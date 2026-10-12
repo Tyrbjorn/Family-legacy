@@ -36,13 +36,11 @@
    ],
    "desc": "The Iron Vanguard: sword-brothers who hold the roads. Martial legitimacy.",
    "req": {
-    "classAny": [
-     "fighter",
-     "knight",
-     "duelist"
-    ],
+    "stats": {
+     "STR": 7
+    },
     "skills": {
-     "swordsmanship": 10
+     "swordsmanship": 5
     },
     "coin": 100
    },
@@ -52,7 +50,8 @@
     "brawling",
     "leadership",
     "tactics"
-   ]
+   ],
+   "grantsClass": "fighter"
   },
   {
    "id": "lodge",
@@ -61,17 +60,16 @@
    "town": "millbrook",
    "path": [
     "scout",
-    "ranger"
+    "ranger",
+    "trapper"
    ],
    "desc": "The Greenwood Lodge: trackers and hunters of the wilds.",
    "req": {
-    "classAny": [
-     "scout",
-     "ranger",
-     "rogue"
-    ],
+    "stats": {
+     "AGI": 7
+    },
     "skills": {
-     "archery": 10
+     "archery": 5
     },
     "coin": 100
    },
@@ -80,7 +78,8 @@
     "hunting",
     "foraging",
     "tracking"
-   ]
+   ],
+   "grantsClass": "scout"
   },
   {
    "id": "collegium",
@@ -94,14 +93,12 @@
    ],
    "desc": "The Arcane Collegium: scholars of the weave. Licenses legal spellcasting.",
    "req": {
-    "classAny": [
-     "apprentice",
-     "elementalist",
-     "scholar"
-    ],
+    "stats": {
+     "INT": 7
+    },
     "skills": {
-     "arcana": 10,
-     "reading": 5
+     "arcana": 5,
+     "reading": 3
     },
     "coin": 150
    },
@@ -112,7 +109,8 @@
     "reading",
     "history",
     "runecraft"
-   ]
+   ],
+   "grantsClass": "apprentice"
   },
   {
    "id": "church",
@@ -120,15 +118,17 @@
    "icon": "⛪",
    "town": "millbrook",
    "path": [
-    "any",
-    "knight",
-    "scholar"
+    "acolyte",
+    "cleric",
+    "templar"
    ],
    "desc": "Healers and clergy. Sanctifies paladins and ordains priests.",
    "req": {
+    "stats": {
+     "WIL": 7
+    },
     "skills": {
-     "healing": 8,
-     "etiquette": 3
+     "healing": 5
     },
     "coin": 120
    },
@@ -137,7 +137,8 @@
     "history",
     "etiquette",
     "faith"
-   ]
+   ],
+   "grantsClass": "acolyte"
   },
   {
    "id": "rogues",
@@ -145,20 +146,18 @@
    "icon": "🗝️",
    "town": "thornwick",
    "path": [
+    "cutpurse",
     "rogue",
-    "scout",
-    "duelist"
+    "spy"
    ],
    "desc": "Thieves, spies and knives in the dark. Membership is never spoken of.",
    "req": {
-    "classAny": [
-     "scout",
-     "rogue",
-     "duelist"
-    ],
+    "stats": {
+     "AGI": 7
+    },
     "skills": {
      "brawling": 5,
-     "haggling": 8
+     "haggling": 5
     },
     "coin": 150
    },
@@ -167,7 +166,8 @@
     "archery",
     "haggling",
     "thievery"
-   ]
+   ],
+   "grantsClass": "cutpurse"
   },
   {
    "id": "hearth",
@@ -175,13 +175,17 @@
    "icon": "🔨",
    "town": "millbrook",
    "path": [
-    "any"
+    "artisan",
+    "blacksmith",
+    "carpenter",
+    "alchemist",
+    "tailor"
    ],
-   "desc": "Hearthstone Builders: masons, smiths and appraisers.",
+   "desc": "Hearthstone Builders: open to everyone (doesn't count toward the one-guild rule). Teaches the Artisan profession.",
    "req": {
     "skills": {
-     "carpentry": 8,
-     "smithing": 5
+     "carpentry": 5,
+     "smithing": 3
     },
     "coin": 120
    },
@@ -192,7 +196,9 @@
     "tailoring",
     "masonry",
     "appraisal"
-   ]
+   ],
+   "open": true,
+   "profession": "artisan"
   }
  ],
  "adventurers": {
@@ -249,9 +255,11 @@
   ],
   "services": {
    "questBoard": "Bounty board: guild bounty quests appear on the Map",
-   "appraisal": "Appraiser buys your loot at 100% value instead of 50%",
+   "appraisal": "Appraiser buys your loot at 80% value instead of 50% (Market Stall sales still pay 100%)",
    "storage": "Guild storage: +3 furniture slots & +2 follower room",
    "healer": "Guild healer: injuries heal in 1 day"
-  }
- }
+  },
+  "grantsClass": "adventurer"
+ },
+ "minJoinAge": 16
 }

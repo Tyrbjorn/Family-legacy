@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting'])D[n]=L(n);
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
@@ -8,7 +8,7 @@ const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
 ok(f.skills.swordsmanship.lvl>0,'training gains levels ('+f.skills.swordsmanship.lvl+')');
 ok(s.turbo.charge===0,'active play does not charge turbo');
-E.advanceReal(s,10*400); ok(E.isAdult(f)&&s.pendingClass.includes(f.id),'founder comes of age, class pending');
+E.advanceReal(s,10*400); ok(E.isAdult(f)&&!f.cls&&!s.pendingClass.length,'founder comes of age still classless (no auto pick at 16)');
 E.chooseClass(s,f.id,'fighter'); E.setAction(s,{type:'quest',target:'rats'}); const c0=s.res.coin; E.advanceReal(s,10*30); ok(s.res.coin>c0,'quests pay coin');
 // offline 14h
 const str=E.serialize(s,t0); const s2=E.deserialize(str); const d0=s2.day; const rep=E.applyOffline(s2,t0+14*3600e3);
@@ -25,7 +25,7 @@ s.res.coin=5000; s.suitors.push({id:'x',name:'Ysolde',gender:'f',cls:'scout',aff
 const home=estate(s,['bunk']); ok(E.propose(s,'x')&&s.members.length===2,'marriage adds playable spouse');
 home.pieces=['bunk','bunk2'].slice(0,1).concat(['cradle','larder','minionbunk']); home.pieces.push('bunk'); s.res.food=1e6; for(let i=0;i<40&&s.members.length<3;i++) E.advanceReal(s,10*360);
 ok(s.members.length>=3,'child born'); const kid=s.members[2];
-f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&kid.cls,'child inherits 10% at 16 & gets class');
+f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&!kid.cls,'child inherits 10% at 16, stays classless');
 ok(E.switchTo(s,kid.id)&&E.active(s)===kid,'switch members');
 E.setOrder(s,f.id,{type:'quest',target:'outskirts'}); E.advanceReal(s,100); ok(f.action&&f.action.type==='quest','idle standing order quests');
 E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on active death');
@@ -54,25 +54,26 @@ ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked be
 ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest locked before joining');
 gm2.skills.swordsmanship.lvl=5; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced');
 gm2.skills.swordsmanship.lvl=12; ok(E.joinGuild(G,gm2,'vanguard')&&gm2.guild.id==='vanguard','join guild');
-gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(!E.joinGuild(G,gm2,'hearth')&&E.joinIssues(G,gm2,'hearth')[0].startsWith('sworn'),'membership blocks other guilds');
+gm2.skills.archery.lvl=20;gm2.stats.AGI=20; ok(!E.joinGuild(G,gm2,'lodge')&&E.joinIssues(G,gm2,'lodge')[0].startsWith('sworn'),'membership blocks other class guilds');
+gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(E.joinGuild(G,gm2,'hearth')&&gm2.guild.id==='vanguard'&&gm2.craft&&gm2.prof==='artisan','Crafters open to sworn members, grants Artisan profession');
 ok(E.setAction(G,{type:'train',target:'tactics'})!==false&&E.canTrain(gm2,'tactics'),'guild unlocks new skill');
 ok(!E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank-gated guild items');
 gm2.guild.rep=60; ok(E.rankUp(G,gm2)&&gm2.guild.rank===1&&E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank up unlocks special item');
 gm2.cls='knight'; gm2.skills.leadership.lvl=45; gm2.skills.tactics.lvl=25; const wl=D.classes.find(c=>c.id==='warlord');
 ok(!E.canEvolve(G,gm2,wl),'tier 2 needs guild rank'); gm2.guild.rep=200; E.rankUp(G,gm2); ok(E.evolve(G,gm2,'warlord')&&gm2.cls==='warlord','Adept Warrior unlocks Warlord');
-const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.skills.tactics;delete m.guild;} old._norm=false; E.normalize(old); ok(old.members[0].skills.tactics&&old.members[0].guild===null,'old saves migrate');
+const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.skills.tactics;delete m.guild;} old._norm=false; E.normalize(old); ok(old.members[0].skills.tactics&&old.members[0].guild&&old.members[0].guild.id===E.classGuild(old.members[0].cls).id,'old saves migrate (skills + guild from class)');
 // adventurers' guild
 ok(E.joinAdventurers(G,gm2)&&gm2.guild.id==='vanguard'&&gm2.adv.rank===0,"Adventurers' Guild joinable by a sworn guild member");
 const G2=E.newGame(t0); const am=G2.members[0]; am.ageDays=20*360; am.cls='scout'; am.skills.archery.lvl=12; G2.res.coin=1e5;
 ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
 ok(!E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'bounties locked at rank F');
 am.adv.rep=30; ok(E.advRankUp(G2,am)&&E.hasService(G2,'questBoard')&&E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'rank E unlocks quest board + bounty');
-const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===D.items[0].value&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
+const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===Math.round(D.items[0].value*0.8)&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
 ok(E.buyAdvItem(G2,am,'adv_blade'),'rank-gated adventurer items');
 // guild roster rework
 const ids=D.guilds.guilds.map(g=>g.id).sort().join(); ok(ids==='church,collegium,hearth,lodge,rogues,vanguard','six guilds: Warriors/Rangers/Magic/Healers/Rogues/Crafters');
 ok(D.guilds.guilds.every(g=>D.skills.some(k=>k.guild===g.id)&&D.quests.some(q=>q.guild===g.id)&&D.items.some(i=>i.guild===g.id)),'every guild has skill, quest and items');
-ok(D.classes.filter(c=>c.tier===2).every(c=>c.guild&&D.guilds.guilds.some(g=>g.id===c.guild)),'every tier 2 class gated by an existing guild');
+ok(D.classes.filter(c=>c.tier===2).every(c=>(c.guild&&D.guilds.guilds.some(g=>g.id===c.guild))||c.advRank!=null||c.crafterRank!=null),'every tier 2 class gated by guild, adventurer or crafter rank');
 ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id==='assassin').guild==='rogues','Paladin→Healers, Assassin→Rogues');
 const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
 ok(E.joinGuild(H,hm,'church')&&E.canTrain(hm,'faith')&&!E.canTrain(hm,'thievery'),'Healers guild unlocks Faith, not Thievery');
@@ -135,4 +136,51 @@ for(let i=0;i<20;i++){LS.res.food=0;E.advanceReal(LS,10);} ok(LS.minions.length=
 const OLD=JSON.parse(E.serialize(G,t0)); delete OLD.land; delete OLD.structures; OLD.rooms=['living','workshop','study']; OLD.furniture=['bookshelf','trophy']; OLD.buildings={house:2,farm:1,lumber:1,yard:0,library:0,hourglass:0}; E.normalize(OLD);
 ok(OLD.structures.length===1&&OLD.structures[0].type==='cabin'&&OLD.structures[0].pieces.includes('bunk')&&OLD.structures[0].pieces.includes('workbench')&&E.landSlots(OLD)>=E.landUsed(OLD)&&OLD.rooms===undefined&&OLD.buildings.house===undefined,'old House/rooms save → Cabin with stations');
 ok([...OLD.structures[0].pieces,...OLD.pieceStore].includes('trophy'),'old furniture kept (placed or in storage)');
+// classes via guilds
+const CG=E.newGame(t0); const cm=CG.members[0]; CG.res.coin=1e4; ok(!cm.cls,'characters start classless');
+cm.ageDays=15*360; cm.skills.swordsmanship.lvl=10; cm.stats.STR=10; ok(E.joinIssues(CG,cm,'vanguard').includes('age 16+'),'guilds require age 16');
+cm.ageDays=16*360; cm.stats.STR=3; ok(E.joinIssues(CG,cm,'vanguard').some(x=>x.startsWith('STR')),'stat thresholds instead of class');
+cm.stats.STR=10; ok(E.joinGuild(CG,cm,'vanguard')&&cm.cls==='fighter','Warriors grant Fighter');
+const grants={lodge:'scout',collegium:'apprentice',church:'acolyte',rogues:'cutpurse'};
+for(const [gid,c] of Object.entries(grants)){ const X=E.newGame(t0); const xm=X.members[0]; xm.ageDays=20*360; X.res.coin=1e4; for(const k of E.STATS) xm.stats[k]=20; for(const k in xm.skills) xm.skills[k].lvl=10; ok(E.joinGuild(X,xm,gid)&&xm.cls===c,`${gid} grants ${c}`); }
+const CR=E.newGame(t0); const cr=CR.members[0]; cr.ageDays=20*360; CR.res.coin=1e4; cr.skills.carpentry.lvl=6; cr.skills.smithing.lvl=4; ok(E.joinGuild(CR,cr,'hearth')&&!cr.cls&&cr.prof==='artisan','Crafters give the Artisan profession, no primary class');
+ok(E.joinAdventurers(CR,cr)&&cr.cls==='adventurer'&&cr.prof==='artisan',"Adventurers' Guild grants Adventurer as primary class (classless members)");
+ok(D.classes.filter(c=>c.tier>0).every(c=>{const g=E.classGuild(c.id);return g&&(!c.guild||c.guild===g.id);}),'every evolution stays inside its guild line');
+const MG=JSON.parse(E.serialize(G,t0)); MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
+// crafting, inventory, professions, minion gear
+const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e5; K.res.wood=300; K.res.planks=100; K.res.ingots=100; K.res.hides=50; K.res.cloth=50; K.res.potions=20; K.res.ore=30; K.res.stone=300;
+['plot','acre','meadow'].forEach(l=>E.buyLand(K,l)); const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','forge','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p));
+ok(E.itemDef('c|iron_sword|masterwork').cp>E.itemDef('c|iron_sword|crude').cp&&E.itemDef('c|iron_sword|fine').value>E.itemDef('iron_sword').value,'crafted quality tiers scale stats and value');
+ok(E.rollQuality(-1)==='crude'&&E.rollQuality(2)==='masterwork','quality roll spans Crude→Masterwork');
+const low=E.qualityScore(K,km2,E.recipeDef('r_sword')); km2.skills.smithing.lvl=50; const hi=E.qualityScore(K,km2,E.recipeDef('r_sword')); ok(hi>low,'skill raises craft quality');
+km2.craft={id:'hearth',rank:1,rep:0}; km2.prof='artisan'; ok(E.evolve(K,km2,'blacksmith')&&km2.prof==='blacksmith'&&!km2.cls,'Artisan → Blacksmith profession (no primary class needed)');
+ok(E.profBonus(km2,E.recipeDef('r_sword'))>E.profBonus(km2,E.recipeDef('r_staff')),'profession specialty boosts matching recipes');
+const ing0=K.res.ingots; E.setAction(K,{type:'craft',target:'r_sword'}); E.advanceReal(K,10*4); ok(K.res.ingots<ing0+8-2&&K.vault.some(x=>x.startsWith('c|iron_sword|')),'family member crafts a quality item from materials');
+ok(E.recipeIssue(K,km2,E.recipeDef('r_jerkin'))==='needs Loom','recipes need their station');
+const cs=K.vault.find(x=>x.startsWith('c|')); ok(E.listForSale(K,cs)&&K.forSale.includes(cs),'list crafted item in stock for sale');
+const bh2=E.buildStructure(K,'bunkhouse'); E.addMinion(K,'laborer','t'); E.assignMinion(K,K.minions[0].uid,'merchant'); const coin0=K.res.coin; K.res.food=500; E.setAction(K,{type:'rest'}); E.advanceReal(K,10*4);
+ok(!K.forSale.includes(cs)&&K.res.coin-coin0>=E.stallValue(K,E.itemDef(cs))-60,'merchant minion sells stock at full price over time');
+ok(E.stallValue(K,E.itemDef('c|iron_sword|fine'))>E.sellValue(K,E.itemDef('c|iron_sword|fine')),'stall sale beats quick sell');
+const cap=E.vaultCap(K); ok(cap===D.crafting.vaultBase+D.crafting.vaultPerStorage,'vault capacity tied to Storage Chests'); while(K.vault.length<cap) K.vault.push('flowers'); ok(!E.buyItem(K,'millbrook','buckler'),'full vault blocks buying');
+ok(E.sellMany(K,K.vault.filter(x=>x==='flowers'))>0&&!K.vault.includes('flowers'),'bulk sell');
+const kr=K.res.wood; ok(E.sellAllRes(K,'millbrook','wood')&&K.res.wood===0&&K.res.coin>0,'sell a whole material stack');
+for(let i=0;i<9;i++) K.vault.push('rusty_sword'); for(let i=0;i<8;i++) E.moveItem(K,km2,'rusty_sword',true); ok(km2.bag.length===8&&!E.moveItem(K,km2,'rusty_sword',true),'personal pack capacity');
+// minion gear
+const mw=K.minions[0]; K.vault.push('c|sickle|masterwork','woodaxe','collar','chain_shirt'); ok(E.equipMinion(K,mw.uid,'c|sickle|masterwork')&&mw.equip.tool,'minion tool slot');
+ok(E.minionGearMult(mw,'farm')>E.minionGearMult(mw,'gather')&&E.minionGearMult(mw,'farm')>1.3,'quality tool boosts matching job output');
+ok(!E.equipMinion(K,mw.uid,'collar'),'collar only for companions'); ok(E.equipMinion(K,mw.uid,'chain_shirt')&&E.minionSurvival(mw)<1&&E.minionGearMult(mw,'guard')>1,'armor boosts guard power and survival');
+ok(E.unequipMinion(K,mw.uid,'tool')&&K.vault.includes('c|sickle|masterwork'),'unequip minion gear to vault');
+// adventurer line
+const AV=E.newGame(t0); const av=AV.members[0]; av.ageDays=20*360; AV.res.coin=1e5; ok(E.joinAdventurers(AV,av)&&av.cls==='adventurer','classless join → Adventurer');
+av.skills.monsterlore.lvl=30; av.skills.swordsmanship.lvl=30; ok(!E.evolve(AV,av,'monsterhunter'),'adventurer branch gated by rank'); av.adv.rank=3; ok(E.evolve(AV,av,'monsterhunter'),'Rank C unlocks Monster Hunter');
+const AV2=E.newGame(t0); const a2=AV2.members[0]; a2.ageDays=20*360; AV2.res.coin=1e5; a2.stats.STR=10; a2.skills.swordsmanship.lvl=6; E.joinAdventurers(AV2,a2); ok(E.joinGuild(AV2,a2,'vanguard')&&a2.cls==='fighter'&&a2.adv,'class guild replaces Adventurer as primary; rank track kept');
+// crafter playstyle without questing: idle crafter on standing order + merchant
+const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smithing.lvl=30; cz.prof='blacksmith'; CP.res.coin=2000; CP.res.wood=200; CP.res.planks=200; CP.res.ingots=200; CP.res.stone=200; CP.res.food=400;
+['plot','acre'].forEach(l=>E.buyLand(CP,l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','forge','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p));
+CP.members.push({...JSON.parse(JSON.stringify(cz)),id:99,name:'Kip'}); CP.activeId=99; E.setOrder(CP,cz.id,{type:'craft'});
+E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'idle family member crafts on standing order');
+const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
+const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
+ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===3,'Renown + Manor → Era 3 indicator');
+ER.members[0].ageDays=20*360; ok(E.setAction(ER,{type:'quest',target:'rats'})!==false&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'archery'})!==false,'later eras keep questing, jobs and training open');
 console.log(pass,'tests passed');

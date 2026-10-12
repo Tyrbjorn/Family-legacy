@@ -1,0 +1,257 @@
+{
+ "qualities": [
+  {
+   "id": "crude",
+   "name": "Crude",
+   "mult": 0.7,
+   "score": 0
+  },
+  {
+   "id": "common",
+   "name": "Common",
+   "mult": 1.0,
+   "score": 0.25
+  },
+  {
+   "id": "fine",
+   "name": "Fine",
+   "mult": 1.4,
+   "score": 0.55
+  },
+  {
+   "id": "superior",
+   "name": "Superior",
+   "mult": 1.9,
+   "score": 0.9
+  },
+  {
+   "id": "masterwork",
+   "name": "Masterwork",
+   "mult": 2.6,
+   "score": 1.3
+  }
+ ],
+ "craftedValueMult": 1.6,
+ "quickSellRate": 0.5,
+ "stallSellRate": 1.0,
+ "stallDaysPerItem": 3,
+ "vaultBase": 20,
+ "vaultPerStorage": 10,
+ "packCap": 8,
+ "recipes": [
+  {
+   "id": "r_sword",
+   "name": "Iron Sword",
+   "base": "iron_sword",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "planks": 1
+   },
+   "days": 4,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_chain",
+   "name": "Chain Shirt",
+   "base": "chain_shirt",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5
+   },
+   "days": 6,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_scale",
+   "name": "Scale Mail",
+   "base": "scale_mail",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 8,
+    "hides": 2
+   },
+   "days": 8,
+   "minSkill": 20,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_kite",
+   "name": "Kite Shield",
+   "base": "kite_shield",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "ingots": 1
+   },
+   "days": 4,
+   "line": "carpenter"
+  },
+  {
+   "id": "r_staff",
+   "name": "Oak Staff",
+   "base": "oak_staff",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 3
+   },
+   "days": 3,
+   "line": "carpenter"
+  },
+  {
+   "id": "r_bow",
+   "name": "Yew Longbow",
+   "base": "yew_longbow",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 5,
+   "minSkill": 10,
+   "line": "carpenter"
+  },
+  {
+   "id": "r_jerkin",
+   "name": "Leather Jerkin",
+   "base": "leather_jerkin",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "hides": 3,
+    "cloth": 1
+   },
+   "days": 4,
+   "line": "tailor"
+  },
+  {
+   "id": "r_robe",
+   "name": "Mage Robe",
+   "base": "mage_robe",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 5,
+    "potions": 1
+   },
+   "days": 6,
+   "minSkill": 15,
+   "line": "tailor"
+  },
+  {
+   "id": "r_cloak",
+   "name": "Ranger Cloak",
+   "base": "ranger_cloak",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 3,
+    "hides": 2
+   },
+   "days": 5,
+   "line": "tailor"
+  },
+  {
+   "id": "r_vigor",
+   "name": "Ring of Vigor",
+   "base": "ring_of_vigor",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "ingots": 1,
+    "potions": 2
+   },
+   "days": 4,
+   "line": "alchemist"
+  },
+  {
+   "id": "r_wit",
+   "name": "Amulet of Wit",
+   "base": "amulet_of_wit",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 3,
+    "ingots": 1
+   },
+   "days": 5,
+   "minSkill": 10,
+   "line": "alchemist"
+  },
+  {
+   "id": "r_cakes",
+   "name": "Honey Cakes (gift)",
+   "base": "chocolate",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 20,
+    "herbs": 1
+   },
+   "days": 2,
+   "line": "tailor"
+  },
+  {
+   "id": "r_sickle",
+   "name": "Sickle",
+   "base": "sickle",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 1,
+    "planks": 1
+   },
+   "days": 2,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_axe",
+   "name": "Woodsman's Axe",
+   "base": "woodaxe",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 2,
+    "planks": 1
+   },
+   "days": 3,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_hammer",
+   "name": "Smith's Hammer",
+   "base": "smithhammer",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3
+   },
+   "days": 3,
+   "line": "blacksmith"
+  },
+  {
+   "id": "r_collar",
+   "name": "Leather Collar",
+   "base": "collar",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "hides": 2
+   },
+   "days": 2,
+   "line": "tailor"
+  }
+ ],
+ "minionSlots": [
+  "weapon",
+  "armor",
+  "tool",
+  "charm"
+ ]
+}

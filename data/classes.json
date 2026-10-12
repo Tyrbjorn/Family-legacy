@@ -45,6 +45,36 @@
   "icon": "🪄"
  },
  {
+  "id": "acolyte",
+  "name": "Acolyte",
+  "tier": 0,
+  "stats": [
+   "WIL",
+   "CHA"
+  ],
+  "cpSkills": [
+   "healing",
+   "faith",
+   "etiquette"
+  ],
+  "icon": "🕯️"
+ },
+ {
+  "id": "cutpurse",
+  "name": "Cutpurse",
+  "tier": 0,
+  "stats": [
+   "AGI",
+   "CHA"
+  ],
+  "cpSkills": [
+   "brawling",
+   "thievery",
+   "archery"
+  ],
+  "icon": "🗝️"
+ },
+ {
   "id": "knight",
   "name": "Knight",
   "tier": 1,
@@ -113,10 +143,10 @@
   "id": "rogue",
   "name": "Rogue",
   "tier": 1,
-  "from": "scout",
+  "from": "cutpurse",
   "req": {
-   "archery": 20,
-   "haggling": 25
+   "thievery": 25,
+   "brawling": 20
   },
   "cost": 500,
   "stats": [
@@ -178,7 +208,7 @@
   "id": "paladin",
   "name": "Paladin",
   "tier": 2,
-  "from": "knight",
+  "from": "templar",
   "req": {
    "swordsmanship": 45,
    "faith": 20
@@ -346,7 +376,7 @@
   "id": "priest",
   "name": "Priest",
   "tier": 2,
-  "from": "scholar",
+  "from": "cleric",
   "req": {
    "healing": 45,
    "faith": 25
@@ -413,5 +443,442 @@
   ],
   "cpMult": 2.4,
   "icon": "🌳"
+ },
+ {
+  "id": "trapper",
+  "name": "Trapper",
+  "tier": 1,
+  "from": "scout",
+  "req": {
+   "hunting": 25,
+   "foraging": 25
+  },
+  "cost": 500,
+  "stats": [
+   "AGI",
+   "WIL"
+  ],
+  "cpSkills": [
+   "archery",
+   "hunting",
+   "foraging"
+  ],
+  "cpMult": 1.6,
+  "icon": "🪤"
+ },
+ {
+  "id": "spy",
+  "name": "Spy",
+  "tier": 1,
+  "from": "cutpurse",
+  "req": {
+   "thievery": 25,
+   "etiquette": 20
+  },
+  "cost": 500,
+  "stats": [
+   "AGI",
+   "INT"
+  ],
+  "cpSkills": [
+   "thievery",
+   "etiquette",
+   "brawling"
+  ],
+  "cpMult": 1.6,
+  "icon": "🕵️"
+ },
+ {
+  "id": "cleric",
+  "name": "Cleric",
+  "tier": 1,
+  "from": "acolyte",
+  "req": {
+   "healing": 25,
+   "faith": 25
+  },
+  "cost": 500,
+  "stats": [
+   "WIL",
+   "INT"
+  ],
+  "cpSkills": [
+   "healing",
+   "faith"
+  ],
+  "cpMult": 1.6,
+  "icon": "✝️"
+ },
+ {
+  "id": "templar",
+  "name": "Templar",
+  "tier": 1,
+  "from": "acolyte",
+  "req": {
+   "swordsmanship": 20,
+   "faith": 25
+  },
+  "cost": 500,
+  "stats": [
+   "STR",
+   "WIL"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "shield",
+   "faith"
+  ],
+  "cpMult": 1.6,
+  "icon": "⚔️"
+ },
+ {
+  "id": "adventurer",
+  "name": "Adventurer",
+  "tier": 0,
+  "req": {},
+  "cost": 0,
+  "stats": [
+   "AGI",
+   "VIT"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "archery",
+   "monsterlore"
+  ],
+  "cpMult": 1,
+  "icon": "🧭",
+  "line": "adventurer"
+ },
+ {
+  "id": "wanderer",
+  "name": "Wanderer",
+  "tier": 1,
+  "from": "adventurer",
+  "req": {
+   "nature": 20,
+   "foraging": 20
+  },
+  "cost": 500,
+  "advRank": 2,
+  "stats": [
+   "AGI",
+   "WIL"
+  ],
+  "cpSkills": [
+   "archery",
+   "nature",
+   "foraging"
+  ],
+  "cpMult": 1.6,
+  "icon": "🥾",
+  "line": "adventurer"
+ },
+ {
+  "id": "treasurehunter",
+  "name": "Treasure Hunter",
+  "tier": 1,
+  "from": "adventurer",
+  "req": {
+   "history": 20,
+   "archery": 15
+  },
+  "cost": 500,
+  "advRank": 3,
+  "stats": [
+   "AGI",
+   "INT"
+  ],
+  "cpSkills": [
+   "archery",
+   "history",
+   "thievery"
+  ],
+  "cpMult": 1.6,
+  "icon": "💎",
+  "line": "adventurer",
+  "lootBonus": 0.15
+ },
+ {
+  "id": "monsterhunter",
+  "name": "Monster Hunter",
+  "tier": 1,
+  "from": "adventurer",
+  "req": {
+   "monsterlore": 25,
+   "swordsmanship": 20
+  },
+  "cost": 500,
+  "advRank": 3,
+  "stats": [
+   "STR",
+   "VIT"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "monsterlore",
+   "shield"
+  ],
+  "cpMult": 1.6,
+  "icon": "🐲",
+  "line": "adventurer"
+ },
+ {
+  "id": "explorer",
+  "name": "Explorer",
+  "tier": 2,
+  "from": "wanderer",
+  "req": {
+   "nature": 45,
+   "foraging": 40
+  },
+  "cost": 2000,
+  "advRank": 4,
+  "stats": [
+   "AGI",
+   "WIL"
+  ],
+  "cpSkills": [
+   "archery",
+   "nature",
+   "foraging"
+  ],
+  "cpMult": 2.4,
+  "icon": "🗺️",
+  "line": "adventurer"
+ },
+ {
+  "id": "relicseeker",
+  "name": "Relic Seeker",
+  "tier": 2,
+  "from": "treasurehunter",
+  "req": {
+   "history": 45
+  },
+  "cost": 2000,
+  "advRank": 4,
+  "stats": [
+   "AGI",
+   "INT"
+  ],
+  "cpSkills": [
+   "archery",
+   "history",
+   "thievery"
+  ],
+  "cpMult": 2.4,
+  "icon": "🏺",
+  "line": "adventurer",
+  "lootBonus": 0.3
+ },
+ {
+  "id": "hero",
+  "name": "Hero",
+  "tier": 2,
+  "from": "monsterhunter",
+  "req": {
+   "monsterlore": 50,
+   "swordsmanship": 45
+  },
+  "cost": 2000,
+  "advRank": 5,
+  "stats": [
+   "STR",
+   "VIT"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "monsterlore",
+   "shield"
+  ],
+  "cpMult": 2.4,
+  "icon": "🌟",
+  "line": "adventurer"
+ },
+ {
+  "id": "artisan",
+  "name": "Artisan",
+  "tier": 0,
+  "req": {},
+  "cost": 0,
+  "crafterRank": 0,
+  "line": "artisan",
+  "profession": true,
+  "spec": null,
+  "craftBonus": 0.05,
+  "icon": "🧑‍🔧",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "blacksmith",
+  "name": "Blacksmith",
+  "tier": 1,
+  "from": "artisan",
+  "req": {
+   "smithing": 20
+  },
+  "cost": 400,
+  "crafterRank": 1,
+  "line": "artisan",
+  "profession": true,
+  "spec": "blacksmith",
+  "craftBonus": 0.15,
+  "icon": "⚒️",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "carpenter",
+  "name": "Carpenter",
+  "tier": 1,
+  "from": "artisan",
+  "req": {
+   "carpentry": 20
+  },
+  "cost": 400,
+  "crafterRank": 1,
+  "line": "artisan",
+  "profession": true,
+  "spec": "carpenter",
+  "craftBonus": 0.15,
+  "icon": "🪚",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "alchemist",
+  "name": "Alchemist",
+  "tier": 1,
+  "from": "artisan",
+  "req": {
+   "alchemy": 20
+  },
+  "cost": 400,
+  "crafterRank": 1,
+  "line": "artisan",
+  "profession": true,
+  "spec": "alchemist",
+  "craftBonus": 0.15,
+  "icon": "⚗️",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "tailor",
+  "name": "Tailor",
+  "tier": 1,
+  "from": "artisan",
+  "req": {
+   "tailoring": 20
+  },
+  "cost": 400,
+  "crafterRank": 1,
+  "line": "artisan",
+  "profession": true,
+  "spec": "tailor",
+  "craftBonus": 0.15,
+  "icon": "🧵",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "armorer",
+  "name": "Master Armorer",
+  "tier": 2,
+  "from": "blacksmith",
+  "req": {
+   "smithing": 45
+  },
+  "cost": 1600,
+  "crafterRank": 2,
+  "line": "artisan",
+  "profession": true,
+  "spec": "blacksmith",
+  "craftBonus": 0.3,
+  "icon": "🛡️",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "architect",
+  "name": "Architect",
+  "tier": 2,
+  "from": "carpenter",
+  "req": {
+   "carpentry": 45
+  },
+  "cost": 1600,
+  "crafterRank": 2,
+  "line": "artisan",
+  "profession": true,
+  "spec": "carpenter",
+  "craftBonus": 0.3,
+  "icon": "📐",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "masteralchemist",
+  "name": "Master Alchemist",
+  "tier": 2,
+  "from": "alchemist",
+  "req": {
+   "alchemy": 45
+  },
+  "cost": 1600,
+  "crafterRank": 2,
+  "line": "artisan",
+  "profession": true,
+  "spec": "alchemist",
+  "craftBonus": 0.3,
+  "icon": "🧪",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
+ },
+ {
+  "id": "couturier",
+  "name": "Leatherworker-Couturier",
+  "tier": 2,
+  "from": "tailor",
+  "req": {
+   "tailoring": 45
+  },
+  "cost": 1600,
+  "crafterRank": 2,
+  "line": "artisan",
+  "profession": true,
+  "spec": "tailor",
+  "craftBonus": 0.3,
+  "icon": "👘",
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": []
  }
 ]

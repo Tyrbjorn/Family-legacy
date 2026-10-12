@@ -84,7 +84,8 @@
   "risk": "risky",
   "reward": {
    "coin": 60,
-   "food": 15
+   "food": 15,
+   "hides": 3
   },
   "skill": "hunting",
   "loot": [
@@ -124,7 +125,8 @@
   "risk": "safe",
   "reward": {
    "coin": 40,
-   "stone": 25
+   "stone": 25,
+   "ore": 8
   },
   "skill": "mining",
   "loot": []
@@ -422,7 +424,8 @@
   "risk": "risky",
   "reward": {
    "coin": 300,
-   "food": 40
+   "food": 40,
+   "hides": 3
   },
   "skill": "archery",
   "loot": [
@@ -466,7 +469,8 @@
   "risk": "risky",
   "reward": {
    "coin": 350,
-   "stone": 40
+   "stone": 40,
+   "ore": 8
   },
   "skill": "history",
   "loot": [
@@ -553,7 +557,8 @@
   "days": 8,
   "risk": "risky",
   "reward": {
-   "coin": 420
+   "coin": 420,
+   "hides": 3
   },
   "skill": "shield",
   "loot": [
@@ -612,7 +617,8 @@
   "days": 6,
   "risk": "risky",
   "reward": {
-   "coin": 280
+   "coin": 280,
+   "hides": 3
   },
   "skill": "archery",
   "loot": [

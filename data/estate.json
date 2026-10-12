@@ -261,7 +261,7 @@
    "bonus": {
     "process": {
      "in": {
-      "stone": 4
+      "ore": 3
      },
      "out": "ingots",
      "rate": 2
@@ -271,7 +271,7 @@
     },
     "craftQuality": 0.05
    },
-   "desc": "Smelts 4 stone (ore) → 1 ingot, 2/day; +1 crafting spot"
+   "desc": "Smelts 3 ore → 1 ingot, 2/day; +1 crafting spot"
   },
   {
    "id": "loom",
@@ -287,9 +287,16 @@
     "xp": 0.03,
     "jobs": {
      "craft": 1
+    },
+    "process": {
+     "in": {
+      "herbs": 2
+     },
+     "out": "cloth",
+     "rate": 2
     }
    },
-   "desc": "+3% Craft XP, +1 crafting spot"
+   "desc": "Weaves 2 herbs (flax) → 1 cloth, 2/day; +3% Craft XP"
   },
   {
    "id": "herbrack",
@@ -426,6 +433,22 @@
     }
    },
    "desc": "Houses a fire spirit"
+  },
+  {
+   "id": "stall",
+   "name": "Market Stall",
+   "icon": "🏷️",
+   "kind": "station",
+   "cost": {
+    "coin": 60,
+    "planks": 6
+   },
+   "bonus": {
+    "jobs": {
+     "merchant": 1
+    }
+   },
+   "desc": "1 merchant spot: sells your 'stock for sale' at full price over time"
   }
  ],
  "synergies": [
@@ -536,7 +559,10 @@
    "herbs",
    "planks",
    "ingots",
-   "potions"
+   "potions",
+   "ore",
+   "hides",
+   "cloth"
   ]
  },
  "minionFoodPerDay": 0.5

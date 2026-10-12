@@ -32,7 +32,7 @@ export function newGame(now=Date.now()){ const _s=_newGame(now); _s.land=[]; _s.
 function _newGame(now){
   const s={v:SAVE_VERSION,day:0,nextId:1,members:[],activeId:1,head:1,
     res:{coin:50,food:60,wood:0,stone:0,herbs:0},revealed:[],buildings:{},furniture:[],vault:['rusty_sword','padded_vest'],
-    log:[],turbo:{charge:0,on:false},lastSave:now,unlocks:[],doneQuests:[],specialGranted:[],minions:[],repLevel:0,gameOver:false,suitors:[],renown:0,deeds:[],acc:0,pendingClass:[]};
+    log:[],turbo:{charge:0,on:false},lastSave:now,forSale:[],saleProg:0,unlocks:[],doneQuests:[],specialGranted:[],minions:[],repLevel:0,gameOver:false,suitors:[],renown:0,deeds:[],acc:0,pendingClass:[]};
   for(const b of D.buildings) s.buildings[b.id]=b.start;
   const f=newMember(s,{age:15}); s.members.push(f);
   f.action={type:'train',target:'swordsmanship',progress:0};
@@ -57,7 +57,7 @@ export function cp(s,m){
   const c=cls(m); let v=0;
   if(c){ v+=c.stats.reduce((a,k)=>a+statVal(m,k),0); v+=c.cpSkills.reduce((a,k)=>a+m.skills[k].lvl*2,0); v*=c.cpMult||1; }
   else v=(statVal(m,'STR')+statVal(m,'AGI'))/2;
-  for(const id of Object.values(m.equip)){const it=D.items.find(i=>i.id===id); if(it) v+=it.cp||0;}
+  for(const id of Object.values(m.equip)){const it=itemDef(id); if(it) v+=it.cp||0;}
   v*=1+traitSum(m,'cp');
   return Math.round(v);
 }
@@ -69,7 +69,7 @@ function xpMult(s,m,skillId){
   for(const f of furn(s)){ if(f.bonus.skill===skillId) mult+=f.bonus.xp; if(f.bonus.family===sk.family) mult+=f.bonus.xp; }
   if(ageY(m)>=50) mult+=.1;
   if(s.res.food<=0) mult*=.5;
-  if(m.guild){ const g=guildDef(m.guild.id); if(g.skills.includes(skillId)) mult+=0.05*(m.guild.rank+1); }
+  for(const mg of guildsOf(m)){ const g=guildDef(mg.id); if(g.skills.includes(skillId)) mult+=0.05*(mg.rank+1); }
   mult+=Math.min(.2,minionPower(s,'tutor')*.05);
   return mult;
 }
@@ -131,10 +131,11 @@ function doAction(s,m,a,eff){
   if(a.type==='train'){ gainXp(s,m,a.target,T.xpPerDay*eff); }
   else if(a.type==='work'){ const c=(4+level(m)*0.5+m.skills.haggling.lvl*0.2)*eff*(1+traitSum(m,'coin'))*(1+furn(s).reduce((x,f)=>x+(f.bonus.coin||0),0)); s.res.coin+=c; gainXp(s,m,'haggling',T.xpPerDay*.3*eff); }
   else if(a.type==='gather'){ const n=D.nodes.find(x=>x.id===a.target); if(!n){m.action=null;return;} const mul=(1+m.skills[n.skill].lvl*0.03)*eff; for(const[k,v]of Object.entries(n.res)) s.res[k]=(s.res[k]||0)+v*mul; gainXp(s,m,n.skill,T.xpPerDay*.6*eff); }
-  else if(a.type==='craft'){ if(!hasPiece(s,'workbench')) return; a.progress=(a.progress||0)+eff; gainXp(s,m,'smithing',T.xpPerDay*.5*eff); if(a.progress>=T.craftDays){ a.progress=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const pool=D.items.filter(i=>i.slot!=='gift'&&i.rarity===(rng()<craftQuality(s)+(m.skills.smithing.lvl>=15?.2:0)?'Fine':'Common')); const it=r(pool); s.vault.push(it.id); log(s,`🔨 ${m.name} crafted ${it.name}.`);} } }
+  else if(a.type==='craft'){ const rc=a.target?recipeDef(a.target):bestRecipe(s,m); if(!rc||recipeIssue(s,m,rc)){ if(!a.target) a.progress=0; return; } a.target=a.target||null; a.rc=rc.id;
+    a.progress=(a.progress||0)+eff; gainXp(s,m,rc.skill,T.xpPerDay*.8*eff); if(a.progress>=rc.days){ a.progress=0; craftItem(s,m,rc,null); } }
   else if(a.type==='job'){ const j=D.jobs.find(x=>x.id===a.target); if(!j||!jobOk(m,j)){m.action=null;return;}
     s.res.coin+=(isAdult(m)?j.payAdult:j.payChild)*(1+level(m)*0.02)*eff*(1+traitSum(m,'coin'));
-    for(const[k,v]of Object.entries(j.stats)) m.stats[k]+=v*eff; for(const k of j.skills) gainXp(s,m,k,T.xpPerDay*.5*eff); }
+    for(const[k,v]of Object.entries(j.stats)) m.stats[k]+=v*eff; for(const k of j.skills) gainXp(s,m,k,T.xpPerDay*.5*eff); if(j.id==='shop') sellTick(s,eff*(1+m.skills.haggling.lvl*0.02)); }
   else if(a.type==='activity'){ const ac=D.activities.find(x=>x.id===a.target); if(!ac||!activityOk(s,m,ac)){m.action=null;return;}
     for(const[k,v]of Object.entries(ac.stats)) m.stats[k]+=v*eff; for(const k of ac.skills) if(canTrain(m,k,s,true)) gainXp(s,m,k,T.xpPerDay*.6*eff); if(ac.id==='fishing') s.res.food+=1*eff; }
   else if(a.type==='rest'){ m.injured=Math.max(0,m.injured-1-furn(s).reduce((x,f)=>x+(f.bonus.rest||0),0)); }
@@ -154,12 +155,12 @@ function resolveQuest(s,m,q,eff){
   const scale=eff>=1?1:Math.max(eff,0.2)*(1/Math.max(eff,0.2))*eff; // eff already applied via time; loot scaled
   const gain=[]; for(const [k,v] of Object.entries(q.reward)){ const n=Math.round(v*(eff>=1?1:Math.max(eff*2,.4))); s.res[k]=(s.res[k]||0)+n; gain.push(`+${n} ${k}`);}
   gainXp(s,m,q.skill,T.xpPerDay*2);
-  if(q.loot.length && rng()<0.35){ const id=r(q.loot); s.vault.push(id); gain.push(D.items.find(i=>i.id===id).name); }
+  if(q.loot.length && rng()<0.35+((cls(m)||{}).lootBonus||0)){ const id=r(q.loot); if(addToVault(s,id)) gain.push(itemDef(id).name); else gain.push('(vault full – loot lost)'); }
   s.renown+= Math.ceil(q.cp/20);
   m.questsDone=(m.questsDone||0)+1; if(!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   if(q.unlocks&&!s.unlocks.includes(q.unlocks)){ s.unlocks.push(q.unlocks); const [k,id]=q.unlocks.split(':'); log(s,`🔓 ${q.name} unlocked ${k==='skill'?'training: '+D.skills.find(x=>x.id===id).name:'activity: '+D.activities.find(x=>x.id===id).name}!`); }
   if(m.adv) m.adv.rep+=Math.ceil(q.cp/10)+1;
-  if(m.guild){ const g=guildDef(m.guild.id); if(q.guild===g.id) m.guild.rep+=D.guilds.repPerGuildQuest; else if(g.skills.includes(q.skill)) m.guild.rep+=D.guilds.repPerQuestSkill; }
+  for(const mg of guildsOf(m)){ const g=guildDef(mg.id); if(q.guild===g.id) mg.rep+=D.guilds.repPerGuildQuest; else if(g.skills.includes(q.skill)) mg.rep+=D.guilds.repPerQuestSkill; }
   const rc=D.minions.rescueQuests[q.id]; if(rc&&rng()<rc) addMinion(s,'refugee',`rescued on ${q.name}`);
   log(s,`✅ ${m.name} finished ${q.name}: ${gain.join(', ')}`);
   if(q.risk==='deadly' && rng()<T.deadlyDeathChance) kill(s,m,`was slain on ${q.name}`);
@@ -201,7 +202,7 @@ function dayTick(s,effActive,effIdle){
     m.ageDays++;
     const a=ageY(m);
     if(m.ageDays%Y()===0){ // birthday
-      if(a===T.adultAge){ if(m.parents) inherit(s,m); if(!m.cls){ if(m.id===s.activeId) s.pendingClass.push(m.id); else { m.cls=r(D.classes.filter(c=>c.tier===0)).id; log(s,`🎓 ${m.name} came of age and became a ${cls(m).name}.`);} } }
+      if(a===T.adultAge){ if(m.parents) inherit(s,m); log(s,`🎂 ${m.name} came of age (16): guild halls will now consider them.`); }
       if(a>=m.lifespan-3 && !m.warned){ m.warned=true; log(s,`⚠️ ${m.name} is growing frail (lifespan ~${m.lifespan}).`); }
     }
     if(a>=m.lifespan && rng()<(0.002*(a-m.lifespan+1))){ kill(s,m,'died of old age'); if(s.gameOver) return; continue; }
@@ -211,6 +212,7 @@ function dayTick(s,effActive,effIdle){
     if(m.injured>0){ m.injured=hasService(s,'healer')?0:Math.max(0,m.injured-1); continue; }
     if(isAct) doAction(s,m,m.action,eff);
     else { const o=established(s)?m.order:{type:'work'}; if(o.type==='quest'){ if(!m.action||m.action.type!=='quest'){ const q=autoQuest(s,m,o.target); m.action=q?{type:'quest',target:q.id,progress:0}:null; } doAction(s,m,m.action,eff); }
+      else if(o.type==='craft'){ if(!m.action||m.action.type!=='craft') m.action={type:'craft',target:o.target,progress:0}; doAction(s,m,m.action,eff); }
       else doAction(s,m,{type:o.type,target:o.target},eff); }
     // children
     const sp=s.members.find(x=>x.id===m.spouse&&x.alive);
@@ -224,13 +226,13 @@ export function autoQuest(s,m,region){
   return qs.sort((a,b)=>b.cp-a.cp)[0]||D.quests.find(q=>q.id==='rats');
 }
 export function regionOpen(s,id){const rg=D.regions.find(x=>x.id===id);return living(s).some(m=>cp(s,m)>=rg.cp)||id==='outskirts';}
-function spawnSuitor(s){ const g=r(['m','f']); const su={id:'su'+s.day,name:r(NAMES[g]),gender:g,cls:r(D.classes.filter(c=>c.tier===0)).id,affinity:0,age:18+Math.floor(rng()*8)}; s.suitors.push(su); log(s,`💌 A suitor, ${su.name} the ${D.classes.find(c=>c.id===su.cls).name}, appeared in town.`); }
+function spawnSuitor(s){ const g=r(['m','f']); const su={id:'su'+s.day,name:r(NAMES[g]),gender:g,cls:r(D.classes.filter(c=>c.tier===0&&!c.line)).id,affinity:0,age:18+Math.floor(rng()*8)}; s.suitors.push(su); log(s,`💌 A suitor, ${su.name} the ${D.classes.find(c=>c.id===su.cls).name}, appeared in town.`); }
 
 // ---- player actions
 export function setAction(s,a){ const m=active(s); if(['train','job','activity'].includes(a.type)&&!actionAllowed(s,m,a)) return false; if(a.type==='quest'&&!questOk(m,D.quests.find(q=>q.id===a.target))) return false; if(!m||!isAdult(m)&&a.type!=='rest'&&a.type!=='train') {} m.action={...a,progress:0}; }
 export function chooseClass(s,mid,cid){ const m=s.members.find(x=>x.id===mid); m.cls=cid; s.pendingClass=s.pendingClass.filter(x=>x!==mid); log(s,`🎓 ${m.name} became a ${cls(m).name}.`); }
-export function canEvolve(s,m,c){ return c.from===m.cls && (!c.guild||(m.guild&&m.guild.id===c.guild&&m.guild.rank>=c.guildRank)) && Object.entries(c.req).every(([k,v])=>m.skills[k].lvl>=v) && s.res.coin>=c.cost; }
-export function evolve(s,m,cid){ const c=D.classes.find(x=>x.id===cid); if(!canEvolve(s,m,c)) return false; s.res.coin-=c.cost; m.cls=cid; log(s,`🌟 ${m.name} evolved into a ${c.name}!`); s.deeds.push(`${m.name} became a ${c.name}.`); return true; }
+export function canEvolve(s,m,c){ const mg=c.guild&&memberGuild(m,c.guild); return c.from===(c.profession?m.prof:m.cls) && (!c.guild||(mg&&mg.rank>=c.guildRank)) && (c.advRank==null||(m.adv&&m.adv.rank>=c.advRank)) && (c.crafterRank==null||(m.craft&&m.craft.rank>=c.crafterRank)) && Object.entries(c.req).every(([k,v])=>m.skills[k].lvl>=v) && s.res.coin>=c.cost; }
+export function evolve(s,m,cid){ const c=D.classes.find(x=>x.id===cid); if(!canEvolve(s,m,c)) return false; s.res.coin-=c.cost; if(c.profession) m.prof=cid; else m.cls=cid; log(s,`🌟 ${m.name} evolved into a ${c.name}!`); s.deeds.push(`${m.name} became a ${c.name}.`); return true; }
 export function propose(s,suitorId){
   const m=active(s); const su=s.suitors.find(x=>x.id===suitorId); const cost=200;
   if(!su||su.affinity<100||m.spouse||s.res.coin<cost||living(s).length>=bedrooms(s)) return false;
@@ -239,15 +241,15 @@ export function propose(s,suitorId){
   if(m.gender===sp.gender){ sp.gender=m.gender==='m'?'f':'m'; } // MVP: births need one f partner
   log(s,`💍 ${m.name} married ${sp.name}!`); s.deeds.push(`${m.name} married ${sp.name}.`); return true;
 }
-export function giveGift(s,suitorId,itemId){ const i=s.vault.indexOf(itemId); const su=s.suitors.find(x=>x.id===suitorId); const it=D.items.find(x=>x.id===itemId); if(i<0||!su||!it.affinity) return false; s.vault.splice(i,1); su.affinity=Math.min(100,su.affinity+it.affinity); return true; }
+export function giveGift(s,suitorId,itemId){ const i=s.vault.indexOf(itemId); const su=s.suitors.find(x=>x.id===suitorId); const it=itemDef(itemId); if(i<0||!su||!it.affinity) return false; s.vault.splice(i,1); su.affinity=Math.min(100,su.affinity+it.affinity); return true; }
 export function cost(s,b){ const lv=s.buildings[b.id]; return Object.fromEntries(Object.entries(b.cost).map(([k,v])=>[k,Math.round(v*Math.pow(T.buildCostMult,lv))])); }
 export const afford=(s,c)=>Object.entries(c).every(([k,v])=>s.res[k]>=v);
 const pay=(s,c)=>{for(const[k,v]of Object.entries(c)) s.res[k]-=v;};
 export function buildIssue(s,b){ if(!hasLand(s)) return 'buy land first'; if(s.buildings[b.id]>=b.max) return 'max level'; if(!established(s)) return 'build a Shack first'; if(!s.buildings[b.id]&&landUsed(s)+b.land>landSlots(s)) return 'no free land slot'; if(!afford(s,cost(s,b))) return 'cannot afford'; return null; }
 export function build(s,id){ const b=D.buildings.find(x=>x.id===id); if(buildIssue(s,b)) return false; const c=cost(s,b); if(!afford(s,c)) return false; pay(s,c); s.buildings[id]++; log(s,`🏗️ ${b.name} ${s.buildings[id]>1?'upgraded to Lv'+s.buildings[id]:'built'}.`); return true; }
-export function equip(s,m,itemId,from='vault'){ const src=from==='bag'?m.bag:s.vault; const i=src.indexOf(itemId); const it=D.items.find(x=>x.id===itemId); if(i<0||it.slot==='gift') return false; src.splice(i,1); if(m.equip[it.slot]) m.bag.push(m.equip[it.slot]); m.equip[it.slot]=itemId; return true; }
-export const sellValue=(s,it)=>Math.round(it.value*(hasService(s,'appraisal')?1:.5));
-export function sell(s,itemId){ const i=s.vault.indexOf(itemId); if(i<0) return; s.vault.splice(i,1); s.res.coin+=sellValue(s,D.items.find(x=>x.id===itemId)); }
+export function equip(s,m,itemId,from='vault'){ const src=from==='bag'?m.bag:s.vault; const i=src.indexOf(itemId); const it=itemDef(itemId); if(i<0||!['weapon','offhand','armor','accessory'].includes(it.slot)) return false; src.splice(i,1); if(m.equip[it.slot]) m.bag.push(m.equip[it.slot]); m.equip[it.slot]=itemId; return true; }
+export const sellValue=(s,it)=>Math.round(it.value*(hasService(s,'appraisal')?0.8:.5));
+export function sell(s,itemId){ const i=s.vault.indexOf(itemId); if(i<0) return; s.vault.splice(i,1); s.res.coin+=sellValue(s,itemDef(itemId)); }
 export function switchTo(s,id){ const m=s.members.find(x=>x.id===id&&x.alive); if(!m) return false; s.activeId=id; s.needSuccession=false; if(!m.action) m.action={type:m.order.type,target:m.order.target,progress:0}; return true; }
 export function setOrder(s,id,order){ const m=s.members.find(x=>x.id===id); m.order=order; m.action=null; }
 export function toggleTurbo(s){ if(!s.turbo.on && s.turbo.charge<T.turboMinMin*60) return false; s.turbo.on=!s.turbo.on; return true; }
@@ -279,9 +281,9 @@ export function serialize(s,now=Date.now()){ s.lastSave=now; return JSON.stringi
 export function deserialize(str){ const s=JSON.parse(str); if(!s||s.v!==SAVE_VERSION) throw new Error('bad save version'); return s; }
 
 export function unequip(s,m,slot){ if(m.equip[slot]){ m.bag.push(m.equip[slot]); delete m.equip[slot]; } }
-export function moveItem(s,m,id,toBag){ const a=toBag?s.vault:m.bag, b=toBag?m.bag:s.vault; const i=a.indexOf(id); if(i<0) return false; a.splice(i,1); b.push(id); return true; }
+export function moveItem(s,m,id,toBag){ if(toBag?m.bag.length>=packCap():!vaultRoom(s)) return false; const a=toBag?s.vault:m.bag, b=toBag?m.bag:s.vault; const i=a.indexOf(id); if(i<0) return false; a.splice(i,1); b.push(id); return true; }
 export const buyPrice=(it)=>Math.round(it.value*T.buyMarkup);
-export function buyItem(s,townId,itemId){ const t=D.towns.find(x=>x.id===townId); const it=D.items.find(x=>x.id===itemId); if(!t.shop.includes(itemId)||s.res.coin<buyPrice(it)) return false; s.res.coin-=buyPrice(it); s.vault.push(itemId); log(s,`🛒 Bought ${it.name}.`); return true; }
+export function buyItem(s,townId,itemId){ const t=D.towns.find(x=>x.id===townId); const it=itemDef(itemId); if(!t.shop.includes(itemId)||s.res.coin<buyPrice(it)||!vaultRoom(s)) return false; s.res.coin-=buyPrice(it); s.vault.push(itemId); log(s,`🛒 Bought ${it.name}.`); return true; }
 export function sellRes(s,townId,res,n){ const t=D.towns.find(x=>x.id===townId); n=Math.min(n,Math.floor(s.res[res])); if(n<=0) return false; s.res[res]-=n; s.res.coin+=n*t.prices[res]; return true; }
 export function rumor(s,regionId){ if(s.res.coin<T.rumorCost) return null; const pool=[...D.quests,...D.nodes].filter(x=>x.region===regionId&&x.hidden&&!s.revealed.includes(x.id)); s.res.coin-=T.rumorCost; gainXp(s,active(s),'etiquette',T.xpPerDay);
   if(rng()<D.minions.rumorRecruitChance && minionRoom(s)){ addMinion(s,r(D.minions.types.filter(t=>!t.special&&t.id!=='refugee')).id,'found through a rumor'); return {recruit:true}; }
@@ -298,7 +300,7 @@ export const freeHousing=(s,kind='bunk')=>housingCap(s,kind)-s.minions.filter(x=
 export const minionFood=s=>s.minions.length*ES().minionFoodPerDay;
 export const minionRoom=s=>s.minions.filter(x=>!x.special).length<minionCap(s)&&freeHousing(s,'bunk')>0;
 const mtype=id=>D.minions.types.find(t=>t.id===id);
-export function minionPower(s,job){ return (s.minions||[]).filter(x=>x.job===job).reduce((a,x)=>a+(mtype(x.type).apt[job]||1),0); }
+export function minionPower(s,job){ return (s.minions||[]).filter(x=>x.job===job).reduce((a,x)=>a+(mtype(x.type).apt[job]||1)*minionGearMult(x,job),0); }
 export function addMinion(s,type,why){ if(!mtype(type).special&&!minionRoom(s)) { log(s,`🚪 No room or no bunk for a new follower (${why}).`); return null; }
   const t=mtype(type); const mi={uid:'mi'+(s.nextId++),type,name:t.special?t.name:r(D.minions.names),job:'idle',loyalty:100,since:s.day}; if(t.special){mi.special=true;mi.source=why;}
   s.minions.push(mi); log(s,`🤝 ${mi.name} the ${t.name} joined (${why}).`); return mi; }
@@ -307,19 +309,20 @@ export function hire(s,townId,type){ const t=mtype(type); if(!(D.minions.hireAt[
 export function jobOpen(s,jobId){ const j=D.minions.jobs.find(x=>x.id===jobId); return !!j&&(jobId==='idle'||(established(s)&&jobCap(s,jobId)>0)); }
 export const jobUsed=(s,job,except)=>s.minions.filter(x=>x.job===job&&x.uid!==except).length;
 export function assignMinion(s,uid,job){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!jobOpen(s,job)||(job!=='idle'&&!isHoused(s,mi))||jobUsed(s,job,uid)>=jobCap(s,job)) return false; mi.job=job; return true; }
-export function dismiss(s,uid){ const i=s.minions.findIndex(x=>x.uid===uid); if(i<0) return false; log(s,`👋 ${s.minions[i].name} was dismissed.`); s.minions.splice(i,1); return true; }
+export function dismiss(s,uid){ const i=s.minions.findIndex(x=>x.uid===uid); if(i<0) return false; for(const id of Object.values(s.minions[i].equip||{})) s.vault.push(id); log(s,`👋 ${s.minions[i].name} was dismissed.`); s.minions.splice(i,1); return true; }
 export const monthlyWages=s=>s.minions.reduce((a,x)=>a+mtype(x.type).wage,0);
 function minionDay(s){
   if(!s.minions){s.minions=[];s.repLevel=0;}
   checkSpecialMinions(s);
   const fed=s.res.food>=minionFood(s);
-  for(const mi of s.minions){ if(!fed){ mi.hunger=(mi.hunger||0)+1; mi.loyalty-=D.minions.hungerLoyaltyLoss; } else mi.hunger=0;
+  for(const mi of s.minions){ if(!fed){ mi.hunger=(mi.hunger||0)+1; mi.loyalty-=D.minions.hungerLoyaltyLoss*minionSurvival(mi); } else mi.hunger=0;
     if(!isHoused(s,mi)){ mi.unhoused=true; continue; } mi.unhoused=false;
-    const a=(mtype(mi.type).apt[mi.job]||1)*(fed?1:D.minions.hungryOutput);
+    const a=(mtype(mi.type).apt[mi.job]||1)*(fed?1:D.minions.hungryOutput)*minionGearMult(mi,mi.job);
     if(mi.job==='farm') s.res.food+=3*a*(1+bl(s,'farm')*.2);
     else if(mi.job==='gather'){ s.res.wood+=2*a; s.res.stone+=1*a; }
     else if(mi.job==='herbs') s.res.herbs=(s.res.herbs||0)+1.5*a;
-    else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; if(mi.prog>=T.craftDays){ mi.prog=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const it=r(D.items.filter(i=>i.slot!=='gift'&&i.rarity===(rng()<craftQuality(s)?'Fine':'Common'))); s.vault.push(it.id); log(s,`🔧 ${mi.name} crafted ${it.name}.`);} } } }
+    else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; const rc=bestRecipe(s,null); if(rc&&mi.prog>=rc.days){ mi.prog=0; craftItem(s,null,rc,mi,a); } }
+    else if(mi.job==='merchant'){ sellTick(s,a*(1+(mi.equip?0:0))); } }
   s.res.food=Math.max(0,s.res.food-minionFood(s));
   for(const mi of [...s.minions]) if(mi.loyalty<=0){ s.minions=s.minions.filter(x=>x!==mi); log(s,`🍽️ ${mi.name} left: ${mi.hunger?'not enough food':'unhappy'}.`); }
   if(s.day%30===0 && s.minions.length){ const w=monthlyWages(s);
@@ -329,7 +332,12 @@ function minionDay(s){
 }
 
 // ---- guilds
-export function normalize(s){ if(!s.unlocks) s.unlocks=[];
+export function classGuild(cid){ let c=D.classes.find(x=>x.id===cid); while(c&&c.from) c=D.classes.find(x=>x.id===c.from); return c&&(D.guilds.guilds.find(g=>g.grantsClass===c.id||g.profession===c.id)||(D.guilds.adventurers.grantsClass===c.id?D.guilds.adventurers:null)); }
+export function normalize(s){ if(!s.unlocks) s.unlocks=[]; s.pendingClass=[];
+  for(const m of s.members){ if(m.guild&&m.guild.id==='hearth'){ m.craft={id:'hearth',rank:m.guild.rank,rep:m.guild.rep}; m.guild=null; if(!m.prof) m.prof='artisan'; delete m.title; }
+    if(m.cls&&!m.guild&&(D.classes.find(c=>c.id===m.cls)||{}).line==='adventurer'){ if(!m.adv) m.adv={rank:0,rep:0}; }
+    else if(m.cls&&!m.guild){ const g=classGuild(m.cls); if(g){ m.guild={id:g.id,rank:0,rep:0}; log(s,`📜 ${m.name} (${cls(m).name}) was enrolled in the ${g.name}.`); } } }
+  if(!s.forSale) s.forSale=[]; if(s.saleProg==null) s.saleProg=0; for(const mi of s.minions||[]) if(!mi.equip) mi.equip={};
   for(const b of D.buildings) if(s.buildings[b.id]===undefined) s.buildings[b.id]=0;
   if(!s.land) s.land=[];
   if(!s.structures){ s.structures=[]; s.pieceStore=[]; // migrate house/room/furniture saves
@@ -343,11 +351,11 @@ export function normalize(s){ if(!s.unlocks) s.unlocks=[];
     else s.pieceStore.push(...oldF);
     for(const l of ES().lands){ if(landSlots(s)>=landUsed(s)) break; if(!s.land.includes(l.id)) s.land.push(l.id); }
     delete s.buildings.house; delete s.rooms; s.furniture=[];
-    if(any) log(s,`📜 Estate converted to buildings & stations: ${s.structures.length} building(s), ${s.pieceStore.length} piece(s) in storage.`); } if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>D.items.some(i=>i.id===id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>D.items.some(i=>i.id===id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
+    if(any) log(s,`📜 Estate converted to buildings & stations: ${s.structures.length} building(s), ${s.pieceStore.length} piece(s) in storage.`); } if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>!!itemDef(id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>!!itemDef(id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
 export const guildDef=id=>D.guilds.guilds.find(g=>g.id===id);
 export const rankName=r=>D.guilds.ranks[r].name;
 export function trainIssue(m,skillId,s){ const sk=D.skills.find(x=>x.id===skillId); if(!sk) return 'unknown'; const a=ageY(m);
-  if(sk.guild&&!(m.guild&&m.guild.id===sk.guild)) return 'guild';
+  if(sk.guild&&!memberGuild(m,sk.guild)) return 'guild';
   if(sk.unlockQuest&&s&&!(s.unlocks||[]).includes('skill:'+skillId)) return 'quest';
   if(a<12) return 'age12'; if(sk.family==='magic'&&a<14) return 'age14'; return null; }
 export function canTrain(m,skillId,s,ignoreAge){ const i=trainIssue(m,skillId,s); return !i||(ignoreAge&&i.startsWith('age')); }
@@ -358,35 +366,42 @@ export function actionAllowed(s,m,a){ if(!a) return false; const t=a.type;
   if(t==='train') return canTrain(m,a.target,s); if(t==='job') return jobOk(m,D.jobs.find(j=>j.id===a.target)||{minAge:99});
   if(t==='activity'){ const ac=D.activities.find(x=>x.id===a.target); return !!ac&&activityOk(s,m,ac); }
   if(t==='gather'||t==='rest') return ageY(m)>=10; return false; }
-export function questOk(m,q){ return !!q&&(!q.adv||(m.adv&&m.adv.rank>=q.adv))&&(!q.guild||(m.guild&&m.guild.id===q.guild&&m.guild.rank>=(q.rank||0))); }
+export function memberGuild(m,gid){ const g=guildDef(gid); if(!g) return null; if(g.open) return m.craft&&gid==='hearth'?{id:gid,...m.craft,_ref:m.craft}:null; return m.guild&&m.guild.id===gid?m.guild:null; }
+export function guildsOf(m){ return [m.guild,m.craft?Object.assign(m.craft,{id:'hearth'}):null].filter(Boolean); }
+export function questOk(m,q){ const mg=q&&q.guild&&memberGuild(m,q.guild); return !!q&&(!q.adv||(m.adv&&m.adv.rank>=q.adv))&&(!q.guild||(mg&&mg.rank>=(q.rank||0))); }
 export function joinIssues(s,m,gid){ const g=guildDef(gid), q=g.req, out=[];
-  if(m.guild) out.push(m.guild.id===gid?'already a member':`sworn to ${guildDef(m.guild.id).name}`);
+  if(memberGuild(m,gid)) out.push('already a member'); else if(!g.open&&m.guild) out.push(`sworn to ${guildDef(m.guild.id).name}`);
   if(!isAdult(m)) out.push('must be an adult');
-  if(q.classAny&&!q.classAny.includes(m.cls)) out.push('class: '+q.classAny.join('/'));
+  if(ageY(m)<(D.guilds.minJoinAge||16)) out.push('age 16+');
+  for(const[k,v]of Object.entries(q.stats||{})) if(statVal(m,k)<v) out.push(`${k} ${statVal(m,k)}/${v}`);
   for(const[k,v]of Object.entries(q.skills||{})) if(m.skills[k].lvl<v) out.push(`${D.skills.find(x=>x.id===k).name} ${m.skills[k].lvl}/${v}`);
   if(s.res.coin<(q.coin||0)) out.push(`${q.coin} coin`);
   return out; }
-export function joinGuild(s,m,gid){ if(joinIssues(s,m,gid).length) return false; const g=guildDef(gid); s.res.coin-=g.req.coin||0; m.guild={id:gid,rank:0,rep:0};
+export function joinGuild(s,m,gid){ if(joinIssues(s,m,gid).length) return false; const g=guildDef(gid); s.res.coin-=g.req.coin||0;
+  if(g.open){ m.craft={id:gid,rank:0,rep:0}; if(g.profession&&!m.prof){ m.prof=g.profession; log(s,`🧑‍🔧 ${m.name} took up the ${D.classes.find(c=>c.id===m.prof).name} profession.`);} }
+  else { m.guild={id:gid,rank:0,rep:0}; if(g.grantsClass&&(!m.cls||m.cls==='adventurer')){ const was=m.cls; m.cls=g.grantsClass; log(s,`🎓 ${m.name} was trained as a ${cls(m).name}${was?' (Adventurer becomes their rank track only)':''}.`); } }
   log(s,`${g.icon} ${m.name} joined the ${g.name} as ${rankName(0)}.`); s.deeds.push(`${m.name} joined the ${g.name}.`); return true; }
-export function nextRank(m){ return m.guild&&D.guilds.ranks[m.guild.rank+1]; }
-export function canRankUp(s,m){ const n=nextRank(m); return !!n&&m.guild.rep>=n.rep&&s.res.coin>=n.cost; }
-export function rankUp(s,m){ if(!canRankUp(s,m)) return false; const n=nextRank(m); s.res.coin-=n.cost; m.guild.rank++; s.renown+=10*m.guild.rank;
-  log(s,`🎖️ ${m.name} rose to ${n.name} of the ${guildDef(m.guild.id).name}.`); s.deeds.push(`${m.name} became ${n.name} of the ${guildDef(m.guild.id).name}.`); return true; }
+const mgOf=(m,gid)=>gid?memberGuild(m,gid):m.guild;
+const store=(m,gid)=>gid==='hearth'?m.craft:m.guild;
+export function nextRank(m,gid){ const g=mgOf(m,gid); return g&&D.guilds.ranks[g.rank+1]; }
+export function canRankUp(s,m,gid){ const g=mgOf(m,gid), n=nextRank(m,gid); return !!n&&g.rep>=n.rep&&s.res.coin>=n.cost; }
+export function rankUp(s,m,gid){ if(!canRankUp(s,m,gid)) return false; const n=nextRank(m,gid), st=store(m,gid||m.guild.id); s.res.coin-=n.cost; st.rank++; s.renown+=10*st.rank; const gn=guildDef(gid||m.guild.id).name;
+  log(s,`🎖️ ${m.name} rose to ${n.name} of the ${gn}.`); s.deeds.push(`${m.name} became ${n.name} of the ${gn}.`); return true; }
 export const guildShop=gid=>D.items.filter(i=>i.guild===gid);
-export function buyGuildItem(s,m,itemId){ const it=D.items.find(i=>i.id===itemId); if(!it||!it.guild||!m.guild||m.guild.id!==it.guild||m.guild.rank<it.rank||s.res.coin<buyPrice(it)) return false; s.res.coin-=buyPrice(it); s.vault.push(it.id); log(s,`🛒 Bought ${it.name} from the guild.`); return true; }
+export function buyGuildItem(s,m,itemId){ const it=itemDef(itemId); const mg=it&&it.guild&&memberGuild(m,it.guild); if(!mg||mg.rank<it.rank||s.res.coin<buyPrice(it)||!vaultRoom(s)) return false; s.res.coin-=buyPrice(it); s.vault.push(it.id); log(s,`🛒 Bought ${it.name} from the guild.`); return true; }
 
 // ---- Adventurers' Guild (open to everyone; separate from the one-guild lock)
 const AG=()=>D.guilds.adventurers;
 export const advRankName=r=>AG().ranks[r].name;
 export function hasService(s,svc){ const need=AG().ranks.findIndex(r=>r.unlocks===svc); return (s.members||[]).some(m=>m.alive&&m.adv&&m.adv.rank>=need); }
 export function services(s){ return Object.keys(AG().services).filter(k=>hasService(s,k)); }
-export function joinAdventurers(s,m){ if(m.adv||!isAdult(m)||s.res.coin<AG().joinCost) return false; s.res.coin-=AG().joinCost; m.adv={rank:0,rep:0}; log(s,`⚔️ ${m.name} registered with the Adventurers' Guild (Rank F).`); return true; }
+export function joinAdventurers(s,m){ if(m.adv||!isAdult(m)||s.res.coin<AG().joinCost) return false; s.res.coin-=AG().joinCost; m.adv={rank:0,rep:0}; if(!m.cls){ m.cls='adventurer'; log(s,`🧭 ${m.name} becomes an Adventurer (their primary class).`); } log(s,`⚔️ ${m.name} registered with the Adventurers' Guild (Rank F).`); return true; }
 export const advNext=m=>m.adv&&AG().ranks[m.adv.rank+1];
 export function canAdvRankUp(s,m){ const n=advNext(m); return !!n&&m.adv.rep>=n.rep&&s.res.coin>=n.cost; }
 export function advRankUp(s,m){ if(!canAdvRankUp(s,m)) return false; const n=advNext(m); s.res.coin-=n.cost; m.adv.rank++; s.renown+=5*m.adv.rank;
   log(s,`⚔️ ${m.name} is now Rank ${n.name} in the Adventurers' Guild${n.unlocks?' – unlocked '+n.unlocks:''}.`); return true; }
 export const advShop=()=>D.items.filter(i=>i.adv);
-export function buyAdvItem(s,m,id){ const it=D.items.find(i=>i.id===id); if(!it||!it.adv||!m.adv||m.adv.rank<it.adv||s.res.coin<buyPrice(it)) return false; s.res.coin-=buyPrice(it); s.vault.push(id); log(s,`🛒 Bought ${it.name} from the Adventurers' Guild.`); return true; }
+export function buyAdvItem(s,m,id){ const it=itemDef(id); if(!it||!it.adv||!m.adv||m.adv.rank<it.adv||s.res.coin<buyPrice(it)||!vaultRoom(s)) return false; s.res.coin-=buyPrice(it); s.vault.push(id); log(s,`🛒 Bought ${it.name} from the Adventurers' Guild.`); return true; }
 
 // ---- special minions (from classes, guild ranks, quests)
 export function specialSource(s,t){ const src=t.source, L=living(s);
@@ -395,3 +410,39 @@ export function specialSource(s,t){ const src=t.source, L=living(s);
   if(src.quest) return (s.doneQuests||[]).includes(src.quest)?`quest: ${D.quests.find(q=>q.id===src.quest).name}`:null; return null; }
 export function sourceLabel(t){ const src=t.source; if(src.class) return `Class: ${D.classes.find(c=>c.id===src.class).name}`; if(src.guild) return `${guildDef(src.guild).name} – ${rankName(src.rank)}`; return `Quest: ${D.quests.find(q=>q.id===src.quest).name}`; }
 export function checkSpecialMinions(s){ for(const t of D.minions.types.filter(x=>x.special)){ if(s.specialGranted.includes(t.id)) continue; const why=specialSource(s,t); if(why){ s.specialGranted.push(t.id); addMinion(s,t.id,why); } } }
+
+// ---- items, crafting & inventory
+const CR=()=>D.crafting;
+export const qualities=()=>CR().qualities;
+export function itemDef(id){ if(typeof id!=='string') return null; if(id.startsWith('c|')){ const [,b,q]=id.split('|'); const base=D.items.find(i=>i.id===b), Q=CR().qualities.find(x=>x.id===q); if(!base||!Q) return null;
+  return {...base,id,name:`${Q.name} ${base.name}`,rarity:Q.name,quality:q,crafted:true,cp:Math.round((base.cp||0)*Q.mult),value:Math.round(base.value*Q.mult*CR().craftedValueMult),affinity:base.affinity?Math.round(base.affinity*Q.mult):undefined}; }
+  return D.items.find(i=>i.id===id)||null; }
+export const vaultCap=s=>CR().vaultBase+eff(s,'matCap')/400*CR().vaultPerStorage;
+export const vaultRoom=s=>s.vault.length<vaultCap(s);
+export const packCap=()=>CR().packCap;
+export function addToVault(s,id){ if(!vaultRoom(s)) return false; s.vault.push(id); return true; }
+export const recipeDef=id=>CR().recipes.find(r=>r.id===id);
+export function recipeIssue(s,m,rc){ if(!hasPiece(s,rc.station)) return `needs ${pieceDef(rc.station).name}`; if(m&&m.skills[rc.skill].lvl<(rc.minSkill||0)) return `${D.skills.find(k=>k.id===rc.skill).name} ${rc.minSkill}`; if(!afford(s,rc.mats)) return 'missing materials'; if(!vaultRoom(s)) return 'vault full'; return null; }
+export function bestRecipe(s,m){ return CR().recipes.filter(r=>!recipeIssue(s,m,r)).sort((a,b)=>itemDef(b.base).value-itemDef(a.base).value)[0]||null; }
+export function profBonus(m,rc){ const p=m&&m.prof&&D.classes.find(c=>c.id===m.prof); if(!p) return 0; return p.craftBonus+(p.spec&&p.spec===rc.line?0.15:0); }
+export function qualityScore(s,m,rc,mi,apt=1){ const sk=m?m.skills[rc.skill].lvl:10*apt; return sk/50+craftQuality(s)+profBonus(m,rc); }
+export function rollQuality(score){ const x=score+rng()*0.5; let q=CR().qualities[0]; for(const Q of CR().qualities) if(x>=Q.score) q=Q; return q.id; }
+export function craftItem(s,m,rc,mi,apt=1){ if(recipeIssue(s,m,rc)) return null; pay(s,rc.mats); const q=rollQuality(qualityScore(s,m,rc,mi,apt)); const id=`c|${rc.base}|${q}`; s.vault.push(id);
+  if(m){ gainXp(s,m,rc.skill,T.xpPerDay*3); if(m.craft) m.craft.rep+=2+CR().qualities.findIndex(x=>x.id===q); }
+  log(s,`🔨 ${(m||mi).name} crafted ${itemDef(id).name}.`); return id; }
+export const stallValue=(s,it)=>Math.round(it.value*CR().stallSellRate);
+export function listForSale(s,id){ const i=s.vault.indexOf(id); if(i<0) return false; s.vault.splice(i,1); s.forSale.push(id); return true; }
+export function unlist(s,id){ const i=s.forSale.indexOf(id); if(i<0||!vaultRoom(s)) return false; s.forSale.splice(i,1); s.vault.push(id); return true; }
+export function sellTick(s,power=1){ if(!s.forSale.length) return; s.saleProg=(s.saleProg||0)+power; if(s.saleProg>=CR().stallDaysPerItem){ s.saleProg=0; const id=s.forSale.shift(); const it=itemDef(id); const v=stallValue(s,it); s.res.coin+=v; log(s,`🏷️ Sold ${it.name} for ${v}🪙.`); } }
+export function sellMany(s,ids){ let n=0; for(const id of ids){ if(s.vault.includes(id)){ sell(s,id); n++; } } return n; }
+export function sellAllRes(s,townId,res){ return sellRes(s,townId,res,Math.floor(s.res[res]||0)); }
+export function minionGearMult(mi,job){ const g=mi.equip||{}, cp=sl=>(itemDef(g[sl])||{}).cp||0; let m=1+cp('charm')/100;
+  if(job==='guard') m+=(cp('weapon')+cp('armor'))/50; const t=itemDef(g.tool); if(t&&(t.toolFor===job)) m+=t.cp/40; return m; }
+export const minionSurvival=mi=>1/(1+((itemDef((mi.equip||{}).armor)||{}).cp||0)/20);
+export function equipMinion(s,uid,id){ const mi=s.minions.find(x=>x.uid===uid); const it=itemDef(id); const i=s.vault.indexOf(id); if(!mi||!it||i<0||!CR().minionSlots.includes(it.slot)||(it.companion&&!['kennel','perch','brazier'].includes(housingKind(mi)))) return false; mi.equip=mi.equip||{}; s.vault.splice(i,1); if(mi.equip[it.slot]) s.vault.push(mi.equip[it.slot]); mi.equip[it.slot]=id; return true; }
+export function unequipMinion(s,uid,slot){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!mi.equip||!mi.equip[slot]||!vaultRoom(s)) return false; s.vault.push(mi.equip[slot]); delete mi.equip[slot]; return true; }
+
+// ---- eras (eras only ADD systems; nothing earlier is ever locked)
+export const ERAS=[{n:1,name:'Solo Adventurer',icon:'🧭'},{n:2,name:'Established Family',icon:'🏡'},{n:3,name:'Ruling Power',icon:'👑'}];
+export function era(s){ const fam=living(s).length>1||s.members.some(m=>m.spouse); if(s.renown>=5000&&['Manor','Prosperous Estate'].includes(estateStage(s))) return ERAS[2]; if(established(s)&&fam||s.renown>=300) return ERAS[1]; return ERAS[0]; }
+export function nextEraHint(s){ const e=era(s).n; return e===1?'Next: build a home on your land and start a family (or reach 300 Renown).':e===2?'Next: 5,000 Renown and a Manor-tier estate (Era 3 systems coming in a later update).':'Era 3 systems (titles, vassals, taxes) are planned.'; }

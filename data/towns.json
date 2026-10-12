@@ -8,7 +8,13 @@
    "food": 1,
    "wood": 2,
    "stone": 3,
-   "herbs": 4
+   "herbs": 4,
+   "planks": 5,
+   "ore": 4,
+   "ingots": 14,
+   "potions": 12,
+   "hides": 5,
+   "cloth": 7
   },
   "shop": [
    "rusty_sword",
@@ -22,7 +28,11 @@
    "copper_ring",
    "wolf_tooth",
    "flowers",
-   "chocolate"
+   "chocolate",
+   "sickle",
+   "woodaxe",
+   "herbknife",
+   "collar"
   ]
  },
  {
@@ -34,7 +44,13 @@
    "food": 2,
    "wood": 2,
    "stone": 4,
-   "herbs": 6
+   "herbs": 6,
+   "planks": 5,
+   "ore": 4,
+   "ingots": 14,
+   "potions": 12,
+   "hides": 5,
+   "cloth": 7
   },
   "shop": [
    "iron_sword",
@@ -46,7 +62,11 @@
    "ranger_cloak",
    "silver_locket",
    "owl_feather",
-   "chocolate"
+   "chocolate",
+   "smithhammer",
+   "scales",
+   "primer",
+   "luckcharm"
   ]
  }
 ]

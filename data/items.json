@@ -481,5 +481,76 @@
   "value": 700,
   "guild": "hearth",
   "rank": 3
+ },
+ {
+  "id": "sickle",
+  "name": "Sickle",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 6,
+  "value": 40,
+  "toolFor": "farm"
+ },
+ {
+  "id": "woodaxe",
+  "name": "Woodsman's Axe",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 8,
+  "value": 50,
+  "toolFor": "gather"
+ },
+ {
+  "id": "herbknife",
+  "name": "Herb Knife",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 5,
+  "value": 35,
+  "toolFor": "herbs"
+ },
+ {
+  "id": "smithhammer",
+  "name": "Smith's Hammer",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 10,
+  "value": 70,
+  "toolFor": "craft"
+ },
+ {
+  "id": "scales",
+  "name": "Merchant's Scales",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 6,
+  "value": 60,
+  "toolFor": "merchant"
+ },
+ {
+  "id": "primer",
+  "name": "Tutor's Primer",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 6,
+  "value": 50,
+  "toolFor": "tutor"
+ },
+ {
+  "id": "collar",
+  "name": "Leather Collar",
+  "slot": "charm",
+  "rarity": "Common",
+  "cp": 8,
+  "value": 40,
+  "companion": true
+ },
+ {
+  "id": "luckcharm",
+  "name": "Lucky Charm Bracelet",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 6,
+  "value": 60
  }
 ]

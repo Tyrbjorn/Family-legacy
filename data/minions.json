@@ -41,6 +41,12 @@
    "name": "Tutoring",
    "icon": "📖",
    "desc": "+5% family XP each (max 20%); spots from Study/Library"
+  },
+  {
+   "id": "merchant",
+   "name": "Selling",
+   "icon": "🏷️",
+   "desc": "Sells 'stock for sale' at full price (spots from Market Stalls)"
   }
  ],
  "types": [
@@ -52,7 +58,8 @@
    "wage": 8,
    "apt": {
     "farm": 1.5,
-    "gather": 1.3
+    "gather": 1.3,
+    "merchant": 1.0
    },
    "housing": "bunk"
   },

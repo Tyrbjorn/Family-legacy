@@ -7,3 +7,6 @@ Content: data/*.json (seeded by gen-data.mjs; hand edits to the JSON are now aut
 Round 5: trait badges (opposed pairs never co-roll; saves migrated), Jobs tab (8 apprentice/adult jobs), Activities (10; age/quest/building-gated), character sheet on Main, Estate/Minions/Guilds tabs hidden until the active member is 18, 7 quests that unlock trainings/activities, 15 special minions (class/guild-rank/quest).
 Round 6: land system (data/estate.json) — estate locked until land is bought (Map towns / Main / Estate); buildings use land slots; Shack→Manor interior rooms (living/workshop/resource post/study/nursery/shrine); furniture & minion job spots come from rooms/buildings; old saves get deeded land + rooms.
 Round 7: rooms replaced by buildings (Shack/Cabin/House/Workshop Hall/Bunkhouse) on land slots, each holding slotted stations/furniture (data/estate.json pieces) with processing chains (wood→planks, stone→ingots, herbs→potions), food/material caps, crafting quality, minion job spots; synergies for related pieces in the same building; minion housing (Bunk/Bunkhouse, Kennel/Perch/Brazier for specials) and daily food with hunger morale loss. Old saves migrate.
+
+## Eras
+The header shows your era (Solo Adventurer → Established Family → Ruling Power) and a hint for the next one. Eras only add systems; nothing earlier is ever locked. See ROADMAP.md.
