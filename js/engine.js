@@ -10,7 +10,7 @@ const Y=()=>T.daysPerYear;
 export const ageY=m=>Math.floor(m.ageDays/Y());
 export const xpNeed=l=>T.xpBase*Math.pow(T.xpGrowth,l);
 const bl=(s,id)=>s.buildings[id]||0;
-const furn=(s,k)=>s.furniture.map(id=>D.furniture.find(f=>f.id===id)).filter(f=>f);
+const furn=(s,k)=>effects(s);
 
 function newMember(s,{gender,age,cls=null,parents=null,stats}={}){
   gender=gender||(rng()<.5?'m':'f');
@@ -28,7 +28,7 @@ export function pickTraits(n,have=[]){ const out=[...have]; const pool=[...D.tra
 export const traitSum=(m,k)=>m.traits.reduce((a,t)=>a+((traitDef(t)||{})[k]||0),0);
 export function fixTraits(m){ const kept=[]; let changed=false; for(const t of m.traits){ if(!traitDef(t)||kept.some(k=>conflicts(k,t))){ changed=true; m.lifespan-=((traitDef(t)||{}).life||0); } else kept.push(t); }
   if(!changed) return false; m.traits=pickTraits(2,kept); for(const t of m.traits.slice(kept.length)) m.lifespan+=(traitDef(t).life||0); return true; }
-export function newGame(now=Date.now()){ const _s=_newGame(now); _s.land=[]; _s.rooms=[]; normalize(_s); return _s; }
+export function newGame(now=Date.now()){ const _s=_newGame(now); _s.land=[]; _s.structures=[]; _s.pieceStore=[]; normalize(_s); return _s; }
 function _newGame(now){
   const s={v:SAVE_VERSION,day:0,nextId:1,members:[],activeId:1,head:1,
     res:{coin:50,food:60,wood:0,stone:0,herbs:0},revealed:[],buildings:{},furniture:[],vault:['rusty_sword','padded_vest'],
@@ -64,7 +64,7 @@ export function cp(s,m){
 export function softCap(m){const c=cls(m);return T.softCap[c?c.tier:0];}
 function xpMult(s,m,skillId){
   const sk=D.skills.find(x=>x.id===skillId); let mult=1;
-  mult+=traitSum(m,'xp'); mult+=rooms(s).filter(r=>r.xpFamily===sk.family).length*0.03;
+  mult+=traitSum(m,'xp'); if(s.res.food>0) mult+=eff(s,'foodQuality');
   if(['lore','magic'].includes(sk.family)) mult+=m.skills.reading.lvl*0.01 + bl(s,'library')*0.02;
   for(const f of furn(s)){ if(f.bonus.skill===skillId) mult+=f.bonus.xp; if(f.bonus.family===sk.family) mult+=f.bonus.xp; }
   if(ageY(m)>=50) mult+=.1;
@@ -86,25 +86,43 @@ export const idleEff=s=>T.idleEff+bl(s,'yard')*0.05;
 export const turboCapSec=s=>(T.turboCapMin+bl(s,'hourglass')*30)*60;
 export const offlineCapSec=s=>(T.offlineCapHours+bl(s,'hourglass')*2)*3600;
 const ES=()=>D.estate;
-export const roomDef=id=>ES().rooms.find(r=>r.id===id);
-const rooms=s=>(s.rooms||[]).map(roomDef).filter(Boolean);
-export const bedrooms=s=>1+rooms(s).reduce((a,r)=>a+(r.beds||0),0);
+export const pieceDef=id=>ES().pieces.find(p=>p.id===id)||D.furniture.find(p=>p.id===id);
+export const structDef=id=>ES().structures.find(x=>x.id===id);
+const placed=s=>(s.structures||[]).flatMap(st=>st.pieces.map(pieceDef).filter(Boolean));
+export function activeSynergies(st){ return ES().synergies.filter(y=>y.pieces.every(p=>st.pieces.includes(p))); }
+export const allSynergies=s=>(s.structures||[]).flatMap(st=>activeSynergies(st).map(y=>({...y,where:st.uid})));
+// every placed piece + every active synergy, as {bonus} objects (old furniture code reads f.bonus)
+const effects=s=>[...placed(s),...allSynergies(s)];
+export const eff=(s,k)=>effects(s).reduce((a,f)=>a+(typeof f.bonus[k]==='number'?f.bonus[k]:0),0);
+export const hasPiece=(s,id)=>(s.structures||[]).some(st=>st.pieces.includes(id));
+export const bedrooms=s=>1+eff(s,'beds');
 export const hasLand=s=>(s.land||[]).length>0;
-export const established=s=>hasLand(s)&&bl(s,'house')>=1;
+export const established=s=>hasLand(s)&&(s.structures||[]).length>0;
 export const landSlots=s=>(s.land||[]).reduce((a,id)=>a+ES().lands.find(l=>l.id===id).slots,0);
-export const landUsed=s=>D.buildings.reduce((a,b)=>a+(bl(s,b.id)>0?b.land:0),0);
-export const interiorSlots=s=>D.buildings.reduce((a,b)=>a+bl(s,b.id)*(b.interiorPerLevel||0),0);
-export const buildingLevelName=(b,lv)=>b.levelNames?b.levelNames[Math.max(0,lv-1)]:b.name;
+export const landUsed=s=>D.buildings.reduce((a,b)=>a+(bl(s,b.id)>0?b.land:0),0)+(s.structures||[]).reduce((a,st)=>a+structDef(st.type).land,0);
+export const foodCap=s=>ES().caps.foodBase+eff(s,'foodCap')+bl(s,'farm')*100;
+export const matCap=s=>ES().caps.matBase+eff(s,'matCap');
+export const craftQuality=s=>eff(s,'craftQuality');
+export const buildingLevelName=(b,lv)=>b.name;
 export function canBuyLand(s,id){ const l=ES().lands.find(x=>x.id===id); return !!l&&!(s.land||[]).includes(id)&&(!l.requires||s.land.includes(l.requires))&&afford(s,l.cost); }
 export function buyLand(s,id){ if(!canBuyLand(s,id)) return false; const l=ES().lands.find(x=>x.id===id); pay(s,l.cost); s.land.push(id); log(s,`📜 Bought ${l.name} (+${l.slots} land slots).`); s.deeds.push(`Bought ${l.name}.`); return true; }
-export function canAddRoom(s,id){ const r=roomDef(id); if(!r||!established(s)||s.rooms.length>=interiorSlots(s)||!afford(s,r.cost)) return false;
-  if(!s.rooms.includes('living')&&id!=='living') return false; // first Shack room must be a living space
-  return true; }
-export function addRoom(s,id){ if(!canAddRoom(s,id)) return false; const r=roomDef(id); pay(s,r.cost); s.rooms.push(id); log(s,`🚪 Added a ${r.name}.`); return true; }
-export function removeRoom(s,i){ if(i<0||i>=s.rooms.length) return false; if(s.rooms[i]==='living'&&s.rooms.filter(x=>x==='living').length===1) return false; s.rooms.splice(i,1); return true; }
-export function jobCap(s,job){ if(job==='idle'||job==='guard') return Infinity; let c=rooms(s).reduce((a,r)=>a+((r.jobs||{})[job]||0),0);
+export function structIssue(s,type){ const d=structDef(type); if(!hasLand(s)) return 'buy land first'; if(landUsed(s)+d.land>landSlots(s)) return 'no free land slot'; if(!afford(s,d.cost)) return 'cannot afford'; return null; }
+export function buildStructure(s,type){ if(structIssue(s,type)) return null; const d=structDef(type); pay(s,d.cost); const st={uid:'st'+(s.nextId++),type,pieces:[]}; s.structures.push(st); log(s,`🛖 Built a ${d.name} (${d.slots} slots).`); return st; }
+export function upgradeIssue(s,uid){ const st=s.structures.find(x=>x.uid===uid); if(!st) return 'missing'; const nx=ES().structures.find(x=>x.upgradeFrom===st.type); if(!nx) return 'max'; if(landUsed(s)-structDef(st.type).land+nx.land>landSlots(s)) return 'no free land slot'; if(!afford(s,nx.cost)) return 'cannot afford'; return null; }
+export function upgradeStructure(s,uid){ if(upgradeIssue(s,uid)) return false; const st=s.structures.find(x=>x.uid===uid); const nx=ES().structures.find(x=>x.upgradeFrom===st.type); pay(s,nx.cost); log(s,`🏗️ ${structDef(st.type).name} upgraded to ${nx.name}.`); st.type=nx.id; return true; }
+export const freeSlots=(s,st)=>structDef(st.type).slots-st.pieces.length;
+export function placeIssue(s,uid,pid,fromStore){ const st=s.structures.find(x=>x.uid===uid), p=pieceDef(pid); if(!st||!p) return 'missing'; if(freeSlots(s,st)<=0) return 'building full'; if(st.pieces.includes(pid)) return 'already here'; if(!fromStore&&!afford(s,p.cost)) return 'cannot afford'; if(fromStore&&!s.pieceStore.includes(pid)) return 'not in storage'; return null; }
+export function placePiece(s,uid,pid,fromStore=false){ if(placeIssue(s,uid,pid,fromStore)) return false; const st=s.structures.find(x=>x.uid===uid), p=pieceDef(pid);
+  if(fromStore) s.pieceStore.splice(s.pieceStore.indexOf(pid),1); else pay(s,p.cost); st.pieces.push(pid);
+  const before=new Set(); log(s,`🪑 Placed ${p.name} in the ${structDef(st.type).name}.`); for(const y of activeSynergies(st)) if(y.pieces.includes(pid)) log(s,`✨ Synergy: ${y.name} (${y.desc}).`); return true; }
+export function removePiece(s,uid,pid){ const st=s.structures.find(x=>x.uid===uid); if(!st||!st.pieces.includes(pid)) return false; st.pieces.splice(st.pieces.indexOf(pid),1); s.pieceStore.push(pid); return true; }
+function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(pieceDef)){ const pr=p&&p.bonus.process; if(!pr) continue;
+  let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,(s.res[k]||0)/v); if(n<=0) continue;
+  for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n; } } }
+export const processRate=(s,st,pid)=>{ const pr=pieceDef(pid).bonus.process; return pr?pr.rate*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1):0; };
+export function jobCap(s,job){ if(job==='idle'||job==='guard') return Infinity; let c=placed(s).reduce((a,p)=>a+((p.bonus.jobs||{})[job]||0),0);
   if(job==='farm') c+=bl(s,'farm')*2+bl(s,'garden'); if(job==='gather') c+=bl(s,'lumber')*2; if(job==='tutor') c+=bl(s,'library'); return c; }
-export function estateStage(s){ if(!hasLand(s)) return 'Landless'; const t=Object.values(s.buildings).reduce((a,b)=>a+b,0)+s.rooms.length; const STAGES=ES().stages; let n=STAGES[0][1];for(const[k,v]of STAGES)if(t>=k)n=v;return n;}
+export function estateStage(s){ if(!hasLand(s)) return 'Landless'; const t=Object.values(s.buildings).reduce((a,b)=>a+b,0)+s.structures.reduce((a,st)=>a+structDef(st.type).slots/2+st.pieces.length,0); const STAGES=ES().stages; let n=STAGES[0][1];for(const[k,v]of STAGES)if(t>=k)n=v;return n;}
 export const known=(s,x)=>!x.hidden||s.revealed.includes(x.id);
 export function successChance(s,m,q){const c=cp(s,m);return Math.max(.1,Math.min(.98,0.5+(c-q.cp)/(q.cp+20)+Math.min(.15,minionPower(s,'guard')*.03)));}
 
@@ -113,7 +131,7 @@ function doAction(s,m,a,eff){
   if(a.type==='train'){ gainXp(s,m,a.target,T.xpPerDay*eff); }
   else if(a.type==='work'){ const c=(4+level(m)*0.5+m.skills.haggling.lvl*0.2)*eff*(1+traitSum(m,'coin'))*(1+furn(s).reduce((x,f)=>x+(f.bonus.coin||0),0)); s.res.coin+=c; gainXp(s,m,'haggling',T.xpPerDay*.3*eff); }
   else if(a.type==='gather'){ const n=D.nodes.find(x=>x.id===a.target); if(!n){m.action=null;return;} const mul=(1+m.skills[n.skill].lvl*0.03)*eff; for(const[k,v]of Object.entries(n.res)) s.res[k]=(s.res[k]||0)+v*mul; gainXp(s,m,n.skill,T.xpPerDay*.6*eff); }
-  else if(a.type==='craft'){ if(!established(s)) return; a.progress=(a.progress||0)+eff; gainXp(s,m,'smithing',T.xpPerDay*.5*eff); if(a.progress>=T.craftDays){ a.progress=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const pool=D.items.filter(i=>i.slot!=='gift'&&(i.rarity==='Common'||(i.rarity==='Fine'&&m.skills.smithing.lvl>=15))); const it=r(pool); s.vault.push(it.id); log(s,`🔨 ${m.name} crafted ${it.name}.`);} } }
+  else if(a.type==='craft'){ if(!hasPiece(s,'workbench')) return; a.progress=(a.progress||0)+eff; gainXp(s,m,'smithing',T.xpPerDay*.5*eff); if(a.progress>=T.craftDays){ a.progress=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const pool=D.items.filter(i=>i.slot!=='gift'&&i.rarity===(rng()<craftQuality(s)+(m.skills.smithing.lvl>=15?.2:0)?'Fine':'Common')); const it=r(pool); s.vault.push(it.id); log(s,`🔨 ${m.name} crafted ${it.name}.`);} } }
   else if(a.type==='job'){ const j=D.jobs.find(x=>x.id===a.target); if(!j||!jobOk(m,j)){m.action=null;return;}
     s.res.coin+=(isAdult(m)?j.payAdult:j.payChild)*(1+level(m)*0.02)*eff*(1+traitSum(m,'coin'));
     for(const[k,v]of Object.entries(j.stats)) m.stats[k]+=v*eff; for(const k of j.skills) gainXp(s,m,k,T.xpPerDay*.5*eff); }
@@ -174,6 +192,9 @@ function dayTick(s,effActive,effIdle){
   s.res.food-=living(s).length; if(s.res.food<0) s.res.food=0;
   if(s.day%30===0){ const up=Object.values(lv).reduce((a,b)=>a+b,0)*T.upkeepPerBuildingMonth; s.res.coin=Math.max(0,s.res.coin-up); s.renown+=furn(s).reduce((x,f)=>x+(f.bonus.renown||0),0)*30; }
   minionDay(s);
+  processDay(s);
+  s.res.food=Math.min(s.res.food,foodCap(s)); for(const k of ES().caps.capped) if((s.res[k]||0)>matCap(s)) s.res[k]=matCap(s);
+  for(const m of living(s)) if(m.injured>1&&(s.res.potions||0)>=1){ s.res.potions-=1; m.injured=0; }
   // suitors spawn
   if(s.suitors.length<2 && s.day%45===0) spawnSuitor(s);
   for(const m of [...living(s)]){
@@ -185,7 +206,7 @@ function dayTick(s,effActive,effIdle){
     }
     if(a>=m.lifespan && rng()<(0.002*(a-m.lifespan+1))){ kill(s,m,'died of old age'); if(s.gameOver) return; continue; }
     if(a<T.adultAge && !(m.id===s.activeId&&actionAllowed(s,m,m.action))){ // child passive xp
-      const f=1+furn(s).reduce((x,f)=>x+(f.bonus.childxp||0),0)+rooms(s).reduce((x,r)=>x+(r.childxp||0),0); gainXp(s,m,r(D.skills).id,T.xpPerDay*.15*f); continue; }
+      const f=1+furn(s).reduce((x,f)=>x+(f.bonus.childxp||0),0); gainXp(s,m,r(D.skills).id,T.xpPerDay*.15*f); continue; }
     const isAct=m.id===s.activeId; const eff=isAct?effActive:effIdle;
     if(m.injured>0){ m.injured=hasService(s,'healer')?0:Math.max(0,m.injured-1); continue; }
     if(isAct) doAction(s,m,m.action,eff);
@@ -222,10 +243,8 @@ export function giveGift(s,suitorId,itemId){ const i=s.vault.indexOf(itemId); co
 export function cost(s,b){ const lv=s.buildings[b.id]; return Object.fromEntries(Object.entries(b.cost).map(([k,v])=>[k,Math.round(v*Math.pow(T.buildCostMult,lv))])); }
 export const afford=(s,c)=>Object.entries(c).every(([k,v])=>s.res[k]>=v);
 const pay=(s,c)=>{for(const[k,v]of Object.entries(c)) s.res[k]-=v;};
-export function buildIssue(s,b){ if(!hasLand(s)) return 'buy land first'; if(s.buildings[b.id]>=b.max) return 'max level'; if(b.id!=='house'&&!established(s)) return 'build a Shack first'; if(!s.buildings[b.id]&&landUsed(s)+b.land>landSlots(s)) return 'no free land slot'; if(!afford(s,cost(s,b))) return 'cannot afford'; return null; }
-export function build(s,id){ const b=D.buildings.find(x=>x.id===id); if(buildIssue(s,b)) return false; const c=cost(s,b); if(!afford(s,c)) return false; pay(s,c); s.buildings[id]++; log(s,`🏗️ ${buildingLevelName(b,s.buildings[id])} ${s.buildings[id]>1?'upgraded to Lv'+s.buildings[id]:'built'}.`); if(id==='house'&&s.buildings.house===1&&!s.rooms.length){ s.rooms.push('living'); log(s,'🛏️ The Shack has a living space; choose its second room.'); } return true; }
-export const furnSlots=s=>established(s)?s.rooms.length*ES().furniturePerRoom+(hasService(s,'storage')?3:0):0;
-export function buyFurniture(s,id){ const f=D.furniture.find(x=>x.id===id); if(s.furniture.includes(id)||s.furniture.length>=furnSlots(s)||!afford(s,f.cost)) return false; pay(s,f.cost); s.furniture.push(id); log(s,`🪑 Placed ${f.name}.`); return true; }
+export function buildIssue(s,b){ if(!hasLand(s)) return 'buy land first'; if(s.buildings[b.id]>=b.max) return 'max level'; if(!established(s)) return 'build a Shack first'; if(!s.buildings[b.id]&&landUsed(s)+b.land>landSlots(s)) return 'no free land slot'; if(!afford(s,cost(s,b))) return 'cannot afford'; return null; }
+export function build(s,id){ const b=D.buildings.find(x=>x.id===id); if(buildIssue(s,b)) return false; const c=cost(s,b); if(!afford(s,c)) return false; pay(s,c); s.buildings[id]++; log(s,`🏗️ ${b.name} ${s.buildings[id]>1?'upgraded to Lv'+s.buildings[id]:'built'}.`); return true; }
 export function equip(s,m,itemId,from='vault'){ const src=from==='bag'?m.bag:s.vault; const i=src.indexOf(itemId); const it=D.items.find(x=>x.id===itemId); if(i<0||it.slot==='gift') return false; src.splice(i,1); if(m.equip[it.slot]) m.bag.push(m.equip[it.slot]); m.equip[it.slot]=itemId; return true; }
 export const sellValue=(s,it)=>Math.round(it.value*(hasService(s,'appraisal')?1:.5));
 export function sell(s,itemId){ const i=s.vault.indexOf(itemId); if(i<0) return; s.vault.splice(i,1); s.res.coin+=sellValue(s,D.items.find(x=>x.id===itemId)); }
@@ -269,29 +288,40 @@ export function rumor(s,regionId){ if(s.res.coin<T.rumorCost) return null; const
   if(!pool.length||rng()<0.3){ log(s,'🗣️ The tavern talk was idle gossip.'); return false; } const x=r(pool); s.revealed.push(x.id); log(s,`🗣️ Rumor: ${x.name} discovered!`); return x; }
 
 // ---- minions (followers, hired help, retainers)
-export const minionCap=s=>D.minions.baseCap+bl(s,'house')*D.minions.capPerHouse+(hasService(s,'storage')?2:0);
-export const minionRoom=s=>s.minions.filter(x=>!x.special).length<minionCap(s);
+export const minionCap=s=>D.minions.baseCap+(s.structures||[]).length*D.minions.capPerHouse+(hasService(s,'storage')?2:0);
+export function housingCap(s,kind){ if(kind==='none') return Infinity; if(kind==='garden') return bl(s,'garden')>0?Infinity:0;
+  return (s.structures||[]).reduce((a,st)=>a+(((structDef(st.type).builtin||{}).housing||{})[kind]||0)+st.pieces.map(pieceDef).reduce((b,p)=>b+(((p&&p.bonus.housing)||{})[kind]||0),0),0); }
+export const housingKind=mi=>(D.minions.types.find(t=>t.id===(mi.type||mi.id))||{}).housing||'bunk';
+export function isHoused(s,mi){ const k=housingKind(mi); const same=s.minions.filter(x=>housingKind(x)===k); return same.indexOf(mi)<housingCap(s,k); }
+export const housingUsed=(s,kind)=>Math.min(s.minions.filter(x=>housingKind(x)===kind).length,housingCap(s,kind));
+export const freeHousing=(s,kind='bunk')=>housingCap(s,kind)-s.minions.filter(x=>housingKind(x)===kind).length;
+export const minionFood=s=>s.minions.length*ES().minionFoodPerDay;
+export const minionRoom=s=>s.minions.filter(x=>!x.special).length<minionCap(s)&&freeHousing(s,'bunk')>0;
 const mtype=id=>D.minions.types.find(t=>t.id===id);
 export function minionPower(s,job){ return (s.minions||[]).filter(x=>x.job===job).reduce((a,x)=>a+(mtype(x.type).apt[job]||1),0); }
-export function addMinion(s,type,why){ if(!mtype(type).special&&!minionRoom(s)) { log(s,`🚪 No room for a new follower (${why}).`); return null; }
+export function addMinion(s,type,why){ if(!mtype(type).special&&!minionRoom(s)) { log(s,`🚪 No room or no bunk for a new follower (${why}).`); return null; }
   const t=mtype(type); const mi={uid:'mi'+(s.nextId++),type,name:t.special?t.name:r(D.minions.names),job:'idle',loyalty:100,since:s.day}; if(t.special){mi.special=true;mi.source=why;}
   s.minions.push(mi); log(s,`🤝 ${mi.name} the ${t.name} joined (${why}).`); return mi; }
 export const hireable=(s,townId)=>(D.minions.hireAt[townId]||[]).map(mtype);
 export function hire(s,townId,type){ const t=mtype(type); if(!(D.minions.hireAt[townId]||[]).includes(type)||s.res.coin<t.hire||!minionRoom(s)) return null; s.res.coin-=t.hire; return addMinion(s,type,'hired in town'); }
 export function jobOpen(s,jobId){ const j=D.minions.jobs.find(x=>x.id===jobId); return !!j&&(jobId==='idle'||(established(s)&&jobCap(s,jobId)>0)); }
 export const jobUsed=(s,job,except)=>s.minions.filter(x=>x.job===job&&x.uid!==except).length;
-export function assignMinion(s,uid,job){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!jobOpen(s,job)||jobUsed(s,job,uid)>=jobCap(s,job)) return false; mi.job=job; return true; }
+export function assignMinion(s,uid,job){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!jobOpen(s,job)||(job!=='idle'&&!isHoused(s,mi))||jobUsed(s,job,uid)>=jobCap(s,job)) return false; mi.job=job; return true; }
 export function dismiss(s,uid){ const i=s.minions.findIndex(x=>x.uid===uid); if(i<0) return false; log(s,`👋 ${s.minions[i].name} was dismissed.`); s.minions.splice(i,1); return true; }
 export const monthlyWages=s=>s.minions.reduce((a,x)=>a+mtype(x.type).wage,0);
 function minionDay(s){
   if(!s.minions){s.minions=[];s.repLevel=0;}
   checkSpecialMinions(s);
-  for(const mi of s.minions){ const a=mtype(mi.type).apt[mi.job]||1;
+  const fed=s.res.food>=minionFood(s);
+  for(const mi of s.minions){ if(!fed){ mi.hunger=(mi.hunger||0)+1; mi.loyalty-=D.minions.hungerLoyaltyLoss; } else mi.hunger=0;
+    if(!isHoused(s,mi)){ mi.unhoused=true; continue; } mi.unhoused=false;
+    const a=(mtype(mi.type).apt[mi.job]||1)*(fed?1:D.minions.hungryOutput);
     if(mi.job==='farm') s.res.food+=3*a*(1+bl(s,'farm')*.2);
     else if(mi.job==='gather'){ s.res.wood+=2*a; s.res.stone+=1*a; }
     else if(mi.job==='herbs') s.res.herbs=(s.res.herbs||0)+1.5*a;
-    else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; if(mi.prog>=T.craftDays){ mi.prog=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const it=r(D.items.filter(i=>i.slot!=='gift'&&i.rarity==='Common')); s.vault.push(it.id); log(s,`🔧 ${mi.name} crafted ${it.name}.`);} } } }
-  s.res.food=Math.max(0,s.res.food-s.minions.length*0.5);
+    else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; if(mi.prog>=T.craftDays){ mi.prog=0; if(afford(s,T.craftCost)){ pay(s,T.craftCost); const it=r(D.items.filter(i=>i.slot!=='gift'&&i.rarity===(rng()<craftQuality(s)?'Fine':'Common'))); s.vault.push(it.id); log(s,`🔧 ${mi.name} crafted ${it.name}.`);} } } }
+  s.res.food=Math.max(0,s.res.food-minionFood(s));
+  for(const mi of [...s.minions]) if(mi.loyalty<=0){ s.minions=s.minions.filter(x=>x!==mi); log(s,`🍽️ ${mi.name} left: ${mi.hunger?'not enough food':'unhappy'}.`); }
   if(s.day%30===0 && s.minions.length){ const w=monthlyWages(s);
     if(s.res.coin>=w){ s.res.coin-=w; for(const mi of s.minions) mi.loyalty=Math.min(100,mi.loyalty+10); }
     else { s.res.coin=0; for(const mi of [...s.minions]){ mi.loyalty-=D.minions.loyaltyLossUnpaid; if(mi.loyalty<=0){ s.minions=s.minions.filter(x=>x!==mi); log(s,`💸 ${mi.name} left over unpaid wages.`);} } log(s,'💸 Wages went unpaid; loyalty fell.'); } }
@@ -301,10 +331,19 @@ function minionDay(s){
 // ---- guilds
 export function normalize(s){ if(!s.unlocks) s.unlocks=[];
   for(const b of D.buildings) if(s.buildings[b.id]===undefined) s.buildings[b.id]=0;
-  if(!s.land){ s.land=[]; s.rooms=[]; // migrate pre-land saves
-    if(D.buildings.some(b=>bl(s,b.id)>0)){ for(const l of ES().lands){ if(landSlots(s)>=landUsed(s)&&s.land.length) break; s.land.push(l.id); }
-      if(bl(s,'house')>0){ const need=Math.max(1,Math.ceil((s.members.filter(m=>m.alive).length-1)/2)); const cap=interiorSlots(s); for(let i=0;i<need&&s.rooms.length<cap;i++) s.rooms.push('living'); const fill=['workshop','post','study']; let k=0; while(s.rooms.length<cap&&k<fill.length) s.rooms.push(fill[k++]); }
-      log(s,`📜 Your existing holdings were deeded: ${s.land.length} land parcel(s), ${s.rooms.length} rooms.`); } } if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>D.items.some(i=>i.id===id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>D.items.some(i=>i.id===id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
+  if(!s.land) s.land=[];
+  if(!s.structures){ s.structures=[]; s.pieceStore=[]; // migrate house/room/furniture saves
+    const hlv=s.buildings.house||0, oldRooms=s.rooms||[], oldF=s.furniture||[]; const any=hlv>0||D.buildings.some(b=>bl(s,b.id)>0);
+    if(any&&!s.land.length) s.land.push('plot');
+    if(hlv>0){ const st={uid:'st'+(s.nextId++),type:hlv>=3?'house':hlv===2?'cabin':'shack',pieces:[]}; s.structures.push(st);
+      const map={living:'bunk',workshop:'workbench',post:'toolrack',study:'studydesk',nursery:'cradle',shrine:'shrine'};
+      let want=oldRooms.length?oldRooms.map(r=>map[r]).filter(Boolean):['bunk','workbench']; if(!want.includes('bunk')) want.unshift('bunk');
+      if(s.minions&&s.minions.length) want.push('minionbunk'); want=[...want,...oldF];
+      for(const pid of want){ if(freeSlots(s,st)>0&&!st.pieces.includes(pid)) st.pieces.push(pid); else s.pieceStore.push(pid); } }
+    else s.pieceStore.push(...oldF);
+    for(const l of ES().lands){ if(landSlots(s)>=landUsed(s)) break; if(!s.land.includes(l.id)) s.land.push(l.id); }
+    delete s.buildings.house; delete s.rooms; s.furniture=[];
+    if(any) log(s,`📜 Estate converted to buildings & stations: ${s.structures.length} building(s), ${s.pieceStore.length} piece(s) in storage.`); } if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>D.items.some(i=>i.id===id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>D.items.some(i=>i.id===id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
 export const guildDef=id=>D.guilds.guilds.find(g=>g.id===id);
 export const rankName=r=>D.guilds.ranks[r].name;
 export function trainIssue(m,skillId,s){ const sk=D.skills.find(x=>x.id===skillId); if(!sk) return 'unknown'; const a=ageY(m);

@@ -53,7 +53,8 @@
    "apt": {
     "farm": 1.5,
     "gather": 1.3
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "woodsman",
@@ -64,7 +65,8 @@
    "apt": {
     "gather": 1.8,
     "herbs": 1.2
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "herbalist",
@@ -75,7 +77,8 @@
    "apt": {
     "herbs": 2,
     "farm": 1.1
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "guard",
@@ -85,7 +88,8 @@
    "wage": 20,
    "apt": {
     "guard": 1.6
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "tinker",
@@ -96,7 +100,8 @@
    "apt": {
     "craft": 1.8,
     "gather": 1.1
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "tutor",
@@ -107,7 +112,8 @@
    "apt": {
     "tutor": 1.6,
     "craft": 1.1
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "refugee",
@@ -119,7 +125,8 @@
     "farm": 1.2,
     "gather": 1.2,
     "herbs": 1.2
-   }
+   },
+   "housing": "bunk"
   },
   {
    "id": "squire",
@@ -135,7 +142,8 @@
    "source": {
     "class": "paladin"
    },
-   "desc": "A young squire sworn to your Paladin"
+   "desc": "A young squire sworn to your Paladin",
+   "housing": "bunk"
   },
   {
    "id": "wolf",
@@ -151,7 +159,8 @@
    "source": {
     "class": "beastmaster"
    },
-   "desc": "Bonded beast; eats but takes no wages"
+   "desc": "Bonded beast; eats but takes no wages",
+   "housing": "kennel"
   },
   {
    "id": "familiar",
@@ -166,7 +175,8 @@
    "source": {
     "class": "archmage"
    },
-   "desc": "Arcane familiar that whispers lessons"
+   "desc": "Arcane familiar that whispers lessons",
+   "housing": "perch"
   },
   {
    "id": "salamander",
@@ -181,7 +191,8 @@
    "source": {
     "class": "pyromancer"
    },
-   "desc": "Fire spirit that stokes the forge"
+   "desc": "Fire spirit that stokes the forge",
+   "housing": "brazier"
   },
   {
    "id": "bannerman",
@@ -196,7 +207,8 @@
    "source": {
     "class": "warlord"
    },
-   "desc": "Veteran who rallies estate guards"
+   "desc": "Veteran who rallies estate guards",
+   "housing": "bunk"
   },
   {
    "id": "drillmaster",
@@ -213,7 +225,8 @@
     "guild": "vanguard",
     "rank": 2
    },
-   "desc": "Warriors' Guild loaned instructor"
+   "desc": "Warriors' Guild loaned instructor",
+   "housing": "bunk"
   },
   {
    "id": "falconer",
@@ -230,7 +243,8 @@
     "guild": "lodge",
     "rank": 1
    },
-   "desc": "Rangers' Guild scout and hunter"
+   "desc": "Rangers' Guild scout and hunter",
+   "housing": "bunk"
   },
   {
    "id": "golem",
@@ -247,7 +261,8 @@
     "guild": "collegium",
     "rank": 2
    },
-   "desc": "Magic Guild construct; tireless"
+   "desc": "Magic Guild construct; tireless",
+   "housing": "none"
   },
   {
    "id": "acolyte",
@@ -264,7 +279,8 @@
     "guild": "church",
     "rank": 1
    },
-   "desc": "Healers' Guild novice who tends the estate"
+   "desc": "Healers' Guild novice who tends the estate",
+   "housing": "bunk"
   },
   {
    "id": "fence",
@@ -281,7 +297,8 @@
     "guild": "rogues",
     "rank": 1
    },
-   "desc": "Rogues' Guild contact; 'finds' materials"
+   "desc": "Rogues' Guild contact; 'finds' materials",
+   "housing": "bunk"
   },
   {
    "id": "journeyman",
@@ -297,7 +314,8 @@
     "guild": "hearth",
     "rank": 1
    },
-   "desc": "Crafters' Guild artisan"
+   "desc": "Crafters' Guild artisan",
+   "housing": "bunk"
   },
   {
    "id": "hermitpupil",
@@ -313,7 +331,8 @@
    "source": {
     "quest": "q_hermit"
    },
-   "desc": "Followed you down from Greyrock"
+   "desc": "Followed you down from Greyrock",
+   "housing": "bunk"
   },
   {
    "id": "ferryman",
@@ -329,7 +348,8 @@
    "source": {
     "quest": "q_river"
    },
-   "desc": "Grateful river hand who fishes for the estate"
+   "desc": "Grateful river hand who fishes for the estate",
+   "housing": "bunk"
   },
   {
    "id": "sprite",
@@ -345,7 +365,8 @@
    "source": {
     "quest": "dryad"
    },
-   "desc": "Bound by the dryad's bargain"
+   "desc": "Bound by the dryad's bargain",
+   "housing": "garden"
   },
   {
    "id": "caravanmaster",
@@ -361,7 +382,8 @@
    "source": {
     "quest": "caravan"
    },
-   "desc": "Recruited after the escort"
+   "desc": "Recruited after the escort",
+   "housing": "bunk"
   }
  ],
  "hireAt": {
@@ -409,5 +431,7 @@
   "Vera",
   "Yorick"
  ],
- "specialsBypassCap": true
+ "specialsBypassCap": true,
+ "hungerLoyaltyLoss": 8,
+ "hungryOutput": 0.5
 }

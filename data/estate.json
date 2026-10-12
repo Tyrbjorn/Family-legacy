@@ -56,90 +56,6 @@
    "requires": "meadow"
   }
  ],
- "rooms": [
-  {
-   "id": "living",
-   "name": "Living Space",
-   "icon": "🛏️",
-   "kind": "living",
-   "beds": 2,
-   "cost": {
-    "coin": 20,
-    "wood": 10
-   },
-   "desc": "+2 beds (family size)"
-  },
-  {
-   "id": "workshop",
-   "name": "Workshop",
-   "icon": "🔨",
-   "kind": "work",
-   "cost": {
-    "coin": 40,
-    "wood": 20
-   },
-   "jobs": {
-    "craft": 2
-   },
-   "desc": "2 crafting minion spots; family crafting"
-  },
-  {
-   "id": "post",
-   "name": "Resource Post",
-   "icon": "🧺",
-   "kind": "work",
-   "cost": {
-    "coin": 30,
-    "wood": 15
-   },
-   "jobs": {
-    "gather": 2,
-    "herbs": 2
-   },
-   "desc": "2 gathering + 2 herb-picking minion spots"
-  },
-  {
-   "id": "study",
-   "name": "Study",
-   "icon": "📖",
-   "kind": "special",
-   "cost": {
-    "coin": 80,
-    "wood": 20
-   },
-   "jobs": {
-    "tutor": 2
-   },
-   "xpFamily": "lore",
-   "desc": "2 tutor spots, +3% Lore XP"
-  },
-  {
-   "id": "nursery",
-   "name": "Nursery",
-   "icon": "🧸",
-   "kind": "special",
-   "cost": {
-    "coin": 60,
-    "wood": 15
-   },
-   "childxp": 0.25,
-   "beds": 1,
-   "desc": "+1 bed, +25% childhood XP"
-  },
-  {
-   "id": "shrine",
-   "name": "Household Shrine",
-   "icon": "🕯️",
-   "kind": "special",
-   "cost": {
-    "coin": 70,
-    "stone": 10
-   },
-   "rest": 0.5,
-   "desc": "Faster injury recovery"
-  }
- ],
- "furniturePerRoom": 2,
  "stages": [
   [
    0,
@@ -150,16 +66,478 @@
    "Homestead"
   ],
   [
-   5,
+   6,
    "Farmstead"
   ],
   [
-   10,
+   12,
    "Manor"
   ],
   [
-   18,
+   20,
    "Prosperous Estate"
   ]
- ]
+ ],
+ "structures": [
+  {
+   "id": "shack",
+   "name": "Shack",
+   "icon": "🛖",
+   "land": 1,
+   "slots": 2,
+   "cost": {
+    "coin": 40,
+    "wood": 15
+   },
+   "desc": "2 slots. A home, a sawmill, a workshop: the pieces decide."
+  },
+  {
+   "id": "cabin",
+   "name": "Cabin",
+   "icon": "🏠",
+   "land": 1,
+   "slots": 4,
+   "cost": {
+    "coin": 200,
+    "wood": 40,
+    "planks": 15
+   },
+   "upgradeFrom": "shack",
+   "desc": "4 slots"
+  },
+  {
+   "id": "house",
+   "name": "House",
+   "icon": "🏡",
+   "land": 2,
+   "slots": 6,
+   "cost": {
+    "coin": 600,
+    "stone": 60,
+    "planks": 40
+   },
+   "upgradeFrom": "cabin",
+   "desc": "6 slots, needs 2 land"
+  },
+  {
+   "id": "hall",
+   "name": "Workshop Hall",
+   "icon": "🏭",
+   "land": 2,
+   "slots": 8,
+   "cost": {
+    "coin": 1200,
+    "stone": 80,
+    "planks": 80,
+    "ingots": 15
+   },
+   "desc": "8 slots, needs 2 land"
+  },
+  {
+   "id": "bunkhouse",
+   "name": "Bunkhouse",
+   "icon": "🏚️",
+   "land": 1,
+   "slots": 2,
+   "cost": {
+    "coin": 150,
+    "wood": 40,
+    "planks": 10
+   },
+   "builtin": {
+    "housing": {
+     "bunk": 4
+    }
+   },
+   "desc": "Houses 4 followers built-in, plus 2 slots"
+  }
+ ],
+ "pieces": [
+  {
+   "id": "bunk",
+   "name": "Bed",
+   "icon": "🛏️",
+   "kind": "station",
+   "cost": {
+    "coin": 20,
+    "wood": 10
+   },
+   "bonus": {
+    "beds": 2
+   },
+   "desc": "+2 beds (family size)"
+  },
+  {
+   "id": "cradle",
+   "name": "Cradle",
+   "icon": "🧸",
+   "kind": "station",
+   "cost": {
+    "coin": 40,
+    "wood": 10
+   },
+   "bonus": {
+    "beds": 1,
+    "childxp": 0.25
+   },
+   "desc": "+1 bed, +25% childhood XP"
+  },
+  {
+   "id": "larder",
+   "name": "Larder",
+   "icon": "🥫",
+   "kind": "station",
+   "cost": {
+    "coin": 30,
+    "wood": 15
+   },
+   "bonus": {
+    "foodCap": 300,
+    "foodQuality": 0.05
+   },
+   "desc": "+300 food capacity, +5% XP from better meals"
+  },
+  {
+   "id": "storage",
+   "name": "Storage Chest",
+   "icon": "🧰",
+   "kind": "station",
+   "cost": {
+    "coin": 25,
+    "wood": 15
+   },
+   "bonus": {
+    "matCap": 400
+   },
+   "desc": "+400 capacity for wood/stone/herbs/planks/ingots/potions"
+  },
+  {
+   "id": "sawtable",
+   "name": "Saw Table",
+   "icon": "🪚",
+   "kind": "station",
+   "cost": {
+    "coin": 30,
+    "wood": 20
+   },
+   "bonus": {
+    "process": {
+     "in": {
+      "wood": 3
+     },
+     "out": "planks",
+     "rate": 4
+    }
+   },
+   "desc": "Turns 3 wood → 1 plank, 4/day"
+  },
+  {
+   "id": "workbench",
+   "name": "Workbench",
+   "icon": "🛠️",
+   "kind": "station",
+   "cost": {
+    "coin": 40,
+    "wood": 20
+   },
+   "bonus": {
+    "unlock": "craft",
+    "jobs": {
+     "craft": 2
+    },
+    "craftQuality": 0.05
+   },
+   "desc": "Enables crafting; 2 crafting spots"
+  },
+  {
+   "id": "forge",
+   "name": "Forge",
+   "icon": "🔥",
+   "kind": "station",
+   "cost": {
+    "coin": 120,
+    "stone": 40
+   },
+   "bonus": {
+    "process": {
+     "in": {
+      "stone": 4
+     },
+     "out": "ingots",
+     "rate": 2
+    },
+    "jobs": {
+     "craft": 1
+    },
+    "craftQuality": 0.05
+   },
+   "desc": "Smelts 4 stone (ore) → 1 ingot, 2/day; +1 crafting spot"
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "icon": "🧶",
+   "kind": "station",
+   "cost": {
+    "coin": 60,
+    "planks": 5
+   },
+   "bonus": {
+    "family": "craft",
+    "xp": 0.03,
+    "jobs": {
+     "craft": 1
+    }
+   },
+   "desc": "+3% Craft XP, +1 crafting spot"
+  },
+  {
+   "id": "herbrack",
+   "name": "Herb Rack",
+   "icon": "🌿",
+   "kind": "station",
+   "cost": {
+    "coin": 35,
+    "wood": 10
+   },
+   "bonus": {
+    "process": {
+     "in": {
+      "herbs": 3
+     },
+     "out": "potions",
+     "rate": 2
+    },
+    "jobs": {
+     "herbs": 2
+    }
+   },
+   "desc": "Brews 3 herbs → 1 potion, 2/day; 2 herb spots. Potions auto-heal injuries"
+  },
+  {
+   "id": "toolrack",
+   "name": "Tool Rack",
+   "icon": "🪓",
+   "kind": "station",
+   "cost": {
+    "coin": 30,
+    "wood": 15
+   },
+   "bonus": {
+    "jobs": {
+     "gather": 2,
+     "herbs": 1
+    }
+   },
+   "desc": "Resource-gathering spot: 2 gathering + 1 herb minion spots"
+  },
+  {
+   "id": "studydesk",
+   "name": "Study Desk",
+   "icon": "🖋️",
+   "kind": "station",
+   "cost": {
+    "coin": 60,
+    "planks": 5
+   },
+   "bonus": {
+    "family": "lore",
+    "xp": 0.03,
+    "jobs": {
+     "tutor": 2
+    }
+   },
+   "desc": "+3% Lore XP, 2 tutor spots"
+  },
+  {
+   "id": "shrine",
+   "name": "Shrine",
+   "icon": "🕯️",
+   "kind": "station",
+   "cost": {
+    "coin": 70,
+    "stone": 10
+   },
+   "bonus": {
+    "rest": 0.5
+   },
+   "desc": "Faster injury recovery"
+  },
+  {
+   "id": "minionbunk",
+   "name": "Bunk",
+   "icon": "🛌",
+   "kind": "station",
+   "cost": {
+    "coin": 25,
+    "wood": 15
+   },
+   "bonus": {
+    "housing": {
+     "bunk": 2
+    }
+   },
+   "desc": "Houses 2 followers"
+  },
+  {
+   "id": "kennel",
+   "name": "Kennel",
+   "icon": "🐕",
+   "kind": "station",
+   "cost": {
+    "coin": 30,
+    "wood": 20
+   },
+   "bonus": {
+    "housing": {
+     "kennel": 1
+    }
+   },
+   "desc": "Houses an animal companion"
+  },
+  {
+   "id": "perch",
+   "name": "Perch",
+   "icon": "🪶",
+   "kind": "station",
+   "cost": {
+    "coin": 30,
+    "planks": 3
+   },
+   "bonus": {
+    "housing": {
+     "perch": 1
+    }
+   },
+   "desc": "Houses a familiar"
+  },
+  {
+   "id": "brazier",
+   "name": "Brazier",
+   "icon": "🔥",
+   "kind": "station",
+   "cost": {
+    "coin": 40,
+    "stone": 15
+   },
+   "bonus": {
+    "housing": {
+     "brazier": 1
+    }
+   },
+   "desc": "Houses a fire spirit"
+  }
+ ],
+ "synergies": [
+  {
+   "id": "cozy",
+   "name": "Cozy Home",
+   "icon": "🏡",
+   "pieces": [
+    "bunk",
+    "larder"
+   ],
+   "bonus": {
+    "rest": 0.3,
+    "foodQuality": 0.05
+   },
+   "desc": "+30% rest recovery, +5% meal XP"
+  },
+  {
+   "id": "lumberyard",
+   "name": "Lumberyard",
+   "icon": "🪵",
+   "pieces": [
+    "sawtable",
+    "storage"
+   ],
+   "bonus": {
+    "processMult": {
+     "planks": 1.5
+    }
+   },
+   "desc": "Plank output ×1.5 in this building"
+  },
+  {
+   "id": "tidyshop",
+   "name": "Tidy Workshop",
+   "icon": "🧰",
+   "pieces": [
+    "workbench",
+    "storage"
+   ],
+   "bonus": {
+    "craftQuality": 0.1
+   },
+   "desc": "+10% crafting quality"
+  },
+  {
+   "id": "smithy",
+   "name": "Smithy",
+   "icon": "⚒️",
+   "pieces": [
+    "workbench",
+    "forge"
+   ],
+   "bonus": {
+    "craftQuality": 0.2
+   },
+   "desc": "+20% crafting quality"
+  },
+  {
+   "id": "nook",
+   "name": "Scholar's Nook",
+   "icon": "📚",
+   "pieces": [
+    "studydesk",
+    "bookshelf"
+   ],
+   "bonus": {
+    "family": "lore",
+    "xp": 0.05
+   },
+   "desc": "+5% Lore XP"
+  },
+  {
+   "id": "apothecary",
+   "name": "Apothecary",
+   "icon": "⚗️",
+   "pieces": [
+    "herbrack",
+    "larder"
+   ],
+   "bonus": {
+    "processMult": {
+     "potions": 1.5
+    }
+   },
+   "desc": "Potion output ×1.5 in this building"
+  },
+  {
+   "id": "nursery",
+   "name": "Nursery",
+   "icon": "👶",
+   "pieces": [
+    "cradle",
+    "bunk"
+   ],
+   "bonus": {
+    "childxp": 0.15
+   },
+   "desc": "+15% childhood XP"
+  }
+ ],
+ "caps": {
+  "foodBase": 150,
+  "matBase": 300,
+  "capped": [
+   "wood",
+   "stone",
+   "herbs",
+   "planks",
+   "ingots",
+   "potions"
+  ]
+ },
+ "minionFoodPerDay": 0.5
 }

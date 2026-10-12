@@ -10,7 +10,8 @@
   "bonus": {
    "skill": "reading",
    "xp": 0.05
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "bed",
@@ -22,7 +23,8 @@
   },
   "bonus": {
    "rest": 0.2
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "trophy",
@@ -34,7 +36,8 @@
   },
   "bonus": {
    "renown": 1
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "dummy",
@@ -47,7 +50,8 @@
   "bonus": {
    "family": "combat",
    "xp": 0.03
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "desk",
@@ -60,7 +64,8 @@
   "bonus": {
    "family": "lore",
    "xp": 0.03
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "crystal",
@@ -73,7 +78,8 @@
   "bonus": {
    "family": "magic",
    "xp": 0.03
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "mirror",
@@ -85,7 +91,8 @@
   },
   "bonus": {
    "court": 0.2
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "pantry",
@@ -97,7 +104,8 @@
   },
   "bonus": {
    "food": 2
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "cradle",
@@ -109,7 +117,8 @@
   },
   "bonus": {
    "childxp": 0.25
-  }
+  },
+  "kind": "decor"
  },
  {
   "id": "strongbox",
@@ -121,6 +130,7 @@
   },
   "bonus": {
    "coin": 0.05
-  }
+  },
+  "kind": "decor"
  }
 ]
