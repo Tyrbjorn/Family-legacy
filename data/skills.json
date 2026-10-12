@@ -74,7 +74,8 @@
   "name": "Alchemy",
   "family": "craft",
   "stat": "INT",
-  "icon": "⚗️"
+  "icon": "⚗️",
+  "unlockQuest": "mushrooms"
  },
  {
   "id": "tailoring",
@@ -106,7 +107,7 @@
  },
  {
   "id": "haggling",
-  "name": "Haggling",
+  "name": "Bartering",
   "family": "social",
   "stat": "CHA",
   "icon": "💰"
@@ -137,14 +138,16 @@
   "name": "History",
   "family": "lore",
   "stat": "INT",
-  "icon": "📜"
+  "icon": "📜",
+  "unlockQuest": "tutor"
  },
  {
   "id": "monsterlore",
   "name": "Monster Lore",
   "family": "lore",
   "stat": "WIL",
-  "icon": "🐉"
+  "icon": "🐉",
+  "unlockQuest": "beasttome"
  },
  {
   "id": "tactics",
@@ -201,5 +204,47 @@
   "stat": "AGI",
   "icon": "🧤",
   "guild": "rogues"
+ },
+ {
+  "id": "animal",
+  "name": "Animal Handling",
+  "family": "gathering",
+  "stat": "STR",
+  "icon": "🐴"
+ },
+ {
+  "id": "cooking",
+  "name": "Cooking",
+  "family": "craft",
+  "stat": "VIT",
+  "icon": "🍲"
+ },
+ {
+  "id": "farming",
+  "name": "Farming",
+  "family": "gathering",
+  "stat": "VIT",
+  "icon": "🌾"
+ },
+ {
+  "id": "nature",
+  "name": "Nature Knowledge",
+  "family": "lore",
+  "stat": "WIL",
+  "icon": "🍃"
+ },
+ {
+  "id": "fishing",
+  "name": "Fishing",
+  "family": "gathering",
+  "stat": "AGI",
+  "icon": "🎣"
+ },
+ {
+  "id": "sailing",
+  "name": "Seamanship",
+  "family": "gathering",
+  "stat": "STR",
+  "icon": "⚓"
  }
 ]

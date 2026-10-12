@@ -2,42 +2,89 @@
  {
   "id": "quick",
   "name": "Quick Learner",
-  "xp": 0.1
- },
- {
-  "id": "frail",
-  "name": "Frail",
-  "life": -5
- },
- {
-  "id": "charming",
-  "name": "Charming",
-  "court": 0.5
- },
- {
-  "id": "hardy",
-  "name": "Hardy",
-  "life": 5
- },
- {
-  "id": "thrifty",
-  "name": "Thrifty",
-  "coin": 0.1
- },
- {
-  "id": "brave",
-  "name": "Brave",
-  "cp": 0.1
- },
- {
-  "id": "dreamer",
-  "name": "Dreamer",
-  "xp": 0.05,
-  "court": 0.2
+  "icon": "⚡",
+  "xp": 0.1,
+  "desc": "+10% all skill XP",
+  "opposes": "lazy"
  },
  {
   "id": "lazy",
   "name": "Lazy",
-  "xp": -0.1
+  "icon": "🥱",
+  "xp": -0.1,
+  "desc": "−10% all skill XP",
+  "opposes": "quick"
+ },
+ {
+  "id": "hardy",
+  "name": "Hardy",
+  "icon": "💪",
+  "life": 5,
+  "desc": "+5 years lifespan",
+  "opposes": "frail"
+ },
+ {
+  "id": "frail",
+  "name": "Frail",
+  "icon": "🥀",
+  "life": -5,
+  "desc": "−5 years lifespan",
+  "opposes": "hardy"
+ },
+ {
+  "id": "charming",
+  "name": "Charming",
+  "icon": "😊",
+  "court": 0.5,
+  "desc": "+50% courtship affinity gain",
+  "opposes": "awkward"
+ },
+ {
+  "id": "awkward",
+  "name": "Awkward",
+  "icon": "😬",
+  "court": -0.3,
+  "desc": "−30% courtship affinity gain",
+  "opposes": "charming"
+ },
+ {
+  "id": "thrifty",
+  "name": "Thrifty",
+  "icon": "🪙",
+  "coin": 0.1,
+  "desc": "+10% coin from jobs",
+  "opposes": "spendthrift"
+ },
+ {
+  "id": "spendthrift",
+  "name": "Spendthrift",
+  "icon": "💸",
+  "coin": -0.1,
+  "desc": "−10% coin from jobs",
+  "opposes": "thrifty"
+ },
+ {
+  "id": "brave",
+  "name": "Brave",
+  "icon": "🦁",
+  "cp": 0.1,
+  "desc": "+10% Combat Power",
+  "opposes": "timid"
+ },
+ {
+  "id": "timid",
+  "name": "Timid",
+  "icon": "🐭",
+  "cp": -0.1,
+  "desc": "−10% Combat Power",
+  "opposes": "brave"
+ },
+ {
+  "id": "dreamer",
+  "name": "Dreamer",
+  "icon": "💭",
+  "xp": 0.05,
+  "court": 0.2,
+  "desc": "+5% XP, +20% courtship"
  }
 ]

@@ -2,10 +2,11 @@ import {chromium} from '/home/box/.npm/_npx/e41f203b7505f1fb/node_modules/playwr
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
-await p.goto('http://localhost:8080/');await p.waitForTimeout(3000);
+await p.goto('http://localhost:8080/');await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+console.log('teen tabs',await p.$$eval('#tabs button',b=>b.map(x=>x.dataset.tab).join()));await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-teen.png'});
 console.log('day',await p.evaluate(()=>__game.s.day));
 // fast-forward a played game and simulate 14h away via save tamper
-await p.evaluate(()=>{const g=__game;g.E.advanceReal(g.s,5400);g.E.chooseClass(g.s,1,'fighter');g.E.setAction(g.s,{type:'quest',target:'wolves'});g.s.res.coin+=300;g.s.res.wood+=50;g.E.build(g.s,'house');g.E.build(g.s,'farm');g.E.hire(g.s,'millbrook','laborer');g.E.hire(g.s,'millbrook','woodsman');g.E.assignMinion(g.s,g.s.minions[0].uid,'farm');g.E.assignMinion(g.s,g.s.minions[1].uid,'gather');const fm=g.s.members[0];fm.skills.swordsmanship.lvl=Math.max(12,fm.skills.swordsmanship.lvl);g.s.res.coin+=200;g.E.joinGuild(g.s,fm,'vanguard');fm.guild.rep=30;g.E.joinAdventurers(g.s,fm);fm.adv.rep=100;g.E.advRankUp(g.s,fm);g.E.advRankUp(g.s,fm);g.save();window.__noSave=true;
+await p.evaluate(()=>{const g=__game;g.E.advanceReal(g.s,5400);g.E.chooseClass(g.s,1,'fighter');g.E.setAction(g.s,{type:'quest',target:'wolves'});g.s.res.coin+=300;g.s.res.wood+=50;g.E.build(g.s,'house');g.E.build(g.s,'farm');g.E.hire(g.s,'millbrook','laborer');g.E.hire(g.s,'millbrook','woodsman');g.E.assignMinion(g.s,g.s.minions[0].uid,'farm');g.E.assignMinion(g.s,g.s.minions[1].uid,'gather');const fm=g.s.members[0];fm.skills.swordsmanship.lvl=Math.max(12,fm.skills.swordsmanship.lvl);g.s.res.coin+=200;g.E.joinGuild(g.s,fm,'vanguard');fm.guild.rep=30;g.s.doneQuests.push('q_hermit','dryad');g.s.unlocks.push('activity:fishing');g.E.joinAdventurers(g.s,fm);fm.adv.rep=100;g.E.advRankUp(g.s,fm);g.E.advRankUp(g.s,fm);g.save();window.__noSave=true;
  const o=JSON.parse(localStorage.getItem('familyLegacy.save.v1'));o.lastSave-=14*3600e3;localStorage.setItem('familyLegacy.save.v1',JSON.stringify(o));});
 await p.reload();await p.waitForTimeout(1500);
 console.log('modal:',(await p.textContent('#modal')).slice(0,160));
@@ -16,6 +17,9 @@ await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-main.png'});
 for(const t of ['inv','map','estate']){await p.click(`[data-tab=${t}]`);await p.waitForTimeout(400);} await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-estate.png'});
 await p.click('[data-tab=map]');await p.waitForTimeout(400);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-map.png'});
 await p.click('[data-tab=inv]');await p.waitForTimeout(400);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-inventory.png'});
+await p.click('[data-tab=jobs]');await p.waitForTimeout(400);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-jobs.png'});
+await p.click('[data-tab=main]');await p.waitForTimeout(300);await p.click('[data-a=sheet]');await p.waitForTimeout(500);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-sheet.png',fullPage:false});await p.click('[data-a=sheet]');
+console.log('adult tabs',await p.$$eval('#tabs button',b=>b.map(x=>x.dataset.tab).join()));
 await p.click('[data-tab=minions]');await p.waitForTimeout(400);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-minions.png'});
 await p.click('[data-tab=main]');await p.waitForTimeout(400);await p.evaluate(()=>{const el=[...document.querySelectorAll('.card')].find(c=>c.textContent.includes('Iron Vanguard'));el&&el.scrollIntoView();scrollBy(0,-150);});await p.waitForTimeout(600);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-guild-main.png'});
 await p.evaluate(()=>scrollTo(0,0));await p.click('[data-tab=map]');await p.waitForTimeout(600);await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-guilds-map.png'});

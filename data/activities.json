@@ -1,0 +1,162 @@
+[
+ {
+  "id": "play",
+  "name": "Play Outside",
+  "icon": "🤸",
+  "minAge": 3,
+  "maxAge": 11,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "brawling",
+   "foraging"
+  ],
+  "desc": "Run, climb and tumble"
+ },
+ {
+  "id": "stories",
+  "name": "Story Time",
+  "icon": "📚",
+  "minAge": 3,
+  "maxAge": 11,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "reading"
+  ],
+  "desc": "Listen to tales by the hearth"
+ },
+ {
+  "id": "hiking",
+  "name": "Hiking",
+  "icon": "🥾",
+  "minAge": 10,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "nature"
+  ],
+  "desc": "Endurance (VIT) and Nature Knowledge"
+ },
+ {
+  "id": "sparring",
+  "name": "Sparring",
+  "icon": "🤺",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "swordsmanship",
+   "brawling"
+  ],
+  "desc": "Practice bouts with wooden swords"
+ },
+ {
+  "id": "fishing",
+  "name": "Fishing",
+  "icon": "🎣",
+  "minAge": 8,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "fishing"
+  ],
+  "desc": "Dexterity (AGI) and Fishing; brings home a little food",
+  "unlock": {
+   "quest": "q_river"
+  }
+ },
+ {
+  "id": "meditation",
+  "name": "Meditation",
+  "icon": "🧘",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.025
+  },
+  "skills": [
+   "arcana",
+   "healing"
+  ],
+  "desc": "Still the mind",
+  "unlock": {
+   "quest": "q_hermit"
+  }
+ },
+ {
+  "id": "herbwalk",
+  "name": "Herb Walks",
+  "icon": "🌿",
+  "minAge": 10,
+  "stats": {
+   "WIL": 0.015
+  },
+  "skills": [
+   "alchemy",
+   "nature"
+  ],
+  "desc": "Dryad-taught herb lore",
+  "unlock": {
+   "quest": "dryad"
+  }
+ },
+ {
+  "id": "vigil",
+  "name": "Shrine Vigil",
+  "icon": "⛩️",
+  "minAge": 14,
+  "stats": {
+   "WIL": 0.02,
+   "CHA": 0.01
+  },
+  "skills": [
+   "healing",
+   "faith"
+  ],
+  "desc": "Night vigils (Faith needs Healers' Guild)",
+  "unlock": {
+   "quest": "shrine"
+  }
+ },
+ {
+  "id": "studyhall",
+  "name": "Library Study",
+  "icon": "🏛️",
+  "minAge": 12,
+  "stats": {
+   "INT": 0.025
+  },
+  "skills": [
+   "reading",
+   "history",
+   "arcana"
+  ],
+  "desc": "Needs an estate Library",
+  "unlock": {
+   "building": "library"
+  }
+ },
+ {
+  "id": "drills",
+  "name": "Yard Drills",
+  "icon": "🎯",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.015,
+   "VIT": 0.015
+  },
+  "skills": [
+   "shield",
+   "swordsmanship"
+  ],
+  "desc": "Needs a Training Yard",
+  "unlock": {
+   "building": "yard"
+  }
+ }
+]

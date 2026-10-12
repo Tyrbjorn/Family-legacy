@@ -1,0 +1,133 @@
+[
+ {
+  "id": "shop",
+  "name": "General Store",
+  "icon": "🏪",
+  "minAge": 8,
+  "payChild": 2,
+  "payAdult": 7,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "haggling",
+   "etiquette"
+  ],
+  "desc": "Stock shelves and haggle with customers"
+ },
+ {
+  "id": "stables",
+  "name": "Stables",
+  "icon": "🐴",
+  "minAge": 8,
+  "payChild": 2,
+  "payAdult": 6,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "animal",
+   "hunting"
+  ],
+  "desc": "Muck stalls and gentle horses"
+ },
+ {
+  "id": "smithy",
+  "name": "Blacksmith",
+  "icon": "⚒️",
+  "minAge": 10,
+  "payChild": 2,
+  "payAdult": 9,
+  "stats": {
+   "STR": 0.02,
+   "VIT": 0.01
+  },
+  "skills": [
+   "smithing",
+   "mining"
+  ],
+  "desc": "Work the bellows, then the anvil"
+ },
+ {
+  "id": "farmhand",
+  "name": "Farmhand",
+  "icon": "🌾",
+  "minAge": 8,
+  "payChild": 1.5,
+  "payAdult": 6,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming",
+   "foraging"
+  ],
+  "desc": "Plant, weed and harvest"
+ },
+ {
+  "id": "tavern",
+  "name": "Tavern",
+  "icon": "🍺",
+  "minAge": 10,
+  "payChild": 2,
+  "payAdult": 8,
+  "stats": {
+   "CHA": 0.015,
+   "VIT": 0.01
+  },
+  "skills": [
+   "cooking",
+   "etiquette"
+  ],
+  "desc": "Serve tables and work the kitchen"
+ },
+ {
+  "id": "scribe",
+  "name": "Scribe's Office",
+  "icon": "📜",
+  "minAge": 10,
+  "payChild": 2,
+  "payAdult": 9,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "reading",
+   "history"
+  ],
+  "desc": "Copy letters and ledgers"
+ },
+ {
+  "id": "temple",
+  "name": "Temple Acolyte",
+  "icon": "🕯️",
+  "minAge": 8,
+  "payChild": 1.5,
+  "payAdult": 7,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "healing",
+   "etiquette"
+  ],
+  "desc": "Tend candles and the sick"
+ },
+ {
+  "id": "docks",
+  "name": "River Docks",
+  "icon": "⚓",
+  "minAge": 12,
+  "payChild": 2.5,
+  "payAdult": 10,
+  "stats": {
+   "STR": 0.015,
+   "AGI": 0.01
+  },
+  "skills": [
+   "sailing",
+   "fishing"
+  ],
+  "desc": "Haul cargo and mend nets"
+ }
+]

@@ -1,8 +1,8 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities'])D[n]=L(n);
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
-let pass=0;const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
+let pass=0; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
 const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
@@ -74,4 +74,32 @@ ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id=
 const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
 ok(E.joinGuild(H,hm,'church')&&E.canTrain(hm,'faith')&&!E.canTrain(hm,'thievery'),'Healers guild unlocks Faith, not Thievery');
 const O=JSON.parse(E.serialize(H,t0)); O.members[0].guild={id:'exchange',rank:1,rep:5}; O.vault.push('exchange_seal'); E.normalize(O); ok(O.members[0].guild===null&&!O.vault.includes('exchange_seal'),'old Exchange saves migrate cleanly');
+// playtest feedback round
+let clash=0; for(let i=0;i<300;i++){ const tr=E.pickTraits(2); if(E.conflicts(tr[0],tr[1])) clash++; } ok(clash===0,'opposed traits never roll together');
+const P=E.newGame(t0); const pm=P.members[0]; pm.traits=['hardy','frail']; const ls=pm.lifespan; P._norm=false; E.normalize(P);
+ok(!E.conflicts(pm.traits[0],pm.traits[1])&&pm.traits.length===2,'save migration resolves Hardy+Frail');
+ok(D.jobs.length>=6&&D.activities.length>=6,'6+ jobs and activities');
+const kd=E.newGame(t0); const km=kd.members[0]; km.ageDays=9*360; const c0k=kd.res.coin, ch0=km.stats.CHA;
+ok(E.setAction(kd,{type:'job',target:'shop'})!==false,'minor can apprentice at the shop'); E.advanceReal(kd,10*30);
+ok(kd.res.coin>c0k&&km.stats.CHA>ch0&&km.skills.haggling.lvl+km.skills.haggling.xp>0,'job pays coin + CHA + Bartering');
+const kidPay=kd.res.coin-c0k; const ad=E.newGame(t0); const am2=ad.members[0]; am2.ageDays=20*360; const c1a=ad.res.coin; E.setAction(ad,{type:'job',target:'shop'}); E.advanceReal(ad,10*30); ok(ad.res.coin-c1a>kidPay*2,'adult job pays more');
+ok(E.setAction(kd,{type:'job',target:'docks'})===false,'docks need age 12');
+ok(E.setAction(kd,{type:'train',target:'swordsmanship'})===false&&E.setAction(kd,{type:'activity',target:'play'})!==false,'children: activities not direct training');
+km.ageDays=12*360; ok(E.setAction(kd,{type:'train',target:'swordsmanship'})!==false&&E.setAction(kd,{type:'train',target:'fire'})===false,'teens train; magic waits till 14');
+ok(E.setAction(kd,{type:'activity',target:'play'})===false,'Play Outside ends after childhood');
+ok(E.setAction(kd,{type:'activity',target:'fishing'})===false,'Fishing locked before its quest');
+const qr=D.quests.filter(q=>q.unlocks); ok(qr.length>=5&&qr.length<=8,'5-8 quests grant unlocks');
+km.ageDays=20*360; km.cls='fighter'; setRngOK(); E.setAction(kd,{type:'quest',target:'q_river'}); for(let i=0;i<20&&!kd.unlocks.includes('activity:fishing');i++) E.advanceReal(kd,10*4);
+ok(kd.unlocks.includes('activity:fishing')&&E.setAction(kd,{type:'activity',target:'fishing'})!==false,'river quest unlocks Fishing');
+const f1=km.stats.AGI; E.advanceReal(kd,10*20); ok(km.stats.AGI>f1&&km.skills.fishing.lvl+km.skills.fishing.xp>0,'Fishing gives AGI (Dex) + Fishing');
+ok(E.setAction(kd,{type:'train',target:'monsterlore'})===false,'Monster Lore training locked until Catalogue Beasts');
+ok(E.setAction(kd,{type:'activity',target:'studyhall'})===false,'Library Study needs a Library');
+// special minions
+const SP=E.newGame(t0); const sm=SP.members[0]; sm.ageDays=30*360; SP.res.food=1e6;
+const specials=D.minions.types.filter(t=>t.special); ok(['class','guild','quest'].every(k=>specials.some(t=>t.source[k])),'special minions from classes, guilds and quests');
+sm.cls='beastmaster'; E.advanceReal(SP,10); const wolf=SP.minions.find(x=>x.type==='wolf'); ok(wolf&&wolf.special&&/Beastmaster/.test(wolf.source),'Beastmaster gains an animal companion');
+E.advanceReal(SP,10*5); ok(SP.minions.filter(x=>x.type==='wolf').length===1,'special minion granted only once');
+sm.guild={id:'lodge',rank:1,rep:0}; E.advanceReal(SP,10); ok(SP.minions.some(x=>x.type==='falconer'),'guild rank grants special minion');
+SP.doneQuests.push('q_hermit'); E.advanceReal(SP,10); ok(SP.minions.some(x=>x.type==='hermitpupil'&&/Hermit/.test(x.source)),'quest grants recruited NPC');
+while(E.minionRoom(SP)) E.addMinion(SP,'refugee','t'); sm.cls='archmage'; E.advanceReal(SP,10); ok(SP.minions.some(x=>x.type==='familiar'),'specials bypass the follower cap');
 console.log(pass,'tests passed');

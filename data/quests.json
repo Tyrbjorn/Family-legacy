@@ -197,7 +197,8 @@
    "coin": 55
   },
   "skill": "reading",
-  "loot": []
+  "loot": [],
+  "unlocks": "skill:history"
  },
  {
   "id": "goblins",
@@ -333,7 +334,8 @@
   "skill": "alchemy",
   "loot": [
    "flowers"
-  ]
+  ],
+  "unlocks": "skill:alchemy"
  },
  {
   "id": "oaks",
@@ -407,7 +409,8 @@
   "skill": "etiquette",
   "loot": [
    "chocolate"
-  ]
+  ],
+  "unlocks": "activity:herbwalk"
  },
  {
   "id": "stag",
@@ -597,7 +600,8 @@
   },
   "skill": "healing",
   "loot": [],
-  "hidden": true
+  "hidden": true,
+  "unlocks": "activity:vigil"
  },
  {
   "id": "poachers",
@@ -655,7 +659,8 @@
   },
   "skill": "monsterlore",
   "loot": [],
-  "hidden": true
+  "hidden": true,
+  "unlocks": "skill:monsterlore"
  },
  {
   "id": "treant",
@@ -899,5 +904,36 @@
   ],
   "guild": "church",
   "rank": 2
+ },
+ {
+  "id": "q_river",
+  "name": "Trouble on the River",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 3,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 20,
+   "food": 15
+  },
+  "skill": "sailing",
+  "loot": [],
+  "unlocks": "activity:fishing"
+ },
+ {
+  "id": "q_hermit",
+  "name": "The Hermit of Greyrock",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 6,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 15
+  },
+  "skill": "nature",
+  "loot": [],
+  "unlocks": "activity:meditation"
  }
 ]
