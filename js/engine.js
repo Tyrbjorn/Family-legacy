@@ -136,10 +136,15 @@ export function placePiece(s,uid,pid,fromStore=false){ if(placeIssue(s,uid,pid,f
   if(fromStore) s.pieceStore.splice(s.pieceStore.indexOf(pid),1); else pay(s,p.cost); st.pieces.push(pid);
   const before=new Set(); log(s,`🪑 Placed ${p.name} in the ${structDef(st.type).name}.`); for(const y of activeSynergies(st)) if(y.pieces.includes(pid)) log(s,`✨ Synergy: ${y.name} (${y.desc}).`); return true; }
 export function removePiece(s,uid,pid){ const st=s.structures.find(x=>x.uid===uid); if(!st||!st.pieces.includes(pid)) return false; st.pieces.splice(st.pieces.indexOf(pid),1); s.pieceStore.push(pid); return true; }
-function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(id=>scaledPiece(st,id))) for(const pr of (p&&p.bonus.processes)||[]){
+export function operatorLvl(s,skill){ if(!skill) return 0; const sp=ES().skillProcess; let b=0; for(const m of living(s)) if(isAdult(m)||ageY(m)>=12) b=Math.max(b,m.skills[skill]?.lvl||0);
+  for(const mi of s.minions||[]) if(mi.job==='craft') b=Math.max(b,(mtype(mi.type).apt.craft||1)*sp.minionLvlPerApt); return b; }
+export const skillSpeed=(s,p)=>1+ES().skillProcess.speedPerLvl*operatorLvl(s,p&&p.skill);
+export const skillYield=(s,p)=>1+ES().skillProcess.yieldPerLvl*operatorLvl(s,p&&p.skill);
+export const resTier=k=>+(Object.entries(ES().resourceTiers).find(([,t])=>t.res.includes(k))||[0])[0];
+function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(id=>scaledPiece(st,id))) for(const pr0 of (p&&p.bonus.processes)||[]){ const pr={...pr0,rate:pr0.rate*skillSpeed(s,p)}; const yl=skillYield(s,p);
   let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,(s.res[k]||0)/v); if(n<=0) continue;
-  for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n; } } }
-export const processRates=(s,st,pid)=>((scaledPiece(st,pid).bonus.processes)||[]).map(pr=>({out:pr.out,rate:Math.round(pr.rate*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1)*100)/100}));
+  for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n*yl; } } }
+export const processRates=(s,st,pid)=>((scaledPiece(st,pid).bonus.processes)||[]).map(pr=>({out:pr.out,rate:Math.round(pr.rate*skillSpeed(s,pieceDef(pid))*skillYield(s,pieceDef(pid))*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1)*100)/100}));
 export const processRate=(s,st,pid)=>{ const r=processRates(s,st,pid); return r.length?r[0].rate:0; };
 export function jobCap(s,job){ if(job==='idle'||job==='guard') return Infinity; let c=placed(s).reduce((a,p)=>a+((p.bonus.jobs||{})[job]||0),0);
   if(job==='farm') c+=bl(s,'farm')*2+bl(s,'garden'); if(job==='gather') c+=bl(s,'lumber')*2; if(job==='tutor') c+=bl(s,'library'); return c; }

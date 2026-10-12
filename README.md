@@ -16,3 +16,8 @@ The header shows your era (Solo Adventurer → Established Family → Ruling Pow
 - **Building level:** Shack/Bunkhouse Lv1, Cabin Lv2, House/Hall Lv3: +5% per level above 1 to every piece inside.
 - **Furniture tiers:** Crude ×1 → Sturdy ×1.15 (planks+copper) → Fine ×1.3 → Masterwork ×1.5 (planks+ingots+coin). Pieces keep their tier in storage.
 - **Unlockable furniture:** Feather Bed (estate tier Farmstead), Cold Cellar (quest), Steel Anvil (Crafters rank 2), Alchemist's Bench (Magic rank 2), Ore Cart.
+
+## Resource tiers
+- **T1 Raw:** wood, stone, iron ore, copper ore, herbs, hides. **T2 Processed:** planks (Saw Table), blocks (new Mason's Table), iron ingots + copper (Forge), potions, leather (new Tanning Rack), cloth. **T3 Refined:** reserved (fine lumber, dressed stone, steel).
+- Stations process automatically, and the best operator's skill scales them (each skill level adds +3% speed and +1% yield). The operator is the best family member aged 12+ in the station's skill (Carpentry for the Saw Table, Masonry for the Mason's Table, Smithing for the Forge, Alchemy, Tailoring), or a Crafting minion (aptitude ×10 levels).
+- Costs climb by tier: Shack/Bunkhouse use wood+stone, Cabin planks+blocks, House/Hall planks+blocks+ingots. Furniture: Sturdy uses planks, Fine and Masterwork blocks+ingots.

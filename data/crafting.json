@@ -124,7 +124,7 @@
    "skill": "tailoring",
    "station": "loom",
    "mats": {
-    "hides": 3,
+    "leather": 3,
     "cloth": 1
    },
    "days": 4,
@@ -242,7 +242,7 @@
    "skill": "tailoring",
    "station": "loom",
    "mats": {
-    "hides": 2
+    "leather": 2
    },
    "days": 2,
    "line": "tailor"

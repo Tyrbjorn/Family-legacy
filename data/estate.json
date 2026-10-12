@@ -87,7 +87,8 @@
    "slots": 2,
    "cost": {
     "coin": 40,
-    "wood": 15
+    "wood": 15,
+    "stone": 5
    },
    "desc": "2 slots. A home, a sawmill, a workshop: the pieces decide.",
    "level": 1
@@ -100,8 +101,8 @@
    "slots": 4,
    "cost": {
     "coin": 200,
-    "wood": 40,
-    "planks": 15
+    "planks": 15,
+    "blocks": 10
    },
    "upgradeFrom": "shack",
    "desc": "4 slots",
@@ -115,8 +116,9 @@
    "slots": 6,
    "cost": {
     "coin": 600,
-    "stone": 60,
-    "planks": 40
+    "planks": 40,
+    "blocks": 30,
+    "ingots": 5
    },
    "upgradeFrom": "cabin",
    "desc": "6 slots, needs 2 land",
@@ -130,8 +132,8 @@
    "slots": 8,
    "cost": {
     "coin": 1200,
-    "stone": 80,
     "planks": 80,
+    "blocks": 50,
     "ingots": 15
    },
    "desc": "8 slots, needs 2 land",
@@ -146,7 +148,7 @@
    "cost": {
     "coin": 150,
     "wood": 40,
-    "planks": 10
+    "stone": 10
    },
    "builtin": {
     "housing": {
@@ -234,7 +236,8 @@
      "rate": 4
     }
    },
-   "desc": "Turns 3 wood → 1 plank, 4/day"
+   "desc": "Turns 3 wood → 1 plank, 4/day",
+   "skill": "carpentry"
   },
   {
    "id": "workbench",
@@ -285,7 +288,8 @@
      }
     ]
    },
-   "desc": "Smelts 3 iron ore → 1 iron ingot (2/day) and 2 copper ore → 1 copper ingot (3/day); +1 crafting spot"
+   "desc": "Smelts 3 iron ore → 1 iron ingot (2/day) and 2 copper ore → 1 copper ingot (3/day); +1 crafting spot",
+   "skill": "smithing"
   },
   {
    "id": "loom",
@@ -310,7 +314,8 @@
      "rate": 2
     }
    },
-   "desc": "Weaves 2 herbs (flax) → 1 cloth, 2/day; +3% Craft XP"
+   "desc": "Weaves 2 herbs (flax) → 1 cloth, 2/day; +3% Craft XP",
+   "skill": "tailoring"
   },
   {
    "id": "herbrack",
@@ -333,7 +338,8 @@
      "herbs": 2
     }
    },
-   "desc": "Brews 3 herbs → 1 potion, 2/day; 2 herb spots. Potions auto-heal injuries"
+   "desc": "Brews 3 herbs → 1 potion, 2/day; 2 herb spots. Potions auto-heal injuries",
+   "skill": "alchemy"
   },
   {
    "id": "toolrack",
@@ -572,7 +578,55 @@
     "guild": "collegium",
     "rank": 1
    },
-   "desc": "Brews 2 herbs → 1 potion, 4/day; +5% craft quality (Magic guild rank 2)"
+   "desc": "Brews 2 herbs → 1 potion, 4/day; +5% craft quality (Magic guild rank 2)",
+   "skill": "alchemy"
+  },
+  {
+   "id": "masontable",
+   "name": "Mason's Table",
+   "icon": "🧱",
+   "kind": "station",
+   "skill": "masonry",
+   "cost": {
+    "coin": 35,
+    "wood": 10,
+    "stone": 20
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "stone": 3
+      },
+      "out": "blocks",
+      "rate": 3
+     }
+    ]
+   },
+   "desc": "Cuts 3 stone → 1 block, 3/day (Masonry speeds it up)"
+  },
+  {
+   "id": "tanrack",
+   "name": "Tanning Rack",
+   "icon": "🟫",
+   "kind": "station",
+   "skill": "tailoring",
+   "cost": {
+    "coin": 30,
+    "wood": 15
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "hides": 2
+      },
+      "out": "leather",
+      "rate": 2
+     }
+    ]
+   },
+   "desc": "Tans 2 hides → 1 leather, 2/day"
   }
  ],
  "synergies": [
@@ -688,7 +742,9 @@
    "hides",
    "cloth",
    "copperore",
-   "copper"
+   "copper",
+   "blocks",
+   "leather"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -702,8 +758,7 @@
    "name": "Sturdy",
    "mult": 1.15,
    "cost": {
-    "planks": 4,
-    "copper": 2
+    "planks": 6
    }
   },
   {
@@ -712,7 +767,8 @@
    "cost": {
     "coin": 150,
     "planks": 8,
-    "ingots": 4
+    "blocks": 6,
+    "ingots": 3
    }
   },
   {
@@ -721,8 +777,48 @@
    "cost": {
     "coin": 500,
     "planks": 15,
+    "blocks": 15,
     "ingots": 10
    }
   }
- ]
+ ],
+ "resourceTiers": {
+  "1": {
+   "name": "Raw",
+   "res": [
+    "wood",
+    "stone",
+    "ore",
+    "copperore",
+    "herbs",
+    "hides"
+   ]
+  },
+  "2": {
+   "name": "Processed",
+   "res": [
+    "planks",
+    "blocks",
+    "ingots",
+    "copper",
+    "potions",
+    "leather",
+    "cloth"
+   ]
+  },
+  "3": {
+   "name": "Refined (planned)",
+   "res": [],
+   "planned": [
+    "fine lumber",
+    "dressed stone",
+    "steel"
+   ]
+  }
+ },
+ "skillProcess": {
+  "speedPerLvl": 0.03,
+  "yieldPerLvl": 0.01,
+  "minionLvlPerApt": 10
+ }
 }
