@@ -86,15 +86,35 @@ export const idleEff=s=>T.idleEff+bl(s,'yard')*0.05;
 export const turboCapSec=s=>(T.turboCapMin+bl(s,'hourglass')*30)*60;
 export const offlineCapSec=s=>(T.offlineCapHours+bl(s,'hourglass')*2)*3600;
 const ES=()=>D.estate;
-export const pieceDef=id=>ES().pieces.find(p=>p.id===id)||D.furniture.find(p=>p.id===id);
+export const baseId=id=>String(id).split('@')[0];
+export const pieceTier=id=>+(String(id).split('@')[1]||0);
+export const pieceDef=id=>{ const b=baseId(id); return ES().pieces.find(p=>p.id===b)||D.furniture.find(p=>p.id===b); };
+export const tierName=id=>ES().pieceTiers[pieceTier(id)].name;
+export const structLevel=st=>structDef(st.type).level||1;
+export const pieceMult=(st,id)=>ES().pieceTiers[pieceTier(id)].mult*(1+ES().levelBonus*(structLevel(st)-1));
+const INTK=new Set(['beds']);
+function scaleBonus(b,m){ const o={}; for(const[k,v]of Object.entries(b)){
+  if(typeof v==='number') o[k]=INTK.has(k)?Math.floor(v*m+1e-9):v*m;
+  else if(k==='jobs'||k==='housing') o[k]=Object.fromEntries(Object.entries(v).map(([j,n])=>[j,Math.floor(n*m+1e-9)]));
+  else if(k==='process'||k==='processes') o.processes=[...(o.processes||[]),...[].concat(v).map(p=>({...p,rate:p.rate*m}))];
+  else o[k]=v; } return o; }
+export const scaledPiece=(st,id)=>{ const p=pieceDef(id); return p&&{...p,bonus:scaleBonus(p.bonus,pieceMult(st,id))}; };
+const STAGE_ORDER=()=>ES().stages.map(x=>x[1]);
+export function pieceLock(s,p){ const u=p.unlock; if(!u) return null;
+  if(u.stage&&STAGE_ORDER().indexOf(estateStage(s))<STAGE_ORDER().indexOf(u.stage)) return 'estate tier '+u.stage;
+  if(u.quest&&!s.doneQuests.includes(u.quest)) return 'quest: '+((D.quests.find(q=>q.id===u.quest)||{}).name||u.quest);
+  if(u.guild&&!living(s).some(m=>{const g=memberGuild(m,u.guild);return g&&(g.rank||0)>=(u.rank||0);})) return ((guildDef(u.guild)||{}).name||u.guild)+' rank '+((u.rank||0)+1);
+  return null; }
+export function pieceUpIssue(s,uid,pid){ const st=s.structures.find(x=>x.uid===uid); if(!st||!st.pieces.includes(pid)) return 'missing'; const t=pieceTier(pid); const nx=ES().pieceTiers[t+1]; if(!nx) return 'max'; if(!afford(s,nx.cost)) return 'cannot afford'; return null; }
+export function upgradePiece(s,uid,pid){ if(pieceUpIssue(s,uid,pid)) return false; const st=s.structures.find(x=>x.uid===uid); const t=pieceTier(pid)+1, nx=ES().pieceTiers[t]; pay(s,nx.cost); st.pieces[st.pieces.indexOf(pid)]=baseId(pid)+'@'+t; log(s,`🔧 ${pieceDef(pid).name} upgraded to ${nx.name}.`); return true; }
 export const structDef=id=>ES().structures.find(x=>x.id===id);
-const placed=s=>(s.structures||[]).flatMap(st=>st.pieces.map(pieceDef).filter(Boolean));
-export function activeSynergies(st){ return ES().synergies.filter(y=>y.pieces.every(p=>st.pieces.includes(p))); }
+const placed=s=>(s.structures||[]).flatMap(st=>st.pieces.map(id=>scaledPiece(st,id)).filter(Boolean));
+export function activeSynergies(st){ return ES().synergies.filter(y=>y.pieces.every(p=>st.pieces.map(baseId).includes(p))); }
 export const allSynergies=s=>(s.structures||[]).flatMap(st=>activeSynergies(st).map(y=>({...y,where:st.uid})));
 // every placed piece + every active synergy, as {bonus} objects (old furniture code reads f.bonus)
 const effects=s=>[...placed(s),...allSynergies(s)];
 export const eff=(s,k)=>effects(s).reduce((a,f)=>a+(typeof f.bonus[k]==='number'?f.bonus[k]:0),0);
-export const hasPiece=(s,id)=>(s.structures||[]).some(st=>st.pieces.includes(id));
+export const hasPiece=(s,id)=>(s.structures||[]).some(st=>st.pieces.map(baseId).includes(baseId(id)));
 export const bedrooms=s=>1+eff(s,'beds');
 export const hasLand=s=>(s.land||[]).length>0;
 export const established=s=>hasLand(s)&&(s.structures||[]).length>0;
@@ -111,15 +131,16 @@ export function buildStructure(s,type){ if(structIssue(s,type)) return null; con
 export function upgradeIssue(s,uid){ const st=s.structures.find(x=>x.uid===uid); if(!st) return 'missing'; const nx=ES().structures.find(x=>x.upgradeFrom===st.type); if(!nx) return 'max'; if(landUsed(s)-structDef(st.type).land+nx.land>landSlots(s)) return 'no free land slot'; if(!afford(s,nx.cost)) return 'cannot afford'; return null; }
 export function upgradeStructure(s,uid){ if(upgradeIssue(s,uid)) return false; const st=s.structures.find(x=>x.uid===uid); const nx=ES().structures.find(x=>x.upgradeFrom===st.type); pay(s,nx.cost); log(s,`🏗️ ${structDef(st.type).name} upgraded to ${nx.name}.`); st.type=nx.id; return true; }
 export const freeSlots=(s,st)=>structDef(st.type).slots-st.pieces.length;
-export function placeIssue(s,uid,pid,fromStore){ const st=s.structures.find(x=>x.uid===uid), p=pieceDef(pid); if(!st||!p) return 'missing'; if(freeSlots(s,st)<=0) return 'building full'; if(st.pieces.includes(pid)) return 'already here'; if(!fromStore&&!afford(s,p.cost)) return 'cannot afford'; if(fromStore&&!s.pieceStore.includes(pid)) return 'not in storage'; return null; }
+export function placeIssue(s,uid,pid,fromStore){ const st=s.structures.find(x=>x.uid===uid), p=pieceDef(pid); if(!st||!p) return 'missing'; if(freeSlots(s,st)<=0) return 'building full'; if(st.pieces.map(baseId).includes(baseId(pid))) return 'already here'; if(!fromStore&&pieceLock(s,p)) return '🔒 '+pieceLock(s,p); if(!fromStore&&!afford(s,p.cost)) return 'cannot afford'; if(fromStore&&!s.pieceStore.includes(pid)) return 'not in storage'; return null; }
 export function placePiece(s,uid,pid,fromStore=false){ if(placeIssue(s,uid,pid,fromStore)) return false; const st=s.structures.find(x=>x.uid===uid), p=pieceDef(pid);
   if(fromStore) s.pieceStore.splice(s.pieceStore.indexOf(pid),1); else pay(s,p.cost); st.pieces.push(pid);
   const before=new Set(); log(s,`🪑 Placed ${p.name} in the ${structDef(st.type).name}.`); for(const y of activeSynergies(st)) if(y.pieces.includes(pid)) log(s,`✨ Synergy: ${y.name} (${y.desc}).`); return true; }
 export function removePiece(s,uid,pid){ const st=s.structures.find(x=>x.uid===uid); if(!st||!st.pieces.includes(pid)) return false; st.pieces.splice(st.pieces.indexOf(pid),1); s.pieceStore.push(pid); return true; }
-function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(pieceDef)){ const pr=p&&p.bonus.process; if(!pr) continue;
+function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(id=>scaledPiece(st,id))) for(const pr of (p&&p.bonus.processes)||[]){
   let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,(s.res[k]||0)/v); if(n<=0) continue;
   for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n; } } }
-export const processRate=(s,st,pid)=>{ const pr=pieceDef(pid).bonus.process; return pr?pr.rate*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1):0; };
+export const processRates=(s,st,pid)=>((scaledPiece(st,pid).bonus.processes)||[]).map(pr=>({out:pr.out,rate:Math.round(pr.rate*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1)*100)/100}));
+export const processRate=(s,st,pid)=>{ const r=processRates(s,st,pid); return r.length?r[0].rate:0; };
 export function jobCap(s,job){ if(job==='idle'||job==='guard') return Infinity; let c=placed(s).reduce((a,p)=>a+((p.bonus.jobs||{})[job]||0),0);
   if(job==='farm') c+=bl(s,'farm')*2+bl(s,'garden'); if(job==='gather') c+=bl(s,'lumber')*2; if(job==='tutor') c+=bl(s,'library'); return c; }
 export function estateStage(s){ if(!hasLand(s)) return 'Landless'; const t=Object.values(s.buildings).reduce((a,b)=>a+b,0)+s.structures.reduce((a,st)=>a+structDef(st.type).slots/2+st.pieces.length,0); const STAGES=ES().stages; let n=STAGES[0][1];for(const[k,v]of STAGES)if(t>=k)n=v;return n;}
@@ -292,7 +313,7 @@ export function rumor(s,regionId){ if(s.res.coin<T.rumorCost) return null; const
 // ---- minions (followers, hired help, retainers)
 export const minionCap=s=>D.minions.baseCap+(s.structures||[]).length*D.minions.capPerHouse+(hasService(s,'storage')?2:0);
 export function housingCap(s,kind){ if(kind==='none') return Infinity; if(kind==='garden') return bl(s,'garden')>0?Infinity:0;
-  return (s.structures||[]).reduce((a,st)=>a+(((structDef(st.type).builtin||{}).housing||{})[kind]||0)+st.pieces.map(pieceDef).reduce((b,p)=>b+(((p&&p.bonus.housing)||{})[kind]||0),0),0); }
+  return (s.structures||[]).reduce((a,st)=>a+(((structDef(st.type).builtin||{}).housing||{})[kind]||0)+st.pieces.map(id=>scaledPiece(st,id)).reduce((b,p)=>b+(((p&&p.bonus.housing)||{})[kind]||0),0),0); }
 export const housingKind=mi=>(D.minions.types.find(t=>t.id===(mi.type||mi.id))||{}).housing||'bunk';
 export function isHoused(s,mi){ const k=housingKind(mi); const same=s.minions.filter(x=>housingKind(x)===k); return same.indexOf(mi)<housingCap(s,k); }
 export const housingUsed=(s,kind)=>Math.min(s.minions.filter(x=>housingKind(x)===kind).length,housingCap(s,kind));
@@ -320,6 +341,7 @@ function minionDay(s){
     const a=(mtype(mi.type).apt[mi.job]||1)*(fed?1:D.minions.hungryOutput)*minionGearMult(mi,mi.job);
     if(mi.job==='farm') s.res.food+=3*a*(1+bl(s,'farm')*.2);
     else if(mi.job==='gather'){ s.res.wood+=2*a; s.res.stone+=1*a; }
+    else if(mi.job==='mine'){ s.res.ore=(s.res.ore||0)+1*a; s.res.copperore=(s.res.copperore||0)+0.8*a; s.res.stone+=0.5*a; }
     else if(mi.job==='herbs') s.res.herbs=(s.res.herbs||0)+1.5*a;
     else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; const rc=bestRecipe(s,null); if(rc&&mi.prog>=rc.days){ mi.prog=0; craftItem(s,null,rc,mi,a); } }
     else if(mi.job==='merchant'){ sellTick(s,a*(1+(mi.equip?0:0))); } }
@@ -417,7 +439,7 @@ export const qualities=()=>CR().qualities;
 export function itemDef(id){ if(typeof id!=='string') return null; if(id.startsWith('c|')){ const [,b,q]=id.split('|'); const base=D.items.find(i=>i.id===b), Q=CR().qualities.find(x=>x.id===q); if(!base||!Q) return null;
   return {...base,id,name:`${Q.name} ${base.name}`,rarity:Q.name,quality:q,crafted:true,cp:Math.round((base.cp||0)*Q.mult),value:Math.round(base.value*Q.mult*CR().craftedValueMult),affinity:base.affinity?Math.round(base.affinity*Q.mult):undefined}; }
   return D.items.find(i=>i.id===id)||null; }
-export const vaultCap=s=>CR().vaultBase+eff(s,'matCap')/400*CR().vaultPerStorage;
+export const vaultCap=s=>CR().vaultBase+Math.floor(eff(s,'matCap')/400*CR().vaultPerStorage+1e-9);
 export const vaultRoom=s=>s.vault.length<vaultCap(s);
 export const packCap=()=>CR().packCap;
 export function addToVault(s,id){ if(!vaultRoom(s)) return false; s.vault.push(id); return true; }

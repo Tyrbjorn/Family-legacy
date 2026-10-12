@@ -86,7 +86,7 @@
    "station": "workbench",
    "mats": {
     "planks": 4,
-    "ingots": 1
+    "copper": 2
    },
    "days": 4,
    "line": "carpenter"
@@ -164,8 +164,8 @@
    "skill": "alchemy",
    "station": "herbrack",
    "mats": {
-    "ingots": 1,
-    "potions": 2
+    "potions": 2,
+    "copper": 2
    },
    "days": 4,
    "line": "alchemist"
@@ -178,7 +178,7 @@
    "station": "herbrack",
    "mats": {
     "potions": 3,
-    "ingots": 1
+    "copper": 2
    },
    "days": 5,
    "minSkill": 10,
@@ -204,8 +204,8 @@
    "skill": "smithing",
    "station": "forge",
    "mats": {
-    "ingots": 1,
-    "planks": 1
+    "planks": 1,
+    "copper": 2
    },
    "days": 2,
    "line": "blacksmith"

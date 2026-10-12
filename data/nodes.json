@@ -26,7 +26,7 @@
   "region": "outskirts",
   "res": {
    "stone": 2,
-   "ore": 0.5
+   "copperore": 1
   },
   "skill": "mining",
   "icon": "🪨"
@@ -46,8 +46,9 @@
   "name": "Abandoned Mine",
   "region": "outskirts",
   "res": {
-   "stone": 2,
-   "ore": 2
+   "stone": 1,
+   "ore": 2.5,
+   "copperore": 0.5
   },
   "skill": "mining",
   "icon": "⛏️",
@@ -84,5 +85,17 @@
   "skill": "alchemy",
   "icon": "🌙",
   "hidden": true
+ },
+ {
+  "id": "coppervein",
+  "name": "Copper Vein",
+  "region": "outskirts",
+  "res": {
+   "copperore": 3,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "🟠",
+  "hidden": false
  }
 ]

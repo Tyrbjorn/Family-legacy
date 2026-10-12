@@ -10,3 +10,9 @@ Round 7: rooms replaced by buildings (Shack/Cabin/House/Workshop Hall/Bunkhouse)
 
 ## Eras
 The header shows your era (Solo Adventurer → Established Family → Ruling Power) and a hint for the next one. Eras only add systems; nothing earlier is ever locked. See ROADMAP.md.
+
+## Metals & furniture tiers
+- **Ore:** iron ore (Abandoned Mine) and copper ore (Creek, new Copper Vein node, and followers on the new **Mining** job using Ore Cart spots). The Forge smelts iron ore → iron ingots and copper ore → copper. Ingots go into gear recipes and furniture; copper goes into tools and charms, and into the Sturdy furniture upgrade.
+- **Building level:** Shack/Bunkhouse Lv1, Cabin Lv2, House/Hall Lv3: +5% per level above 1 to every piece inside.
+- **Furniture tiers:** Crude ×1 → Sturdy ×1.15 (planks+copper) → Fine ×1.3 → Masterwork ×1.5 (planks+ingots+coin). Pieces keep their tier in storage.
+- **Unlockable furniture:** Feather Bed (estate tier Farmstead), Cold Cellar (quest), Steel Anvil (Crafters rank 2), Alchemist's Bench (Magic rank 2), Ore Cart.

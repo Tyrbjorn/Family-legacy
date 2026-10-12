@@ -52,7 +52,7 @@ const G=E.newGame(t0); const gm2=G.members[0]; G.res.coin=1e5; E.advanceReal(G,1
 ok(D.guilds.guilds.length>=4&&D.guilds.guilds.every(g=>D.towns.some(t=>t.id===g.town)),'4-5 guilds, each in a town');
 ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked before joining');
 ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest locked before joining');
-gm2.skills.swordsmanship.lvl=5; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced');
+gm2.skills.swordsmanship.lvl=5; const _st=gm2.stats.STR; gm2.stats.STR=1; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced'); gm2.stats.STR=_st;
 gm2.skills.swordsmanship.lvl=12; ok(E.joinGuild(G,gm2,'vanguard')&&gm2.guild.id==='vanguard','join guild');
 gm2.skills.archery.lvl=20;gm2.stats.AGI=20; ok(!E.joinGuild(G,gm2,'lodge')&&E.joinIssues(G,gm2,'lodge')[0].startsWith('sworn'),'membership blocks other class guilds');
 gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(E.joinGuild(G,gm2,'hearth')&&gm2.guild.id==='vanguard'&&gm2.craft&&gm2.prof==='artisan','Crafters open to sworn members, grants Artisan profession');
@@ -188,4 +188,21 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  m.guild={id:'vanguard',rank:0,rep:0}; ok(E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill'))&&!E.activityOk(T2,m,D.activities.find(a=>a.id==='masterkata')),'guild rank gates advanced vs master');
  m.guild.rank=2; const before={...m.stats}, sx={...Object.fromEntries(['swordsmanship','shield','tactics'].map(k=>[k,m.skills[k].lvl*1e6+m.skills[k].xp]))}; m.action={type:'activity',target:'masterkata'}; E.advanceReal(T2,50);
  ok(['STR','AGI','VIT'].every(k=>m.stats[k]>before[k])&&['swordsmanship','shield','tactics'].every(k=>m.skills[k].lvl*1e6+m.skills[k].xp>sx[k]),'master training raises 3 stats and 3 skills'); }
+// metals, building level, furniture tiers, unlockable furniture
+{ const M=E.newGame(t0); const st=estate(M,['forge'],'shack'); M.res.ore=30; M.res.copperore=20; M.res.stone=0; E.advanceReal(M,10);
+ ok(M.res.ingots>0&&M.res.copper>0&&M.res.stone===0,'Forge smelts iron ore → ingots and copper ore → copper (no stone used)');
+ ok(D.nodes.some(n=>n.res.copperore)&&D.nodes.some(n=>n.res.ore),'mine nodes yield iron and copper ore');
+ const A=E.newGame(t0); const sa=estate(A,['larder'],'shack'); const f1=E.foodCap(A); sa.type='house'; const f3=E.foodCap(A);
+ ok(Math.abs((f3-f1)-300*0.10)<1e-6,'building level 3 gives +10% to its furniture (5%/level)');
+ sa.type='shack'; A.res.copper=10; ok(E.upgradePiece(A,sa.uid,'larder')&&sa.pieces[0]==='larder@1'&&E.tierName(sa.pieces[0])==='Sturdy','furniture upgrades Crude → Sturdy with planks+copper');
+ ok(Math.abs(E.foodCap(A)-(f1+300*0.15))<1e-6,'Sturdy furniture +15% effect');
+ A.res.ingots=100;A.res.coin+=5000; E.upgradePiece(A,sa.uid,'larder@1'); E.upgradePiece(A,sa.uid,'larder@2'); ok(sa.pieces[0]==='larder@3'&&!E.upgradePiece(A,sa.uid,'larder@3'),'Masterwork is the top tier');
+ ok(E.hasPiece(A,'larder')&&E.removePiece(A,sa.uid,'larder@3')&&A.pieceStore.includes('larder@3'),'tiered piece removes to storage with its tier');
+ ok(E.placePiece(A,sa.uid,'larder@3',true)&&Math.abs(E.foodCap(A)-(f1+150))<1e-6,'tier kept when re-placed');
+ const L=E.newGame(t0); const sl=estate(L,[],'house'); L.res.ingots=50; L.res.cloth=20; L.res.copper=20;
+ ok(E.placeIssue(L,sl.uid,'steelanvil')&&E.placeIssue(L,sl.uid,'coldcellar')&&E.placeIssue(L,sl.uid,'alchbench'),'better furniture locked by guild/quest/tier');
+ L.doneQuests.push('mushrooms'); ok(E.placePiece(L,sl.uid,'coldcellar'),'quest unlocks Cold Cellar');
+ const lm=L.members[0]; lm.ageDays=20*360; lm.craft={id:'hearth',rank:1,rep:0}; ok(E.placePiece(L,sl.uid,'steelanvil')&&E.craftQuality(L)>=0.12,'Crafters rank unlocks Steel Anvil');
+ const MM=E.newGame(t0); estate(MM,['orecart','minionbunk'],'shack'); MM.res.copper=5; ok(E.jobCap(MM,'mine')===2,'Ore Cart gives mining spots');
+ const old=E.newGame(t0); estate(old,['forge','bunk']); const o2=JSON.parse(JSON.stringify(old)); E.normalize(o2); ok(o2.structures[0].pieces.every(p=>E.pieceTier(p)===0)&&E.bedrooms(o2)>=3,'old saves load as Crude tier'); }
 console.log(pass,'tests passed');
