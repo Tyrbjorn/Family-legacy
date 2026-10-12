@@ -361,7 +361,7 @@ export function trainIssue(m,skillId,s){ const sk=D.skills.find(x=>x.id===skillI
 export function canTrain(m,skillId,s,ignoreAge){ const i=trainIssue(m,skillId,s); return !i||(ignoreAge&&i.startsWith('age')); }
 export const jobOk=(m,j)=>ageY(m)>=j.minAge;
 export function activityOk(s,m,ac){ const a=ageY(m); if(a<ac.minAge||(ac.maxAge&&a>ac.maxAge)) return false; const u=ac.unlock; if(!u) return true;
-  if(u.quest) return (s.unlocks||[]).includes('activity:'+ac.id); if(u.building) return bl(s,u.building)>0; return true; }
+  if(u.guild){ const g=memberGuild(m,u.guild); return !!g&&(g.rank||0)>=(u.rank||0); } if(u.quest) return (s.unlocks||[]).includes('activity:'+ac.id); if(u.building) return bl(s,u.building)>0; return true; }
 export function actionAllowed(s,m,a){ if(!a) return false; const t=a.type;
   if(t==='train') return canTrain(m,a.target,s); if(t==='job') return jobOk(m,D.jobs.find(j=>j.id===a.target)||{minAge:99});
   if(t==='activity'){ const ac=D.activities.find(x=>x.id===a.target); return !!ac&&activityOk(s,m,ac); }
@@ -446,3 +446,6 @@ export function unequipMinion(s,uid,slot){ const mi=s.minions.find(x=>x.uid===ui
 export const ERAS=[{n:1,name:'Solo Adventurer',icon:'🧭'},{n:2,name:'Established Family',icon:'🏡'},{n:3,name:'Ruling Power',icon:'👑'}];
 export function era(s){ const fam=living(s).length>1||s.members.some(m=>m.spouse); if(s.renown>=5000&&['Manor','Prosperous Estate'].includes(estateStage(s))) return ERAS[2]; if(established(s)&&fam||s.renown>=300) return ERAS[1]; return ERAS[0]; }
 export function nextEraHint(s){ const e=era(s).n; return e===1?'Next: build a home on your land and start a family (or reach 300 Renown).':e===2?'Next: 5,000 Renown and a Manor-tier estate (Era 3 systems coming in a later update).':'Era 3 systems (titles, vassals, taxes) are planned.'; }
+
+export const ACT_TIERS={basic:1,advanced:2,master:3};
+export const activityGains=ac=>({stats:Object.entries(ac.stats),skills:ac.skills});

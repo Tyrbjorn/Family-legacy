@@ -28,7 +28,7 @@ function hero(){ const m=E.active(s); if(!m) return ''; const a=m.action;
  ${a&&a.type==='quest'?`<div class="bar"><i style="width:${a.progress/D.quests.find(q=>q.id===a.target).days*100}%"></i></div>`:''}
  <div class="row" style="margin-top:6px"><button class="b ${sheetOpen?'sel':''}" data-a="sheet">📋 Character Sheet ${sheetOpen?'▴':'▾'}</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
  if(sheetOpen) h+=sheet(m);
- h+=activities(m);
+ h+=trainingv(m)+activities(m);
  const evo=D.classes.filter(c=>(c.from===m.cls&&!c.profession)||(m.prof&&c.from===m.prof&&c.profession));
  if(evo.length) h+=`<h3>Evolution</h3>`+evo.map(c=>`<div class="card row"><span>${c.icon} ${c.name}<br><span class="muted">${Object.entries(c.req).map(([k,v])=>`${sk(k).name} ${m.skills[k].lvl}/${v}`).join(' · ')}${c.guild?` · ${E.guildDef(c.guild).icon} ${E.rankName(c.guildRank)} of ${E.guildDef(c.guild).name}`:''}${c.advRank!=null?` · Adventurers' Rank ${E.advRankName(c.advRank)}`:''}${c.crafterRank!=null?` · Crafters' ${E.rankName(c.crafterRank)}`:''}${c.profession?' · profession':''} · ${c.cost}🪙</span></span><button class="b" data-a="evolve" data-v="${c.id}" ${E.canEvolve(s,m,c)?'':'disabled'}>Evolve</button></div>`).join('');
  return h; }
@@ -36,15 +36,18 @@ function sheet(m){ const a=m.action; let h=`<div class="card"><b>📋 ${m.name}<
  <h3>Stats</h3><div class="grid">${E.STATS.map(k=>`<span>${k} <b>${E.statVal(m,k)}</b></span>`).join('')}</div>
  <h3>Traits</h3>${m.traits.map(t=>{const d=E.traitDef(t);return `<div><span class="tb">${d.icon} ${d.name}</span> <span class="muted">${d.desc}</span></div>`}).join('')}
  <h3>Guilds</h3>${guildCard(m)}
- <h3>Skills & Training (soft cap ${E.softCap(m)})</h3>`;
+ <h3>Skills (soft cap ${E.softCap(m)}) <span class="muted" style="font-size:11px">· view only; train from Main → Training</span></h3>`;
  for(const fam of [...new Set(D.skills.map(x=>x.family))]){ h+=`<div class="muted" style="margin-top:6px">${fam.toUpperCase()}</div>`;
   for(const x of D.skills.filter(y=>y.family===fam)){ const v=m.skills[x.id]; const on=a&&a.type==='train'&&a.target===x.id; const iss=E.trainIssue(m,x.id,s);
-   h+=`<div class="row" style="margin:3px 0"><span style="flex:1">${x.icon} ${x.name} <b>${v.lvl}</b><div class="bar"><i style="width:${v.xp/E.xpNeed(v.lvl)*100}%"></i></div></span><button class="b ${on?'sel':''}" data-a="train" data-v="${x.id}" ${iss?'disabled':''}>${iss?LOCK[iss]:'Train'}</button></div>`; } }
+   h+=`<div class="row" style="margin:3px 0"><span style="flex:1">${x.icon} ${x.name} <b>${v.lvl}</b><div class="bar"><i style="width:${v.xp/E.xpNeed(v.lvl)*100}%"></i></div></span><span class="muted" style="font-size:11px;min-width:84px;text-align:right">${Math.floor(v.xp)}/${Math.round(E.xpNeed(v.lvl))} XP${on?' · ⏳':''}</span></div>`; } }
  return h+`</div>`; }
+function trainingv(m){ const a=m.action; const rows=D.skills.filter(x=>!E.trainIssue(m,x.id,s)||(a&&a.type==='train'&&a.target===x.id)).map(x=>{ const v=m.skills[x.id], on=a&&a.type==='train'&&a.target===x.id;
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${x.icon} ${x.name} <b>${v.lvl}</b></span><button class="b ${on?'sel':''}" data-a="train" data-v="${x.id}">${on?'Training':'Train'}</button></div>`; }).join('');
+ return `<h3>🏋️ Training</h3><div class="muted" style="font-size:12px">Options change with age, guilds, estate and quest unlocks.</div>`+(rows||'<div class="muted">Nothing to train yet.</div>'); }
 function activities(m){ const a=m.action; const rows=D.activities.map(ac=>{ const ok=E.activityOk(s,m,ac); const age=E.ageY(m); if(ac.maxAge&&age>ac.maxAge) return '';
-  const why=age<ac.minAge?`age ${ac.minAge}+`:ac.unlock?.quest?`complete “${D.quests.find(q=>q.id===ac.unlock.quest).name}”`:ac.unlock?.building?`build ${D.buildings.find(b=>b.id===ac.unlock.building).name}`:'';
+  const why=age<ac.minAge?`age ${ac.minAge}+`:ac.unlock?.guild?`${(E.guildDef(ac.unlock.guild)||{}).name} rank ${(ac.unlock.rank||0)+1}`:ac.unlock?.quest?`complete “${D.quests.find(q=>q.id===ac.unlock.quest).name}”`:ac.unlock?.building?`build ${D.buildings.find(b=>b.id===ac.unlock.building).name}`:'';
   const on=a&&a.type==='activity'&&a.target===ac.id;
-  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${ac.icon} ${ac.name}<br><span class="muted">${Object.keys(ac.stats).join('/')} · ${ac.skills.map(k=>sk(k).name).join(', ')}${ok?'':' · 🔒 '+why}</span></span><button class="b ${on?'sel':''}" data-a="activity" data-v="${ac.id}" ${ok?'':'disabled'}>Do</button></div>`; }).join('');
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${ac.icon} ${ac.name}<br><span class="muted"><b>${({basic:'Basic',advanced:'Advanced',master:'Master'})[ac.tier]||''}</b> · ${Object.entries(ac.stats).map(([k,v])=>`+${k} ${v}/d`).join(', ')} · ${ac.skills.map(k=>'+'+sk(k).name).join(', ')}${ok?'':' · 🔒 '+why}</span></span><button class="b ${on?'sel':''}" data-a="activity" data-v="${ac.id}" ${ok?'':'disabled'}>Do</button></div>`; }).join('');
  return `<h3>🎯 Activities</h3>`+rows; }
 function craftv(m){ const a=m.action; const pf=m.prof&&cl(m.prof); let h=`<h3>🔨 Crafting ${pf?`<span class="muted">· ${pf.icon} ${pf.name}</span>`:''}</h3><div class="muted">Needs stations in your buildings and materials. Quality (Crude→Masterwork) comes from skill, stations, synergies and profession.</div>`;
  for(const rc of D.crafting.recipes){ const iss=E.recipeIssue(s,m,rc), on=a&&a.type==='craft'&&a.target===rc.id; const sc=E.qualityScore(s,m,rc);

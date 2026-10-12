@@ -9,10 +9,10 @@
    "AGI": 0.02
   },
   "skills": [
-   "brawling",
    "foraging"
   ],
-  "desc": "Run, climb and tumble"
+  "desc": "Run, climb and tumble",
+  "tier": "basic"
  },
  {
   "id": "stories",
@@ -26,7 +26,8 @@
   "skills": [
    "reading"
   ],
-  "desc": "Listen to tales by the hearth"
+  "desc": "Listen to tales by the hearth",
+  "tier": "basic"
  },
  {
   "id": "hiking",
@@ -39,7 +40,8 @@
   "skills": [
    "nature"
   ],
-  "desc": "Endurance (VIT) and Nature Knowledge"
+  "desc": "Endurance (VIT) and Nature Knowledge",
+  "tier": "basic"
  },
  {
   "id": "sparring",
@@ -50,10 +52,10 @@
    "STR": 0.02
   },
   "skills": [
-   "swordsmanship",
-   "brawling"
+   "swordsmanship"
   ],
-  "desc": "Practice bouts with wooden swords"
+  "desc": "Practice bouts with wooden swords",
+  "tier": "basic"
  },
  {
   "id": "fishing",
@@ -61,15 +63,18 @@
   "icon": "🎣",
   "minAge": 8,
   "stats": {
-   "AGI": 0.02
+   "AGI": 0.02,
+   "VIT": 0.015
   },
   "skills": [
-   "fishing"
+   "fishing",
+   "nature"
   ],
   "desc": "Dexterity (AGI) and Fishing; brings home a little food",
   "unlock": {
    "quest": "q_river"
-  }
+  },
+  "tier": "advanced"
  },
  {
   "id": "meditation",
@@ -77,7 +82,8 @@
   "icon": "🧘",
   "minAge": 12,
   "stats": {
-   "WIL": 0.025
+   "WIL": 0.025,
+   "INT": 0.015
   },
   "skills": [
    "arcana",
@@ -86,7 +92,8 @@
   "desc": "Still the mind",
   "unlock": {
    "quest": "q_hermit"
-  }
+  },
+  "tier": "advanced"
  },
  {
   "id": "herbwalk",
@@ -94,7 +101,8 @@
   "icon": "🌿",
   "minAge": 10,
   "stats": {
-   "WIL": 0.015
+   "WIL": 0.015,
+   "INT": 0.015
   },
   "skills": [
    "alchemy",
@@ -103,7 +111,8 @@
   "desc": "Dryad-taught herb lore",
   "unlock": {
    "quest": "dryad"
-  }
+  },
+  "tier": "advanced"
  },
  {
   "id": "vigil",
@@ -112,16 +121,19 @@
   "minAge": 14,
   "stats": {
    "WIL": 0.02,
-   "CHA": 0.01
+   "CHA": 0.015,
+   "VIT": 0.01
   },
   "skills": [
    "healing",
-   "faith"
+   "faith",
+   "leadership"
   ],
   "desc": "Night vigils (Faith needs Healers' Guild)",
   "unlock": {
    "quest": "shrine"
-  }
+  },
+  "tier": "master"
  },
  {
   "id": "studyhall",
@@ -129,7 +141,9 @@
   "icon": "🏛️",
   "minAge": 12,
   "stats": {
-   "INT": 0.025
+   "INT": 0.025,
+   "WIL": 0.015,
+   "CHA": 0.01
   },
   "skills": [
    "reading",
@@ -139,7 +153,8 @@
   "desc": "Needs an estate Library",
   "unlock": {
    "building": "library"
-  }
+  },
+  "tier": "master"
  },
  {
   "id": "drills",
@@ -157,6 +172,249 @@
   "desc": "Needs a Training Yard",
   "unlock": {
    "building": "yard"
+  },
+  "tier": "advanced"
+ },
+ {
+  "id": "regimen",
+  "name": "Soldier's Regimen",
+  "icon": "🪖",
+  "tier": "advanced",
+  "minAge": 18,
+  "stats": {
+   "STR": 0.02,
+   "VIT": 0.015
+  },
+  "skills": [
+   "swordsmanship",
+   "brawling"
+  ],
+  "desc": "Adult conditioning: marches, weights, bouts"
+ },
+ {
+  "id": "scholar",
+  "name": "Scholar's Circle",
+  "icon": "📚",
+  "tier": "advanced",
+  "minAge": 18,
+  "stats": {
+   "INT": 0.02,
+   "CHA": 0.015
+  },
+  "skills": [
+   "reading",
+   "etiquette"
+  ],
+  "desc": "Adult debate and reading circle"
+ },
+ {
+  "id": "wardrill",
+  "name": "War Drill",
+  "icon": "⚔️",
+  "tier": "advanced",
+  "minAge": 16,
+  "stats": {
+   "STR": 0.02,
+   "AGI": 0.015
+  },
+  "skills": [
+   "swordsmanship",
+   "tactics"
+  ],
+  "desc": "Warriors' Guild drill",
+  "unlock": {
+   "guild": "vanguard",
+   "rank": 0
+  }
+ },
+ {
+  "id": "rangecourse",
+  "name": "Ranger Course",
+  "icon": "🏹",
+  "tier": "advanced",
+  "minAge": 16,
+  "stats": {
+   "AGI": 0.02,
+   "VIT": 0.015
+  },
+  "skills": [
+   "archery",
+   "tracking"
+  ],
+  "desc": "Rangers' Guild course",
+  "unlock": {
+   "guild": "lodge",
+   "rank": 0
+  }
+ },
+ {
+  "id": "lecture",
+  "name": "Arcane Lecture",
+  "icon": "🔮",
+  "tier": "advanced",
+  "minAge": 16,
+  "stats": {
+   "INT": 0.02,
+   "WIL": 0.015
+  },
+  "skills": [
+   "arcana",
+   "fire"
+  ],
+  "desc": "Magic guild lecture",
+  "unlock": {
+   "guild": "collegium",
+   "rank": 0
+  }
+ },
+ {
+  "id": "liturgy",
+  "name": "Liturgy",
+  "icon": "🕯️",
+  "tier": "advanced",
+  "minAge": 16,
+  "stats": {
+   "WIL": 0.02,
+   "CHA": 0.015
+  },
+  "skills": [
+   "faith",
+   "healing"
+  ],
+  "desc": "Church liturgy",
+  "unlock": {
+   "guild": "church",
+   "rank": 0
+  }
+ },
+ {
+  "id": "shadowrun",
+  "name": "Shadow Run",
+  "icon": "🗝️",
+  "tier": "advanced",
+  "minAge": 16,
+  "stats": {
+   "AGI": 0.02,
+   "INT": 0.015
+  },
+  "skills": [
+   "thievery",
+   "tracking"
+  ],
+  "desc": "Rogues' Guild rooftop runs",
+  "unlock": {
+   "guild": "rogues",
+   "rank": 0
+  }
+ },
+ {
+  "id": "masterkata",
+  "name": "Master's Kata",
+  "icon": "🛡️",
+  "tier": "master",
+  "minAge": 18,
+  "stats": {
+   "STR": 0.02,
+   "AGI": 0.015,
+   "VIT": 0.015
+  },
+  "skills": [
+   "swordsmanship",
+   "shield",
+   "tactics"
+  ],
+  "desc": "Veteran forms (Warriors rank 3)",
+  "unlock": {
+   "guild": "vanguard",
+   "rank": 2
+  }
+ },
+ {
+  "id": "wildtrek",
+  "name": "Wild Trek",
+  "icon": "🐺",
+  "tier": "master",
+  "minAge": 18,
+  "stats": {
+   "AGI": 0.02,
+   "VIT": 0.015,
+   "WIL": 0.01
+  },
+  "skills": [
+   "archery",
+   "tracking",
+   "hunting"
+  ],
+  "desc": "Long patrols (Rangers rank 3)",
+  "unlock": {
+   "guild": "lodge",
+   "rank": 2
+  }
+ },
+ {
+  "id": "seminar",
+  "name": "Grand Seminar",
+  "icon": "📜",
+  "tier": "master",
+  "minAge": 18,
+  "stats": {
+   "INT": 0.025,
+   "WIL": 0.015,
+   "CHA": 0.01
+  },
+  "skills": [
+   "arcana",
+   "frost",
+   "runecraft"
+  ],
+  "desc": "Archmage seminar (Magic rank 3)",
+  "unlock": {
+   "guild": "collegium",
+   "rank": 2
+  }
+ },
+ {
+  "id": "pilgrimage",
+  "name": "Pilgrimage",
+  "icon": "⛪",
+  "tier": "master",
+  "minAge": 18,
+  "stats": {
+   "WIL": 0.02,
+   "CHA": 0.015,
+   "VIT": 0.01
+  },
+  "skills": [
+   "faith",
+   "healing",
+   "history"
+  ],
+  "desc": "Holy road (Church rank 3)",
+  "unlock": {
+   "guild": "church",
+   "rank": 2
+  }
+ },
+ {
+  "id": "heist",
+  "name": "Practice Heist",
+  "icon": "🎭",
+  "tier": "master",
+  "minAge": 18,
+  "stats": {
+   "AGI": 0.02,
+   "INT": 0.015,
+   "CHA": 0.01
+  },
+  "skills": [
+   "thievery",
+   "appraisal",
+   "etiquette"
+  ],
+  "desc": "Mock heists (Rogues rank 3)",
+  "unlock": {
+   "guild": "rogues",
+   "rank": 2
   }
  }
 ]

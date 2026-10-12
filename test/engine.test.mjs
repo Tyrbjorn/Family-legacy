@@ -183,4 +183,9 @@ const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
 ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===3,'Renown + Manor → Era 3 indicator');
 ER.members[0].ageDays=20*360; ok(E.setAction(ER,{type:'quest',target:'rats'})!==false&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'archery'})!==false,'later eras keep questing, jobs and training open');
+for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
+{ const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
+ m.guild={id:'vanguard',rank:0,rep:0}; ok(E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill'))&&!E.activityOk(T2,m,D.activities.find(a=>a.id==='masterkata')),'guild rank gates advanced vs master');
+ m.guild.rank=2; const before={...m.stats}, sx={...Object.fromEntries(['swordsmanship','shield','tactics'].map(k=>[k,m.skills[k].lvl*1e6+m.skills[k].xp]))}; m.action={type:'activity',target:'masterkata'}; E.advanceReal(T2,50);
+ ok(['STR','AGI','VIT'].every(k=>m.stats[k]>before[k])&&['swordsmanship','shield','tactics'].every(k=>m.skills[k].lvl*1e6+m.skills[k].xp>sx[k]),'master training raises 3 stats and 3 skills'); }
 console.log(pass,'tests passed');
