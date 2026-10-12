@@ -32,7 +32,7 @@ export function newGame(now=Date.now()){ const _s=_newGame(now); _s.land=[]; _s.
 function _newGame(now){
   const s={v:SAVE_VERSION,day:0,nextId:1,members:[],activeId:1,head:1,
     res:{coin:50,food:60,wood:0,stone:0,herbs:0},revealed:[],buildings:{},furniture:[],vault:['rusty_sword','padded_vest'],
-    log:[],turbo:{charge:0,on:false},lastSave:now,forSale:[],saleProg:0,unlocks:[],doneQuests:[],specialGranted:[],minions:[],repLevel:0,gameOver:false,suitors:[],renown:0,deeds:[],acc:0,pendingClass:[]};
+    log:[],turbo:{charge:0,on:false},lastSave:now,reserve:{...DEFAULT_RESERVE},paused:[],forSale:[],saleProg:0,unlocks:[],doneQuests:[],specialGranted:[],minions:[],repLevel:0,gameOver:false,suitors:[],renown:0,deeds:[],acc:0,pendingClass:[]};
   for(const b of D.buildings) s.buildings[b.id]=b.start;
   const f=newMember(s,{age:15}); s.members.push(f);
   f.action={type:'train',target:'swordsmanship',progress:0};
@@ -141,8 +141,14 @@ export function operatorLvl(s,skill){ if(!skill) return 0; const sp=ES().skillPr
 export const skillSpeed=(s,p)=>1+ES().skillProcess.speedPerLvl*operatorLvl(s,p&&p.skill);
 export const skillYield=(s,p)=>1+ES().skillProcess.yieldPerLvl*operatorLvl(s,p&&p.skill);
 export const resTier=k=>+(Object.entries(ES().resourceTiers).find(([,t])=>t.res.includes(k))||[0])[0];
-function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.map(id=>scaledPiece(st,id))) for(const pr0 of (p&&p.bonus.processes)||[]){ const pr={...pr0,rate:pr0.rate*skillSpeed(s,p)}; const yl=skillYield(s,p);
-  let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,(s.res[k]||0)/v); if(n<=0) continue;
+export const DEFAULT_RESERVE={wood:50,stone:50,ore:0,copperore:0,hides:0,herbs:0};
+export const reserveOf=(s,k)=>((s.reserve||{})[k]||0);
+export function setReserve(s,k,n){ if(!(k in DEFAULT_RESERVE)) return false; s.reserve[k]=Math.max(0,Math.floor(+n||0)); return true; }
+const pkey=(uid,id)=>uid+':'+baseId(id);
+export const isPaused=(s,uid,id)=>(s.paused||[]).includes(pkey(uid,id));
+export function togglePiece(s,uid,id){ const k=pkey(uid,id); const i=s.paused.indexOf(k); if(i>=0) s.paused.splice(i,1); else s.paused.push(k); return i<0; }
+function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.filter(id=>!isPaused(s,st.uid,id)).map(id=>scaledPiece(st,id))) for(const pr0 of (p&&p.bonus.processes)||[]){ const pr={...pr0,rate:pr0.rate*skillSpeed(s,p)}; const yl=skillYield(s,p);
+  let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,Math.max(0,(s.res[k]||0)-reserveOf(s,k))/v); if(n<=0) continue;
   for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n*yl; } } }
 export const processRates=(s,st,pid)=>((scaledPiece(st,pid).bonus.processes)||[]).map(pr=>({out:pr.out,rate:Math.round(pr.rate*skillSpeed(s,pieceDef(pid))*skillYield(s,pieceDef(pid))*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1)*100)/100}));
 export const processRate=(s,st,pid)=>{ const r=processRates(s,st,pid); return r.length?r[0].rate:0; };
@@ -360,7 +366,7 @@ function minionDay(s){
 
 // ---- guilds
 export function classGuild(cid){ let c=D.classes.find(x=>x.id===cid); while(c&&c.from) c=D.classes.find(x=>x.id===c.from); return c&&(D.guilds.guilds.find(g=>g.grantsClass===c.id||g.profession===c.id)||(D.guilds.adventurers.grantsClass===c.id?D.guilds.adventurers:null)); }
-export function normalize(s){ if(!s.unlocks) s.unlocks=[]; s.pendingClass=[];
+export function normalize(s){ if(!s.unlocks) s.unlocks=[]; s.reserve={...DEFAULT_RESERVE,...(s.reserve||{})}; if(!Array.isArray(s.paused)) s.paused=[]; s.pendingClass=[];
   for(const m of s.members){ if(m.guild&&m.guild.id==='hearth'){ m.craft={id:'hearth',rank:m.guild.rank,rep:m.guild.rep}; m.guild=null; if(!m.prof) m.prof='artisan'; delete m.title; }
     if(m.cls&&!m.guild&&(D.classes.find(c=>c.id===m.cls)||{}).line==='adventurer'){ if(!m.adv) m.adv={rank:0,rep:0}; }
     else if(m.cls&&!m.guild){ const g=classGuild(m.cls); if(g){ m.guild={id:g.id,rank:0,rep:0}; log(s,`📜 ${m.name} (${cls(m).name}) was enrolled in the ${g.name}.`); } } }

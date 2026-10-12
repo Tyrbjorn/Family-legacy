@@ -207,9 +207,9 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const old=E.newGame(t0); estate(old,['forge','bunk']); const o2=JSON.parse(JSON.stringify(old)); E.normalize(o2); ok(o2.structures[0].pieces.every(p=>E.pieceTier(p)===0)&&E.bedrooms(o2)>=3,'old saves load as Crude tier'); }
 // resource tiers
 { ok(E.resTier('wood')===1&&E.resTier('hides')===1&&E.resTier('planks')===2&&E.resTier('blocks')===2&&E.resTier('leather')===2&&D.estate.resourceTiers['3'].planned.includes('steel'),'resource tiers: raw → processed, Tier 3 reserved');
- const R=E.newGame(t0); const st=estate(R,['masontable','tanrack'],'shack'); R.res.blocks=0; R.res.leather=0; R.res.stone=60; R.res.hides=10; R.members.forEach(m=>m.skills.masonry.lvl=0); E.advanceReal(R,10); const b0=R.res.blocks;
+ const R=E.newGame(t0); const st=estate(R,['masontable','tanrack'],'shack'); R.res.blocks=0; R.res.leather=0; R.res.stone=60; R.res.hides=10; R.reserve.stone=0; R.members.forEach(m=>m.skills.masonry.lvl=0); E.advanceReal(R,10); const b0=R.res.blocks;
  ok(b0>0&&R.res.leather>0,"Mason's Table cuts blocks, Tanning Rack makes leather");
- const R2=E.newGame(t0); estate(R2,['masontable'],'shack'); R2.res.blocks=0; R2.res.stone=60; R2.members[0].skills.masonry.lvl=30; E.advanceReal(R2,10);
+ const R2=E.newGame(t0); estate(R2,['masontable'],'shack'); R2.res.blocks=0; R2.res.stone=60; R2.reserve.stone=0; R2.members[0].skills.masonry.lvl=30; E.advanceReal(R2,10);
  ok(R2.res.blocks>b0*1.5,'Masonry skill speeds up and boosts the Mason\'s Table');
  const st2=R2.structures[0]; ok(E.processRate(R2,st2,'masontable')>3,'shown rate includes operator skill');
  const R3=E.newGame(t0); estate(R3,['sawtable'],'shack'); R3.res.planks=0; R3.res.wood=60; R3.minions.push({uid:'mx',type:'laborer',job:'craft',loyalty:100,name:'x'}); ok(E.operatorLvl(R3,'carpentry')>=10,'minion crafters operate stations too');
@@ -217,4 +217,16 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(Object.keys(sh).every(k=>k==='coin'||E.resTier(k)===1)&&cab.planks&&cab.blocks&&!cab.wood&&hou.ingots&&hou.blocks,'building upgrades need higher-tier resources');
  const PT=D.estate.pieceTiers; ok(PT[1].cost.planks&&!PT[1].cost.ingots&&PT[2].cost.blocks&&PT[2].cost.ingots&&PT[3].cost.ingots>PT[2].cost.ingots,'furniture tiers: Sturdy planks, Fine/Masterwork blocks+ingots');
  const U=E.newGame(t0); const su=estate(U,['bunk'],'shack'); U.res.blocks=0; U.res.ingots=0; U.res.planks=100; U.res.coin=1e4; E.upgradePiece(U,su.uid,'bunk'); ok(su.pieces[0]==='bunk@1'&&!E.upgradePiece(U,su.uid,'bunk@1'),'Fine upgrade blocked without blocks/ingots'); }
+// reserves & station toggles
+{ const Q=E.newGame(t0); ok(Q.reserve.wood===50&&Q.reserve.stone===50&&Q.reserve.ore===0&&Array.isArray(Q.paused),'default reserves: 50 wood, 50 stone');
+ const st=estate(Q,['sawtable','masontable'],'shack'); Q.res.wood=80; Q.res.stone=200; Q.res.planks=0; Q.res.blocks=0; E.advanceReal(Q,10*20);
+ ok(Q.res.wood>=50-1e-9&&Q.res.planks>0,'stations never consume below the reserve');
+ ok(E.setReserve(Q,'stone',190)&&Q.reserve.stone===190&&!E.setReserve(Q,'planks',5),'reserve editable for raw resources only');
+ Q.res.stone=200; const b0=Q.res.blocks; E.advanceReal(Q,10*30); ok(Q.res.stone>=190-1e-9,'raised reserve respected');
+ ok(E.togglePiece(Q,st.uid,'masontable')&&E.isPaused(Q,st.uid,'masontable'),'station can be paused');
+ Q.reserve.stone=0; Q.res.stone=100; const b1=Q.res.blocks; E.advanceReal(Q,10*5); ok(Q.res.blocks===b1&&Q.res.stone===100,'paused station neither consumes nor produces');
+ Q.res.copper=50; E.upgradePiece(Q,st.uid,'masontable'); ok(E.isPaused(Q,st.uid,'masontable@1'),'pause survives furniture upgrade');
+ ok(!E.togglePiece(Q,st.uid,'masontable@1')&&!E.isPaused(Q,st.uid,'masontable@1'),'station resumes');
+ const O=JSON.parse(JSON.stringify(Q)); delete O.reserve; delete O.paused; E.normalize(O); ok(O.reserve.wood===50&&O.paused.length===0,'old saves get default reserves and no pauses');
+ const O2=JSON.parse(JSON.stringify(Q)); O2.reserve={wood:10}; E.normalize(O2); ok(O2.reserve.wood===10&&O2.reserve.stone===50,'saved reserves kept, missing ones defaulted'); }
 console.log(pass,'tests passed');
