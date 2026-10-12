@@ -1,0 +1,165 @@
+{
+ "lands": [
+  {
+   "id": "plot",
+   "name": "Starting Plot",
+   "icon": "🟫",
+   "slots": 2,
+   "cost": {
+    "coin": 150
+   },
+   "towns": [
+    "millbrook"
+   ],
+   "desc": "A small patch of scrub land outside Millbrook"
+  },
+  {
+   "id": "acre",
+   "name": "Cleared Acre",
+   "icon": "🌱",
+   "slots": 2,
+   "cost": {
+    "coin": 500
+   },
+   "towns": [
+    "millbrook"
+   ],
+   "requires": "plot"
+  },
+  {
+   "id": "meadow",
+   "name": "Brookside Meadow",
+   "icon": "🌼",
+   "slots": 2,
+   "cost": {
+    "coin": 1500,
+    "stone": 50
+   },
+   "towns": [
+    "millbrook",
+    "thornwick"
+   ],
+   "requires": "acre"
+  },
+  {
+   "id": "hillside",
+   "name": "Hillside Holdings",
+   "icon": "⛰️",
+   "slots": 3,
+   "cost": {
+    "coin": 4000,
+    "stone": 150
+   },
+   "towns": [
+    "thornwick"
+   ],
+   "requires": "meadow"
+  }
+ ],
+ "rooms": [
+  {
+   "id": "living",
+   "name": "Living Space",
+   "icon": "🛏️",
+   "kind": "living",
+   "beds": 2,
+   "cost": {
+    "coin": 20,
+    "wood": 10
+   },
+   "desc": "+2 beds (family size)"
+  },
+  {
+   "id": "workshop",
+   "name": "Workshop",
+   "icon": "🔨",
+   "kind": "work",
+   "cost": {
+    "coin": 40,
+    "wood": 20
+   },
+   "jobs": {
+    "craft": 2
+   },
+   "desc": "2 crafting minion spots; family crafting"
+  },
+  {
+   "id": "post",
+   "name": "Resource Post",
+   "icon": "🧺",
+   "kind": "work",
+   "cost": {
+    "coin": 30,
+    "wood": 15
+   },
+   "jobs": {
+    "gather": 2,
+    "herbs": 2
+   },
+   "desc": "2 gathering + 2 herb-picking minion spots"
+  },
+  {
+   "id": "study",
+   "name": "Study",
+   "icon": "📖",
+   "kind": "special",
+   "cost": {
+    "coin": 80,
+    "wood": 20
+   },
+   "jobs": {
+    "tutor": 2
+   },
+   "xpFamily": "lore",
+   "desc": "2 tutor spots, +3% Lore XP"
+  },
+  {
+   "id": "nursery",
+   "name": "Nursery",
+   "icon": "🧸",
+   "kind": "special",
+   "cost": {
+    "coin": 60,
+    "wood": 15
+   },
+   "childxp": 0.25,
+   "beds": 1,
+   "desc": "+1 bed, +25% childhood XP"
+  },
+  {
+   "id": "shrine",
+   "name": "Household Shrine",
+   "icon": "🕯️",
+   "kind": "special",
+   "cost": {
+    "coin": 70,
+    "stone": 10
+   },
+   "rest": 0.5,
+   "desc": "Faster injury recovery"
+  }
+ ],
+ "furniturePerRoom": 2,
+ "stages": [
+  [
+   0,
+   "Scrub Plot"
+  ],
+  [
+   1,
+   "Homestead"
+  ],
+  [
+   5,
+   "Farmstead"
+  ],
+  [
+   10,
+   "Manor"
+  ],
+  [
+   18,
+   "Prosperous Estate"
+  ]
+ ]
+}

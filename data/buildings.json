@@ -5,11 +5,34 @@
   "icon": "🏠",
   "max": 5,
   "cost": {
-   "coin": 50,
-   "wood": 20
+   "coin": 40,
+   "wood": 15
   },
-  "desc": "+2 bedrooms per level. Lv1 establishes the estate (unlocks Standing Orders & furniture)",
-  "start": 0
+  "desc": "Lv1 Shack: 1 land slot, 2 interior slots (1 living space + 1 workshop/resource post/special room). Each level +2 interior. Establishes the estate.",
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 2,
+  "levelNames": [
+   "Shack",
+   "Cottage",
+   "House",
+   "Hall",
+   "Manor"
+  ]
+ },
+ {
+  "id": "garden",
+  "name": "Small Garden",
+  "icon": "🥕",
+  "max": 3,
+  "cost": {
+   "coin": 30,
+   "wood": 5
+  },
+  "desc": "+2 Food/day per level · +1 farming minion spot/level",
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 0
  },
  {
   "id": "farm",
@@ -20,8 +43,10 @@
    "coin": 80,
    "wood": 15
   },
-  "desc": "+5 Food/day per level",
-  "start": 0
+  "desc": "+5 Food/day per level · +2 farming minion spots/level",
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 0
  },
  {
   "id": "lumber",
@@ -31,8 +56,10 @@
   "cost": {
    "coin": 100
   },
-  "desc": "+3 Wood, +1 Stone/day per level",
-  "start": 0
+  "desc": "+3 Wood, +1 Stone/day per level · +2 gathering minion spots/level",
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 0
  },
  {
   "id": "yard",
@@ -45,7 +72,9 @@
    "stone": 20
   },
   "desc": "Idle XP efficiency +5% per level",
-  "start": 0
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 0
  },
  {
   "id": "library",
@@ -57,8 +86,10 @@
    "wood": 50,
    "stone": 30
   },
-  "desc": "+2% Lore/Magic XP & +1% inheritance per level",
-  "start": 0
+  "desc": "+2% Lore/Magic XP & +1% inheritance per level · +1 interior room/level, +1 tutor spot/level",
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 1
  },
  {
   "id": "hourglass",
@@ -71,6 +102,8 @@
    "stone": 80
   },
   "desc": "Turbo cap +30 min, offline cap +2h per level",
-  "start": 0
+  "start": 0,
+  "land": 1,
+  "interiorPerLevel": 0
  }
 ]

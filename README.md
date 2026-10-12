@@ -5,3 +5,4 @@ Tests: `node test/engine.test.mjs` · UI smoke: `test/ui-smoke.mjs` (Playwright 
 Content: data/*.json (seeded by gen-data.mjs; hand edits to the JSON are now authoritative).
 
 Round 5: trait badges (opposed pairs never co-roll; saves migrated), Jobs tab (8 apprentice/adult jobs), Activities (10; age/quest/building-gated), character sheet on Main, Estate/Minions/Guilds tabs hidden until the active member is 18, 7 quests that unlock trainings/activities, 15 special minions (class/guild-rank/quest).
+Round 6: land system (data/estate.json) — estate locked until land is bought (Map towns / Main / Estate); buildings use land slots; Shack→Manor interior rooms (living/workshop/resource post/study/nursery/shrine); furniture & minion job spots come from rooms/buildings; old saves get deeded land + rooms.

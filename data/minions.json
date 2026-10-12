@@ -10,20 +10,19 @@
    "id": "farm",
    "name": "Farming",
    "icon": "🌾",
-   "needs": "farm",
-   "desc": "+food per day (×Farm level bonus)"
+   "desc": "+food per day; spots from Farm (2/lv) and Garden (1/lv)"
   },
   {
    "id": "gather",
    "name": "Gathering",
    "icon": "🪵",
-   "desc": "+wood and stone per day"
+   "desc": "+wood and stone; spots from Resource Posts and Lumber Camp"
   },
   {
    "id": "herbs",
    "name": "Herb Picking",
    "icon": "🌱",
-   "desc": "+herbs per day"
+   "desc": "+herbs; spots from Resource Posts"
   },
   {
    "id": "guard",
@@ -35,15 +34,13 @@
    "id": "craft",
    "name": "Crafting",
    "icon": "🔨",
-   "needs": "house",
-   "desc": "Slowly crafts gear from wood/stone"
+   "desc": "Crafts gear; spots from Workshops"
   },
   {
    "id": "tutor",
    "name": "Tutoring",
    "icon": "📖",
-   "needs": "library",
-   "desc": "+5% skill XP for family each (max +20%)"
+   "desc": "+5% family XP each (max 20%); spots from Study/Library"
   }
  ],
  "types": [

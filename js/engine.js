@@ -28,7 +28,7 @@ export function pickTraits(n,have=[]){ const out=[...have]; const pool=[...D.tra
 export const traitSum=(m,k)=>m.traits.reduce((a,t)=>a+((traitDef(t)||{})[k]||0),0);
 export function fixTraits(m){ const kept=[]; let changed=false; for(const t of m.traits){ if(!traitDef(t)||kept.some(k=>conflicts(k,t))){ changed=true; m.lifespan-=((traitDef(t)||{}).life||0); } else kept.push(t); }
   if(!changed) return false; m.traits=pickTraits(2,kept); for(const t of m.traits.slice(kept.length)) m.lifespan+=(traitDef(t).life||0); return true; }
-export function newGame(now=Date.now()){ const _s=_newGame(now); normalize(_s); return _s; }
+export function newGame(now=Date.now()){ const _s=_newGame(now); _s.land=[]; _s.rooms=[]; normalize(_s); return _s; }
 function _newGame(now){
   const s={v:SAVE_VERSION,day:0,nextId:1,members:[],activeId:1,head:1,
     res:{coin:50,food:60,wood:0,stone:0,herbs:0},revealed:[],buildings:{},furniture:[],vault:['rusty_sword','padded_vest'],
@@ -64,7 +64,7 @@ export function cp(s,m){
 export function softCap(m){const c=cls(m);return T.softCap[c?c.tier:0];}
 function xpMult(s,m,skillId){
   const sk=D.skills.find(x=>x.id===skillId); let mult=1;
-  mult+=traitSum(m,'xp');
+  mult+=traitSum(m,'xp'); mult+=rooms(s).filter(r=>r.xpFamily===sk.family).length*0.03;
   if(['lore','magic'].includes(sk.family)) mult+=m.skills.reading.lvl*0.01 + bl(s,'library')*0.02;
   for(const f of furn(s)){ if(f.bonus.skill===skillId) mult+=f.bonus.xp; if(f.bonus.family===sk.family) mult+=f.bonus.xp; }
   if(ageY(m)>=50) mult+=.1;
@@ -85,10 +85,26 @@ export function gainXp(s,m,skillId,amt){
 export const idleEff=s=>T.idleEff+bl(s,'yard')*0.05;
 export const turboCapSec=s=>(T.turboCapMin+bl(s,'hourglass')*30)*60;
 export const offlineCapSec=s=>(T.offlineCapHours+bl(s,'hourglass')*2)*3600;
-export const bedrooms=s=>1+bl(s,'house')*2;
-export const established=s=>bl(s,'house')>=1;
-const STAGES=[[0,'Scrub Land'],[1,'Homestead'],[4,'Farmstead'],[9,'Manor'],[16,'Prosperous Estate']];
-export function estateStage(s){const t=Object.values(s.buildings).reduce((a,b)=>a+b,0);let n=STAGES[0][1];for(const[k,v]of STAGES)if(t>=k)n=v;return n;}
+const ES=()=>D.estate;
+export const roomDef=id=>ES().rooms.find(r=>r.id===id);
+const rooms=s=>(s.rooms||[]).map(roomDef).filter(Boolean);
+export const bedrooms=s=>1+rooms(s).reduce((a,r)=>a+(r.beds||0),0);
+export const hasLand=s=>(s.land||[]).length>0;
+export const established=s=>hasLand(s)&&bl(s,'house')>=1;
+export const landSlots=s=>(s.land||[]).reduce((a,id)=>a+ES().lands.find(l=>l.id===id).slots,0);
+export const landUsed=s=>D.buildings.reduce((a,b)=>a+(bl(s,b.id)>0?b.land:0),0);
+export const interiorSlots=s=>D.buildings.reduce((a,b)=>a+bl(s,b.id)*(b.interiorPerLevel||0),0);
+export const buildingLevelName=(b,lv)=>b.levelNames?b.levelNames[Math.max(0,lv-1)]:b.name;
+export function canBuyLand(s,id){ const l=ES().lands.find(x=>x.id===id); return !!l&&!(s.land||[]).includes(id)&&(!l.requires||s.land.includes(l.requires))&&afford(s,l.cost); }
+export function buyLand(s,id){ if(!canBuyLand(s,id)) return false; const l=ES().lands.find(x=>x.id===id); pay(s,l.cost); s.land.push(id); log(s,`📜 Bought ${l.name} (+${l.slots} land slots).`); s.deeds.push(`Bought ${l.name}.`); return true; }
+export function canAddRoom(s,id){ const r=roomDef(id); if(!r||!established(s)||s.rooms.length>=interiorSlots(s)||!afford(s,r.cost)) return false;
+  if(!s.rooms.includes('living')&&id!=='living') return false; // first Shack room must be a living space
+  return true; }
+export function addRoom(s,id){ if(!canAddRoom(s,id)) return false; const r=roomDef(id); pay(s,r.cost); s.rooms.push(id); log(s,`🚪 Added a ${r.name}.`); return true; }
+export function removeRoom(s,i){ if(i<0||i>=s.rooms.length) return false; if(s.rooms[i]==='living'&&s.rooms.filter(x=>x==='living').length===1) return false; s.rooms.splice(i,1); return true; }
+export function jobCap(s,job){ if(job==='idle'||job==='guard') return Infinity; let c=rooms(s).reduce((a,r)=>a+((r.jobs||{})[job]||0),0);
+  if(job==='farm') c+=bl(s,'farm')*2+bl(s,'garden'); if(job==='gather') c+=bl(s,'lumber')*2; if(job==='tutor') c+=bl(s,'library'); return c; }
+export function estateStage(s){ if(!hasLand(s)) return 'Landless'; const t=Object.values(s.buildings).reduce((a,b)=>a+b,0)+s.rooms.length; const STAGES=ES().stages; let n=STAGES[0][1];for(const[k,v]of STAGES)if(t>=k)n=v;return n;}
 export const known=(s,x)=>!x.hidden||s.revealed.includes(x.id);
 export function successChance(s,m,q){const c=cp(s,m);return Math.max(.1,Math.min(.98,0.5+(c-q.cp)/(q.cp+20)+Math.min(.15,minionPower(s,'guard')*.03)));}
 
@@ -153,7 +169,7 @@ function dayTick(s,effActive,effIdle){
   s.day++;
   // estate production & food
   const lv=s.buildings;
-  s.res.food+=lv.farm*5+furn(s).reduce((x,f)=>x+(f.bonus.food||0),0);
+  s.res.food+=lv.farm*5+(lv.garden||0)*2+furn(s).reduce((x,f)=>x+(f.bonus.food||0),0);
   s.res.wood+=lv.lumber*3; s.res.stone+=lv.lumber*1;
   s.res.food-=living(s).length; if(s.res.food<0) s.res.food=0;
   if(s.day%30===0){ const up=Object.values(lv).reduce((a,b)=>a+b,0)*T.upkeepPerBuildingMonth; s.res.coin=Math.max(0,s.res.coin-up); s.renown+=furn(s).reduce((x,f)=>x+(f.bonus.renown||0),0)*30; }
@@ -169,7 +185,7 @@ function dayTick(s,effActive,effIdle){
     }
     if(a>=m.lifespan && rng()<(0.002*(a-m.lifespan+1))){ kill(s,m,'died of old age'); if(s.gameOver) return; continue; }
     if(a<T.adultAge && !(m.id===s.activeId&&actionAllowed(s,m,m.action))){ // child passive xp
-      const f=1+furn(s).reduce((x,f)=>x+(f.bonus.childxp||0),0); gainXp(s,m,r(D.skills).id,T.xpPerDay*.15*f); continue; }
+      const f=1+furn(s).reduce((x,f)=>x+(f.bonus.childxp||0),0)+rooms(s).reduce((x,r)=>x+(r.childxp||0),0); gainXp(s,m,r(D.skills).id,T.xpPerDay*.15*f); continue; }
     const isAct=m.id===s.activeId; const eff=isAct?effActive:effIdle;
     if(m.injured>0){ m.injured=hasService(s,'healer')?0:Math.max(0,m.injured-1); continue; }
     if(isAct) doAction(s,m,m.action,eff);
@@ -206,8 +222,9 @@ export function giveGift(s,suitorId,itemId){ const i=s.vault.indexOf(itemId); co
 export function cost(s,b){ const lv=s.buildings[b.id]; return Object.fromEntries(Object.entries(b.cost).map(([k,v])=>[k,Math.round(v*Math.pow(T.buildCostMult,lv))])); }
 export const afford=(s,c)=>Object.entries(c).every(([k,v])=>s.res[k]>=v);
 const pay=(s,c)=>{for(const[k,v]of Object.entries(c)) s.res[k]-=v;};
-export function build(s,id){ const b=D.buildings.find(x=>x.id===id); if(s.buildings[id]>=b.max) return false; const c=cost(s,b); if(!afford(s,c)) return false; pay(s,c); s.buildings[id]++; log(s,`🏗️ ${b.name} upgraded to Lv${s.buildings[id]}.`); return true; }
-export const furnSlots=s=>established(s)?2+bl(s,'house')*2+(hasService(s,'storage')?3:0):0;
+export function buildIssue(s,b){ if(!hasLand(s)) return 'buy land first'; if(s.buildings[b.id]>=b.max) return 'max level'; if(b.id!=='house'&&!established(s)) return 'build a Shack first'; if(!s.buildings[b.id]&&landUsed(s)+b.land>landSlots(s)) return 'no free land slot'; if(!afford(s,cost(s,b))) return 'cannot afford'; return null; }
+export function build(s,id){ const b=D.buildings.find(x=>x.id===id); if(buildIssue(s,b)) return false; const c=cost(s,b); if(!afford(s,c)) return false; pay(s,c); s.buildings[id]++; log(s,`🏗️ ${buildingLevelName(b,s.buildings[id])} ${s.buildings[id]>1?'upgraded to Lv'+s.buildings[id]:'built'}.`); if(id==='house'&&s.buildings.house===1&&!s.rooms.length){ s.rooms.push('living'); log(s,'🛏️ The Shack has a living space; choose its second room.'); } return true; }
+export const furnSlots=s=>established(s)?s.rooms.length*ES().furniturePerRoom+(hasService(s,'storage')?3:0):0;
 export function buyFurniture(s,id){ const f=D.furniture.find(x=>x.id===id); if(s.furniture.includes(id)||s.furniture.length>=furnSlots(s)||!afford(s,f.cost)) return false; pay(s,f.cost); s.furniture.push(id); log(s,`🪑 Placed ${f.name}.`); return true; }
 export function equip(s,m,itemId,from='vault'){ const src=from==='bag'?m.bag:s.vault; const i=src.indexOf(itemId); const it=D.items.find(x=>x.id===itemId); if(i<0||it.slot==='gift') return false; src.splice(i,1); if(m.equip[it.slot]) m.bag.push(m.equip[it.slot]); m.equip[it.slot]=itemId; return true; }
 export const sellValue=(s,it)=>Math.round(it.value*(hasService(s,'appraisal')?1:.5));
@@ -261,8 +278,9 @@ export function addMinion(s,type,why){ if(!mtype(type).special&&!minionRoom(s)) 
   s.minions.push(mi); log(s,`🤝 ${mi.name} the ${t.name} joined (${why}).`); return mi; }
 export const hireable=(s,townId)=>(D.minions.hireAt[townId]||[]).map(mtype);
 export function hire(s,townId,type){ const t=mtype(type); if(!(D.minions.hireAt[townId]||[]).includes(type)||s.res.coin<t.hire||!minionRoom(s)) return null; s.res.coin-=t.hire; return addMinion(s,type,'hired in town'); }
-export function jobOpen(s,jobId){ const j=D.minions.jobs.find(x=>x.id===jobId); return j&&(!j.needs||bl(s,j.needs)>0)&&(jobId==='idle'||established(s)); }
-export function assignMinion(s,uid,job){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!jobOpen(s,job)) return false; mi.job=job; return true; }
+export function jobOpen(s,jobId){ const j=D.minions.jobs.find(x=>x.id===jobId); return !!j&&(jobId==='idle'||(established(s)&&jobCap(s,jobId)>0)); }
+export const jobUsed=(s,job,except)=>s.minions.filter(x=>x.job===job&&x.uid!==except).length;
+export function assignMinion(s,uid,job){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||!jobOpen(s,job)||jobUsed(s,job,uid)>=jobCap(s,job)) return false; mi.job=job; return true; }
 export function dismiss(s,uid){ const i=s.minions.findIndex(x=>x.uid===uid); if(i<0) return false; log(s,`👋 ${s.minions[i].name} was dismissed.`); s.minions.splice(i,1); return true; }
 export const monthlyWages=s=>s.minions.reduce((a,x)=>a+mtype(x.type).wage,0);
 function minionDay(s){
@@ -281,7 +299,12 @@ function minionDay(s){
 }
 
 // ---- guilds
-export function normalize(s){ if(!s.unlocks) s.unlocks=[]; if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>D.items.some(i=>i.id===id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>D.items.some(i=>i.id===id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
+export function normalize(s){ if(!s.unlocks) s.unlocks=[];
+  for(const b of D.buildings) if(s.buildings[b.id]===undefined) s.buildings[b.id]=0;
+  if(!s.land){ s.land=[]; s.rooms=[]; // migrate pre-land saves
+    if(D.buildings.some(b=>bl(s,b.id)>0)){ for(const l of ES().lands){ if(landSlots(s)>=landUsed(s)&&s.land.length) break; s.land.push(l.id); }
+      if(bl(s,'house')>0){ const need=Math.max(1,Math.ceil((s.members.filter(m=>m.alive).length-1)/2)); const cap=interiorSlots(s); for(let i=0;i<need&&s.rooms.length<cap;i++) s.rooms.push('living'); const fill=['workshop','post','study']; let k=0; while(s.rooms.length<cap&&k<fill.length) s.rooms.push(fill[k++]); }
+      log(s,`📜 Your existing holdings were deeded: ${s.land.length} land parcel(s), ${s.rooms.length} rooms.`); } } if(!s.doneQuests) s.doneQuests=[]; if(!s.specialGranted) s.specialGranted=[]; for(const m of s.members){ if(fixTraits(m)) log(s,`🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t=>traitDef(t).name).join(', ')}.`); for(const sk of D.skills) if(!m.skills[sk.id]) m.skills[sk.id]={lvl:0,xp:0}; if(m.guild===undefined) m.guild=null; if(m.guild&&!guildDef(m.guild.id)) m.guild=null; const okI=id=>D.items.some(i=>i.id===id); m.bag=(m.bag||[]).filter(okI); for(const k in m.equip) if(!okI(m.equip[k])) delete m.equip[k]; if(m.adv===undefined) m.adv=null; if(!m.bag) m.bag=[]; } s.vault=s.vault.filter(id=>D.items.some(i=>i.id===id)); if(!s.minions){s.minions=[];s.repLevel=0;} s._norm=true; }
 export const guildDef=id=>D.guilds.guilds.find(g=>g.id===id);
 export const rankName=r=>D.guilds.ranks[r].name;
 export function trainIssue(m,skillId,s){ const sk=D.skills.find(x=>x.id===skillId); if(!sk) return 'unknown'; const a=ageY(m);
