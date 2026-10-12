@@ -1,0 +1,175 @@
+import * as E from './engine.js';
+const KEY='familyLegacy.save.v1';
+const names=['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds'];
+const D={}; await Promise.all(names.map(async n=>D[n]=await (await fetch(`data/${n}.json`)).json())); E.setData(D);
+let s, tab='main', report=null;
+const raw=localStorage.getItem(KEY);
+try{ if(raw){ s=E.deserialize(raw); report=E.applyOffline(s); if(report&&report.elapsed<60) report=null; } }catch(e){ console.warn(e); }
+if(!s) s=E.newGame(); E.normalize(s);
+const save=()=>!window.__noSave&&localStorage.setItem(KEY,E.serialize(s));
+window.__game={get s(){return s},E,save,D};
+const $=q=>document.querySelector(q); const fmt=n=>Math.floor(n).toLocaleString();
+const mmss=sec=>`${Math.floor(sec/60)}m ${String(Math.floor(sec%60)).padStart(2,'0')}s`;
+const hm=sec=>`${Math.floor(sec/3600)}h ${String(Math.floor(sec%3600/60)).padStart(2,'0')}m`;
+const sk=id=>D.skills.find(x=>x.id===id), it=id=>D.items.find(x=>x.id===id), cl=id=>D.classes.find(x=>x.id===id);
+const yr=d=>Math.floor(d/D.tuning.daysPerYear);
+function top(){ const t=s.turbo, cap=E.turboCapSec(s);
+ return `<div class="row"><b>🏰 Family Legacy</b><span class="muted">${E.estateStage(s)} · Y${yr(s.day)+1}, day ${s.day%D.tuning.daysPerYear+1} · Renown ${fmt(s.renown)}</span></div>
+ <div class="res"><span>🪙 <b>${fmt(s.res.coin)}</b></span><span>🍞 <b>${fmt(s.res.food)}</b></span><span>🪵 <b>${fmt(s.res.wood)}</b></span><span>🪨 <b>${fmt(s.res.stone)}</b></span><span>🌱 <b>${fmt(s.res.herbs||0)}</b></span></div>
+ <div class="row"><div style="flex:1"><div class="bar t"><i style="width:${t.charge/cap*100}%"></i></div><span class="muted">⚡ Turbo ${mmss(t.charge)} / ${cap/60}m · charges only while away (1h → 6m)</span></div>
+ <button class="b ${t.on?'sel':''}" data-a="turbo" ${!t.on&&t.charge<60?'disabled':''}>${t.on?'⏸ Turbo 3×':'⚡ Turbo'}</button></div>`;}
+function memberLine(m){ const c=cl(m.cls); return `${m.gender==='f'?'👩':'👨'} <b>${m.name}</b> · ${E.ageY(m)}y · ${c?c.icon+' '+c.name:(E.isAdult(m)?'No class':'Child')} · CP ${E.cp(s,m)}`; }
+function hero(){ const m=E.active(s); if(!m) return ''; const a=m.action;
+ let h=`<div class="card">${memberLine(m)}<div class="muted">Lv ${E.level(m)} · lifespan ~${m.lifespan} · traits: ${m.traits.map(t=>D.traits.find(x=>x.id===t).name).join(', ')}${m.injured?' · 🤕 injured':''}${E.ageY(m)>=m.lifespan-3?' · ⚠️ frail':''}</div>
+ <div class="muted">Doing: ${a?a.type+(a.target?' – '+(a.type==='quest'?D.quests.find(q=>q.id===a.target).name:a.type==='train'?sk(a.target).name:a.type==='court'?(s.suitors.find(x=>x.id===a.target)||{}).name:''):''):'nothing'}</div>
+ ${a&&a.type==='quest'?`<div class="bar"><i style="width:${a.progress/D.quests.find(q=>q.id===a.target).days*100}%"></i></div>`:''}
+ <div class="grid" style="margin-top:6px">${E.STATS.map(k=>`<span>${k} <b>${E.statVal(m,k)}</b></span>`).join('')}</div>
+ <div class="row" style="margin-top:6px"><button class="b" data-a="work">💼 Work</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
+ const evo=D.classes.filter(c=>c.from===m.cls);
+ if(evo.length) h+=`<h3>Evolution</h3>`+evo.map(c=>`<div class="card row"><span>${c.icon} ${c.name}<br><span class="muted">${Object.entries(c.req).map(([k,v])=>`${sk(k).name} ${m.skills[k].lvl}/${v}`).join(' · ')}${c.guild?` · ${E.guildDef(c.guild).icon} ${E.rankName(c.guildRank)} of ${E.guildDef(c.guild).name}`:''} · ${c.cost}🪙</span></span><button class="b" data-a="evolve" data-v="${c.id}" ${E.canEvolve(s,m,c)?'':'disabled'}>Evolve</button></div>`).join('');
+ h+=`<h3>Skills (soft cap ${E.softCap(m)})</h3>`;
+ for(const fam of [...new Set(D.skills.map(x=>x.family))]){ h+=`<div class="muted" style="margin-top:6px">${fam.toUpperCase()}</div>`;
+  for(const x of D.skills.filter(y=>y.family===fam)){ const v=m.skills[x.id]; const on=a&&a.type==='train'&&a.target===x.id;
+   h+=`<div class="card row" style="margin:4px 0;padding:6px 8px"><span style="flex:1">${x.icon} ${x.name} <b>${v.lvl}</b><div class="bar"><i style="width:${v.xp/E.xpNeed(v.lvl)*100}%"></i></div></span><button class="b ${on?'sel':''}" data-a="train" data-v="${x.id}" ${E.canTrain(m,x.id)?'':'disabled'}>${x.guild&&!E.canTrain(m,x.id)?'🔒 '+E.guildDef(x.guild).name.split(' ').pop():'Train'}</button></div>`; } }
+ return h; }
+function quests(){ const m=E.active(s); let h=''; if(!E.isAdult(m)) h+=`<div class="card muted">Children can't quest. Switch to an adult in Family.</div>`;
+ for(const rg of D.regions){ const open=E.regionOpen(s,rg.id); h+=`<h3>${rg.icon} ${rg.name} ${open?'':`🔒 (needs CP ${rg.cp})`}</h3>`; if(!open) continue;
+  for(const q of D.quests.filter(x=>x.region===rg.id)){ const on=m.action&&m.action.type==='quest'&&m.action.target===q.id;
+   const qok=E.questOk(m,q); h+=`<div class="card row"><span>${q.guild?E.guildDef(q.guild).icon+' ':''}${q.name} <span class="risk-${q.risk}">[${q.risk}]</span>${q.adv&&!qok?`<br><span class="muted">🔒 Adventurers' Rank ${E.advRankName(q.adv)}</span>`:''}${q.guild&&!qok?`<br><span class="muted">🔒 ${E.rankName(q.rank)} of ${E.guildDef(q.guild).name}</span>`:''}<br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(q.reward).map(([k,v])=>v+' '+k).join(', ')} · ${Math.round(E.successChance(s,m,q)*100)}% success${q.risk==='deadly'?` · ☠️ ${D.tuning.deadlyDeathChance*100}%+ death risk`:''}</span></span>
+   <button class="b ${on?'sel':''}" data-a="quest" data-v="${q.id}" ${E.isAdult(m)&&qok?'':'disabled'}>Go</button></div>`; } }
+ return h; }
+function family(){ const m=E.active(s); let h=`<h3>Members (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
+ for(const x of s.members.filter(y=>y.alive)){ const o=x.order;
+  h+=`<div class="card">${memberLine(x)} ${x.id===s.head?'👑':''} ${x.id===s.activeId?'<b>(active)</b>':''}<div class="muted">${x.spouse?'Married to '+(s.members.find(y=>y.id===x.spouse)||{}).name:'Single'}</div>
+  ${x.id!==s.activeId?`<div class="row" style="margin-top:4px"><span class="muted">Order:</span>${E.isAdult(x)?`<select data-a="order" data-v="${x.id}">
+  ${['train','quest','work','rest'].map(t=>`<option ${o.type===t?'selected':''}>${t}</option>`).join('')}</select>
+  ${o.type==='train'?`<select data-a="ordt" data-v="${x.id}">${D.skills.map(k=>`<option value="${k.id}" ${o.target===k.id?'selected':''}>${k.name}</option>`).join('')}</select>`:''}
+  ${o.type==='quest'?`<select data-a="ordt" data-v="${x.id}">${D.regions.map(k=>`<option value="${k.id}" ${o.target===k.id?'selected':''}>${k.name}</option>`).join('')}</select>`:''}`:'<span class="muted">growing up</span>'}
+  <button class="b" data-a="switch" data-v="${x.id}">Play</button></div>`:''}</div>`; }
+ h+=`<h3>💌 Suitors ${E.ageY(m)<D.tuning.courtAge?'(active member must be 18+)':''}</h3>`;
+ if(!s.suitors.length) h+=`<div class="muted">None yet. They appear in town every ~45 days.</div>`;
+ const gifts=[...new Set(s.vault.filter(i=>it(i).slot==='gift'))];
+ for(const su of s.suitors){ h+=`<div class="card"><div class="row"><span>${su.name}, ${su.age} · ${cl(su.cls).name}</span><span>❤️ ${Math.floor(su.affinity)}/100</span></div><div class="bar"><i style="width:${su.affinity}%;background:#e66"></i></div>
+  <div class="row"><button class="b" data-a="court" data-v="${su.id}" ${E.ageY(m)>=D.tuning.courtAge&&!m.spouse?'':'disabled'}>Court</button>
+  ${gifts.map(g=>`<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}</button>`).join('')}
+  <button class="b" data-a="propose" data-v="${su.id}" ${su.affinity>=100&&!m.spouse&&s.res.coin>=200&&E.ageY(m)>=18?'':'disabled'}>💍 Propose (200🪙)</button></div></div>`; }
+ const dead=s.members.filter(x=>!x.alive); if(dead.length) h+=`<h3>🕯️ Ancestors</h3>`+dead.map(x=>`<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join('');
+ return h; }
+const RI={coin:'🪙',wood:'🪵',stone:'🪨',food:'🍞',herbs:'🌱'};
+const costStr=c=>Object.entries(c).map(([k,v])=>`${fmt(v)} ${({coin:'🪙',wood:'🪵',stone:'🪨',food:'🍞'})[k]}`).join(' ');
+function estate(){ let h=`<h3>Buildings</h3>`;
+ for(const b of D.buildings){ const lv=s.buildings[b.id]; const c=E.cost(s,b); h+=`<div class="card row"><span>${b.icon} ${b.name} <b>Lv${lv}</b><br><span class="muted">${b.desc}</span></span><button class="b" data-a="build" data-v="${b.id}" ${lv<b.max&&E.afford(s,c)?'':'disabled'}>${lv>=b.max?'Max':costStr(c)}</button></div>`; }
+ h+=`<div class="muted">Upkeep: ${Object.values(s.buildings).reduce((a,b)=>a+b,0)*D.tuning.upkeepPerBuildingMonth}🪙 per month. Family eats ${E.living(s).length}🍞/day.</div><h3>Furniture (${s.furniture.length}/${E.furnSlots(s)} slots)</h3>`;
+ for(const f of D.furniture){ const own=s.furniture.includes(f.id); h+=`<div class="card row"><span>${f.icon} ${f.name}<br><span class="muted">${Object.entries(f.bonus).map(([k,v])=>k+': '+v).join(', ')}</span></span><button class="b" data-a="furn" data-v="${f.id}" ${!own&&E.afford(s,f.cost)&&s.furniture.length<E.furnSlots(s)?'':'disabled'}>${own?'Placed':costStr(f.cost)}</button></div>`; }
+ return h; }
+function vault(){ const m=E.active(s); let h=`<h3>Equipped (${m.name})</h3><div class="card">${['weapon','offhand','armor','accessory'].map(sl=>`<div>${sl}: ${m.equip[sl]?it(m.equip[sl]).name+' (+'+it(m.equip[sl]).cp+' CP)':'—'}</div>`).join('')}</div><h3>Family Vault</h3>`;
+ if(!s.vault.length) h+=`<div class="muted">Empty. Quests drop loot.</div>`;
+ s.vault.forEach(id=>{ const x=it(id); h+=`<div class="card row"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp?' +'+x.cp+' CP':''}${x.affinity?' +'+x.affinity+' ❤️':''}</span></span><span>${x.slot!=='gift'?`<button class="b" data-a="equip" data-v="${id}">Equip</button>`:''}<button class="b" data-a="sell" data-v="${id}">Sell ${Math.round(x.value/2)}</button></span></div>`; });
+ return h; }
+function logv(){ return `<h3>Activity Log</h3>`+s.log.map(l=>`<div class="card" style="padding:5px 8px"><span class="muted">Y${yr(l.d)+1} D${l.d%D.tuning.daysPerYear+1}</span> ${l.msg}</div>`).join('')+`<h3>Save</h3><div class="row"><button class="b" data-a="export">Export</button><button class="b" data-a="import">Import</button><button class="b" data-a="reset">New Lineage</button></div>`; }
+function doing(a){ if(!a) return 'nothing'; const n={quest:()=>D.quests.find(q=>q.id===a.target).name,train:()=>sk(a.target).name,court:()=>(s.suitors.find(x=>x.id===a.target)||{}).name,gather:()=>D.nodes.find(x=>x.id===a.target).name}[a.type]; return a.type+(n?' – '+n():''); }
+function guildCard(m){ return advLine(m)+guildCard0(m); }
+function advLine(m){ return `<div class="card row"><span>⚔️ Adventurers' Guild</span><span>${m.adv?'Rank <b>'+E.advRankName(m.adv.rank)+'</b>':'<span class="muted">not registered</span>'}</span></div>`; }
+function guildCard0(m){ if(!m.guild) return `<div class="card"><b>🏛️ Guild</b><div class="muted">${m.name} is unaffiliated. Guild halls are in towns on the Map. Joining one bars all others for life.</div></div>`;
+ const g=E.guildDef(m.guild.id), n=E.nextRank(m); return `<div class="card"><div class="row"><b>${g.icon} ${g.name}</b><span>🎖️ ${E.rankName(m.guild.rank)}</span></div><div class="muted">${g.desc}</div>
+ ${n?`<div class="bar"><i style="width:${Math.min(100,m.guild.rep/n.rep*100)}%;background:#d9b44a"></i></div><div class="row"><span class="muted">${m.guild.rep>=n.rep?'✓ Rep '+n.rep+' reached':'Rep '+m.guild.rep+'/'+n.rep} → ${n.name} (${n.cost}🪙)</span><button class="b" data-a="rankup" ${E.canRankUp(s,m)?'':'disabled'}>Rank up</button></div>`:'<div class="muted">Highest rank reached.</div>'}
+ <div class="muted">Perks: +${5*(m.guild.rank+1)}% XP in ${g.skills.map(k=>sk(k).name).join(', ')}</div></div>`; }
+function mainv(){ const m=E.active(s); let h=hero().replace('<h3>Evolution</h3>',guildCard(m)+'<h3>Evolution</h3>'); if(!h.includes('🏛️ Guild')&&!h.includes('🎖️')) h=h.replace('<h3>Skills',guildCard(m)+'<h3>Skills');
+ h=h.replace(/Doing: .*?<\/div>/,`Doing: ${doing(m.action)}</div>`);
+ const others=E.living(s).filter(x=>x.id!==m.id); if(others.length) h=`<div class="row"><span class="muted">Playing as:</span><select data-a="pick">${E.living(s).map(x=>`<option value="${x.id}" ${x.id===m.id?'selected':''}>${x.name} (${E.ageY(x)})</option>`).join('')}</select></div>`+h;
+ h+=courtship();
+ const towns=D.towns.filter(t=>E.regionOpen(s,t.region));
+ h+=`<h3>🛒 Buy items</h3>`+towns.map(t=>`<div class="muted">${t.icon} ${t.name}</div>`+t.shop.map(id=>{const x=it(id);return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp?' +'+x.cp+' CP':''}${x.affinity?' +'+x.affinity+'❤️ gift':''}</span></span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin>=E.buyPrice(x)?'':'disabled'}>${E.buyPrice(x)}🪙</button></div>`}).join('')).join('');
+ h+=`<h3>📜 Recent</h3>`+s.log.slice(0,8).map(l=>`<div class="muted">Y${yr(l.d)+1} D${l.d%D.tuning.daysPerYear+1} · ${l.msg}</div>`).join('')+`<h3>Save</h3><div class="row"><button class="b" data-a="export">Export</button><button class="b" data-a="import">Import</button><button class="b" data-a="reset">New Lineage</button></div>`;
+ return h; }
+function courtship(){ return family().split('<h3>💌')[1]?.split('<h3>🕯️')[0].replace(/^/,'<h3>💌')||''; }
+function invv(){ const m=E.active(s); const row=(x,btns)=>`<div class="card row"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp?' +'+x.cp+' CP':''}${x.affinity?' +'+x.affinity+'❤️':''}</span></span><span>${btns}</span></div>`;
+ let h=`<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s,m)})</h3><div class="card">${['weapon','offhand','armor','accessory'].map(sl=>`<div class="row"><span>${sl}: ${m.equip[sl]?it(m.equip[sl]).name+' (+'+it(m.equip[sl]).cp+' CP)':'—'}</span>${m.equip[sl]?`<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>`:''}</div>`).join('')}</div>`;
+ h+=`<h3>🎒 Personal pack</h3>`+(m.bag.length?m.bag.map(id=>row(it(id),`${it(id).slot!=='gift'?`<button class="b" data-a="equipbag" data-v="${id}">Equip</button>`:''}<button class="b" data-a="tovault" data-v="${id}">→ Vault</button>`)).join(''):'<div class="muted">Empty.</div>');
+ h+=`<h3>🏛️ Family vault (shared)</h3>`+(s.vault.length?s.vault.map(id=>row(it(id),`${it(id).slot!=='gift'?`<button class="b" data-a="equip" data-v="${id}">Equip</button>`:''}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s,it(id))}</button>`)).join(''):'<div class="muted">Empty. Quests drop loot; towns sell gear.</div>');
+ return h; }
+function estatev(){ let h=`<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s)?'Your holdings are established. Direct idle family members below.':'A small patch of scrub land. Build a House to establish the estate and unlock Standing Orders and furniture.'}</div></div>`;
+ h+=estate();
+ h+=`<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
+ for(const x of E.living(s)){ const o=x.order; h+=`<div class="card">${memberLine(x)} ${x.id===s.head?'👑':''} ${x.id===s.activeId?'<b>(playing)</b>':''}<div class="muted">${x.spouse?'Married to '+(s.members.find(y=>y.id===x.spouse)||{}).name:'Single'} · ${x.id===s.activeId?'':'Doing: '+doing(x.action||(o.type!=='quest'?o:null))}</div>`;
+  if(x.id!==s.activeId){ h+=`<div class="row" style="margin-top:4px">`;
+   if(!E.isAdult(x)) h+=`<span class="muted">growing up</span>`;
+   else if(!E.established(s)) h+=`<span class="muted">Works odd jobs (orders unlock with a House)</span>`;
+   else { h+=`<select data-a="order" data-v="${x.id}">${['train','quest','gather','craft','work','rest'].map(t=>`<option ${o.type===t?'selected':''}>${t}</option>`).join('')}</select>`;
+    const opts={train:D.skills.map(k=>[k.id,k.name]),quest:D.regions.filter(r=>E.regionOpen(s,r.id)).map(k=>[k.id,k.name]),gather:D.nodes.filter(n=>E.known(s,n)&&E.regionOpen(s,n.region)).map(k=>[k.id,k.name])}[o.type];
+    if(opts) h+=`<select data-a="ordt" data-v="${x.id}">${opts.map(([v,n])=>`<option value="${v}" ${o.target===v?'selected':''}>${n}</option>`).join('')}</select>`; }
+   h+=`<button class="b" data-a="switch" data-v="${x.id}">Play</button></div>`; }
+  h+=`</div>`; }
+ if(E.established(s)) h+=`<div class="muted">Craft: uses ${costStr(D.tuning.craftCost)} per item every ${D.tuning.craftDays} days.</div>`;
+ const dead=s.members.filter(x=>!x.alive); if(dead.length) h+=`<h3>🕯️ Ancestors</h3>`+dead.map(x=>`<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join('');
+ return h; }
+function guildHall(m,g){ const mine=m.guild&&m.guild.id===g.id; const iss=E.joinIssues(s,m,g.id);
+ let h=`<div class="card" style="margin:6px 0"><div class="row"><b>${g.icon} ${g.name}</b>${mine?`<span>🎖️ ${E.rankName(m.guild.rank)}</span>`:`<button class="b" data-a="join" data-v="${g.id}" ${iss.length?'disabled':''}>Join ${g.req.coin}🪙</button>`}</div><div class="muted">${g.desc} Paths: ${g.path.join(', ')}.</div>`;
+ if(!mine) h+=`<div class="muted">${iss.length?'Needs: '+iss.join(' · '):'Requirements met.'}</div>`;
+ else h+=E.guildShop(g.id).map(x=>`<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} +${x.cp} CP · ${E.rankName(x.rank)}</span></span><button class="b" data-a="gbuy" data-v="${x.id}" ${m.guild.rank>=x.rank&&s.res.coin>=E.buyPrice(x)?'':'disabled'}>${E.buyPrice(x)}🪙</button></div>`).join('');
+ return h+`</div>`; }
+function mapv(){ const m=E.active(s); let h=E.isAdult(m)?'':`<div class="card muted">Children can gather but not quest.</div>`;
+ for(const rg of D.regions){ const open=E.regionOpen(s,rg.id); h+=`<h3>${rg.icon} ${rg.name} ${open?'':`🔒 (needs CP ${rg.cp})`}</h3>`; if(!open) continue;
+  const hidden=[...D.quests,...D.nodes].filter(x=>x.region===rg.id&&!E.known(s,x)).length;
+  for(const t of D.towns.filter(t=>t.region===rg.id)) h+=`<div class="card"><b>${t.icon} ${t.name}</b> <span class="muted">· trade</span><div class="row" style="flex-wrap:wrap;margin-top:4px">${Object.entries(t.prices).map(([k,p])=>`<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k]>=10?'':'disabled'}>Sell 10${RI[k]} → ${p*10}🪙</button>`).join('')}</div>
+   ${D.guilds.guilds.filter(g=>g.town===t.id).map(g=>guildHall(m,g)).join('')}
+   <div class="muted" style="margin-top:4px">⚔️ Adventurers' Guild branch here (see Guilds tab)</div>
+   <div class="row" style="margin-top:6px"><span class="muted">🗣️ Tavern rumors (${hidden} secrets left)</span><button class="b" data-a="rumor" data-v="${rg.id}" ${s.res.coin>=D.tuning.rumorCost&&hidden?'':'disabled'}>Listen ${D.tuning.rumorCost}🪙</button></div></div>`;
+  h+=`<div class="muted">RESOURCE NODES</div>`+D.nodes.filter(n=>n.region===rg.id&&E.known(s,n)).map(n=>{const on=m.action&&m.action.type==='gather'&&m.action.target===n.id;return `<div class="card row"><span>${n.icon} ${n.name}<br><span class="muted">${Object.entries(n.res).map(([k,v])=>`+${v}${RI[k]}/day`).join(' ')} · ${sk(n.skill).name}</span></span><button class="b ${on?'sel':''}" data-a="gather" data-v="${n.id}">Gather</button></div>`}).join('');
+  h+=`<div class="muted">QUESTS</div>`;
+  for(const q of D.quests.filter(x=>x.region===rg.id&&E.known(s,x))){ const on=m.action&&m.action.type==='quest'&&m.action.target===q.id;
+   h+=`<div class="card row"><span>${q.name} <span class="risk-${q.risk}">[${q.risk}]</span><br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(q.reward).map(([k,v])=>v+RI[k]).join(' ')} · ${Math.round(E.successChance(s,m,q)*100)}%${q.risk==='deadly'?' · ☠️ death risk':''}</span>${on?`<div class="bar"><i style="width:${m.action.progress/q.days*100}%"></i></div>`:''}</span><button class="b ${on?'sel':''}" data-a="quest" data-v="${q.id}" ${E.isAdult(m)?'':'disabled'}>Go</button></div>`; } }
+ return h; }
+function minionsv(){ const M=D.minions; const mt=id=>M.types.find(t=>t.id===id);
+ let h=`<div class="card"><b>🧑‍🤝‍🧑 Followers ${s.minions.length}/${E.minionCap(s)}</b><div class="muted">Wages ${E.monthlyWages(s)}🪙/month · each eats ½🍞/day · ${E.established(s)?'assign them to estate work below':'jobs unlock once a House establishes the estate'}</div><div class="muted">Gained by hiring in towns, rescues on some quests, tavern rumors, and estate reputation (every ${M.reputationEveryRenown} Renown).</div></div>`;
+ if(!s.minions.length) h+=`<div class="muted">No followers yet.</div>`;
+ for(const mi of s.minions){ const t=mt(mi.type); h+=`<div class="card"><div class="row"><span>${t.icon} <b>${mi.name}</b> · ${t.name}</span><span class="muted">❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div>
+  <div class="muted">Good at: ${Object.entries(t.apt).map(([j,v])=>M.jobs.find(x=>x.id===j).name+' ×'+v).join(', ')}</div>
+  <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j=>`<option value="${j.id}" ${mi.job===j.id?'selected':''} ${E.jobOpen(s,j.id)?'':'disabled'}>${j.icon} ${j.name}${E.jobOpen(s,j.id)?'':' 🔒'}</option>`).join('')}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div></div>`; }
+ h+=`<h3>Jobs</h3>`+M.jobs.filter(j=>j.id!=='idle').map(j=>`<div class="muted">${j.icon} ${j.name}${j.needs?` (needs ${D.buildings.find(b=>b.id===j.needs).name})`:''}: ${j.desc} · assigned ${s.minions.filter(x=>x.job===j.id).length}</div>`).join('');
+ h+=`<h3>Hire</h3>`;
+ for(const t of D.towns.filter(t=>E.regionOpen(s,t.region))) h+=`<div class="muted">${t.icon} ${t.name}</div>`+E.hireable(s,t.id).map(x=>`<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.icon} ${x.name} <span class="muted">${x.wage}🪙/mo</span></span><button class="b" data-a="hire" data-v="${t.id}" data-w="${x.id}" ${s.res.coin>=x.hire&&E.minionRoom(s)?'':'disabled'}>${x.hire}🪙</button></div>`).join('');
+ return h; }
+function guildsv(){ const m=E.active(s), A=D.guilds.adventurers; let h=`<div class="muted">Showing guild standing for <b>${m.name}</b> (switch members on Main).</div>`;
+ h+=`<h3>${A.icon} ${A.name}</h3><div class="card"><div class="muted">${A.desc} Branches: ${A.towns.map(t=>D.towns.find(x=>x.id===t).name).join(', ')}.</div>`;
+ if(!m.adv) h+=`<div class="row" style="margin-top:6px"><span class="muted">Not registered</span><button class="b" data-a="advjoin" ${E.isAdult(m)&&s.res.coin>=A.joinCost?'':'disabled'}>Register ${A.joinCost}🪙</button></div>`;
+ else { const n=E.advNext(m); h+=`<div class="row" style="margin-top:6px"><b>Rank ${E.advRankName(m.adv.rank)}</b><span class="muted">${A.ranks.map((r,i)=>i<=m.adv.rank?`<b>${r.name}</b>`:r.name).join(' ')}</span></div>`+
+  (n?`<div class="bar"><i style="width:${Math.min(100,m.adv.rep/n.rep*100)}%;background:#d9b44a"></i></div><div class="row"><span class="muted">${m.adv.rep>=n.rep?'✓ Rep '+n.rep+' reached':'Rep '+m.adv.rep+'/'+n.rep} → ${n.name} (${n.cost}🪙)${n.unlocks?' · unlocks '+n.unlocks:''}</span><button class="b" data-a="advrank" ${E.canAdvRankUp(s,m)?'':'disabled'}>Rank up</button></div>`:'<div class="muted">S-Rank legend.</div>')+`<div class="muted">Every completed quest earns guild rep.</div>`; }
+ h+=`<div class="muted" style="margin-top:6px">SERVICES (family-wide, unlocked by any member's rank)</div>`+Object.entries(A.services).map(([k,d])=>{const r=A.ranks.find(x=>x.unlocks===k);return `<div>${E.hasService(s,k)?'✅':'🔒'} <b>${k}</b> <span class="muted">(Rank ${r.name}) ${d}</span></div>`}).join('');
+ h+=`<div class="muted" style="margin-top:6px">BOUNTIES</div>`+D.quests.filter(q=>q.adv).map(q=>`<div>${E.questOk(m,q)?'📌':'🔒'} ${q.name} <span class="muted">Rank ${E.advRankName(q.adv)} · CP ${q.cp} · on Map: ${D.regions.find(r=>r.id===q.region).name}</span></div>`).join('');
+ h+=`<div class="muted" style="margin-top:6px">GUILD STORE</div>`+E.advShop().map(x=>`<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} +${x.cp} CP · Rank ${E.advRankName(x.adv)}</span></span><button class="b" data-a="advbuy" data-v="${x.id}" ${m.adv&&m.adv.rank>=x.adv&&s.res.coin>=E.buyPrice(x)?'':'disabled'}>${E.buyPrice(x)}🪙</button></div>`).join('')+`</div>`;
+ h+=`<h3>🏛️ Class & Craft Guilds <span class="muted">(one per member, for life)</span></h3>`+D.guilds.guilds.map(g=>`<div class="muted">📍 ${D.towns.find(t=>t.id===g.town).name}${E.regionOpen(s,D.towns.find(t=>t.id===g.town).region)?'':' 🔒 region locked'}</div>`+guildHall(m,g)).join('');
+ const ranksTxt=D.guilds.ranks.map(r=>r.name).join(' → '); h+=`<div class="muted">Ranks: ${ranksTxt}. Rep from guild quests and quests using guild skills. Adept unlocks Tier 2 classes (Warriors: Blademaster/Warlord · Rangers: Beastmaster/Warden · Magic: Pyromancer/Archmage · Healers: Paladin/Priest · Rogues: Assassin/Master Thief).</div>`;
+ return h; }
+const TABS={main:['🧝','Main',mainv],inv:['🎒','Inventory',invv],estate:['🏰','Estate',estatev],map:['🗺️','Map',mapv],minions:['🧑‍🤝‍🧑','Minions',minionsv],guilds:['🏛️','Guilds',guildsv]};
+function modal(){ const el=$('#modal');
+ if(s.gameOver){ el.hidden=false; el.innerHTML=`<div class="card"><h3>⚰️ The ${s.members[0].name} line has ended</h3><p>Renown: <b>${fmt(s.renown)}</b> · Generations of members: ${s.members.length} · Years: ${yr(s.day)}</p><h3>Family tree</h3>${s.members.map(m=>`<div>${m.name} (${E.ageY(m)}y)${m.parents?' – child of '+m.parents.map(p=>s.members.find(x=>x.id===p).name).join(' & '):''}</div>`).join('')}<h3>Deeds</h3>${s.deeds.slice(-15).map(d=>`<div class="muted">${d}</div>`).join('')}<p><button class="b" data-a="reset">Start a New Lineage</button></p></div>`; return; }
+ if(report){ el.hidden=false; el.innerHTML=`<div class="card"><h3>While you were away</h3><p>${hm(report.sim)} simulated, ${hm(report.elapsed)} total (${report.days} game days)</p><p>${report.coin>=0?'+':''}${fmt(report.coin)}🪙 · ${report.food>=0?'+':''}${fmt(report.food)}🍞 · +${fmt(report.wood)}🪵 · +${fmt(report.stone)}🪨</p><p>⚡ Turbo +${Math.round(report.turboAdded/60)} min${report.turboFull?' (bar full)':''}</p>${report.events.map(e=>`<div class="muted">${e}</div>`).join('')}<p><button class="b" data-a="close">Continue</button></p></div>`; return; }
+ const pc=s.pendingClass[0]; if(pc){ const m=s.members.find(x=>x.id===pc); el.hidden=false; el.innerHTML=`<div class="card"><h3>${m.name} came of age! Choose a class</h3>${D.classes.filter(c=>c.tier===0).map(c=>`<div class="card row"><span>${c.icon} ${c.name}<br><span class="muted">${c.stats.join('/')} · ${c.cpSkills.map(k=>sk(k).name).join(', ')}</span></span><button class="b" data-a="class" data-v="${c.id}">Pick</button></div>`).join('')}</div>`; return; }
+ if(s.needSuccession){ el.hidden=false; el.innerHTML=`<div class="card"><h3>🕯️ Succession</h3><p>Your active character has died. Choose who to play next:</p>${E.living(s).map(m=>`<div class="card row"><span>${memberLine(m)}</span><button class="b" data-a="switch" data-v="${m.id}">Play</button></div>`).join('')}</div>`; return; }
+ el.hidden=true; el.innerHTML=''; }
+let lastHTML='';
+function render(){ $('#top').innerHTML=top(); const h=TABS[tab][2](); if(h!==lastHTML){ const y=scrollY; $('#view').innerHTML=h; lastHTML=h; scrollTo(0,y);} 
+ const tb=Object.entries(TABS).map(([k,[i,n]])=>`<button class="${k===tab?'on':''}" data-tab="${k}">${i}<br>${n}</button>`).join(''); if(tb!==window._tb){$('#tabs').innerHTML=tb;window._tb=tb;} modal(); }
+document.addEventListener('click',e=>{ const t=e.target.closest('[data-tab]'); if(t){tab=t.dataset.tab;lastHTML='';render();return;}
+ const b=e.target.closest('button[data-a]'); if(!b) return; const a=b.dataset.a, v=b.dataset.v, m=E.active(s);
+ ({turbo:()=>E.toggleTurbo(s),train:()=>E.setAction(s,{type:'train',target:v}),work:()=>E.setAction(s,{type:'work'}),rest:()=>E.setAction(s,{type:'rest'}),
+  quest:()=>{E.setAction(s,{type:'quest',target:v});},court:()=>E.setAction(s,{type:'court',target:v}),gift:()=>E.giveGift(s,v,b.dataset.w),propose:()=>E.propose(s,v),
+  evolve:()=>E.evolve(s,m,v),build:()=>E.build(s,v),furn:()=>E.buyFurniture(s,v),equip:()=>E.equip(s,m,v),equipbag:()=>E.equip(s,m,v,'bag'),unequip:()=>E.unequip(s,m,v),tobag:()=>E.moveItem(s,m,v,true),tovault:()=>E.moveItem(s,m,v,false),buy:()=>E.buyItem(s,v,b.dataset.w),sellres:()=>E.sellRes(s,v,b.dataset.w,10),rumor:()=>E.rumor(s,v),advjoin:()=>E.joinAdventurers(s,m),advrank:()=>E.advRankUp(s,m),advbuy:()=>E.buyAdvItem(s,m,v),join:()=>E.joinGuild(s,m,v),rankup:()=>E.rankUp(s,m),gbuy:()=>E.buyGuildItem(s,m,v),hire:()=>E.hire(s,v,b.dataset.w),dismiss:()=>E.dismiss(s,v),gather:()=>E.setAction(s,{type:'gather',target:v}),sell:()=>E.sell(s,v),switch:()=>E.switchTo(s,+v),
+  class:()=>E.chooseClass(s,s.pendingClass[0],v),close:()=>{report=null},
+  export:()=>{prompt('Copy your save:',btoa(unescape(encodeURIComponent(E.serialize(s)))));},
+  import:()=>{const t=prompt('Paste save:'); if(t){try{s=E.deserialize(decodeURIComponent(escape(atob(t))));}catch(err){alert('Invalid save');}}},
+  reset:()=>{ if(s.gameOver||confirm('Abandon this lineage and start over?')){ s=E.newGame(); report=null; } }})[a]?.();
+ save(); lastHTML=''; render(); });
+document.addEventListener('change',e=>{ const el=e.target; const id=+el.dataset.v; const m=s.members.find(x=>x.id===id);
+ if(el.dataset.a==='mjob'){ E.assignMinion(s,el.dataset.v,el.value); }
+ if(el.dataset.a==='pick'){ E.switchTo(s,+el.value); }
+ if(el.dataset.a==='order'){ const t=el.value; E.setOrder(s,id,{type:t,target:t==='train'?'swordsmanship':t==='quest'?'outskirts':t==='gather'?'scrub':undefined}); }
+ if(el.dataset.a==='ordt'){ E.setOrder(s,id,{...m.order,target:el.value}); } save(); lastHTML=''; render(); });
+let last=performance.now(), saveT=0;
+function loop(){ const now=performance.now(); let dt=(now-last)/1000; last=now; if(dt>5) dt=5; // big gaps handled by offline calc
+ if(!report) E.advanceReal(s,dt); saveT+=dt; if(saveT>=D.tuning.autosaveSec){saveT=0;save();} render(); }
+setInterval(loop,500);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) save(); else { const r=E.applyOffline(s); if(r&&r.elapsed>60) report=r; last=performance.now(); } });
+addEventListener('pagehide',save);
+render();

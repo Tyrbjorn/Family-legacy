@@ -1,0 +1,126 @@
+[
+ {
+  "id": "bookshelf",
+  "name": "Bookshelf",
+  "icon": "📚",
+  "cost": {
+   "coin": 60,
+   "wood": 10
+  },
+  "bonus": {
+   "skill": "reading",
+   "xp": 0.05
+  }
+ },
+ {
+  "id": "bed",
+  "name": "Comfy Bed",
+  "icon": "🛏️",
+  "cost": {
+   "coin": 80,
+   "wood": 15
+  },
+  "bonus": {
+   "rest": 0.2
+  }
+ },
+ {
+  "id": "trophy",
+  "name": "Trophy Rack",
+  "icon": "🦌",
+  "cost": {
+   "coin": 120,
+   "wood": 20
+  },
+  "bonus": {
+   "renown": 1
+  }
+ },
+ {
+  "id": "dummy",
+  "name": "Training Dummy",
+  "icon": "🪆",
+  "cost": {
+   "coin": 70,
+   "wood": 15
+  },
+  "bonus": {
+   "family": "combat",
+   "xp": 0.03
+  }
+ },
+ {
+  "id": "desk",
+  "name": "Writing Desk",
+  "icon": "🖋️",
+  "cost": {
+   "coin": 90,
+   "wood": 15
+  },
+  "bonus": {
+   "family": "lore",
+   "xp": 0.03
+  }
+ },
+ {
+  "id": "crystal",
+  "name": "Scrying Crystal",
+  "icon": "🔮",
+  "cost": {
+   "coin": 200,
+   "stone": 20
+  },
+  "bonus": {
+   "family": "magic",
+   "xp": 0.03
+  }
+ },
+ {
+  "id": "mirror",
+  "name": "Vanity Mirror",
+  "icon": "🪞",
+  "cost": {
+   "coin": 100,
+   "stone": 5
+  },
+  "bonus": {
+   "court": 0.2
+  }
+ },
+ {
+  "id": "pantry",
+  "name": "Pantry",
+  "icon": "🥫",
+  "cost": {
+   "coin": 60,
+   "wood": 20
+  },
+  "bonus": {
+   "food": 2
+  }
+ },
+ {
+  "id": "cradle",
+  "name": "Cradle",
+  "icon": "🧸",
+  "cost": {
+   "coin": 90,
+   "wood": 15
+  },
+  "bonus": {
+   "childxp": 0.25
+  }
+ },
+ {
+  "id": "strongbox",
+  "name": "Strongbox",
+  "icon": "🧰",
+  "cost": {
+   "coin": 150,
+   "stone": 15
+  },
+  "bonus": {
+   "coin": 0.05
+  }
+ }
+]

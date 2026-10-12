@@ -1,0 +1,485 @@
+[
+ {
+  "id": "rusty_sword",
+  "name": "Rusty Sword",
+  "slot": "weapon",
+  "rarity": "Common",
+  "cp": 4,
+  "value": 25
+ },
+ {
+  "id": "hunting_bow",
+  "name": "Hunting Bow",
+  "slot": "weapon",
+  "rarity": "Common",
+  "cp": 8,
+  "value": 50
+ },
+ {
+  "id": "oak_staff",
+  "name": "Oak Staff",
+  "slot": "weapon",
+  "rarity": "Common",
+  "cp": 12,
+  "value": 75
+ },
+ {
+  "id": "iron_sword",
+  "name": "Iron Sword",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 100
+ },
+ {
+  "id": "yew_longbow",
+  "name": "Yew Longbow",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 20,
+  "value": 125
+ },
+ {
+  "id": "ember_wand",
+  "name": "Ember Wand",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 24,
+  "value": 150
+ },
+ {
+  "id": "steel_blade",
+  "name": "Steel Blade",
+  "slot": "weapon",
+  "rarity": "Rare",
+  "cp": 28,
+  "value": 175
+ },
+ {
+  "id": "elven_bow",
+  "name": "Elven Bow",
+  "slot": "weapon",
+  "rarity": "Rare",
+  "cp": 32,
+  "value": 200
+ },
+ {
+  "id": "frost_rod",
+  "name": "Frost Rod",
+  "slot": "weapon",
+  "rarity": "Rare",
+  "cp": 36,
+  "value": 225
+ },
+ {
+  "id": "knight_sabre",
+  "name": "Knight Sabre",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 40,
+  "value": 250
+ },
+ {
+  "id": "buckler",
+  "name": "Buckler",
+  "slot": "offhand",
+  "rarity": "Common",
+  "cp": 3,
+  "value": 25
+ },
+ {
+  "id": "quiver",
+  "name": "Quiver",
+  "slot": "offhand",
+  "rarity": "Common",
+  "cp": 6,
+  "value": 50
+ },
+ {
+  "id": "spell_tome",
+  "name": "Spell Tome",
+  "slot": "offhand",
+  "rarity": "Common",
+  "cp": 9,
+  "value": 75
+ },
+ {
+  "id": "kite_shield",
+  "name": "Kite Shield",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 100
+ },
+ {
+  "id": "lucky_charm",
+  "name": "Lucky Charm",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 15,
+  "value": 125
+ },
+ {
+  "id": "grimoire",
+  "name": "Grimoire",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 150
+ },
+ {
+  "id": "tower_shield",
+  "name": "Tower Shield",
+  "slot": "offhand",
+  "rarity": "Rare",
+  "cp": 21,
+  "value": 175
+ },
+ {
+  "id": "runed_orb",
+  "name": "Runed Orb",
+  "slot": "offhand",
+  "rarity": "Rare",
+  "cp": 24,
+  "value": 200
+ },
+ {
+  "id": "padded_vest",
+  "name": "Padded Vest",
+  "slot": "armor",
+  "rarity": "Common",
+  "cp": 3,
+  "value": 25
+ },
+ {
+  "id": "leather_jerkin",
+  "name": "Leather Jerkin",
+  "slot": "armor",
+  "rarity": "Common",
+  "cp": 6,
+  "value": 50
+ },
+ {
+  "id": "apprentice_robe",
+  "name": "Apprentice Robe",
+  "slot": "armor",
+  "rarity": "Common",
+  "cp": 9,
+  "value": 75
+ },
+ {
+  "id": "chain_shirt",
+  "name": "Chain Shirt",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 100
+ },
+ {
+  "id": "ranger_cloak",
+  "name": "Ranger Cloak",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 15,
+  "value": 125
+ },
+ {
+  "id": "mage_robe",
+  "name": "Mage Robe",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 150
+ },
+ {
+  "id": "scale_mail",
+  "name": "Scale Mail",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 21,
+  "value": 175
+ },
+ {
+  "id": "shadow_leathers",
+  "name": "Shadow Leathers",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 24,
+  "value": 200
+ },
+ {
+  "id": "archmage_mantle",
+  "name": "Archmage Mantle",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 27,
+  "value": 225
+ },
+ {
+  "id": "plate_cuirass",
+  "name": "Plate Cuirass",
+  "slot": "armor",
+  "rarity": "Epic",
+  "cp": 30,
+  "value": 250
+ },
+ {
+  "id": "copper_ring",
+  "name": "Copper Ring",
+  "slot": "accessory",
+  "rarity": "Common",
+  "cp": 2,
+  "value": 25
+ },
+ {
+  "id": "wolf_tooth",
+  "name": "Wolf Tooth",
+  "slot": "accessory",
+  "rarity": "Common",
+  "cp": 4,
+  "value": 50
+ },
+ {
+  "id": "silver_locket",
+  "name": "Silver Locket",
+  "slot": "accessory",
+  "rarity": "Common",
+  "cp": 6,
+  "value": 75
+ },
+ {
+  "id": "owl_feather",
+  "name": "Owl Feather",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 8,
+  "value": 100
+ },
+ {
+  "id": "ring_of_vigor",
+  "name": "Ring of Vigor",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 10,
+  "value": 125
+ },
+ {
+  "id": "amulet_of_wit",
+  "name": "Amulet of Wit",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 150
+ },
+ {
+  "id": "gilded_brooch",
+  "name": "Gilded Brooch",
+  "slot": "accessory",
+  "rarity": "Rare",
+  "cp": 14,
+  "value": 175
+ },
+ {
+  "id": "signet_ring",
+  "name": "Signet Ring",
+  "slot": "accessory",
+  "rarity": "Rare",
+  "cp": 16,
+  "value": 200
+ },
+ {
+  "id": "moonstone",
+  "name": "Moonstone",
+  "slot": "accessory",
+  "rarity": "Rare",
+  "cp": 18,
+  "value": 225
+ },
+ {
+  "id": "dragon_scale",
+  "name": "Dragon Scale",
+  "slot": "accessory",
+  "rarity": "Epic",
+  "cp": 20,
+  "value": 250
+ },
+ {
+  "id": "phoenix_plume",
+  "name": "Phoenix Plume",
+  "slot": "accessory",
+  "rarity": "Epic",
+  "cp": 22,
+  "value": 275
+ },
+ {
+  "id": "heart_locket",
+  "name": "Heart Locket",
+  "slot": "accessory",
+  "rarity": "Epic",
+  "cp": 24,
+  "value": 300
+ },
+ {
+  "id": "flowers",
+  "name": "Wildflowers",
+  "slot": "gift",
+  "rarity": "Common",
+  "affinity": 8,
+  "value": 10
+ },
+ {
+  "id": "chocolate",
+  "name": "Honey Cakes",
+  "slot": "gift",
+  "rarity": "Fine",
+  "affinity": 15,
+  "value": 30
+ },
+ {
+  "id": "vanguard_tabard",
+  "name": "Vanguard Tabard",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 25,
+  "value": 300,
+  "guild": "vanguard",
+  "rank": 1
+ },
+ {
+  "id": "vanguard_greatsword",
+  "name": "Oathkeeper Greatsword",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 50,
+  "value": 900,
+  "guild": "vanguard",
+  "rank": 3
+ },
+ {
+  "id": "lodge_cloak",
+  "name": "Greenwood Cloak",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 22,
+  "value": 280,
+  "guild": "lodge",
+  "rank": 1
+ },
+ {
+  "id": "lodge_bow",
+  "name": "Heartwood Warbow",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 48,
+  "value": 850,
+  "guild": "lodge",
+  "rank": 3
+ },
+ {
+  "id": "collegium_focus",
+  "name": "Collegium Focus",
+  "slot": "offhand",
+  "rarity": "Rare",
+  "cp": 20,
+  "value": 320,
+  "guild": "collegium",
+  "rank": 1
+ },
+ {
+  "id": "collegium_staff",
+  "name": "Staff of the Weave",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 52,
+  "value": 950,
+  "guild": "collegium",
+  "rank": 3
+ },
+ {
+  "id": "rogue_lockpicks",
+  "name": "Thieves' Lockpicks",
+  "slot": "accessory",
+  "rarity": "Rare",
+  "cp": 10,
+  "value": 250,
+  "guild": "rogues",
+  "rank": 1
+ },
+ {
+  "id": "hearth_hammer",
+  "name": "Hearthstone Maul",
+  "slot": "weapon",
+  "rarity": "Rare",
+  "cp": 30,
+  "value": 350,
+  "guild": "hearth",
+  "rank": 1
+ },
+ {
+  "id": "adv_badge",
+  "name": "Adventurer's Badge",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 5,
+  "value": 80,
+  "adv": 1
+ },
+ {
+  "id": "adv_pack",
+  "name": "Delver's Brigandine",
+  "slot": "armor",
+  "rarity": "Rare",
+  "cp": 28,
+  "value": 400,
+  "adv": 3
+ },
+ {
+  "id": "adv_blade",
+  "name": "Guild Hunter's Blade",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 55,
+  "value": 1000,
+  "adv": 5
+ },
+ {
+  "id": "rogue_dagger",
+  "name": "Whisperfang Dagger",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 46,
+  "value": 850,
+  "guild": "rogues",
+  "rank": 3
+ },
+ {
+  "id": "church_symbol",
+  "name": "Dawn Symbol",
+  "slot": "accessory",
+  "rarity": "Rare",
+  "cp": 12,
+  "value": 260,
+  "guild": "church",
+  "rank": 1
+ },
+ {
+  "id": "church_mace",
+  "name": "Sunforged Mace",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 48,
+  "value": 900,
+  "guild": "church",
+  "rank": 3
+ },
+ {
+  "id": "hearth_apron",
+  "name": "Master Crafter's Apron",
+  "slot": "armor",
+  "rarity": "Epic",
+  "cp": 30,
+  "value": 700,
+  "guild": "hearth",
+  "rank": 3
+ }
+]

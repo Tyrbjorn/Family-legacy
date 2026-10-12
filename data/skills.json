@@ -1,0 +1,205 @@
+[
+ {
+  "id": "swordsmanship",
+  "name": "Swordsmanship",
+  "family": "combat",
+  "stat": "STR",
+  "icon": "⚔️"
+ },
+ {
+  "id": "archery",
+  "name": "Archery",
+  "family": "combat",
+  "stat": "AGI",
+  "icon": "🏹"
+ },
+ {
+  "id": "shield",
+  "name": "Shield",
+  "family": "combat",
+  "stat": "VIT",
+  "icon": "🛡️"
+ },
+ {
+  "id": "brawling",
+  "name": "Brawling",
+  "family": "combat",
+  "stat": "STR",
+  "icon": "👊"
+ },
+ {
+  "id": "fire",
+  "name": "Fire Magic",
+  "family": "magic",
+  "stat": "INT",
+  "icon": "🔥"
+ },
+ {
+  "id": "frost",
+  "name": "Frost Magic",
+  "family": "magic",
+  "stat": "INT",
+  "icon": "❄️"
+ },
+ {
+  "id": "healing",
+  "name": "Healing",
+  "family": "magic",
+  "stat": "WIL",
+  "icon": "✨"
+ },
+ {
+  "id": "arcana",
+  "name": "Arcana",
+  "family": "magic",
+  "stat": "INT",
+  "icon": "🔮"
+ },
+ {
+  "id": "smithing",
+  "name": "Smithing",
+  "family": "craft",
+  "stat": "STR",
+  "icon": "🔨"
+ },
+ {
+  "id": "carpentry",
+  "name": "Carpentry",
+  "family": "craft",
+  "stat": "STR",
+  "icon": "🪚"
+ },
+ {
+  "id": "alchemy",
+  "name": "Alchemy",
+  "family": "craft",
+  "stat": "INT",
+  "icon": "⚗️"
+ },
+ {
+  "id": "tailoring",
+  "name": "Tailoring",
+  "family": "craft",
+  "stat": "AGI",
+  "icon": "🧵"
+ },
+ {
+  "id": "foraging",
+  "name": "Foraging",
+  "family": "gathering",
+  "stat": "AGI",
+  "icon": "🌿"
+ },
+ {
+  "id": "mining",
+  "name": "Mining",
+  "family": "gathering",
+  "stat": "STR",
+  "icon": "⛏️"
+ },
+ {
+  "id": "hunting",
+  "name": "Hunting",
+  "family": "gathering",
+  "stat": "AGI",
+  "icon": "🦌"
+ },
+ {
+  "id": "haggling",
+  "name": "Haggling",
+  "family": "social",
+  "stat": "CHA",
+  "icon": "💰"
+ },
+ {
+  "id": "etiquette",
+  "name": "Etiquette",
+  "family": "social",
+  "stat": "CHA",
+  "icon": "🎩"
+ },
+ {
+  "id": "leadership",
+  "name": "Leadership",
+  "family": "social",
+  "stat": "CHA",
+  "icon": "📣"
+ },
+ {
+  "id": "reading",
+  "name": "Reading",
+  "family": "lore",
+  "stat": "INT",
+  "icon": "📖"
+ },
+ {
+  "id": "history",
+  "name": "History",
+  "family": "lore",
+  "stat": "INT",
+  "icon": "📜"
+ },
+ {
+  "id": "monsterlore",
+  "name": "Monster Lore",
+  "family": "lore",
+  "stat": "WIL",
+  "icon": "🐉"
+ },
+ {
+  "id": "tactics",
+  "name": "Tactics",
+  "family": "combat",
+  "stat": "INT",
+  "icon": "♟️",
+  "guild": "vanguard"
+ },
+ {
+  "id": "tracking",
+  "name": "Tracking",
+  "family": "gathering",
+  "stat": "AGI",
+  "icon": "🐾",
+  "guild": "lodge"
+ },
+ {
+  "id": "runecraft",
+  "name": "Runecraft",
+  "family": "magic",
+  "stat": "INT",
+  "icon": "ᚱ",
+  "guild": "collegium"
+ },
+ {
+  "id": "appraisal",
+  "name": "Appraisal",
+  "family": "craft",
+  "stat": "CHA",
+  "icon": "🔍",
+  "guild": "hearth"
+ },
+ {
+  "id": "masonry",
+  "name": "Masonry",
+  "family": "craft",
+  "stat": "STR",
+  "icon": "🧱",
+  "guild": "hearth"
+ },
+ {
+  "id": "faith",
+  "name": "Faith",
+  "family": "magic",
+  "stat": "WIL",
+  "icon": "🕯️",
+  "guild": "church"
+ },
+ {
+  "id": "thievery",
+  "name": "Thievery",
+  "family": "social",
+  "stat": "AGI",
+  "icon": "🧤",
+  "guild": "rogues"
+ }
+]

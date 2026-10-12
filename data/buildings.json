@@ -1,0 +1,76 @@
+[
+ {
+  "id": "house",
+  "name": "House",
+  "icon": "🏠",
+  "max": 5,
+  "cost": {
+   "coin": 50,
+   "wood": 20
+  },
+  "desc": "+2 bedrooms per level. Lv1 establishes the estate (unlocks Standing Orders & furniture)",
+  "start": 0
+ },
+ {
+  "id": "farm",
+  "name": "Farm",
+  "icon": "🌾",
+  "max": 5,
+  "cost": {
+   "coin": 80,
+   "wood": 15
+  },
+  "desc": "+5 Food/day per level",
+  "start": 0
+ },
+ {
+  "id": "lumber",
+  "name": "Lumber Camp",
+  "icon": "🪵",
+  "max": 5,
+  "cost": {
+   "coin": 100
+  },
+  "desc": "+3 Wood, +1 Stone/day per level",
+  "start": 0
+ },
+ {
+  "id": "yard",
+  "name": "Training Yard",
+  "icon": "🎯",
+  "max": 5,
+  "cost": {
+   "coin": 200,
+   "wood": 40,
+   "stone": 20
+  },
+  "desc": "Idle XP efficiency +5% per level",
+  "start": 0
+ },
+ {
+  "id": "library",
+  "name": "Library",
+  "icon": "📚",
+  "max": 5,
+  "cost": {
+   "coin": 250,
+   "wood": 50,
+   "stone": 30
+  },
+  "desc": "+2% Lore/Magic XP & +1% inheritance per level",
+  "start": 0
+ },
+ {
+  "id": "hourglass",
+  "name": "Hourglass Tower",
+  "icon": "⏳",
+  "max": 2,
+  "cost": {
+   "coin": 600,
+   "wood": 80,
+   "stone": 80
+  },
+  "desc": "Turbo cap +30 min, offline cap +2h per level",
+  "start": 0
+ }
+]

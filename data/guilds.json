@@ -1,0 +1,257 @@
+{
+ "ranks": [
+  {
+   "name": "Initiate",
+   "rep": 0,
+   "cost": 0
+  },
+  {
+   "name": "Journeyman",
+   "rep": 50,
+   "cost": 150
+  },
+  {
+   "name": "Adept",
+   "rep": 150,
+   "cost": 400
+  },
+  {
+   "name": "Master",
+   "rep": 400,
+   "cost": 1000
+  }
+ ],
+ "repPerQuestSkill": 3,
+ "repPerGuildQuest": 20,
+ "guilds": [
+  {
+   "id": "vanguard",
+   "name": "Warriors' Guild",
+   "icon": "🛡️",
+   "town": "millbrook",
+   "path": [
+    "fighter",
+    "knight",
+    "duelist"
+   ],
+   "desc": "The Iron Vanguard: sword-brothers who hold the roads. Martial legitimacy.",
+   "req": {
+    "classAny": [
+     "fighter",
+     "knight",
+     "duelist"
+    ],
+    "skills": {
+     "swordsmanship": 10
+    },
+    "coin": 100
+   },
+   "skills": [
+    "swordsmanship",
+    "shield",
+    "brawling",
+    "leadership",
+    "tactics"
+   ]
+  },
+  {
+   "id": "lodge",
+   "name": "Rangers' Guild",
+   "icon": "🏹",
+   "town": "millbrook",
+   "path": [
+    "scout",
+    "ranger"
+   ],
+   "desc": "The Greenwood Lodge: trackers and hunters of the wilds.",
+   "req": {
+    "classAny": [
+     "scout",
+     "ranger",
+     "rogue"
+    ],
+    "skills": {
+     "archery": 10
+    },
+    "coin": 100
+   },
+   "skills": [
+    "archery",
+    "hunting",
+    "foraging",
+    "tracking"
+   ]
+  },
+  {
+   "id": "collegium",
+   "name": "Magic Guild",
+   "icon": "🔮",
+   "town": "thornwick",
+   "path": [
+    "apprentice",
+    "elementalist",
+    "scholar"
+   ],
+   "desc": "The Arcane Collegium: scholars of the weave. Licenses legal spellcasting.",
+   "req": {
+    "classAny": [
+     "apprentice",
+     "elementalist",
+     "scholar"
+    ],
+    "skills": {
+     "arcana": 10,
+     "reading": 5
+    },
+    "coin": 150
+   },
+   "skills": [
+    "fire",
+    "frost",
+    "arcana",
+    "reading",
+    "history",
+    "runecraft"
+   ]
+  },
+  {
+   "id": "church",
+   "name": "Healers' Guild (Church of the Dawn)",
+   "icon": "⛪",
+   "town": "millbrook",
+   "path": [
+    "any",
+    "knight",
+    "scholar"
+   ],
+   "desc": "Healers and clergy. Sanctifies paladins and ordains priests.",
+   "req": {
+    "skills": {
+     "healing": 8,
+     "etiquette": 3
+    },
+    "coin": 120
+   },
+   "skills": [
+    "healing",
+    "history",
+    "etiquette",
+    "faith"
+   ]
+  },
+  {
+   "id": "rogues",
+   "name": "Rogues' Guild (The Quiet Hand)",
+   "icon": "🗝️",
+   "town": "thornwick",
+   "path": [
+    "rogue",
+    "scout",
+    "duelist"
+   ],
+   "desc": "Thieves, spies and knives in the dark. Membership is never spoken of.",
+   "req": {
+    "classAny": [
+     "scout",
+     "rogue",
+     "duelist"
+    ],
+    "skills": {
+     "brawling": 5,
+     "haggling": 8
+    },
+    "coin": 150
+   },
+   "skills": [
+    "brawling",
+    "archery",
+    "haggling",
+    "thievery"
+   ]
+  },
+  {
+   "id": "hearth",
+   "name": "Crafters' Guild",
+   "icon": "🔨",
+   "town": "millbrook",
+   "path": [
+    "any"
+   ],
+   "desc": "Hearthstone Builders: masons, smiths and appraisers.",
+   "req": {
+    "skills": {
+     "carpentry": 8,
+     "smithing": 5
+    },
+    "coin": 120
+   },
+   "skills": [
+    "carpentry",
+    "smithing",
+    "alchemy",
+    "tailoring",
+    "masonry",
+    "appraisal"
+   ]
+  }
+ ],
+ "adventurers": {
+  "id": "adventurers",
+  "name": "Adventurers' Guild",
+  "icon": "⚔️",
+  "towns": [
+   "millbrook",
+   "thornwick"
+  ],
+  "desc": "Open to all, even sworn members of other guilds. Does not count toward the one-guild rule.",
+  "joinCost": 25,
+  "repPerQuest": "ceil(questCP/10)+1",
+  "ranks": [
+   {
+    "name": "F",
+    "rep": 0,
+    "cost": 0
+   },
+   {
+    "name": "E",
+    "rep": 30,
+    "cost": 50,
+    "unlocks": "questBoard"
+   },
+   {
+    "name": "D",
+    "rep": 90,
+    "cost": 120,
+    "unlocks": "appraisal"
+   },
+   {
+    "name": "C",
+    "rep": 200,
+    "cost": 250,
+    "unlocks": "storage"
+   },
+   {
+    "name": "B",
+    "rep": 400,
+    "cost": 500,
+    "unlocks": "healer"
+   },
+   {
+    "name": "A",
+    "rep": 800,
+    "cost": 1000
+   },
+   {
+    "name": "S",
+    "rep": 1600,
+    "cost": 2500
+   }
+  ],
+  "services": {
+   "questBoard": "Bounty board: guild bounty quests appear on the Map",
+   "appraisal": "Appraiser buys your loot at 100% value instead of 50%",
+   "storage": "Guild storage: +3 furniture slots & +2 follower room",
+   "healer": "Guild healer: injuries heal in 1 day"
+  }
+ }
+}

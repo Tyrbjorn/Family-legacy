@@ -1,0 +1,39 @@
+{
+ "secPerDayActive": 10,
+ "secPerDayOffline": 20,
+ "daysPerYear": 360,
+ "offlineCapHours": 8,
+ "offlineEffActive": 0.5,
+ "offlineEffIdle": 0.2,
+ "idleEff": 0.4,
+ "turboMult": 3,
+ "turboChargeRatio": 0.1,
+ "turboCapMin": 60,
+ "turboMinMin": 1,
+ "xpBase": 50,
+ "xpGrowth": 1.12,
+ "xpPerDay": 20,
+ "softCap": [
+  50,
+  75,
+  100
+ ],
+ "baseLifespan": 70,
+ "courtAge": 18,
+ "adultAge": 16,
+ "childEvery": 720,
+ "maxKidsPerCouple": 3,
+ "inheritShare": 0.1,
+ "buildCostMult": 2.2,
+ "upkeepPerBuildingMonth": 5,
+ "deadlyDeathChance": 0.05,
+ "autosaveSec": 30,
+ "rumorCost": 20,
+ "craftCost": {
+  "wood": 15,
+  "stone": 5
+ },
+ "craftDays": 5,
+ "buyMarkup": 1.5,
+ "sellRate": 0.5
+}

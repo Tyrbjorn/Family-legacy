@@ -1,0 +1,52 @@
+[
+ {
+  "id": "millbrook",
+  "name": "Millbrook Village",
+  "region": "outskirts",
+  "icon": "🏘️",
+  "prices": {
+   "food": 1,
+   "wood": 2,
+   "stone": 3,
+   "herbs": 4
+  },
+  "shop": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "buckler",
+   "quiver",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "flowers",
+   "chocolate"
+  ]
+ },
+ {
+  "id": "thornwick",
+  "name": "Thornwick Trading Post",
+  "region": "forest",
+  "icon": "⛺",
+  "prices": {
+   "food": 2,
+   "wood": 2,
+   "stone": 4,
+   "herbs": 6
+  },
+  "shop": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "kite_shield",
+   "spell_tome",
+   "chain_shirt",
+   "ranger_cloak",
+   "silver_locket",
+   "owl_feather",
+   "chocolate"
+  ]
+ }
+]

@@ -1,0 +1,417 @@
+[
+ {
+  "id": "fighter",
+  "name": "Fighter",
+  "tier": 0,
+  "stats": [
+   "STR",
+   "VIT"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "shield",
+   "brawling"
+  ],
+  "icon": "🗡️"
+ },
+ {
+  "id": "scout",
+  "name": "Scout",
+  "tier": 0,
+  "stats": [
+   "AGI",
+   "CHA"
+  ],
+  "cpSkills": [
+   "archery",
+   "hunting",
+   "foraging"
+  ],
+  "icon": "🏹"
+ },
+ {
+  "id": "apprentice",
+  "name": "Apprentice",
+  "tier": 0,
+  "stats": [
+   "INT",
+   "WIL"
+  ],
+  "cpSkills": [
+   "fire",
+   "frost",
+   "arcana"
+  ],
+  "icon": "🪄"
+ },
+ {
+  "id": "knight",
+  "name": "Knight",
+  "tier": 1,
+  "from": "fighter",
+  "req": {
+   "swordsmanship": 25,
+   "shield": 25
+  },
+  "cost": 500,
+  "stats": [
+   "STR",
+   "VIT"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "shield",
+   "leadership"
+  ],
+  "cpMult": 1.6,
+  "icon": "🛡️"
+ },
+ {
+  "id": "duelist",
+  "name": "Duelist",
+  "tier": 1,
+  "from": "fighter",
+  "req": {
+   "swordsmanship": 30,
+   "brawling": 20
+  },
+  "cost": 500,
+  "stats": [
+   "STR",
+   "AGI"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "brawling"
+  ],
+  "cpMult": 1.6,
+  "icon": "🤺"
+ },
+ {
+  "id": "ranger",
+  "name": "Ranger",
+  "tier": 1,
+  "from": "scout",
+  "req": {
+   "archery": 25,
+   "hunting": 25
+  },
+  "cost": 500,
+  "stats": [
+   "AGI",
+   "VIT"
+  ],
+  "cpSkills": [
+   "archery",
+   "hunting",
+   "foraging"
+  ],
+  "cpMult": 1.6,
+  "icon": "🌲"
+ },
+ {
+  "id": "rogue",
+  "name": "Rogue",
+  "tier": 1,
+  "from": "scout",
+  "req": {
+   "archery": 20,
+   "haggling": 25
+  },
+  "cost": 500,
+  "stats": [
+   "AGI",
+   "CHA"
+  ],
+  "cpSkills": [
+   "archery",
+   "brawling",
+   "haggling"
+  ],
+  "cpMult": 1.6,
+  "icon": "🗝️"
+ },
+ {
+  "id": "elementalist",
+  "name": "Elementalist",
+  "tier": 1,
+  "from": "apprentice",
+  "req": {
+   "fire": 25,
+   "frost": 25
+  },
+  "cost": 500,
+  "stats": [
+   "INT",
+   "WIL"
+  ],
+  "cpSkills": [
+   "fire",
+   "frost"
+  ],
+  "cpMult": 1.6,
+  "icon": "🌩️"
+ },
+ {
+  "id": "scholar",
+  "name": "Scholar",
+  "tier": 1,
+  "from": "apprentice",
+  "req": {
+   "arcana": 25,
+   "reading": 25
+  },
+  "cost": 500,
+  "stats": [
+   "INT",
+   "INT"
+  ],
+  "cpSkills": [
+   "arcana",
+   "reading",
+   "history"
+  ],
+  "cpMult": 1.6,
+  "icon": "🎓"
+ },
+ {
+  "id": "paladin",
+  "name": "Paladin",
+  "tier": 2,
+  "from": "knight",
+  "req": {
+   "swordsmanship": 45,
+   "faith": 20
+  },
+  "cost": 2000,
+  "guild": "church",
+  "guildRank": 2,
+  "stats": [
+   "STR",
+   "WIL"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "shield",
+   "faith"
+  ],
+  "cpMult": 2.4,
+  "icon": "⚜️"
+ },
+ {
+  "id": "blademaster",
+  "name": "Blademaster",
+  "tier": 2,
+  "from": "duelist",
+  "req": {
+   "swordsmanship": 50,
+   "tactics": 20
+  },
+  "cost": 2000,
+  "guild": "vanguard",
+  "guildRank": 2,
+  "stats": [
+   "STR",
+   "AGI"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "brawling",
+   "tactics"
+  ],
+  "cpMult": 2.4,
+  "icon": "🗡️"
+ },
+ {
+  "id": "beastmaster",
+  "name": "Beastmaster",
+  "tier": 2,
+  "from": "ranger",
+  "req": {
+   "hunting": 50,
+   "tracking": 20
+  },
+  "cost": 2000,
+  "guild": "lodge",
+  "guildRank": 2,
+  "stats": [
+   "AGI",
+   "VIT"
+  ],
+  "cpSkills": [
+   "archery",
+   "hunting",
+   "tracking"
+  ],
+  "cpMult": 2.4,
+  "icon": "🐺"
+ },
+ {
+  "id": "assassin",
+  "name": "Assassin",
+  "tier": 2,
+  "from": "rogue",
+  "req": {
+   "brawling": 40,
+   "thievery": 25
+  },
+  "cost": 2000,
+  "guild": "rogues",
+  "guildRank": 2,
+  "stats": [
+   "AGI",
+   "AGI"
+  ],
+  "cpSkills": [
+   "brawling",
+   "archery",
+   "thievery"
+  ],
+  "cpMult": 2.4,
+  "icon": "🥷"
+ },
+ {
+  "id": "pyromancer",
+  "name": "Pyromancer",
+  "tier": 2,
+  "from": "elementalist",
+  "req": {
+   "fire": 50,
+   "runecraft": 20
+  },
+  "cost": 2000,
+  "guild": "collegium",
+  "guildRank": 2,
+  "stats": [
+   "INT",
+   "WIL"
+  ],
+  "cpSkills": [
+   "fire",
+   "arcana",
+   "runecraft"
+  ],
+  "cpMult": 2.4,
+  "icon": "🔥"
+ },
+ {
+  "id": "archmage",
+  "name": "Archmage",
+  "tier": 2,
+  "from": "scholar",
+  "req": {
+   "arcana": 50,
+   "runecraft": 25
+  },
+  "cost": 2000,
+  "guild": "collegium",
+  "guildRank": 2,
+  "stats": [
+   "INT",
+   "WIL"
+  ],
+  "cpSkills": [
+   "arcana",
+   "reading",
+   "runecraft"
+  ],
+  "cpMult": 2.4,
+  "icon": "🧙"
+ },
+ {
+  "id": "warlord",
+  "name": "Warlord",
+  "tier": 2,
+  "from": "knight",
+  "req": {
+   "leadership": 40,
+   "tactics": 20
+  },
+  "cost": 2000,
+  "guild": "vanguard",
+  "guildRank": 2,
+  "stats": [
+   "STR",
+   "CHA"
+  ],
+  "cpSkills": [
+   "swordsmanship",
+   "leadership",
+   "tactics"
+  ],
+  "cpMult": 2.4,
+  "icon": "🚩"
+ },
+ {
+  "id": "priest",
+  "name": "Priest",
+  "tier": 2,
+  "from": "scholar",
+  "req": {
+   "healing": 45,
+   "faith": 25
+  },
+  "cost": 2000,
+  "guild": "church",
+  "guildRank": 2,
+  "stats": [
+   "WIL",
+   "INT"
+  ],
+  "cpSkills": [
+   "healing",
+   "faith",
+   "arcana"
+  ],
+  "cpMult": 2.4,
+  "icon": "✝️"
+ },
+ {
+  "id": "thief",
+  "name": "Master Thief",
+  "tier": 2,
+  "from": "rogue",
+  "req": {
+   "thievery": 40,
+   "haggling": 30
+  },
+  "cost": 2000,
+  "guild": "rogues",
+  "guildRank": 2,
+  "stats": [
+   "AGI",
+   "CHA"
+  ],
+  "cpSkills": [
+   "archery",
+   "haggling",
+   "thievery"
+  ],
+  "cpMult": 2.4,
+  "icon": "🦝"
+ },
+ {
+  "id": "warden",
+  "name": "Warden",
+  "tier": 2,
+  "from": "ranger",
+  "req": {
+   "foraging": 45,
+   "tracking": 20
+  },
+  "cost": 2000,
+  "guild": "lodge",
+  "guildRank": 2,
+  "stats": [
+   "AGI",
+   "WIL"
+  ],
+  "cpSkills": [
+   "archery",
+   "foraging",
+   "tracking"
+  ],
+  "cpMult": 2.4,
+  "icon": "🌳"
+ }
+]

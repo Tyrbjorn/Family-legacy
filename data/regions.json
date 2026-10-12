@@ -1,0 +1,14 @@
+[
+ {
+  "id": "outskirts",
+  "name": "Village Outskirts",
+  "cp": 10,
+  "icon": "🏘️"
+ },
+ {
+  "id": "forest",
+  "name": "Old Forest",
+  "cp": 50,
+  "icon": "🌲"
+ }
+]

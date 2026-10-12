@@ -1,0 +1,85 @@
+[
+ {
+  "id": "scrub",
+  "name": "Scrub Thicket",
+  "region": "outskirts",
+  "res": {
+   "wood": 2,
+   "food": 1
+  },
+  "skill": "foraging",
+  "icon": "🌿"
+ },
+ {
+  "id": "berries",
+  "name": "Berry Brambles",
+  "region": "outskirts",
+  "res": {
+   "food": 3
+  },
+  "skill": "foraging",
+  "icon": "🫐"
+ },
+ {
+  "id": "creek",
+  "name": "Creek Stones",
+  "region": "outskirts",
+  "res": {
+   "stone": 2
+  },
+  "skill": "mining",
+  "icon": "🪨"
+ },
+ {
+  "id": "herbpatch",
+  "name": "Herb Patch",
+  "region": "outskirts",
+  "res": {
+   "herbs": 2
+  },
+  "skill": "foraging",
+  "icon": "🌱"
+ },
+ {
+  "id": "oldmine",
+  "name": "Abandoned Mine",
+  "region": "outskirts",
+  "res": {
+   "stone": 4
+  },
+  "skill": "mining",
+  "icon": "⛏️",
+  "hidden": true
+ },
+ {
+  "id": "deadfall",
+  "name": "Deadfall Grove",
+  "region": "forest",
+  "res": {
+   "wood": 6
+  },
+  "skill": "carpentry",
+  "icon": "🪵"
+ },
+ {
+  "id": "gameTrail",
+  "name": "Game Trail",
+  "region": "forest",
+  "res": {
+   "food": 6
+  },
+  "skill": "hunting",
+  "icon": "🦌"
+ },
+ {
+  "id": "moonherbs",
+  "name": "Moonherb Glade",
+  "region": "forest",
+  "res": {
+   "herbs": 5
+  },
+  "skill": "alchemy",
+  "icon": "🌙",
+  "hidden": true
+ }
+]

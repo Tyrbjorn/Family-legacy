@@ -1,0 +1,903 @@
+[
+ {
+  "id": "rats",
+  "name": "Rats in the Cellar",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 25
+  },
+  "skill": "brawling",
+  "loot": []
+ },
+ {
+  "id": "letters",
+  "name": "Deliver Letters",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 20
+  },
+  "skill": "etiquette",
+  "loot": []
+ },
+ {
+  "id": "herbs",
+  "name": "Gather Herbs",
+  "region": "outskirts",
+  "type": "hunt",
+  "cp": 3,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 10,
+   "food": 10
+  },
+  "skill": "foraging",
+  "loot": [
+   "flowers"
+  ]
+ },
+ {
+  "id": "firewood",
+  "name": "Chop Firewood",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 3,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 15,
+   "wood": 15
+  },
+  "skill": "carpentry",
+  "loot": []
+ },
+ {
+  "id": "lostgoat",
+  "name": "Find the Lost Goat",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 5,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 35
+  },
+  "skill": "hunting",
+  "loot": [],
+  "hidden": true
+ },
+ {
+  "id": "wolves",
+  "name": "Wolf Pack",
+  "region": "outskirts",
+  "type": "hunt",
+  "cp": 10,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 60,
+   "food": 15
+  },
+  "skill": "hunting",
+  "loot": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "buckler",
+   "quiver",
+   "spell_tome",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "silver_locket",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit"
+  ]
+ },
+ {
+  "id": "quarry",
+  "name": "Clear the Old Quarry",
+  "region": "outskirts",
+  "type": "hunt",
+  "cp": 12,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 40,
+   "stone": 25
+  },
+  "skill": "mining",
+  "loot": []
+ },
+ {
+  "id": "bandit_scout",
+  "name": "Bandit Lookout",
+  "region": "outskirts",
+  "type": "hunt",
+  "cp": 15,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "swordsmanship",
+  "loot": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "buckler",
+   "quiver",
+   "spell_tome",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "silver_locket",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit"
+  ]
+ },
+ {
+  "id": "fair",
+  "name": "Harvest Fair Duty",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 8,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 50,
+   "food": 20
+  },
+  "skill": "haggling",
+  "loot": [
+   "chocolate"
+  ]
+ },
+ {
+  "id": "tutor",
+  "name": "Tutor the Miller's Son",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 10,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 55
+  },
+  "skill": "reading",
+  "loot": []
+ },
+ {
+  "id": "goblins",
+  "name": "Goblin Burrow",
+  "region": "outskirts",
+  "type": "dungeon",
+  "cp": 20,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 140
+  },
+  "skill": "swordsmanship",
+  "loot": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "buckler",
+   "quiver",
+   "spell_tome",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "silver_locket",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit"
+  ]
+ },
+ {
+  "id": "haunt",
+  "name": "Haunted Mill",
+  "region": "outskirts",
+  "type": "dungeon",
+  "cp": 25,
+  "days": 6,
+  "risk": "deadly",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "arcana",
+  "loot": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "buckler",
+   "quiver",
+   "spell_tome",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "silver_locket",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit"
+  ],
+  "hidden": true
+ },
+ {
+  "id": "caravan",
+  "name": "Escort the Caravan",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 30,
+  "days": 7,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "leadership",
+  "loot": [
+   "rusty_sword",
+   "hunting_bow",
+   "oak_staff",
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "buckler",
+   "quiver",
+   "spell_tome",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "padded_vest",
+   "leather_jerkin",
+   "apprentice_robe",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "copper_ring",
+   "wolf_tooth",
+   "silver_locket",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit"
+  ],
+  "hidden": true
+ },
+ {
+  "id": "mushrooms",
+  "name": "Glowcap Mushrooms",
+  "region": "forest",
+  "type": "hunt",
+  "cp": 50,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 80,
+   "food": 30
+  },
+  "skill": "alchemy",
+  "loot": [
+   "flowers"
+  ]
+ },
+ {
+  "id": "oaks",
+  "name": "Fell the Ironoaks",
+  "region": "forest",
+  "type": "hunt",
+  "cp": 55,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 70,
+   "wood": 60
+  },
+  "skill": "carpentry",
+  "loot": []
+ },
+ {
+  "id": "spiders",
+  "name": "Spider Hollow",
+  "region": "forest",
+  "type": "dungeon",
+  "cp": 65,
+  "days": 7,
+  "risk": "risky",
+  "reward": {
+   "coin": 260
+  },
+  "skill": "fire",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ]
+ },
+ {
+  "id": "dryad",
+  "name": "Bargain with a Dryad",
+  "region": "forest",
+  "type": "errand",
+  "cp": 60,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 150
+  },
+  "skill": "etiquette",
+  "loot": [
+   "chocolate"
+  ]
+ },
+ {
+  "id": "stag",
+  "name": "The White Stag",
+  "region": "forest",
+  "type": "hunt",
+  "cp": 75,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 300,
+   "food": 40
+  },
+  "skill": "archery",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ]
+ },
+ {
+  "id": "ruins",
+  "name": "Moss-Covered Ruins",
+  "region": "forest",
+  "type": "dungeon",
+  "cp": 85,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 350,
+   "stone": 40
+  },
+  "skill": "history",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ]
+ },
+ {
+  "id": "witch",
+  "name": "The Bog Witch",
+  "region": "forest",
+  "type": "dungeon",
+  "cp": 100,
+  "days": 9,
+  "risk": "deadly",
+  "reward": {
+   "coin": 600
+  },
+  "skill": "frost",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ],
+  "hidden": true
+ },
+ {
+  "id": "owlbear",
+  "name": "Owlbear Den",
+  "region": "forest",
+  "type": "hunt",
+  "cp": 95,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 420
+  },
+  "skill": "shield",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ]
+ },
+ {
+  "id": "shrine",
+  "name": "Cleanse the Shrine",
+  "region": "forest",
+  "type": "errand",
+  "cp": 70,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "healing",
+  "loot": [],
+  "hidden": true
+ },
+ {
+  "id": "poachers",
+  "name": "Drive off Poachers",
+  "region": "forest",
+  "type": "hunt",
+  "cp": 80,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 280
+  },
+  "skill": "archery",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ]
+ },
+ {
+  "id": "beasttome",
+  "name": "Catalogue Beasts",
+  "region": "forest",
+  "type": "errand",
+  "cp": 60,
+  "days": 7,
+  "risk": "safe",
+  "reward": {
+   "coin": 160
+  },
+  "skill": "monsterlore",
+  "loot": [],
+  "hidden": true
+ },
+ {
+  "id": "treant",
+  "name": "Elder Treant",
+  "region": "forest",
+  "type": "dungeon",
+  "cp": 130,
+  "days": 10,
+  "risk": "deadly",
+  "reward": {
+   "coin": 900,
+   "wood": 100
+  },
+  "skill": "fire",
+  "loot": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "steel_blade",
+   "elven_bow",
+   "frost_rod",
+   "knight_sabre",
+   "kite_shield",
+   "lucky_charm",
+   "grimoire",
+   "tower_shield",
+   "runed_orb",
+   "chain_shirt",
+   "ranger_cloak",
+   "mage_robe",
+   "scale_mail",
+   "shadow_leathers",
+   "archmage_mantle",
+   "plate_cuirass",
+   "owl_feather",
+   "ring_of_vigor",
+   "amulet_of_wit",
+   "gilded_brooch",
+   "signet_ring",
+   "moonstone",
+   "dragon_scale",
+   "phoenix_plume",
+   "heart_locket"
+  ],
+  "hidden": true
+ },
+ {
+  "id": "g_vanguard_patrol",
+  "name": "Vanguard Road Patrol",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 20,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 180
+  },
+  "skill": "tactics",
+  "loot": [
+   "vanguard_tabard"
+  ],
+  "guild": "vanguard",
+  "rank": 0
+ },
+ {
+  "id": "g_lodge_hunt",
+  "name": "Lodge Great Hunt",
+  "region": "forest",
+  "type": "guild",
+  "cp": 50,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 220,
+   "food": 60
+  },
+  "skill": "tracking",
+  "loot": [
+   "lodge_cloak"
+  ],
+  "guild": "lodge",
+  "rank": 0
+ },
+ {
+  "id": "g_collegium_rift",
+  "name": "Seal the Leyline Rift",
+  "region": "forest",
+  "type": "guild",
+  "cp": 60,
+  "days": 7,
+  "risk": "risky",
+  "reward": {
+   "coin": 300,
+   "herbs": 20
+  },
+  "skill": "runecraft",
+  "loot": [
+   "collegium_focus"
+  ],
+  "guild": "collegium",
+  "rank": 1
+ },
+ {
+  "id": "g_hearth_bridge",
+  "name": "Rebuild the Mill Bridge",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 10,
+  "days": 7,
+  "risk": "safe",
+  "reward": {
+   "coin": 200,
+   "stone": 40
+  },
+  "skill": "masonry",
+  "loot": [
+   "hearth_hammer"
+  ],
+  "guild": "hearth",
+  "rank": 0
+ },
+ {
+  "id": "g_vanguard_siege",
+  "name": "Break the Bandit Keep",
+  "region": "forest",
+  "type": "guild",
+  "cp": 110,
+  "days": 10,
+  "risk": "risky",
+  "reward": {
+   "coin": 900
+  },
+  "skill": "tactics",
+  "loot": [
+   "vanguard_greatsword"
+  ],
+  "guild": "vanguard",
+  "rank": 2
+ },
+ {
+  "id": "b_boars",
+  "name": "Bounty: Rampaging Boars",
+  "region": "outskirts",
+  "type": "bounty",
+  "cp": 12,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 120,
+   "food": 30
+  },
+  "skill": "hunting",
+  "loot": [
+   "adv_badge"
+  ],
+  "adv": 1
+ },
+ {
+  "id": "b_smugglers",
+  "name": "Bounty: Smuggler Ring",
+  "region": "outskirts",
+  "type": "bounty",
+  "cp": 35,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 320
+  },
+  "skill": "swordsmanship",
+  "loot": [],
+  "adv": 2
+ },
+ {
+  "id": "b_wyvern",
+  "name": "Bounty: Forest Wyvern",
+  "region": "forest",
+  "type": "bounty",
+  "cp": 120,
+  "days": 9,
+  "risk": "deadly",
+  "reward": {
+   "coin": 1200
+  },
+  "skill": "monsterlore",
+  "loot": [
+   "adv_pack"
+  ],
+  "adv": 4
+ },
+ {
+  "id": "g_rogues_heist",
+  "name": "The Moneylender's Vault",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 15,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "thievery",
+  "loot": [
+   "rogue_lockpicks"
+  ],
+  "guild": "rogues",
+  "rank": 0
+ },
+ {
+  "id": "g_church_plague",
+  "name": "Tend the Fever Ward",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 8,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 150,
+   "herbs": 15
+  },
+  "skill": "faith",
+  "loot": [
+   "church_symbol"
+  ],
+  "guild": "church",
+  "rank": 0
+ },
+ {
+  "id": "g_church_crypt",
+  "name": "Consecrate the Old Crypt",
+  "region": "forest",
+  "type": "guild",
+  "cp": 80,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 500
+  },
+  "skill": "faith",
+  "loot": [
+   "church_mace"
+  ],
+  "guild": "church",
+  "rank": 2
+ }
+]

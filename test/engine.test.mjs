@@ -1,0 +1,77 @@
+import fs from 'fs'; import * as E from '../js/engine.js';
+const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds'])D[n]=L(n);
+E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
+let pass=0;const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
+ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
+const t0=1_700_000_000_000; let s=E.newGame(t0);
+const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
+ok(f.skills.swordsmanship.lvl>0,'training gains levels ('+f.skills.swordsmanship.lvl+')');
+ok(s.turbo.charge===0,'active play does not charge turbo');
+E.advanceReal(s,10*400); ok(E.isAdult(f)&&s.pendingClass.includes(f.id),'founder comes of age, class pending');
+E.chooseClass(s,f.id,'fighter'); E.setAction(s,{type:'quest',target:'rats'}); const c0=s.res.coin; E.advanceReal(s,10*30); ok(s.res.coin>c0,'quests pay coin');
+// offline 14h
+const str=E.serialize(s,t0); const s2=E.deserialize(str); const d0=s2.day; const rep=E.applyOffline(s2,t0+14*3600e3);
+ok(rep.days===Math.floor(8*3600/20)&&s2.day-d0===rep.days,'offline capped at 8h → '+rep.days+' days');
+ok(s2.turbo.charge===3600,'14h away → 84min charge clipped to 60min cap');
+const s3=E.deserialize(E.serialize(s,t0)); E.applyOffline(s3,t0+2*3600e3); ok(Math.abs(s3.turbo.charge-720)<1,'2h away → 12 min turbo');
+ok(E.applyOffline(E.deserialize(E.serialize(s,t0)),t0-5000)===null,'negative elapsed ignored');
+// turbo: 3x incl aging
+const a=s3.members[0].ageDays,d=s3.day; E.toggleTurbo(s3); E.advanceReal(s3,60); ok(s3.day-d===18&&s3.members[0].ageDays-a===18&&Math.abs(s3.turbo.charge-660)<1e-6,'turbo 3x time & aging, burns 1s/s');
+// save roundtrip
+const s4=E.deserialize(E.serialize(s2,t0)); ok(JSON.stringify(s4.members)===JSON.stringify(s2.members),'save/load roundtrip');
+// marriage, kids, inheritance, death, game over
+s.res.coin=5000; s.suitors.push({id:'x',name:'Ysolde',gender:'f',cls:'scout',affinity:100,age:20});
+s.buildings.house=1; ok(E.propose(s,'x')&&s.members.length===2,'marriage adds playable spouse');
+s.buildings.house=3; s.res.food=1e6; for(let i=0;i<40&&s.members.length<3;i++) E.advanceReal(s,10*360);
+ok(s.members.length>=3,'child born'); const kid=s.members[2];
+f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&kid.cls,'child inherits 10% at 16 & gets class');
+ok(E.switchTo(s,kid.id)&&E.active(s)===kid,'switch members');
+E.setOrder(s,f.id,{type:'quest',target:'outskirts'}); E.advanceReal(s,100); ok(f.action&&f.action.type==='quest','idle standing order quests');
+E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on active death');
+for(const m of E.living(s)) E.kill(s,m,'test'); ok(s.gameOver,'game over when all die (no safety net)');
+const g=E.newGame(t0); ok(E.estateStage(g)==='Scrub Land'&&!E.established(g),'starts on scrub land');
+g.res.coin=500;g.res.wood=50; ok(E.build(g,'house')&&E.established(g)&&E.estateStage(g)==='Homestead','house establishes estate');
+const gm=E.active(g); E.setAction(g,{type:'gather',target:'creek'}); E.advanceReal(g,100); ok(g.res.stone>0,'gather from resource node');
+ok(E.buyItem(g,'millbrook','buckler')&&g.vault.includes('buckler'),'buy from town');
+ok(E.moveItem(g,gm,'buckler',true)&&E.equip(g,gm,'buckler','bag')&&gm.equip.offhand==='buckler','personal bag + equip');
+g.res.coin=1000; let rv=0; for(let i=0;i<20;i++) if(E.rumor(g,'outskirts')?.id) rv++; ok(rv>0&&g.revealed.length===rv,'rumors reveal hidden content'); ok(g.minions.length>0,'rumors can bring recruits');
+const h=E.newGame(t0); h.res.coin=1000; h.res.wood=100;
+ok(E.hire(h,'millbrook','laborer')&&h.minions.length===1&&h.res.coin===960,'hire minion in town');
+ok(!E.assignMinion(h,h.minions[0].uid,'gather'),'jobs locked until estate established');
+E.build(h,'house'); E.build(h,'farm'); ok(E.assignMinion(h,h.minions[0].uid,'farm'),'assign minion to farm');
+const f0=h.res.food; E.advanceReal(h,10*10); ok(h.res.food>f0,'farming minion adds food');
+while(E.minionRoom(h)) E.addMinion(h,'refugee','test'); ok(E.hire(h,'millbrook','laborer')===null,'minion cap enforced');
+const c1=h.res.coin; const wg=E.monthlyWages(h); h.day=29; h.acc=0; E.advanceReal(h,10); ok(wg>0&&Math.abs(h.res.coin-(c1-wg-5*2))<1e-6||h.res.coin<=c1-wg,'monthly wages paid');
+h.res.coin=0; for(let i=0;i<3;i++){h.res.coin=0;h.day=Math.ceil((h.day+1)/30)*30-1;E.advanceReal(h,10);} ok(h.minions.length===0,'unpaid minions leave');
+// guilds
+const G=E.newGame(t0); const gm2=G.members[0]; G.res.coin=1e5; E.advanceReal(G,10*360); E.chooseClass(G,gm2.id,'fighter');
+ok(D.guilds.guilds.length>=4&&D.guilds.guilds.every(g=>D.towns.some(t=>t.id===g.town)),'4-5 guilds, each in a town');
+ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked before joining');
+ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest locked before joining');
+gm2.skills.swordsmanship.lvl=5; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced');
+gm2.skills.swordsmanship.lvl=12; ok(E.joinGuild(G,gm2,'vanguard')&&gm2.guild.id==='vanguard','join guild');
+gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(!E.joinGuild(G,gm2,'hearth')&&E.joinIssues(G,gm2,'hearth')[0].startsWith('sworn'),'membership blocks other guilds');
+ok(E.setAction(G,{type:'train',target:'tactics'})!==false&&E.canTrain(gm2,'tactics'),'guild unlocks new skill');
+ok(!E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank-gated guild items');
+gm2.guild.rep=60; ok(E.rankUp(G,gm2)&&gm2.guild.rank===1&&E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank up unlocks special item');
+gm2.cls='knight'; gm2.skills.leadership.lvl=45; gm2.skills.tactics.lvl=25; const wl=D.classes.find(c=>c.id==='warlord');
+ok(!E.canEvolve(G,gm2,wl),'tier 2 needs guild rank'); gm2.guild.rep=200; E.rankUp(G,gm2); ok(E.evolve(G,gm2,'warlord')&&gm2.cls==='warlord','Adept Warrior unlocks Warlord');
+const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.skills.tactics;delete m.guild;} old._norm=false; E.normalize(old); ok(old.members[0].skills.tactics&&old.members[0].guild===null,'old saves migrate');
+// adventurers' guild
+ok(E.joinAdventurers(G,gm2)&&gm2.guild.id==='vanguard'&&gm2.adv.rank===0,"Adventurers' Guild joinable by a sworn guild member");
+const G2=E.newGame(t0); const am=G2.members[0]; am.ageDays=20*360; am.cls='scout'; am.skills.archery.lvl=12; G2.res.coin=1e5;
+ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
+ok(!E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'bounties locked at rank F');
+am.adv.rep=30; ok(E.advRankUp(G2,am)&&E.hasService(G2,'questBoard')&&E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'rank E unlocks quest board + bounty');
+const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===D.items[0].value&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
+ok(E.buyAdvItem(G2,am,'adv_blade'),'rank-gated adventurer items');
+// guild roster rework
+const ids=D.guilds.guilds.map(g=>g.id).sort().join(); ok(ids==='church,collegium,hearth,lodge,rogues,vanguard','six guilds: Warriors/Rangers/Magic/Healers/Rogues/Crafters');
+ok(D.guilds.guilds.every(g=>D.skills.some(k=>k.guild===g.id)&&D.quests.some(q=>q.guild===g.id)&&D.items.some(i=>i.guild===g.id)),'every guild has skill, quest and items');
+ok(D.classes.filter(c=>c.tier===2).every(c=>c.guild&&D.guilds.guilds.some(g=>g.id===c.guild)),'every tier 2 class gated by an existing guild');
+ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id==='assassin').guild==='rogues','Paladin→Healers, Assassin→Rogues');
+const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
+ok(E.joinGuild(H,hm,'church')&&E.canTrain(hm,'faith')&&!E.canTrain(hm,'thievery'),'Healers guild unlocks Faith, not Thievery');
+const O=JSON.parse(E.serialize(H,t0)); O.members[0].guild={id:'exchange',rank:1,rep:5}; O.vault.push('exchange_seal'); E.normalize(O); ok(O.members[0].guild===null&&!O.vault.includes('exchange_seal'),'old Exchange saves migrate cleanly');
+console.log(pass,'tests passed');

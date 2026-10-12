@@ -1,0 +1,173 @@
+{
+ "jobs": [
+  {
+   "id": "idle",
+   "name": "Idle",
+   "icon": "💤",
+   "desc": "No output, no fatigue"
+  },
+  {
+   "id": "farm",
+   "name": "Farming",
+   "icon": "🌾",
+   "needs": "farm",
+   "desc": "+food per day (×Farm level bonus)"
+  },
+  {
+   "id": "gather",
+   "name": "Gathering",
+   "icon": "🪵",
+   "desc": "+wood and stone per day"
+  },
+  {
+   "id": "herbs",
+   "name": "Herb Picking",
+   "icon": "🌱",
+   "desc": "+herbs per day"
+  },
+  {
+   "id": "guard",
+   "name": "Guarding",
+   "icon": "🛡️",
+   "desc": "+3% quest success each (max +15%), halves injury time"
+  },
+  {
+   "id": "craft",
+   "name": "Crafting",
+   "icon": "🔨",
+   "needs": "house",
+   "desc": "Slowly crafts gear from wood/stone"
+  },
+  {
+   "id": "tutor",
+   "name": "Tutoring",
+   "icon": "📖",
+   "needs": "library",
+   "desc": "+5% skill XP for family each (max +20%)"
+  }
+ ],
+ "types": [
+  {
+   "id": "laborer",
+   "name": "Laborer",
+   "icon": "🧑‍🌾",
+   "hire": 40,
+   "wage": 8,
+   "apt": {
+    "farm": 1.5,
+    "gather": 1.3
+   }
+  },
+  {
+   "id": "woodsman",
+   "name": "Woodsman",
+   "icon": "🪓",
+   "hire": 60,
+   "wage": 10,
+   "apt": {
+    "gather": 1.8,
+    "herbs": 1.2
+   }
+  },
+  {
+   "id": "herbalist",
+   "name": "Herbalist",
+   "icon": "🌿",
+   "hire": 70,
+   "wage": 12,
+   "apt": {
+    "herbs": 2,
+    "farm": 1.1
+   }
+  },
+  {
+   "id": "guard",
+   "name": "Sellsword",
+   "icon": "🗡️",
+   "hire": 120,
+   "wage": 20,
+   "apt": {
+    "guard": 1.6
+   }
+  },
+  {
+   "id": "tinker",
+   "name": "Tinker",
+   "icon": "🔧",
+   "hire": 100,
+   "wage": 15,
+   "apt": {
+    "craft": 1.8,
+    "gather": 1.1
+   }
+  },
+  {
+   "id": "tutor",
+   "name": "Wandering Scholar",
+   "icon": "🧙",
+   "hire": 150,
+   "wage": 25,
+   "apt": {
+    "tutor": 1.6,
+    "craft": 1.1
+   }
+  },
+  {
+   "id": "refugee",
+   "name": "Rescued Villager",
+   "icon": "🧍",
+   "hire": 0,
+   "wage": 4,
+   "apt": {
+    "farm": 1.2,
+    "gather": 1.2,
+    "herbs": 1.2
+   }
+  }
+ ],
+ "hireAt": {
+  "millbrook": [
+   "laborer",
+   "woodsman",
+   "herbalist",
+   "guard"
+  ],
+  "thornwick": [
+   "woodsman",
+   "guard",
+   "tinker",
+   "tutor"
+  ]
+ },
+ "rescueQuests": {
+  "bandit_scout": 0.4,
+  "goblins": 0.5,
+  "caravan": 0.4,
+  "spiders": 0.4,
+  "haunt": 0.5,
+  "ruins": 0.3
+ },
+ "rumorRecruitChance": 0.25,
+ "reputationEveryRenown": 150,
+ "baseCap": 2,
+ "capPerHouse": 2,
+ "loyaltyLossUnpaid": 34,
+ "names": [
+  "Odo",
+  "Pell",
+  "Wren",
+  "Marta",
+  "Gil",
+  "Nessa",
+  "Rook",
+  "Tam",
+  "Bess",
+  "Hob",
+  "Ilse",
+  "Quill",
+  "Sab",
+  "Ulf",
+  "Vera",
+  "Yorick"
+ ]
+}
