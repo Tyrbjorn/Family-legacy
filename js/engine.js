@@ -16,7 +16,7 @@ function newMember(s,{gender,age,cls=null,parents=null,stats}={}){
   gender=gender||(rng()<.5?'m':'f');
   const m={id:s.nextId++,name:r(NAMES[gender]),gender,ageDays:(age||0)*Y(),alive:true,cls,
     stats:stats||Object.fromEntries(STATS.map(k=>[k,5])),skills:{},traits:[],spouse:null,parents,
-    order:{type:'train',target:'swordsmanship'},action:null,injured:0,equip:{},bag:[],kids:0,lastChild:0,warned:false,diedDay:null};
+    order:{type:'train',target:'farming'},action:null,injured:0,equip:{},bag:[],kids:0,lastChild:0,warned:false,diedDay:null};
   m.traits=pickTraits(2);
   m.lifespan=T.baseLifespan+traitSum(m,'life')+Math.round((rng()-.5)*8);
   for(const sk of D.skills) m.skills[sk.id]={lvl:0,xp:0};
@@ -35,7 +35,7 @@ function _newGame(now){
     log:[],turbo:{charge:0,on:false},lastSave:now,cleared:[],explored:[],discovered:[],found:[],reserve:{...DEFAULT_RESERVE},paused:[],forSale:[],saleProg:0,unlocks:[],doneQuests:[],specialGranted:[],minions:[],repLevel:0,gameOver:false,suitors:[],renown:0,deeds:[],acc:0,pendingClass:[]};
   for(const b of D.buildings) s.buildings[b.id]=b.start;
   const f=newMember(s,{age:15}); s.members.push(f);
-  f.action={type:'train',target:'swordsmanship',progress:0};
+  f.action={type:'activity',target:'hiking',progress:0};
   log(s,`🏡 ${f.name} founds the family estate.`);
   return s;
 }
@@ -75,7 +75,7 @@ function xpMult(s,m,skillId){
   return mult;
 }
 export function gainXp(s,m,skillId,amt){
-  const k=m.skills[skillId]; if(!k) return;
+  const k=m.skills[skillId]; if(!k) return; if(!skillOpen(m,skillId)) return;
   if(k.lvl>=softCap(m)) amt*=0.1;
   k.xp+=amt*xpMult(s,m,skillId);
   while(k.xp>=xpNeed(k.lvl)){k.xp-=xpNeed(k.lvl);k.lvl++; if(k.lvl%10===0) log(s,`⭐ ${m.name} reached ${D.skills.find(x=>x.id===skillId).name} ${k.lvl}.`);
@@ -171,7 +171,7 @@ export function successChance(s,m,q){const c=cp(s,m);return Math.max(.1,Math.min
 
 function doAction(s,m,a,eff){
   if(!a) return;
-  if(a.type==='train'){ gainXp(s,m,a.target,T.xpPerDay*eff); }
+  if(a.type==='train'){ const t=themedFor(s,m,a.target); m.action=t?{type:'activity',target:t,progress:0}:defaultAction(s,m); return; }
   else if(a.type==='work'){ const c=(4+level(m)*0.5+m.skills.haggling.lvl*0.2)*eff*(1+traitSum(m,'coin'))*(1+furn(s).reduce((x,f)=>x+(f.bonus.coin||0),0)); s.res.coin+=c; gainXp(s,m,'haggling',T.xpPerDay*.3*eff); }
   else if(TRAVEL_TYPES.includes(a.type)){ travelTick(s,m,a,eff); }
   else if(a.type==='gather_'){ const n=D.nodes.find(x=>x.id===a.target); if(!n){m.action=null;return;} const mul=(1+m.skills[n.skill].lvl*0.03)*eff; for(const[k,v]of Object.entries(n.res)) s.res[k]=(s.res[k]||0)+v*mul; gainXp(s,m,n.skill,T.xpPerDay*.6*eff); }
@@ -357,7 +357,7 @@ function grantRewards(s,m,q){ const g=q.grants||{}; const out=[];
 function spawnSuitor(s){ const g=r(['m','f']); const su={id:'su'+s.day,name:r(NAMES[g]),gender:g,cls:r(D.classes.filter(c=>c.tier===0&&!c.line)).id,affinity:0,age:18+Math.floor(rng()*8)}; s.suitors.push(su); log(s,`💌 A suitor, ${su.name} the ${D.classes.find(c=>c.id===su.cls).name}, appeared in town.`); }
 
 // ---- player actions
-export function setAction(s,a){ const m=active(s); if(!m) return false; if(isBusy(m)&&a.type==='auto'){ m.standing=a.target; return true; } if(isBusy(m)&&a.type==='stopauto'){ m.standing=null; return true; } if(isBusy(m)&&!(m.action.type===a.type&&m.action.target===a.target)) return false; if(a.type==='stopauto'){ m.standing=null; return true; } if(isBusy(m)) return true; if(['train','job','activity','quest','court','gather','rest','explore','dungeon','auto'].includes(a.type)&&!actionAllowed(s,m,a)) return false; if(!m||!isAdult(m)&&a.type!=='rest'&&a.type!=='train') {} if(a.type==='auto'){ m.standing=a.target; m.action=null; standingTick(s,m); if(!m.action) m.action={type:'rest',progress:0}; return true; } m.standing=null; m.action={...a,progress:0}; if(TRAVEL_TYPES.includes(a.type)) m.action.trip=newTrip(m.action); }
+export function setAction(s,a){ const m=active(s); if(!m) return false; if(a&&a.type==='train'){ const t=themedFor(s,m,a.target); if(!t) return false; a={type:'activity',target:t}; } if(isBusy(m)&&a.type==='auto'){ m.standing=a.target; return true; } if(isBusy(m)&&a.type==='stopauto'){ m.standing=null; return true; } if(isBusy(m)&&!(m.action.type===a.type&&m.action.target===a.target)) return false; if(a.type==='stopauto'){ m.standing=null; return true; } if(isBusy(m)) return true; if(['train','job','activity','quest','court','gather','rest','explore','dungeon','auto'].includes(a.type)&&!actionAllowed(s,m,a)) return false; if(!m||!isAdult(m)&&a.type!=='rest'&&a.type!=='train') {} if(a.type==='auto'){ m.standing=a.target; m.action=null; standingTick(s,m); if(!m.action) m.action={type:'rest',progress:0}; return true; } m.standing=null; m.action={...a,progress:0}; if(TRAVEL_TYPES.includes(a.type)) m.action.trip=newTrip(m.action); }
 export function chooseClass(s,mid,cid){ const m=s.members.find(x=>x.id===mid); m.cls=cid; s.pendingClass=s.pendingClass.filter(x=>x!==mid); log(s,`🎓 ${m.name} became a ${cls(m).name}.`); }
 export const structReqOk=(s,reqs)=>(reqs||[]).every(r=>(s.structures||[]).some(st=>r.buildings.includes(st.type)&&(st.up||0)>=r.up));
 export const structReqText=reqs=>(reqs||[]).map(r=>r.buildings.map(id=>structDef(id).name).join('/')+(r.up?' upg '+r.up:'')).join(' + ');
@@ -381,8 +381,8 @@ export function equip(s,m,itemId,from='vault'){ const src=from==='bag'?m.bag:s.v
 export const sellValue=(s,it)=>Math.round(it.value*(hasService(s,'appraisal')?0.8:.5)*(1+eff(s,'saleBonus')));
 export function sell(s,itemId){ const i=s.vault.indexOf(itemId); if(i<0) return; s.vault.splice(i,1); s.res.coin+=sellValue(s,itemDef(itemId)); }
 export function defaultAction(s,m){ const age=ageY(m);
-  for(const id of age<12?['play','stories']:['hiking','sparring']){ const ac=D.activities.find(x=>x.id===id); if(ac&&activityOk(s,m,ac)) return {type:'activity',target:id,progress:0}; }
-  const sk=D.skills.find(k=>canTrain(m,k.id,s)); if(sk) return {type:'train',target:sk.id,progress:0}; return {type:'rest',progress:0}; }
+  for(const id of age<12?['play','stories']:['chores','hiking']){ const ac=D.activities.find(x=>x.id===id); if(ac&&activityOk(s,m,ac)) return {type:'activity',target:id,progress:0}; }
+  const ac=D.activities.find(x=>activityOk(s,m,x)); if(ac) return {type:'activity',target:ac.id,progress:0}; return {type:'rest',progress:0}; }
 export function switchTo(s,id){ const m=s.members.find(x=>x.id===id&&x.alive); if(!m) return false; s.activeId=id; s.needSuccession=false;
   if(!m.action&&m.order) m.action={type:m.order.type,target:m.order.target,progress:0};
   if(!m.action||!actionAllowed(s,m,m.action)) m.action=defaultAction(s,m); return true; }
@@ -495,7 +495,7 @@ function minionDay(s){
 
 // ---- guilds
 export function classGuild(cid){ let c=D.classes.find(x=>x.id===cid); while(c&&c.from) c=D.classes.find(x=>x.id===c.from); return c&&(D.guilds.guilds.find(g=>g.grantsClass===c.id||g.profession===c.id)||(D.guilds.adventurers.grantsClass===c.id?D.guilds.adventurers:null)); }
-export function normalize(s){ if(!s.unlocks) s.unlocks=[]; for(const k of ['explored','discovered','found','cleared']) if(!Array.isArray(s[k])) s[k]=[]; for(const mi of s.minions||[]){ if(!mi.special&&!mi.cls) mi.cls='n_peasant'; const mg=(D.minions.npcClassMigrate||{})[mi.cls]; if(mg) mi.cls=mg; } for(const st of s.structures||[]) if(st.up==null) st.up=0; s.reserve={...DEFAULT_RESERVE,...(s.reserve||{})}; if(!Array.isArray(s.paused)) s.paused=[]; s.pendingClass=[];
+export function normalize(s){ if(!s.unlocks) s.unlocks=[]; for(const m of s.members||[]){ const a=m.action; if(a&&a.type==='train'&&m.skills){ const t=themedFor(s,m,a.target); m.action=t?{type:'activity',target:t,progress:0}:null; } else if(a&&a.type==='activity'&&!(D.activities||[]).some(x=>x.id===a.target)) m.action=null; if(m.order&&m.order.type==='activity'&&!(D.activities||[]).some(x=>x.id===m.order.target)) m.order={type:'rest'}; } for(const k of ['explored','discovered','found','cleared']) if(!Array.isArray(s[k])) s[k]=[]; for(const mi of s.minions||[]){ if(!mi.special&&!mi.cls) mi.cls='n_peasant'; const mg=(D.minions.npcClassMigrate||{})[mi.cls]; if(mg) mi.cls=mg; } for(const st of s.structures||[]) if(st.up==null) st.up=0; s.reserve={...DEFAULT_RESERVE,...(s.reserve||{})}; if(!Array.isArray(s.paused)) s.paused=[]; s.pendingClass=[];
   for(const m of s.members){ if(m.guild&&m.guild.id==='hearth'){ m.craft={id:'hearth',rank:m.guild.rank,rep:m.guild.rep}; m.guild=null; if(!m.prof) m.prof='artisan'; delete m.title; }
     if(m.cls&&!m.guild&&(D.classes.find(c=>c.id===m.cls)||{}).line==='adventurer'){ if(!m.adv) m.adv={rank:0,rep:0}; }
     else if(m.cls&&!m.guild){ const g=classGuild(m.cls); if(g){ m.guild={id:g.id,rank:0,rep:0}; log(s,`📜 ${m.name} (${cls(m).name}) was enrolled in the ${g.name}.`); } } }
@@ -522,10 +522,21 @@ export function trainIssue(m,skillId,s){ const sk=D.skills.find(x=>x.id===skillI
   if(a<12) return 'age12'; if(sk.family==='magic'&&a<14) return 'age14'; return null; }
 export function canTrain(m,skillId,s,ignoreAge){ const i=trainIssue(m,skillId,s); return !i||(ignoreAge&&i.startsWith('age')); }
 export const jobOk=(m,j)=>ageY(m)>=j.minAge;
+export const clsLine=id=>{ const out=[]; let c=id&&D.classes.find(x=>x.id===id); while(c&&!out.includes(c.id)){ out.push(c.id); c=c.from&&D.classes.find(x=>x.id===c.from); } return out; };
+export const inLine=(m,cid)=>[m.cls,m.prof].some(x=>x&&clsLine(x).includes(cid));
+export const ownsItem=(s,m,id)=>(s.vault||[]).some(x=>x===id||String(x).endsWith(id))||(m.bag||[]).includes(id)||Object.values(m.equip||{}).includes(id);
+export function srcOk(s,m,u,ac){ if(u.cls) return inLine(m,u.cls); if(u.piece) return hasPiece(s,u.piece); if(u.item) return ownsItem(s,m,u.item);
+  if(u.guild){ const g=memberGuild(m,u.guild); return !!g&&(g.rank||0)>=(u.rank||0); } if(u.quest) return (s.unlocks||[]).includes('activity:'+ac.id)||(s.doneQuests||[]).includes(u.quest); if(u.building) return bl(s,u.building)>0; return true; }
+export function srcText(u){ if(u.cls) return (D.classes.find(c=>c.id===u.cls)||{}).name+' line'; if(u.piece) return (ES().pieces.find(p=>p.id===u.piece)||{}).name||u.piece; if(u.item) return (itemDef(u.item)||{}).name||u.item;
+  if(u.guild) return ((guildDef(u.guild)||{}).name||u.guild)+((u.rank||0)?' rank '+((u.rank||0)+1):''); if(u.quest) return 'quest “'+((D.quests.find(q=>q.id===u.quest)||{}).name||u.quest)+'”'; if(u.building) return 'build '+((D.buildings.find(b=>b.id===u.building)||{}).name||u.building); return ''; }
+export const activityReq=ac=>!ac.unlock?'':'Requires: '+[].concat(ac.unlock).map(srcText).join(' or ');
+export function skillOpen(m,skillId){ const x=(D.skills.find(k=>k.id===skillId)||{}).exclusive; if(!x) return true; return x.guilds.some(g=>memberGuild(m,g)||(g==='adventurers'&&m.adv))||x.classes.some(c=>inLine(m,c)); }
+export function themedFor(s,m,skillId){ const ok=D.activities.filter(ac=>ac.skills.includes(skillId)&&activityOk(s,m,ac)); return ok.length?ok[ok.length-1].id:null; }
 export function activityOk(s,m,ac){ const a=ageY(m); if(a<ac.minAge||(ac.maxAge&&a>ac.maxAge)) return false; const u=ac.unlock; if(!u) return true;
+  if(Array.isArray(u)) return u.some(x=>srcOk(s,m,x,ac)); return srcOk(s,m,u,ac);
   if(u.guild){ const g=memberGuild(m,u.guild); return !!g&&(g.rank||0)>=(u.rank||0); } if(u.quest) return (s.unlocks||[]).includes('activity:'+ac.id); if(u.building) return bl(s,u.building)>0; return true; }
 export function actionAllowed(s,m,a){ if(!a) return false; const t=a.type;
-  if(t==='train') return canTrain(m,a.target,s); if(t==='job') return jobOk(m,D.jobs.find(j=>j.id===a.target)||{minAge:99});
+  if(t==='train') return !!themedFor(s,m,a.target); if(t==='job') return jobOk(m,D.jobs.find(j=>j.id===a.target)||{minAge:99});
   if(t==='activity'){ const ac=D.activities.find(x=>x.id===a.target); return !!ac&&activityOk(s,m,ac); }
   if(t==='rest') return true; if(t==='gather'){ const n=D.nodes.find(x=>x.id===a.target); return ageY(m)>=10&&(!n||(known(s,n)&&regionOpen(s,n.region))); }
   if(t==='quest'){ const q=D.quests.find(x=>x.id===a.target); return !!q&&isAdult(m)&&!questIssue(s,m,q); }

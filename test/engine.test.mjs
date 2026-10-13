@@ -6,7 +6,7 @@ let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.r
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
 const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
-ok(f.skills.swordsmanship.lvl>0,'training gains levels ('+f.skills.swordsmanship.lvl+')');
+ok(Object.values(f.skills).some(k=>k.lvl>0),'activities gain levels');
 ok(s.turbo.charge===0,'active play does not charge turbo');
 E.advanceReal(s,10*400); ok(E.isAdult(f)&&!f.cls&&!s.pendingClass.length,'founder comes of age still classless (no auto pick at 16)');
 E.chooseClass(s,f.id,'fighter'); E.setAction(s,{type:'quest',target:'rats'}); const c0=s.res.coin; E.advanceReal(s,10*30); ok(s.res.coin>c0,'quests pay coin');
@@ -50,7 +50,7 @@ h.res.coin=0; for(let i=0;i<3;i++){h.res.coin=0;h.res.food=500;h.day=Math.ceil((
 // guilds
 const G=E.newGame(t0); const gm2=G.members[0]; G.res.coin=1e5; E.advanceReal(G,10*360); E.chooseClass(G,gm2.id,'fighter');
 ok(D.guilds.guilds.length>=4&&D.guilds.guilds.every(g=>D.towns.some(t=>t.id===g.town)),'4-5 guilds, each in a town');
-ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked before joining');
+{ const _c=gm2.cls; gm2.cls=null; ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked before joining'); gm2.cls=_c; }
 ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest locked before joining');
 gm2.skills.swordsmanship.lvl=5; const _st=gm2.stats.STR; gm2.stats.STR=1; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced'); gm2.stats.STR=_st;
 gm2.skills.swordsmanship.lvl=12; ok(E.joinGuild(G,gm2,'vanguard')&&gm2.guild.id==='vanguard','join guild');
@@ -75,7 +75,7 @@ const ids=D.guilds.guilds.map(g=>g.id).sort().join(); ok(ids==='church,collegium
 ok(D.guilds.guilds.every(g=>D.skills.some(k=>k.guild===g.id)&&D.quests.some(q=>q.guild===g.id)&&D.items.some(i=>i.guild===g.id)),'every guild has skill, quest and items');
 ok(D.classes.filter(c=>c.tier===2).every(c=>(c.guild&&D.guilds.guilds.some(g=>g.id===c.guild))||c.advRank!=null||c.crafterRank!=null),'every tier 2 class gated by guild, adventurer or crafter rank');
 ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id==='assassin').guild==='rogues','Paladin→Healers, Assassin→Rogues');
-const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
+const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.faith.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
 ok(E.joinGuild(H,hm,'church')&&E.canTrain(hm,'faith')&&!E.canTrain(hm,'thievery'),'Healers guild unlocks Faith, not Thievery');
 const O=JSON.parse(E.serialize(H,t0)); O.members[0].guild={id:'exchange',rank:1,rep:5}; O.vault.push('exchange_seal'); E.normalize(O); ok(O.members[0].guild===null&&!O.vault.includes('exchange_seal'),'old Exchange saves migrate cleanly');
 // playtest feedback round
@@ -89,7 +89,7 @@ ok(kd.res.coin>c0k&&km.stats.CHA>ch0&&km.skills.haggling.lvl+km.skills.haggling.
 const kidPay=kd.res.coin-c0k; const ad=E.newGame(t0); const am2=ad.members[0]; am2.ageDays=20*360; const c1a=ad.res.coin; E.setAction(ad,{type:'job',target:'shop'}); E.advanceReal(ad,10*30); ok(ad.res.coin-c1a>kidPay*2,'adult job pays more');
 ok(E.setAction(kd,{type:'job',target:'docks'})===false,'docks need age 12');
 ok(E.setAction(kd,{type:'train',target:'swordsmanship'})===false&&E.setAction(kd,{type:'activity',target:'play'})!==false,'children: activities not direct training');
-km.ageDays=12*360; ok(E.setAction(kd,{type:'train',target:'swordsmanship'})!==false&&E.setAction(kd,{type:'train',target:'fire'})===false,'teens train; magic waits till 14');
+km.ageDays=12*360; ok(E.setAction(kd,{type:'train',target:'farming'})!==false&&E.setAction(kd,{type:'train',target:'fire'})===false,'teens train; magic waits till 14');
 ok(E.setAction(kd,{type:'activity',target:'play'})===false,'Play Outside ends after childhood');
 ok(E.setAction(kd,{type:'activity',target:'fishing'})===false,'Fishing locked before its quest');
 const qr=D.quests.filter(q=>q.unlocks); ok(qr.length>=5&&qr.length<=12,'5-12 quests grant unlocks');
@@ -182,7 +182,7 @@ E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'id
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
 ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===3,'Renown + Manor → Era 3 indicator');
-ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'archery'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
+ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'farming'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
 for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
 { const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
  m.guild={id:'vanguard',rank:0,rep:0}; ok(E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill'))&&!E.activityOk(T2,m,D.activities.find(a=>a.id==='masterkata')),'guild rank gates advanced vs master');
@@ -381,4 +381,20 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const tw=E.buildStructure(K,'magestower'); ok(E.structName(tw)==="Hedge Mage's Hut",'magic chain starts as Hedge Mage\'s Hut'); tw.up=2; ok(E.structName(tw)==="Mage's Tower",'→ Mage\'s Tower');
  const ws=E.buildStructure(K,'smithy'); ws.up=3; ok(E.specialize(K,ws.uid,'tradinghouse')&&E.eff(K,'saleBonus')>=0.1,'Workshop → Guild Hall → Trading House specialty bonus');
  sh.spec=null; ok(E.specialize(K,sh.uid,'temple')&&E.structName(sh)==='Temple','Shrine → Chapel → Temple'); }
+// themed activities, unlock sources, exclusive skills
+{ const AC=D.activities; ok(!AC.some(a=>/^train /i.test(a.name)),'no generic Train X activities');
+ ok(D.skills.every(k=>AC.some(a=>a.skills.includes(k.id))),'every skill has a themed activity');
+ ok(['play','stories','chores','hiking'].every(id=>!AC.find(a=>a.id===id).unlock),'starter activities need no unlock');
+ const X=E.newGame(t0); const m=X.members[0]; m.ageDays=20*360; m.cls=null; m.guild=null; const orb=AC.find(a=>a.id==='orb');
+ ok(!E.activityOk(X,m,orb)&&E.activityReq(orb).startsWith('Requires:')&&E.activityReq(orb).includes(' or '),'Ponder the Orb locked, shows alternatives');
+ X.vault.push('runed_orb'); ok(E.activityOk(X,m,orb),'Orb item unlocks Ponder the Orb'); X.vault.pop();
+ m.cls='apprentice'; ok(E.activityOk(X,m,orb),'Mage-line class unlocks Ponder the Orb'); m.cls='elementalist'; ok(E.activityOk(X,m,orb)&&E.inLine(m,'apprentice'),'class line counts (Elementalist)');
+ m.cls=null; const pl=AC.find(a=>a.id==='pells'); ok(!E.activityOk(X,m,pl),'Pells need furniture'); estate(X,['pells'],'shack'); ok(E.activityOk(X,m,pl),'Training Pells unlock Spar at the Pells');
+ const lo=AC.find(a=>a.id==='locks'); ok(lo.signature&&!E.activityOk(X,m,lo),'signature activity locked for others');
+ m.cls='fighter'; ok(!E.skillOpen(m,'thievery')&&!E.skillOpen(m,'fire')&&!E.skillOpen(m,'healing')&&E.skillOpen(m,'tactics'),'Fighter can\'t learn Thievery/Fire/Healing; can learn Tactics');
+ const t0x=m.skills.thievery.xp+m.skills.thievery.lvl; E.gainXp(X,m,'thievery',500); ok(m.skills.thievery.xp+m.skills.thievery.lvl===t0x,'exclusive skill XP blocked for other classes');
+ m.cls='cutpurse'; ok(E.skillOpen(m,'thievery')&&E.activityOk(X,m,lo)&&!E.skillOpen(m,'tactics'),'Cutpurse line opens Thievery, not Tactics');
+ const lines=['fighter','hunter','apprentice','acolyte','cutpurse','adventurer','artisan']; ok(lines.every(c=>D.skills.some(k=>k.exclusive&&k.exclusive.classes.includes(c))),'every class line has an exclusive skill');
+ const W=E.newGame(t0); const wm=W.members[0]; wm.ageDays=20*360; wm.action={type:'train',target:'farming'}; E.normalize(W); ok(wm.action.type==='activity'&&wm.action.target==='chores','old Train action migrates to a themed activity');
+ wm.action={type:'activity',target:'sparring'}; E.normalize(W); ok(!wm.action,'removed activity cleared on load'); }
 console.log(pass,'tests passed');

@@ -18,7 +18,15 @@
   "name": "Shield",
   "family": "combat",
   "stat": "VIT",
-  "icon": "🛡️"
+  "icon": "🛡️",
+  "exclusive": {
+   "guilds": [
+    "vanguard"
+   ],
+   "classes": [
+    "fighter"
+   ]
+  }
  },
  {
   "id": "brawling",
@@ -32,21 +40,45 @@
   "name": "Fire Magic",
   "family": "magic",
   "stat": "INT",
-  "icon": "🔥"
+  "icon": "🔥",
+  "exclusive": {
+   "guilds": [
+    "collegium"
+   ],
+   "classes": [
+    "apprentice"
+   ]
+  }
  },
  {
   "id": "frost",
   "name": "Frost Magic",
   "family": "magic",
   "stat": "INT",
-  "icon": "❄️"
+  "icon": "❄️",
+  "exclusive": {
+   "guilds": [
+    "collegium"
+   ],
+   "classes": [
+    "apprentice"
+   ]
+  }
  },
  {
   "id": "healing",
   "name": "Healing",
   "family": "magic",
   "stat": "WIL",
-  "icon": "✨"
+  "icon": "✨",
+  "exclusive": {
+   "guilds": [
+    "church"
+   ],
+   "classes": [
+    "acolyte"
+   ]
+  }
  },
  {
   "id": "arcana",
@@ -82,7 +114,15 @@
   "name": "Tailoring",
   "family": "craft",
   "stat": "AGI",
-  "icon": "🧵"
+  "icon": "🧵",
+  "exclusive": {
+   "guilds": [
+    "hearth"
+   ],
+   "classes": [
+    "artisan"
+   ]
+  }
  },
  {
   "id": "foraging",
@@ -147,7 +187,13 @@
   "family": "lore",
   "stat": "WIL",
   "icon": "🐉",
-  "unlockQuest": "beasttome"
+  "unlockQuest": "beasttome",
+  "exclusive": {
+   "guilds": [],
+   "classes": [
+    "adventurer"
+   ]
+  }
  },
  {
   "id": "tactics",
@@ -155,7 +201,15 @@
   "family": "combat",
   "stat": "INT",
   "icon": "♟️",
-  "guild": "vanguard"
+  "guild": "vanguard",
+  "exclusive": {
+   "guilds": [
+    "vanguard"
+   ],
+   "classes": [
+    "fighter"
+   ]
+  }
  },
  {
   "id": "tracking",
@@ -163,7 +217,15 @@
   "family": "gathering",
   "stat": "AGI",
   "icon": "🐾",
-  "guild": "lodge"
+  "guild": "lodge",
+  "exclusive": {
+   "guilds": [
+    "lodge"
+   ],
+   "classes": [
+    "hunter"
+   ]
+  }
  },
  {
   "id": "runecraft",
@@ -171,7 +233,15 @@
   "family": "magic",
   "stat": "INT",
   "icon": "ᚱ",
-  "guild": "collegium"
+  "guild": "collegium",
+  "exclusive": {
+   "guilds": [
+    "collegium"
+   ],
+   "classes": [
+    "apprentice"
+   ]
+  }
  },
  {
   "id": "appraisal",
@@ -203,7 +273,15 @@
   "family": "social",
   "stat": "AGI",
   "icon": "🧤",
-  "guild": "rogues"
+  "guild": "rogues",
+  "exclusive": {
+   "guilds": [
+    "rogues"
+   ],
+   "classes": [
+    "cutpurse"
+   ]
+  }
  },
  {
   "id": "animal",

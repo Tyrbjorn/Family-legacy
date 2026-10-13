@@ -1345,7 +1345,8 @@
     "minionbunk",
     "storage",
     "toolrack",
-    "shrine"
+    "shrine",
+    "pells"
    ],
    "cost": {
     "coin": 300,
@@ -2384,6 +2385,18 @@
     "rumorDiscount": 0.5
    },
    "desc": "Rumors cost half; adventuring followers share tips (+10%)"
+  },
+  {
+   "id": "pells",
+   "name": "Training Pells",
+   "icon": "🪵",
+   "kind": "station",
+   "cost": {
+    "coin": 25,
+    "wood": 20
+   },
+   "bonus": {},
+   "desc": "Posts and straw dummies: unlocks Spar at the Pells and Loose at the Butts"
   }
  ],
  "synergies": [

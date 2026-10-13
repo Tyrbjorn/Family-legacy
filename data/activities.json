@@ -30,6 +30,20 @@
   "tier": "basic"
  },
  {
+  "id": "chores",
+  "name": "Do the Chores",
+  "icon": "🧹",
+  "minAge": 6,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Do the Chores"
+ },
+ {
   "id": "hiking",
   "name": "Hiking",
   "icon": "🥾",
@@ -41,20 +55,6 @@
    "nature"
   ],
   "desc": "Endurance (VIT) and Nature Knowledge",
-  "tier": "basic"
- },
- {
-  "id": "sparring",
-  "name": "Sparring",
-  "icon": "🤺",
-  "minAge": 12,
-  "stats": {
-   "STR": 0.02
-  },
-  "skills": [
-   "swordsmanship"
-  ],
-  "desc": "Practice bouts with wooden swords",
   "tier": "basic"
  },
  {
@@ -71,9 +71,14 @@
    "nature"
   ],
   "desc": "Dexterity (AGI) and Fishing; brings home a little food",
-  "unlock": {
-   "quest": "q_river"
-  },
+  "unlock": [
+   {
+    "quest": "q_river"
+   },
+   {
+    "piece": "fishrack"
+   }
+  ],
   "tier": "advanced"
  },
  {
@@ -87,7 +92,7 @@
   },
   "skills": [
    "arcana",
-   "healing"
+   "history"
   ],
   "desc": "Still the mind",
   "unlock": {
@@ -125,9 +130,9 @@
    "VIT": 0.01
   },
   "skills": [
-   "healing",
    "faith",
-   "leadership"
+   "leadership",
+   "reading"
   ],
   "desc": "Night vigils (Faith needs Healers' Guild)",
   "unlock": {
@@ -166,8 +171,8 @@
    "VIT": 0.015
   },
   "skills": [
-   "shield",
-   "swordsmanship"
+   "swordsmanship",
+   "brawling"
   ],
   "desc": "Needs a Training Yard",
   "unlock": {
@@ -222,10 +227,15 @@
    "tactics"
   ],
   "desc": "Warriors' Guild drill",
-  "unlock": {
-   "guild": "vanguard",
-   "rank": 0
-  }
+  "unlock": [
+   {
+    "guild": "vanguard",
+    "rank": 0
+   },
+   {
+    "cls": "fighter"
+   }
+  ]
  },
  {
   "id": "rangecourse",
@@ -242,10 +252,15 @@
    "tracking"
   ],
   "desc": "Rangers' Guild course",
-  "unlock": {
-   "guild": "lodge",
-   "rank": 0
-  }
+  "unlock": [
+   {
+    "guild": "lodge",
+    "rank": 0
+   },
+   {
+    "cls": "hunter"
+   }
+  ]
  },
  {
   "id": "lecture",
@@ -262,10 +277,15 @@
    "fire"
   ],
   "desc": "Magic guild lecture",
-  "unlock": {
-   "guild": "collegium",
-   "rank": 0
-  }
+  "unlock": [
+   {
+    "guild": "collegium",
+    "rank": 0
+   },
+   {
+    "cls": "apprentice"
+   }
+  ]
  },
  {
   "id": "liturgy",
@@ -282,10 +302,15 @@
    "healing"
   ],
   "desc": "Church liturgy",
-  "unlock": {
-   "guild": "church",
-   "rank": 0
-  }
+  "unlock": [
+   {
+    "guild": "church",
+    "rank": 0
+   },
+   {
+    "cls": "acolyte"
+   }
+  ]
  },
  {
   "id": "shadowrun",
@@ -299,13 +324,18 @@
   },
   "skills": [
    "thievery",
-   "tracking"
+   "haggling"
   ],
   "desc": "Rogues' Guild rooftop runs",
-  "unlock": {
-   "guild": "rogues",
-   "rank": 0
-  }
+  "unlock": [
+   {
+    "guild": "rogues",
+    "rank": 0
+   },
+   {
+    "cls": "cutpurse"
+   }
+  ]
  },
  {
   "id": "masterkata",
@@ -429,11 +459,726 @@
   },
   "skills": [
    "nature",
-   "healing"
+   "alchemy"
   ],
   "unlock": {
    "quest": "st6"
   },
   "desc": "Walk the dryad groves (Story ch. 6)"
+ },
+ {
+  "id": "pells",
+  "name": "Spar at the Pells",
+  "icon": "⚔️",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "swordsmanship"
+  ],
+  "tier": "basic",
+  "desc": "Spar at the Pells",
+  "unlock": [
+   {
+    "piece": "pells"
+   },
+   {
+    "cls": "fighter"
+   },
+   {
+    "guild": "vanguard",
+    "rank": 0
+   }
+  ]
+ },
+ {
+  "id": "scuffle",
+  "name": "Tavern Scuffle",
+  "icon": "👊",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "brawling"
+  ],
+  "tier": "basic",
+  "desc": "Tavern Scuffle"
+ },
+ {
+  "id": "butts",
+  "name": "Loose at the Butts",
+  "icon": "🎯",
+  "minAge": 12,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "archery"
+  ],
+  "tier": "basic",
+  "desc": "Loose at the Butts",
+  "unlock": [
+   {
+    "piece": "pells"
+   },
+   {
+    "cls": "hunter"
+   },
+   {
+    "guild": "lodge",
+    "rank": 0
+   }
+  ]
+ },
+ {
+  "id": "shieldwall",
+  "name": "Hold the Shield Wall",
+  "icon": "🛡️",
+  "minAge": 16,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "shield"
+  ],
+  "tier": "basic",
+  "desc": "Hold the Shield Wall",
+  "unlock": [
+   {
+    "cls": "fighter"
+   },
+   {
+    "guild": "vanguard",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "stalk",
+  "name": "Stalk Game",
+  "icon": "🦌",
+  "minAge": 12,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "hunting"
+  ],
+  "tier": "basic",
+  "desc": "Stalk Game",
+  "unlock": [
+   {
+    "piece": "gamerack"
+   },
+   {
+    "cls": "hunter"
+   },
+   {
+    "guild": "lodge",
+    "rank": 0
+   }
+  ]
+ },
+ {
+  "id": "tracks",
+  "name": "Read the Tracks",
+  "icon": "👣",
+  "minAge": 14,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "tracking"
+  ],
+  "tier": "basic",
+  "desc": "Read the Tracks",
+  "unlock": [
+   {
+    "cls": "hunter"
+   },
+   {
+    "guild": "lodge",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "orb",
+  "name": "Ponder the Orb",
+  "icon": "🔮",
+  "minAge": 14,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "arcana"
+  ],
+  "tier": "basic",
+  "desc": "Ponder the Orb",
+  "unlock": [
+   {
+    "item": "runed_orb"
+   },
+   {
+    "item": "stormglass_orb"
+   },
+   {
+    "piece": "arcanefocus"
+   },
+   {
+    "cls": "apprentice"
+   }
+  ]
+ },
+ {
+  "id": "kindle",
+  "name": "Kindle the Brazier",
+  "icon": "🔥",
+  "minAge": 16,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "fire"
+  ],
+  "tier": "basic",
+  "desc": "Kindle the Brazier",
+  "unlock": [
+   {
+    "cls": "apprentice"
+   },
+   {
+    "guild": "collegium",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "frostglass",
+  "name": "Breathe on Frostglass",
+  "icon": "❄️",
+  "minAge": 16,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "frost"
+  ],
+  "tier": "basic",
+  "desc": "Breathe on Frostglass",
+  "unlock": [
+   {
+    "cls": "apprentice"
+   },
+   {
+    "guild": "collegium",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "runes",
+  "name": "Carve Runes",
+  "icon": "ᚱ",
+  "minAge": 16,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "runecraft"
+  ],
+  "tier": "basic",
+  "desc": "Carve Runes",
+  "unlock": [
+   {
+    "cls": "apprentice"
+   },
+   {
+    "guild": "collegium",
+    "rank": 1
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "altar",
+  "name": "Pray at the Altar",
+  "icon": "🙏",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "faith"
+  ],
+  "tier": "basic",
+  "desc": "Pray at the Altar",
+  "unlock": [
+   {
+    "piece": "altar"
+   },
+   {
+    "piece": "shrine"
+   },
+   {
+    "cls": "acolyte"
+   },
+   {
+    "guild": "church",
+    "rank": 0
+   }
+  ]
+ },
+ {
+  "id": "layhands",
+  "name": "Lay on Hands",
+  "icon": "✋",
+  "minAge": 16,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "healing"
+  ],
+  "tier": "basic",
+  "desc": "Lay on Hands",
+  "unlock": [
+   {
+    "cls": "acolyte"
+   },
+   {
+    "guild": "church",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "tinker",
+  "name": "Tinker at the Workbench",
+  "icon": "🔧",
+  "minAge": 10,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "carpentry"
+  ],
+  "tier": "basic",
+  "desc": "Tinker at the Workbench",
+  "unlock": [
+   {
+    "piece": "workbench"
+   },
+   {
+    "piece": "sawtable"
+   }
+  ]
+ },
+ {
+  "id": "forgework",
+  "name": "Work the Forge",
+  "icon": "🔨",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "smithing"
+  ],
+  "tier": "basic",
+  "desc": "Work the Forge",
+  "unlock": [
+   {
+    "piece": "forge"
+   },
+   {
+    "cls": "artisan"
+   }
+  ]
+ },
+ {
+  "id": "anvilmaster",
+  "name": "Temper at the Steel Anvil",
+  "icon": "⚒️",
+  "minAge": 16,
+  "stats": {
+   "STR": 0.02,
+   "VIT": 0.015
+  },
+  "skills": [
+   "smithing",
+   "masonry"
+  ],
+  "tier": "advanced",
+  "desc": "Temper at the Steel Anvil",
+  "unlock": [
+   {
+    "piece": "steelanvil"
+   }
+  ]
+ },
+ {
+  "id": "loomwork",
+  "name": "Stitch Fine Garments",
+  "icon": "🧵",
+  "minAge": 14,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "tailoring"
+  ],
+  "tier": "basic",
+  "desc": "Stitch Fine Garments",
+  "unlock": [
+   {
+    "cls": "artisan"
+   },
+   {
+    "guild": "hearth",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "brew",
+  "name": "Brew at the Herb Rack",
+  "icon": "⚗️",
+  "minAge": 12,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "alchemy"
+  ],
+  "tier": "basic",
+  "desc": "Brew at the Herb Rack",
+  "unlock": [
+   {
+    "piece": "herbrack"
+   },
+   {
+    "piece": "remedybench"
+   }
+  ]
+ },
+ {
+  "id": "distil",
+  "name": "Distil at the Alchemist's Bench",
+  "icon": "🧪",
+  "minAge": 16,
+  "stats": {
+   "INT": 0.02,
+   "WIL": 0.015
+  },
+  "skills": [
+   "alchemy",
+   "nature"
+  ],
+  "tier": "advanced",
+  "desc": "Distil at the Alchemist's Bench",
+  "unlock": [
+   {
+    "piece": "alchbench"
+   }
+  ]
+ },
+ {
+  "id": "dig",
+  "name": "Dig the Ore Cart",
+  "icon": "⛏️",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "mining"
+  ],
+  "tier": "basic",
+  "desc": "Dig the Ore Cart",
+  "unlock": [
+   {
+    "piece": "orecart"
+   },
+   {
+    "piece": "shaftlift"
+   }
+  ]
+ },
+ {
+  "id": "haggle",
+  "name": "Haggle at the Stall",
+  "icon": "🪙",
+  "minAge": 12,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "haggling"
+  ],
+  "tier": "basic",
+  "desc": "Haggle at the Stall",
+  "unlock": [
+   {
+    "piece": "stall"
+   },
+   {
+    "piece": "fencetable"
+   }
+  ]
+ },
+ {
+  "id": "manners",
+  "name": "Dinner Etiquette",
+  "icon": "🎩",
+  "minAge": 10,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "etiquette"
+  ],
+  "tier": "basic",
+  "desc": "Dinner Etiquette",
+  "unlock": [
+   {
+    "piece": "larder"
+   },
+   {
+    "piece": "coldcellar"
+   }
+  ]
+ },
+ {
+  "id": "cook",
+  "name": "Cook for the Family",
+  "icon": "🍲",
+  "minAge": 10,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "cooking"
+  ],
+  "tier": "basic",
+  "desc": "Cook for the Family",
+  "unlock": [
+   {
+    "piece": "larder"
+   },
+   {
+    "piece": "coldcellar"
+   }
+  ]
+ },
+ {
+  "id": "leadhands",
+  "name": "Lead the Hands",
+  "icon": "📣",
+  "minAge": 16,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "leadership"
+  ],
+  "tier": "basic",
+  "desc": "Lead the Hands",
+  "unlock": [
+   {
+    "piece": "minionbunk"
+   },
+   {
+    "piece": "questboard"
+   }
+  ]
+ },
+ {
+  "id": "tomes",
+  "name": "Read Old Tomes",
+  "icon": "📚",
+  "minAge": 10,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "reading"
+  ],
+  "tier": "basic",
+  "desc": "Read Old Tomes",
+  "unlock": [
+   {
+    "piece": "studydesk"
+   }
+  ]
+ },
+ {
+  "id": "chronicle",
+  "name": "Recite the Chronicles",
+  "icon": "📜",
+  "minAge": 12,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "history"
+  ],
+  "tier": "basic",
+  "desc": "Recite the Chronicles",
+  "unlock": [
+   {
+    "piece": "studydesk"
+   },
+   {
+    "piece": "questboard"
+   }
+  ]
+ },
+ {
+  "id": "monstertales",
+  "name": "Swap Monster Tales",
+  "icon": "🐉",
+  "minAge": 16,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "monsterlore"
+  ],
+  "tier": "basic",
+  "desc": "Swap Monster Tales",
+  "unlock": [
+   {
+    "cls": "adventurer"
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "eyeloot",
+  "name": "Eye the Loot",
+  "icon": "💎",
+  "minAge": 14,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "appraisal"
+  ],
+  "tier": "basic",
+  "desc": "Eye the Loot",
+  "unlock": [
+   {
+    "piece": "fencetable"
+   },
+   {
+    "cls": "treasurehunter"
+   },
+   {
+    "guild": "rogues",
+    "rank": 0
+   }
+  ]
+ },
+ {
+  "id": "dressstone",
+  "name": "Dress Stone",
+  "icon": "🧱",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "masonry"
+  ],
+  "tier": "basic",
+  "desc": "Dress Stone",
+  "unlock": [
+   {
+    "piece": "masontable"
+   }
+  ]
+ },
+ {
+  "id": "locks",
+  "name": "Pick Practice Locks",
+  "icon": "🗝️",
+  "minAge": 16,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "thievery"
+  ],
+  "tier": "basic",
+  "desc": "Pick Practice Locks",
+  "unlock": [
+   {
+    "cls": "cutpurse"
+   },
+   {
+    "guild": "rogues",
+    "rank": 0
+   }
+  ],
+  "signature": true
+ },
+ {
+  "id": "groom",
+  "name": "Groom the Animals",
+  "icon": "🐴",
+  "minAge": 10,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "animal"
+  ],
+  "tier": "basic",
+  "desc": "Groom the Animals",
+  "unlock": [
+   {
+    "piece": "kennel"
+   },
+   {
+    "piece": "perch"
+   },
+   {
+    "piece": "nestboxes"
+   },
+   {
+    "piece": "hives"
+   }
+  ]
+ },
+ {
+  "id": "row",
+  "name": "Row the River",
+  "icon": "⛵",
+  "minAge": 14,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "sailing"
+  ],
+  "tier": "basic",
+  "desc": "Row the River",
+  "unlock": [
+   {
+    "piece": "fishrack"
+   },
+   {
+    "quest": "q_river"
+   }
+  ]
  }
 ]
