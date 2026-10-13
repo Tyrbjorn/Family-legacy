@@ -1,3 +1,4 @@
+import { foodOutputMult } from "./food.js";
 import { DEV_SPEEDS, devOn } from "./dev.js";
 // Prestige: per-member renown, Legacy Renown banked at the Graveyard, permanent Legacy upgrades,
 // and game speed (global speed selector + tick bonuses from skill, stat, furniture and legacy).
@@ -106,7 +107,7 @@ export function memberTick(m) {
   return Math.min(LG().memberTickCap, 1 + focus * 0.005 + wil * 0.005);
 }
 
-export const resGain = s => 1 + legacyValue(s, "resgain");
+export const resGain = s => (1 + legacyValue(s, "resgain")) * foodOutputMult(s);
 
 export const lifeBonus = s => legacyValue(s, "life");
 

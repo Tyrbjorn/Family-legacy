@@ -832,7 +832,7 @@
   "risk": "risky",
   "reward": {
    "coin": 300,
-   "herbs": 20
+   "thyme": 20
   },
   "skill": "runecraft",
   "loot": [
@@ -962,7 +962,7 @@
   "risk": "safe",
   "reward": {
    "coin": 150,
-   "herbs": 15
+   "thyme": 15
   },
   "skill": "faith",
   "loot": [
@@ -1147,7 +1147,7 @@
   "days": 6,
   "risk": "risky",
   "reward": {
-   "herbs": 40,
+   "thyme": 40,
    "coin": 150
   },
   "skill": "nature",

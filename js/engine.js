@@ -25,3 +25,4 @@ export * from "./engine/dev.js";
 export * from "./engine/notify.js";
 export * from "./engine/timers.js";
 export * from "./engine/tree.js";
+export * from "./engine/food.js";

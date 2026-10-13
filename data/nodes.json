@@ -43,7 +43,7 @@
   "name": "Herb Patch",
   "region": "outskirts",
   "res": {
-   "herbs": 2
+   "thyme": 2
   },
   "skill": "foraging",
   "icon": "🌱"
@@ -104,7 +104,7 @@
   "name": "Moonherb Glade",
   "region": "forest",
   "res": {
-   "herbs": 5
+   "thyme": 5
   },
   "skill": "alchemy",
   "icon": "🌙",

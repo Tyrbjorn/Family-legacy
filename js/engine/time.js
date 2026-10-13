@@ -13,7 +13,8 @@ import { ES, bedrooms, estEff, established, foodCap, matCap, processDay } from "
 import { inherit, kill, newMember, spawnSuitor } from "./family.js";
 import { hasService } from "./guilds.js";
 import { isBusy } from "./map.js";
-import { minionDay, minionFood, pantry } from "./minions.js";
+import { minionDay } from "./minions.js";
+import { eatDay, mealHeal, moraleSpeed } from "./food.js";
 import { normalize } from "./save.js";
 import { gainXp } from "./skills.js";
 import { D, T, Y, active, ageY, bl, furn, living, log, r, rng } from "./state.js";
@@ -67,9 +68,7 @@ function estateDay(s) {
     furn(s).reduce((x, f) => x + (f.bonus.food || 0), 0);
   s.res.wood += lv.lumber * 3;
   s.res.stone += lv.lumber * 1;
-  pantry(s, living(s).length + minionFood(s));
-  s.res.food -= living(s).length;
-  if (s.res.food < 0) s.res.food = 0;
+  eatDay(s);
   if (s.day % 30 === 0) {
     const up = Object.values(lv).reduce((a, b) => a + b, 0) * T.upkeepPerBuildingMonth;
     s.res.coin = Math.max(0, s.res.coin - up);
@@ -119,10 +118,15 @@ function ageMember(s, m) {
 }
 
 function healDay(s, m) {
-  let h = 1 + estEff(s, "healBoost");
+  let h = 1 + estEff(s, "healBoost") + mealHeal(s);
   if ((s.res.remedies || 0) >= 1) {
     s.res.remedies -= 1;
     h += 2;
+  }
+  const dr = (ES().meals.tonics || {}).draught;
+  if (dr && m.injured > h && (s.res.draught || 0) >= 1) {
+    s.res.draught -= 1;
+    h += dr.heal;
   }
   m.injured = hasService(s, "healer") ? 0 : Math.max(0, m.injured - h);
 }
@@ -177,7 +181,7 @@ function memberDay(s, m, effActive, effIdle) {
     return;
   }
   const isAct = m.id === s.activeId;
-  const eff = (isAct ? effActive : effIdle) * memberTick(m);
+  const eff = (isAct ? effActive : effIdle) * memberTick(m) * (1 + moraleSpeed(s));
   if (m.injured > 0) return healDay(s, m);
   if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
   else if (!isAct && m.standing) m.standing = null;

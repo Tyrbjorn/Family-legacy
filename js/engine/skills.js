@@ -1,3 +1,4 @@
+import { isFed, moraleXp, starving, stockValue, tonicXp } from "./food.js";
 import { traitSkillXp } from "./traits.js";
 import { buffSum } from "./encounters.js";
 import { LG, addMemberRenown } from "./legacy.js";
@@ -19,7 +20,8 @@ export function xpMult(s, m, skillId) {
   mult += traitSum(m, "xp");
   mult += buffSum(s, "xp");
   mult += traitSkillXp(m, skillId);
-  if (s.res.food > 0) mult += eff(s, "foodQuality");
+  if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
+  mult += moraleXp(s) + tonicXp(s, sk.family);
   mult += eff(s, "blessing");
   for (const st of s.structures || []) {
     const d = structDef(st.type);
@@ -33,7 +35,7 @@ export function xpMult(s, m, skillId) {
     if (f.bonus.family === sk.family) mult += f.bonus.xp;
   }
   if (ageY(m) >= 50) mult += 0.1;
-  if (s.res.food <= 0) mult *= 0.5;
+  if (starving(s)) mult *= ES().meals.starvingXp;
   for (const mg of guildsOf(m)) {
     const g = guildDef(mg.id);
     if (g.skills.includes(skillId)) mult += 0.05 * (mg.rank + 1);

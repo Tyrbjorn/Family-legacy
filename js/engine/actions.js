@@ -78,7 +78,7 @@ export const ACTIONS = {
     }
     for (const [k, v] of Object.entries(ac.stats)) m.stats[k] += v * eff;
     for (const k of ac.skills) if (canTrain(m, k, s, true)) gainXp(s, m, k, T.xpPerDay * 0.6 * eff);
-    if (ac.id === "fishing") s.res.food += 1 * eff;
+    for (const [k, v] of Object.entries(ac.yields || {})) s.res[k] = (s.res[k] || 0) + v * eff;
   },
   rest(s, m) {
     m.injured = Math.max(0, m.injured - 1 - furn(s).reduce((x, f) => x + (f.bonus.rest || 0), 0));

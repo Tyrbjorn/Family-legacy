@@ -47,6 +47,10 @@ const PIECES = [
   "masontable",
   "tanrack",
   "hourglass",
+  "hearth",
+  "quern",
+  "churn",
+  "jars",
 ];
 const STRUCTS = [
   "shack",
@@ -58,12 +62,20 @@ const STRUCTS = [
   "masonyard",
   "quarry",
   "herbgarden",
+  "fields",
+  "kitchen",
+  "cowpen",
+  "gristmill",
   "fishinghut",
   "hunterscabin",
   "smithy",
   "graveyard",
   "mineshaft",
   "ancestorhall",
+  "orchard",
+  "smokehouse",
+  "brewery",
+  "preservery",
 ];
 
 function check(s, seed) {
@@ -80,6 +92,8 @@ function check(s, seed) {
   }
   for (const mi of s.minions || []) if (!isFinite(mi.xp || 0) || !isFinite(mi.loyalty)) bad(seed, s.day, "minion NaN");
   if (!isFinite(s.renown)) bad(seed, s.day, "renown NaN");
+  if (!isFinite(s.morale || 0)) bad(seed, s.day, "morale NaN");
+  for (const [k, q] of Object.entries(s.foodQ || {})) if (!isFinite(q) || q <= 0 || q > 2.6) bad(seed, s.day, `foodQ.${k}=${q}`);
   if (!isFinite(s.turbo.charge) || s.turbo.charge < 0) bad(seed, s.day, "turbo charge broken");
   for (const t of E.timers(s))
     if (!isFinite(t.p) || (t.left != null && !isFinite(t.left))) bad(seed, s.day, `timer ${t.key} NaN`);
@@ -143,6 +157,16 @@ function bot(s, m) {
       if (!E.placeIssue(s, st.uid, p) && s.res.coin > 300) E.placePiece(s, st.uid, p) && seen.pieces.add(p);
     if (!E.upgradeIssue(s, st.uid) && s.res.coin > 2000) E.upgradeStructure(s, st.uid);
   }
+  // food: never let the larder run dry — buy provisions, else do chores (the starter path)
+  if (E.daysOfStock(s) < 4) {
+    if (s.res.coin >= E.townBuyPrice(s, "millbrook", "food") * 30) E.buyRes(s, "millbrook", "food", 30);
+    else if (!E.isBusy(m) && !E.tutActive(s) && s.day % 9 < 3) {
+      E.setAction(s, { type: "activity", target: "chores" });
+      return;
+    }
+  }
+  // food: keep salt stocked for the smokehouse
+  if (s.res.coin > 400 && (s.res.salt || 0) < 10) E.buyRes(s, "millbrook", "salt", 10);
   // minions
   if (s.res.coin > 800 && E.established(s)) {
     const type = (D.minions.hireAt.millbrook || [])[s.day % 3];
@@ -207,7 +231,8 @@ for (const [k, f] of Object.entries(E.MINION_JOBS))
     coinBy["job:" + k] = (coinBy["job:" + k] || 0) + (s.res.coin - c0);
   };
 const report = [];
-for (let seed = 1; seed <= SEEDS; seed++) {
+const SEED0 = +(process.env.SEED || 1);
+for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   let sd = seed * 104729;
   E.setRng(() => ((sd = (sd * 16807) % 2147483647), sd / 2147483647));
   let s = E.newGame(1e12);
@@ -215,16 +240,20 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     maxGen = 1,
     peakCoin = 0,
     idleDays = 0;
+  const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
   for (let day = 0; day < YEARS * YD; day++) {
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
+      if (process.env.DBG) console.log("GAMEOVER", day, s.log.slice(0, 6).map(l => l.msg).join(" | "));
       for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
       s = E.newLineage(s, 1e12);
       lineages++;
       continue;
     }
     if (day % 3 === 0) bot(s, E.active(s));
+    if (process.env.FDBG && day % 720 === 0 && s.meal)
+      console.log("FOOD", day, "alive", E.living(s).length, "min", s.minions.length, "need", s.meal.need.toFixed(1), "ratio", s.meal.ratio.toFixed(2), "food", Math.round(s.res.food), "cap", E.foodCap(s), "coin", Math.round(s.res.coin), "structs", s.structures.map(x => x.type).join("/"));
     if (process.env.DBG && day % 1800 === 0) {
       const m = E.active(s);
       console.log(
@@ -242,6 +271,21 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     const m = E.active(s);
     if (m && !m.action && !m.injured && E.isAdult(m)) idleDays++;
     if (day % 10 === 0) check(s, seed);
+    if (s.meal && day > YD * 2) {
+      food.days++;
+      if (s.meal.short > 0.01) food.short++;
+      if (s.meal.short > 0.5) {
+        food.starving++;
+        const last = food.spans[food.spans.length - 1];
+        if (last && last.to === day - 1) last.to = day;
+        else if (food.spans.length < 6)
+          food.spans.push({ from: day, to: day, lineage: lineages, alive: E.living(s).length, minions: s.minions.length, structs: s.structures.length });
+      }
+      if (s.meal.emergency && s.meal.emergency.length) food.emergency++;
+      food.variety += s.meal.variety;
+      food.morale += s.morale;
+      food.minMorale = Math.min(food.minMorale, s.morale);
+    }
     for (const q of s.doneQuests) seen.quests.add(q);
     for (const e of s.wevents) seen.events.add(e.type);
     for (const id of s.vault) if (id.startsWith("c|")) seen.recipes.add(id.split("|")[1]);
@@ -291,6 +335,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     }
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
+  if (food.starving > food.days * 0.02) bad(seed, s.day, `starvation on ${food.starving}/${food.days} days`);
   const ip = E.timers(s);
   report.push({
     seed,
@@ -307,7 +352,33 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     ach: Object.keys(s.ach || {}).length,
     timers: ip.length,
     legacyUps: JSON.stringify(s.legacy?.ups || {}),
+    food: {
+      shortDays: food.short,
+      starvingDays: food.starving,
+      emergencyDays: food.emergency,
+      avgVariety: +(food.variety / Math.max(1, food.days)).toFixed(2),
+      avgMorale: +(food.morale / Math.max(1, food.days)).toFixed(2),
+      minMorale: +food.minMorale.toFixed(2),
+      menuAtEnd: (s.meal || {}).menu,
+      starvingSpans: food.spans,
+    },
   });
+}
+// starter check: a brand-new founder doing only Chores (no estate, no shopping) for 5 years must not starve
+{
+  let sd = 7;
+  E.setRng(() => ((sd = (sd * 16807) % 2147483647), sd / 2147483647));
+  const s = E.newGame(1e12);
+  E.skipTutorial && E.skipTutorial(s);
+  let starving = 0;
+  for (let d = 0; d < YD * 5 && !s.gameOver; d++) {
+    const m = E.active(s);
+    if (m && (!m.action || m.action.target !== "chores") && E.ageY(m) >= 6) E.setAction(s, { type: "activity", target: "chores" });
+    E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
+    if (s.meal && s.meal.short > 0.5) starving++;
+  }
+  report.push({ starterChores5y: { starvingDays: starving, food: Math.round(s.res.food), morale: +(s.morale || 0).toFixed(2) } });
+  if (starving > 0) bad("starter", s.day, `idle starter family starved ${starving} days`);
 }
 console.log(JSON.stringify(report, null, 1));
 const never = (all, set) => all.filter(x => !set.has(x));

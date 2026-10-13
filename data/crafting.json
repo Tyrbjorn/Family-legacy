@@ -192,7 +192,7 @@
    "station": "larder",
    "mats": {
     "food": 20,
-    "herbs": 1
+    "thyme": 1
    },
    "days": 2,
    "line": "tailor"

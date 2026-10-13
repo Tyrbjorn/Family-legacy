@@ -11,6 +11,7 @@ export const inventoryActions = ({ v, b, m }) => ({
   tovault: () => E.moveItem(s, m, v, false),
   buy: () => E.buyItem(s, v, b.dataset.w),
   sellres: () => E.sellRes(s, v, b.dataset.w, 10),
+  buyres: () => E.buyRes(s, v, b.dataset.w, 10),
   sellallres: () => E.sellAllRes(s, v, b.dataset.w),
   bulksell: () => E.sellMany(s, curList()),
   bulklist: () => curList().forEach(id => E.listForSale(s, id)),

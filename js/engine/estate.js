@@ -323,7 +323,19 @@ export const skillYield = (s, p) => 1 + ES().skillProcess.yieldPerLvl * operator
 
 export const resTier = k => +(Object.entries(ES().resourceTiers).find(([, t]) => t.res.includes(k)) || [0])[0];
 
-export const DEFAULT_RESERVE = { wood: 50, stone: 50, ore: 0, copperore: 0, hides: 0, herbs: 0 };
+export const DEFAULT_RESERVE = {
+  wood: 50,
+  stone: 50,
+  ore: 0,
+  copperore: 0,
+  hides: 0,
+  thyme: 0,
+  wheat: 0,
+  barley: 0,
+  milk: 0,
+  meat: 0,
+  vegetables: 0,
+};
 
 export const reserveOf = (s, k) => (s.reserve || {})[k] || 0;
 
@@ -345,6 +357,25 @@ export function togglePiece(s, uid, id) {
   return i < 0;
 }
 
+// Quality flows down food chains: farmers raise crop quality, inputs carry theirs into the dish.
+export const Q_MAX = 2.5;
+export const isIngredient = k => k in (ES().meals?.menu || {}) || (ES().cropQuality?.res || []).includes(k) || k === "flour";
+export function inputQuality(s, inp) {
+  let w = 0,
+    q = 0;
+  for (const [k, v] of Object.entries(inp || {}))
+    if (isIngredient(k)) {
+      w += v;
+      q += v * ((s.foodQ || {})[k] || 1);
+    }
+  return w ? q / w : 1;
+}
+function cropQ(s, p, pr) {
+  const c = ES().cropQuality;
+  if (!c || Object.keys(pr.in || {}).length || !c.res.includes(pr.out)) return 0;
+  return 1 + operatorLvl(s, c.skill) * c.perLvl;
+}
+
 export function processDay(s, mul = 1) {
   for (const st of s.structures || []) {
     const syn = activeSynergies(st);
@@ -355,9 +386,13 @@ export function processDay(s, mul = 1) {
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);
         for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, Math.max(0, (s.res[k] || 0) - reserveOf(s, k)) / v);
         if (n <= 0) continue;
+        const inQ = inputQuality(s, pr.in);
         for (const [k, v] of Object.entries(pr.in)) s.res[k] -= v * n;
         const made = n * yl * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
-        if (pr.food) blendFoodQ(s, pr.out, made, foodQualityOf(s, p));
+        const cq = cropQ(s, p, pr);
+        if (pr.food) blendFoodQ(s, pr.out, made, Math.min(Q_MAX, foodQualityOf(s, p) * inQ));
+        else if (cq) blendFoodQ(s, pr.out, made, cq);
+        else if (inQ !== 1 && isIngredient(pr.out)) blendFoodQ(s, pr.out, made, inQ);
         s.res[pr.out] = (s.res[pr.out] || 0) + made;
       }
   }

@@ -22,8 +22,29 @@ export function pieceRow(p, btn) {
   }</span></span>${btn}</div>`;
 }
 
+// Stronghold-style food panel: menu, variety, rations, days of stock, active bonuses
+export function foodPanelv() {
+  const f = E.foodPanel(s);
+  const days = f.days === Infinity ? "∞" : f.days >= 999 ? "999+" : fmt(f.days);
+  const last = f.last;
+  const warn = last && last.short > 0.01 ? `<div style="color:#e77">⚠️ Shortage: ate ${Math.round(last.ratio * 100)}% of needs. Morale and output fall.</div>` : "";
+  const emerg = last && last.emergency && last.emergency.length ? `<div class="muted">Ate off-menu as a last resort: ${last.emergency.map(k => RI[k] || k).join(" ")}</div>` : "";
+  return `<div class="card" id="foodpanel"><div class="row"><b>🍽️ Food</b><span class="muted">${f.variety} type${f.variety === 1 ? "" : "s"} · ${fmt(f.need)}🍞/day · ${days} days of stock · morale ${f.morale >= 0 ? "+" : ""}${f.morale.toFixed(1)}</span></div>
+ <div class="muted">Everyone eats evenly from every food on the menu. More types = more satiation and morale (diminishing). Quality makes each portion go further.</div>
+ <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start;margin:4px 0"><span class="muted">Rations:</span>${E.RATIONS()
+   .map(r => `<button class="b ${f.ration.id === r.id ? "sel" : ""}" data-a="ration" data-v="${r.id}" title="${r.mult}× food, ${r.morale >= 0 ? "+" : ""}${r.morale} morale">${r.name}</button>`)
+   .join("")}</div>
+ <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${f.all
+   .map(
+     x =>
+       `<button class="chip ${x.on ? "sel" : ""}" data-a="diet" data-v="${x.k}" ${x.k === "food" ? "disabled" : ""} title="${x.on ? "On the menu" : "Kept for cooking"} · value ${x.value.toFixed(2)}">${RI[x.k] || ""} ${x.k} ${fmt(x.have)}</button>`,
+   )
+   .join("")}</div>
+ <div class="muted">Bonuses: ${f.bonuses.length ? f.bonuses.join(" · ") : "none"}</div>${warn}${emerg}</div>`;
+}
+
 export function estate() {
-  let h = `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => D.estate.lands.find(l => l.id === id).name).join(", ")}</div></div>${landShop()}`;
+  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => D.estate.lands.find(l => l.id === id).name).join(", ")}</div></div>${landShop()}`;
   h += `<div class="card"><b>📦 Capacity</b><div class="muted">🍞 ${fmt(s.res.food)}/${fmt(E.foodCap(s))} food · materials cap ${fmt(E.matCap(s))} each</div>
  <div class="muted">${Object.entries(D.estate.resourceTiers)
    .map(
@@ -32,7 +53,7 @@ export function estate() {
    )
    .join(
      "<br>",
-   )}</div>${E.craftingUnlocked(s) ? '<div class="muted">📦 Reserves and station overview moved to the <a data-tab="craft" href="#">🔨 Crafting tab</a>.</div>' : reservesRow()}<div class="muted">Family eats ${E.living(s).length}🍞/day · followers eat ${E.minionFood(s)}🍞/day · beds ${E.living(s).length}/${E.bedrooms(s)} · follower bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}</div></div>`;
+   )}</div>${E.craftingUnlocked(s) ? '<div class="muted">📦 Reserves and station overview moved to the <a data-tab="craft" href="#">🔨 Crafting tab</a>.</div>' : reservesRow()}<div class="muted">Family eats ${E.living(s).length}🍞/day · followers eat ${E.minionFood(s)}🍞/day (× rations) · beds ${E.living(s).length}/${E.bedrooms(s)} · follower bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}</div></div>`;
   const syn = E.allSynergies(s);
   h +=
     `<h3>✨ Active synergies (${syn.length})</h3>` +

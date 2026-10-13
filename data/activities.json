@@ -41,7 +41,10 @@
    "farming"
   ],
   "tier": "basic",
-  "desc": "Do the Chores"
+  "desc": "Help around the house and plot; brings home a little food (starter food path)",
+  "yields": {
+   "food": 1.2
+  }
  },
  {
   "id": "hiking",
@@ -79,7 +82,10 @@
     "piece": "fishrack"
    }
   ],
-  "tier": "advanced"
+  "tier": "advanced",
+  "yields": {
+   "food": 1
+  }
  },
  {
   "id": "meditation",
@@ -110,7 +116,7 @@
    "INT": 0.015
   },
   "skills": [
-   "alchemy",
+   "herbalism",
    "nature"
   ],
   "desc": "Dryad-taught herb lore",
@@ -1221,6 +1227,113 @@
   "unlock": [
    {
     "piece": "clock"
+   }
+  ]
+ },
+ {
+  "id": "forage",
+  "name": "Forage for Herbs",
+  "icon": "🌿",
+  "minAge": 8,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "herbalism"
+  ],
+  "tier": "basic",
+  "desc": "Gather wild thyme and learn herb lore; brings home a little thyme",
+  "yields": {
+   "thyme": 0.6,
+   "food": 0.4
+  }
+ },
+ {
+  "id": "bake",
+  "name": "Bake at the Oven",
+  "icon": "🥖",
+  "minAge": 12,
+  "stats": {
+   "VIT": 0.015,
+   "INT": 0.01
+  },
+  "skills": [
+   "cooking",
+   "farming"
+  ],
+  "tier": "advanced",
+  "desc": "Bread and pies teach real cookery",
+  "unlock": [
+   {
+    "piece": "oven"
+   }
+  ]
+ },
+ {
+  "id": "tendfields",
+  "name": "Tend the Fields",
+  "icon": "🌾",
+  "minAge": 8,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Hoe, weed and harvest the crop fields",
+  "unlock": [
+   {
+    "piece": "furrows"
+   },
+   {
+    "piece": "fruittrees"
+   }
+  ],
+  "yields": {
+   "food": 0.5
+  }
+ },
+ {
+  "id": "salves",
+  "name": "Mix Salves",
+  "icon": "🌱",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.02,
+   "INT": 0.01
+  },
+  "skills": [
+   "herbalism",
+   "healing"
+  ],
+  "tier": "advanced",
+  "desc": "Sage salves and sleep draughts at the herb rack or remedy bench",
+  "unlock": [
+   {
+    "piece": "herbrack"
+   },
+   {
+    "piece": "remedybench"
+   }
+  ]
+ },
+ {
+  "id": "milking",
+  "name": "Milk the Cows",
+  "icon": "🐄",
+  "minAge": 8,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "animal"
+  ],
+  "tier": "basic",
+  "desc": "Early mornings in the cow pen",
+  "unlock": [
+   {
+    "piece": "milkstalls"
    }
   ]
  }

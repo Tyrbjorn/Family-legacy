@@ -921,7 +921,7 @@
      "name": "Wildflower Meadow",
      "cost": {
       "coin": 300,
-      "herbs": 40
+      "thyme": 40
      },
      "mult": 0.25,
      "cap": 1
@@ -1684,6 +1684,492 @@
    "slots": 1,
    "special": true,
    "level": 1
+  },
+  {
+   "id": "fields",
+   "name": "Crop Fields",
+   "icon": "🌾",
+   "fixed": [
+    "furrows"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "quern",
+    "toolrack"
+   ],
+   "cost": {
+    "coin": 90,
+    "wood": 25
+   },
+   "upgrades": [
+    {
+     "name": "Drainage Ditches",
+     "cost": {
+      "coin": 120,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Crop Rotation",
+     "cost": {
+      "coin": 350,
+      "stone": 40
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Seed Drill",
+     "cost": {
+      "coin": 900,
+      "planks": 20,
+      "ingots": 5
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Wheat, barley, vegetables and flax (seasonal)",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "orchard",
+   "name": "Orchard",
+   "icon": "🍎",
+   "fixed": [
+    "fruittrees"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "jars"
+   ],
+   "cost": {
+    "coin": 160,
+    "wood": 30
+   },
+   "upgrades": [
+    {
+     "name": "Pruning",
+     "cost": {
+      "coin": 150,
+      "planks": 6
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Grafted Stock",
+     "cost": {
+      "coin": 400,
+      "thyme": 20
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Walled Orchard",
+     "cost": {
+      "coin": 900,
+      "blocks": 20
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Fruit and berries",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "cowpen",
+   "name": "Cow Pen & Dairy",
+   "icon": "🐄",
+   "fixed": [
+    "milkstalls"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "churn"
+   ],
+   "cost": {
+    "coin": 180,
+    "wood": 40
+   },
+   "upgrades": [
+    {
+     "name": "Hay Loft",
+     "cost": {
+      "coin": 150,
+      "planks": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Good Pasture",
+     "cost": {
+      "coin": 400,
+      "stone": 40
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Prize Herd",
+     "cost": {
+      "coin": 900,
+      "planks": 20,
+      "copper": 6
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Milk for cheese, butter and porridge",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "gristmill",
+   "name": "Mill",
+   "icon": "⚙️",
+   "fixed": [
+    "millwheel"
+   ],
+   "allowed": [
+    "storage",
+    "quern"
+   ],
+   "cost": {
+    "coin": 220,
+    "wood": 40,
+    "stone": 30
+   },
+   "upgrades": [
+    {
+     "name": "Iron Gearing",
+     "cost": {
+      "coin": 200,
+      "ingots": 4
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Second Stones",
+     "cost": {
+      "coin": 450,
+      "blocks": 15
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Waterwheel",
+     "cost": {
+      "coin": 1000,
+      "planks": 25,
+      "blocks": 20
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Wheat → flour",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "kitchen",
+   "name": "Kitchen",
+   "icon": "🍳",
+   "fixed": [
+    "range"
+   ],
+   "allowed": [
+    "oven",
+    "smoker",
+    "churn",
+    "jars",
+    "larder",
+    "coldcellar",
+    "storage",
+    "hearth"
+   ],
+   "cost": {
+    "coin": 200,
+    "stone": 30,
+    "planks": 10
+   },
+   "upgrades": [
+    {
+     "name": "Spice Shelf",
+     "cost": {
+      "coin": 150,
+      "thyme": 15
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Copper Pots",
+     "cost": {
+      "coin": 400,
+      "copper": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Great Kitchen",
+     "cost": {
+      "coin": 1000,
+      "blocks": 20,
+      "ingots": 6
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Stew and porridge, plus 3 slots for oven, smoker, churn or jars",
+   "land": 1,
+   "slots": 3,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "smokehouse",
+   "name": "Smokehouse",
+   "icon": "🏚️",
+   "fixed": [
+    "smokepit"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "smoker"
+   ],
+   "cost": {
+    "coin": 150,
+    "wood": 40,
+    "stone": 10
+   },
+   "upgrades": [
+    {
+     "name": "Oak Racks",
+     "cost": {
+      "coin": 120,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Salt Store",
+     "cost": {
+      "coin": 300,
+      "salt": 20
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Great Chimney",
+     "cost": {
+      "coin": 800,
+      "blocks": 15
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Salted, smoked meat and fish",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "brewery",
+   "name": "Brewery",
+   "icon": "🍺",
+   "fixed": [
+    "brewvats"
+   ],
+   "allowed": [
+    "storage",
+    "larder"
+   ],
+   "cost": {
+    "coin": 250,
+    "planks": 15,
+    "copper": 4
+   },
+   "upgrades": [
+    {
+     "name": "Malting Floor",
+     "cost": {
+      "coin": 200,
+      "planks": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Copper Kettle",
+     "cost": {
+      "coin": 450,
+      "copper": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Cellar Casks",
+     "cost": {
+      "coin": 1000,
+      "blocks": 20
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Barley → ale",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "preservery",
+   "name": "Preserving Pantry",
+   "icon": "🫙",
+   "fixed": [
+    "brinecrocks"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "coldcellar",
+    "jars"
+   ],
+   "cost": {
+    "coin": 140,
+    "wood": 30,
+    "stone": 20
+   },
+   "upgrades": [
+    {
+     "name": "Shelving",
+     "cost": {
+      "coin": 100,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Cool Cellar",
+     "cost": {
+      "coin": 350,
+      "stone": 50
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Sealed Crocks",
+     "cost": {
+      "coin": 800,
+      "copper": 6
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Pickles and preserves keep the menu varied through winter",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   }
  ],
  "pieces": [
@@ -1835,13 +2321,13 @@
     },
     "process": {
      "in": {
-      "herbs": 2
+      "flax": 2
      },
      "out": "cloth",
      "rate": 2
     }
    },
-   "desc": "Weaves 2 herbs (flax) → 1 cloth, 2/day; +3% Craft XP",
+   "desc": "Weaves 2 flax → 1 cloth, 2/day; +3% Craft XP",
    "skill": "tailoring"
   },
   {
@@ -1856,7 +2342,7 @@
    "bonus": {
     "process": {
      "in": {
-      "herbs": 3
+      "thyme": 3
      },
      "out": "potions",
      "rate": 2
@@ -1865,8 +2351,8 @@
      "herbs": 2
     }
    },
-   "desc": "Brews 3 herbs → 1 potion, 2/day; 2 herb spots. Potions auto-heal injuries",
-   "skill": "alchemy"
+   "desc": "Brews 3 thyme → 1 potion, 2/day; 2 herb spots. Potions auto-heal injuries",
+   "skill": "herbalism"
   },
   {
    "id": "toolrack",
@@ -2090,18 +2576,17 @@
     "processes": [
      {
       "in": {
-       "herbs": 2
+       "thyme": 2
       },
       "out": "potions",
       "rate": 4
      },
      {
       "in": {
-       "mandrake": 1,
-       "herbs": 1
+       "mandrake": 2
       },
-      "out": "potions",
-      "rate": 5
+      "out": "draught",
+      "rate": 2
      },
      {
       "in": {
@@ -2109,6 +2594,14 @@
       },
       "out": "dust",
       "rate": 1
+     },
+     {
+      "in": {
+       "moonpetal": 1,
+       "honey": 1
+      },
+      "out": "manatonic",
+      "rate": 1.5
      }
     ],
     "craftQuality": 0.05,
@@ -2120,7 +2613,7 @@
     "guild": "collegium",
     "rank": 1
    },
-   "desc": "Brews 2 herbs → 1 potion, 4/day; +5% craft quality (Magic guild rank 2)",
+   "desc": "Thyme → potions; mandrake → sleep/poison draughts; moonpetal → arcane dust or mana tonic (Magic guild rank 2)",
    "skill": "alchemy"
   },
   {
@@ -2209,13 +2702,18 @@
       "in": {},
       "out": "copperore",
       "rate": 1.5
+     },
+     {
+      "in": {},
+      "out": "salt",
+      "rate": 0.5
      }
     ],
     "jobs": {
      "mine": 2
     }
    },
-   "desc": "Raises 1.5 iron + 1.5 copper ore/day; 2 mining spots"
+   "desc": "Raises 1.5 iron + 1.5 copper ore + 0.5 salt/day; 2 mining spots"
   },
   {
    "id": "herbbeds",
@@ -2228,7 +2726,7 @@
     "processes": [
      {
       "in": {},
-      "out": "herbs",
+      "out": "thyme",
       "rate": 2.5
      },
      {
@@ -2245,6 +2743,16 @@
       "in": {},
       "out": "mandrake",
       "rate": 0.2
+     },
+     {
+      "in": {},
+      "out": "vegetables",
+      "rate": 1.5
+     },
+     {
+      "in": {},
+      "out": "flax",
+      "rate": 0.5
      }
     ],
     "jobs": {
@@ -2252,7 +2760,8 @@
      "farm": 1
     }
    },
-   "desc": "Grows 2.5 herbs + 3 food/day; 1 herb + 1 farming spot"
+   "desc": "Grows 2.5 thyme, 3 provisions, 1.5 vegetables, some sage/mandrake/flax; 1 herb + 1 farming spot",
+   "skill": "farming"
   },
   {
    "id": "gamerack",
@@ -2292,21 +2801,21 @@
     "processes": [
      {
       "in": {
-       "herbs": 2
+       "thyme": 2
       },
       "out": "remedies",
       "rate": 3
      },
      {
       "in": {
-       "herbs": 3
+       "thyme": 3
       },
       "out": "potions",
       "rate": 1
      },
      {
       "in": {
-       "herbs": 2,
+       "sage": 2,
        "honey": 1
       },
       "out": "salves",
@@ -2318,14 +2827,22 @@
       },
       "out": "remedies",
       "rate": 4
+     },
+     {
+      "in": {
+       "mandrake": 1,
+       "sage": 1
+      },
+      "out": "draught",
+      "rate": 1
      }
     ],
     "jobs": {
      "herbs": 1
     }
    },
-   "desc": "2 herbs → remedy (3/day), 3 herbs → potion, 2 herbs + honey → salve",
-   "skill": "alchemy"
+   "desc": "Thyme → remedies/potions; sage + honey → healing salve; sage → strong remedy; mandrake + sage → sleep draught",
+   "skill": "herbalism"
   },
   {
    "id": "fishrack",
@@ -2365,7 +2882,7 @@
      },
      {
       "in": {},
-      "out": "herbs",
+      "out": "thyme",
       "rate": 0.5
      }
     ],
@@ -2584,7 +3101,7 @@
     "processes": [
      {
       "in": {
-       "food": 3
+       "flour": 2
       },
       "out": "bread",
       "rate": 2,
@@ -2592,16 +3109,26 @@
      },
      {
       "in": {
-       "meat": 2,
-       "herbs": 1
+       "flour": 1,
+       "eggs": 1
       },
-      "out": "stew",
+      "out": "bread",
       "rate": 1.5,
+      "food": true
+     },
+     {
+      "in": {
+       "flour": 1,
+       "berries": 2,
+       "butter": 1
+      },
+      "out": "pie",
+      "rate": 1,
       "food": true
      }
     ]
    },
-   "desc": "Bakes bread; simmers stew (cooking skill + oven tier raise quality)"
+   "desc": "Bakes bread (flour, or flour + eggs) and berry pies (flour + berries + butter)"
   },
   {
    "id": "smoker",
@@ -2617,19 +3144,29 @@
     "processes": [
      {
       "in": {
-       "meat": 2
+       "meat": 2,
+       "salt": 1
       },
       "out": "smokedmeat",
       "rate": 1.5,
       "food": true
+     },
+     {
+      "in": {
+       "fish": 2,
+       "salt": 1
+      },
+      "out": "smokedmeat",
+      "rate": 1,
+      "food": true
      }
     ]
    },
-   "desc": "Smokes meat into long-keeping provisions"
+   "desc": "Meat or fish + salt → smoked provisions"
   },
   {
    "id": "churn",
-   "name": "Cheese Press",
+   "name": "Dairy Churn & Press",
    "icon": "🧀",
    "kind": "station",
    "skill": "cooking",
@@ -2641,16 +3178,23 @@
     "processes": [
      {
       "in": {
-       "eggs": 2,
-       "food": 1
+       "milk": 3
       },
       "out": "cheese",
       "rate": 1.5,
       "food": true
+     },
+     {
+      "in": {
+       "milk": 2
+      },
+      "out": "butter",
+      "rate": 2,
+      "food": true
      }
     ]
    },
-   "desc": "Presses cheese"
+   "desc": "Milk → cheese or butter"
   },
   {
    "id": "jars",
@@ -2666,16 +3210,322 @@
     "processes": [
      {
       "in": {
-       "honey": 1,
-       "herbs": 1
+       "berries": 2,
+       "honey": 1
       },
       "out": "preserves",
+      "rate": 2,
+      "food": true
+     },
+     {
+      "in": {
+       "vegetables": 2,
+       "salt": 1
+      },
+      "out": "preserves",
+      "rate": 1,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Berries + honey (or vegetables + salt) → preserves"
+  },
+  {
+   "id": "hearth",
+   "name": "Cooking Hearth",
+   "icon": "🔥",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 25,
+    "stone": 10
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "barley": 2,
+       "milk": 1
+      },
+      "out": "porridge",
+      "rate": 2,
+      "food": true
+     },
+     {
+      "in": {
+       "wheat": 3
+      },
+      "out": "porridge",
+      "rate": 1,
+      "food": true
+     },
+     {
+      "in": {
+       "meat": 1,
+       "vegetables": 2,
+       "thyme": 1
+      },
+      "out": "stew",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Starter kitchen: porridge (barley + milk, or plain wheat) and stew (meat + vegetables + thyme)"
+  },
+  {
+   "id": "quern",
+   "name": "Hand Quern",
+   "icon": "🪨",
+   "kind": "station",
+   "skill": "farming",
+   "cost": {
+    "coin": 30,
+    "stone": 15
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "wheat": 2
+      },
+      "out": "flour",
+      "rate": 1.5
+     }
+    ]
+   },
+   "desc": "Grinds 2 wheat → 1 flour, 1.5/day"
+  },
+  {
+   "id": "furrows",
+   "name": "Furrowed Fields",
+   "icon": "🌾",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "farming",
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "wheat",
+      "rate": 3
+     },
+     {
+      "in": {},
+      "out": "barley",
+      "rate": 1.5
+     },
+     {
+      "in": {},
+      "out": "vegetables",
+      "rate": 2
+     },
+     {
+      "in": {},
+      "out": "flax",
+      "rate": 0.8
+     }
+    ],
+    "jobs": {
+     "farm": 2
+    }
+   },
+   "desc": "3 wheat, 1.5 barley, 2 vegetables, 0.8 flax/day (seasonal); 2 farming spots"
+  },
+  {
+   "id": "fruittrees",
+   "name": "Fruit Trees",
+   "icon": "🍎",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "farming",
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "berries",
+      "rate": 2.5
+     },
+     {
+      "in": {},
+      "out": "thyme",
+      "rate": 0.3
+     }
+    ],
+    "jobs": {
+     "farm": 1
+    }
+   },
+   "desc": "2.5 fruit & berries/day (summer/autumn heavy)"
+  },
+  {
+   "id": "milkstalls",
+   "name": "Milking Stalls",
+   "icon": "🐄",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "animal",
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "milk",
+      "rate": 3
+     }
+    ],
+    "jobs": {
+     "farm": 1
+    }
+   },
+   "desc": "3 milk/day"
+  },
+  {
+   "id": "millwheel",
+   "name": "Millstones",
+   "icon": "⚙️",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "farming",
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "wheat": 2
+      },
+      "out": "flour",
+      "rate": 5
+     }
+    ],
+    "jobs": {
+     "farm": 1
+    }
+   },
+   "desc": "Grinds 2 wheat → 1 flour, 5/day"
+  },
+  {
+   "id": "range",
+   "name": "Kitchen Range",
+   "icon": "🍳",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "cooking",
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "meat": 1,
+       "vegetables": 2,
+       "thyme": 1
+      },
+      "out": "stew",
+      "rate": 3,
+      "food": true
+     },
+     {
+      "in": {
+       "barley": 2,
+       "milk": 1
+      },
+      "out": "porridge",
+      "rate": 3,
+      "food": true
+     }
+    ],
+    "foodQuality": 0.05
+   },
+   "desc": "Big stew pot and porridge kettle; +5% meal XP"
+  },
+  {
+   "id": "smokepit",
+   "name": "Smoke Pit",
+   "icon": "🥓",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "cooking",
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "meat": 2,
+       "salt": 1
+      },
+      "out": "smokedmeat",
+      "rate": 3,
+      "food": true
+     },
+     {
+      "in": {
+       "fish": 2,
+       "salt": 1
+      },
+      "out": "smokedmeat",
       "rate": 2,
       "food": true
      }
     ]
    },
-   "desc": "Honey-and-herb preserves"
+   "desc": "Meat/fish + salt → smoked provisions, fast"
+  },
+  {
+   "id": "brewvats",
+   "name": "Brewing Vats",
+   "icon": "🍺",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "cooking",
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "barley": 3
+      },
+      "out": "ale",
+      "rate": 2,
+      "food": true
+     }
+    ]
+   },
+   "desc": "3 barley → 1 ale, 2/day. Ale on the menu lifts morale"
+  },
+  {
+   "id": "brinecrocks",
+   "name": "Brine Crocks",
+   "icon": "🫙",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "cooking",
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "vegetables": 2,
+       "salt": 1
+      },
+      "out": "preserves",
+      "rate": 2.5,
+      "food": true
+     },
+     {
+      "in": {
+       "berries": 2,
+       "honey": 1
+      },
+      "out": "preserves",
+      "rate": 2,
+      "food": true
+     }
+    ],
+    "foodCap": 200
+   },
+   "desc": "Pickles and jams; +200 provisions capacity"
   }
  ],
  "synergies": [
@@ -2788,7 +3638,7 @@
    "dust",
    "eggs",
    "fish",
-   "herbs",
+   "thyme",
    "hides",
    "honey",
    "ingots",
@@ -2808,7 +3658,21 @@
    "stew",
    "sage",
    "mandrake",
-   "moonpetal"
+   "moonpetal",
+   "wheat",
+   "barley",
+   "vegetables",
+   "berries",
+   "milk",
+   "salt",
+   "flax",
+   "flour",
+   "butter",
+   "ale",
+   "pie",
+   "porridge",
+   "draught",
+   "manatonic"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2854,7 +3718,7 @@
     "stone",
     "ore",
     "copperore",
-    "herbs",
+    "thyme",
     "hides",
     "meat",
     "fish",
@@ -2862,7 +3726,14 @@
     "eggs",
     "sage",
     "mandrake",
-    "moonpetal"
+    "moonpetal",
+    "wheat",
+    "barley",
+    "vegetables",
+    "berries",
+    "milk",
+    "salt",
+    "flax"
    ]
   },
   "2": {
@@ -2882,7 +3753,14 @@
     "cheese",
     "preserves",
     "smokedmeat",
-    "stew"
+    "stew",
+    "flour",
+    "butter",
+    "ale",
+    "pie",
+    "porridge",
+    "draught",
+    "manatonic"
    ]
   },
   "3": {
@@ -2901,20 +3779,131 @@
   "minionLvlPerApt": 10
  },
  "foodValue": {
+  "bread": 2,
+  "porridge": 1.5,
+  "stew": 3.5,
+  "cheese": 2.5,
+  "butter": 1,
+  "pie": 3,
+  "preserves": 2.5,
+  "smokedmeat": 3,
+  "ale": 0.5,
   "meat": 2,
   "fish": 1.5,
   "eggs": 1,
   "honey": 1,
-  "bread": 2,
-  "cheese": 2.5,
-  "preserves": 2.5,
-  "smokedmeat": 3,
-  "stew": 3.5
+  "vegetables": 1,
+  "berries": 1
  },
  "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output.",
  "foodQuality": {
   "perTier": 0.15,
   "perCookLvl": 0.005,
   "skill": "cooking"
+ },
+ "meals": {
+  "menu": {
+   "food": 1,
+   "bread": 2,
+   "porridge": 1.5,
+   "stew": 3.5,
+   "cheese": 2.5,
+   "butter": 1,
+   "pie": 3,
+   "preserves": 2.5,
+   "smokedmeat": 3,
+   "ale": 0.5,
+   "meat": 2,
+   "fish": 1.5,
+   "eggs": 1,
+   "honey": 1,
+   "vegetables": 1,
+   "berries": 1
+  },
+  "defaultOff": [
+   "meat",
+   "eggs",
+   "honey",
+   "vegetables",
+   "butter"
+  ],
+  "rations": [
+   {
+    "id": "none",
+    "name": "No rations",
+    "mult": 0,
+    "morale": -8
+   },
+   {
+    "id": "half",
+    "name": "Half",
+    "mult": 0.5,
+    "morale": -4
+   },
+   {
+    "id": "normal",
+    "name": "Normal",
+    "mult": 1,
+    "morale": 0
+   },
+   {
+    "id": "extra",
+    "name": "Extra",
+    "mult": 1.5,
+    "morale": 2
+   },
+   {
+    "id": "double",
+    "name": "Double",
+    "mult": 2,
+    "morale": 4
+   }
+  ],
+  "varietyMorale": [
+   0,
+   0,
+   1,
+   2,
+   3,
+   3.5,
+   4
+  ],
+  "varietySatiation": 0.04,
+  "satiationCap": 0.15,
+  "drinks": {
+   "ale": 2
+  },
+  "shortageMorale": -15,
+  "smoothing": 0.3,
+  "min": -15,
+  "max": 10,
+  "outputPerMorale": 0.015,
+  "outputMin": 0.6,
+  "outputMax": 1.15,
+  "healAtMorale": 4,
+  "heal": 0.5,
+  "minionLoyaltyPerMorale": 0.1,
+  "starvingXp": 0.5,
+  "tonics": {
+   "manatonic": {
+    "family": "magic",
+    "xp": 0.1,
+    "perDay": 0.25
+   },
+   "draught": {
+    "heal": 1.5
+   }
+  }
+ },
+ "cropQuality": {
+  "perLvl": 0.005,
+  "skill": "farming",
+  "res": [
+   "wheat",
+   "barley",
+   "vegetables",
+   "berries",
+   "milk"
+  ]
  }
 }

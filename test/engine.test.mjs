@@ -317,8 +317,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const m2=H2.members[0]; m2.cls=null; m2.guild=null; E.setAction(H2,{type:'gather',target:'gameTrail'}); E.advanceReal(H2,10*20); ok(meatH>(H2.res.meat||0),'Hunter gathers more meat and hides');
  const F=E.newGame(t0); estate(F,[],'shack'); F.res.coin=1e5; F.res.wood=1e3; F.res.stone=1e3; F.res.planks=500; F.res.blocks=500; F.res.ingots=200; F.res.copper=200; F.res.hides=200; F.res.cloth=50; F.res.leather=50;
  E.buyLand(F,'hillside'); E.buyLand(F,'riverbank'); const ids=['hunterscabin','herbalistshack','fishinghut','apiary','chickencoop','tannery']; const built=ids.map(id=>E.buildStructure(F,id)); ok(built.every(Boolean)&&ids.every(id=>E.structDef(id).land===1&&E.structDef(id).upgrades.length===3&&E.structDef(id).slots===1),'six new 1-land special buildings with a slot and an upgrade line');
- ok(E.structDef('herbgarden').name==='Garden'&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='food')&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='herbs'),'Garden makes herbs and food');
- F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.herbs=100; F.reserve.herbs=0; E.advanceReal(F,10*5);
+ ok(E.structDef('herbgarden').name==='Garden'&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='food')&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='thyme'),'Garden makes herbs (thyme) and food');
+ F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.thyme=100; F.reserve.thyme=0; E.advanceReal(F,10*5);
  ok(['meat','fish','honey','eggs','remedies','leather'].every(k=>F.res[k]>0),'new resources: meat, fish, honey, eggs, remedies, leather');
  const P=E.newGame(t0); P.res.food=0; P.res.meat=10; E.advanceReal(P,10); ok(P.res.food>=0&&P.res.meat<10,'meat/fish/eggs/honey feed the family when food runs out');
  const R2=E.newGame(t0); const rm=R2.members[0]; rm.injured=6; R2.res.remedies=5; E.advanceReal(R2,10); ok(rm.injured<=3&&R2.res.remedies<5,'remedies speed injury recovery');
@@ -479,10 +479,10 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 { const S=E.newGame(t0); E.normalize(S); const Y=D.tuning.daysPerYear; const names=[]; for(let q=0;q<4;q++){ S.day=q*Y/4+1; names.push(E.season(S).id); } ok(names.join()==='spring,summer,autumn,winter','4-season cycle');
  S.day=Math.floor(Y*0.8); ok(E.seasonTravel(S)<1&&E.seasonYield(S,'food')<1&&E.seasonEvents(S)>1,'winter: slow travel, less food, more events');
  ok(E.townSellPrice(S,'millbrook','food')>D.towns.find(t=>t.id==='millbrook').prices.food,'winter food prices up');
- S.day=Math.floor(Y*0.6); ok(E.seasonYield(S,'food')>1,'autumn harvest'); S.day=5; ok(E.seasonYield(S,'herbs')>1,'spring herbs'); }
+ S.day=Math.floor(Y*0.6); ok(E.seasonYield(S,'food')>1,'autumn harvest'); S.day=5; ok(E.seasonYield(S,'thyme')>1,'spring herbs'); }
 { const F=E.newGame(t0); estate(F,['oven','smoker'],'shack'); E.normalize(F); const fv=D.estate.foodValue; ok(['bread','stew','smokedmeat','cheese','preserves'].every(k=>fv[k]>0),'5 cooked foods with food value');
  ok(['sage','mandrake','moonpetal'].every(h=>D.estate.pieces.some(p=>(p.bonus.processes||[]).some(pr=>pr.in&&pr.in[h]))),'herb types used in remedies/potions');
- Object.assign(F.res,{food:100,meat:50,herbs:50}); F.members[0].skills.cooking.lvl=40; E.processDay(F); ok(F.res.bread>0&&F.res.smokedmeat>0&&F.foodQ.bread>1,'oven/smoker cook with quality from cooking skill');
+ Object.assign(F.res,{food:100,meat:50,flour:50,salt:20,thyme:50}); F.members[0].skills.cooking.lvl=40; E.processDay(F); ok(F.res.bread>0&&F.res.smokedmeat>0&&F.foodQ.bread>1,'oven/smoker cook with quality from cooking skill');
  const Gq=E.newGame(t0); E.normalize(Gq); Gq.res.food=0; Gq.res.bread=10; Gq.foodQ={bread:1}; E.pantry(Gq,10); const lo=Gq.res.bread; const Gh=E.newGame(t0); E.normalize(Gh); Gh.res.food=0; Gh.res.bread=10; Gh.foodQ={bread:1.5}; E.pantry(Gh,10); ok(Gh.res.bread>lo,'higher-quality food goes further'); }
 { const X=E.newGame(t0); E.normalize(X); X.res.coin=4242; X.members[0].name='Exporta'; const code=E.exportCode(X); ok(code.startsWith('FL1:')&&!code.includes('{'),'export is a base64 text code');
  const Y=E.importSave(code); ok(Y.res.coin===4242&&Y.members[0].name==='Exporta','import restores the save'); const Z=E.importSave(E.serialize(X)); ok(Z.res.coin===4242,'import accepts raw JSON (file)');
@@ -559,5 +559,51 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  F.ageDays=20*D.tuning.daysPerYear; E.chooseClass(G,F.id,'fighter'); const R=E.importSave(E.serialize(G,t0)); ok(!R.members[0].guild,'reloading no longer grants a free guild seat');
  const M=E.newGame(t0); M.res.coin=0; const mi={uid:'x',type:'laborer',name:'X',loyalty:100,equip:{},prog:0}; let mx=0; for(let i=0;i<60;i++){const c=M.res.coin; E.MINION_JOBS.adventure(M,mi,2,1); mx=Math.max(mx,M.res.coin-c);}
  ok(mx>0&&mx<=30,'adventuring minions run plain safe quests only (no guild jobs)');
+}
+// Food chains + Stronghold-style meals
+{ const G=E.newGame(t0); E.skipTutorial(G); G.res.food=100; for(const k of Object.keys(D.estate.meals.menu)) if(k!=='food') G.res[k]=0;
+ const one=E.eatDay(G); ok(one.variety===1&&one.fed&&Math.abs(G.res.food-(100-one.need))<1e-6,'one food type: eats from provisions only');
+ const H=E.newGame(t0); E.skipTutorial(H); Object.assign(H.res,{food:100,bread:50,porridge:50,berries:50}); const m4=E.eatDay(H);
+ ok(m4.variety===4&&H.res.bread<50&&H.res.porridge<50&&H.res.berries<50,'everyone eats evenly from every food on the menu');
+ ok(m4.need<one.need&&E.varietyMorale(4)>E.varietyMorale(2)&&E.varietyMorale(2)>E.varietyMorale(1),'variety: satiation and morale grow');
+ ok(E.varietyMorale(20)===E.varietyMorale(6)&&E.varietyMorale(6)-E.varietyMorale(5)<=E.varietyMorale(3)-E.varietyMorale(2),'variety bonus is capped with diminishing returns');
+ const Q1=E.newGame(t0); Q1.res.food=0; Q1.res.bread=10; Q1.foodQ={bread:1}; E.eatDay(Q1); const Q2=E.newGame(t0); Q2.res.food=0; Q2.res.bread=10; Q2.foodQ={bread:1.5}; E.eatDay(Q2);
+ ok(Q2.res.bread>Q1.res.bread,'higher-quality food goes further');
+ const R=E.newGame(t0); R.res.food=100; ok(E.setRation(R,'double')&&!E.setRation(R,'feast'),'ration levels'); const nd=E.dailyNeed(R); E.setRation(R,'half'); ok(Math.abs(E.dailyNeed(R)*4-nd)<1e-9,'half rations eat a quarter of double');
+ for(let i=0;i<30;i++) E.eatDay(R); const mh=R.morale; E.setRation(R,'extra'); R.res.food=1e4; for(let i=0;i<30;i++) E.eatDay(R); ok(mh<0&&R.morale>0,'rations trade consumption for morale');
+ const Sx=E.newGame(t0); Sx.res.food=0; for(const k of Object.keys(D.estate.meals.menu)) Sx.res[k]=0; for(let i=0;i<20;i++) E.eatDay(Sx); ok(Sx.meal.short>0.99&&Sx.morale<-5&&E.foodOutputMult(Sx)<1&&E.starving(Sx),'shortage lowers morale and output');
+ const Em=E.newGame(t0); Em.res.food=0; Em.res.meat=20; ok(!E.onMenu(Em,'meat'),'raw meat kept for cooking by default'); E.eatDay(Em); ok(Em.meal.fed&&Em.res.meat<20&&Em.meal.emergency.includes('meat'),'off-menu food is eaten before anyone starves');
+ E.toggleDiet(Em,'meat'); ok(E.onMenu(Em,'meat'),'menu toggle'); ok(!E.toggleDiet(Em,'food'),'provisions always on the menu');
+ const P=E.newGame(t0); P.res.food=0; P.res.meat=10; E.advanceReal(P,10); ok(P.res.food>=0&&P.res.meat<10,'meat feeds the family when provisions run out');
+ const fp=E.foodPanel(H); ok(fp.menu.length===4&&fp.days>0&&fp.ration.id==='normal'&&Array.isArray(fp.bonuses),'food panel summary');
+ // chains with quality flow
+ const C=E.newGame(t0); const st=estate(C,['quern','oven','hearth','churn','smoker','jars'],'house'); E.normalize(C); C.members[0].skills.cooking.lvl=40; C.members[0].skills.farming.lvl=40;
+ Object.assign(C.res,{wheat:40,barley:20,milk:20,meat:10,vegetables:20,thyme:10,salt:10,berries:20,honey:10,eggs:10}); C.foodQ={wheat:1.4};
+ for(let i=0;i<3;i++) E.processDay(C); ok(C.foodQ.flour>0&&['bread','porridge','stew','cheese','butter','smokedmeat','preserves'].every(k=>C.res[k]>0),'mill → bake → cook chains all run');
+ ok(C.foodQ.flour>1.3&&C.foodQ.bread>C.foodQ.flour,'quality flows through the chain (farmer → flour → bread)');
+ const Fm=E.newGame(t0); E.normalize(Fm); estate(Fm,['furrows'],'fields'); Fm.members[0].ageDays=20*360; Fm.members[0].skills.farming.lvl=50; Fm.day=Math.floor(D.tuning.daysPerYear*0.6); E.processDay(Fm); ok(Fm.res.wheat>0&&Fm.foodQ.wheat>1.2,'fields grow crops; farming raises crop quality');
+ const Fw=E.newGame(t0); E.normalize(Fw); estate(Fw,['furrows'],'fields'); Fw.day=Math.floor(D.tuning.daysPerYear*0.8); E.processDay(Fw); ok(Fw.res.wheat<Fm.res.wheat*0.5,'winter crop yields are low');
+ // market + migration
+ const M=E.newGame(t0); M.res.coin=1000; ok(E.buyRes(M,'millbrook','salt',10)&&M.res.salt===10&&M.res.coin<1000,'towns sell salt'); ok(!E.buyRes(M,'millbrook','moonpetal',1),'only market goods can be bought');
+ ok(E.townBuyPrice(M,'millbrook','salt')>E.townSellPrice(M,'millbrook','salt'),'buy price above sell price');
+ ok(D.towns.every(x=>x.market.includes('food'))&&E.buyRes(M,'millbrook','food',10)&&E.townBuyPrice(M,'millbrook','food')>=5*E.townSellPrice(M,'millbrook','food'),'every town sells emergency provisions (at a steep markup)');
+ const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; old.res.herbs=42; delete old.res.thyme; old.reserve={herbs:7}; delete old.ration; delete old.morale; delete old.diet;
+ const O=E.importSave(JSON.stringify(old)); ok(O.res.thyme===42&&!('herbs' in O.res)&&O.reserve.thyme===7&&!('herbs' in O.reserve),'old generic herbs migrate to thyme (stock and reserve)');
+ ok(O.ration==='normal'&&O.morale===0&&O.diet&&typeof O.diet==='object','old saves get normal rations and neutral morale');
+ const O2=E.importSave(E.serialize(O,t0)); ok(O2.res.thyme===42,'migration is one-time (reload keeps thyme)');
+ const T=E.newGame(t0); E.skipTutorial(T); T.res.food=0; for(const k of Object.keys(D.estate.meals.menu)) T.res[k]=0; T.members[0].ageDays=10*360; E.setAction(T,{type:'activity',target:'chores'}); E.advanceReal(T,30*5); ok(T.res.food>0||T.meal.fed,'starter food path: chores bring home food');
+ ok(D.skills.some(x=>x.id==='herbalism')&&D.activities.some(a=>a.skills.includes('herbalism'))&&D.activities.some(a=>a.id==='bake'),'herbalism + cooking activities');
+ const Mt=E.newGame(t0); Mt.res.manatonic=5; E.eatDay(Mt); ok(Mt.tonics.manatonic&&E.tonicXp(Mt,'magic')>0&&E.tonicXp(Mt,'combat')===0,'mana tonic boosts magic XP');
+}
+// Morale → skill XP and character speed (tuning.json)
+{ const TM=D.tuning.morale; ok(TM&&TM.xpMax===0.1&&TM.xpMin===-0.15&&TM.speedMax===0.1&&TM.speedMin===-0.15,'morale effects live in tuning.json');
+ const G=E.newGame(t0); E.skipTutorial(G); G.morale=0; ok(E.moraleXp(G)===0&&E.moraleSpeed(G)===0,'neutral morale: no effect');
+ G.morale=50; ok(Math.abs(E.moraleXp(G)-0.1)<1e-9&&Math.abs(E.moraleSpeed(G)-0.1)<1e-9,'high morale caps at +10%');
+ G.morale=-50; ok(Math.abs(E.moraleXp(G)+0.15)<1e-9&&Math.abs(E.moraleSpeed(G)+0.15)<1e-9,'low morale floors at -15%');
+ const m=E.active(G); m.ageDays=20*360; G.morale=0; const x0=E.xpMult(G,m,'farming'); G.morale=10; const x1=E.xpMult(G,m,'farming'); ok(x1>x0,'morale raises skill XP multiplier');
+ const run=mo=>{const H=E.newGame(t0); E.skipTutorial(H); H.res.food=1e4; const a=E.active(H); a.ageDays=20*360; E.setAction(H,{type:'quest',target:'rats'}); H.morale=mo; for(let i=0;i<2;i++){H.morale=mo; E.dayTick(H,1,1);} return {p:(a.action||{}).progress||0,done:H.doneQuests.length};};
+ const lo=run(-15), hi=run(10); ok(hi.p>lo.p||hi.done>lo.done,'morale changes action/travel speed');
+ const S=E.newGame(t0); S.res.food=0; for(const k of Object.keys(D.estate.meals.menu)) S.res[k]=0; for(let i=0;i<30;i++) E.eatDay(S); ok(E.moraleSpeed(S)<=-0.14&&E.moraleXp(S)<=-0.14,'starvation drives speed and XP toward -15%');
+ const F=E.newGame(t0); F.morale=8; ok(E.foodPanel(F).bonuses.some(b=>/Speed \+8%/.test(b))&&E.foodPanel(F).bonuses.some(b=>/Skill XP \+8%/.test(b)),'food panel shows morale XP and speed');
 }
 console.log(pass,'tests passed');

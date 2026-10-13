@@ -1,7 +1,7 @@
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
-import { RI, dur, sk, unlockName } from "./common.js";
+import { RI, dur, fmt, sk, unlockName } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { guildHall } from "./guilds-tab.js";
 import { D, s } from "../main.js";
@@ -207,7 +207,16 @@ export function mapv() {
           ([k, p]) =>
             `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"}>Sell 10${RI[k]} → ${p * 10}🪙</button>`,
         )
-        .join("")}</div>
+        .join("")}</div>${
+        (t.market || []).length
+          ? `<div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${t.market
+              .map(k => {
+                const p = E.townBuyPrice(s, t.id, k);
+                return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"}>Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙</button>`;
+              })
+              .join("")}</div>`
+          : ""
+      }
    ${landShop(t.id) ? '<div class="muted" style="margin-top:4px">📜 LAND FOR SALE</div>' + landShop(t.id) : ""}
    ${D.guilds.guilds
      .filter(g => g.town === t.id)

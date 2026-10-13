@@ -55,9 +55,10 @@ for (const q of D.quests) Object.keys(q.reward).forEach(k => src.add(k));
 for (const p of D.estate.pieces)
   for (const pr of [].concat((p.bonus || {}).processes || (p.bonus || {}).process || [])) src.add(pr.out);
 for (const st of D.estate.structures) for (const p of st.fixed || []) src.add(p);
-["wood", "stone", "ore", "copperore", "meat", "hides", "fish", "herbs", "sage", "mandrake", "moonpetal"].forEach(k =>
+["wood", "stone", "ore", "copperore", "meat", "hides", "fish", "thyme", "sage", "mandrake", "moonpetal"].forEach(k =>
   src.add(k),
 ); // minion jobs
+for (const t of D.towns) (t.market || []).forEach(k => src.add(k));
 const need = new Set();
 for (const rc of D.crafting.recipes) Object.keys(rc.mats).forEach(k => need.add(k));
 for (const st of D.estate.structures) Object.keys(st.cost).forEach(k => need.add(k));
@@ -77,6 +78,29 @@ for (const t of D.towns)
       E.buyPrice(it, S, t.id) > it.value * E.SELL_CAP && E.buyPrice(it, S, t.id) > it.value * D.crafting.stallSellRate,
       `no arbitrage on ${id} at ${t.id}`,
     );
+  }
+
+// food chains: every process input has a source, every menu food can be produced or bought
+for (const p of D.estate.pieces)
+  for (const pr of [].concat((p.bonus || {}).processes || (p.bonus || {}).process || []))
+    for (const k of Object.keys(pr.in || {})) ok(src.has(k), `process input "${k}" (${p.id}) has a source`);
+for (const k of Object.keys(D.estate.meals.menu)) ok(src.has(k), `menu food "${k}" has a source`);
+for (const f of ["estate", "towns", "seasons", "quests", "nodes", "events", "crafting", "tutorial"])
+  ok(!/"(in|out|res|cost|mats|prices|reward)":\s*\{[^}]*"herbs"/.test(JSON.stringify(D[f])) && !/"out":"herbs"/.test(JSON.stringify(D[f])), `${f}: no generic herbs resource`);
+// specific herb uses
+const uses = h => D.estate.pieces.flatMap(p => [].concat(p.bonus.processes || p.bonus.process || [])).filter(pr => pr.in && pr.in[h]).map(pr => pr.out);
+ok(uses("sage").includes("salves"), "sage → healing salves");
+ok(uses("mandrake").includes("draught"), "mandrake → sleep/poison draughts");
+ok(uses("moonpetal").includes("manatonic"), "moonpetal → mana tonic");
+ok(uses("thyme").includes("stew") && uses("thyme").includes("potions"), "thyme → stew and potions");
+for (const t of D.towns) for (const k of t.market || []) ok(t.prices[k] > 0, `market ${t.id} ${k} priced`);
+// market resale: buying at the cheapest market town can never be resold for a profit anywhere (events stacked)
+const maxEv = k => Math.max(1, ...D.events.types.map(e => ((e.effects || {}).price || {})[k] || 1)) * Math.max(1, ...D.events.types.map(e => (e.effects || {}).sellMult || 1));
+for (const t of D.towns)
+  for (const k of t.market || []) {
+    const buy = t.prices[k] * ((D.tuning.resBuyMarkupBy || {})[k] || D.tuning.resBuyMarkup) * E.BUY_MULT_FLOOR;
+    const sell = Math.max(...D.towns.map(u => u.prices[k] || 0)) * maxEv(k);
+    ok(buy > sell, `no market arbitrage on ${k} at ${t.id} (${buy.toFixed(2)} > ${sell.toFixed(2)})`);
   }
 console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));
 if (fail) process.exit(1);

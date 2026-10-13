@@ -7,6 +7,7 @@ import { resGain } from "./legacy.js";
 import { exploreArea, regionOpen } from "./map.js";
 import { rollRare } from "./quests.js";
 import { D, bl, known, living, log, r } from "./state.js";
+import { isFed, morale } from "./food.js";
 
 // ---- minions (followers, hired help, retainers)
 export const minionCap = s =>
@@ -303,7 +304,8 @@ export const MINION_JOBS = {
     s.res.fish = (s.res.fish || 0) + 2 * a * rg;
   },
   herbs: (s, mi, a, rg) => {
-    s.res.herbs = (s.res.herbs || 0) + 1.5 * a * rg * seasonYield(s, "herbs");
+    s.res.thyme = (s.res.thyme || 0) + 1.3 * a * rg * seasonYield(s, "thyme");
+    s.res.sage = (s.res.sage || 0) + 0.2 * a * rg * seasonYield(s, "sage");
     s.res.sage = (s.res.sage || 0) + 0.3 * a * rg * seasonYield(s, "sage");
     s.res.mandrake = (s.res.mandrake || 0) + 0.1 * a * rg * seasonYield(s, "mandrake");
     s.res.moonpetal = (s.res.moonpetal || 0) + 0.05 * a * rg * seasonYield(s, "moonpetal");
@@ -328,10 +330,11 @@ export function minionDay(s) {
     s.repLevel = 0;
   }
   checkSpecialMinions(s);
-  const fed = s.res.food >= minionFood(s);
+  const fed = isFed(s);
   const hm = homeMap(s);
-  const mor = eff(s, "morale");
+  const mor = eff(s, "morale") + morale(s) * (ES().meals.minionLoyaltyPerMorale || 0) * (morale(s) < 0 ? 2 : 1);
   if (mor) for (const mi of s.minions) mi.loyalty = Math.min(100, mi.loyalty + mor);
+  // hunger loyalty loss below; meals are eaten in eatDay (food.js) before this runs
   for (const mi of s.minions) mi.home = hm[mi.uid] || null;
   for (const mi of s.minions) {
     if (!fed) {
@@ -352,7 +355,6 @@ export function minionDay(s) {
     minionGainXp(s, mi, MLV().xpPerDay * (fed ? 1 : 0.5));
     MINION_JOBS[mi.job]?.(s, mi, a, rg);
   }
-  s.res.food = Math.max(0, s.res.food - minionFood(s));
   for (const mi of [...s.minions])
     if (mi.loyalty <= 0) {
       s.minions = s.minions.filter(x => x !== mi);

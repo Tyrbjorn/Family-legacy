@@ -12,6 +12,8 @@ export const estateActions = ({ v, b, m }) => ({
   uppiece: () => E.upgradePiece(s, v, b.dataset.w),
   toggle: () => E.togglePiece(s, v, b.dataset.w),
   land: () => E.buyLand(s, v),
+  ration: () => E.setRation(s, v),
+  diet: () => E.toggleDiet(s, v),
   room: () => E.addRoom(s, v),
   unroom: () => E.removeRoom(s, +v),
   mevolve: () => E.evolveMinion(s, v, b.dataset.w),

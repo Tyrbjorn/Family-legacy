@@ -23,7 +23,7 @@ export function devCheat(s, kind) {
       "food",
       "wood",
       "stone",
-      "herbs",
+      "thyme",
       "planks",
       "blocks",
       "ingots",

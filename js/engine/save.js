@@ -29,7 +29,10 @@ export function _newGame(now) {
     members: [],
     activeId: 1,
     head: 1,
-    res: { coin: 50, food: 60, wood: 0, stone: 0, herbs: 0 },
+    res: { coin: 50, food: 60, wood: 0, stone: 0, thyme: 0 },
+    ration: "normal",
+    morale: 0,
+    diet: {},
     revealed: [],
     buildings: {},
     furniture: [],
@@ -287,6 +290,24 @@ const STEPS = [
         s.minions = [];
         s.repLevel = 0;
       }
+    },
+  },
+  {
+    n: 6,
+    once: true,
+    name: "food chains: generic herbs → thyme; ration, morale and menu",
+    run: s => {
+      const r = s.res || (s.res = {});
+      if (r.herbs) r.thyme = (r.thyme || 0) + r.herbs;
+      delete r.herbs;
+      if (s.foodQ && s.foodQ.herbs) delete s.foodQ.herbs;
+      if (s.reserve && "herbs" in s.reserve) {
+        s.reserve.thyme = s.reserve.herbs;
+        delete s.reserve.herbs;
+      }
+      if (!s.ration) s.ration = "normal";
+      if (s.morale == null) s.morale = 0;
+      if (!s.diet) s.diet = {};
     },
   },
 ];

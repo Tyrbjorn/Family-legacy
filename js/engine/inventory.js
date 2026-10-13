@@ -68,6 +68,31 @@ export function buyItem(s, townId, itemId) {
   return true;
 }
 
+// Town markets sell staple goods (salt, grain, milk...). Buying costs resBuyMarkup × the town's base price,
+// with the same event/season multipliers as selling, so resale can never profit (see data.test).
+export const marketOf = townId => (D.towns.find(x => x.id === townId) || {}).market || [];
+export const townBuyPrice = (s, townId, res) => {
+  const t = D.towns.find(x => x.id === townId);
+  return (
+    Math.round(
+      t.prices[res] *
+        ((T.resBuyMarkupBy || {})[res] || T.resBuyMarkup || 2.5) *
+        Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) *
+        Math.max(1, priceMult(s, townId, res)) *
+        seasonPrice(s, res) *
+        100,
+    ) / 100
+  );
+};
+export function buyRes(s, townId, res, n) {
+  if (!marketOf(townId).includes(res)) return false;
+  const c = townBuyPrice(s, townId, res) * n;
+  if (n <= 0 || s.res.coin < c) return false;
+  s.res.coin -= c;
+  s.res[res] = (s.res[res] || 0) + n;
+  return true;
+}
+
 export function sellRes(s, townId, res, n) {
   const t = D.towns.find(x => x.id === townId);
   n = Math.min(n, Math.floor(s.res[res]));

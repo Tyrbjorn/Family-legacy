@@ -331,5 +331,12 @@
   "family": "lore",
   "stat": "WIL",
   "icon": "⏳"
+ },
+ {
+  "id": "herbalism",
+  "name": "Herbalism",
+  "family": "craft",
+  "stat": "WIL",
+  "icon": "🌿"
  }
 ]

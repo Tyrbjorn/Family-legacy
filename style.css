@@ -81,3 +81,4 @@ select{max-width:100%;text-overflow:ellipsis}
  header .res{font-size:13px;gap:4px 10px}
  header select{min-height:34px}
 }
+button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-size:12px}button.chip.sel{border-color:#d9b44a;background:#3a3350;color:#fff}button.chip:disabled{opacity:.75;cursor:default}

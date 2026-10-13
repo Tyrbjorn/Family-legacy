@@ -36,5 +36,18 @@
  "craftDays": 5,
  "buyMarkup": 1.5,
  "sellRate": 0.5,
- "founderAge": 15.75
+ "founderAge": 15.75,
+ "resBuyMarkup": 2.5,
+ "morale": {
+  "xpPerPoint": 0.01,
+  "xpMax": 0.1,
+  "xpMin": -0.15,
+  "speedPerPoint": 0.01,
+  "speedMax": 0.1,
+  "speedMin": -0.15,
+  "note": "morale −15…+10 → skill XP and character speed (work, activities, travel) −15%…+10%"
+ },
+ "resBuyMarkupBy": {
+  "food": 6
+ }
 }

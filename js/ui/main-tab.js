@@ -35,9 +35,14 @@ export function hero() {
   return h;
 }
 
+const pct = x => (x > 0 ? "+" : "") + Math.round(x * 100) + "%";
+export const moraleLine = () =>
+  `${(s.morale || 0) >= 0 ? "🙂" : "😟"} Morale ${(s.morale || 0) >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}: skill XP ${pct(E.moraleXp(s))} · speed ${pct(E.moraleSpeed(s))} (work, activities, travel)`;
+
 export function sheet(m) {
   const a = m.action;
   let h = `<div class="card"><b>📋 ${m.name}</b><div class="muted">Age ${E.ageY(m)} (${stage(m)}) · lifespan ~${m.lifespan} · Lv ${E.level(m)} · CP ${E.cp(s, m)} · ${cl(m.cls) ? cl(m.cls).name : "no class"}</div>
+ <div class="muted" id="sheet-morale">${moraleLine()}</div>
  <h3>Stats</h3><div class="grid">${E.STATS.map(k => `<span>${k} <b>${E.statVal(m, k)}</b></span>`).join("")}</div>
  <h3>Traits</h3>${m.traits
    .map(t => {
