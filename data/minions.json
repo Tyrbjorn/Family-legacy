@@ -53,6 +53,18 @@
    "name": "Selling",
    "icon": "🏷️",
    "desc": "Sells 'stock for sale' at full price (spots from Market Stalls)"
+  },
+  {
+   "id": "scout",
+   "name": "Scouting",
+   "icon": "🧭",
+   "desc": "Auto-explores fogged areas every few days (finds towns, secrets, dungeons)"
+  },
+  {
+   "id": "adventure",
+   "name": "Adventuring",
+   "icon": "⚔️",
+   "desc": "Auto-runs safe known quests/dungeon floors for a share of the loot"
   }
  ],
  "types": [
@@ -447,5 +459,245 @@
  ],
  "specialsBypassCap": true,
  "hungerLoyaltyLoss": 8,
- "hungryOutput": 0.5
+ "hungryOutput": 0.5,
+ "leveling": {
+  "xpPerDay": 1,
+  "xpBase": 8,
+  "xpGrowth": 1.35,
+  "aptPerLvl": 0.05,
+  "maxLvl": 20
+ },
+ "perks": {
+  "farm": {
+   "5": "Green Thumb: +10% food",
+   "10": "Master Farmer: +20% food"
+  },
+  "gather": {
+   "5": "Sure Axe: +10% wood/stone",
+   "10": "Woodwise: +20% wood/stone"
+  },
+  "herbs": {
+   "5": "Keen Nose: +10% herbs",
+   "10": "Herb Sage: +20% herbs"
+  },
+  "mine": {
+   "5": "Vein Sense: +10% ore",
+   "10": "Deep Delver: +20% ore"
+  },
+  "guard": {
+   "5": "Watchful: +10% guard power",
+   "10": "Shieldwall: +20% guard power"
+  },
+  "craft": {
+   "5": "Steady Hands: +10% craft speed",
+   "10": "Journeyman: +20% craft speed"
+  },
+  "tutor": {
+   "5": "Patient: +10% tutoring",
+   "10": "Mentor: +20% tutoring"
+  },
+  "merchant": {
+   "5": "Silver Tongue: +10% sales",
+   "10": "Trade Prince: +20% sales"
+  },
+  "scout": {
+   "5": "Pathfinder: explores faster (+10%)",
+   "10": "Cartographer: +20%"
+  },
+  "adventure": {
+   "5": "Seasoned: +10% loot",
+   "10": "Veteran: +20% loot"
+  }
+ },
+ "npcClasses": [
+  {
+   "id": "n_peasant",
+   "name": "Peasant",
+   "icon": "🧑‍🌾",
+   "branch": "base",
+   "bonus": {},
+   "desc": "Every follower starts here"
+  },
+  {
+   "id": "n_militia",
+   "name": "Militia",
+   "icon": "🪖",
+   "branch": "military",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "guard": 0.2,
+    "adventure": 0.15
+   }
+  },
+  {
+   "id": "n_soldier",
+   "name": "Soldier",
+   "icon": "🛡️",
+   "branch": "military",
+   "from": "n_militia",
+   "lvl": 10,
+   "bonus": {
+    "guard": 0.4,
+    "adventure": 0.3
+   }
+  },
+  {
+   "id": "n_sergeant",
+   "name": "Sergeant",
+   "icon": "🎖️",
+   "branch": "military",
+   "from": "n_soldier",
+   "lvl": 15,
+   "bonus": {
+    "guard": 0.6,
+    "adventure": 0.45,
+    "scout": 0.2
+   }
+  },
+  {
+   "id": "n_scoutnpc",
+   "name": "Outrider",
+   "icon": "🏇",
+   "branch": "military",
+   "from": "n_militia",
+   "lvl": 10,
+   "bonus": {
+    "scout": 0.5,
+    "adventure": 0.2
+   }
+  },
+  {
+   "id": "n_laborer",
+   "name": "Laborer",
+   "icon": "🧱",
+   "branch": "economic",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "farm": 0.15,
+    "gather": 0.15,
+    "mine": 0.15,
+    "herbs": 0.15
+   }
+  },
+  {
+   "id": "n_artisan",
+   "name": "Artisan",
+   "icon": "🔨",
+   "branch": "economic",
+   "from": "n_laborer",
+   "lvl": 10,
+   "bonus": {
+    "craft": 0.4,
+    "merchant": 0.2
+   }
+  },
+  {
+   "id": "n_foreman",
+   "name": "Foreman",
+   "icon": "📋",
+   "branch": "economic",
+   "from": "n_laborer",
+   "lvl": 10,
+   "bonus": {
+    "farm": 0.35,
+    "gather": 0.35,
+    "mine": 0.35,
+    "herbs": 0.35
+   }
+  },
+  {
+   "id": "n_master",
+   "name": "Master Artisan",
+   "icon": "🏅",
+   "branch": "economic",
+   "from": "n_artisan",
+   "lvl": 15,
+   "bonus": {
+    "craft": 0.7,
+    "merchant": 0.4
+   }
+  },
+  {
+   "id": "n_hedgemage",
+   "name": "Hedge Mage",
+   "icon": "🔮",
+   "branch": "magic",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "tutor": 0.2,
+    "herbs": 0.15,
+    "adventure": 0.1
+   }
+  },
+  {
+   "id": "n_adept",
+   "name": "Adept",
+   "icon": "✨",
+   "branch": "magic",
+   "from": "n_hedgemage",
+   "lvl": 10,
+   "bonus": {
+    "tutor": 0.4,
+    "craft": 0.15,
+    "adventure": 0.25
+   }
+  },
+  {
+   "id": "n_magus",
+   "name": "Magus",
+   "icon": "🧙",
+   "branch": "magic",
+   "from": "n_adept",
+   "lvl": 15,
+   "bonus": {
+    "tutor": 0.6,
+    "craft": 0.25,
+    "adventure": 0.4
+   }
+  },
+  {
+   "id": "n_acolyte",
+   "name": "Acolyte",
+   "icon": "🕯️",
+   "branch": "divine",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "tutor": 0.1,
+    "guard": 0.1,
+    "farm": 0.1
+   }
+  },
+  {
+   "id": "n_priest",
+   "name": "Village Priest",
+   "icon": "⛪",
+   "branch": "divine",
+   "from": "n_acolyte",
+   "lvl": 10,
+   "bonus": {
+    "tutor": 0.25,
+    "guard": 0.2,
+    "farm": 0.2
+   }
+  },
+  {
+   "id": "n_curate",
+   "name": "Curate",
+   "icon": "📿",
+   "branch": "divine",
+   "from": "n_priest",
+   "lvl": 15,
+   "bonus": {
+    "tutor": 0.4,
+    "guard": 0.35,
+    "farm": 0.3,
+    "adventure": 0.15
+   }
+  }
+ ],
+ "npcClassNote": "NPC classes are weaker than family classes: bonuses apply to job output only."
 }

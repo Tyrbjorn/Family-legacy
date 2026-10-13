@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons'])D[n]=L(n);
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
@@ -92,7 +92,7 @@ ok(E.setAction(kd,{type:'train',target:'swordsmanship'})===false&&E.setAction(kd
 km.ageDays=12*360; ok(E.setAction(kd,{type:'train',target:'swordsmanship'})!==false&&E.setAction(kd,{type:'train',target:'fire'})===false,'teens train; magic waits till 14');
 ok(E.setAction(kd,{type:'activity',target:'play'})===false,'Play Outside ends after childhood');
 ok(E.setAction(kd,{type:'activity',target:'fishing'})===false,'Fishing locked before its quest');
-const qr=D.quests.filter(q=>q.unlocks); ok(qr.length>=5&&qr.length<=8,'5-8 quests grant unlocks');
+const qr=D.quests.filter(q=>q.unlocks); ok(qr.length>=5&&qr.length<=12,'5-12 quests grant unlocks');
 km.ageDays=20*360; km.cls='fighter'; setRngOK(); E.setAction(kd,{type:'quest',target:'q_river'}); for(let i=0;i<20&&!kd.unlocks.includes('activity:fishing');i++) E.advanceReal(kd,10*4);
 ok(kd.unlocks.includes('activity:fishing')&&E.setAction(kd,{type:'activity',target:'fishing'})!==false,'river quest unlocks Fishing');
 const f1=km.stats.AGI; E.advanceReal(kd,10*20); ok(km.stats.AGI>f1&&km.skills.fishing.lvl+km.skills.fishing.xp>0,'Fishing gives AGI (Dex) + Fishing');
@@ -182,7 +182,7 @@ E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'id
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
 ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===3,'Renown + Manor → Era 3 indicator');
-ER.members[0].ageDays=20*360; ok(E.setAction(ER,{type:'quest',target:'rats'})!==false&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'archery'})!==false,'later eras keep questing, jobs and training open');
+ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'archery'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
 for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
 { const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
  m.guild={id:'vanguard',rank:0,rep:0}; ok(E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill'))&&!E.activityOk(T2,m,D.activities.find(a=>a.id==='masterkata')),'guild rank gates advanced vs master');
@@ -229,4 +229,81 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(!E.togglePiece(Q,st.uid,'masontable@1')&&!E.isPaused(Q,st.uid,'masontable@1'),'station resumes');
  const O=JSON.parse(JSON.stringify(Q)); delete O.reserve; delete O.paused; E.normalize(O); ok(O.reserve.wood===50&&O.paused.length===0,'old saves get default reserves and no pauses');
  const O2=JSON.parse(JSON.stringify(Q)); O2.reserve={wood:10}; E.normalize(O2); ok(O2.reserve.wood===10&&O2.reserve.stone===50,'saved reserves kept, missing ones defaulted'); }
+// switching to a child member never strands play
+{ const C=E.newGame(t0); const f=C.members[0]; f.ageDays=25*360; const kid={...JSON.parse(JSON.stringify(f)),id:999,name:'Pip',ageDays:6*360,guild:null,craft:null,cls:null,prof:null,action:null,order:{type:'quest',target:'outskirts'},equip:{}}; C.members.push(kid);
+ ok(E.switchTo(C,999)&&C.activeId===999,'can switch to a child');
+ ok(kid.action&&E.actionAllowed(C,kid,kid.action),'child gets a valid age-appropriate action (adult quest order replaced)');
+ ok(kid.action.type==='activity'&&['play','stories'].includes(kid.action.target),'young child defaults to Play/Stories');
+ ok(E.setAction(C,{type:'quest',target:'rats'})===false&&E.actionAllowed(C,kid,kid.action),'blocked adult action leaves the child busy, not stuck');
+ const d0=C.day; E.advanceReal(C,10*30); ok(C.day>d0&&!C.gameOver&&C.activeId===999,'time keeps running with a child active');
+ ok(E.joinIssues(C,kid,'vanguard').length>0,'child can view but not join guilds');
+ ok(E.setAction(C,{type:'rest'})!==false&&kid.action.type==='rest','young child can always rest'); f.action={type:'quest',target:'rats',progress:0}; ok(E.switchTo(C,f.id)&&C.activeId===f.id&&f.action.type==='quest','switching back to the adult keeps their quest');
+ const teen={...JSON.parse(JSON.stringify(kid)),id:998,ageDays:13*360,action:{type:'job',target:'nope'}}; C.members.push(teen); E.switchTo(C,998); ok(E.actionAllowed(C,teen,teen.action),'invalid saved action is repaired on switch'); }
+// story, one-time, rare drops
+{ const S=E.newGame(t0); const m=S.members[0]; m.ageDays=20*360; const st=E.storyQuests(); ok(st.length>=8&&st.length<=12&&new Set(st.map(q=>q.region)).size>=2,'8-12 story chapters across both regions');
+ m.skills.reading.lvl=10; ok(E.questIssue(S,m,st[1])==='finish chapter 1','chapters are chained');
+ const ch1=st[0]; S.doneQuests.push(ch1.id); ok(!E.questIssue(S,m,st[1])||E.questIssue(S,m,st[1]).startsWith('Lv'),'finishing a chapter opens the next');
+ ok(E.questIssue(S,m,ch1)==='done','story chapters are not repeatable');
+ ok(st.some(q=>q.grants?.land)&&st.some(q=>q.grants?.minion)&&st.some(q=>(q.unlocks||'').startsWith('activity:'))&&st.some(q=>q.req?.era),'story rewards: land, minions, trainings; era gates');
+ ok(E.questIssue(S,m,st.find(q=>q.story===4))==='hear a rumor or explore'||!S.doneQuests.includes('st3'),'some chapters need rumors');
+ const once=D.quests.filter(q=>q.once&&!q.story); ok(once.length>=5,'5+ one-time side quests');
+ ok(D.quests.filter(q=>q.rare).length>=8&&D.nodes.filter(n=>n.rare).length>=4&&[...D.quests,...D.nodes].flatMap(x=>x.rare||[]).every(d=>d.chance>0&&d.chance<=0.05),'rare drop tables at ≤5%');
+ const R=E.newGame(t0); const rm=R.members[0]; rm.ageDays=25*360; for(const k in rm.skills) rm.skills[k].lvl=40; for(const k in rm.stats) rm.stats[k]=60; E.setRng(()=>0.001);
+ R.revealed.push('st4'); E.setAction(R,{type:'quest',target:'wolves'}); E.advanceReal(R,10*30); E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
+ ok(E.dropFound(R,'wolfking_pelt')&&R.vault.includes('wolfking_pelt'),'rare drop lands in the vault and is marked found');
+ const G=E.newGame(t0); const gm=G.members[0]; gm.ageDays=20*360; for(const k in gm.skills) gm.skills[k].lvl=20; E.setRng(()=>0.01); G.doneQuests.push('st1','st2'); E.setAction(G,{type:'quest',target:'st3'}); E.advanceReal(G,10*40);
+ E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;}); ok(G.doneQuests.includes('st3')&&G.land.includes('plot'),'story chapter grants land');
+ ok(gm.action.type!=='quest'||gm.action.target!=='st3','finished one-time quest is not repeated'); }
+// travel & exploration
+{ const V=E.newGame(t0); const m=V.members[0]; m.ageDays=20*360; for(const k in m.skills) m.skills[k].lvl=10;
+ ok(E.travelDays('rats')<E.travelDays('treant'),'travel time grows with distance');
+ E.setAction(V,{type:'quest',target:'rats'}); const a=m.action; E.advanceReal(V,10); ok(a.trip&&E.tripPhase(a)!=='task'||a.trip.out<=1,'quest starts with an outbound trip');
+ ok(E.isBusy(m)&&E.setAction(V,{type:'train',target:'brawling'})===false&&E.setAction(V,{type:'rest'})===false,'traveller is locked: no other actions or training');
+ const tot=E.tripTotal(a); ok(Math.abs(tot-(2*E.travelDays('rats')+2))<1e-9,'trip = out + task + return');
+ const d0=V.doneQuests.length; E.advanceReal(V,10*Math.ceil(tot)+10); ok(V.doneQuests.includes('rats'),'quest resolves and the member comes home');
+ const W=E.newGame(t0); const w=W.members[0]; w.ageDays=20*360; E.setAction(W,{type:'gather',target:'scrub'}); E.advanceReal(W,10); const t0w=E.tripLeft(w.action); W.turbo={charge:1e9,on:true}; E.advanceReal(W,10); ok(E.tripLeft(w.action)<t0w-1.5,'turbo speeds travel');
+ const O=E.newGame(t0); const om=O.members[0]; om.ageDays=20*360; for(const k in om.skills) om.skills[k].lvl=10; E.setAction(O,{type:'quest',target:'rats'}); E.applyOffline(O,O.lastSave+3*3600*1000); ok(O.doneQuests.includes('rats'),'travel completes during offline progress');
+ const X=E.newGame(t0); const xm=X.members[0]; xm.ageDays=20*360; ok(!X.discovered.includes('ashford')&&!E.townKnown(X,D.towns.find(t=>t.id==='ashford')),'hidden towns start undiscovered');
+ ok(E.setAction(X,{type:'explore',target:'a_hills'})!==false&&xm.action.type==='explore','explore a fogged area');
+ E.advanceReal(X,10); E.advanceReal(X,10*(E.tripTotal(xm.action)+1)); ok(E.explored(X,'a_hills')&&X.discovered.includes('ashford'),'exploring clears fog and discovers a hidden town');
+ ok(D.towns.filter(t=>t.hidden).length>=2&&D.regions.some(r=>r.hidden),'2 hidden towns and a hidden region');
+ ok(!E.regionOpen(X,'highlands'),'hidden region locked until discovered'); xm.skills.tracking.lvl=0; X.discovered.push('highlands'); for(const k in xm.stats) xm.stats[k]=200; ok(E.regionKnown(X,'highlands'),'region discovered via exploration');
+ ok(D.map.areas.every(a=>a.secrets.length>=3)&&D.map.areas.some(a=>a.secrets.some(sc=>sc.type==='encounter'))&&D.map.areas.some(a=>a.secrets.some(sc=>sc.type==='cache')),'areas hold caches, encounters and secrets');
+ ok([...D.quests,...D.nodes].every(x=>D.map.points[x.id])&&D.towns.every(t=>D.map.towns[t.id]),'every quest, node and town has map coordinates');
+ const J=JSON.parse(JSON.stringify(X)); delete J.explored; delete J.discovered; delete J.found; E.normalize(J); ok(Array.isArray(J.explored)&&Array.isArray(J.discovered)&&Array.isArray(J.found),'old saves get exploration tracking'); }
+// minion levels, dungeons, standing orders
+{ const ML=E.newGame(t0); estate(ML,['minionbunk','minionbunk','orecart'],'house'); ML.res.food=1e4; ML.res.copper=50;
+ const jobs=['farm','gather','guard','mine','scout','adventure']; for(const j of jobs){ const mi=E.addMinion(ML,'laborer','t'); if(mi) mi.job=j; }
+ E.advanceReal(ML,10*60); ok(ML.minions.filter(x=>x.job!=='idle').every(x=>E.minionLvl(x)>1),'every working minion gains levels from its job');
+ const mx=ML.minions[0]; ok(E.minionLvlMult(mx)>1,'levels raise output'); mx.lvl=10; ok(E.minionPerks(mx).length===2&&E.minionPerks(mx,'farm')[0].text.length>0,'perks unlock by job at Lv 5/10');
+ const lazy=E.addMinion(ML,'laborer','t')||{}; ok(!lazy.xp,'idle minions gain no XP');
+ ok(D.dungeons.length>=5&&D.dungeons.every(d=>d.floors.length>=3&&d.rare&&d.hidden&&D.map.points[d.id]),'5 multi-floor dungeons with rare drops, hidden, on the map');
+ const DG=E.newGame(t0); const dm=DG.members[0]; dm.ageDays=25*360; for(const k in dm.skills) dm.skills[k].lvl=30; for(const k in dm.stats) dm.stats[k]=80;
+ ok(E.setAction(DG,{type:'dungeon',target:'d_ratwarren'})===false,'undiscovered dungeon cannot be run');
+ E.setAction(DG,{type:'auto',target:'explore'}); ok(dm.standing==='explore'&&dm.action.type==='explore','standing Explore auto-picks a fogged area');
+ E.setRng(()=>0.01); E.advanceReal(DG,10*60); ok(DG.explored.length>=2&&DG.revealed.some(id=>id.startsWith('d_')),'auto-explore clears several areas and finds dungeons');
+ ok(E.setAction(DG,{type:'auto',target:'adventure'})&&dm.standing==='adventure','standing order can be switched mid-trip (applies when home)'); E.advanceReal(DG,10*12); dm.injured=0; ok(['dungeon','quest'].includes(dm.action?.type),'standing Adventure auto-picks a known dungeon or quest');
+ E.advanceReal(DG,10*80); E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;}); ok(DG.cleared.length>=1,'adventurer clears a discovered dungeon floor by floor');
+ const sc=E.newGame(t0); estate(sc,['minionbunk'],'shack'); sc.res.food=1e4; const scm=E.addMinion(sc,'laborer','t'); scm.job='scout'; E.advanceReal(sc,10*30); ok(sc.explored.length>=1,'scout minions explore on their own'); }
+// NPC classes, more land, special buildings
+{ const N=E.newGame(t0); estate(N,['minionbunk','minionbunk'],'shack'); N.res.food=1e4; const a=E.addMinion(N,'laborer','t'), b=E.addMinion(N,'guard','t');
+ ok(a.cls==='n_peasant'&&b.cls==='n_peasant','all followers start as Peasant');
+ ok(E.evolveOptions(a).map(c=>c.branch).sort().join()==='divine,economic,magic,military','Peasant branches into Military/Economic/Magic/Divine');
+ ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
+ ok(!E.evolveMinion(N,a.uid,'n_adept'),'cannot jump branches'); a.lvl=10; ok(E.evolveOptions(a).length>=2,'branches split again (choice)');
+ a.job='guard'; const m0=E.minionLvlMult(a); a.cls='n_soldier'; ok(E.minionLvlMult(a)>m0,'NPC class boosts its jobs'); ok(D.minions.npcClasses.every(c=>Object.values(c.bonus).every(v=>v<=0.7)),'NPC classes stay weaker than PC classes');
+ a.job='farm'; E.advanceReal(N,10*20); ok(E.minionSkillLvl(a,'farm')>=1,'minions build job skills');
+ const sp={...a,uid:'x',special:true,cls:undefined}; ok(E.evolveOptions(sp).length===0,'special companions keep their own path');
+ const O=JSON.parse(JSON.stringify(N)); O.minions.forEach(m=>delete m.cls); E.normalize(O); ok(O.minions.every(m=>m.cls==='n_peasant'),'old followers migrate to Peasant'); }
+{ const L=E.newGame(t0); ok(D.estate.lands.length>=8,'8+ land parcels with rising cost'); ok(D.estate.lands.every(l=>l.towns.length>=2),'land sold in several towns');
+ L.res.coin=1e6; L.res.stone=1e4; L.res.wood=1e4; L.res.blocks=1e3; for(const id of ['plot','acre','meadow','hillside','ridge','valley','riverbank','woodlot']) E.buyLand(L,id); ok(L.land.length===8&&E.landSlots(L)>=19,'chain of purchases up to Greenvale');
+ ok(!E.canBuyLand(L,'highclaim'),'highland claim needs the region discovered'); L.discovered.push('highlands'); ok(E.canBuyLand(L,'highclaim'),'discovered region opens its land');
+ L.res.planks=1e3; L.res.ingots=1e3; L.res.copper=1e3;
+ const q=E.buildStructure(L,'quarry'); ok(q&&E.structDef('quarry').land===1&&q.pieces[0]==='quarrypit'&&!E.removePiece(L,q.uid,'quarrypit'),'special 1-slot Quarry with built-in, non-removable pit');
+ ok(E.placeIssue(L,q.uid,'bunk')==='not allowed here'&&E.placePiece(L,q.uid,'storage'),'special buildings accept only their own attached furniture');
+ L.reserve.stone=0; L.res.stone=0; E.advanceReal(L,10*5); const st0=L.res.stone; ok(st0>0,'quarry produces stone passively');
+ const sl=E.freeSlots(L,q); ok(E.upgradeSpecial(L,q.uid)&&q.up===1&&E.freeSlots(L,q)===sl,'upgrade line uses no slot');
+ L.res.stone=0; E.advanceReal(L,10*5); ok(L.res.stone>st0*1.2,'upgrades raise output'); E.upgradeSpecial(L,q.uid); E.upgradeSpecial(L,q.uid); ok(!E.upgradeSpecial(L,q.uid),'upgrade line has 3 steps');
+ L.res.stone=1e3; L.res.wood=1e3; for(const id of ['mineshaft','herbgarden','smithy','sawmill','masonyard']) ok(E.buildStructure(L,id),'build '+id);
+ ok(D.estate.structures.find(x=>x.id==='bunkhouse').builtin.housing.bunk===4,'Bunkhouse unchanged'); }
 console.log(pass,'tests passed');

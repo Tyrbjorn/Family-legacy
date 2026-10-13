@@ -68,5 +68,74 @@
    "primer",
    "luckcharm"
   ]
+ },
+ {
+  "id": "ashford",
+  "name": "Ashford Crossing",
+  "region": "outskirts",
+  "icon": "🏚️",
+  "prices": {
+   "food": 1,
+   "wood": 2,
+   "stone": 3,
+   "herbs": 4,
+   "planks": 5,
+   "ore": 3,
+   "ingots": 12,
+   "potions": 12,
+   "hides": 4,
+   "cloth": 7
+  },
+  "shop": [
+   "hunting_bow",
+   "buckler",
+   "quiver",
+   "padded_vest",
+   "leather_jerkin",
+   "copper_ring",
+   "wolf_tooth",
+   "sickle",
+   "woodaxe",
+   "collar"
+  ],
+  "hidden": true
+ },
+ {
+  "id": "eyrie",
+  "name": "Eagle's Eyrie",
+  "region": "highlands",
+  "icon": "🦅",
+  "prices": {
+   "food": 2,
+   "wood": 2,
+   "stone": 4,
+   "herbs": 6,
+   "planks": 5,
+   "ore": 3,
+   "ingots": 10,
+   "potions": 12,
+   "hides": 5,
+   "cloth": 7
+  },
+  "shop": [
+   "iron_sword",
+   "yew_longbow",
+   "ember_wand",
+   "kite_shield",
+   "spell_tome",
+   "chain_shirt",
+   "ranger_cloak",
+   "silver_locket",
+   "owl_feather",
+   "chocolate",
+   "smithhammer",
+   "scales",
+   "primer",
+   "luckcharm",
+   "steel_blade",
+   "tower_shield",
+   "signet_ring"
+  ],
+  "hidden": true
  }
 ]

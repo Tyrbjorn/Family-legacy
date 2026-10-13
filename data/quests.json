@@ -113,6 +113,12 @@
    "owl_feather",
    "ring_of_vigor",
    "amulet_of_wit"
+  ],
+  "rare": [
+   {
+    "id": "wolfking_pelt",
+    "chance": 0.02
+   }
   ]
  },
  {
@@ -129,7 +135,13 @@
    "ore": 8
   },
   "skill": "mining",
-  "loot": []
+  "loot": [],
+  "rare": [
+   {
+    "id": "ancient_coin",
+    "chance": 0.02
+   }
+  ]
  },
  {
   "id": "bandit_scout",
@@ -239,6 +251,12 @@
    "owl_feather",
    "ring_of_vigor",
    "amulet_of_wit"
+  ],
+  "rare": [
+   {
+    "id": "goblin_crown",
+    "chance": 0.03
+   }
   ]
  },
  {
@@ -279,7 +297,13 @@
    "ring_of_vigor",
    "amulet_of_wit"
   ],
-  "hidden": true
+  "hidden": true,
+  "rare": [
+   {
+    "id": "grandmothers_locket",
+    "chance": 0.02
+   }
+  ]
  },
  {
   "id": "caravan",
@@ -319,7 +343,13 @@
    "ring_of_vigor",
    "amulet_of_wit"
   ],
-  "hidden": true
+  "hidden": true,
+  "rare": [
+   {
+    "id": "giant_pearl",
+    "chance": 0.03
+   }
+  ]
  },
  {
   "id": "mushrooms",
@@ -395,6 +425,12 @@
    "dragon_scale",
    "phoenix_plume",
    "heart_locket"
+  ],
+  "rare": [
+   {
+    "id": "recipe:r_wyrmmail",
+    "chance": 0.02
+   }
   ]
  },
  {
@@ -412,7 +448,13 @@
   "loot": [
    "chocolate"
   ],
-  "unlocks": "activity:herbwalk"
+  "unlocks": "activity:herbwalk",
+  "rare": [
+   {
+    "id": "dryad_tear",
+    "chance": 0.03
+   }
+  ]
  },
  {
   "id": "stag",
@@ -457,6 +499,12 @@
    "dragon_scale",
    "phoenix_plume",
    "heart_locket"
+  ],
+  "rare": [
+   {
+    "id": "moonsilver_bow",
+    "chance": 0.015
+   }
   ]
  },
  {
@@ -502,6 +550,16 @@
    "dragon_scale",
    "phoenix_plume",
    "heart_locket"
+  ],
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.02
+   },
+   {
+    "id": "ancient_coin",
+    "chance": 0.04
+   }
   ]
  },
  {
@@ -590,6 +648,12 @@
    "dragon_scale",
    "phoenix_plume",
    "heart_locket"
+  ],
+  "rare": [
+   {
+    "id": "wolfking_pelt",
+    "chance": 0.01
+   }
   ]
  },
  {
@@ -666,7 +730,8 @@
   "skill": "monsterlore",
   "loot": [],
   "hidden": true,
-  "unlocks": "skill:monsterlore"
+  "unlocks": "skill:monsterlore",
+  "once": true
  },
  {
   "id": "treant",
@@ -711,7 +776,13 @@
    "phoenix_plume",
    "heart_locket"
   ],
-  "hidden": true
+  "hidden": true,
+  "rare": [
+   {
+    "id": "oathstone",
+    "chance": 0.03
+   }
+  ]
  },
  {
   "id": "g_vanguard_patrol",
@@ -854,7 +925,13 @@
   "loot": [
    "adv_pack"
   ],
-  "adv": 4
+  "adv": 4,
+  "rare": [
+   {
+    "id": "recipe:r_heirblade",
+    "chance": 0.05
+   }
+  ]
  },
  {
   "id": "g_rogues_heist",
@@ -925,7 +1002,8 @@
   },
   "skill": "sailing",
   "loot": [],
-  "unlocks": "activity:fishing"
+  "unlocks": "activity:fishing",
+  "once": true
  },
  {
   "id": "q_hermit",
@@ -940,6 +1018,402 @@
   },
   "skill": "nature",
   "loot": [],
-  "unlocks": "activity:meditation"
+  "unlocks": "activity:meditation",
+  "once": true
+ },
+ {
+  "id": "st1",
+  "name": "A Letter Sealed in Wax",
+  "region": "outskirts",
+  "type": "story",
+  "cp": 5,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 60
+  },
+  "skill": "reading",
+  "loot": [],
+  "story": 1,
+  "once": true,
+  "req": {
+   "lvl": 2
+  },
+  "grants": {
+   "item": "family_signet"
+  },
+  "desc": "A courier brings a letter bearing a crest you have never seen."
+ },
+ {
+  "id": "st2",
+  "name": "The Miller's Debt",
+  "region": "outskirts",
+  "type": "story",
+  "cp": 10,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 80,
+   "food": 40
+  },
+  "skill": "haggling",
+  "loot": [],
+  "story": 2,
+  "once": true,
+  "req": {
+   "lvl": 3
+  },
+  "grants": {
+   "minion": "refugee"
+  },
+  "desc": "The miller knew your grandmother. He owes her a favor."
+ },
+ {
+  "id": "st3",
+  "name": "Smoke Over the Ridge",
+  "region": "outskirts",
+  "type": "story",
+  "cp": 18,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 120
+  },
+  "skill": "tactics",
+  "loot": [],
+  "story": 3,
+  "once": true,
+  "req": {
+   "lvl": 5
+  },
+  "grants": {
+   "land": "plot"
+  },
+  "desc": "Raiders burn a homestead; the widow deeds you her plot."
+ },
+ {
+  "id": "st4",
+  "name": "The Hidden Ledger",
+  "region": "outskirts",
+  "type": "story",
+  "cp": 25,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 150
+  },
+  "skill": "reading",
+  "loot": [],
+  "story": 4,
+  "once": true,
+  "hidden": true,
+  "req": {
+   "lvl": 7
+  },
+  "unlocks": "recipe:r_heirblade",
+  "desc": "A rumor of a ledger naming your lost house. Hear it in the tavern."
+ },
+ {
+  "id": "st5",
+  "name": "Into the Old Forest",
+  "region": "forest",
+  "type": "story",
+  "cp": 50,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 200,
+   "wood": 40
+  },
+  "skill": "tracking",
+  "loot": [],
+  "story": 5,
+  "once": true,
+  "req": {
+   "lvl": 10
+  },
+  "grants": {
+   "minion": "falconer"
+  },
+  "desc": "The ledger points to a ranger lodge deep in the trees."
+ },
+ {
+  "id": "st6",
+  "name": "The Dryad's Price",
+  "region": "forest",
+  "type": "story",
+  "cp": 65,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "herbs": 40,
+   "coin": 150
+  },
+  "skill": "nature",
+  "loot": [],
+  "story": 6,
+  "once": true,
+  "req": {
+   "lvl": 12
+  },
+  "unlocks": "activity:grovewalk",
+  "desc": "The dryad will speak of House Vael, for a price."
+ },
+ {
+  "id": "st7",
+  "name": "Ashes of House Vael",
+  "region": "forest",
+  "type": "story",
+  "cp": 80,
+  "days": 7,
+  "risk": "risky",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "history",
+  "loot": [],
+  "story": 7,
+  "once": true,
+  "req": {
+   "lvl": 14,
+   "era": 2
+  },
+  "grants": {
+   "item": "vael_banner"
+  },
+  "desc": "The ruined manor of your ancestors. Its banner still hangs."
+ },
+ {
+  "id": "st8",
+  "name": "The Treant's Oath",
+  "region": "forest",
+  "type": "story",
+  "cp": 100,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 250,
+   "wood": 80
+  },
+  "skill": "nature",
+  "loot": [],
+  "story": 8,
+  "once": true,
+  "req": {
+   "lvl": 17,
+   "era": 2
+  },
+  "grants": {
+   "land": "acre",
+   "item": "oathstone"
+  },
+  "desc": "The old treant returns the acre it guarded for your bloodline."
+ },
+ {
+  "id": "st9",
+  "name": "The Usurper's Hand",
+  "region": "outskirts",
+  "type": "story",
+  "cp": 110,
+  "days": 8,
+  "risk": "deadly",
+  "reward": {
+   "coin": 400
+  },
+  "skill": "swordsmanship",
+  "loot": [],
+  "story": 9,
+  "once": true,
+  "hidden": true,
+  "req": {
+   "lvl": 20,
+   "era": 2
+  },
+  "grants": {
+   "minion": "bannerman"
+  },
+  "desc": "The usurper's agents hunt your family. Find them through rumors."
+ },
+ {
+  "id": "st10",
+  "name": "Reclaim the Name",
+  "region": "forest",
+  "type": "story",
+  "cp": 140,
+  "days": 10,
+  "risk": "deadly",
+  "reward": {
+   "coin": 800
+  },
+  "skill": "leadership",
+  "loot": [],
+  "story": 10,
+  "once": true,
+  "req": {
+   "lvl": 24,
+   "era": 2
+  },
+  "grants": {
+   "item": "ancestral_blade",
+   "renown": 200
+  },
+  "desc": "Face the usurper and restore House Vael."
+ },
+ {
+  "id": "s_oldwell",
+  "name": "The Old Well",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 8,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 70
+  },
+  "skill": "foraging",
+  "loot": [],
+  "once": true,
+  "grants": {
+   "item": "ancient_coin"
+  },
+  "desc": "Something glints at the bottom."
+ },
+ {
+  "id": "s_lostheir",
+  "name": "The Lost Heir's Locket",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 15,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "once": true,
+  "grants": {
+   "item": "grandmothers_locket"
+  },
+  "desc": "A peddler sells a locket with your family crest."
+ },
+ {
+  "id": "s_hermitcache",
+  "name": "Hermit's Cache",
+  "region": "forest",
+  "type": "errand",
+  "cp": 60,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 180,
+   "potions": 5
+  },
+  "skill": "nature",
+  "loot": [],
+  "once": true,
+  "hidden": true,
+  "desc": "A buried chest of a long-dead hermit."
+ },
+ {
+  "id": "s_moonduel",
+  "name": "Moonlit Duel",
+  "region": "forest",
+  "type": "errand",
+  "cp": 70,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "swordsmanship",
+  "loot": [],
+  "once": true,
+  "desc": "A masked duelist challenges the strongest of your house."
+ },
+ {
+  "id": "s_sunkenchapel",
+  "name": "The Sunken Chapel",
+  "region": "forest",
+  "type": "errand",
+  "cp": 90,
+  "days": 6,
+  "risk": "deadly",
+  "reward": {
+   "coin": 350
+  },
+  "skill": "faith",
+  "loot": [],
+  "once": true,
+  "unlocks": "recipe:r_wyrmmail",
+  "desc": "A drowned chapel holds an old smith's plans."
+ },
+ {
+  "id": "h_giants",
+  "name": "Hill Giant Toll",
+  "region": "highlands",
+  "type": "errand",
+  "cp": 120,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 420,
+   "stone": 40
+  },
+  "skill": "tactics",
+  "loot": [
+   "steel_blade",
+   "tower_shield"
+  ],
+  "rare": [
+   {
+    "id": "moonsilver_bow",
+    "chance": 0.02
+   }
+  ]
+ },
+ {
+  "id": "h_eyrie",
+  "name": "The Eyrie Oath",
+  "region": "highlands",
+  "type": "errand",
+  "cp": 100,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "leadership",
+  "loot": [],
+  "once": true,
+  "grants": {
+   "minion": "falconer",
+   "item": "signet_ring"
+  },
+  "desc": "The eagle-riders swear friendship to a house that climbs to them."
+ },
+ {
+  "id": "h_stormcave",
+  "name": "Storm Cave",
+  "region": "highlands",
+  "type": "errand",
+  "cp": 140,
+  "days": 7,
+  "risk": "deadly",
+  "reward": {
+   "coin": 600
+  },
+  "skill": "arcana",
+  "loot": [
+   "runed_orb"
+  ],
+  "hidden": true,
+  "once": true,
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.05
+   }
+  ]
  }
 ]

@@ -552,5 +552,122 @@
   "rarity": "Fine",
   "cp": 6,
   "value": 60
+ },
+ {
+  "id": "ancestral_blade",
+  "name": "Ancestral Blade",
+  "slot": "weapon",
+  "rarity": "Legendary",
+  "cp": 60,
+  "value": 2500,
+  "heirloom": true
+ },
+ {
+  "id": "vael_banner",
+  "name": "Banner of House Vael",
+  "slot": "accessory",
+  "rarity": "Legendary",
+  "cp": 22,
+  "value": 1200,
+  "heirloom": true
+ },
+ {
+  "id": "family_signet",
+  "name": "Family Signet",
+  "slot": "accessory",
+  "rarity": "Heirloom",
+  "cp": 8,
+  "value": 300,
+  "heirloom": true
+ },
+ {
+  "id": "grandmothers_locket",
+  "name": "Grandmother's Locket",
+  "slot": "accessory",
+  "rarity": "Heirloom",
+  "cp": 12,
+  "value": 400,
+  "heirloom": true
+ },
+ {
+  "id": "wolfking_pelt",
+  "name": "Wolf-King Pelt",
+  "slot": "armor",
+  "rarity": "Legendary",
+  "cp": 34,
+  "value": 1400
+ },
+ {
+  "id": "dryad_tear",
+  "name": "Dryad's Tear",
+  "slot": "accessory",
+  "rarity": "Legendary",
+  "cp": 22,
+  "value": 1100
+ },
+ {
+  "id": "goblin_crown",
+  "name": "Goblin Crown",
+  "slot": "accessory",
+  "rarity": "Unique",
+  "cp": 16,
+  "value": 700
+ },
+ {
+  "id": "stormglass_orb",
+  "name": "Stormglass Orb",
+  "slot": "offhand",
+  "rarity": "Legendary",
+  "cp": 38,
+  "value": 1600
+ },
+ {
+  "id": "moonsilver_bow",
+  "name": "Moonsilver Bow",
+  "slot": "weapon",
+  "rarity": "Legendary",
+  "cp": 45,
+  "value": 1800
+ },
+ {
+  "id": "giant_pearl",
+  "name": "Giant Pearl",
+  "slot": "accessory",
+  "rarity": "Unique",
+  "cp": 5,
+  "value": 800
+ },
+ {
+  "id": "ancient_coin",
+  "name": "Ancient Coin",
+  "slot": "accessory",
+  "rarity": "Unique",
+  "cp": 4,
+  "value": 500
+ },
+ {
+  "id": "heir_blade",
+  "name": "Heirloom Blade",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 30,
+  "value": 260
+ },
+ {
+  "id": "wyrm_mail",
+  "name": "Wyrmscale Mail",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 32,
+  "value": 300
+ },
+ {
+  "id": "oathstone",
+  "name": "Oathstone",
+  "slot": "accessory",
+  "rarity": "Heirloom",
+  "cp": 14,
+  "value": 600,
+  "heirloom": true
  }
 ]

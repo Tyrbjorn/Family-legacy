@@ -29,7 +29,13 @@
    "copperore": 1
   },
   "skill": "mining",
-  "icon": "🪨"
+  "icon": "🪨",
+  "rare": [
+   {
+    "id": "giant_pearl",
+    "chance": 0.005
+   }
+  ]
  },
  {
   "id": "herbpatch",
@@ -52,7 +58,17 @@
   },
   "skill": "mining",
   "icon": "⛏️",
-  "hidden": true
+  "hidden": true,
+  "rare": [
+   {
+    "id": "ancient_coin",
+    "chance": 0.01
+   },
+   {
+    "id": "recipe:r_heirblade",
+    "chance": 0.003
+   }
+  ]
  },
  {
   "id": "deadfall",
@@ -62,7 +78,13 @@
    "wood": 6
   },
   "skill": "carpentry",
-  "icon": "🪵"
+  "icon": "🪵",
+  "rare": [
+   {
+    "id": "ancient_coin",
+    "chance": 0.004
+   }
+  ]
  },
  {
   "id": "gameTrail",
@@ -84,7 +106,13 @@
   },
   "skill": "alchemy",
   "icon": "🌙",
-  "hidden": true
+  "hidden": true,
+  "rare": [
+   {
+    "id": "dryad_tear",
+    "chance": 0.004
+   }
+  ]
  },
  {
   "id": "coppervein",
@@ -96,6 +124,31 @@
   },
   "skill": "mining",
   "icon": "🟠",
-  "hidden": false
+  "hidden": false,
+  "rare": [
+   {
+    "id": "goblin_crown",
+    "chance": 0.003
+   }
+  ]
+ },
+ {
+  "id": "silverseam",
+  "name": "Silver Seam",
+  "region": "highlands",
+  "res": {
+   "ore": 3,
+   "copperore": 2,
+   "stone": 2
+  },
+  "skill": "mining",
+  "icon": "🪨",
+  "hidden": true,
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.004
+   }
+  ]
  }
 ]

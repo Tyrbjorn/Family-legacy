@@ -1,0 +1,555 @@
+{
+ "size": {
+  "w": 1000,
+  "h": 900
+ },
+ "speed": 150,
+ "minTravel": 0.5,
+ "gatherTripDays": 5,
+ "home": {
+  "x": 200,
+  "y": 400,
+  "name": "Home"
+ },
+ "regions": [
+  {
+   "id": "outskirts",
+   "x": 20,
+   "y": 20,
+   "w": 500,
+   "h": 680,
+   "color": "#3b5d33"
+  },
+  {
+   "id": "forest",
+   "x": 520,
+   "y": 20,
+   "w": 460,
+   "h": 680,
+   "color": "#1f4a2c"
+  },
+  {
+   "id": "highlands",
+   "x": 20,
+   "y": 715,
+   "w": 960,
+   "h": 170,
+   "color": "#55606b"
+  }
+ ],
+ "towns": {
+  "millbrook": {
+   "x": 330,
+   "y": 300
+  },
+  "thornwick": {
+   "x": 700,
+   "y": 380
+  },
+  "ashford": {
+   "x": 90,
+   "y": 150
+  },
+  "eyrie": {
+   "x": 820,
+   "y": 790
+  }
+ },
+ "points": {
+  "scrub": {
+   "x": 225,
+   "y": 234
+  },
+  "berries": {
+   "x": 262,
+   "y": 129
+  },
+  "creek": {
+   "x": 97,
+   "y": 628
+  },
+  "herbpatch": {
+   "x": 108,
+   "y": 454
+  },
+  "oldmine": {
+   "x": 358,
+   "y": 139
+  },
+  "deadfall": {
+   "x": 819,
+   "y": 299
+  },
+  "gameTrail": {
+   "x": 579,
+   "y": 168
+  },
+  "moonherbs": {
+   "x": 782,
+   "y": 508
+  },
+  "coppervein": {
+   "x": 95,
+   "y": 326
+  },
+  "rats": {
+   "x": 483,
+   "y": 659
+  },
+  "letters": {
+   "x": 355,
+   "y": 486
+  },
+  "herbs": {
+   "x": 128,
+   "y": 376
+  },
+  "firewood": {
+   "x": 336,
+   "y": 200
+  },
+  "lostgoat": {
+   "x": 352,
+   "y": 395
+  },
+  "wolves": {
+   "x": 112,
+   "y": 272
+  },
+  "quarry": {
+   "x": 314,
+   "y": 624
+  },
+  "bandit_scout": {
+   "x": 278,
+   "y": 401
+  },
+  "fair": {
+   "x": 298,
+   "y": 544
+  },
+  "tutor": {
+   "x": 417,
+   "y": 329
+  },
+  "goblins": {
+   "x": 235,
+   "y": 539
+  },
+  "haunt": {
+   "x": 207,
+   "y": 154
+  },
+  "caravan": {
+   "x": 447,
+   "y": 430
+  },
+  "mushrooms": {
+   "x": 637,
+   "y": 580
+  },
+  "oaks": {
+   "x": 775,
+   "y": 120
+  },
+  "spiders": {
+   "x": 902,
+   "y": 159
+  },
+  "dryad": {
+   "x": 845,
+   "y": 401
+  },
+  "stag": {
+   "x": 734,
+   "y": 438
+  },
+  "ruins": {
+   "x": 864,
+   "y": 588
+  },
+  "witch": {
+   "x": 698,
+   "y": 565
+  },
+  "owlbear": {
+   "x": 591,
+   "y": 397
+  },
+  "shrine": {
+   "x": 891,
+   "y": 536
+  },
+  "poachers": {
+   "x": 902,
+   "y": 435
+  },
+  "beasttome": {
+   "x": 571,
+   "y": 552
+  },
+  "treant": {
+   "x": 741,
+   "y": 252
+  },
+  "g_vanguard_patrol": {
+   "x": 263,
+   "y": 480
+  },
+  "g_lodge_hunt": {
+   "x": 814,
+   "y": 162
+  },
+  "g_collegium_rift": {
+   "x": 765,
+   "y": 642
+  },
+  "g_hearth_bridge": {
+   "x": 479,
+   "y": 520
+  },
+  "g_vanguard_siege": {
+   "x": 678,
+   "y": 234
+  },
+  "b_boars": {
+   "x": 66,
+   "y": 576
+  },
+  "b_smugglers": {
+   "x": 485,
+   "y": 266
+  },
+  "b_wyvern": {
+   "x": 562,
+   "y": 229
+  },
+  "g_rogues_heist": {
+   "x": 249,
+   "y": 659
+  },
+  "g_church_plague": {
+   "x": 413,
+   "y": 607
+  },
+  "g_church_crypt": {
+   "x": 594,
+   "y": 293
+  },
+  "q_river": {
+   "x": 285,
+   "y": 246
+  },
+  "q_hermit": {
+   "x": 112,
+   "y": 80
+  },
+  "st1": {
+   "x": 165,
+   "y": 620
+  },
+  "st2": {
+   "x": 228,
+   "y": 308
+  },
+  "st3": {
+   "x": 472,
+   "y": 325
+  },
+  "st4": {
+   "x": 434,
+   "y": 109
+  },
+  "st5": {
+   "x": 659,
+   "y": 432
+  },
+  "st6": {
+   "x": 879,
+   "y": 81
+  },
+  "st7": {
+   "x": 604,
+   "y": 485
+  },
+  "st8": {
+   "x": 931,
+   "y": 242
+  },
+  "st9": {
+   "x": 147,
+   "y": 210
+  },
+  "st10": {
+   "x": 639,
+   "y": 641
+  },
+  "s_oldwell": {
+   "x": 469,
+   "y": 185
+  },
+  "s_lostheir": {
+   "x": 371,
+   "y": 84
+  },
+  "s_hermitcache": {
+   "x": 831,
+   "y": 648
+  },
+  "s_moonduel": {
+   "x": 701,
+   "y": 123
+  },
+  "s_sunkenchapel": {
+   "x": 786,
+   "y": 413
+  },
+  "silverseam": {
+   "x": 300,
+   "y": 800
+  },
+  "h_giants": {
+   "x": 520,
+   "y": 770
+  },
+  "h_eyrie": {
+   "x": 740,
+   "y": 840
+  },
+  "h_stormcave": {
+   "x": 930,
+   "y": 760
+  },
+  "d_ratwarren": {
+   "x": 260,
+   "y": 520
+  },
+  "d_barrow": {
+   "x": 90,
+   "y": 560
+  },
+  "d_spidercave": {
+   "x": 660,
+   "y": 180
+  },
+  "d_ruinvault": {
+   "x": 950,
+   "y": 450
+  },
+  "d_stormhold": {
+   "x": 420,
+   "y": 860
+  }
+ },
+ "areas": [
+  {
+   "id": "a_hills",
+   "name": "Windswept Hills",
+   "region": "outskirts",
+   "x": 110,
+   "y": 160,
+   "r": 90,
+   "days": 3,
+   "secrets": [
+    {
+     "type": "town",
+     "id": "ashford",
+     "chance": 1
+    },
+    {
+     "type": "reveal",
+     "id": "lostgoat",
+     "chance": 0.5
+    },
+    {
+     "type": "cache",
+     "id": "c_hills",
+     "chance": 0.5,
+     "reward": {
+      "coin": 120,
+      "wood": 30
+     }
+    },
+    {
+     "type": "dungeon",
+     "id": "d_ratwarren",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "id": "a_marsh",
+   "name": "Fenwater Marsh",
+   "region": "outskirts",
+   "x": 140,
+   "y": 620,
+   "r": 85,
+   "days": 3,
+   "secrets": [
+    {
+     "type": "reveal",
+     "id": "haunt",
+     "chance": 0.5
+    },
+    {
+     "type": "reveal",
+     "id": "oldmine",
+     "chance": 0.6
+    },
+    {
+     "type": "reveal",
+     "id": "st4",
+     "chance": 0.3
+    },
+    {
+     "type": "encounter",
+     "id": "e_bogwisp",
+     "chance": 0.08,
+     "reward": {
+      "coin": 60
+     },
+     "drop": {
+      "id": "giant_pearl",
+      "chance": 0.25
+     }
+    },
+    {
+     "type": "dungeon",
+     "id": "d_barrow",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "id": "a_deepwood",
+   "name": "The Deepwood",
+   "region": "forest",
+   "x": 760,
+   "y": 130,
+   "r": 100,
+   "days": 4,
+   "secrets": [
+    {
+     "type": "reveal",
+     "id": "witch",
+     "chance": 0.4
+    },
+    {
+     "type": "reveal",
+     "id": "moonherbs",
+     "chance": 0.6
+    },
+    {
+     "type": "reveal",
+     "id": "s_hermitcache",
+     "chance": 0.5
+    },
+    {
+     "type": "encounter",
+     "id": "e_whitestag",
+     "chance": 0.06,
+     "reward": {
+      "coin": 150
+     },
+     "drop": {
+      "id": "dryad_tear",
+      "chance": 0.2
+     }
+    },
+    {
+     "type": "dungeon",
+     "id": "d_spidercave",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "id": "a_ridge",
+   "name": "Thunder Ridge",
+   "region": "forest",
+   "x": 900,
+   "y": 620,
+   "r": 90,
+   "days": 4,
+   "secrets": [
+    {
+     "type": "region",
+     "id": "highlands",
+     "chance": 1
+    },
+    {
+     "type": "reveal",
+     "id": "treant",
+     "chance": 0.4
+    },
+    {
+     "type": "reveal",
+     "id": "st9",
+     "chance": 0.3
+    },
+    {
+     "type": "cache",
+     "id": "c_ridge",
+     "chance": 0.5,
+     "reward": {
+      "coin": 300,
+      "ingots": 10
+     }
+    },
+    {
+     "type": "dungeon",
+     "id": "d_ruinvault",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "id": "a_peaks",
+   "name": "Stormcrest Peaks",
+   "region": "highlands",
+   "x": 600,
+   "y": 820,
+   "r": 110,
+   "days": 5,
+   "secrets": [
+    {
+     "type": "town",
+     "id": "eyrie",
+     "chance": 1
+    },
+    {
+     "type": "reveal",
+     "id": "silverseam",
+     "chance": 0.6
+    },
+    {
+     "type": "reveal",
+     "id": "h_stormcave",
+     "chance": 0.4
+    },
+    {
+     "type": "encounter",
+     "id": "e_roc",
+     "chance": 0.05,
+     "reward": {
+      "coin": 300
+     },
+     "drop": {
+      "id": "moonsilver_bow",
+      "chance": 0.15
+     }
+    },
+    {
+     "type": "dungeon",
+     "id": "d_stormhold",
+     "chance": 0.6
+    }
+   ]
+  }
+ ],
+ "encounterNames": {
+  "e_bogwisp": "a Bog Wisp",
+  "e_whitestag": "the White Stag",
+  "e_roc": "a Thunder Roc"
+ }
+}

@@ -9,7 +9,10 @@
     "coin": 150
    },
    "towns": [
-    "millbrook"
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
    ],
    "desc": "A small patch of scrub land outside Millbrook"
   },
@@ -22,7 +25,10 @@
     "coin": 500
    },
    "towns": [
-    "millbrook"
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
    ],
    "requires": "plot"
   },
@@ -37,7 +43,9 @@
    },
    "towns": [
     "millbrook",
-    "thornwick"
+    "thornwick",
+    "ashford",
+    "eyrie"
    ],
    "requires": "acre"
   },
@@ -51,9 +59,102 @@
     "stone": 150
    },
    "towns": [
-    "thornwick"
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
    ],
    "requires": "meadow"
+  },
+  {
+   "id": "riverbank",
+   "name": "Riverbank Strip",
+   "icon": "🌊",
+   "slots": 1,
+   "cost": {
+    "coin": 900
+   },
+   "requires": "plot",
+   "desc": "Narrow strip by the creek",
+   "towns": [
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
+   ]
+  },
+  {
+   "id": "woodlot",
+   "name": "Forest Woodlot",
+   "icon": "🌲",
+   "slots": 2,
+   "cost": {
+    "coin": 2500,
+    "wood": 100
+   },
+   "requires": "acre",
+   "desc": "Timbered land at the forest edge",
+   "towns": [
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
+   ]
+  },
+  {
+   "id": "ridge",
+   "name": "Ridge Pastures",
+   "icon": "🐑",
+   "slots": 3,
+   "cost": {
+    "coin": 9000,
+    "stone": 300
+   },
+   "requires": "hillside",
+   "towns": [
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
+   ]
+  },
+  {
+   "id": "valley",
+   "name": "Greenvale",
+   "icon": "🏞️",
+   "slots": 4,
+   "cost": {
+    "coin": 20000,
+    "stone": 500,
+    "blocks": 100
+   },
+   "requires": "ridge",
+   "desc": "A whole valley: room for a village (Era 3)",
+   "towns": [
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
+   ]
+  },
+  {
+   "id": "highclaim",
+   "name": "Highland Claim",
+   "icon": "🏔️",
+   "slots": 3,
+   "cost": {
+    "coin": 14000,
+    "blocks": 80
+   },
+   "requires": "hillside",
+   "desc": "Requires the Stormcrest Highlands discovered",
+   "region": "highlands",
+   "towns": [
+    "millbrook",
+    "thornwick",
+    "ashford",
+    "eyrie"
+   ]
   }
  ],
  "stages": [
@@ -156,6 +257,299 @@
     }
    },
    "desc": "Houses 4 followers built-in, plus 2 slots",
+   "level": 1
+  },
+  {
+   "id": "quarry",
+   "name": "Quarry",
+   "icon": "🪨",
+   "fixed": [
+    "quarrypit"
+   ],
+   "allowed": [
+    "storage",
+    "toolrack",
+    "masontable"
+   ],
+   "cost": {
+    "coin": 120,
+    "wood": 30
+   },
+   "upgrades": [
+    {
+     "name": "Winch",
+     "cost": {
+      "coin": 150,
+      "planks": 10
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Blasting Powder",
+     "cost": {
+      "coin": 400,
+      "blocks": 10
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Deep Cut",
+     "cost": {
+      "coin": 900,
+      "blocks": 30,
+      "ingots": 8
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "Passive stone; upgrades raise output",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "mineshaft",
+   "name": "Mine Shaft",
+   "icon": "⛏️",
+   "fixed": [
+    "shaftlift"
+   ],
+   "allowed": [
+    "storage",
+    "orecart",
+    "toolrack"
+   ],
+   "cost": {
+    "coin": 250,
+    "wood": 40,
+    "stone": 20
+   },
+   "upgrades": [
+    {
+     "name": "Timber Props",
+     "cost": {
+      "coin": 200,
+      "planks": 15
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Pumps",
+     "cost": {
+      "coin": 500,
+      "copper": 10
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Deep Gallery",
+     "cost": {
+      "coin": 1200,
+      "ingots": 12,
+      "blocks": 20
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "Passive iron & copper ore",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "herbgarden",
+   "name": "Herb Garden",
+   "icon": "🌿",
+   "fixed": [
+    "herbbeds"
+   ],
+   "allowed": [
+    "herbrack",
+    "storage",
+    "alchbench"
+   ],
+   "cost": {
+    "coin": 90,
+    "wood": 20
+   },
+   "upgrades": [
+    {
+     "name": "Trellises",
+     "cost": {
+      "coin": 100,
+      "planks": 8
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Irrigation",
+     "cost": {
+      "coin": 300,
+      "blocks": 8
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Greenhouse",
+     "cost": {
+      "coin": 800,
+      "planks": 20,
+      "cloth": 10
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "Passive herbs",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "smithy",
+   "name": "Smithy",
+   "icon": "⚒️",
+   "fixed": [
+    "forge"
+   ],
+   "allowed": [
+    "workbench",
+    "storage",
+    "steelanvil",
+    "toolrack"
+   ],
+   "cost": {
+    "coin": 300,
+    "stone": 60
+   },
+   "upgrades": [
+    {
+     "name": "Bellows",
+     "cost": {
+      "coin": 250,
+      "planks": 10
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Fire-brick Hearth",
+     "cost": {
+      "coin": 600,
+      "blocks": 20
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Master Crucible",
+     "cost": {
+      "coin": 1400,
+      "ingots": 15,
+      "blocks": 20
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "A Forge with its own upgrade line",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "sawmill",
+   "name": "Saw Mill",
+   "icon": "🪚",
+   "fixed": [
+    "sawtable"
+   ],
+   "allowed": [
+    "storage",
+    "toolrack",
+    "workbench"
+   ],
+   "cost": {
+    "coin": 150,
+    "wood": 40
+   },
+   "upgrades": [
+    {
+     "name": "Water Wheel",
+     "cost": {
+      "coin": 200,
+      "planks": 10
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Twin Blades",
+     "cost": {
+      "coin": 500,
+      "copper": 8
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Steam Saw",
+     "cost": {
+      "coin": 1200,
+      "ingots": 10
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "A Saw Table with its own upgrade line",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "masonyard",
+   "name": "Mason Yard",
+   "icon": "🧱",
+   "fixed": [
+    "masontable"
+   ],
+   "allowed": [
+    "storage",
+    "toolrack"
+   ],
+   "cost": {
+    "coin": 150,
+    "stone": 40
+   },
+   "upgrades": [
+    {
+     "name": "Chisel Racks",
+     "cost": {
+      "coin": 200,
+      "planks": 8
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Crane",
+     "cost": {
+      "coin": 500,
+      "planks": 20
+     },
+     "mult": 0.25
+    },
+    {
+     "name": "Guild Masons",
+     "cost": {
+      "coin": 1200,
+      "blocks": 40
+     },
+     "mult": 0.5
+    }
+   ],
+   "desc": "A Mason's Table with its own upgrade line",
+   "land": 1,
+   "slots": 1,
+   "special": true,
    "level": 1
   }
  ],
@@ -627,6 +1021,74 @@
     ]
    },
    "desc": "Tans 2 hides → 1 leather, 2/day"
+  },
+  {
+   "id": "quarrypit",
+   "name": "Quarry Pit",
+   "icon": "⛏️",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "stone",
+      "rate": 4
+     }
+    ],
+    "jobs": {
+     "gather": 1
+    }
+   },
+   "desc": "Produces 4 stone/day; +1 gathering spot"
+  },
+  {
+   "id": "shaftlift",
+   "name": "Shaft Lift",
+   "icon": "🛗",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "ore",
+      "rate": 1.5
+     },
+     {
+      "in": {},
+      "out": "copperore",
+      "rate": 1.5
+     }
+    ],
+    "jobs": {
+     "mine": 2
+    }
+   },
+   "desc": "Raises 1.5 iron + 1.5 copper ore/day; 2 mining spots"
+  },
+  {
+   "id": "herbbeds",
+   "name": "Herb Beds",
+   "icon": "🌿",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "herbs",
+      "rate": 3
+     }
+    ],
+    "jobs": {
+     "herbs": 2
+    }
+   },
+   "desc": "Grows 3 herbs/day; 2 herb-picking spots"
   }
  ],
  "synergies": [

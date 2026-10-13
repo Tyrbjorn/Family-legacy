@@ -246,6 +246,35 @@
    },
    "days": 2,
    "line": "tailor"
+  },
+  {
+   "id": "r_heirblade",
+   "name": "Heirloom Blade",
+   "base": "heir_blade",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 6,
+    "planks": 2,
+    "leather": 1
+   },
+   "days": 6,
+   "line": "blacksmith",
+   "hidden": true
+  },
+  {
+   "id": "r_wyrmmail",
+   "name": "Wyrmscale Mail",
+   "base": "wyrm_mail",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 8,
+    "leather": 4
+   },
+   "days": 8,
+   "line": "blacksmith",
+   "hidden": true
   }
  ],
  "minionSlots": [

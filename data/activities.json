@@ -416,5 +416,24 @@
    "guild": "rogues",
    "rank": 2
   }
+ },
+ {
+  "id": "grovewalk",
+  "name": "Grove Walk",
+  "icon": "🌳",
+  "tier": "advanced",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.02,
+   "VIT": 0.015
+  },
+  "skills": [
+   "nature",
+   "healing"
+  ],
+  "unlock": {
+   "quest": "st6"
+  },
+  "desc": "Walk the dryad groves (Story ch. 6)"
  }
 ]

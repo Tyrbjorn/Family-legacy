@@ -10,5 +10,12 @@
   "name": "Old Forest",
   "cp": 50,
   "icon": "🌲"
+ },
+ {
+  "id": "highlands",
+  "name": "Stormcrest Highlands",
+  "cp": 110,
+  "icon": "🏔️",
+  "hidden": true
  }
 ]

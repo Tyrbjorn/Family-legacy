@@ -1,0 +1,233 @@
+[
+ {
+  "id": "d_ratwarren",
+  "name": "Rat Warren",
+  "region": "outskirts",
+  "icon": "🕳️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "Tunnels",
+    "days": 1,
+    "cp": 8,
+    "reward": {
+     "coin": 30
+    }
+   },
+   {
+    "name": "Nest",
+    "days": 1,
+    "cp": 12,
+    "reward": {
+     "coin": 40
+    }
+   },
+   {
+    "name": "Rat King",
+    "days": 1,
+    "cp": 18,
+    "reward": {
+     "coin": 80
+    }
+   }
+  ],
+  "loot": [
+   "wolf_tooth",
+   "buckler"
+  ],
+  "rare": [
+   {
+    "id": "ancient_coin",
+    "chance": 0.05
+   }
+  ],
+  "skill": "brawling"
+ },
+ {
+  "id": "d_barrow",
+  "name": "Sunken Barrow",
+  "region": "outskirts",
+  "icon": "⚰️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "Antechamber",
+    "days": 1,
+    "cp": 20,
+    "reward": {
+     "coin": 60
+    }
+   },
+   {
+    "name": "Crypt",
+    "days": 2,
+    "cp": 28,
+    "reward": {
+     "coin": 90,
+     "stone": 20
+    }
+   },
+   {
+    "name": "Barrow-Wight",
+    "days": 2,
+    "cp": 38,
+    "reward": {
+     "coin": 180
+    }
+   }
+  ],
+  "loot": [
+   "signet_ring",
+   "gilded_brooch"
+  ],
+  "rare": [
+   {
+    "id": "grandmothers_locket",
+    "chance": 0.03
+   },
+   {
+    "id": "recipe:r_heirblade",
+    "chance": 0.02
+   }
+  ],
+  "skill": "monsterlore"
+ },
+ {
+  "id": "d_spidercave",
+  "name": "Webbed Hollow",
+  "region": "forest",
+  "icon": "🕸️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "Silk Halls",
+    "days": 2,
+    "cp": 55,
+    "reward": {
+     "coin": 120
+    }
+   },
+   {
+    "name": "Egg Chamber",
+    "days": 2,
+    "cp": 70,
+    "reward": {
+     "coin": 160,
+     "cloth": 10
+    }
+   },
+   {
+    "name": "Broodmother",
+    "days": 2,
+    "cp": 85,
+    "reward": {
+     "coin": 320
+    }
+   }
+  ],
+  "loot": [
+   "elven_bow",
+   "shadow_leathers"
+  ],
+  "rare": [
+   {
+    "id": "recipe:r_wyrmmail",
+    "chance": 0.04
+   }
+  ],
+  "skill": "monsterlore"
+ },
+ {
+  "id": "d_ruinvault",
+  "name": "Vael Vault",
+  "region": "forest",
+  "icon": "🏛️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "Gate",
+    "days": 2,
+    "cp": 80,
+    "reward": {
+     "coin": 150
+    }
+   },
+   {
+    "name": "Hall of Ancestors",
+    "days": 2,
+    "cp": 95,
+    "reward": {
+     "coin": 220
+    }
+   },
+   {
+    "name": "Guardian Golem",
+    "days": 3,
+    "cp": 115,
+    "reward": {
+     "coin": 450,
+     "ingots": 10
+    }
+   }
+  ],
+  "loot": [
+   "knight_sabre",
+   "plate_cuirass"
+  ],
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.03
+   },
+   {
+    "id": "oathstone",
+    "chance": 0.03
+   }
+  ],
+  "skill": "history"
+ },
+ {
+  "id": "d_stormhold",
+  "name": "Stormhold Depths",
+  "region": "highlands",
+  "icon": "⛈️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "Ice Stair",
+    "days": 2,
+    "cp": 110,
+    "reward": {
+     "coin": 250
+    }
+   },
+   {
+    "name": "Thunder Gallery",
+    "days": 3,
+    "cp": 130,
+    "reward": {
+     "coin": 350
+    }
+   },
+   {
+    "name": "Storm Drake",
+    "days": 3,
+    "cp": 150,
+    "reward": {
+     "coin": 800
+    }
+   }
+  ],
+  "loot": [
+   "frost_rod",
+   "runed_orb"
+  ],
+  "rare": [
+   {
+    "id": "moonsilver_bow",
+    "chance": 0.04
+   }
+  ],
+  "skill": "tactics"
+ }
+]

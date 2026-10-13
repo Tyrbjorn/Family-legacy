@@ -20,6 +20,12 @@ One young adventurer making a name.
 - Minions: hiring, housing, food, wages, loyalty, gear, special minions
 - Estate direction of idle members and minions
 
+## Next: Parties 🤝 (planned, not built)
+**Unlocks at** Adventurers' Guild rank C, or with a Barracks or Guild Hall estate building.
+- Form a party of family members plus minions; it travels as one dot and runs dungeons and quests with **combined power** (sum of CP with diminishing returns).
+- Roles (front, support, scout) use member classes and minion jobs; loot and XP are split between members.
+- The standing Explore and Adventure orders, dungeons and travel are already built; parties will reuse them.
+
 ## Era 3 — Ruling Power 👑 (planned, not built)
 **Reached by:** 5,000 Renown and a Manor-tier estate. Right now the indicator just shows that you've reached it.
 Planned additions:
