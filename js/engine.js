@@ -30,4 +30,5 @@ export * from "./engine/houses.js";
 export * from "./engine/war.js";
 export * from "./engine/intros.js";
 export * from "./engine/gear.js";
+export * from "./engine/minionups.js";
 export * from "./engine/courtship.js";

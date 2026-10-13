@@ -54,7 +54,7 @@ function navv() {
   return GROUPS.filter(([g]) => groupTabs(g).length)
     .map(
       ([g, i, n]) =>
-        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}<br>${n}</button>`,
+        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}${g === "home" && E.pendingCount(s) ? '<sup class="nbadge">🎯</sup>' : ""}<br>${n}</button>`,
     )
     .join("");
 }
@@ -62,7 +62,7 @@ function subtabsv() {
   const ts = groupTabs(groupOf(U.tab));
   if (ts.length < 2) return "";
   return ts
-    .map(k => `<button class="${k === U.tab ? "on" : ""}" data-tab="${k}">${TABS[k][0]} ${TABS[k][1]}</button>`)
+    .map(k => `<button class="${k === U.tab ? "on" : ""}" data-tab="${k}">${TABS[k][0]} ${TABS[k][1]}${k === "minions" && E.pendingCount(s) ? " 🎯" + E.pendingCount(s) : ""}</button>`)
     .join("");
 }
 

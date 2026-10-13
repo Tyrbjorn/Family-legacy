@@ -3,7 +3,7 @@
 import { addRenown } from "./legacy.js";
 import { cp } from "./family.js";
 import { FEUD, HC, atWar, houseDef, houseList, houseState, phaseOk, tierOf } from "./houses.js";
-import { minionPower } from "./minions.js";
+import { minionPower, minionSurvival } from "./minions.js";
 import { active, isAdult, living, log, rng } from "./state.js";
 
 export const WAR = () => HC().war;
@@ -65,7 +65,7 @@ export function battle(s, id) {
     if (hurt) hurt.injured = Math.max(hurt.injured, W.injureDays);
     const g = (s.minions || []).filter(x => x.job === "guard" && !x.special);
     let gone = null;
-    if (g.length && rng() < W.minionLossChance) {
+    if (g.length && rng() < W.minionLossChance * minionSurvival(g[0])) {
       gone = g[Math.floor(rng() * g.length)];
       s.minions = s.minions.filter(x => x !== gone);
     }

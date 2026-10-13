@@ -1,3 +1,4 @@
+import { upPacks } from "./minionups.js";
 import { introNote } from "./intros.js";
 import { houseSellMult } from "./houses.js";
 import { seasonPrice } from "./seasons.js";
@@ -144,7 +145,7 @@ export function itemDef(id) {
   return D.items.find(i => i.id === id) || null;
 }
 
-export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9);
+export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9) + upPacks(s);
 
 export const vaultRoom = s => s.vault.length < vaultCap(s);
 

@@ -1,3 +1,4 @@
+import { backfillMilestones } from "./minionups.js";
 import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
 import { startTutorial } from "./tutorial.js";
@@ -349,6 +350,12 @@ const STEPS = [
       }
       introsMigrate(s);
     },
+  },
+  {
+    n: 10,
+    once: true,
+    name: "follower milestone upgrades: backfill earned milestones (auto, quiet), default Auto mode",
+    run: s => backfillMilestones(s),
   },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));

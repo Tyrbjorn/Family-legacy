@@ -2,15 +2,32 @@ import { pbar, timerBar } from "./progress.js";
 import * as E from "../engine.js";
 import { QC, fmt, it } from "./common.js";
 import { D, s } from "../main.js";
+import { setsCard } from "./gear-ui.js";
+
+// milestone upgrades: Auto/Manual toggle, owned upgrades, waiting choices (badge; never blocking)
+function upgradesBlock(mi) {
+  const MS = D.minions.milestones,
+    own = mi.ups || [],
+    pend = mi.pending || [];
+  const lv = E.minionLvl(mi),
+    next = Math.ceil((lv + 1) / MS.every) * MS.every;
+  let h = `<div style="margin-top:4px"><div class="row" style="flex-wrap:wrap;gap:4px"><b>🔓 Upgrades</b>${pend.length ? `<span class="tb" style="border-color:#d9b44a">🎯 ${pend.length} to choose</span>` : ""}<span style="flex:1"></span><button class="b ${E.upMode(mi) === "auto" ? "sel" : ""}" data-a="mupmode" data-v="${mi.uid}" data-w="auto">Auto</button><button class="b ${E.upMode(mi) === "manual" ? "sel" : ""}" data-a="mupmode" data-v="${mi.uid}" data-w="manual">Manual</button></div>`;
+  h += own.length ? `<div>${own.map(u => { const d = E.upDef(u.id); return d ? `<span class="tb" title="${d.desc}">${d.icon} ${d.name}${u.mult > 1 ? " ×" + u.mult : ""}${u.job ? " (" + u.job + ")" : ""}</span>` : ""; }).join("")}</div>` : "";
+  h += lv < D.minions.leveling.maxLvl ? pbar(((lv - (next - MS.every)) + Math.min(1, (mi.xp || 0) / E.minionXpNeed(lv))) / MS.every, `next upgrade at Lv ${next} (evolving gives a double one)`, null, "thin") : "";
+  for (const [i, p] of pend.entries())
+    h += `<div class="row" style="flex-wrap:wrap;gap:4px;margin-top:3px"><span class="muted">${p.why}${p.big ? " (double)" : ""}:</span>${p.offer.map(id => { const d = E.upDef(id); return `<button class="b" data-a="mupick" data-v="${mi.uid}" data-w="${i}" data-x="${id}" title="${d.desc}">${d.icon} ${d.name}</button>`; }).join("")}</div>`;
+  return h + `</div>`;
+}
 
 export function minionsv() {
   const M = D.minions;
   const mt = id => M.types.find(t => t.id === id);
   let h = `<div class="card"><b>🧑‍🤝‍🧑 Followers ${s.minions.filter(x => !x.special).length}/${E.minionCap(s)}${s.minions.some(x => x.special) ? " + " + s.minions.filter(x => x.special).length + " ⭐" : ""}</b><div class="muted">Wages ${E.monthlyWages(s)}🪙/month · eat ${E.minionFood(s)}🍞/day (pool ${fmt(s.res.food)}${s.res.food < E.minionFood(s) ? " ⚠️ hungry!" : ""}) · 🛌 bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}${E.housingCap(s, "bunk") ? "" : " – build a Bunk or Bunkhouse to hire"} · ${E.established(s) ? "assign them to estate work below" : "jobs unlock once a House establishes the estate"}</div><div class="muted">Gained by hiring in towns, rescues on some quests, tavern rumors, and estate reputation (every ${M.reputationEveryRenown} Renown).</div></div>`;
   if (!s.minions.length) h += `<div class="muted">No followers yet.</div>`;
+  if (E.pendingCount(s)) h += `<div class="card tut">🎯 ${E.pendingCount(s)} follower upgrade choice${E.pendingCount(s) > 1 ? "s" : ""} waiting (Manual mode). Followers keep working meanwhile.</div>`;
   for (const mi of s.minions) {
     const t = mt(mi.type);
-    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div>${mi.job ? timerBar(E.minionTimer(s, mi)) : pbar((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi)), "XP · idle")}${
+    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${(mi.pending || []).length ? ' <span class="tb" style="border-color:#d9b44a">🎯</span>' : ""}${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div>${mi.job ? timerBar(E.minionTimer(s, mi)) : pbar((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi)), "XP · idle")}${
       E.evolveOptions(mi).length
         ? `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Evolve:</span>${E.evolveOptions(
             mi,
@@ -37,7 +54,7 @@ export function minionsv() {
           ? " · next perk at Lv " + Object.keys(D.minions.perks[mi.job]).find(l => +l > E.minionLvl(mi))
           : ""
     }</div><div class="muted">${mi.home ? "🏠 lives in " + E.structName(s.structures.find(x => x.uid === mi.home)) + " (class home, +15%)" : E.isHoused(s, mi) ? "🏠 housed (" + t.housing + ")" : "⛺ UNHOUSED – needs " + ({ bunk: "a Bunk/Bunkhouse", kennel: "a Kennel", perch: "a Perch", brazier: "a Brazier", garden: "a Small Garden" }[t.housing] || t.housing) + "; cannot work"}${mi.hunger ? " · 🍽️ hungry " + mi.hunger + "d (output halved)" : ""}</div>
-  ${mi.special ? `<div class="muted">⭐ ${E.sourceLabel(t)}${t.source.quest ? "" : " (" + mi.source + ")"} · ${t.desc}</div>` : ""}<div class="row" style="flex-wrap:wrap;gap:4px;margin:4px 0">${D.crafting.minionSlots
+  ${mi.special ? `<div class="muted">⭐ ${E.sourceLabel(t)}${t.source.quest ? "" : " (" + mi.source + ")"} · ${t.desc}</div>` : ""}<div class="row" style="flex-wrap:wrap;gap:4px;margin:4px 0">${E.minionSlots(mi)
     .map(sl => {
       const g = (mi.equip || {})[sl];
       return g
@@ -50,7 +67,7 @@ export function minionsv() {
       const x = it(id);
       return (
         x &&
-        D.crafting.minionSlots.includes(x.slot) &&
+        E.minionSlots(mi).includes(x.slot) &&
         (!x.companion || ["kennel", "perch", "brazier"].includes(t.housing))
       );
     });
@@ -58,6 +75,7 @@ export function minionsv() {
       ? `<select data-a="mequipsel" data-v="${mi.uid}"><option value="">+ Equip from vault…</option>${opts.map(id => `<option value="${id}">${it(id).slot}: ${it(id).name} (+${it(id).cp})</option>`).join("")}</select>`
       : "";
   })()}</div>
+  ${upgradesBlock(mi)}${setsCard(mi.equip, "minion")}
   <div class="muted">Gear: job output ×${E.minionGearMult(mi, mi.job).toFixed(2)}${E.minionSurvival(mi) < 1 ? " · hunger resistance " + Math.round((1 - E.minionSurvival(mi)) * 100) + "%" : ""}</div><div class="muted">Good at: ${Object.entries(
     t.apt,
   )

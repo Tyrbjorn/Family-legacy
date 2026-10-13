@@ -137,6 +137,16 @@ for (const l of D.intros.lines) {
   for (const x of [...D.crafting.recipes, ...D.estate.pieces, ...D.estate.structures.flatMap(s => s.upgrades || [])].filter(x => x.requiresClass)) ok(D.classes.some(c => c.id === x.requiresClass), `requiresClass ${x.requiresClass} exists`);
   for (const r of D.crafting.recipes.filter(r => r.set)) ok(PC.has(r.station), `set recipe ${r.id} station`);
 }
+// follower milestones
+{ const MS = D.minions.milestones, ids = new Set(MS.pool.map(u => u.id)), cls = new Set(D.minions.npcClasses.map(c => c.id)), slots = new Set(D.items.map(i => i.slot));
+  ok(ids.size === MS.pool.length && MS.every >= 2 && MS.offer >= 2 && MS.offer <= 3, "milestone pool unique; offers 2-3");
+  for (const [b, l] of Object.entries(MS.prefs)) ok(l.every(x => ids.has(x)) && D.minions.npcClasses.some(c => c.branch === b), `prefs ${b} valid`);
+  for (const [c, l] of Object.entries(MS.classPrefs)) ok(cls.has(c) && l.every(x => ids.has(x)), `classPrefs ${c} valid`);
+  for (const u of MS.pool.filter(u => u.kind === "slot")) ok(slots.has(u.slot) && !D.crafting.minionSlots.includes(u.slot), `slot upgrade ${u.id} adds a new slot`);
+  const all = new Set([...D.crafting.minionSlots, ...MS.pool.filter(u => u.kind === "slot").map(u => u.slot)]);
+  ok(["weapon", "offhand", "armor", "accessory"].every(x => all.has(x)), "followers can reach every set slot");
+  for (const st of D.gear.sets) ok(st.minion["4"], `set ${st.id} has a follower 4-piece bonus`);
+}
 // marriage & diplomacy data
 const MD = D.marriage,
   HS = new Set(MD.houses.list.map(h => h.id)),

@@ -14,6 +14,10 @@ const T = D.tuning,
 const issues = [];
 const seen = {
   enchants: 0,
+  picks: 0,
+  evolves: 0,
+  setWorn: 0,
+  setCrafts: 0,
   quests: new Set(),
   structs: new Set(),
   pieces: new Set(),
@@ -124,7 +128,7 @@ function bot(s, m) {
   while (s.pendingClass && s.pendingClass.length) {
     const who = s.members.find(x => x.id === s.pendingClass[0]);
     const opts = D.classes.filter(c => c.tier === 0 && !c.line);
-    E.chooseClass(s, who.id, opts[who.id % opts.length].id);
+    E.chooseClass(s, who.id, who.id % 3 === 0 && s.members.filter(x => E.isAdult(x)).length > 1 ? "apprentice" : opts[who.id % opts.length].id);
     if (s.pendingClass[0] === who.id) s.pendingClass.shift();
   }
   if (s.needSuccession) {
@@ -145,7 +149,9 @@ function bot(s, m) {
   }
   if (E.isAdult(m) && !m.cls) {
     const opts = D.classes.filter(c => c.tier === 0 && !c.line);
-    if (opts.length) E.chooseClass(s, m.id, opts[m.id % opts.length].id);
+    // every third heir goes mage-line so enchanting/sets get long-run coverage
+    const pick = m.id % 3 === 0 && s.members.filter(x => E.isAdult(x) && x.alive !== false).length > 1 && opts.some(c => c.id === "apprentice") ? "apprentice" : opts[m.id % opts.length].id;
+    if (opts.length) E.chooseClass(s, m.id, pick);
   }
   if (m.cls) seen.classes.add(m.cls);
   // estate
@@ -210,6 +216,27 @@ function bot(s, m) {
     if (mi)
       for (const j of ["farm", "gather", "herbs", "mine", "hunt", "craft", "merchant", "adventure", "fish", "scout"])
         if (E.assignMinion(s, mi.uid, j)) break;
+  }
+  // followers: evolve (magic branch when possible), Manual mode on some to exercise choices
+  if (s.day % 30 === 0 && E.daysOfStock(s) > 10)
+    for (const mi of s.minions) {
+      if (mi.uid.endsWith("3") && !mi.upMode) E.setUpMode(s, mi.uid, "manual");
+      for (const [i, p] of (mi.pending || []).entries()) if (s.day % 90 === 0 && E.choosePending(s, mi.uid, i, p.offer[p.offer.length - 1])) { seen.picks++; break; }
+      const ev = E.evolveOptions(mi).filter(c => !E.minionEvolveIssue(s, mi, c.id)).sort((a, b) => (b.branch === "magic") - (a.branch === "magic"))[0];
+      if (ev && E.evolveMinion(s, mi.uid, ev.id)) seen.evolves++;
+    }
+  // gear sets: wear set pieces (member first, then followers); craft a set piece now and then
+  if (s.day % 30 === 15 && E.daysOfStock(s) > 10 && s.coins > 200) {
+    for (const id of s.vault.filter(v => (E.itemDef(v) || {}).set)) {
+      const x = E.itemDef(id);
+      if (!m.equip[x.slot]) { E.equip(s, m, id); seen.setWorn++; continue; }
+      const f = s.minions.find(mi => E.minionSlots(mi).includes(x.slot) && !(mi.equip || {})[x.slot]);
+      if (f && E.equipMinion(s, f.uid, id)) seen.setWorn++;
+    }
+    if (s.day % 120 === 15 && E.isAdult(m) && !E.isBusy(m) && E.daysOfStock(s) > 10) {
+      const rc = D.crafting.recipes.find(r => r.set && !E.recipeIssue(s, m, r));
+      if (rc) { E.setAction(s, { type: "craft", target: rc.id }); seen.setCrafts++; }
+    }
   }
   // legacy
   for (const u of D.legacy.upgrades) if (E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
@@ -377,6 +404,11 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
   for (const id of [...s.vault, ...s.members.flatMap(m => Object.values(m.equip || {})), ...(s.minions || []).flatMap(x => Object.values(x.equip || {}))]) if (!E.itemDef(id)) bad(seed, s.day, 'unloadable item ' + id);
+  for (const mi of s.minions || []) {
+    if ((mi.pending || []).length > D.minions.milestones.maxPending) bad(seed, s.day, 'pending upgrades over cap ' + mi.name);
+    for (const sl of Object.keys(mi.equip || {})) if (!E.minionSlots(mi).includes(sl)) bad(seed, s.day, 'follower gear in a locked slot ' + sl);
+    if ((mi.lvl || 1) >= D.minions.milestones.every && !(mi.ups || []).length && !(mi.pending || []).length) bad(seed, s.day, 'missing milestone ' + mi.name);
+  }
   for (const j of s.enchants || []) if (s.day - j.start > 365) bad(seed, s.day, 'enchant job stuck ' + j.item);
   for (const st of s.structures) if (E.freeSlots(s, st) < 0) bad(seed, s.day, 'over-full building ' + st.type);
   for (const [id, l] of Object.entries((s.intros || {}).lines || {})) if (!['active', 'done', 'skipped'].includes(l.state)) bad(seed, s.day, 'bad intro state ' + id);
@@ -403,6 +435,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
     phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),
+    minionUps: (s.minions || []).reduce((a, mi) => a + (mi.ups || []).length, 0),
+    fullSetFollowers: (s.minions || []).filter(mi => E.setProgress(mi.equip).some(p => p.n >= 4)).length,
     sets: s.vault.concat(s.members.flatMap(m => Object.values(m.equip || {}))).filter(id => (E.itemDef(id) || {}).set).length,
     enchanted: s.vault.concat(s.members.flatMap(m => Object.values(m.equip || {}))).filter(id => String(id).includes('#')).length,
     intros: Object.fromEntries(Object.entries((s.intros || {}).lines || {}).map(([k, l]) => [k, l.state])),
@@ -464,7 +498,7 @@ console.log(
   JSON.stringify(Object.fromEntries(Object.entries(coinBy).map(([k, v]) => [k, Math.round(v)]))),
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
-console.log("enchant jobs started by bot:", seen.enchants);
+console.log("enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

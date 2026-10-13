@@ -5,6 +5,7 @@ import { baseId, pieceDef, pieceTier, structDef } from "./estate.js";
 import { introNote } from "./intros.js";
 import { itemDef, vaultRoom } from "./inventory.js";
 import { isHoused, minionLvl } from "./minions.js";
+import { upEnchant } from "./minionups.js";
 import { gainXp, inLine } from "./skills.js";
 import { D, afford, isAdult, living, log, pay, rng } from "./state.js";
 
@@ -124,7 +125,7 @@ export function enchanters(s) {
     .map(m => ({ key: "m:" + m.id, name: m.name, skill: m.skills[EN().skill]?.lvl || 0, m }));
   for (const mi of s.minions || [])
     if (EN().minionClasses.includes(mi.cls) && isHoused(s, mi))
-      out.push({ key: "n:" + mi.uid, name: mi.name, skill: minionLvl(mi) * EN().minionSkillPerLvl + (EN().minionClassBonus[mi.cls] || 0), mi });
+      out.push({ key: "n:" + mi.uid, name: mi.name, skill: minionLvl(mi) * EN().minionSkillPerLvl + (EN().minionClassBonus[mi.cls] || 0) + upEnchant(mi), mi });
   return out;
 }
 const whoOf = (s, key) => enchanters(s).find(x => x.key === key);

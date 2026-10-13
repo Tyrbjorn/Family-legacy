@@ -1,3 +1,4 @@
+import { extraSlots, onMinionEvolve, onMinionLevel, upJobMult, upVigor } from "./minionups.js";
 import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
@@ -160,6 +161,7 @@ export function evolveMinion(s, uid, cid) {
   if (!mi || minionEvolveIssue(s, mi, cid)) return false;
   mi.cls = cid;
   log(s, `🌟 ${mi.name} became a ${npcClass(cid).name}.`);
+  onMinionEvolve(s, mi, npcClass(cid).name);
   return true;
 }
 
@@ -176,6 +178,7 @@ export function minionGainXp(s, mi, n) {
       s,
       `⬆️ ${mi.name} reached level ${mi.lvl}${minionPerks(mi).find(p => p.lvl === mi.lvl) ? " – perk: " + minionPerks(mi).find(p => p.lvl === mi.lvl).text : ""}.`,
     );
+    onMinionLevel(s, mi);
   }
 }
 
@@ -447,10 +450,11 @@ export function minionGearMult(mi, job) {
   if (job === "guard") m += (cp("weapon") + cp("armor")) / 50;
   const t = itemDef(g.tool);
   if (t && t.toolFor === job) m += t.cp / 40;
-  return m + minionSetMult(mi, job);
+  return m + minionSetMult(mi, job) + upJobMult(mi, job);
 }
 
-export const minionSurvival = mi => 1 / (1 + ((itemDef((mi.equip || {}).armor) || {}).cp || 0) / 20);
+export const minionSurvival = mi => 1 / (1 + ((itemDef((mi.equip || {}).armor) || {}).cp || 0) / 20 + upVigor(mi));
+export const minionSlots = mi => [...CR().minionSlots, ...extraSlots(mi)];
 
 export function equipMinion(s, uid, id) {
   const mi = s.minions.find(x => x.uid === uid);
@@ -460,7 +464,7 @@ export function equipMinion(s, uid, id) {
     !mi ||
     !it ||
     i < 0 ||
-    !CR().minionSlots.includes(it.slot) ||
+    !minionSlots(mi).includes(it.slot) ||
     (it.companion && !["kennel", "perch", "brazier"].includes(housingKind(mi)))
   )
     return false;

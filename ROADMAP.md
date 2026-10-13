@@ -51,3 +51,6 @@ Planned additions:
 - **Marriages for alliances:** arranged matches between houses that grant alliances or land
 
 Everything from Eras 1–2 keeps working alongside these.
+
+- [x] Follower milestone upgrades (Auto/Manual, extra slots → 4-piece follower sets, save step 10)
+- [x] estate.js split: production.js

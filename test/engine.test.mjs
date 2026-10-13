@@ -458,7 +458,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(D.encounters.list.some(e=>e.options.some(o=>o.check)),'skill/stat checks');
  N.pendingEnc={id:'crone',mid:m.id,day:N.day}; m.stats.CHA=40; N.res.coin=100; const r=E.resolvePending(N,'alms'); ok(r&&r.win&&N.minions.some(x=>x.type==='witch')&&N.specialGranted.includes('witch'),'kind alms: crone joins as the Hedge Witch');
  ok(E.buffSum(N,'xp')>0&&N.chronicle.some(e=>e.c==='encounter'),'blessing buff and chronicle entry'); ok(!N.pendingEnc,'pending cleared');
- const N2=E.newGame(t0); E.normalize(N2); const m2=N2.members[0]; m2.stats.WIL=0; N2.pendingEnc={id:'crone',mid:m2.id,day:0}; E.resolvePending(N2,'mock'); ok(E.buffSum(N2,'xp')<0&&N2.counts.curses===1,'mocking her can curse');
+ const N2=E.newGame(t0); E.normalize(N2); const m2=N2.members[0]; m2.stats.WIL=0; N2.pendingEnc={id:'crone',mid:m2.id,day:0}; const _r=E.rng; E.setRng(()=>0.99); E.resolvePending(N2,'mock'); E.setRng(_r); ok(E.buffSum(N2,'xp')<0&&N2.counts.curses===1,'mocking her can curse');
  for(let i=0;i<40;i++) E.advanceReal(N2,10); ok(E.buffSum(N2,'xp')===0,'curse wears off');
  const N3=E.newGame(t0); E.normalize(N3); N3.encPolicy='cautious'; const e3=E.encDef('toll'); ok(E.policyOption(N3,e3).tag==='cautious','auto-resolve uses the policy'); const k=N3.members[0]; k.standing='explore'; const c0=N3.res.coin; E.autoResolve(N3,k,e3); ok(N3.res.coin===c0-30&&!N3.pendingEnc,'automated orders auto-resolve');
  const N4=E.newGame(t0); E.normalize(N4); N4.res.coin=0; ok(E.policyOption(N4,E.encDef('peddler')).id!=='buy','unaffordable options skipped');
@@ -766,5 +766,29 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  const st=G.structures[0]; const pm0=E.pieceMult(st,'forge'); m.prof='blacksmith'; ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'forge'); E.placePiece(G,st.uid,'forge',G.pieceStore.includes('forge')); ok(E.pieceMult(st,'forge')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
  const ws={uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:2}; G.structures.push(ws); G.res.coin=1e5; G.res.blocks=100; G.res.moonpetal=50; ok(/needs an Apprentice/.test(E.specialUpIssue(G,'w')||''),'class-gated building upgrade');
  for(const [c,k] of Object.entries(D.crafting.classPerks)) if(c[0]!=='_') ok(D.classes.some(x=>x.id===c)&&k.pieces.every(p=>E.pieceDef(p)),'perk '+c+' references real classes/pieces');
+}
+// Follower milestone upgrades: every N levels + double on evolution; Auto by class preference, Manual waits
+{ const MS=D.minions.milestones; const G=E.newGame(t0); E.skipTutorial(G); const mk=(cls,uid)=>{const mi={uid,type:'laborer',name:'F'+uid,job:'farm',lvl:1,xp:0,equip:{},loyalty:10,cls};G.minions.push(mi);return mi;};
+ const lvTo=(mi,l)=>{while(mi.lvl<l)E.minionGainXp(G,mi,E.minionXpNeed(mi.lvl));};
+ const a=mk('n_peasant','a'); lvTo(a,MS.every-1); ok(!(a.ups||[]).length,'no upgrade before the first milestone'); lvTo(a,MS.every); ok(a.ups.length===1&&a.ups[0].id===MS.prefs.base[0],'Auto: milestone picked by class preference ('+a.ups[0].id+')');
+ ok(G.log.some(l=>/🔓 .*gained/.test(l.msg)),'upgrade logged (notify level-up)');
+ const g=mk('n_militia','g'); lvTo(g,MS.every); ok(['vigor','slot_offhand','might'].includes(g.ups[0].id),'Guard prefers armor/health ('+g.ups[0].id+')');
+ const h=mk('n_hedgemage','h'); h.job='craft'; lvTo(h,2*MS.every); ok(h.ups.some(u=>u.id==='slot_accessory'||u.id==='wits'),'Hedge Mage prefers a charm/accessory or magic');
+ const m=mk('n_peasant','m'); E.setUpMode(G,'m','manual'); lvTo(m,MS.every); ok((m.pending||[]).length===1&&m.pending[0].offer.length>=2&&m.pending[0].offer.length<=3&&!(m.ups||[]).length,'Manual: 2-3 choices wait');
+ ok(E.pendingCount(G)===1,'waiting choice counted for the badge'); const out0=E.minionLvlMult(m)*E.minionGearMult(m,'farm'); ok(out0>0&&m.job==='farm','waiting never blocks work');
+ ok(!E.choosePending(G,'m',0,'not_offered'),'cannot pick outside the offer'); const pick=m.pending[0].offer[1]; ok(E.choosePending(G,'m',0,pick)===pick&&!m.pending.length&&m.ups[0].id===pick,'pick one of the offered upgrades');
+ lvTo(m,MS.every*(MS.maxPending+2)); ok(m.pending.length===MS.maxPending&&m.ups.length>1,'pending queue capped; overflow auto-picks');
+ E.setUpMode(G,'m','auto'); ok(!m.pending.length,'switching to Auto resolves waiting choices');
+ const ev=mk('n_peasant','ev'); ev.lvl=5; G.structures=[{uid:'b',type:'barracks',pieces:[],up:3}]; const n0=(ev.ups||[]).length; E.evolveMinion(G,'ev','n_militia'); ok(ev.cls==='n_militia'&&ev.ups.length===n0+1&&ev.ups[ev.ups.length-1].mult===MS.bigMult,'evolution grants a double upgrade');
+ // full 4-piece set on an evolved follower
+ const f=mk('n_militia','f'); f.ups=[{id:'slot_offhand',mult:1},{id:'slot_accessory',mult:1}]; ok(E.minionSlots(f).length===6,'extra gear slots unlocked');
+ G.vault.push('warden_blade','warden_shield','warden_mail','warden_sigil'); for(const id of ['warden_blade','warden_shield','warden_mail','warden_sigil']) E.equipMinion(G,'f',id); ok(E.setProgress(f.equip)[0].n===4,'follower wears a full 4-piece set');
+ const two={uid:'t',equip:{weapon:'warden_blade',armor:'warden_mail'}}; ok(E.minionGearMult(f,'guard')>E.minionGearMult(two,'guard')+0.1,'4-piece follower bonus beats 2-piece');
+ const vc=E.vaultCap(G); f.ups.push({id:'pack',mult:1}); ok(E.vaultCap(G)===vc+1,'pack upgrade adds vault space');
+ const sv=E.minionSurvival(f); f.ups.push({id:'vigor',mult:1}); ok(E.minionSurvival(f)<sv,'vigor makes followers tougher');
+ const w=mk('n_enchanter','w'); w.home=null; const k0=E.upEnchant(w); w.ups=[{id:'wits',mult:2}]; ok(E.upEnchant(w)>k0,'wits raises a magic follower\'s enchanting skill');
+ // migration: old followers get earned milestones, quietly
+ const O=E.newGame(t0); O.minions.push({uid:'o',type:'laborer',name:'Old',job:'farm',lvl:2*MS.every+1,xp:0,equip:{},loyalty:10,cls:'n_militia'}); const ol=JSON.parse(E.serialize(O,t0)); delete ol.minions[0].ups; ol.schema=9; ol._norm=false; const nl=ol.log.length; E.normalize(ol);
+ ok(ol.minions[0].ups.length===3&&ol.minions[0].upMode==='auto','migration backfills milestones (+1 for the evolved class)'); ok(!ol.log.slice(nl).some(l=>/🔓/.test(l.msg)),'backfill is quiet');
 }
 console.log(pass,'tests passed');

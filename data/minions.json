@@ -1238,5 +1238,156 @@
   "n_herbwife": "n_herbalist",
   "n_healer": "n_masterherbalist",
   "n_magus": "n_loremaster"
+ },
+ "milestones": {
+  "_note": "Every `every` levels (and on each evolution, with bigMult values) a follower gains one upgrade from the pool. Auto mode picks by class/branch preference; Manual offers `offer` choices that wait (never blocking). Extra gear slots let evolved followers wear a full 4-piece set.",
+  "every": 4,
+  "offer": 3,
+  "bigMult": 2,
+  "maxPending": 3,
+  "pool": [
+   {
+    "id": "slot_offhand",
+    "kind": "slot",
+    "slot": "offhand",
+    "name": "Off-hand slot",
+    "icon": "🛡️",
+    "desc": "Can equip an off-hand item",
+    "minLvl": 4
+   },
+   {
+    "id": "slot_accessory",
+    "kind": "slot",
+    "slot": "accessory",
+    "name": "Accessory slot",
+    "icon": "💍",
+    "desc": "Can equip an accessory",
+    "minLvl": 8
+   },
+   {
+    "id": "pack",
+    "kind": "pack",
+    "n": 1,
+    "name": "Pack",
+    "icon": "🎒",
+    "desc": "+1 family vault space",
+    "repeat": true
+   },
+   {
+    "id": "carry",
+    "kind": "jobs",
+    "jobs": {
+     "gather": 0.08,
+     "farm": 0.08,
+     "mine": 0.08,
+     "herbs": 0.08,
+     "fish": 0.08,
+     "hunt": 0.08
+    },
+    "name": "Strong Back",
+    "icon": "🧺",
+    "desc": "+8% gathering/farming/mining output",
+    "repeat": true
+   },
+   {
+    "id": "might",
+    "kind": "jobs",
+    "jobs": {
+     "guard": 0.1,
+     "adventure": 0.1
+    },
+    "name": "Might",
+    "icon": "💪",
+    "desc": "+10% guard and adventure",
+    "repeat": true
+   },
+   {
+    "id": "vigor",
+    "kind": "vigor",
+    "n": 0.15,
+    "name": "Vigor",
+    "icon": "❤️",
+    "desc": "Tougher: fewer losses in battle and on adventures",
+    "repeat": true
+   },
+   {
+    "id": "wits",
+    "kind": "jobs",
+    "jobs": {
+     "craft": 0.1,
+     "tutor": 0.1,
+     "merchant": 0.1,
+     "scout": 0.1
+    },
+    "name": "Sharp Wits",
+    "icon": "🧠",
+    "desc": "+10% craft, tutoring, selling, scouting; +2 enchanting skill",
+    "enchant": 2,
+    "repeat": true
+   },
+   {
+    "id": "jobperk",
+    "kind": "jobperk",
+    "n": 0.15,
+    "name": "Specialist",
+    "icon": "⭐",
+    "desc": "+15% at the job it has when picked",
+    "repeat": true
+   }
+  ],
+  "prefs": {
+   "base": [
+    "carry",
+    "jobperk",
+    "pack",
+    "slot_offhand",
+    "vigor"
+   ],
+   "military": [
+    "slot_offhand",
+    "vigor",
+    "might",
+    "slot_accessory",
+    "jobperk"
+   ],
+   "magic": [
+    "slot_accessory",
+    "wits",
+    "slot_offhand",
+    "jobperk",
+    "vigor"
+   ],
+   "economic": [
+    "carry",
+    "jobperk",
+    "pack",
+    "wits",
+    "slot_offhand",
+    "slot_accessory"
+   ],
+   "divine": [
+    "vigor",
+    "wits",
+    "slot_accessory",
+    "slot_offhand",
+    "jobperk"
+   ]
+  },
+  "classPrefs": {
+   "n_militia": [
+    "vigor",
+    "slot_offhand",
+    "might"
+   ],
+   "n_hedgemage": [
+    "slot_accessory",
+    "wits"
+   ],
+   "n_enchanter": [
+    "wits",
+    "slot_accessory",
+    "slot_offhand"
+   ]
+  }
  }
 }
