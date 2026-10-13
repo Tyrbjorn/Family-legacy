@@ -1416,5 +1416,292 @@
     "chance": 0.05
    }
   ]
+ },
+ {
+  "id": "hq_ashbrook_harvest",
+  "name": "Bring in the Ashbrook Harvest",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 0,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 60,
+   "wheat": 20
+  },
+  "skill": "farming",
+  "loot": [],
+  "house": "ashbrook",
+  "desc": "Help House Ashbrook's fields before the rain."
+ },
+ {
+  "id": "hq_tallow_ledger",
+  "name": "Audit the Tallow Ledgers",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 5,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "haggling",
+  "loot": [],
+  "house": "tallow",
+  "desc": "Count candles and coin for House Tallow."
+ },
+ {
+  "id": "hq_tallow_outbid",
+  "name": "Outbid Ashbrook at Market",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 10,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 160
+  },
+  "skill": "haggling",
+  "loot": [],
+  "house": "tallow",
+  "desc": "Buy up the grain contract House Ashbrook wanted.",
+  "against": "ashbrook"
+ },
+ {
+  "id": "hq_vey_poachers",
+  "name": "Drive Off Poachers",
+  "region": "forest",
+  "type": "house",
+  "cp": 25,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 140,
+   "meat": 15
+  },
+  "skill": "hunting",
+  "loot": [],
+  "house": "vey",
+  "desc": "Clear poachers from House Vey's woods."
+ },
+ {
+  "id": "hq_vey_sabotage",
+  "name": "Sabotage the Corran Charcoal",
+  "region": "forest",
+  "type": "house",
+  "cp": 30,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "hunting",
+  "loot": [],
+  "house": "vey",
+  "desc": "Ruin House Corran's charcoal stacks in the Old Wood.",
+  "against": "corran"
+ },
+ {
+  "id": "hq_corran_ore",
+  "name": "Escort Corran Ore Carts",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 20,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 180,
+   "ore": 15
+  },
+  "skill": "leadership",
+  "loot": [],
+  "house": "corran",
+  "desc": "Guard House Corran's ore on the road."
+ },
+ {
+  "id": "hq_corran_poach",
+  "name": "Poach Marlowe's Bargemen",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 15,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "house": "corran",
+  "desc": "Lure skilled hands away from House Marlowe.",
+  "against": "marlowe"
+ },
+ {
+  "id": "hq_marlowe_cargo",
+  "name": "Recover Marlowe Cargo",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 25,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 220,
+   "salt": 15
+  },
+  "skill": "sailing",
+  "loot": [],
+  "house": "marlowe",
+  "desc": "Fish a sunken barge's cargo out of the river."
+ },
+ {
+  "id": "hq_marlowe_undercut",
+  "name": "Undercut Tallow's Candle Trade",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 20,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 240
+  },
+  "skill": "haggling",
+  "loot": [],
+  "house": "marlowe",
+  "desc": "Flood the market so House Tallow's prices collapse.",
+  "against": "tallow"
+ },
+ {
+  "id": "hq_skye_letters",
+  "name": "Carry Skye's Sealed Letters",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 15,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "house": "skye",
+  "desc": "Deliver letters no one else may read."
+ },
+ {
+  "id": "hq_skye_rumours",
+  "name": "Spread Rumours of House Vey",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 20,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 260
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "house": "skye",
+  "desc": "Whisper about House Vey's debts in the right halls.",
+  "against": "vey"
+ },
+ {
+  "id": "hq_raid_ashbrook",
+  "name": "Raid House Ashbrook's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 25,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "ashbrook",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Ashbrook where it hurts."
+ },
+ {
+  "id": "hq_raid_tallow",
+  "name": "Raid House Tallow's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 35,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 160
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "tallow",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Tallow where it hurts."
+ },
+ {
+  "id": "hq_raid_vey",
+  "name": "Raid House Vey's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 25,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "vey",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Vey where it hurts."
+ },
+ {
+  "id": "hq_raid_marlowe",
+  "name": "Raid House Marlowe's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 45,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 240
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "marlowe",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Marlowe where it hurts."
+ },
+ {
+  "id": "hq_raid_corran",
+  "name": "Raid House Corran's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 35,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 160
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "corran",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Corran where it hurts."
+ },
+ {
+  "id": "hq_raid_skye",
+  "name": "Raid House Skye's Stores",
+  "region": "outskirts",
+  "type": "house",
+  "cp": 45,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 240
+  },
+  "skill": "brawling",
+  "loot": [],
+  "against": "skye",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Skye where it hurts."
  }
 ]

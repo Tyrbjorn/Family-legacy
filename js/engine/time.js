@@ -15,6 +15,8 @@ import { hasService } from "./guilds.js";
 import { isBusy } from "./map.js";
 import { minionDay } from "./minions.js";
 import { eatDay, mealHeal, moraleSpeed } from "./food.js";
+import { household, householdDay, suitorsTick } from "./courtship.js";
+import { housesDay } from "./houses.js";
 import { normalize } from "./save.js";
 import { gainXp } from "./skills.js";
 import { D, T, Y, active, ageY, bl, furn, living, log, r, rng } from "./state.js";
@@ -86,6 +88,7 @@ function estateDay(s) {
 }
 
 function suitorsDay(s) {
+  suitorsTick(s);
   if (s.suitors.length < 2 && s.day % 45 === 0) spawnSuitor(s);
 }
 
@@ -118,7 +121,7 @@ function ageMember(s, m) {
 }
 
 function healDay(s, m) {
-  let h = 1 + estEff(s, "healBoost") + mealHeal(s);
+  let h = 1 + estEff(s, "healBoost") + mealHeal(s) + household(s, "heal");
   if ((s.res.remedies || 0) >= 1) {
     s.res.remedies -= 1;
     h += 2;
@@ -201,6 +204,7 @@ for (const [n, f] of [
   ["tutorial", tutorialDay],
   ["estate", estateDay],
   ["suitors", suitorsDay],
+  ["houses", s => (housesDay(s), householdDay(s))],
   ["members", membersDay],
 ])
   registerDayHook(n, f);

@@ -33,6 +33,7 @@ const names = [
   "seasons",
   "tutorial",
   "notify",
+  "marriage",
 ];
 
 export const D = {};
@@ -153,6 +154,7 @@ document.addEventListener("change", e => {
     });
   }
   if (el.dataset.a === "chronf") U.chronF = el.value;
+  if (el.dataset.a === "mosel") (U.moSel ||= {})[el.dataset.v] = el.value;
   if (el.dataset.a === "encpolicy") s.encPolicy = el.value;
   if (el.dataset.a === "craftf") U.craftF[el.dataset.v] = el.value;
   if (el.dataset.a === "crafter") U.crafter = el.value;

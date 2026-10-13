@@ -2,15 +2,92 @@
  "cap": 40,
  "toastMax": 3,
  "categories": {
-  "travel": { "name": "Quests & travel", "icon": "🧭", "prefixes": ["✅", "❌", "🏆"] },
-  "injury": { "name": "Injuries", "icon": "🤕", "prefixes": ["🤕"] },
-  "levelup": { "name": "Level-ups & ranks", "icon": "⭐", "prefixes": ["⭐", "🎖️", "⚔️"] },
-  "evolution": { "name": "Evolutions", "icon": "🌟", "prefixes": ["🌟"] },
-  "family": { "name": "Births & deaths", "icon": "👶", "prefixes": ["👶", "🕯️", "🪦", "💍"] },
-  "craft": { "name": "Crafting", "icon": "🔨", "prefixes": ["🔨"] },
-  "event": { "name": "World events", "icon": "🌍", "prefixes": [] },
-  "encounter": { "name": "Encounters", "icon": "❗", "prefixes": [] },
-  "achievement": { "name": "Achievements", "icon": "🏅", "prefixes": ["🏅"] },
-  "tutorial": { "name": "Apprentice tasks", "icon": "📘", "prefixes": ["📘"] }
+  "travel": {
+   "name": "Quests & travel",
+   "icon": "🧭",
+   "prefixes": [
+    "✅",
+    "❌",
+    "🏆"
+   ]
+  },
+  "injury": {
+   "name": "Injuries",
+   "icon": "🤕",
+   "prefixes": [
+    "🤕"
+   ]
+  },
+  "levelup": {
+   "name": "Level-ups & ranks",
+   "icon": "⭐",
+   "prefixes": [
+    "⭐",
+    "🎖️",
+    "⚔️"
+   ]
+  },
+  "evolution": {
+   "name": "Evolutions",
+   "icon": "🌟",
+   "prefixes": [
+    "🌟"
+   ]
+  },
+  "family": {
+   "name": "Births & deaths",
+   "icon": "👶",
+   "prefixes": [
+    "👶",
+    "🕯️",
+    "🪦",
+    "💍"
+   ]
+  },
+  "craft": {
+   "name": "Crafting",
+   "icon": "🔨",
+   "prefixes": [
+    "🔨"
+   ]
+  },
+  "event": {
+   "name": "World events",
+   "icon": "🌍",
+   "prefixes": []
+  },
+  "encounter": {
+   "name": "Encounters",
+   "icon": "❗",
+   "prefixes": []
+  },
+  "achievement": {
+   "name": "Achievements",
+   "icon": "🏅",
+   "prefixes": [
+    "🏅"
+   ]
+  },
+  "tutorial": {
+   "name": "Apprentice tasks",
+   "icon": "📘",
+   "prefixes": [
+    "📘"
+   ]
+  },
+  "houses": {
+   "name": "Courtship & houses",
+   "icon": "🤝",
+   "prefixes": [
+    "🤝",
+    "😠",
+    "💕",
+    "🏳️",
+    "🔥",
+    "🏴",
+    "🕊️",
+    "🛡️"
+   ]
+  }
  }
 }

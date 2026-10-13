@@ -1,3 +1,4 @@
+import { ensureSuitor } from "./courtship.js";
 import { startTutorial } from "./tutorial.js";
 import { devOn } from "./dev.js";
 import { LG } from "./legacy.js";
@@ -55,6 +56,8 @@ export function _newGame(now) {
     repLevel: 0,
     gameOver: false,
     suitors: [],
+    houses: {},
+    weary: 0,
     renown: 0,
     deeds: [],
     acc: 0,
@@ -308,6 +311,20 @@ const STEPS = [
       if (!s.ration) s.ration = "normal";
       if (s.morale == null) s.morale = 0;
       if (!s.diet) s.diet = {};
+    },
+  },
+  {
+    n: 7,
+    once: true,
+    name: "marriage depth: suitor personalities/houses/dowries, house rapport, war weariness",
+    run: s => {
+      if (!s.houses) s.houses = {};
+      if (s.weary == null) s.weary = 0;
+      for (const su of s.suitors || []) ensureSuitor(s, su);
+      for (const m of s.members || []) {
+        if (m.persona === undefined) m.persona = null;
+        if (m.house === undefined) m.house = null;
+      }
     },
   },
 ];

@@ -102,5 +102,30 @@ for (const t of D.towns)
     const sell = Math.max(...D.towns.map(u => u.prices[k] || 0)) * maxEv(k);
     ok(buy > sell, `no market arbitrage on ${k} at ${t.id} (${buy.toFixed(2)} > ${sell.toFixed(2)})`);
   }
+// marriage & diplomacy data
+const MD = D.marriage,
+  HS = new Set(MD.houses.list.map(h => h.id)),
+  STATSET = new Set(["STR", "AGI", "INT", "VIT", "WIL", "CHA"]);
+for (const p of MD.personalities) {
+  ok(STATSET.has(p.likesStat), `persona ${p.id} likesStat`);
+  ok(items.has(p.likesGift) || p.likesGift in D.estate.meals.menu, `persona ${p.id} likesGift ${p.likesGift} is an item or dish`);
+  for (const t of p.favors) ok(D.traits.some(x => x.id === t), `persona ${p.id} favors trait ${t}`);
+  ok(Object.keys(p.household).length > 0, `persona ${p.id} affects the household`);
+}
+for (const h of MD.houses.list) {
+  ok(D.towns.some(t => t.id === h.town), `house ${h.id} town`);
+  ok(h.wealth >= 1 && h.wealth <= 3, `house ${h.id} wealth`);
+  ok(D.quests.some(q => q.house === h.id), `house ${h.id} offers a quest`);
+  ok(D.quests.some(q => q.needsFeud && q.against === h.id), `house ${h.id} has a feud quest`);
+}
+for (const st of MD.houses.status) ok(MD.houses.tiers[st.id], `tier ${st.id} has effects`);
+ok(MD.houses.status.every((st, i, a) => !i || st.max > a[i - 1].max), "rapport tiers ascend");
+ok(MD.houses.feud.at <= MD.houses.status.find(x => x.id === "feud").max && MD.houses.feud.exit > MD.houses.feud.at, "feud thresholds");
+for (const q of D.quests.filter(q => q.house || q.against)) {
+  if (q.house) ok(HS.has(q.house), `quest ${q.id} house`);
+  if (q.against) ok(HS.has(q.against) && q.against !== q.house, `quest ${q.id} against`);
+  ok(D.map.points[q.id], `quest ${q.id} map point`);
+}
+ok(MD.stages[MD.stages.length - 1].at === 100 && MD.stages[0].at === 0, "courtship stages span 0..100");
 console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));
 if (fail) process.exit(1);

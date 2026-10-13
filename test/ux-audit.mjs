@@ -34,7 +34,7 @@ await p.evaluate(() => {
   E.startEvent(s, "festival", "millbrook", 9);
   g.save();
 });
-const tabs = ["main", "jobs", "guilds", "map", "inv", "estate", "minions", "craft", "family", "chron"];
+const tabs = ["main", "jobs", "guilds", "map", "inv", "estate", "minions", "craft", "family", "houses", "chron"];
 const report = {};
 for (const t of tabs) {
   await p.evaluate(t => {

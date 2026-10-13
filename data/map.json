@@ -339,6 +339,74 @@
   "d_stormhold": {
    "x": 420,
    "y": 860
+  },
+  "hq_ashbrook_harvest": {
+   "x": 332,
+   "y": 323
+  },
+  "hq_tallow_ledger": {
+   "x": 299,
+   "y": 316
+  },
+  "hq_tallow_outbid": {
+   "x": 336,
+   "y": 309
+  },
+  "hq_vey_poachers": {
+   "x": 673,
+   "y": 382
+  },
+  "hq_vey_sabotage": {
+   "x": 710,
+   "y": 375
+  },
+  "hq_corran_ore": {
+   "x": 67,
+   "y": 138
+  },
+  "hq_corran_poach": {
+   "x": 104,
+   "y": 131
+  },
+  "hq_marlowe_cargo": {
+   "x": 71,
+   "y": 124
+  },
+  "hq_marlowe_undercut": {
+   "x": 108,
+   "y": 177
+  },
+  "hq_skye_letters": {
+   "x": 490,
+   "y": 670
+  },
+  "hq_skye_rumours": {
+   "x": 490,
+   "y": 670
+  },
+  "hq_raid_ashbrook": {
+   "x": 319,
+   "y": 306
+  },
+  "hq_raid_tallow": {
+   "x": 356,
+   "y": 299
+  },
+  "hq_raid_vey": {
+   "x": 490,
+   "y": 372
+  },
+  "hq_raid_marlowe": {
+   "x": 120,
+   "y": 135
+  },
+  "hq_raid_corran": {
+   "x": 87,
+   "y": 128
+  },
+  "hq_raid_skye": {
+   "x": 490,
+   "y": 670
   }
  },
  "areas": [

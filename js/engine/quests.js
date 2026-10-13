@@ -1,3 +1,4 @@
+import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
 import { addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
@@ -41,6 +42,7 @@ export function resolveQuest(s, m, q, eff) {
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   gain.push(...grantRewards(s, m, q));
   rollRare(s, q, m);
+  if (q.house || q.against) houseQuestDone(s, q);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
   if (q.story) chron(s, "story", `📖 Chapter ${q.story}: ${m.name} completed ${q.name}.`, m.name);
   if (q.unlocks && !s.unlocks.includes(q.unlocks)) {
@@ -72,6 +74,8 @@ export function questIssue(s, m, q) {
   if (q.once && s.doneQuests.includes(q.id)) return "done";
   if (!regionOpen(s, q.region)) return "region locked";
   if (!questOk(m, q)) return "guild rank";
+  const hi = houseQuestIssue(s, q);
+  if (hi) return hi;
   if (q.story) {
     const prev = D.quests.find(x => x.story === q.story - 1);
     if (prev && !s.doneQuests.includes(prev.id)) return "finish chapter " + (q.story - 1);

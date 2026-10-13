@@ -13,8 +13,8 @@ function node(n) {
   const icon = n.gender === "f" ? "👩" : "👨";
   const t = n.best && E.traitDef(n.best);
   return `<button class="tnode ${n.alive ? "" : "dead"} ${U.treeSel === n.id ? "sel" : ""}" data-a="treesel" data-v="${n.id}">
-<span class="ticon">${n.alive ? icon : "🕯️"}</span><b>${n.name}</b>
-<span class="muted">${n.alive ? `${n.age}y` : `† Y${n.died}, aged ${n.age}`}</span>
+<span class="ticon">${n.alive ? icon : n.marriedOut ? "💍" : "🕯️"}</span><b>${n.name}</b>
+<span class="muted">${n.alive ? `${n.age}y` : n.marriedOut ? `wed into ${n.marriedOut}` : `† Y${n.died}, aged ${n.age}`}</span>
 <span>${n.cls || "Commoner"} · ⭐${n.renown}</span>
 ${t ? `<span style="color:${rcol(n.best)}">${t.icon || ""} ${t.name}</span>` : ""}</button>`;
 }
@@ -48,7 +48,7 @@ export function familyv() {
     const sp = byId[n?.spouse];
     const ps = (n?.parents || []).map(id => byId[id]?.name).filter(Boolean);
     card = `<div class="card"><div class="row">${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
-<div class="muted">${m.alive ? "Living" : `Died Y${n.died}${m.diedDay != null ? "" : ""}`} · lifespan ~${m.lifespan}y</div>
+<div class="muted">${m.alive ? "Living" : n.marriedOut ? `Married into ${n.marriedOut}` : `Died Y${n.died}`}${m.persona && E.personaDef(m.persona) ? ` · ${E.personaDef(m.persona).icon} ${E.personaDef(m.persona).name}` : ""}${m.house && E.houseDef(m.house) ? ` · of ${E.houseDef(m.house).name}` : ""} · lifespan ~${m.lifespan}y</div>
 <div>${badges(m)}</div>
 ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: <a data-a="treesel" data-v="${sp.id}">${sp.name}</a></div>` : ""}
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}

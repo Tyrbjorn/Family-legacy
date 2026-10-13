@@ -23,6 +23,8 @@ const seen = {
   enc: 0,
   events: new Set(),
   recipes: new Set(),
+  houseQuests: new Set(),
+  wars: 0,
 };
 const bad = (seed, day, msg) => {
   if (issues.filter(i => i.msg === msg).length < 3) issues.push({ seed, day, msg });
@@ -93,6 +95,12 @@ function check(s, seed) {
   for (const mi of s.minions || []) if (!isFinite(mi.xp || 0) || !isFinite(mi.loyalty)) bad(seed, s.day, "minion NaN");
   if (!isFinite(s.renown)) bad(seed, s.day, "renown NaN");
   if (!isFinite(s.morale || 0)) bad(seed, s.day, "morale NaN");
+  for (const [id, h] of Object.entries(s.houses || {})) {
+    if (!isFinite(h.r) || h.r < -100 || h.r > 100) bad(seed, s.day, `house ${id} rapport ${h.r}`);
+    if (!["peace", "feud", "war"].includes(h.state)) bad(seed, s.day, `house ${id} state ${h.state}`);
+    if (h.state === "war" && s.day - h.warStart > D.marriage.houses.war.maxDays + 1) bad(seed, s.day, `war with ${id} never ends`);
+  }
+  for (const su of s.suitors) if (!su.dowry || !isFinite(su.dowry.coin)) bad(seed, s.day, "suitor dowry broken");
   for (const [k, q] of Object.entries(s.foodQ || {})) if (!isFinite(q) || q <= 0 || q > 2.6) bad(seed, s.day, `foodQ.${k}=${q}`);
   if (!isFinite(s.turbo.charge) || s.turbo.charge < 0) bad(seed, s.day, "turbo charge broken");
   for (const t of E.timers(s))
@@ -157,11 +165,27 @@ function bot(s, m) {
       if (!E.placeIssue(s, st.uid, p) && s.res.coin > 300) E.placePiece(s, st.uid, p) && seen.pieces.add(p);
     if (!E.upgradeIssue(s, st.uid) && s.res.coin > 2000) E.upgradeStructure(s, st.uid);
   }
+  // diplomacy: occasionally work for a friendly house, gift a rival, buy peace when rich
+  for (const h of D.marriage.houses.list) {
+    const st = E.houseState(s, h.id);
+    if (st.state === "war") {
+      seen.wars++;
+      if (s.res.coin > E.tributeCost(s, h.id) * 3) E.offerTruce(s, h.id);
+    } else if (["rival", "feud"].includes(E.tierOf(s, h.id)) && s.res.coin > 2000) E.sendGift(s, h.id);
+  }
   // food: never let the larder run dry — buy provisions, else do chores (the starter path)
   if (E.daysOfStock(s) < 4) {
     if (s.res.coin >= E.townBuyPrice(s, "millbrook", "food") * 30) E.buyRes(s, "millbrook", "food", 30);
     else if (!E.isBusy(m) && !E.tutActive(s) && s.day % 9 < 3) {
       E.setAction(s, { type: "activity", target: "chores" });
+      return;
+    }
+  }
+  if (E.isAdult(m) && !E.isBusy(m) && !E.tutActive(s) && s.day % 50 < 3 && E.daysOfStock(s) >= 10) {
+    const q = D.quests.find(q => (q.house || q.needsFeud) && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp <= E.cp(s, m));
+    if (q) {
+      seen.houseQuests.add(q.id);
+      E.setAction(s, { type: "quest", target: q.id });
       return;
     }
   }
@@ -240,6 +264,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     maxGen = 1,
     peakCoin = 0,
     idleDays = 0;
+  const noSuitor = { cur: 0, max: 0 };
   const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
   for (let day = 0; day < YEARS * YD; day++) {
@@ -271,6 +296,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     const m = E.active(s);
     if (m && !m.action && !m.injured && E.isAdult(m)) idleDays++;
     if (day % 10 === 0) check(s, seed);
+    if (s.suitors.length) noSuitor.cur = 0;
+    else noSuitor.max = Math.max(noSuitor.max, ++noSuitor.cur);
     if (s.meal && day > YD * 2) {
       food.days++;
       if (s.meal.short > 0.01) food.short++;
@@ -335,6 +362,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     }
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
+  if (noSuitor.max > YD * 2) bad(seed, s.day, `no suitors for ${noSuitor.max} days (marriage soft-lock)`);
   if (food.starving > food.days * 0.02) bad(seed, s.day, `starvation on ${food.starving}/${food.days} days`);
   const ip = E.timers(s);
   report.push({
@@ -352,6 +380,10 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     ach: Object.keys(s.ach || {}).length,
     timers: ip.length,
     legacyUps: JSON.stringify(s.legacy?.ups || {}),
+    houses: Object.fromEntries(Object.entries(s.houses || {}).map(([k, h]) => [k, `${Math.round(h.r)}/${E.tierOf(s, k)}${h.state !== "peace" ? "/" + h.state : ""}`])),
+    marriages: s.members.filter(x => x.persona).length,
+    marriedOut: s.members.filter(x => x.marriedOut).length,
+    longestNoSuitorDays: noSuitor.max,
     food: {
       shortDays: food.short,
       starvingDays: food.starving,
@@ -409,6 +441,7 @@ console.log(
   "coin by day hook (all seeds):",
   JSON.stringify(Object.fromEntries(Object.entries(coinBy).map(([k, v]) => [k, Math.round(v)]))),
 );
+console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

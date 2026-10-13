@@ -14,5 +14,14 @@ export const familyActions = ({ v, b, m }) => ({
   court: () => E.setAction(s, { type: "court", target: v }),
   gift: () => E.giveGift(s, v, b.dataset.w),
   propose: () => E.propose(s, v),
+  foodgift: () => E.giveFoodGift(s, v, b.dataset.w),
+  hquest: () => E.setAction(s, { type: "quest", target: v }),
+  hgift: () => E.sendGift(s, v),
+  war: () => E.declareWar(s, v),
+  truce: () => E.offerTruce(s, v),
+  marryout: () => {
+    const sel = b.parentElement.querySelector('select[data-a="mosel"]');
+    return sel ? E.marryOut(s, +sel.value, v) : false;
+  },
   evolve: () => E.evolve(s, m, v),
 });

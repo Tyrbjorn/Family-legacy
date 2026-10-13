@@ -5,6 +5,13 @@ The game grows from one adventurer into a dynasty in three eras. The header show
 > **Core rule: eras only ADD systems. They never lock earlier ones.**
 > Solo questing, crafting, jobs, activities, training, guilds and the Map stay fully usable in every era. A Ruling Power family can still send one member out to clear rats, apprentice a child at the stables, or spend a season at the forge.
 
+## Phases (replacing the three eras — Jeremy, Oct 2026)
+The era code (`era(s).n`, 1–3) still drives the header; the design is now four phases. Systems only ever ADD.
+1. **Beginning** — first character, adventuring, a house, kids. *Now:* light marriage (suitors with personalities/houses/dowries), rapport from marriages, friendly house quests.
+2. **Established** — a nice house, a working family and minions, a small estate economy. *Now:* food chains and meals, followers, rivalry quests (acting against a house), rival trouble events, feuds and wars (gated in `data/marriage.json` `houses.gates`).
+3. **Dynasty** — larger holdings, rivalling other families, a mansion or fort, a personal village on the estate. *Built so far:* houses/diplomacy/feud/war (ramps in from Established). *Planned:* mansion/fort homes, estate village.
+4. **Titles** (not built) — Baron with proper land, towns and cities, diplomacy with lords, roads, court, taxes. The house model (`id`, `seat`, `wealth`, `rank`, `kind`) and `houses.ranks` are where lords and titles plug in.
+
 ## Era 1 — Solo Adventurer 🧭 (built)
 One young adventurer making a name.
 - Jobs and apprenticeships, activities, age-gated training, quest-unlocked trainings

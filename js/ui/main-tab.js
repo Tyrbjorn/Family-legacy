@@ -2,6 +2,7 @@ import { settingsCard, tourPrompt, tutorialCard } from "./guide.js";
 import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
+import { suitorCard } from "./houses-tab.js";
 import { badges, cl, costStr, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { D, s, sheetOpen } from "../main.js";
@@ -176,14 +177,9 @@ export function family() {
   }
   h += `<h3>💌 Suitors ${E.ageY(m) < D.tuning.courtAge ? "(active member must be ${D.tuning.courtAge}+)" : ""}</h3>`;
   if (!s.suitors.length) h += `<div class="muted">None yet. They appear in town every ~45 days.</div>`;
-  const gifts = [...new Set(s.vault.filter(i => it(i).slot === "gift"))];
-  for (const su of s.suitors) {
-    h += `<div class="card"><div class="row"><span>${su.name}, ${su.age} · ${cl(su.cls).name}</span><span>❤️ ${Math.floor(su.affinity)}/100</span></div><div class="bar"><i style="width:${su.affinity}%;background:#e66"></i></div>
-  <div class="row"><button class="b" data-a="court" data-v="${su.id}" ${E.ageY(m) >= D.tuning.courtAge && !m.spouse ? "" : "disabled"}>Court</button>
-  ${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}</button>`).join("")}
-  <button class="b" data-a="propose" data-v="${su.id}" ${!E.proposeIssue(s, su.id) && E.ageY(m) >= D.tuning.courtAge ? "" : "disabled"}>💍 Propose (${E.PROPOSE_COST}🪙)</button></div>${su.affinity >= 100 && E.proposeIssue(s, su.id) ? `<div class="muted">Needs ${E.proposeIssue(s, su.id)}</div>` : ""}</div>`;
-  }
-  const dead = s.members.filter(x => !x.alive);
+  h += s.suitors.map(suitorCard).join("");
+  if (s.suitors.length) h += `<div class="muted">More on suitors, houses and alliances in Family → 🏰 Houses.</div>`;
+  const dead = s.members.filter(x => !x.alive && !x.marriedOut);
   if (dead.length)
     h += `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
   return h;

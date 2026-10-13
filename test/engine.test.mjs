@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
@@ -546,7 +546,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,suitors,members','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,suitors,houses,members','day hooks registered in order');
 }
 
 // Polish-pass bug fixes
@@ -605,5 +605,81 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const lo=run(-15), hi=run(10); ok(hi.p>lo.p||hi.done>lo.done,'morale changes action/travel speed');
  const S=E.newGame(t0); S.res.food=0; for(const k of Object.keys(D.estate.meals.menu)) S.res[k]=0; for(let i=0;i<30;i++) E.eatDay(S); ok(E.moraleSpeed(S)<=-0.14&&E.moraleXp(S)<=-0.14,'starvation drives speed and XP toward -15%');
  const F=E.newGame(t0); F.morale=8; ok(E.foodPanel(F).bonuses.some(b=>/Speed \+8%/.test(b))&&E.foodPanel(F).bonuses.some(b=>/Skill XP \+8%/.test(b)),'food panel shows morale XP and speed');
+}
+// Marriage depth: personalities, visible traits, dowries, courtship stages and patience
+{ const Y=D.tuning.daysPerYear; const G=E.newGame(t0); E.skipTutorial(G); const F=E.active(G); F.ageDays=20*Y; G.res.coin=5000;
+ const su=E.makeSuitor(G,{house:'marlowe'}); ok(E.personaDef(su.persona)&&su.traits.length>=2&&su.house==='marlowe'&&su.dowry.coin>0,'suitors have a personality, visible traits, a house and a dowry');
+ ok(E.personaDef(su.persona).favors.some(t=>su.traits.includes(t))||!E.personaDef(su.persona).favors.some(t=>D.traits.some(x=>x.id===t)),'personality favours a matching trait');
+ const com=E.makeSuitor(G,{house:null}); ok(com.house===null&&com.dowry.coin>0,'commoner suitors always possible (small dowry)');
+ su.affinity=100; G.suitors=[su]; estate(G,['bunk','bunk']); const c0=G.res.coin; ok(E.propose(G,su.id),'propose to a house suitor');
+ const sp=G.members.find(x=>x.id===F.spouse); ok(sp.persona===su.persona&&sp.house==='marlowe'&&su.traits.every(t=>sp.traits.includes(t)),'spouse keeps the suitor\'s personality, house and traits');
+ ok(G.res.coin===c0-E.PROPOSE_COST+su.dowry.coin,'dowry received on marriage'); ok(E.rapport(G,'marlowe')>=D.marriage.houses.marryIn,'marriage builds rapport with their house');
+ ok(G.chronicle.some(e=>/married/.test(e.t)),'marriage reaches the Chronicle');
+ // household effects
+ const H=E.newGame(t0); const hm=E.newMember(H,{age:25}); hm.persona='warm'; H.members.push(hm); ok(E.household(H,'morale')===1,'warm spouse: +1 household morale');
+ H.res.food=1e3; for(let i=0;i<40;i++) E.eatDay(H); const mw=H.morale; const H2=E.newGame(t0); H2.res.food=1e3; for(let i=0;i<40;i++) E.eatDay(H2); ok(mw>H2.morale,'spouse personality changes morale');
+ const K=E.newGame(t0); const km=E.newMember(K,{age:25}); km.persona='scholarly'; K.members.push(km); const kid=E.newMember(K,{age:5}); K.members.push(kid); const K2=E.newGame(t0); const kid2=E.newMember(K2,{age:5}); K2.members.push(kid2);
+ ok(E.xpMult(K,kid,'reading')-E.xpMult(K2,kid2,'reading')>0.09,'children XP +10% from a scholarly parent');
+ const Fd=E.newGame(t0); const fm=E.newMember(Fd,{age:25}); fm.persona='thrifty'; Fd.members.push(fm); const Fd2=E.newGame(t0); Fd2.members.push(E.newMember(Fd2,{age:25})); ok(E.dailyNeed(Fd)<E.dailyNeed(Fd2),'frugal spouse: family eats less');
+ // child traits via existing best-trait inheritance
+ const B=E.newGame(t0); const mom=B.members[0]; mom.gender='f'; mom.ageDays=20*Y; const bs=E.makeSuitor(B,{gender:'m'}); bs.traits=['chosen']; bs.affinity=100; B.res.coin=5000; B.suitors=[bs]; estate(B,['bunk','bunk','bunk']); E.propose(B,bs.id);
+ const dad=B.members.find(x=>x.id===mom.spouse); ok(dad.traits.includes('chosen'),'epic suitor trait carried into the family');
+ const ch=E.newMember(B,{age:0,parents:[mom.id,dad.id]}); E.inheritTraits(B,ch,[mom,dad]); ok(ch.traits.includes('chosen'),'child inherits the spouse\'s best trait');
+ // stages, patience, no soft-lock
+ const C=E.newGame(t0); E.skipTutorial(C); const cm=E.active(C); cm.ageDays=20*Y; const cs=E.makeSuitor(C,{house:'vey'}); C.suitors=[cs]; cs.affinity=59.9; E.setAction(C,{type:'court',target:cs.id}); E.advanceReal(C,30);
+ ok(C.log.some(l=>/sweethearts/.test(l.msg))&&E.stageOf(cs.affinity).name!=='Acquainted','courtship stages');
+ const L=E.newGame(t0); const ls=E.makeSuitor(L,{house:'vey'}); ls.affinity=70; ls.arrived=L.day-D.marriage.stayDays; L.suitors=[ls]; const r0=E.rapport(L,'vey'); E.suitorsTick(L); ok(!L.suitors.length&&E.rapport(L,'vey')<r0,'suitors leave after waiting; jilting sours their house');
+ const W=E.newGame(t0); const ws=E.makeSuitor(W,{}); ws.affinity=100; ws.arrived=-9999; W.suitors=[ws]; E.suitorsTick(W); ok(W.suitors.length===1&&E.leavesIn(W,ws)===Infinity,'a suitor ready to wed waits (no lost progress)');
+ const Lc=E.newGame(t0); E.skipTutorial(Lc); const lm=E.active(Lc); lm.ageDays=20*Y; const lcs=E.makeSuitor(Lc,{}); lcs.arrived=Lc.day-D.marriage.stayDays+1; Lc.suitors=[lcs]; E.setAction(Lc,{type:'court',target:lcs.id}); E.advanceReal(Lc,40); ok(!Lc.suitors.includes(lcs)&&(!lm.action||lm.action.type!=='court'),'courting a departed suitor stops cleanly');
+ const lk=E.makeSuitor(G,{}); lk.persona='warm'; const m2=E.active(G); m2.stats.CHA=10; const n1=E.courtMult(G,m2,lk); m2.stats.CHA=1; ok(n1>E.courtMult(G,m2,lk),'liked stat speeds courtship');
+ const fg=E.makeSuitor(G,{}); fg.persona='homely'; G.suitors.push(fg); G.res.pie=10; G.res.bread=10; E.giveFoodGift(G,fg.id,'pie'); const ap=fg.affinity; fg.affinity=0; E.giveFoodGift(G,fg.id,'bread'); ok(ap>fg.affinity&&fg.affinity>0,'food gifts court; the liked dish counts more');
+  const rv=E.newGame(t0); E.addRapport(rv,'skye',-60); for(let i=0;i<40;i++){const x=E.makeSuitor(rv); ok(x.house!=='skye','no suitors from rival houses');} 
+ const al=E.newGame(t0); E.addRapport(al,'skye',80); const as=E.makeSuitor(al,{house:'skye'}); const ne=E.newGame(t0); const ns=E.makeSuitor(ne,{house:'skye'}); ok(as.dowry.coin>ns.dowry.coin,'friendlier houses offer bigger dowries');
+ // marrying out
+ const O=E.newGame(t0); E.skipTutorial(O); O.res.coin=5000; const sib=E.newMember(O,{age:20}); O.members.push(sib); ok(!E.marryOutIssue(O,sib.id,'tallow'),'adult unmarried sibling can marry out');
+ ok(/heir/.test(E.marryOutIssue(O,O.activeId,'tallow')),'the active heir cannot marry out'); const oc=O.res.coin, dw=E.marryOutDowry(sib); ok(E.marryOut(O,sib.id,'tallow')&&O.res.coin===oc-dw&&!sib.alive&&sib.marriedOut==='tallow','marrying out pays a dowry and the member leaves');
+ ok(E.rapport(O,'tallow')>=D.marriage.marryOut.rapport&&E.ties(O,'tallow')===1,'marrying out ties the houses'); for(let i=0;i<24*30;i++) E.dayTick(O,1,1); ok(E.rapport(O,'tallow')>=D.marriage.houses.tieFloor-1,'ties hold rapport up over time');
+ ok(E.familyTree(O).flat().find(n=>n.id===sib.id).marriedOut==='House Tallow','family tree shows who married out');
+}
+const est=g=>{g.renown=Math.max(g.renown||0,300);return g;};
+// Diplomacy: rapport tiers, house quests that pick sides, perks, troubles
+{ const G=est(E.newGame(t0)); E.skipTutorial(G); ok(E.tierOf(G,'tallow')==='neutral','houses start neutral');
+ const tiers=[[-80,'feud'],[-55,'rival'],[-20,'cold'],[0,'neutral'],[40,'friendly'],[80,'allied']]; for(const [r,t] of tiers){const X=est(E.newGame(t0)); E.addRapport(X,'vey',r); ok(E.tierOf(X,'vey')===t,`rapport ${r} → ${t}`);}
+ const q=D.quests.find(x=>x.id==='hq_tallow_outbid'); const m=E.active(G); m.ageDays=20*D.tuning.daysPerYear; ok(!E.houseQuestIssue(G,q),'neutral houses offer quests');
+ const a0=E.rapport(G,'tallow'), b0=E.rapport(G,'ashbrook'); E.houseQuestDone(G,q); ok(E.rapport(G,'tallow')>a0&&E.rapport(G,'ashbrook')<b0,'quests for one house hurt the house they target');
+ ok(D.quests.filter(x=>x.house||x.needsFeud).length>=10&&D.quests.filter(x=>x.against).length>=5,'house quests (some against other houses) are data');
+ ok(!E.autoQuest(G,m,'outskirts').house,'standing orders never take house quests');
+ const C=est(E.newGame(t0)); E.addRapport(C,'ashbrook',-30); ok(/won't deal/.test(E.houseQuestIssue(C,D.quests.find(x=>x.id==='hq_ashbrook_harvest'))||'')===false,'cold houses still offer quests'); E.addRapport(C,'ashbrook',-30); ok(/won't deal/.test(E.houseQuestIssue(C,D.quests.find(x=>x.id==='hq_ashbrook_harvest'))),'rival houses refuse quests');
+ const S=est(E.newGame(t0)); const p0=E.townSellPrice(S,'ashford','wood'); E.addRapport(S,'marlowe',80); ok(E.townSellPrice(S,'ashford','wood')>p0,'allies improve sell prices in their town'); const R=est(E.newGame(t0)); E.addRapport(R,'marlowe',-60); ok(E.townSellPrice(R,'ashford','wood')<p0,'rivals worsen sell prices');
+ const T=est(E.newGame(t0)); T.res.coin=1e4; T.renown=500; E.addRapport(T,'corran',-60); let n=0; for(let d=0;d<30*60;d++){T.day++; const c=T.res.coin,r=T.renown,f=T.res.food; if(T.day%30===0){T.houses.corran.r=-60; E.housesDay(T); if(T.res.coin<c||T.renown<r||T.res.food<f)n++;}} ok(n>0,'rivals cause occasional trouble events');
+ const Dr=est(E.newGame(t0)); E.addRapport(Dr,'corran',-60); for(let d=0;d<90;d++){Dr.day++; E.housesDay(Dr);} ok(E.rapport(Dr,'corran')>-60,'rapport drifts back toward neutral');
+ const Gf=est(E.newGame(t0)); Gf.res.coin=1000; E.addRapport(Gf,'vey',-40); ok(E.sendGift(Gf,'vey')&&E.rapport(Gf,'vey')===-40+D.marriage.houses.giftStanding&&!E.sendGift(Gf,'vey'),'gifts raise rapport (with a cooldown)');
+}
+// Feud & war: warned first, newbie-safe, battles, endings, never a permanent lock
+{ const Y=D.tuning.daysPerYear; const G=est(E.newGame(t0)); E.skipTutorial(G); E.addRapport(G,'skye',-80); ok(E.houseState(G,'skye').state==='feud'&&G.log.some(l=>/Feud/.test(l.msg)),'deep rivalry becomes a feud');
+ ok(!E.houseQuestIssue(G,D.quests.find(x=>x.id==='hq_raid_skye')),'feuds open hostile quests'); ok(/only while feuding/.test(E.houseQuestIssue(est(E.newGame(t0)),D.quests.find(x=>x.id==='hq_raid_skye'))),'hostile quests need a feud');
+ for(let d=0;d<Y*3;d++) E.dayTick(G,1,1); ok(E.houseState(G,'skye').state!=='war','a weak young family is never attacked');
+ const P=est(E.newGame(t0)); E.skipTutorial(P); const pm=E.active(P); pm.ageDays=25*Y; E.chooseClass(P,pm.id,'fighter'); pm.stats.STR=60; pm.stats.VIT=60; E.addRapport(P,'skye',-90); P.houses.skye.r=-95;
+ const fp=E.familyPower(P); ok(fp>=D.marriage.houses.feud.minPowerForAggression,'strong family can be targeted');
+ let warned=null, war=null; for(let d=0;d<Y*30&&!war;d++){P.houses.skye.r=Math.min(P.houses.skye.r,-90); E.dayTick(P,1,1); if(P.houses.skye.warned!=null&&warned==null) warned=P.day; if(P.houses.skye.state==='war') war=P.day;}
+ ok(warned!=null&&war!=null&&war-warned>=D.marriage.houses.feud.warnDays,'rival aggression warns first, then war');
+ ok(P.chronicle.some(e=>/War with/.test(e.t)),'war reaches the Chronicle'); ok(E.timers(P).some(t=>t.key==='warskye'&&t.p>=0&&t.p<=1),'war has a timer/progress bar');
+ const before=P.weary||0; let fights=0; const startDay=P.day; while(P.houses.skye.state==='war'&&fights<200){P.houses.skye.warDay=-999; E.housesDay(P); fights++;} ok(P.houses.skye.state==='peace','wars end (decisive wins or losses)'); ok((P.weary||0)>before&&E.wearyMorale(P)<0,'war weariness costs morale');
+ ok(E.houseState(P,'skye').r>D.marriage.houses.feud.at,'peace never drops straight back into a feud');
+ const Tq=est(E.newGame(t0)); Tq.members[0].ageDays=20*Y; E.addRapport(Tq,'vey',-90); ok(E.declareWar(Tq,'vey')&&E.atWar(Tq,'vey'),'player can escalate a feud to war'); Tq.res.coin=0; ok(/coin/.test(E.truceIssue(Tq,'vey')),'truce needs tribute'); Tq.res.coin=5000; ok(E.offerTruce(Tq,'vey')&&!E.atWar(Tq,'vey')&&Tq.res.coin===5000-E.tributeCost(Tq,'vey'),'tribute buys a truce');
+ const Mq=est(E.newGame(t0)); Mq.members[0].ageDays=20*Y; Mq.res.coin=5000; E.addRapport(Mq,'vey',-90); E.declareWar(Mq,'vey'); const sib=E.newMember(Mq,{age:20}); Mq.members.push(sib); ok(!E.marryOutIssue(Mq,sib.id,'vey')&&E.marryOut(Mq,sib.id,'vey')&&!E.atWar(Mq,'vey'),'marrying into the enemy ends a war');
+ const Ms=est(E.newGame(t0)); Ms.members[0].ageDays=20*Y; Ms.res.coin=5000; E.addRapport(Ms,'vey',-90); E.declareWar(Ms,'vey'); const vs=E.makeSuitor(Ms,{house:'vey'}); vs.affinity=100; Ms.suitors=[vs]; Ms.members[0].ageDays=20*Y; estate(Ms,['bunk','bunk']); ok(E.propose(Ms,vs.id)&&!E.atWar(Ms,'vey'),'marrying one of theirs ends a war too');
+ const To=est(E.newGame(t0)); To.members[0].ageDays=20*Y; E.addRapport(To,'vey',-90); E.declareWar(To,'vey'); for(let d=0;d<D.marriage.houses.war.maxDays+5;d++){To.day++; E.housesDay(To);} ok(!E.atWar(To,'vey'),'wars time out (never a permanent lock)');
+ const Al=est(E.newGame(t0)); const a0=E.allyPower(Al); E.addRapport(Al,'skye',80); ok(E.allyPower(Al)>a0,'allies add power in battles');
+ const Nw=est(E.newGame(t0)); Nw.members[0].ageDays=20*Y; E.addRapport(Nw,'marlowe',-90); E.declareWar(Nw,'marlowe'); ok(E.enemyPower(Nw,'marlowe')<=Math.max(10,(E.familyPower(Nw)+E.allyPower(Nw))*D.marriage.houses.war.enemyMaxScale+1e-9),'enemy power scales with a small family (newbie-safe)');
+ const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; delete old.houses; delete old.weary; old.suitors=[{id:'o1',name:'Old',gender:'m',cls:'scout',affinity:40,age:20}];
+ const O=E.importSave(JSON.stringify(old)); ok(O.houses&&O.weary===0&&O.suitors[0].dowry&&O.suitors[0].persona===null&&O.suitors[0].arrived!=null,'old saves gain houses, weariness and suitor fields');
+}
+// Phase gates: light marriage/rapport early, rivalry/feud/war once Established (Dynasty systems ramp in)
+{ const B=E.newGame(t0); ok(E.era(B).n===1,'fresh game is phase 1'); E.addRapport(B,'vey',-95); ok(E.houseState(B,'vey').state==='peace'&&E.rapport(B,'vey')>D.marriage.houses.feud.at,'no feuds in the Beginning phase');
+ ok(/Established/.test(E.houseQuestIssue(B,D.quests.find(x=>x.id==='hq_tallow_outbid'))||''),'rivalry quests wait for the Established phase'); ok(!E.houseQuestIssue(B,D.quests.find(x=>x.id==='hq_tallow_ledger')),'friendly house quests from the start');
+ const Bs=E.makeSuitor(B,{house:'skye'}); ok(Bs.dowry.coin>0,'house marriages from the start');
+ let tr=0; B.res.coin=1e4; for(let d=0;d<30*40;d++){B.day++; if(B.day%30===0){B.houses.vey.r=-60; const c=B.res.coin; E.housesDay(B); if(B.res.coin<c) tr++;}} ok(tr===0,'no rival trouble events before Established');
+ ok(D.marriage.houses.list.every(h=>h.rank&&h.seat&&h.kind),'house model has rank/seat/kind for future lords & titles');
 }
 console.log(pass,'tests passed');

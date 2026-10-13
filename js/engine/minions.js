@@ -282,6 +282,7 @@ export const MINION_JOBS = {
           !q.once &&
           !q.guild &&
           !q.adv &&
+          !q.house &&
           known(s, q) &&
           regionOpen(s, q.region) &&
           q.risk === "safe" &&

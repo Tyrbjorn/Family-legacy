@@ -1,3 +1,4 @@
+import { houseSellMult } from "./houses.js";
 import { seasonPrice } from "./seasons.js";
 import { inc } from "./achievements.js";
 import { buyMult, priceMult, sellMult } from "./worldevents.js";
@@ -55,7 +56,11 @@ export const buyPrice = (it, s, townId) =>
 
 export const townSellPrice = (s, townId, res) => {
   const t = D.towns.find(x => x.id === townId);
-  return Math.round(t.prices[res] * priceMult(s, townId, res) * sellMult(s, townId) * seasonPrice(s, res) * 100) / 100;
+  return (
+    Math.round(
+      t.prices[res] * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
+    ) / 100
+  );
 };
 
 export function buyItem(s, townId, itemId) {

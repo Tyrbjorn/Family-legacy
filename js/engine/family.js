@@ -4,6 +4,9 @@ import { actionAllowed, defaultAction } from "./actions.js";
 import { bedrooms, established, estateStage } from "./estate.js";
 import { cls } from "./guilds.js";
 import { itemDef } from "./inventory.js";
+import { applyMarriage, giftMult, makeSuitor, personaDef } from "./courtship.js";
+import { houseDef } from "./houses.js";
+const baseGift = id => String(id).replace(/^c\|/, "").split("|")[0];
 import { D, NAMES, STATS, T, Y, active, ageY, bl, isAdult, living, log, r, rng } from "./state.js";
 
 export function newMember(s, { gender, age, cls = null, parents = null, stats } = {}) {
@@ -33,6 +36,8 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
     craftQueue: [],
     guild: null,
     adv: null,
+    persona: null,
+    house: null,
   };
   m.traits = rollTraits(s, 2);
   m.lifespan = T.baseLifespan + traitSum(m, "life") + Math.round((rng() - 0.5) * 8);
@@ -151,17 +156,14 @@ export function inherit(s, child) {
 }
 
 export function spawnSuitor(s) {
-  const g = r(["m", "f"]);
-  const su = {
-    id: "su" + s.day,
-    name: r(NAMES[g]),
-    gender: g,
-    cls: r(D.classes.filter(c => c.tier === 0 && !c.line)).id,
-    affinity: 0,
-    age: 18 + Math.floor(rng() * 8),
-  };
+  const su = makeSuitor(s);
   s.suitors.push(su);
-  log(s, `💌 A suitor, ${su.name} the ${D.classes.find(c => c.id === su.cls).name}, appeared in town.`);
+  const p = personaDef(su.persona),
+    h = su.house && houseDef(su.house);
+  log(
+    s,
+    `💌 A suitor, ${su.name} the ${D.classes.find(c => c.id === su.cls).name}${h ? " of " + h.name : ""}${p ? " (" + p.name + ")" : ""}, appeared in town.`,
+  );
 }
 
 export const PROPOSE_COST = 200;
@@ -190,6 +192,7 @@ export function propose(s, suitorId) {
   sp.order = { type: "work" };
   s.members.push(sp);
   s.suitors = s.suitors.filter(x => x !== su);
+  applyMarriage(s, m, sp, su);
   if (m.gender === sp.gender) {
     sp.gender = m.gender === "m" ? "f" : "m";
   } // MVP: births need one f partner
@@ -204,7 +207,7 @@ export function giveGift(s, suitorId, itemId) {
   const it = itemDef(itemId);
   if (i < 0 || !su || !it.affinity) return false;
   s.vault.splice(i, 1);
-  su.affinity = Math.min(100, su.affinity + it.affinity);
+  su.affinity = Math.min(100, su.affinity + it.affinity * giftMult(su, baseGift(itemId)));
   return true;
 }
 

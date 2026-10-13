@@ -1,3 +1,4 @@
+import { household } from "./courtship.js";
 import { isFed, moraleXp, starving, stockValue, tonicXp } from "./food.js";
 import { traitSkillXp } from "./traits.js";
 import { buffSum } from "./encounters.js";
@@ -7,7 +8,7 @@ import { level, traitSum } from "./family.js";
 import { cls, guildDef, guildsOf, memberGuild } from "./guilds.js";
 import { itemDef } from "./inventory.js";
 import { minionPower } from "./minions.js";
-import { D, STATS, T, ageY, bl, furn, log, r, xpNeed } from "./state.js";
+import { D, STATS, T, ageY, bl, furn, isAdult, log, r, xpNeed } from "./state.js";
 
 export function softCap(m) {
   const c = cls(m);
@@ -22,6 +23,7 @@ export function xpMult(s, m, skillId) {
   mult += traitSkillXp(m, skillId);
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
   mult += moraleXp(s) + tonicXp(s, sk.family);
+  if (!isAdult(m)) mult += household(s, "childXp");
   mult += eff(s, "blessing");
   for (const st of s.structures || []) {
     const d = structDef(st.type);

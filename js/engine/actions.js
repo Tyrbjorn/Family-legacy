@@ -1,4 +1,5 @@
 import { proposeIssue } from "./family.js";
+import { courtMult, noteStage } from "./courtship.js";
 import { nextQueued } from "./crafting.js";
 import { resGain } from "./legacy.js";
 import { cp, level, statVal, traitSum } from "./family.js";
@@ -95,8 +96,10 @@ export const ACTIONS = {
         (1 + statVal(m, "CHA") * 0.1 + m.skills.etiquette.lvl * 0.1) *
           eff *
           (1 + traitSum(m, "court")) *
-          (1 + furn(s).reduce((x, f) => x + (f.bonus.court || 0), 0)),
+          (1 + furn(s).reduce((x, f) => x + (f.bonus.court || 0), 0)) *
+          courtMult(s, m, su),
     );
+    noteStage(s, m, su);
     gainXp(s, m, "etiquette", T.xpPerDay * 0.5 * eff);
     if (su.affinity >= 100) {
       // fix: courting used to continue forever at 100 affinity when the proposal was blocked
@@ -125,6 +128,7 @@ export function autoQuest(s, m, region) {
     q =>
       q.region === region &&
       !q.story &&
+      !q.house && // standing orders never pick sides between houses
       !questIssue(s, m, q) &&
       q.risk !== "deadly" &&
       q.cp <= cp(s, m) &&

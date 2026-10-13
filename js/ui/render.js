@@ -11,6 +11,7 @@ import { minionsv } from "./minions-tab.js";
 import { craftingv } from "./crafting-tab.js";
 import { chroniclev } from "./chronicle-tab.js";
 import { familyv } from "./family-tab.js";
+import { housesv, suitorCard } from "./houses-tab.js";
 import { bellPanel, dockv, toastsv } from "./progress.js";
 import { tourOverlay } from "./guide.js";
 
@@ -25,6 +26,7 @@ export const TABS = {
   guilds: ["🏛️", "Guilds", guildsv],
   craft: ["🔨", "Crafting", craftingv],
   chron: ["📜", "Chronicle", chroniclev],
+  houses: ["🏰", "Houses", housesv],
 };
 
 // Phone nav: 6 group buttons; groups with several tabs get a sub-tab strip under the header.
@@ -35,7 +37,7 @@ export const GROUPS = [
   ["map", "🗺️", "Map", ["map"]],
   ["inv", "🎒", "Bag", ["inv"]],
   ["home", "🏰", "Estate", ["estate", "minions", "craft"]],
-  ["kin", "🌳", "Family", ["family", "chron"]],
+  ["kin", "🌳", "Family", ["family", "houses", "chron"]],
 ];
 export const groupOf = t => (GROUPS.find(g => g[3].includes(t)) || GROUPS[0])[0];
 window.__tabGroup = groupOf;

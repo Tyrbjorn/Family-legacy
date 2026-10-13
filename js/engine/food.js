@@ -3,6 +3,8 @@
 // the ration level trades consumption for morale; shortages drag morale (and so output) down.
 import { ES, reserveOf } from "./estate.js";
 import { D, living } from "./state.js";
+import { household } from "./courtship.js";
+import { wearyMorale } from "./houses.js";
 
 export const MEALS = () => ES().meals;
 export const RATIONS = () => MEALS().rations;
@@ -39,7 +41,8 @@ export const satiation = n => 1 - Math.min(MEALS().satiationCap, MEALS().variety
 // what would be eaten today (types with stock, on the menu)
 export const servable = s => menuKeys().filter(k => onMenu(s, k) && edible(s, k) >= 0.01);
 
-export const dailyNeed = (s, n = servable(s).length) => mouths(s) * rationDef(s).mult * satiation(n);
+export const dailyNeed = (s, n = servable(s).length) =>
+  mouths(s) * rationDef(s).mult * satiation(n) * Math.max(0.5, 1 + household(s, "foodNeed"));
 
 export const stockValue = (s, keys = servable(s)) => keys.reduce((a, k) => a + edible(s, k) * unitValue(s, k), 0);
 
@@ -87,7 +90,15 @@ export function eatDay(s) {
   const drinks = menu.reduce((a, k) => a + ((M.drinks || {})[k] || 0), 0);
   const target = Math.max(
     M.min,
-    Math.min(M.max, rationDef(s).morale + varietyMorale(menu.length) + drinks + M.shortageMorale * short),
+    Math.min(
+      M.max,
+      rationDef(s).morale +
+        varietyMorale(menu.length) +
+        drinks +
+        M.shortageMorale * short +
+        household(s, "morale") +
+        wearyMorale(s),
+    ),
   );
   s.morale = (s.morale || 0) + (target - (s.morale || 0)) * M.smoothing;
   s.meal = { need, eaten, ratio, short, menu, emergency, variety: menu.length, target, fed: short < 0.01 };

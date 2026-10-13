@@ -1,3 +1,4 @@
+import { FEUD, houseList, houseState, warTimer } from "./houses.js";
 // Every running timer in one list (for progress bars and the Timers dock).
 // Each entry: { key, icon, who, what, p (0..1), left (in-game days, null = ongoing), tab }
 import { activeBuffs } from "./encounters.js";
@@ -152,6 +153,16 @@ export function timers(s) {
       left: b.until - s.day,
       tab: "main",
     });
+  for (const h of houseList()) {
+    const st = houseState(s, h.id);
+    if (st.state === "war") {
+      const w = warTimer(s, h.id);
+      out.push({ key: "war" + h.id, icon: "🏴", who: h.name, what: `war · next battle · score ${w.score}`, p: w.p, left: w.left, tab: "houses" });
+    } else if (st.state === "feud" && st.warned != null) {
+      const n = FEUD().warnDays;
+      out.push({ key: "feud" + h.id, icon: "🔥", who: h.name, what: "mustering for war", p: clamp((s.day - st.warned) / n), left: Math.max(0, n - (s.day - st.warned)), tab: "houses" });
+    }
+  }
   return out;
 }
 
