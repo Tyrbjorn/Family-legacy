@@ -1,8 +1,7 @@
-import { toggleDock } from "./ui/progress.js";
+import { runAction } from "./ui/handlers/index.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
-import { curList } from "./ui/common.js";
-import { render } from "./ui/render.js";
+import { groupOf, render } from "./ui/render.js";
 
 const KEY = "familyLegacy.save.v1";
 
@@ -96,6 +95,7 @@ document.addEventListener("click", e => {
   const t = e.target.closest("[data-tab]");
   if (t) {
     U.tab = t.dataset.tab;
+    (U.groupLast ||= {})[groupOf(U.tab)] = U.tab;
     if (U.tab === "estate") E.tutNote(s, "estate");
     U.lastHTML = "";
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
@@ -109,135 +109,10 @@ document.addEventListener("click", e => {
   const a = b.dataset.a,
     v = b.dataset.v,
     m = E.active(s);
-  ({
-    turbo: () => E.toggleTurbo(s),
-    dock: () => toggleDock(),
-    gotab: () => {
-      U.tab = v;
-      if (v === "estate") E.tutNote(s, "estate");
-      scrollTo(0, 0);
-    },
-    bell: () => {
-      U.bell = !U.bell;
-      if (!U.bell) E.markNotesRead(s);
-    },
-    bellread: () => E.markNotesRead(s),
-    mentorcraft: () => E.mentorCraft(s),
-    tutskip: () => confirm("Skip the apprenticeship? You keep what you've earned so far.") && E.skipTutorial(s),
-    tourstart: () => {
-      U.tour = 0;
-      U.tab = "main";
-    },
-    tournext: () => {
-      U.tour++;
-      const st = E.tourSteps().filter(x => document.querySelector(`[data-tab="${x.tab}"]`))[U.tour];
-      if (st) U.tab = st.tab;
-    },
-    tourend: () => {
-      U.tour = null;
-      E.markTourSeen(s);
-    },
-    ver: () => {
-      if (++U.verTaps >= 5) U.devRevealed = true;
-    },
-    dev: () => E.devCheat(s, v),
-    devtut: () => E.completeTutorial(s),
-    treesel: () => {
-      U.treeSel = v ? +v : null;
-    },
-    train: () => E.setAction(s, { type: "train", target: v }),
+  const local = {
     sheet: () => {
       sheetOpen = !sheetOpen;
     },
-    job: () => E.setAction(s, { type: "job", target: v }),
-    activity: () => E.setAction(s, { type: "activity", target: v }),
-    rest: () => E.setAction(s, { type: "rest" }),
-    quest: () => {
-      E.setAction(s, { type: "quest", target: v });
-    },
-    court: () => E.setAction(s, { type: "court", target: v }),
-    gift: () => E.giveGift(s, v, b.dataset.w),
-    propose: () => E.propose(s, v),
-    evolve: () => E.evolve(s, m, v),
-    build: () => E.build(s, v),
-    struct: () => E.buildStructure(s, v),
-    upstruct: () => E.upgradeStructure(s, v),
-    unpiece: () => E.removePiece(s, v, b.dataset.w),
-    upspecial: () => E.upgradeSpecial(s, v),
-    spec: () => E.specialize(s, v, b.dataset.w),
-    mevolve: () => E.evolveMinion(s, v, b.dataset.w),
-    dungeon: () => E.setAction(s, { type: "dungeon", target: v }),
-    auto: () => E.setAction(s, { type: "auto", target: v }),
-    stopauto: () => E.setAction(s, { type: "stopauto" }),
-    explore: () => E.setAction(s, { type: "explore", target: v }),
-    mapsel: () => {
-      U.mapSel = v;
-    },
-    zoom: () => {
-      const f = +v,
-        W = D.map.size.w,
-        H = D.map.size.h;
-      if (!f) {
-        U.mv = { x: 0, y: 0, w: W, h: H };
-      } else {
-        const cx = U.mv.x + U.mv.w / 2,
-          cy = U.mv.y + U.mv.h / 2;
-        U.mv.w = Math.min(W * 1.2, Math.max(180, U.mv.w * f));
-        U.mv.h = (U.mv.w * H) / W;
-        U.mv.x = cx - U.mv.w / 2;
-        U.mv.y = cy - U.mv.h / 2;
-      }
-    },
-    uppiece: () => E.upgradePiece(s, v, b.dataset.w),
-    toggle: () => E.togglePiece(s, v, b.dataset.w),
-    cqueue: () =>
-      E.queueCraft(
-        s,
-        s.members.find(x => x.id === +v),
-        b.dataset.w,
-      ),
-    cunq: () =>
-      E.unqueueCraft(
-        s.members.find(x => x.id === +v),
-        +b.dataset.w,
-      ),
-    mcraft: () => {
-      const mi = s.minions.find(x => x.uid === v);
-      E.setMinionCraft(s, mi, mi && mi.craftOrder === b.dataset.w ? null : b.dataset.w);
-    },
-    legacy: () => E.buyLegacy(s, v),
-    enc: () => E.resolvePending(s, v),
-    equip: () => E.equip(s, m, v),
-    equipbag: () => E.equip(s, m, v, "bag"),
-    unequip: () => E.unequip(s, m, v),
-    tobag: () => E.moveItem(s, m, v, true),
-    tovault: () => E.moveItem(s, m, v, false),
-    buy: () => E.buyItem(s, v, b.dataset.w),
-    sellres: () => E.sellRes(s, v, b.dataset.w, 10),
-    rumor: () => E.rumor(s, v),
-    sellallres: () => E.sellAllRes(s, v, b.dataset.w),
-    bulksell: () => E.sellMany(s, curList()),
-    bulklist: () => curList().forEach(id => E.listForSale(s, id)),
-    list: () => E.listForSale(s, v),
-    unlist: () => E.unlist(s, v),
-    craft: () => E.setAction(s, { type: "craft", target: v }),
-    mequip: () => E.equipMinion(s, v, b.dataset.w),
-    munequip: () => E.unequipMinion(s, v, b.dataset.w),
-    land: () => E.buyLand(s, v),
-    room: () => E.addRoom(s, v),
-    unroom: () => E.removeRoom(s, +v),
-    advjoin: () => E.joinAdventurers(s, m),
-    advrank: () => E.advRankUp(s, m),
-    advbuy: () => E.buyAdvItem(s, m, v),
-    join: () => E.joinGuild(s, m, v),
-    rankup: () => E.rankUp(s, m, v || undefined),
-    gbuy: () => E.buyGuildItem(s, m, v),
-    hire: () => E.hire(s, v, b.dataset.w),
-    dismiss: () => E.dismiss(s, v),
-    gather: () => E.setAction(s, { type: "gather", target: v }),
-    sell: () => E.sell(s, v),
-    switch: () => E.switchTo(s, +v),
-    class: () => E.chooseClass(s, s.pendingClass[0], v),
     close: () => {
       report = null;
     },
@@ -254,7 +129,9 @@ document.addEventListener("click", e => {
         report = null;
       }
     },
-  })[a]?.();
+  };
+  if (local[a]) local[a]();
+  else runAction(a, { v, b, m });
   save();
   U.lastHTML = "";
   render();

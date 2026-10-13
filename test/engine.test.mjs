@@ -24,7 +24,7 @@ const a=s3.members[0].ageDays,d=s3.day; E.toggleTurbo(s3); E.advanceReal(s3,60);
 const s4=E.deserialize(E.serialize(s2,t0)); ok(JSON.stringify(s4.members)===JSON.stringify(s2.members),'save/load roundtrip');
 // marriage, kids, inheritance, death, game over
 s.res.coin=5000; s.suitors.push({id:'x',name:'Ysolde',gender:'f',cls:'scout',affinity:100,age:20});
-const home=estate(s,['bunk']); ok(E.propose(s,'x')&&s.members.length===2,'marriage adds playable spouse');
+const home=estate(s,['bunk']); f.ageDays=Math.max(f.ageDays,D.tuning.courtAge*D.tuning.daysPerYear); ok(E.propose(s,'x')&&s.members.length===2,'marriage adds playable spouse');
 home.pieces=['bunk','bunk2'].slice(0,1).concat(['cradle','larder','minionbunk']); home.pieces.push('bunk'); s.res.food=1e6; for(let i=0;i<40&&s.members.length<3;i++) E.advanceReal(s,10*360);
 ok(s.members.length>=3,'child born'); const kid=s.members[2];
 f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&!kid.cls,'child inherits 10% at 16, stays classless');
@@ -63,7 +63,7 @@ ok(!E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank-gated guild items');
 gm2.guild.rep=60; ok(E.rankUp(G,gm2)&&gm2.guild.rank===1&&E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank up unlocks special item');
 gm2.cls='knight'; gm2.skills.leadership.lvl=45; gm2.skills.tactics.lvl=25; const wl=D.classes.find(c=>c.id==='warlord');
 ok(!E.canEvolve(G,gm2,wl),'tier 2 needs guild rank'); gm2.guild.rep=200; E.rankUp(G,gm2); ok(E.evolve(G,gm2,'warlord')&&gm2.cls==='warlord','Adept Warrior unlocks Warlord');
-const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.skills.tactics;delete m.guild;} old._norm=false; E.normalize(old); ok(old.members[0].skills.tactics&&old.members[0].guild&&old.members[0].guild.id===E.classGuild(old.members[0].cls).id,'old saves migrate (skills + guild from class)');
+const old=JSON.parse(E.serialize(G,t0)); delete old.schema; for(const m of old.members){delete m.skills.tactics;delete m.guild;} old._norm=false; E.normalize(old); ok(old.members[0].skills.tactics&&old.members[0].guild&&old.members[0].guild.id===E.classGuild(old.members[0].cls).id,'old saves migrate (skills + guild from class)');
 // adventurers' guild
 ok(E.joinAdventurers(G,gm2)&&gm2.guild.id==='vanguard'&&gm2.adv.rank===0,"Adventurers' Guild joinable by a sworn guild member");
 const G2=E.newGame(t0); const am=G2.members[0]; am.ageDays=20*360; am.cls='scout'; am.skills.archery.lvl=12; G2.res.coin=1e5;
@@ -79,7 +79,7 @@ ok(D.classes.filter(c=>c.tier===2).every(c=>(c.guild&&D.guilds.guilds.some(g=>g.
 ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id==='assassin').guild==='rogues','Paladin→Healers, Assassin→Rogues');
 const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; hm.cls='fighter'; hm.skills.healing.lvl=10; hm.skills.faith.lvl=10; hm.skills.etiquette.lvl=5; H.res.coin=1e5;
 ok(E.joinGuild(H,hm,'church')&&E.canTrain(hm,'faith')&&!E.canTrain(hm,'thievery'),'Healers guild unlocks Faith, not Thievery');
-const O=JSON.parse(E.serialize(H,t0)); O.members[0].guild={id:'exchange',rank:1,rep:5}; O.vault.push('exchange_seal'); E.normalize(O); ok(O.members[0].guild===null&&!O.vault.includes('exchange_seal'),'old Exchange saves migrate cleanly');
+const O=JSON.parse(E.serialize(H,t0)); delete O.schema; O.members[0].guild={id:'exchange',rank:1,rep:5}; O.vault.push('exchange_seal'); E.normalize(O); ok(O.members[0].guild===null&&!O.vault.includes('exchange_seal'),'old Exchange saves migrate cleanly');
 // playtest feedback round
 let clash=0; for(let i=0;i<300;i++){ const tr=E.pickTraits(2); if(E.conflicts(tr[0],tr[1])) clash++; } ok(clash===0,'opposed traits never roll together');
 const P=E.newGame(t0); const pm=P.members[0]; pm.traits=['hardy','frail']; const ls=pm.lifespan; P._norm=false; E.normalize(P);
@@ -135,7 +135,7 @@ const mf=E.minionFood(LS); ok(mf===LS.minions.length*0.5,'followers eat from the
 LS.res.food=0; const l0=LS.minions[0].loyalty; E.advanceReal(LS,10); ok(LS.minions[0].loyalty<l0&&LS.minions[0].hunger>0,'hungry followers lose morale');
 for(let i=0;i<20;i++){LS.res.food=0;E.advanceReal(LS,10);} ok(LS.minions.length===0,'starving followers eventually leave');
 // migration
-const OLD=JSON.parse(E.serialize(G,t0)); delete OLD.land; delete OLD.structures; OLD.rooms=['living','workshop','study']; OLD.furniture=['bookshelf','trophy']; OLD.buildings={house:2,farm:1,lumber:1,yard:0,library:0,hourglass:0}; E.normalize(OLD);
+const OLD=JSON.parse(E.serialize(G,t0)); delete OLD.schema; delete OLD.land; delete OLD.structures; OLD.rooms=['living','workshop','study']; OLD.furniture=['bookshelf','trophy']; OLD.buildings={house:2,farm:1,lumber:1,yard:0,library:0,hourglass:0}; E.normalize(OLD);
 ok(OLD.structures.length===1&&OLD.structures[0].type==='cabin'&&OLD.structures[0].pieces.includes('bunk')&&OLD.structures[0].pieces.includes('workbench')&&E.landSlots(OLD)>=E.landUsed(OLD)&&OLD.rooms===undefined&&OLD.buildings.house===undefined,'old House/rooms save → Cabin with stations');
 ok([...OLD.structures[0].pieces,...OLD.pieceStore].includes('trophy'),'old furniture kept (placed or in storage)');
 // classes via guilds
@@ -148,7 +148,7 @@ for(const [gid,c] of Object.entries(grants)){ const X=E.newGame(t0); const xm=X.
 const CR=E.newGame(t0); const cr=CR.members[0]; cr.ageDays=20*360; CR.res.coin=1e4; cr.skills.carpentry.lvl=6; cr.skills.smithing.lvl=4; ok(E.joinGuild(CR,cr,'hearth')&&!cr.cls&&cr.prof==='artisan','Crafters give the Artisan profession, no primary class');
 ok(E.joinAdventurers(CR,cr)&&cr.cls==='adventurer'&&cr.prof==='artisan',"Adventurers' Guild grants Adventurer as primary class (classless members)");
 ok(D.classes.filter(c=>c.tier>0).every(c=>{const g=E.classGuild(c.id);return g&&(!c.guild||c.guild===g.id);}),'every evolution stays inside its guild line');
-const MG=JSON.parse(E.serialize(G,t0)); MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
+const MG=JSON.parse(E.serialize(G,t0)); delete MG.schema; MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
 // crafting, inventory, professions, minion gear
 const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e5; K.res.wood=300; K.res.planks=100; K.res.ingots=100; K.res.hides=50; K.res.cloth=50; K.res.potions=20; K.res.ore=30; K.res.stone=300;
 ['plot','acre','meadow'].forEach(l=>E.buyLand(K,l)); K.res.blocks=100; const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','forge','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p));
@@ -431,7 +431,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const r0=G.res.wood; E.buyLegacy(G,'resgain'); ok(E.resGain(G)===1.05,'Family Fortune +5% resources');
  const N=E.newLineage(G,t0); ok(N.legacy.ups.life===1&&N.legacy.renown===G.legacy.renown&&N.members.length>=1,'legacy persists into a new lineage');
  const R=E.deserialize(E.serialize(G)); ok(R.legacy.ups.speed===G.legacy.ups.speed&&R.legacy.renown===G.legacy.renown,'legacy persists through save/load');
- const O=JSON.parse(E.serialize(E.newGame(t0))); delete O.legacy; delete O.speed; O.members.forEach(x=>{delete x.renown; delete x.skills.focus;}); E.normalize(O); ok(O.legacy.renown===0&&O.speed===1&&O.members[0].renown===0&&O.members[0].skills.focus,'old saves migrate (legacy, speed, renown, Focus)'); }
+ const O=JSON.parse(E.serialize(E.newGame(t0))); delete O.schema; delete O.legacy; delete O.speed; O.members.forEach(x=>{delete x.renown; delete x.skills.focus;}); E.normalize(O); ok(O.legacy.renown===0&&O.speed===1&&O.members[0].renown===0&&O.members[0].skills.focus,'old saves migrate (legacy, speed, renown, Focus)'); }
 // Chronicle, achievements, world events, encounters
 { const H=E.newGame(t0); E.normalize(H); const m=H.members[0];
  E.log(H,`👶 Pip was born to ${m.name} and Ann.`); E.log(H,'🏷️ Sold a thing for 3🪙.'); ok(H.chronicle.some(e=>e.c==='birth'&&e.w===m.name)&&!H.chronicle.some(e=>e.t.includes('Sold')),'chronicle records major events only, with member');
@@ -461,7 +461,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  for(let i=0;i<40;i++) E.advanceReal(N2,10); ok(E.buffSum(N2,'xp')===0,'curse wears off');
  const N3=E.newGame(t0); E.normalize(N3); N3.encPolicy='cautious'; const e3=E.encDef('toll'); ok(E.policyOption(N3,e3).tag==='cautious','auto-resolve uses the policy'); const k=N3.members[0]; k.standing='explore'; const c0=N3.res.coin; E.autoResolve(N3,k,e3); ok(N3.res.coin===c0-30&&!N3.pendingEnc,'automated orders auto-resolve');
  const N4=E.newGame(t0); E.normalize(N4); N4.res.coin=0; ok(E.policyOption(N4,E.encDef('peddler')).id!=='buy','unaffordable options skipped');
- const O=JSON.parse(E.serialize(E.newGame(t0))); for(const k of ['chronicle','wevents','buffs','ach','counts','pendingEnc','encPolicy']) delete O[k]; E.normalize(O); ok(Array.isArray(O.chronicle)&&O.ach&&O.encPolicy==='kind'&&O.pendingEnc===null,'old saves migrate'); }
+ const O=JSON.parse(E.serialize(E.newGame(t0))); delete O.schema; for(const k of ['chronicle','wevents','buffs','ach','counts','pendingEnc','encPolicy']) delete O[k]; E.normalize(O); ok(Array.isArray(O.chronicle)&&O.ach&&O.encPolicy==='kind'&&O.pendingEnc===null,'old saves migrate'); }
 // Round 2: trait rarity + inheritance, seasons, foods & herbs, save export/import
 { const R=['bad','common','good','rare','epic']; ok(R.every(r=>D.traits.some(t=>t.rarity===r))&&D.traits.every(t=>R.includes(t.rarity)),'every trait has a rarity tier, all tiers used');
  ok(D.traits.some(t=>t.stats)&&D.traits.some(t=>t.skillXp)&&D.traits.some(t=>t.life),'stat/skill/life effects');
@@ -487,8 +487,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 { const X=E.newGame(t0); E.normalize(X); X.res.coin=4242; X.members[0].name='Exporta'; const code=E.exportCode(X); ok(code.startsWith('FL1:')&&!code.includes('{'),'export is a base64 text code');
  const Y=E.importSave(code); ok(Y.res.coin===4242&&Y.members[0].name==='Exporta','import restores the save'); const Z=E.importSave(E.serialize(X)); ok(Z.res.coin===4242,'import accepts raw JSON (file)');
  let e1=''; try{ E.importSave('garbage!!'); }catch(e){ e1=e.message; } ok(/valid/.test(e1),'invalid code rejected');
- const bad=JSON.parse(E.serialize(X)); bad.v=99; let e2=''; try{ E.importSave(JSON.stringify(bad)); }catch(e){ e2=e.message; } ok(/version/.test(e2),'wrong version rejected');
- const old=JSON.parse(E.serialize(X)); delete old.legacy; delete old.chronicle; delete old.foodQ; const M=E.importSave(JSON.stringify(old)); ok(M.legacy&&Array.isArray(M.chronicle)&&M.foodQ,'import runs migrations'); }
+ const bad=JSON.parse(E.serialize(X)); delete bad.schema; bad.v=99; let e2=''; try{ E.importSave(JSON.stringify(bad)); }catch(e){ e2=e.message; } ok(/version/.test(e2),'wrong version rejected');
+ const old=JSON.parse(E.serialize(X)); delete old.schema; delete old.legacy; delete old.chronicle; delete old.foodQ; const M=E.importSave(JSON.stringify(old)); ok(M.legacy&&Array.isArray(M.chronicle)&&M.foodQ,'import runs migrations'); }
 
 // Tutorial (apprentice prologue) + dev mode
 { const G=E.newGame(t0); const F=E.active(G);
@@ -503,7 +503,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(G.chronicle.some(c=>/Lost House/.test(c.t)),'finale leads into Lost House story');
  const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===6,'tutorial progress saved');
  const H=E.newGame(t0); ok(E.skipTutorial(H)&&!E.tutActive(H)&&!E.skipTutorial(H),'tutorial skippable once');
- const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.tut; old.day=500; const O=E.importSave(JSON.stringify(old)); ok(O.tut.skipped&&!E.tutActive(O),'pre-tutorial saves are not dragged into it');
+ const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; delete old.tut; old.day=500; const O=E.importSave(JSON.stringify(old)); ok(O.tut.skipped&&!E.tutActive(O),'pre-tutorial saves are not dragged into it');
  ok(E.tourSteps().length>=8,'tab tour defined');
  // dev mode
  const V=E.newGame(t0); ok(!E.speedOptions(V).includes(50)&&!E.devCheat(V,'coin'),'dev off: no dev speeds or cheats');
@@ -537,5 +537,27 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  estate(G,['bunk','bunk']); E.propose(G,'y'); const kid=E.newMember(G,{age:0,parents:[F.id,F.spouse]}); G.members.push(kid);
  const tr=E.familyTree(G); ok(tr.length===2&&tr[0].length===2&&tr[1][0].id===kid.id&&tr[0].find(n=>n.id===F.id).children.includes(kid.id),'tree: generations with spouse row and children');
  E.kill(G,F,'test'); ok(E.familyTree(G)[0].find(n=>n.id===F.id).died!=null,'tree keeps the deceased');
+}
+
+// Versioned migrations + old FL1 export code fixture (made by the pre-polish build)
+{ const code=fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim();
+ const A=E.importSave(code); ok(A.schema===E.SCHEMA&&A.members.length>=1&&A.tut&&A.legacy,'old FL1 code imports and is migrated to current schema');
+ const strip=x=>{const j=JSON.parse(E.serialize(x,1)); delete j._norm; return JSON.stringify(j);};
+ const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
+ const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
+ ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,suitors,members','day hooks registered in order');
+}
+
+// Polish-pass bug fixes
+{ const G=E.newGame(t0); E.skipTutorial(G); const F=E.active(G); F.ageDays=20*D.tuning.daysPerYear;
+ G.suitors=[{id:'q',name:'Wren',gender:'m',cls:'scout',affinity:99.5,age:20}]; E.setAction(G,{type:'court',target:'q'}); E.advanceReal(G,30);
+ ok(F.action?.type!=='court'&&G.log.some(l=>/would say yes/.test(l.msg)),'courting stops at full affection and says what is missing');
+ ok(/bed|coin/.test(E.proposeIssue(G,'q')),'proposeIssue explains the blocker');
+ F.ageDays=15*D.tuning.daysPerYear; ok(/age/.test(E.proposeIssue(G,'q')),'proposing respects court age');
+ const N=E.newMember(G,{age:20}); ok(N.renown===0&&Array.isArray(N.craftQueue)&&N.guild===null&&N.adv===null,'new members are fully initialised (no NaN renown)');
+ F.ageDays=20*D.tuning.daysPerYear; E.chooseClass(G,F.id,'fighter'); const R=E.importSave(E.serialize(G,t0)); ok(!R.members[0].guild,'reloading no longer grants a free guild seat');
+ const M=E.newGame(t0); M.res.coin=0; const mi={uid:'x',type:'laborer',name:'X',loyalty:100,equip:{},prog:0}; let mx=0; for(let i=0;i<60;i++){const c=M.res.coin; E.MINION_JOBS.adventure(M,mi,2,1); mx=Math.max(mx,M.res.coin-c);}
+ ok(mx>0&&mx<=30,'adventuring minions run plain safe quests only (no guild jobs)');
 }
 console.log(pass,'tests passed');

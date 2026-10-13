@@ -1,5 +1,6 @@
 const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
 const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
@@ -13,12 +14,12 @@ await p.evaluate(()=>{const g=__game,s=g.s,E=g.E;s.members[0].ageDays=25*360;Obj
  const a=E.addMinion(s,'laborer','t'); if(a){a.cls='n_knighterrant';a.lvl=20;a.xp=0;a.name='Sir Aldric';}
  const c=E.addMinion(s,'laborer','t'); if(c){c.cls='n_adept';c.lvl=15;c.name='Mira';}
  window.__tw=tw.uid; g.save&&g.save();});
-await p.click('[data-tab="estate"]');await p.waitForTimeout(500);
+await go(p,'estate');await p.waitForTimeout(500);
 const card=await p.evaluateHandle(()=>[...document.querySelectorAll('.card')].find(x=>x.textContent.includes("Hedge Mage's Hut")&&x.textContent.includes('Specialise')));
-await card.asElement().scrollIntoViewIfNeeded(); await card.asElement().screenshot({path:'screenshot-estate-chain.png'});
-await p.click('[data-tab="minions"]');await p.waitForTimeout(500);
+await card.asElement().scrollIntoViewIfNeeded(); await card.asElement().screenshot({path:'/workspace/fl-screenshots/screenshot-estate-chain.png'});
+await go(p,'minions');await p.waitForTimeout(500);
 const mc=await p.evaluateHandle(()=>[...document.querySelectorAll('.card')].find(x=>x.textContent.includes('Sir Aldric')));
-await mc.asElement().scrollIntoViewIfNeeded(); await mc.asElement().screenshot({path:'screenshot-evolve-picker.png'});
+await mc.asElement().scrollIntoViewIfNeeded(); await mc.asElement().screenshot({path:'/workspace/fl-screenshots/screenshot-evolve-picker.png'});
 console.log('pal',await mc.asElement().evaluate(x=>x.textContent.match(/Paladin[^)]*\)/)?.[0]));
 const w=await p.evaluate(()=>[...document.querySelectorAll('div')].map(x=>x.textContent).find(t=>/Witch/.test(t)&&/Estate needs/.test(t)&&t.length<200));
 console.log('witch',w,'errs',errs);await b.close();

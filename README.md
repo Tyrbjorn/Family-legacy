@@ -107,3 +107,23 @@ Rewards are coin, resources, a Herb Knife and the hidden *Mentor's Knife* recipe
 
 ## Dev Mode
 Open with `?dev=1` (use `?dev=0` to turn it off), or tap the version label in Settings 5 times to reveal the toggle. Dev Mode is stored in `localStorage["fl-dev"]`, never in saves or exports. While on, it shows a **DEV** badge and adds 5×/10×/50× speeds that bypass the tick cap, plus cheats: coin, resources, max turbo, unlock tabs, and complete/skip the tutorial. Any game ticked in dev mode is marked `s.devRun` and earns no achievements. Saves loaded outside dev mode fall back to 1× speed.
+
+## Polish pass (code layout, saves, tests)
+- **Click handling:** `main.js` handles the few actions that must reassign the game itself (import, reset, close, sheet). Everything else goes to `js/ui/handlers/*.js`, split by area (meta, family, map, estate, inventory, guilds, crafting) through `runAction()`.
+- **Day hooks:** a day is `DAY_HOOKS` in `engine/time.js`: world → milestones → tutorial → estate → suitors → members. They run in that order and `registerDayHook()` adds more. Each member's day is split into `ageMember`, `healDay`, `orderDay` and `birthDay`.
+- **Save migrations:** `normalize()` runs the named `STEPS` in `engine/save.js`.
+  - `once` steps are legacy conversions (old estate, old guilds, missing core fields). They are skipped when `s.schema` already covers them.
+  - Every other step is a repair that runs on each load.
+  - `SAVE_VERSION` stays 1, so `FL1:` codes keep working. `test/fixtures/old-save-fl1.txt` is an export made by the previous build.
+- **Minion jobs:** a `MINION_JOBS` table. Wages and reputation are separate functions.
+- **Estate effects cache:** effects are cached per save and rebuilt only when buildings change. A tick is about 8× faster and the engine suite runs in about 1 s.
+- **Tests:**
+  - `node test/engine.test.mjs` (engine)
+  - `node test/pacing.test.mjs` (early milestones)
+  - `node test/data.test.mjs` (every reference resolves, every material has a source, no buy/resell arbitrage)
+  - `node test/longsim.mjs [seeds] [years]` (a bot plays several lineages headless and reports NaNs, negative resources, round-trip drift, coin by source and things never reached)
+  - `PORT=8137 node test/ui-smoke.mjs` and `node test/ux-audit.mjs` (390px overflow and tap-target audit)
+- Screenshots now go to `/workspace/fl-screenshots/` and `screenshot-*.png` is git-ignored.
+
+## Phone navigation
+The bottom bar has 6 groups: Main · Work (Jobs, Guilds) · Map · Bag · Estate (Estate, Minions, Crafting) · Family (Family, Chronicle). A group with several tabs shows a pill strip under the header, and each group remembers the tab you last used. The unlock rules are unchanged: a group or tab appears only once it is unlocked. For example, Crafting appears after your first crafter.

@@ -195,6 +195,7 @@ export function addMinion(s, type, why) {
   const mi = {
     uid: "mi" + s.nextId++,
     type,
+    equip: {},
     name: t.special ? t.name : r(D.minions.names),
     job: "idle",
     loyalty: 100,
@@ -244,6 +245,83 @@ export function dismiss(s, uid) {
 
 export const monthlyWages = s => s.minions.reduce((a, x) => a + mtype(x.type).wage, 0);
 
+// Per-job daily output: (s, mi, a = output multiplier, rg = resource gain bonus)
+export const ADVENTURE_SHARE = 0.3; // balance: was 0.6 (then 0.5) of the quest reward
+
+export const MINION_JOBS = {
+  farm: (s, mi, a, rg) => {
+    s.res.food += 3 * a * rg * seasonYield(s, "food") * (1 + bl(s, "farm") * 0.2);
+  },
+  gather: (s, mi, a, rg) => {
+    s.res.wood += 2 * a * rg;
+    s.res.stone += 1 * a * rg;
+  },
+  mine: (s, mi, a, rg) => {
+    s.res.ore = (s.res.ore || 0) + 1 * a * rg;
+    s.res.copperore = (s.res.copperore || 0) + 0.8 * a * rg;
+    s.res.stone += 0.5 * a * rg;
+  },
+  scout: (s, mi, a, rg) => {
+    mi.prog = (mi.prog || 0) + a;
+    if (mi.prog >= 6) {
+      mi.prog = 0;
+      const pm = { name: mi.name + " (scout)", minion: true, skills: { tracking: { lvl: 5 } } };
+      const ar = pickExplore(s, pm);
+      if (ar) exploreArea(s, pm, ar);
+    }
+  },
+  adventure: (s, mi, a, rg) => {
+    // Balance/bug fix: minions no longer run guild/adventurer-rank quests (they paid out 200-coin guild
+    // jobs every ~2 days), power no longer NaN-falls back, and a run takes as long as the quest does.
+    const pw = 8 * (mtype(mi.type).apt.adventure || 1);
+    const q = D.quests
+      .filter(
+        q =>
+          !q.story &&
+          !q.once &&
+          !q.guild &&
+          !q.adv &&
+          known(s, q) &&
+          regionOpen(s, q.region) &&
+          q.risk === "safe" &&
+          q.cp <= pw * 3,
+      )
+      .sort((a, b) => b.cp - a.cp)[0];
+    mi.prog = (mi.prog || 0) + a;
+    if (q && mi.prog >= (q.days || 3) + 2) {
+      mi.prog = 0;
+      for (const [k, v] of Object.entries(q.reward))
+        s.res[k] = (s.res[k] || 0) + Math.round(v * ADVENTURE_SHARE * minionGearMult(mi, "adventure"));
+      rollRare(s, q, null);
+    }
+  },
+  hunt: (s, mi, a, rg) => {
+    s.res.meat = (s.res.meat || 0) + 1.5 * a * rg;
+    s.res.hides = (s.res.hides || 0) + 0.5 * a * rg;
+  },
+  fish: (s, mi, a, rg) => {
+    s.res.fish = (s.res.fish || 0) + 2 * a * rg;
+  },
+  herbs: (s, mi, a, rg) => {
+    s.res.herbs = (s.res.herbs || 0) + 1.5 * a * rg * seasonYield(s, "herbs");
+    s.res.sage = (s.res.sage || 0) + 0.3 * a * rg * seasonYield(s, "sage");
+    s.res.mandrake = (s.res.mandrake || 0) + 0.1 * a * rg * seasonYield(s, "mandrake");
+    s.res.moonpetal = (s.res.moonpetal || 0) + 0.05 * a * rg * seasonYield(s, "moonpetal");
+  },
+  craft: (s, mi, a, rg) => {
+    mi.prog = (mi.prog || 0) + 0.2 * a;
+    const ord = mi.craftOrder && recipeDef(mi.craftOrder);
+    const rc = ord && !recipeIssue(s, null, ord) ? ord : bestRecipe(s, null);
+    if (rc && mi.prog >= rc.days) {
+      mi.prog = 0;
+      craftItem(s, null, rc, mi, a);
+    }
+  },
+  merchant: (s, mi, a, rg) => {
+    sellTick(s, a);
+  },
+};
+
 export function minionDay(s) {
   if (!s.minions) {
     s.minions = [];
@@ -272,59 +350,7 @@ export function minionDay(s) {
       minionLvlMult(mi);
     const rg = resGain(s);
     minionGainXp(s, mi, MLV().xpPerDay * (fed ? 1 : 0.5));
-    if (mi.job === "farm") s.res.food += 3 * a * rg * seasonYield(s, "food") * (1 + bl(s, "farm") * 0.2);
-    else if (mi.job === "gather") {
-      s.res.wood += 2 * a * rg;
-      s.res.stone += 1 * a * rg;
-    } else if (mi.job === "mine") {
-      s.res.ore = (s.res.ore || 0) + 1 * a * rg;
-      s.res.copperore = (s.res.copperore || 0) + 0.8 * a * rg;
-      s.res.stone += 0.5 * a * rg;
-    } else if (mi.job === "scout") {
-      mi.prog = (mi.prog || 0) + a;
-      if (mi.prog >= 6) {
-        mi.prog = 0;
-        const pm = { name: mi.name + " (scout)", minion: true, skills: { tracking: { lvl: 5 } } };
-        const ar = pickExplore(s, pm);
-        if (ar) exploreArea(s, pm, ar);
-      }
-    } else if (mi.job === "adventure") {
-      mi.prog = (mi.prog || 0) + a;
-      if (mi.prog >= 5) {
-        mi.prog = 0;
-        const pw = 8 * mtype(mi.type).apt.adventure || 8;
-        const q = D.quests
-          .filter(
-            q => !q.story && !q.once && known(s, q) && regionOpen(s, q.region) && q.risk === "safe" && q.cp <= pw * 3,
-          )
-          .sort((a, b) => b.cp - a.cp)[0];
-        if (q) {
-          for (const [k, v] of Object.entries(q.reward))
-            s.res[k] = (s.res[k] || 0) + Math.round(v * 0.6 * minionGearMult(mi, "adventure"));
-          rollRare(s, q, null);
-        }
-      }
-    } else if (mi.job === "hunt") {
-      s.res.meat = (s.res.meat || 0) + 1.5 * a * rg;
-      s.res.hides = (s.res.hides || 0) + 0.5 * a * rg;
-    } else if (mi.job === "fish") {
-      s.res.fish = (s.res.fish || 0) + 2 * a * rg;
-    } else if (mi.job === "herbs") {
-      s.res.herbs = (s.res.herbs || 0) + 1.5 * a * rg * seasonYield(s, "herbs");
-      s.res.sage = (s.res.sage || 0) + 0.3 * a * rg * seasonYield(s, "sage");
-      s.res.mandrake = (s.res.mandrake || 0) + 0.1 * a * rg * seasonYield(s, "mandrake");
-      s.res.moonpetal = (s.res.moonpetal || 0) + 0.05 * a * rg * seasonYield(s, "moonpetal");
-    } else if (mi.job === "craft") {
-      mi.prog = (mi.prog || 0) + 0.2 * a;
-      const ord = mi.craftOrder && recipeDef(mi.craftOrder);
-      const rc = ord && !recipeIssue(s, null, ord) ? ord : bestRecipe(s, null);
-      if (rc && mi.prog >= rc.days) {
-        mi.prog = 0;
-        craftItem(s, null, rc, mi, a);
-      }
-    } else if (mi.job === "merchant") {
-      sellTick(s, a * (1 + (mi.equip ? 0 : 0)));
-    }
+    MINION_JOBS[mi.job]?.(s, mi, a, rg);
   }
   s.res.food = Math.max(0, s.res.food - minionFood(s));
   for (const mi of [...s.minions])
@@ -332,6 +358,11 @@ export function minionDay(s) {
       s.minions = s.minions.filter(x => x !== mi);
       log(s, `🍽️ ${mi.name} left: ${mi.hunger ? "not enough food" : "unhappy"}.`);
     }
+  minionWages(s);
+  minionReputation(s);
+}
+
+function minionWages(s) {
   if (s.day % 30 === 0 && s.minions.length) {
     const w = monthlyWages(s);
     if (s.res.coin >= w) {
@@ -349,6 +380,9 @@ export function minionDay(s) {
       log(s, "💸 Wages went unpaid; loyalty fell.");
     }
   }
+}
+
+function minionReputation(s) {
   const lvl = Math.floor(s.renown / D.minions.reputationEveryRenown);
   if (lvl > s.repLevel) {
     s.repLevel = lvl;

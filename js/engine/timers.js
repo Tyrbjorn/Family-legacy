@@ -115,6 +115,7 @@ export function timers(s) {
     if (t) out.push(t);
   }
   for (const mi of s.minions || []) {
+    if (mi.job === "idle") continue; // dock lists busy minions only
     const t = minionTimer(s, mi);
     if (t) out.push(t);
   }

@@ -1,5 +1,6 @@
 const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
 const p=await (await b.newContext({viewport:{width:390,height:1300},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
 await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(800);
@@ -11,10 +12,10 @@ await p.evaluate(()=>{const g=__game,s=g.s,E=g.E,m=s.members[0];m.ageDays=22*360
  m.skills.smithing.lvl=25; m.prof='artisan'; E.queueCraft(s,m,'r_sword'); E.queueCraft(s,m,'r_sword');
  const gy=E.buildStructure(s,'graveyard'); E.upgradeSpecial(s,gy.uid); E.upgradeSpecial(s,gy.uid);
  s.legacy.renown=420; E.buyLegacy(s,'speed'); E.buyLegacy(s,'speed'); E.buyLegacy(s,'life'); m.renown=137; E.setSpeed(s,1.5);});
-await p.click('[data-tab="main"]');await p.waitForTimeout(400);
+await go(p,'main');await p.waitForTimeout(400);
 const after=await tabs();
-await p.screenshot({path:'screenshot-speed-top.png',clip:{x:0,y:0,width:390,height:260}});
-await p.click('[data-tab="craft"]');await p.waitForTimeout(500);await p.screenshot({path:'screenshot-crafting-tab.png'});
-await p.click('[data-tab="estate"]');await p.waitForTimeout(500);
-const lc=await p.evaluateHandle(()=>[...document.querySelectorAll('.card')].find(x=>x.textContent.includes('Legacy Renown')));await lc.asElement().screenshot({path:'screenshot-legacy.png'});
+await p.screenshot({path:'/workspace/fl-screenshots/screenshot-speed-top.png',clip:{x:0,y:0,width:390,height:260}});
+await go(p,'craft');await p.waitForTimeout(500);await p.screenshot({path:'/workspace/fl-screenshots/screenshot-crafting-tab.png'});
+await go(p,'estate');await p.waitForTimeout(500);
+const lc=await p.evaluateHandle(()=>[...document.querySelectorAll('.card')].find(x=>x.textContent.includes('Legacy Renown')));await lc.asElement().screenshot({path:'/workspace/fl-screenshots/screenshot-legacy.png'});
 console.log('before',before,'after',after,'errs',errs);await b.close();

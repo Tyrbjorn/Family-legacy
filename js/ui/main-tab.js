@@ -179,7 +179,7 @@ export function family() {
     h += `<div class="card"><div class="row"><span>${su.name}, ${su.age} · ${cl(su.cls).name}</span><span>❤️ ${Math.floor(su.affinity)}/100</span></div><div class="bar"><i style="width:${su.affinity}%;background:#e66"></i></div>
   <div class="row"><button class="b" data-a="court" data-v="${su.id}" ${E.ageY(m) >= D.tuning.courtAge && !m.spouse ? "" : "disabled"}>Court</button>
   ${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}</button>`).join("")}
-  <button class="b" data-a="propose" data-v="${su.id}" ${su.affinity >= 100 && !m.spouse && s.res.coin >= 200 && E.ageY(m) >= 18 ? "" : "disabled"}>💍 Propose (200🪙)</button></div></div>`;
+  <button class="b" data-a="propose" data-v="${su.id}" ${!E.proposeIssue(s, su.id) && E.ageY(m) >= D.tuning.courtAge ? "" : "disabled"}>💍 Propose (${E.PROPOSE_COST}🪙)</button></div>${su.affinity >= 100 && E.proposeIssue(s, su.id) ? `<div class="muted">Needs ${E.proposeIssue(s, su.id)}</div>` : ""}</div>`;
   }
   const dead = s.members.filter(x => !x.alive);
   if (dead.length)

@@ -24,24 +24,43 @@ export const turboCapSec = s => (T.turboCapMin + bl(s, "hourglass") * 30) * 60;
 
 export const offlineCapSec = s => (T.offlineCapHours + bl(s, "hourglass") * 2) * 3600;
 
+// One in-game day = the registered hooks below, run in order. Order matters (RNG sequence, food before births).
+export const DAY_HOOKS = [];
+export const registerDayHook = (name, fn, at = DAY_HOOKS.length) => DAY_HOOKS.splice(at, 0, { name, fn });
+
 export function dayTick(s, effActive, effIdle) {
   if (s.gameOver) return;
   if (!s._norm) normalize(s);
   s.day++;
+  for (const h of DAY_HOOKS) {
+    h.fn(s, effActive, effIdle);
+    if (s.gameOver) return;
+  }
+}
+
+function worldDay(s) {
   eventsDay(s);
   expireBuffs(s);
-  if (s.day % 5 === 0) checkAchievements(s);
-  if (s.day % 5 === 0)
-    for (const mi of s.minions || [])
-      if (mi.evoNoted !== mi.cls && evolveOptions(mi).some(c => !minionEvolveIssue(s, mi, c.id))) {
-        mi.evoNoted = mi.cls;
-        notify(s, "evolution", `🌟 ${mi.name} is ready to evolve.`);
-      }
+}
+
+function milestonesDay(s) {
+  if (s.day % 5 !== 0) return;
+  checkAchievements(s);
+  for (const mi of s.minions || [])
+    if (mi.evoNoted !== mi.cls && evolveOptions(mi).some(c => !minionEvolveIssue(s, mi, c.id))) {
+      mi.evoNoted = mi.cls;
+      notify(s, "evolution", `🌟 ${mi.name} is ready to evolve.`);
+    }
+}
+
+function tutorialDay(s) {
   if (s.tut && s.tut.started && !s.tut.skipped && s.tut.step < (D.tutorial?.steps.length || 0)) {
     if (active(s)?.action?.type === "activity") s.tut.flags.activity = true;
     tutCheck(s);
   }
-  // estate production & food
+}
+
+function estateDay(s) {
   const lv = s.buildings;
   s.res.food +=
     (lv.farm * 5 + (lv.garden || 0) * 2) * seasonYield(s, "food") +
@@ -65,92 +84,122 @@ export function dayTick(s, effActive, effIdle) {
       s.res.potions -= 1;
       m.injured = 0;
     }
-  // suitors spawn
+}
+
+function suitorsDay(s) {
   if (s.suitors.length < 2 && s.day % 45 === 0) spawnSuitor(s);
+}
+
+function membersDay(s, effActive, effIdle) {
   for (const m of [...living(s)]) {
-    m.ageDays++;
-    const a = ageY(m);
-    if (m.ageDays % Y() === 0) {
-      // birthday
-      if (a === T.adultAge) {
-        if (m.parents) inherit(s, m);
-        log(s, `🎂 ${m.name} came of age (16): guild halls will now consider them.`);
-      }
-      if (a >= m.lifespan + lifeBonus(s) - 3 && !m.warned) {
-        m.warned = true;
-        log(s, `⚠️ ${m.name} is growing frail (lifespan ~${m.lifespan}).`);
-      }
-    }
-    if (a >= m.lifespan + lifeBonus(s) && rng() < 0.002 * (a - m.lifespan - lifeBonus(s) + 1)) {
-      kill(s, m, "died of old age");
-      if (s.gameOver) return;
-      continue;
-    }
-    if (a < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
-      // child passive xp
-      const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
-      gainXp(s, m, r(D.skills).id, T.xpPerDay * 0.15 * f);
-      continue;
-    }
-    const isAct = m.id === s.activeId;
-    const eff = (isAct ? effActive : effIdle) * memberTick(m);
-    if (m.injured > 0) {
-      let h = 1 + estEff(s, "healBoost");
-      if ((s.res.remedies || 0) >= 1) {
-        s.res.remedies -= 1;
-        h += 2;
-      }
-      m.injured = hasService(s, "healer") ? 0 : Math.max(0, m.injured - h);
-      continue;
-    }
-    if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
-    else if (!isAct && m.standing) m.standing = null;
-    if (m.standing) {
-      standingTick(s, m);
-      if (m.action) doAction(s, m, m.action, eff);
-      continue;
-    }
-    if (isAct) doAction(s, m, m.action, eff);
-    else {
-      const o = established(s) ? m.order : { type: "work" };
-      if (o.type === "quest") {
-        if (!m.action || m.action.type !== "quest") {
-          const q = autoQuest(s, m, o.target);
-          m.action = q ? { type: "quest", target: q.id, progress: 0 } : null;
-        }
-        doAction(s, m, m.action, eff);
-      } else if (o.type === "craft") {
-        if (!m.action || m.action.type !== "craft") m.action = { type: "craft", target: o.target, progress: 0 };
-        doAction(s, m, m.action, eff);
-      } else if (o.type === "gather") {
-        if (!m.action || m.action.type !== "gather" || m.action.target !== o.target) {
-          if (!isBusy(m)) m.action = { type: "gather", target: o.target, progress: 0 };
-        }
-        doAction(s, m, m.action, eff);
-      } else doAction(s, m, { type: o.type, target: o.target }, eff);
-    }
-    // children
-    const sp = s.members.find(x => x.id === m.spouse && x.alive);
-    if (
-      sp &&
-      m.gender === "f" &&
-      a < 45 &&
-      m.kids < T.maxKidsPerCouple &&
-      s.day - m.lastChild >= T.childEvery &&
-      living(s).length < bedrooms(s) &&
-      rng() < 0.01
-    ) {
-      const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
-      inheritTraits(s, c, [m, sp]);
-      c.ageDays = 0;
-      s.members.push(c);
-      m.kids++;
-      sp.kids++;
-      m.lastChild = s.day;
-      log(s, `👶 ${c.name} was born to ${m.name} and ${sp.name}!`);
-    }
+    memberDay(s, m, effActive, effIdle);
+    if (s.gameOver) return;
   }
 }
+
+// birthday + old age; returns false if the member died
+function ageMember(s, m) {
+  m.ageDays++;
+  const a = ageY(m);
+  if (m.ageDays % Y() === 0) {
+    if (a === T.adultAge) {
+      if (m.parents) inherit(s, m);
+      log(s, `🎂 ${m.name} came of age (${T.adultAge}): guild halls will now consider them.`);
+    }
+    if (a >= m.lifespan + lifeBonus(s) - 3 && !m.warned) {
+      m.warned = true;
+      log(s, `⚠️ ${m.name} is growing frail (lifespan ~${m.lifespan}).`);
+    }
+  }
+  if (a >= m.lifespan + lifeBonus(s) && rng() < 0.002 * (a - m.lifespan - lifeBonus(s) + 1)) {
+    kill(s, m, "died of old age");
+    return false;
+  }
+  return true;
+}
+
+function healDay(s, m) {
+  let h = 1 + estEff(s, "healBoost");
+  if ((s.res.remedies || 0) >= 1) {
+    s.res.remedies -= 1;
+    h += 2;
+  }
+  m.injured = hasService(s, "healer") ? 0 : Math.max(0, m.injured - h);
+}
+
+// what a non-active member does: their standing order
+function orderDay(s, m, eff) {
+  const o = established(s) ? m.order : { type: "work" };
+  if (o.type === "quest") {
+    if (!m.action || m.action.type !== "quest") {
+      const q = autoQuest(s, m, o.target);
+      m.action = q ? { type: "quest", target: q.id, progress: 0 } : null;
+    }
+    doAction(s, m, m.action, eff);
+  } else if (o.type === "craft") {
+    if (!m.action || m.action.type !== "craft") m.action = { type: "craft", target: o.target, progress: 0 };
+    doAction(s, m, m.action, eff);
+  } else if (o.type === "gather") {
+    if (!m.action || m.action.type !== "gather" || m.action.target !== o.target) {
+      if (!isBusy(m)) m.action = { type: "gather", target: o.target, progress: 0 };
+    }
+    doAction(s, m, m.action, eff);
+  } else doAction(s, m, { type: o.type, target: o.target }, eff);
+}
+
+function birthDay(s, m) {
+  const sp = s.members.find(x => x.id === m.spouse && x.alive);
+  if (
+    sp &&
+    m.gender === "f" &&
+    ageY(m) < 45 &&
+    m.kids < T.maxKidsPerCouple &&
+    s.day - m.lastChild >= T.childEvery &&
+    living(s).length < bedrooms(s) &&
+    rng() < 0.01
+  ) {
+    const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
+    inheritTraits(s, c, [m, sp]);
+    c.ageDays = 0;
+    s.members.push(c);
+    m.kids++;
+    sp.kids++;
+    m.lastChild = s.day;
+    log(s, `👶 ${c.name} was born to ${m.name} and ${sp.name}!`);
+  }
+}
+
+function memberDay(s, m, effActive, effIdle) {
+  if (!ageMember(s, m)) return;
+  if (ageY(m) < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
+    const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
+    gainXp(s, m, r(D.skills).id, T.xpPerDay * 0.15 * f);
+    return;
+  }
+  const isAct = m.id === s.activeId;
+  const eff = (isAct ? effActive : effIdle) * memberTick(m);
+  if (m.injured > 0) return healDay(s, m);
+  if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
+  else if (!isAct && m.standing) m.standing = null;
+  if (m.standing) {
+    standingTick(s, m);
+    if (m.action) doAction(s, m, m.action, eff);
+    return;
+  }
+  if (isAct) doAction(s, m, m.action, eff);
+  else orderDay(s, m, eff);
+  birthDay(s, m);
+}
+
+for (const [n, f] of [
+  ["world", worldDay],
+  ["milestones", milestonesDay],
+  ["tutorial", tutorialDay],
+  ["estate", estateDay],
+  ["suitors", suitorsDay],
+  ["members", membersDay],
+])
+  registerDayHook(n, f);
 
 export function toggleTurbo(s) {
   if (!s.turbo.on && s.turbo.charge < T.turboMinMin * 60) return false;

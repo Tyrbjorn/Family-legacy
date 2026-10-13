@@ -19,7 +19,7 @@ export function equip(s, m, itemId, from = "vault") {
 }
 
 export const sellValue = (s, it) =>
-  Math.round(it.value * (hasService(s, "appraisal") ? 0.8 : 0.5) * (1 + eff(s, "saleBonus")));
+  Math.round(it.value * Math.min(SELL_CAP, (hasService(s, "appraisal") ? 0.8 : 0.5) * (1 + eff(s, "saleBonus"))));
 
 export function sell(s, itemId) {
   const i = s.vault.indexOf(itemId);
@@ -46,7 +46,12 @@ export function moveItem(s, m, id, toBag) {
   return true;
 }
 
-export const buyPrice = (it, s, townId) => Math.round(it.value * T.buyMarkup * (s && townId ? buyMult(s, townId) : 1));
+// Stacked event discounts (caravan × festival) are floored so shop prices never drop under the best
+// sell-back value (appraisal + sale bonuses) — that stack used to allow buy-and-resell arbitrage.
+export const BUY_MULT_FLOOR = 0.8;
+export const SELL_CAP = 0.95;
+export const buyPrice = (it, s, townId) =>
+  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1));
 
 export const townSellPrice = (s, townId, res) => {
   const t = D.towns.find(x => x.id === townId);

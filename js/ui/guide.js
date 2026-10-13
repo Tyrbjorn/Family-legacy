@@ -2,6 +2,7 @@
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { U } from "./state.js";
+import { groupOf, tabVisible } from "./render.js";
 
 const rew = r =>
   Object.entries(r || {})
@@ -33,10 +34,12 @@ ${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>` : ""}
 // ---- tab tour overlay
 export function tourOverlay() {
   if (U.tour == null) return "";
-  const steps = E.tourSteps().filter(t => document.querySelector(`[data-tab="${t.tab}"]`));
+  const steps = tourList();
   const st = steps[U.tour];
   if (!st) return "";
-  const btn = document.querySelector(`#tabs [data-tab="${st.tab}"]`);
+  const btn =
+    document.querySelector(`#subtabs [data-tab="${st.tab}"]`) ||
+    document.querySelector(`#tabs [data-group="${groupOf(st.tab)}"]`);
   const r = btn ? btn.getBoundingClientRect() : { left: 0, top: innerHeight - 60, width: 60, height: 50 };
   const tipTop = Math.max(8, r.top - 150);
   return `<div class="tourmask"></div><div class="tourhole" style="left:${r.left - 3}px;top:${r.top - 3}px;width:${r.width + 6}px;height:${r.height + 6}px"></div>
@@ -46,6 +49,8 @@ export function tourOverlay() {
       : `<button class="b sel" data-a="tourend">Done</button>`
   }</div></div>`;
 }
+export const tourList = () => E.tourSteps().filter(t => tabVisible(t.tab));
+
 export function tourPrompt() {
   if (s.tut?.tourSeen || U.tour != null) return "";
   return `<div class="card"><b>👋 Welcome to Family Legacy!</b> Want a quick tour of the tabs? <div class="row"><button class="b sel" data-a="tourstart">Show me around</button><button class="b" data-a="tourend">No thanks</button></div></div>`;

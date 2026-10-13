@@ -145,7 +145,18 @@ export const allSynergies = s =>
   (s.structures || []).flatMap(st => activeSynergies(st).map(y => ({ ...y, where: st.uid })));
 
 // every placed piece + every active synergy, as {bonus} objects (old furniture code reads f.bonus)
-export const effects = s => [...placed(s), ...allSynergies(s), ...(s.structures || []).map(specDef).filter(Boolean)];
+// Cached per save object: rebuilt only when the structures change (it was ~80% of tick time).
+const _fx = new WeakMap();
+export function effects(s) {
+  let key = "";
+  for (const st of s.structures || [])
+    key += `${st.uid}:${st.type}:${st.up || 0}:${st.spec || ""}:${st.pieces.join(",")}|`;
+  const c = _fx.get(s);
+  if (c && c.key === key) return c.list;
+  const list = [...placed(s), ...allSynergies(s), ...(s.structures || []).map(specDef).filter(Boolean)];
+  _fx.set(s, { key, list });
+  return list;
+}
 
 export const estEff = (s, k) => eff(s, k);
 
@@ -370,8 +381,20 @@ export const processRate = (s, st, pid) => {
   return r.length ? r[0].rate : 0;
 };
 
+export const ADVENTURE_BASE_CAP = 2;
+
 export function jobCap(s, job) {
-  if (["idle", "guard", "scout", "adventure"].includes(job)) return Infinity;
+  if (["idle", "guard", "scout"].includes(job)) return Infinity;
+  // Balance: adventuring was uncapped and out-earned the whole family ~3:1 in long sims.
+  // Now 2 parties, +cap of every building that houses adventurers (Adventurers' Lodge: +2).
+  if (job === "adventure")
+    return (
+      ADVENTURE_BASE_CAP +
+      (s.structures || []).reduce((a, st) => {
+        const h = structDef(st.type).houses;
+        return a + (h && (h.jobs || []).includes("adventure") ? h.cap || 0 : 0);
+      }, 0)
+    );
   let c = placed(s).reduce((a, p) => a + ((p.bonus.jobs || {})[job] || 0), 0);
   if (job === "farm") c += bl(s, "farm") * 2 + bl(s, "garden");
   if (job === "gather") c += bl(s, "lumber") * 2;

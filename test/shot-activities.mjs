@@ -1,10 +1,11 @@
 const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
 const p=await (await b.newContext({viewport:{width:390,height:1400},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
 await p.evaluate(()=>{const g=__game,s=g.s,m=s.members[0];m.ageDays=20*360;m.cls='apprentice';m.guild={id:'collegium',rank:0,rep:0};s.vault.push('runed_orb');m.action={type:'activity',target:'orb',progress:0};});
-await p.click('[data-tab="jobs"]');await p.waitForTimeout(200);await p.click('[data-tab="main"]');await p.waitForTimeout(500);
+await go(p,'jobs');await p.waitForTimeout(200);await go(p,'main');await p.waitForTimeout(500);
 const h=await p.evaluateHandle(()=>[...document.querySelectorAll('h3')].find(x=>x.textContent.includes('Training & Activities')));
-await h.asElement().evaluate(x=>x.scrollIntoView());await p.waitForTimeout(200);await p.screenshot({path:'screenshot-activities.png'});
+await h.asElement().evaluate(x=>x.scrollIntoView());await p.waitForTimeout(200);await p.screenshot({path:'/workspace/fl-screenshots/screenshot-activities.png'});
 console.log('rows',await p.evaluate(()=>document.querySelectorAll('[data-a=activity]').length),'req',await p.evaluate(()=>(document.body.innerText.match(/Requires:[^\n]*/g)||[]).slice(0,3)),'errs',errs);await b.close();

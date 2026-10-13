@@ -27,6 +27,42 @@ export const TABS = {
   chron: ["📜", "Chronicle", chroniclev],
 };
 
+// Phone nav: 6 group buttons; groups with several tabs get a sub-tab strip under the header.
+// A group button opens its last-used visible tab. Unlock rules still come from tabVisible().
+export const GROUPS = [
+  ["main", "🧝", "Main", ["main"]],
+  ["work", "💼", "Work", ["jobs", "guilds"]],
+  ["map", "🗺️", "Map", ["map"]],
+  ["inv", "🎒", "Bag", ["inv"]],
+  ["home", "🏰", "Estate", ["estate", "minions", "craft"]],
+  ["kin", "🌳", "Family", ["family", "chron"]],
+];
+export const groupOf = t => (GROUPS.find(g => g[3].includes(t)) || GROUPS[0])[0];
+window.__tabGroup = groupOf;
+const groupTabs = g => GROUPS.find(x => x[0] === g)[3].filter(tabVisible);
+export function groupTarget(g) {
+  const ts = groupTabs(g);
+  if (ts.includes(U.tab)) return U.tab;
+  const last = (U.groupLast || {})[g];
+  return ts.includes(last) ? last : ts[0];
+}
+function navv() {
+  const cur = groupOf(U.tab);
+  return GROUPS.filter(([g]) => groupTabs(g).length)
+    .map(
+      ([g, i, n]) =>
+        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}<br>${n}</button>`,
+    )
+    .join("");
+}
+function subtabsv() {
+  const ts = groupTabs(groupOf(U.tab));
+  if (ts.length < 2) return "";
+  return ts
+    .map(k => `<button class="${k === U.tab ? "on" : ""}" data-tab="${k}">${TABS[k][0]} ${TABS[k][1]}</button>`)
+    .join("");
+}
+
 export function modal() {
   const el = $("#modal");
   if (s.gameOver) {
@@ -110,14 +146,8 @@ export function render() {
     U.lastHTML = h;
     scrollTo(0, y);
   }
-  const tb = Object.entries(TABS)
-    .filter(([k]) => tabVisible(k))
-    .map(([k, [i, n]]) => `<button class="${k === U.tab ? "on" : ""}" data-tab="${k}">${i}<br>${n}</button>`)
-    .join("");
-  if (tb !== window._tb) {
-    $("#tabs").innerHTML = tb;
-    window._tb = tb;
-  }
+  setIf("#tabs", navv());
+  setIf("#subtabs", subtabsv());
   setIf("#dock", dockv());
   setIf("#toasts", toastsv());
   setIf("#overlay", tourOverlay() + bellPanel());

@@ -29,6 +29,10 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
     lastChild: 0,
     warned: false,
     diedDay: null,
+    renown: 0,
+    craftQueue: [],
+    guild: null,
+    adv: null,
   };
   m.traits = rollTraits(s, 2);
   m.lifespan = T.baseLifespan + traitSum(m, "life") + Math.round((rng() - 0.5) * 8);
@@ -160,11 +164,24 @@ export function spawnSuitor(s) {
   log(s, `💌 A suitor, ${su.name} the ${D.classes.find(c => c.id === su.cls).name}, appeared in town.`);
 }
 
+export const PROPOSE_COST = 200;
+export function proposeIssue(s, suitorId) {
+  const m = active(s);
+  const su = s.suitors.find(x => x.id === suitorId);
+  if (!su) return "suitor gone";
+  if (m.spouse) return "already married";
+  if (ageY(m) < T.courtAge) return `age ${T.courtAge}+`;
+  if (su.affinity < 100) return "affection below 100";
+  if (s.res.coin < PROPOSE_COST) return `${PROPOSE_COST} coin for the wedding`;
+  if (living(s).length >= bedrooms(s)) return "a free bed at home (build a shelter with a bunk)";
+  return null;
+}
+
 export function propose(s, suitorId) {
   const m = active(s);
   const su = s.suitors.find(x => x.id === suitorId);
-  const cost = 200;
-  if (!su || su.affinity < 100 || m.spouse || s.res.coin < cost || living(s).length >= bedrooms(s)) return false;
+  const cost = PROPOSE_COST;
+  if (proposeIssue(s, suitorId)) return false;
   s.res.coin -= cost;
   const sp = newMember(s, { gender: su.gender, age: su.age, cls: su.cls });
   sp.name = su.name;

@@ -56,3 +56,28 @@ button.bell b{position:absolute;top:-4px;right:-6px;background:#c0392b;color:#ff
 .tnode{display:flex;flex-direction:column;align-items:center;min-width:104px;background:#2a2434;border:1px solid #4a405c;border-radius:8px;color:inherit;padding:4px 6px;font-size:12px}
 .tnode.dead{opacity:.6;filter:grayscale(.5)}.tnode.sel{border-color:#f4d58d}.ticon{font-size:20px}
 .pb.thin{height:12px;line-height:12px;font-size:9px}
+/* --- grouped phone nav --- */
+nav button{min-width:0;flex:1 1 0;padding:8px 0;min-height:52px;font-size:12px}
+#subtabs{position:relative;display:flex;gap:6px;padding:6px 10px;background:#1a1720;border-bottom:1px solid #2f2939;max-width:640px;margin:auto;overflow-x:auto}
+#subtabs:empty{display:none}
+#subtabs button{flex:1;min-height:40px;background:#2a2434;border:1px solid #4a405c;color:#cfc6dd;border-radius:18px;font-size:14px;white-space:nowrap}
+#subtabs button.on{background:#6a5a2a;border-color:#f4d58d;color:#fff}
+/* --- 390px UX pass: tap targets & readability --- */
+button.b{min-height:40px;padding:8px 12px}
+select,input[type=number],input[type=text]{min-height:38px;font-size:15px;border-radius:6px}
+input[type=checkbox]{width:20px;height:20px;vertical-align:middle}
+.chip{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:2px 10px}
+button.bell{min-width:40px;min-height:40px}
+.dockhead{min-height:40px}
+.pb{font-size:12px}
+.row{flex-wrap:wrap}
+main{overflow-wrap:anywhere}
+.res{gap:8px 12px}
+select{max-width:100%;text-overflow:ellipsis}
+@media (max-width:480px){
+ header .hint{display:none}
+ header{padding:6px 10px}
+ header .row{flex-wrap:nowrap}
+ header .res{font-size:13px;gap:4px 10px}
+ header select{min-height:34px}
+}

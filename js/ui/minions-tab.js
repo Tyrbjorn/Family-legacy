@@ -63,7 +63,7 @@ export function minionsv() {
   )
     .map(([j, v]) => M.jobs.find(x => x.id === j).name + " ×" + v)
     .join(", ")}</div>
-  <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j => `<option value="${j.id}" ${mi.job === j.id ? "selected" : ""} ${E.jobOpen(s, j.id) ? "" : "disabled"}>${j.icon} ${j.name}${j.id === "idle" || j.id === "guard" ? "" : " " + E.jobUsed(s, j.id) + "/" + E.jobCap(s, j.id)}${E.jobOpen(s, j.id) ? "" : " 🔒"}</option>`).join("")}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div></div>`;
+  <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j => `<option value="${j.id}" ${mi.job === j.id ? "selected" : ""} ${E.jobOpen(s, j.id) ? "" : "disabled"}>${j.icon} ${j.name}${j.id === "idle" || j.id === "guard" ? "" : " " + E.jobUsed(s, j.id) + "/" + (isFinite(E.jobCap(s, j.id)) ? E.jobCap(s, j.id) : "∞")}${E.jobOpen(s, j.id) ? "" : " 🔒"}</option>`).join("")}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div></div>`;
   }
   const locked = M.types.filter(t => t.special && !s.specialGranted.includes(t.id));
   h +=

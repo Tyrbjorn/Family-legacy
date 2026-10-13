@@ -1,3 +1,4 @@
+import { proposeIssue } from "./family.js";
 import { nextQueued } from "./crafting.js";
 import { resGain } from "./legacy.js";
 import { cp, level, statVal, traitSum } from "./family.js";
@@ -17,20 +18,16 @@ import {
 import { minionPower } from "./minions.js";
 import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
 import { activityOk, canTrain, gainXp, jobOk, themedFor } from "./skills.js";
-import { D, T, active, ageY, furn, isAdult, known } from "./state.js";
+import { D, T, active, ageY, furn, isAdult, known, log } from "./state.js";
 
 export function successChance(s, m, q) {
   const c = cp(s, m);
   return Math.max(0.1, Math.min(0.98, 0.5 + (c - q.cp) / (q.cp + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03)));
 }
 
-export function doAction(s, m, a, eff) {
-  if (!a) return;
-  if (a.type === "train") {
-    const t = themedFor(s, m, a.target);
-    m.action = t ? { type: "activity", target: t, progress: 0 } : defaultAction(s, m);
-    return;
-  } else if (a.type === "work") {
+// One handler per action type: (s, m, a, eff). Travel types (quest/gather/explore/dungeon) share travelTick.
+export const ACTIONS = {
+  work(s, m, a, eff) {
     const c =
       (4 + level(m) * 0.5 + m.skills.haggling.lvl * 0.2) *
       eff *
@@ -38,18 +35,8 @@ export function doAction(s, m, a, eff) {
       (1 + furn(s).reduce((x, f) => x + (f.bonus.coin || 0), 0));
     s.res.coin += c;
     gainXp(s, m, "haggling", T.xpPerDay * 0.3 * eff);
-  } else if (TRAVEL_TYPES.includes(a.type)) {
-    travelTick(s, m, a, eff);
-  } else if (a.type === "gather_") {
-    const n = D.nodes.find(x => x.id === a.target);
-    if (!n) {
-      m.action = null;
-      return;
-    }
-    const mul = (1 + m.skills[n.skill].lvl * 0.03) * eff * resGain(s);
-    for (const [k, v] of Object.entries(n.res)) s.res[k] = (s.res[k] || 0) + v * mul;
-    gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
-  } else if (a.type === "craft") {
+  },
+  craft(s, m, a, eff) {
     if (!a.target && m.craftQueue && m.craftQueue.length) {
       a.target = nextQueued(m);
       a.queued = true;
@@ -71,7 +58,8 @@ export function doAction(s, m, a, eff) {
         a.queued = !!a.target;
       }
     }
-  } else if (a.type === "job") {
+  },
+  job(s, m, a, eff) {
     const j = D.jobs.find(x => x.id === a.target);
     if (!j || !jobOk(m, j)) {
       m.action = null;
@@ -81,7 +69,8 @@ export function doAction(s, m, a, eff) {
     for (const [k, v] of Object.entries(j.stats)) m.stats[k] += v * eff;
     for (const k of j.skills) gainXp(s, m, k, T.xpPerDay * 0.5 * eff);
     if (j.id === "shop") sellTick(s, eff * (1 + m.skills.haggling.lvl * 0.02));
-  } else if (a.type === "activity") {
+  },
+  activity(s, m, a, eff) {
     const ac = D.activities.find(x => x.id === a.target);
     if (!ac || !activityOk(s, m, ac)) {
       m.action = null;
@@ -90,9 +79,11 @@ export function doAction(s, m, a, eff) {
     for (const [k, v] of Object.entries(ac.stats)) m.stats[k] += v * eff;
     for (const k of ac.skills) if (canTrain(m, k, s, true)) gainXp(s, m, k, T.xpPerDay * 0.6 * eff);
     if (ac.id === "fishing") s.res.food += 1 * eff;
-  } else if (a.type === "rest") {
+  },
+  rest(s, m) {
     m.injured = Math.max(0, m.injured - 1 - furn(s).reduce((x, f) => x + (f.bonus.rest || 0), 0));
-  } else if (a.type === "court") {
+  },
+  court(s, m, a, eff) {
     const su = s.suitors.find(x => x.id === a.target);
     if (!su) {
       m.action = null;
@@ -107,7 +98,26 @@ export function doAction(s, m, a, eff) {
           (1 + furn(s).reduce((x, f) => x + (f.bonus.court || 0), 0)),
     );
     gainXp(s, m, "etiquette", T.xpPerDay * 0.5 * eff);
+    if (su.affinity >= 100) {
+      // fix: courting used to continue forever at 100 affinity when the proposal was blocked
+      const why = proposeIssue(s, su.id);
+      log(s, `💌 ${su.name} would say yes!${why ? " First: " + why + "." : " Propose on the Main tab."}`);
+      m.action = defaultAction(s, m);
+    }
+  },
+};
+
+export function doAction(s, m, a, eff) {
+  if (!a) return;
+  if (a.type === "train") {
+    // train is resolved against the passed action (orders pass a fresh object)
+    const t = themedFor(s, m, a.target);
+    m.action = t ? { type: "activity", target: t, progress: 0 } : defaultAction(s, m);
+    return;
   }
+  if (TRAVEL_TYPES.includes(a.type)) return travelTick(s, m, a, eff);
+  const h = ACTIONS[a.type];
+  if (h) h(s, m, a, eff);
 }
 
 export function autoQuest(s, m, region) {
