@@ -424,6 +424,59 @@
    },
    "desc": "Recruited after the escort",
    "housing": "bunk"
+  },
+  {
+   "id": "witch",
+   "name": "Hedge Witch",
+   "icon": "🧙‍♀️",
+   "hire": 0,
+   "wage": 8,
+   "apt": {
+    "herbs": 2.0,
+    "craft": 1.5,
+    "tutor": 1.3
+   },
+   "special": true,
+   "source": {
+    "buildings": [
+     [
+      "herbalistshack"
+     ],
+     [
+      "shrinehouse",
+      "magestower"
+     ]
+    ]
+   },
+   "desc": "Brews and hexes; drawn by herb lore and old magic",
+   "housing": "bunk"
+  },
+  {
+   "id": "shaman",
+   "name": "Shaman",
+   "icon": "🪶",
+   "hire": 0,
+   "wage": 8,
+   "apt": {
+    "tutor": 1.6,
+    "guard": 1.3,
+    "herbs": 1.5,
+    "scout": 1.4
+   },
+   "special": true,
+   "source": {
+    "buildings": [
+     [
+      "shrinehouse"
+     ],
+     [
+      "hunterscabin",
+      "herbgarden"
+     ]
+    ]
+   },
+   "desc": "Spirit-talker drawn to shrine and wild places",
+   "housing": "bunk"
   }
  ],
  "hireAt": {
@@ -542,7 +595,7 @@
   },
   {
    "id": "n_militia",
-   "name": "Militia",
+   "name": "Guard",
    "icon": "🪖",
    "branch": "military",
    "from": "n_peasant",
@@ -550,6 +603,13 @@
    "bonus": {
     "guard": 0.2,
     "adventure": 0.15
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 0,
+    "tier": 1
    }
   },
   {
@@ -562,6 +622,13 @@
    "bonus": {
     "guard": 0.4,
     "adventure": 0.3
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -575,6 +642,13 @@
     "guard": 0.6,
     "adventure": 0.45,
     "scout": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 3,
+    "tier": 3
    }
   },
   {
@@ -587,6 +661,13 @@
    "bonus": {
     "scout": 0.5,
     "adventure": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "hunterscabin"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -600,6 +681,13 @@
     "hunt": 0.5,
     "fish": 0.3,
     "scout": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "hunterscabin"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -614,6 +702,20 @@
     "gather": 0.15,
     "mine": 0.15,
     "herbs": 0.15
+   },
+   "needs": {
+    "buildings": [
+     "quarry",
+     "mineshaft",
+     "herbgarden",
+     "sawmill",
+     "masonyard",
+     "fishinghut",
+     "apiary",
+     "chickencoop"
+    ],
+    "up": 0,
+    "tier": 1
    }
   },
   {
@@ -626,6 +728,14 @@
    "bonus": {
     "craft": 0.4,
     "merchant": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "smithy",
+     "tannery"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -640,6 +750,17 @@
     "gather": 0.35,
     "mine": 0.35,
     "herbs": 0.35
+   },
+   "needs": {
+    "buildings": [
+     "quarry",
+     "mineshaft",
+     "herbgarden",
+     "sawmill",
+     "masonyard"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -652,6 +773,14 @@
    "bonus": {
     "craft": 0.7,
     "merchant": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "smithy",
+     "tannery"
+    ],
+    "up": 3,
+    "tier": 3
    }
   },
   {
@@ -665,11 +794,18 @@
     "tutor": 0.2,
     "herbs": 0.15,
     "adventure": 0.1
+   },
+   "needs": {
+    "buildings": [
+     "magestower"
+    ],
+    "up": 0,
+    "tier": 1
    }
   },
   {
    "id": "n_adept",
-   "name": "Adept",
+   "name": "Mage",
    "icon": "✨",
    "branch": "magic",
    "from": "n_hedgemage",
@@ -678,19 +814,13 @@
     "tutor": 0.4,
     "craft": 0.15,
     "adventure": 0.25
-   }
-  },
-  {
-   "id": "n_magus",
-   "name": "Magus",
-   "icon": "🧙",
-   "branch": "magic",
-   "from": "n_adept",
-   "lvl": 15,
-   "bonus": {
-    "tutor": 0.6,
-    "craft": 0.25,
-    "adventure": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "magestower"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -704,6 +834,13 @@
     "tutor": 0.1,
     "guard": 0.1,
     "farm": 0.1
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 0,
+    "tier": 1
    }
   },
   {
@@ -717,6 +854,13 @@
     "tutor": 0.25,
     "guard": 0.2,
     "farm": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 2,
+    "tier": 2
    }
   },
   {
@@ -731,8 +875,368 @@
     "guard": 0.35,
     "farm": 0.3,
     "adventure": 0.15
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 3,
+    "tier": 3
    }
+  },
+  {
+   "id": "n_lookout",
+   "name": "Lookout",
+   "icon": "👁️",
+   "branch": "military",
+   "from": "n_militia",
+   "lvl": 10,
+   "bonus": {
+    "merchant": 0.3,
+    "scout": 0.3,
+    "guard": 0.15
+   },
+   "needs": {
+    "buildings": [
+     "thievesden"
+    ],
+    "up": 2,
+    "tier": 2
+   }
+  },
+  {
+   "id": "n_herbalist",
+   "name": "Herbalist",
+   "icon": "🌿",
+   "branch": "economic",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "herbs": 0.3,
+    "craft": 0.15,
+    "farm": 0.1
+   },
+   "desc": "Producer: herbs, remedies, potions, salves",
+   "needs": {
+    "buildings": [
+     "herbalistshack"
+    ],
+    "up": 0,
+    "tier": 1
+   }
+  },
+  {
+   "id": "n_masterherbalist",
+   "name": "Master Herbalist",
+   "icon": "🍃",
+   "branch": "economic",
+   "from": "n_herbalist",
+   "lvl": 10,
+   "bonus": {
+    "herbs": 0.55,
+    "craft": 0.3,
+    "farm": 0.15
+   },
+   "needs": {
+    "buildings": [
+     "herbalistshack"
+    ],
+    "up": 2,
+    "tier": 2
+   }
+  },
+  {
+   "id": "n_horseman",
+   "name": "Horseman",
+   "icon": "🐎",
+   "branch": "military",
+   "from": "n_militia",
+   "lvl": 10,
+   "bonus": {
+    "guard": 0.5,
+    "scout": 0.5,
+    "adventure": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 2,
+    "tier": 2
+   }
+  },
+  {
+   "id": "n_knighterrant",
+   "name": "Knight",
+   "icon": "🛡️",
+   "branch": "military",
+   "from": "n_horseman",
+   "lvl": 15,
+   "bonus": {
+    "guard": 0.7,
+    "adventure": 0.5
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "knightshall"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_bowman",
+   "name": "Bowman",
+   "icon": "🏹",
+   "branch": "military",
+   "from": "n_soldier",
+   "lvl": 15,
+   "bonus": {
+    "guard": 0.5,
+    "hunt": 0.5,
+    "adventure": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "archeryrange"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_battlemage",
+   "name": "Battle Mage",
+   "icon": "🔥",
+   "branch": "magic",
+   "from": "n_adept",
+   "lvl": 15,
+   "bonus": {
+    "adventure": 0.6,
+    "guard": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "magestower"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "warschool"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_loremaster",
+   "name": "Loremaster",
+   "icon": "📚",
+   "branch": "magic",
+   "from": "n_adept",
+   "lvl": 15,
+   "bonus": {
+    "tutor": 0.7,
+    "craft": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "magestower"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "lorelibrary"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_enchanter",
+   "name": "Enchanter",
+   "icon": "💠",
+   "branch": "magic",
+   "from": "n_adept",
+   "lvl": 15,
+   "bonus": {
+    "craft": 0.6,
+    "merchant": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "magestower"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "enchantery"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_highpriest",
+   "name": "High Priest",
+   "icon": "🏛️",
+   "branch": "divine",
+   "from": "n_priest",
+   "lvl": 15,
+   "bonus": {
+    "tutor": 0.5,
+    "guard": 0.3,
+    "farm": 0.3
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "temple"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_orderknight",
+   "name": "Order Knight",
+   "icon": "⚜️",
+   "branch": "divine",
+   "from": "n_priest",
+   "lvl": 15,
+   "bonus": {
+    "guard": 0.6,
+    "adventure": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "orderhouse"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_monk",
+   "name": "Monk",
+   "icon": "📿",
+   "branch": "divine",
+   "from": "n_priest",
+   "lvl": 15,
+   "bonus": {
+    "farm": 0.4,
+    "herbs": 0.4,
+    "tutor": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "monastery"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_mastersmith",
+   "name": "Master Smith",
+   "icon": "⚒️",
+   "branch": "economic",
+   "from": "n_artisan",
+   "lvl": 15,
+   "bonus": {
+    "craft": 0.7
+   },
+   "needs": {
+    "buildings": [
+     "smithy"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "masterforge"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_mastercarpenter",
+   "name": "Master Carpenter",
+   "icon": "🪚",
+   "branch": "economic",
+   "from": "n_artisan",
+   "lvl": 15,
+   "bonus": {
+    "craft": 0.5,
+    "gather": 0.3
+   },
+   "needs": {
+    "buildings": [
+     "smithy"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "carpentryhall"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_merchantnpc",
+   "name": "Merchant",
+   "icon": "💰",
+   "branch": "economic",
+   "from": "n_artisan",
+   "lvl": 15,
+   "bonus": {
+    "merchant": 0.7
+   },
+   "needs": {
+    "buildings": [
+     "smithy"
+    ],
+    "up": 3,
+    "tier": 3,
+    "spec": "tradinghouse"
+   },
+   "specialist": true
+  },
+  {
+   "id": "n_paladinnpc",
+   "name": "Paladin",
+   "icon": "✝️",
+   "branch": "military",
+   "from": "n_knighterrant",
+   "lvl": 20,
+   "bonus": {
+    "guard": 0.7,
+    "adventure": 0.6,
+    "tutor": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 3,
+    "tier": 4,
+    "all": [
+     {
+      "buildings": [
+       "shrinehouse"
+      ],
+      "up": 3
+     },
+     {
+      "buildings": [
+       "barracks"
+      ],
+      "up": 3
+     }
+    ]
+   },
+   "specialist": true
   }
  ],
- "npcClassNote": "NPC classes are weaker than family classes: bonuses apply to job output only."
+ "npcClassNote": "Military: Guard → Horseman → Knight (Knight's Hall) → Paladin (Shrine/Chapel + Guardhouse/Barracks both upg 3); Guard → Soldier → Sergeant / Bowman. Magic: Hedge Mage → Mage → pick a school (War College, Lore Library, Enchanter's Atelier). Herbalists are Economic producers (Herbalist's Shack); healers are Divine (Shrine/Chapel).",
+ "npcClassMigrate": {
+  "n_herbwife": "n_herbalist",
+  "n_healer": "n_masterherbalist",
+  "n_magus": "n_loremaster"
+ }
 }

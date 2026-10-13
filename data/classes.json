@@ -255,7 +255,21 @@
    "faith"
   ],
   "cpMult": 2.4,
-  "icon": "⚜️"
+  "icon": "⚜️",
+  "needsBuildings": [
+   {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 3
+   },
+   {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 3
+   }
+  ]
  },
  {
   "id": "blademaster",
@@ -558,7 +572,21 @@
    "faith"
   ],
   "cpMult": 1.6,
-  "icon": "⚔️"
+  "icon": "⚔️",
+  "needsBuildings": [
+   {
+    "buildings": [
+     "shrinehouse"
+    ],
+    "up": 0
+   },
+   {
+    "buildings": [
+     "barracks"
+    ],
+    "up": 0
+   }
+  ]
  },
  {
   "id": "adventurer",

@@ -288,8 +288,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 // NPC classes, more land, special buildings
 { const N=E.newGame(t0); estate(N,['minionbunk','minionbunk'],'shack'); N.res.food=1e4; const a=E.addMinion(N,'laborer','t'), b=E.addMinion(N,'guard','t');
  ok(a.cls==='n_peasant'&&b.cls==='n_peasant','all followers start as Peasant');
- ok(E.evolveOptions(a).map(c=>c.branch).sort().join()==='divine,economic,magic,military','Peasant branches into Military/Economic/Magic/Divine');
- ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
+ ok([...new Set(E.evolveOptions(a).map(c=>c.branch))].sort().join()==='divine,economic,magic,military','Peasant branches into Military/Economic/Magic/Divine');
+ ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.minionEvolveIssue(N,a,'n_militia').startsWith('needs Guardhouse'),'tier 1 needs the class building'); N.res.coin+=1e4; N.res.wood+=500; N.res.stone+=500; E.buyLand(N,'hillside'); N.structures.push({uid:'stB',type:'barracks',pieces:['weaponrack'],up:0}); ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
  ok(!E.evolveMinion(N,a.uid,'n_adept'),'cannot jump branches'); a.lvl=10; ok(E.evolveOptions(a).length>=2,'branches split again (choice)');
  a.job='guard'; const m0=E.minionLvlMult(a); a.cls='n_soldier'; ok(E.minionLvlMult(a)>m0,'NPC class boosts its jobs'); ok(D.minions.npcClasses.every(c=>Object.values(c.bonus).every(v=>v<=0.7)),'NPC classes stay weaker than PC classes');
  a.job='farm'; E.advanceReal(N,10*20); ok(E.minionSkillLvl(a,'farm')>=1,'minions build job skills');
@@ -328,4 +328,57 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  E.upgradeSpecial(C,cab.uid); ok(E.classHomeCap(cab)===3,'upgrades raise class housing');
  const e2=E.addMinion(C,'guard','t'); if(e2){ e2.cls='n_soldier'; ok(!E.homeMap(C)[e2.uid],'other classes cannot live there'); } else ok(true,'skip');
  ok(D.estate.structures.find(x=>x.id==='bunkhouse').builtin.housing.bunk===4,'Bunkhouse still general housing'); }
+// magic / divine / healer split, coverage of every line
+{ const ES=D.estate.structures, by=id=>ES.find(x=>x.id===id);
+ ok(by('herbalistshack').houses.classes.join()==='n_herbalist,n_masterherbalist'&&D.minions.npcClasses.find(c=>c.id==='n_herbalist').branch==='economic'&&by('magestower').houses.classes.includes('n_adept')&&by('shrinehouse').houses.classes.includes('n_curate'),'magic in the Tower, divine healers in the Shrine/Chapel, Economic herbalists in the Shack');
+ for(const id of ['magestower','shrinehouse','barracks','thievesden','advlodge']){ const d=by(id); ok(d.land===1&&d.slots===1&&d.upgrades.length===3&&d.houses.cap===2&&d.upgrades.every(u=>u.cap===1),id+': 1 land, 1 slot, 3 no-slot upgrades, 2+1/upgrade beds'); }
+ const npcIds=D.minions.npcClasses.filter(c=>c.id!=='n_peasant').map(c=>c.id), housed=new Set(ES.flatMap(d=>[...(d.houses?.classes||[]),...(d.specs||[]).flatMap(sp=>sp.houses)])); ok(npcIds.every(id=>housed.has(id)),'every NPC class has a class building: '+npcIds.filter(id=>!housed.has(id)).join());
+ const boosted=new Set(ES.map(d=>d.guildBoost?.guild).filter(Boolean)); ok([...D.guilds.guilds.map(g=>g.id),'adventurers'].every(g=>boosted.has(g)),'every PC guild line has a class building');
+ const B=E.newGame(t0); estate(B,[],'shack'); Object.assign(B.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50}); E.buyLand(B,'hillside');
+ const sh=E.buildStructure(B,'shrinehouse'); ok(E.structName(sh)==='Wayside Shrine','starts as a Shrine'); E.upgradeSpecial(B,sh.uid); E.upgradeSpecial(B,sh.uid); E.upgradeSpecial(B,sh.uid); ok(E.structName(sh)==='Chapel'&&E.classHomeCap(sh)===5,'Shrine upgrades into a Chapel (5 beds)');
+ const m=B.members[0]; m.ageDays=20*360; m.guild={id:'church',rank:0,rep:0}; const mid=B.members.length; const tw=E.buildStructure(B,'magestower'); ok(tw&&E.hasPiece(B,'arcanefocus'),"Mage's Tower built");
+ B.res.dust=0; E.advanceReal(B,10*3); ok(B.res.dust>0,'tower makes arcane dust'); B.res.dust=10; B.res.cloth=5; ok(!E.recipeIssue(B,m,E.recipeDef('r_scroll')),'scroll crafting at the Arcane Focus');
+ const mi=E.addMinion(B,'laborer','t')||(()=>{estate(B,['minionbunk'],'shack');return E.addMinion(B,'laborer','t');})(); mi.cls='n_adept'; ok(E.homeMap(B)[mi.uid]===tw.uid,'Adept lives in the Tower'); mi.cls='n_priest'; ok(E.homeMap(B)[mi.uid]===sh.uid,'Priest lives in the Chapel'); mi.cls='n_herbalist';
+ const hs=E.buildStructure(B,'herbalistshack'); ok(hs&&E.homeMap(B)[mi.uid]===hs.uid,"Herbalist lives in the Herbalist's Shack");
+ mi.loyalty=50; E.advanceReal(B,10); ok(mi.loyalty>50,'Chapel/Shrine morale raises follower loyalty');
+ m.injured=8; B.res.remedies=0; E.advanceReal(B,10); ok(m.injured<=6,'Shrine/Chapel speeds healing'); ok(E.pieceDef('remedybench').bonus.processes.map(p=>p.out).join()==='remedies,potions,salves','Herbalist\'s Shack produces remedies, potions, salves');
+ const X1=E.newGame(t0); const xm=X1.members[0]; xm.ageDays=20*360; xm.guild={id:'collegium',rank:0,rep:0}; const lv0=JSON.stringify(xm.skills.arcana); xm.action={type:'train',target:'arcana'};
+ const X2=JSON.parse(JSON.stringify(X1)); estate(X2,[],'shack'); Object.assign(X2.res,{coin:1e5,stone:500,planks:50}); E.buildStructure(X2,'magestower'); E.advanceReal(X1,10*20); E.advanceReal(X2,10*20);
+ const tot=m=>m.skills.arcana.lvl*1e4+m.skills.arcana.xp; ok(tot(X2.members[0])>tot(xm),"Mage's Tower boosts Magic guild members' XP"); }
+// multi-building special minions, building-gated evolution
+{ const W=E.newGame(t0); estate(W,['minionbunk'],'shack'); Object.assign(W.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50,food:1e4}); E.buyLand(W,'hillside'); E.buyLand(W,'riverbank');
+ const wt=D.minions.types.find(t=>t.id==='witch'), sm=D.minions.types.find(t=>t.id==='shaman'); ok(wt.source.buildings.length>=2&&sm.source.buildings.length>=2,'Witch and Shaman need multiple buildings');
+ ok(E.sourceLabel(wt).includes("Herbalist's Shack")&&E.sourceLabel(wt).includes(' or '),'requirements labelled (with alternatives)');
+ E.buildStructure(W,'herbalistshack'); E.advanceReal(W,10); ok(!W.minions.some(x=>x.type==='witch'),'one building is not enough');
+ E.buildStructure(W,'magestower'); E.advanceReal(W,10); ok(W.minions.some(x=>x.type==='witch'),'Witch arrives with Shack + Tower');
+ ok(E.buildingReqStatus(W,sm.source.buildings).filter(g=>g.ok).length===0,'Shaman status shows missing groups'); E.buildStructure(W,'shrinehouse'); E.buildStructure(W,'herbgarden'); E.advanceReal(W,10); ok(W.minions.some(x=>x.type==='shaman'),'Shaman arrives with Shrine + Garden');
+ ok(D.minions.npcClasses.filter(c=>c.needs).every(c=>c.needs.up===({1:0,2:2,3:3,4:3})[c.needs.tier]&&c.needs.buildings.length),'each NPC tier is gated by its class building level');
+ W.structures.push({uid:'bhx',type:'bunkhouse',pieces:[],up:0}); const mi=E.addMinion(W,'laborer','t')||W.minions.find(x=>!x.special); mi.cls='n_hedgemage'; mi.lvl=15; const tw=W.structures.find(x=>x.type==='magestower');
+ ok(!E.minionEvolveIssue(W,mi,'n_adept')||E.minionEvolveIssue(W,mi,'n_adept').includes('upgrade 2'),'Adept needs Tower upgrade 2'); tw.up=2; ok(!E.minionEvolveIssue(W,mi,'n_adept'),'Tower upgraded: Adept ok');
+ E.evolveMinion(W,mi.uid,'n_adept'); tw.up=3; ok(E.minionEvolveIssue(W,mi,'n_loremaster').includes('Lore Library'),'Mage picks a school specialty'); tw.spec='lorelibrary'; mi.lvl=Math.max(mi.lvl||0,15); ok(E.evolveMinion(W,mi.uid,'n_loremaster'),'Magus at max Tower');
+ const mi2=W.minions.find(x=>!x.special&&x!==mi)||E.addMinion(W,'laborer','t'); if(mi2){ mi2.cls='n_militia'; mi2.lvl=10; ok(E.minionEvolveIssue(W,mi2,'n_huntsman').includes("Hunter's Cabin"),'specialties need their specific building'); }
+ const O=JSON.parse(JSON.stringify(W)); O.minions.push({...O.minions[0],uid:'old',cls:'n_herbwife',special:false}); E.normalize(O); ok(O.minions.find(x=>x.uid==='old').cls==='n_herbalist','old healer-path followers migrate to Herbalist'); }
+// 3-stage building chains, specialties, crossover Paladin
+{ const K=E.newGame(t0); estate(K,['minionbunk'],'shack'); Object.assign(K.res,{coin:1e6,wood:5e3,stone:5e3,planks:2e3,blocks:2e3,ingots:1e3,copper:500,cloth:200,dust:200,food:1e4}); E.buyLand(K,'hillside'); E.buyLand(K,'riverbank');
+ for(const id of ['barracks','magestower','shrinehouse','smithy']){ const d=E.structDef(id); ok(d.stages.length===3&&d.specs.length===3,id+': 3-stage chain with 3 specialties'); }
+ const g=E.buildStructure(K,'barracks'); ok(E.structName(g)==='Guardhouse'&&E.structStage(g)===1,'starts as Guardhouse (stage 1)');
+ E.upgradeSpecial(K,g.uid); E.upgradeSpecial(K,g.uid); ok(E.structName(g)==='Barracks'&&E.structStage(g)===2,'upgrades into Barracks (stage 2)');
+ ok(E.specIssue(K,g.uid,'stable')==='finish the upgrade line','specialty needs the full upgrade line'); E.upgradeSpecial(K,g.uid);
+ const cap0=E.classHomeCap(g); ok(E.specialize(K,g.uid,'stable')&&E.structName(g)==='Stable'&&E.structStage(g)===3&&E.classHomeCap(g)===cap0+2,'pick one specialty (Stable): stage 3, more beds');
+ ok(!E.specialize(K,g.uid,'knightshall'),'only one specialty per building');
+ K.structures.push({uid:'bhy',type:'bunkhouse',pieces:[],up:0}); const mi=E.addMinion(K,'laborer','t'); mi.cls='n_militia'; mi.lvl=20;
+ ok(!E.minionEvolveIssue(K,mi,'n_horseman'),'Guard → Horseman at Barracks');
+ E.evolveMinion(K,mi.uid,'n_horseman'); ok(String(E.minionEvolveIssue(K,mi,'n_knighterrant')).includes("Knight's Hall"),'Knight needs the Knight\'s Hall specialty'); ok(E.homeMap(K)[mi.uid]===g.uid,'Horseman lives in the Stable');
+ g.spec='knightshall'; ok(E.evolveMinion(K,mi.uid,'n_knighterrant')&&mi.cls==='n_knighterrant','Guard → Horseman → Knight');
+ ok(E.minionEvolveIssue(K,mi,'n_paladinnpc').includes('upg 3'),'follower Paladin needs Shrine/Chapel + Guardhouse/Barracks upg 3');
+ { const sx=E.buildStructure(K,'shrinehouse'); sx.up=3; ok(!E.minionEvolveIssue(K,mi,'n_paladinnpc')&&E.evolveMinion(K,mi.uid,'n_paladinnpc'),'follower Paladin with both at upg 3'); K.structures=K.structures.filter(x=>x!==sx); }
+ { const o=E.newGame(t0); o.minions=[{uid:'x',type:'laborer',cls:'n_magus'}]; o.structures=o.structures||[]; const L=E.normalize(o)||o; ok(!JSON.stringify(L).includes('n_magus'),'old Magus migrates to a school'); }
+ ok(D.minions.types.find(t=>t.id==='witch').source.buildings.length===2&&D.minions.npcClasses.find(c=>c.id==='n_herbalist').branch==='economic'&&E.structDef('shrinehouse').houses.classes.includes('n_priest'),'Witch multi-building; Herbalist economic; healers divine');
+ const pal=D.classes.find(c=>c.id==='paladin'); ok(pal.needsBuildings.length===2&&pal.needsBuildings.every(r=>r.up===3),'Paladin needs Shrine/Chapel and Guardhouse/Barracks at matching levels');
+ const pm=K.members[0]; pm.ageDays=25*360; pm.cls='templar'; pm.guild={id:'church',rank:9,rep:0}; for(const k in pm.skills) pm.skills[k].lvl=99;
+ const sh=E.buildStructure(K,'shrinehouse'); ok(!E.canEvolve(K,pm,pal),'Paladin blocked with Chapel below level 3'); sh.up=3; ok(E.canEvolve(K,pm,pal),'Paladin allowed with both at level 3');
+ g.up=2; ok(!E.canEvolve(K,pm,pal),'both buildings must match the level'); g.up=3;
+ const tw=E.buildStructure(K,'magestower'); ok(E.structName(tw)==="Hedge Mage's Hut",'magic chain starts as Hedge Mage\'s Hut'); tw.up=2; ok(E.structName(tw)==="Mage's Tower",'→ Mage\'s Tower');
+ const ws=E.buildStructure(K,'smithy'); ws.up=3; ok(E.specialize(K,ws.uid,'tradinghouse')&&E.eff(K,'saleBonus')>=0.1,'Workshop → Guild Hall → Trading House specialty bonus');
+ sh.spec=null; ok(E.specialize(K,sh.uid,'temple')&&E.structName(sh)==='Temple','Shrine → Chapel → Temple'); }
 console.log(pass,'tests passed');

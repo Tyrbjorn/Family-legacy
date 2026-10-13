@@ -275,6 +275,32 @@
    "days": 8,
    "line": "blacksmith",
    "hidden": true
+  },
+  {
+   "id": "r_scroll",
+   "name": "Scroll of Warding",
+   "base": "ward_scroll",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "dust": 3,
+    "cloth": 1
+   },
+   "days": 3,
+   "line": "scribe"
+  },
+  {
+   "id": "r_sigil",
+   "name": "Arcane Sigil",
+   "base": "sigil_charm",
+   "skill": "runecraft",
+   "station": "arcanefocus",
+   "mats": {
+    "dust": 4,
+    "copper": 1
+   },
+   "days": 3,
+   "line": "scribe"
   }
  ],
  "minionSlots": [

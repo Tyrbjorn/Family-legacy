@@ -444,7 +444,7 @@
   },
   {
    "id": "smithy",
-   "name": "Smithy",
+   "name": "Workshop",
    "icon": "⚒️",
    "fixed": [
     "forge"
@@ -489,7 +489,7 @@
      "cap": 1
     }
    ],
-   "desc": "A Forge with its own upgrade line",
+   "desc": "Workshop → Guild Hall → Master specialty; Artisans live here",
    "land": 1,
    "slots": 1,
    "special": true,
@@ -501,7 +501,73 @@
     ],
     "cap": 2,
     "bonus": 0.15
-   }
+   },
+   "guildBoost": {
+    "guild": "hearth",
+    "xp": 0.1
+   },
+   "upName": {
+    "2": "Guild Hall"
+   },
+   "stages": [
+    "Workshop",
+    "Guild Hall",
+    "Specialty"
+   ],
+   "specs": [
+    {
+     "id": "masterforge",
+     "name": "Master Forge",
+     "icon": "⚒️",
+     "bonus": {
+      "craftQuality": 0.1
+     },
+     "houses": [
+      "n_mastersmith"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "craftQuality +0.1"
+    },
+    {
+     "id": "carpentryhall",
+     "name": "Carpenters' Hall",
+     "icon": "🪚",
+     "bonus": {
+      "craftQuality": 0.05,
+      "matCap": 200
+     },
+     "houses": [
+      "n_mastercarpenter"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "craftQuality +0.05, matCap +200"
+    },
+    {
+     "id": "tradinghouse",
+     "name": "Trading House",
+     "icon": "💰",
+     "bonus": {
+      "saleBonus": 0.1
+     },
+     "houses": [
+      "n_merchantnpc"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "saleBonus +0.1"
+    }
+   ]
   },
   {
    "id": "sawmill",
@@ -691,6 +757,10 @@
      "warden"
     ],
     "mult": 0.25
+   },
+   "guildBoost": {
+    "guild": "lodge",
+    "xp": 0.1
    }
   },
   {
@@ -704,7 +774,7 @@
     "herbrack",
     "storage",
     "alchbench",
-    "shrine"
+    "larder"
    ],
    "cost": {
     "coin": 120,
@@ -740,22 +810,25 @@
      "cap": 1
     }
    ],
-   "desc": "Herbs → remedies & potions",
+   "desc": "Herbalists live here; makes remedies, potions and salves",
    "land": 1,
    "slots": 1,
    "special": true,
    "level": 1,
    "houses": {
     "classes": [
-     "n_hedgemage",
-     "n_adept",
-     "n_magus",
-     "n_acolyte",
-     "n_priest",
-     "n_curate"
+     "n_herbalist",
+     "n_masterherbalist"
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "skillBoost": {
+    "skills": [
+     "alchemy",
+     "foraging"
+    ],
+    "xp": 0.1
    }
   },
   {
@@ -992,6 +1065,536 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   }
+  },
+  {
+   "id": "magestower",
+   "name": "Hedge Mage's Hut",
+   "icon": "🗼",
+   "fixed": [
+    "arcanefocus"
+   ],
+   "allowed": [
+    "studydesk",
+    "perch",
+    "brazier",
+    "storage"
+   ],
+   "cost": {
+    "coin": 400,
+    "stone": 60,
+    "planks": 10
+   },
+   "upgrades": [
+    {
+     "name": "Star Charts",
+     "cost": {
+      "coin": 300,
+      "cloth": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Scrying Pool",
+     "cost": {
+      "coin": 700,
+      "copper": 10,
+      "dust": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Spire",
+     "cost": {
+      "coin": 1500,
+      "blocks": 40,
+      "ingots": 10
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Arcane dust and scrolls; boosts Magic guild members",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_hedgemage",
+     "n_adept"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "guildBoost": {
+    "guild": "collegium",
+    "xp": 0.1
+   },
+   "upName": {
+    "2": "Mage's Tower"
+   },
+   "stages": [
+    "Hedge Mage's Hut",
+    "Mage's Tower",
+    "Specialty"
+   ],
+   "specs": [
+    {
+     "id": "warschool",
+     "name": "War College",
+     "icon": "🔥",
+     "bonus": {
+      "guardPower": 0.1,
+      "blessing": 0.03
+     },
+     "houses": [
+      "n_battlemage"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "guardPower +0.1, blessing +0.03"
+    },
+    {
+     "id": "lorelibrary",
+     "name": "Lore Library",
+     "icon": "📚",
+     "bonus": {
+      "blessing": 0.05
+     },
+     "houses": [
+      "n_loremaster"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "blessing +0.05"
+    },
+    {
+     "id": "enchantery",
+     "name": "Enchanter's Atelier",
+     "icon": "💠",
+     "bonus": {
+      "craftQuality": 0.08
+     },
+     "houses": [
+      "n_enchanter"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "craftQuality +0.08"
+    }
+   ]
+  },
+  {
+   "id": "shrinehouse",
+   "name": "Wayside Shrine",
+   "icon": "🛐",
+   "fixed": [
+    "altar"
+   ],
+   "allowed": [
+    "shrine",
+    "studydesk",
+    "storage",
+    "herbrack"
+   ],
+   "cost": {
+    "coin": 150,
+    "stone": 40
+   },
+   "upgrades": [
+    {
+     "name": "Candle Niche",
+     "cost": {
+      "coin": 150,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Bell Tower",
+     "cost": {
+      "coin": 450,
+      "blocks": 15,
+      "copper": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Consecrate as Chapel",
+     "cost": {
+      "coin": 1100,
+      "blocks": 40,
+      "ingots": 6
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Healers & clergy live here: blessings, morale, faster healing; becomes a Chapel",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_acolyte",
+     "n_priest",
+     "n_curate"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "guildBoost": {
+    "guild": "church",
+    "xp": 0.1
+   },
+   "upName": {
+    "2": "Chapel"
+   },
+   "skillBoost": {
+    "skills": [
+     "healing",
+     "faith"
+    ],
+    "xp": 0.1
+   },
+   "stages": [
+    "Wayside Shrine",
+    "Chapel",
+    "Specialty"
+   ],
+   "specs": [
+    {
+     "id": "temple",
+     "name": "Temple",
+     "icon": "🏛️",
+     "bonus": {
+      "blessing": 0.05,
+      "healBoost": 1
+     },
+     "houses": [
+      "n_highpriest"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "blessing +0.05, healBoost +1"
+    },
+    {
+     "id": "orderhouse",
+     "name": "Order House",
+     "icon": "⚜️",
+     "bonus": {
+      "guardPower": 0.15,
+      "blessing": 0.03
+     },
+     "houses": [
+      "n_orderknight"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "guardPower +0.15, blessing +0.03"
+    },
+    {
+     "id": "monastery",
+     "name": "Monastery",
+     "icon": "📿",
+     "bonus": {
+      "morale": 0.3,
+      "rest": 0.5
+     },
+     "houses": [
+      "n_monk"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "morale +0.3, rest +0.5"
+    }
+   ]
+  },
+  {
+   "id": "barracks",
+   "name": "Guardhouse",
+   "icon": "🏰",
+   "fixed": [
+    "weaponrack"
+   ],
+   "allowed": [
+    "minionbunk",
+    "storage",
+    "toolrack",
+    "shrine"
+   ],
+   "cost": {
+    "coin": 300,
+    "wood": 40,
+    "stone": 60
+   },
+   "upgrades": [
+    {
+     "name": "Drill Ground",
+     "cost": {
+      "coin": 250,
+      "planks": 15
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Armory",
+     "cost": {
+      "coin": 600,
+      "ingots": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Garrison Hall",
+     "cost": {
+      "coin": 1300,
+      "blocks": 40,
+      "ingots": 10
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Soldiers live here; becomes Barracks at the 3rd upgrade; boosts Warriors guild members and guards",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_militia",
+     "n_soldier",
+     "n_sergeant",
+     "n_horseman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "guildBoost": {
+    "guild": "vanguard",
+    "xp": 0.1
+   },
+   "upName": {
+    "2": "Barracks"
+   },
+   "stages": [
+    "Guardhouse",
+    "Barracks",
+    "Specialty"
+   ],
+   "specs": [
+    {
+     "id": "stable",
+     "name": "Stable",
+     "icon": "🐎",
+     "bonus": {
+      "guardPower": 0.1,
+      "rumorDiscount": 0.2
+     },
+     "houses": [
+      "n_horseman"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "guardPower +0.1, rumorDiscount +0.2"
+    },
+    {
+     "id": "knightshall",
+     "name": "Knight's Hall",
+     "icon": "🏰",
+     "bonus": {
+      "guardPower": 0.25
+     },
+     "houses": [
+      "n_knighterrant",
+      "n_paladinnpc"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "guardPower +0.25"
+    },
+    {
+     "id": "archeryrange",
+     "name": "Archery Range",
+     "icon": "🎯",
+     "bonus": {
+      "guardPower": 0.15,
+      "blessing": 0.02
+     },
+     "houses": [
+      "n_bowman"
+     ],
+     "cost": {
+      "coin": 2500,
+      "blocks": 40,
+      "ingots": 15
+     },
+     "desc": "guardPower +0.15, blessing +0.02"
+    }
+   ]
+  },
+  {
+   "id": "thievesden",
+   "name": "Thieves' Den",
+   "icon": "🕳️",
+   "fixed": [
+    "fencetable"
+   ],
+   "allowed": [
+    "storage",
+    "stall",
+    "studydesk"
+   ],
+   "cost": {
+    "coin": 250,
+    "wood": 30,
+    "planks": 10
+   },
+   "upgrades": [
+    {
+     "name": "Hidden Cellar",
+     "cost": {
+      "coin": 250,
+      "blocks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Fence Network",
+     "cost": {
+      "coin": 600,
+      "copper": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Guildmaster's Vault",
+     "cost": {
+      "coin": 1400,
+      "ingots": 10,
+      "blocks": 20
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Lookouts live here; boosts Rogues guild members and sale prices",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_lookout"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "guildBoost": {
+    "guild": "rogues",
+    "xp": 0.1
+   }
+  },
+  {
+   "id": "advlodge",
+   "name": "Adventurers' Lodge",
+   "icon": "⚔️",
+   "fixed": [
+    "questboard"
+   ],
+   "allowed": [
+    "storage",
+    "minionbunk",
+    "larder",
+    "shrine"
+   ],
+   "cost": {
+    "coin": 300,
+    "wood": 40,
+    "planks": 15
+   },
+   "upgrades": [
+    {
+     "name": "Map Room",
+     "cost": {
+      "coin": 300,
+      "cloth": 6
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Trophy Hall",
+     "cost": {
+      "coin": 700,
+      "blocks": 15
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Guild Annex",
+     "cost": {
+      "coin": 1500,
+      "blocks": 40,
+      "ingots": 10
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Adventuring/scouting followers live here; boosts Adventurers' Guild members",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [],
+    "jobs": [
+     "adventure",
+     "scout"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "guildBoost": {
+    "guild": "adventurers",
+    "xp": 0.1
    }
   }
  ],
@@ -1587,13 +2190,21 @@
       },
       "out": "potions",
       "rate": 1
+     },
+     {
+      "in": {
+       "herbs": 2,
+       "honey": 1
+      },
+      "out": "salves",
+      "rate": 2
      }
     ],
     "jobs": {
      "herbs": 1
     }
    },
-   "desc": "2 herbs → 1 remedy (3/day), 3 herbs → 1 potion; remedies speed injury recovery",
+   "desc": "2 herbs → remedy (3/day), 3 herbs → potion, 2 herbs + honey → salve",
    "skill": "alchemy"
   },
   {
@@ -1688,6 +2299,91 @@
    },
    "desc": "2 hides → 1 leather, 4/day",
    "skill": "tailoring"
+  },
+  {
+   "id": "arcanefocus",
+   "name": "Arcane Focus",
+   "icon": "🔮",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "skill": "arcana",
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "dust",
+      "rate": 1
+     }
+    ],
+    "family": "magic",
+    "xp": 0.05,
+    "jobs": {
+     "tutor": 1
+    }
+   },
+   "desc": "1 arcane dust/day, +5% Magic XP; scroll crafting station"
+  },
+  {
+   "id": "altar",
+   "name": "Altar",
+   "icon": "⛪",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "rest": 0.5,
+    "morale": 0.3,
+    "blessing": 0.05,
+    "healBoost": 1
+   },
+   "desc": "Faster healing, +0.3 follower loyalty/day, +5% family XP (blessing)"
+  },
+  {
+   "id": "weaponrack",
+   "name": "Weapon Racks",
+   "icon": "🗡️",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "jobs": {
+     "guard": 3
+    },
+    "guardPower": 0.2
+   },
+   "desc": "3 guard spots, +20% guard power"
+  },
+  {
+   "id": "fencetable",
+   "name": "Fence's Table",
+   "icon": "🎭",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "jobs": {
+     "merchant": 1
+    },
+    "saleBonus": 0.1
+   },
+   "desc": "1 selling spot, +10% sale prices"
+  },
+  {
+   "id": "questboard",
+   "name": "Quest Board",
+   "icon": "📌",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "jobs": {
+     "adventure": 0,
+     "scout": 0
+    },
+    "rumorDiscount": 0.5
+   },
+   "desc": "Rumors cost half; adventuring followers share tips (+10%)"
   }
  ],
  "synergies": [
@@ -1797,6 +2493,7 @@
    "cloth",
    "copper",
    "copperore",
+   "dust",
    "eggs",
    "fish",
    "herbs",
@@ -1809,6 +2506,7 @@
    "planks",
    "potions",
    "remedies",
+   "salves",
    "stone",
    "wood"
   ]
@@ -1874,7 +2572,9 @@
     "potions",
     "leather",
     "cloth",
-    "remedies"
+    "remedies",
+    "dust",
+    "salves"
    ]
   },
   "3": {

@@ -669,5 +669,21 @@
   "cp": 14,
   "value": 600,
   "heirloom": true
+ },
+ {
+  "id": "ward_scroll",
+  "name": "Scroll of Warding",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 120
+ },
+ {
+  "id": "sigil_charm",
+  "name": "Arcane Sigil",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 10,
+  "value": 140
  }
 ]
