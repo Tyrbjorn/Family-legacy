@@ -31,6 +31,19 @@ ${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>` : ""}
 <p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div><div class="row">${craftBtn}</div></div>`;
 }
 
+// Unlock intro lines (data/intros.json): same card look as the prologue; never blocking, one Skip each.
+export function introCards(tab) {
+  return E.introsActive(s)
+    .filter(l => tab === "main" || l.tab === tab)
+    .map(l => {
+      const st = E.introCurrent(s, l.id),
+        n = s.intros.lines[l.id].step;
+      return `<div class="card tut"><div class="row"><b>${l.icon} ${l.name} ${n}/${l.steps.length}</b><span style="flex:1"></span><button class="b" data-a="introskip" data-v="${l.id}" title="Skip this intro">Skip</button></div>
+<div class="pb"><i style="width:${(n / l.steps.length) * 100}%"></i><span>${st.title} · ${rew(st.reward)}</span></div>${n === 0 ? `<div class="muted" style="font-size:12px">${l.intro}</div>` : ""}</div>`;
+    })
+    .join("");
+}
+
 // ---- tab tour overlay
 export function tourOverlay() {
   if (U.tour == null) return "";

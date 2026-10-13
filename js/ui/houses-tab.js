@@ -88,7 +88,7 @@ export function housesv() {
   h += s.suitors.length ? s.suitors.map(suitorCard).join("") : `<div class="muted">No suitors yet. They arrive every ~45 days (only from neutral or friendlier houses, plus commoners).</div>`;
   h += householdCard();
   const ws = E.wars(s);
-  h += `<h3>🏰 Houses</h3><div class="muted">Quests for a house build rapport; quests against a house lower it. Below Rival a house feuds; feuds can escalate to war (you are warned first). Rapport drifts back toward neutral over time.${!E.phaseOk(s, "feud") ? " <b>Rivalry quests, trouble events and feuds unlock once your family is Established.</b>" : ""}${s.weary ? ` War weariness: morale ${E.wearyMorale(s).toFixed(1)}.` : ""}</div>`;
+  h += `<h3>🏰 Houses</h3><div class="muted">Quests for a house build rapport; quests against a house lower it. Below Rival a house feuds; feuds can escalate to war (you are warned first). Rapport drifts back toward neutral over time.${!E.phaseOk(s, "againstQuests") ? " <b>Rivalry quests and trouble events unlock in the Established phase; feuds and war in the Dynasty phase.</b>" : !E.phaseOk(s, "feud") ? ` <b>Feuds and war unlock in the Dynasty phase (${E.nextEraHint(s)})</b>` : ""}${s.weary ? ` War weariness: morale ${E.wearyMorale(s).toFixed(1)}.` : ""}</div>`;
   if (ws.length) h += `<div class="card" style="border-color:#c55">🏴 At war with ${ws.map(x => x.name).join(", ")}</div>`;
   h += E.houseList().map(houseCard).join("");
   return h;

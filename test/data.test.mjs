@@ -102,6 +102,23 @@ for (const t of D.towns)
     const sell = Math.max(...D.towns.map(u => u.prices[k] || 0)) * maxEv(k);
     ok(buy > sell, `no market arbitrage on ${k} at ${t.id} (${buy.toFixed(2)} > ${sell.toFixed(2)})`);
   }
+// phases + unlock intros
+ok(D.phases.list.map(p => p.n).join() === "1,2,3,4" && D.phases.list[3].planned, "four phases, Titles planned");
+const STG = D.estate.stages.map(x => x[1]);
+for (const p of D.phases.list.filter(p => p.need && !p.need.homeAndFamily)) ok(STG.includes(p.need.stage) && p.need.renown > 0, `phase ${p.id} stage exists`);
+for (const [k, v] of Object.entries(D.marriage.houses.gates)) if (k[0] !== "_") ok(v >= 1 && v <= 3, `gate ${k} is a built phase`);
+ok(D.marriage.houses.gates.feud === 3 && D.marriage.houses.gates.war === 3, "feud & war are Dynasty-phase");
+const TABSET = new Set(["main","family","jobs","inv","estate","map","minions","guilds","craft","chron","houses"]), IDS = new Set();
+for (const l of D.intros.lines) {
+  ok(!IDS.has(l.id), `intro ${l.id} unique`); IDS.add(l.id);
+  ok(TABSET.has(l.tab), `intro ${l.id} tab`); ok(E.INTRO_PREDS.includes(l.when), `intro ${l.id} when`);
+  ok(l.steps.length >= 1 && l.steps.length <= 3, `intro ${l.id} has 1-3 steps`);
+  for (const st of l.steps) {
+    ok(/^(view|flag):/.test(st.check) || E.INTRO_PREDS.includes(st.check), `intro step ${st.id} check`);
+    ok(Object.keys(st.reward || {}).length && Object.values(st.reward).every(v => v > 0 && v <= 500), `intro step ${st.id} small reward`);
+    if (st.check.startsWith("view:")) ok(TABSET.has(st.check.slice(5)), `intro step ${st.id} view tab`);
+  }
+}
 // marriage & diplomacy data
 const MD = D.marriage,
   HS = new Set(MD.houses.list.map(h => h.id)),

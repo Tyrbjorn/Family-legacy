@@ -1,3 +1,4 @@
+import { introCards } from "./guide.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { $, fmt, hm, memberLine, sk, top, yr } from "./common.js";
@@ -138,7 +139,7 @@ export function render() {
   }
   render.force = false;
   $("#top").innerHTML = top();
-  const h = TABS[U.tab][2]();
+  const h = introCards(U.tab) + TABS[U.tab][2]();
   if (h !== U.lastHTML) {
     const y = scrollY;
     const tw = $("#treewrap"),

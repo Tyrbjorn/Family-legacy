@@ -421,11 +421,12 @@
    "timeoutRapport": -45
   },
   "gates": {
-   "_note": "minimum phase (era n) for each diplomacy system: 1 Beginning, 2 Established, 3 Dynasty, 4 Titles",
+   "_note": "minimum phase per system: 1 Beginning, 2 Established, 3 Dynasty, 4 Titles",
    "houseQuests": 1,
    "againstQuests": 2,
    "troubles": 2,
-   "feud": 2
+   "feud": 3,
+   "war": 3
   },
   "ranks": [
    {

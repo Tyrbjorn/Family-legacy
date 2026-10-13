@@ -1,3 +1,4 @@
+import { introNote } from "./intros.js";
 import { houseSellMult } from "./houses.js";
 import { seasonPrice } from "./seasons.js";
 import { inc } from "./achievements.js";
@@ -187,6 +188,7 @@ export function rollQuality(score) {
 
 export function craftItem(s, m, rc, mi, apt = 1) {
   if (recipeIssue(s, m, rc)) return null;
+  introNote(s, "crafted");
   pay(s, rc.mats);
   const q = rollQuality(qualityScore(s, m, rc, mi, apt));
   const id = `c|${rc.base}|${q}`;

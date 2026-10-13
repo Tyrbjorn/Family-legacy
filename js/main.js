@@ -34,6 +34,8 @@ const names = [
   "tutorial",
   "notify",
   "marriage",
+  "phases",
+  "intros",
 ];
 
 export const D = {};
@@ -98,6 +100,7 @@ document.addEventListener("click", e => {
     U.tab = t.dataset.tab;
     (U.groupLast ||= {})[groupOf(U.tab)] = U.tab;
     if (U.tab === "estate") E.tutNote(s, "estate");
+    E.introView(s, U.tab);
     U.lastHTML = "";
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     render.force = true;

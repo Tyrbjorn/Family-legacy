@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
@@ -182,8 +182,9 @@ const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smi
 CP.members.push({...JSON.parse(JSON.stringify(cz)),id:99,name:'Kip'}); CP.activeId=99; E.setOrder(CP,cz.id,{type:'craft'});
 E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'idle family member crafts on standing order');
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
+const kids=g=>{for(let i=0;i<2;i++){const k=E.newMember(g,{age:5});g.members.push(k);}return g;};
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
-ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===3,'Renown + Manor → Era 3 indicator');
+ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===2,'Manor alone (2 living) stays Established'); kids(ER); ok(E.era(ER).n===3,'Manor + 3 living → Phase 3 Dynasty'); ok(E.ERAS[3].planned&&E.era(ER).n<4,'Titles phase is planned, never reached');
 ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'farming'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
 for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
 { const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
@@ -641,7 +642,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(E.rapport(O,'tallow')>=D.marriage.marryOut.rapport&&E.ties(O,'tallow')===1,'marrying out ties the houses'); for(let i=0;i<24*30;i++) E.dayTick(O,1,1); ok(E.rapport(O,'tallow')>=D.marriage.houses.tieFloor-1,'ties hold rapport up over time');
  ok(E.familyTree(O).flat().find(n=>n.id===sib.id).marriedOut==='House Tallow','family tree shows who married out');
 }
-const est=g=>{g.renown=Math.max(g.renown||0,300);return g;};
+// est(): a Dynasty-phase family (Manor-level estate, 3+ living) so feud/war systems are open
+const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(g);g.renown=Math.max(g.renown||0,1000);return g;};
 // Diplomacy: rapport tiers, house quests that pick sides, perks, troubles
 { const G=est(E.newGame(t0)); E.skipTutorial(G); ok(E.tierOf(G,'tallow')==='neutral','houses start neutral');
  const tiers=[[-80,'feud'],[-55,'rival'],[-20,'cold'],[0,'neutral'],[40,'friendly'],[80,'allied']]; for(const [r,t] of tiers){const X=est(E.newGame(t0)); E.addRapport(X,'vey',r); ok(E.tierOf(X,'vey')===t,`rapport ${r} → ${t}`);}
@@ -674,6 +676,34 @@ const est=g=>{g.renown=Math.max(g.renown||0,300);return g;};
  const Nw=est(E.newGame(t0)); Nw.members[0].ageDays=20*Y; E.addRapport(Nw,'marlowe',-90); E.declareWar(Nw,'marlowe'); ok(E.enemyPower(Nw,'marlowe')<=Math.max(10,(E.familyPower(Nw)+E.allyPower(Nw))*D.marriage.houses.war.enemyMaxScale+1e-9),'enemy power scales with a small family (newbie-safe)');
  const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; delete old.houses; delete old.weary; old.suitors=[{id:'o1',name:'Old',gender:'m',cls:'scout',affinity:40,age:20}];
  const O=E.importSave(JSON.stringify(old)); ok(O.houses&&O.weary===0&&O.suitors[0].dowry&&O.suitors[0].persona===null&&O.suitors[0].arrived!=null,'old saves gain houses, weariness and suitor fields');
+}
+// Phases: Established no longer opens feuds/war (Dynasty only); war split into war.js
+{ const G=E.newGame(t0); E.skipTutorial(G); estate(G,['bunk']); G.members[0].ageDays=25*360; G.renown=400; ok(E.era(G).n===2,'Established phase');
+ ok(E.phaseOk(G,'againstQuests')&&!E.phaseOk(G,'feud'),'rivalry quests at Established, feuds wait'); E.addRapport(G,'vey',-95); ok(E.houseState(G,'vey').state==='peace','no feud in Established');
+ G.houses.vey={r:-90,state:'feud'}; ok(/Dynasty/.test(E.declareWarIssue(G,'vey')||''),'declaring war needs Dynasty');
+ est(G); ok(E.era(G).n===3&&!E.declareWarIssue(G,'vey'),'Dynasty opens war'); ok(E.nextEraHint(G).includes('planned'),'header hint points at planned Titles');
+ const n0=G.chronicle?G.chronicle.length:0; G.phaseSeen=2; E.introsDay(G); ok(G.phaseSeen===3&&(G.chronicle||[]).length>n0,'phase change goes to the Chronicle once'); E.introsDay(G); ok((G.chronicle||[]).length===n0+1,'no repeated phase entry');
+}
+// Unlock intros: short rewarded lines per unlock, skippable, never blocking, no spam for old saves
+{ const G=E.newGame(t0); E.introsDay(G); ok(!E.introsActive(G).length,'no intros during the apprentice prologue');
+ E.skipTutorial(G); G.members[0].ageDays=20*360; E.introsDay(G); ok(E.introsActive(G).map(l=>l.id).includes('guilds'),'guild intro starts for an adult');
+ ok(E.introsActive(G).length===1,'one intro line at a time'); E.introSkip(G,'guilds'); estate(G,['bunk']); E.introsDay(G); ok(E.introsActive(G).map(l=>l.id).join()==='food','land opens the food intro next');
+ ok(G.log.some(l=>/📘 New: .*Food/.test(l.msg)),'intro start is logged (notify + chronicle hooks)');
+ const c0=G.res.coin; E.introView(G,'estate'); ok(G.res.coin===c0+D.intros.lines.find(l=>l.id==='food').steps[0].reward.coin,'view step pays its reward');
+ E.setRation(G,E.RATIONS()[0].id); ok(G.intros.lines.food.state==='done'||G.intros.lines.food.step===1,'ration step can complete');
+ E.introsDay(G); ok(E.introsActive(G).map(l=>l.id).join()==='minions','minions intro queued behind food'); ok(E.introSkip(G,'minions')&&G.intros.lines.minions.state==='skipped'&&!E.introSkip(G,'minions'),'intros skip once');
+ E.setAction(G,{type:'activity',target:'chores'}); ok(!E.actionAllowed||E.actionAllowed(G,G.members[0],{type:'activity',target:'chores'})!==false,'intros never block actions');
+ for(const l of D.intros.lines) ok(l.steps.length<=3,'intro '+l.id+' ≤3 steps');
+ { const X=E.newGame(t0); E.skipTutorial(X); X.members[0].ageDays=20*360; E.introsDay(X); const id=E.introsActive(X)[0].id; X.day+=D.intros.expireDays+1; estate(X,['bunk']); E.introsDay(X); ok(X.intros.lines[id].state==='skipped'&&X.intros.lines[id].expired&&E.introsActive(X).length===1&&E.introsActive(X)[0].id!==id,'an ignored intro steps aside so the next can start'); }
+ // dynasty intro chain at phase 3
+ const H=E.newGame(t0); E.skipTutorial(H); est(H); H.members[0].ageDays=25*360; E.introsDay(H); ok(E.introsActive(H).some(l=>l.id==='dynasty'),'Dynasty intro starts at phase 3');
+ E.introView(H,'houses'); ok(H.intros.lines.dynasty.step===1,'dynasty step 1: open Houses'); H.houses.ashbrook={r:40,state:'peace'}; E.introsDay(H); ok(H.intros.lines.dynasty.step===2,'dynasty step 2: a Friendly house');
+ H.doneQuests.push('hq_tallow_ledger'); const r0=H.renown; E.introsDay(H); ok(H.intros.lines.dynasty.state==='done'&&H.renown>r0,'dynasty chain completes with rewards');
+ // migration: an old save that already has land/crafting gets no intro spam
+ const O=E.newGame(t0); E.skipTutorial(O); estate(O,['bunk']); O.members[0].ageDays=25*360; delete O.intros; O.schema=7; O.day=500;
+ const st=JSON.parse(E.serialize(O,t0)); st._norm=false; E.normalize(st); const nlog=st.log.length; E.introsDay(st);
+ ok(st.intros.lines.food&&st.intros.lines.food.state==='done'&&st.intros.lines.food.quiet,'old save: unlocked systems marked done quietly');
+ ok(!st.log.slice(nlog).some(l=>/📘 New: .*(Food|Minions)/.test(l.msg)),'old save: no intro spam on load');
 }
 // Phase gates: light marriage/rapport early, rivalry/feud/war once Established (Dynasty systems ramp in)
 { const B=E.newGame(t0); ok(E.era(B).n===1,'fresh game is phase 1'); E.addRapport(B,'vey',-95); ok(E.houseState(B,'vey').state==='peace'&&E.rapport(B,'vey')>D.marriage.houses.feud.at,'no feuds in the Beginning phase');

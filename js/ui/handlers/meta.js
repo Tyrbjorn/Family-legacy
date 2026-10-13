@@ -11,6 +11,7 @@ export const metaActions = ({ v, b, m }) => ({
   gotab: () => {
     U.tab = v;
     if (v === "estate") E.tutNote(s, "estate");
+    E.introView(s, v);
     scrollTo(0, 0);
   },
   bell: () => {
@@ -19,6 +20,7 @@ export const metaActions = ({ v, b, m }) => ({
   },
   bellread: () => E.markNotesRead(s),
   mentorcraft: () => E.mentorCraft(s),
+  introskip: () => E.introSkip(s, v),
   tutskip: () => confirm("Skip the apprenticeship? You keep what you've earned so far.") && E.skipTutorial(s),
   tourstart: () => {
     U.tour = 0;

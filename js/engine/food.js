@@ -1,10 +1,11 @@
+import { introNote } from "./intros.js";
 // Stronghold-style food: everyone eats evenly from every food on the menu each day.
 // Variety (distinct foods actually eaten) gives satiation + morale with diminishing returns;
 // the ration level trades consumption for morale; shortages drag morale (and so output) down.
 import { ES, reserveOf } from "./estate.js";
 import { D, living } from "./state.js";
 import { household } from "./courtship.js";
-import { wearyMorale } from "./houses.js";
+import { wearyMorale } from "./war.js";
 
 export const MEALS = () => ES().meals;
 export const RATIONS = () => MEALS().rations;
@@ -13,6 +14,7 @@ export const rationDef = s => RATIONS().find(r => r.id === (s.ration || "normal"
 export function setRation(s, id) {
   if (!RATIONS().some(r => r.id === id)) return false;
   s.ration = id;
+  introNote(s, "ration");
   return true;
 }
 

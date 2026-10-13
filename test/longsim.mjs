@@ -265,6 +265,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin = 0,
     idleDays = 0;
   const noSuitor = { cur: 0, max: 0 };
+  const phaseDay = {};
   const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
   for (let day = 0; day < YEARS * YD; day++) {
@@ -296,6 +297,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     const m = E.active(s);
     if (m && !m.action && !m.injured && E.isAdult(m)) idleDays++;
     if (day % 10 === 0) check(s, seed);
+    { const pn = E.era(s).n; if (phaseDay[pn] == null) phaseDay[pn] = s.day; for (const r of [1000, 2000, 5000]) if (s.renown >= r && phaseDay['renown' + r] == null) phaseDay['renown' + r] = s.day; if (['Manor', 'Prosperous Estate'].includes(E.estateStage(s)) && phaseDay.manor == null) phaseDay.manor = s.day; if (E.estateStage(s) === 'Prosperous Estate' && phaseDay.prosp == null) phaseDay.prosp = s.day; if (pn < 3 && Object.values(s.houses || {}).some(h => h.state !== 'peace')) bad(seed, s.day, 'feud/war before the Dynasty phase'); }
     if (s.suitors.length) noSuitor.cur = 0;
     else noSuitor.max = Math.max(noSuitor.max, ++noSuitor.cur);
     if (s.meal && day > YD * 2) {
@@ -362,6 +364,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     }
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
+  for (const [id, l] of Object.entries((s.intros || {}).lines || {})) if (!['active', 'done', 'skipped'].includes(l.state)) bad(seed, s.day, 'bad intro state ' + id);
   if (noSuitor.max > YD * 2) bad(seed, s.day, `no suitors for ${noSuitor.max} days (marriage soft-lock)`);
   if (food.starving > food.days * 0.02) bad(seed, s.day, `starvation on ${food.starving}/${food.days} days`);
   const ip = E.timers(s);
@@ -384,6 +387,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriages: s.members.filter(x => x.persona).length,
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
+    phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),
+    intros: Object.fromEntries(Object.entries((s.intros || {}).lines || {}).map(([k, l]) => [k, l.state])),
     food: {
       shortDays: food.short,
       starvingDays: food.starving,

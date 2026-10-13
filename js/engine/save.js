@@ -1,3 +1,4 @@
+import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
 import { startTutorial } from "./tutorial.js";
 import { devOn } from "./dev.js";
@@ -325,6 +326,15 @@ const STEPS = [
         if (m.persona === undefined) m.persona = null;
         if (m.house === undefined) m.house = null;
       }
+    },
+  },
+  {
+    n: 8,
+    once: true,
+    name: "four phases + unlock intros: old saves keep their phase and skip intros for systems they already have",
+    run: s => {
+      s.phaseSeen = null;
+      introsMigrate(s); // systems this save already unlocked are marked done quietly (no spam)
     },
   },
 ];

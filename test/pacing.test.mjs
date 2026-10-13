@@ -3,7 +3,7 @@
 import fs from "fs";
 import * as E from "../js/engine.js";
 const L = n => JSON.parse(fs.readFileSync(new URL("../data/" + n + ".json", import.meta.url)));
-const names = ["skills","classes","traits","buildings","furniture","items","quests","regions","tuning","nodes","towns","minions","guilds","jobs","activities","map","dungeons","estate","crafting","legacy","chronicle","achievements","events","encounters","seasons", "tutorial","notify","marriage"];
+const names = ["skills","classes","traits","buildings","furniture","items","quests","regions","tuning","nodes","towns","minions","guilds","jobs","activities","map","dungeons","estate","crafting","legacy","chronicle","achievements","events","encounters","seasons", "tutorial","notify","marriage","phases","intros"];
 const D = {};
 for (const n of names) D[n] = L(n);
 E.setData(D);

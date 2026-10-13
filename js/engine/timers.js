@@ -1,4 +1,5 @@
-import { FEUD, houseList, houseState, warTimer } from "./houses.js";
+import { FEUD, houseList, houseState } from "./houses.js";
+import { warTimer } from "./war.js";
 // Every running timer in one list (for progress bars and the Timers dock).
 // Each entry: { key, icon, who, what, p (0..1), left (in-game days, null = ongoing), tab }
 import { activeBuffs } from "./encounters.js";

@@ -1,0 +1,173 @@
+{
+ "_note": "Short intro quest lines, one per unlock. Each starts when its `when` condition first holds (after the apprentice prologue), has 1-3 do-it steps with small rewards, is skippable and never blocks play. Conditions/checks are named predicates in js/engine/intros.js; view:<tab> and flag:<name> are generic. Only one line runs at a time; list order is priority. An ignored line steps aside quietly after expireDays so later intros are never held up.",
+ "lines": [
+  {
+   "id": "dynasty",
+   "name": "Rise of a Dynasty",
+   "icon": "🏰",
+   "tab": "houses",
+   "when": "phase3",
+   "intro": "Your family is now a Dynasty: other houses take notice. Feuds and wars are possible from here on.",
+   "finale": "The family has found its place among the great houses.",
+   "steps": [
+    {
+     "id": "dt_view",
+     "title": "Open the Houses view (Kin → Houses)",
+     "check": "view:houses",
+     "reward": {
+      "coin": 150
+     }
+    },
+    {
+     "id": "dt_rapport",
+     "title": "Get any house to Friendly (gifts or house quests)",
+     "check": "friendly",
+     "reward": {
+      "coin": 250,
+      "renown": 20
+     }
+    },
+    {
+     "id": "dt_quest",
+     "title": "Finish any house quest",
+     "check": "houseQuest",
+     "reward": {
+      "coin": 400,
+      "renown": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "houses",
+   "name": "Courtship & houses",
+   "icon": "💌",
+   "tab": "houses",
+   "when": "suitor",
+   "intro": "A suitor has come calling, and other houses are watching.",
+   "steps": [
+    {
+     "id": "hs_view",
+     "title": "Open the Houses view (Kin → Houses)",
+     "check": "view:houses",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "hs_court",
+     "title": "Raise any suitor's affection",
+     "check": "courted",
+     "reward": {
+      "coin": 80
+     }
+    }
+   ]
+  },
+  {
+   "id": "craft",
+   "name": "Crafting",
+   "icon": "🔨",
+   "tab": "craft",
+   "when": "craft",
+   "intro": "Someone in the family can craft now.",
+   "steps": [
+    {
+     "id": "cr_view",
+     "title": "Open the Crafting tab",
+     "check": "view:craft",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "cr_make",
+     "title": "Craft any item",
+     "check": "flag:crafted",
+     "reward": {
+      "coin": 100
+     }
+    }
+   ]
+  },
+  {
+   "id": "food",
+   "name": "Food & meals",
+   "icon": "🍲",
+   "tab": "estate",
+   "when": "land",
+   "intro": "Your land can feed the family. Rations and the menu set morale.",
+   "steps": [
+    {
+     "id": "fd_view",
+     "title": "Open the Estate tab (Food panel)",
+     "check": "view:estate",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "fd_ration",
+     "title": "Pick a ration level",
+     "check": "flag:ration",
+     "reward": {
+      "coin": 80
+     }
+    }
+   ]
+  },
+  {
+   "id": "minions",
+   "name": "Minions",
+   "icon": "🧑‍🤝‍🧑",
+   "tab": "minions",
+   "when": "land",
+   "intro": "Hired hands can farm, gather, guard and adventure for you.",
+   "steps": [
+    {
+     "id": "mn_view",
+     "title": "Open the Minions tab",
+     "check": "view:minions",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "mn_hire",
+     "title": "Have at least one minion",
+     "check": "minion",
+     "reward": {
+      "coin": 120
+     }
+    }
+   ]
+  },
+  {
+   "id": "guilds",
+   "name": "Guilds",
+   "icon": "🏛️",
+   "tab": "guilds",
+   "when": "adultFree",
+   "intro": "Guilds train members and open new paths.",
+   "steps": [
+    {
+     "id": "gd_view",
+     "title": "Open the Guilds tab",
+     "check": "view:guilds",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "gd_join",
+     "title": "Have a member join any guild",
+     "check": "guild",
+     "reward": {
+      "coin": 150
+     }
+    }
+   ]
+  }
+ ],
+ "expireDays": 90
+}

@@ -2,7 +2,8 @@
 // dowries both ways (marrying in / marrying out) and household effects of spouse personalities.
 import { conflicts, level } from "./family.js";
 import { rollTraits } from "./traits.js";
-import { addRapport, atWar, endWar, houseDef, houseList, tierFx, tierOf } from "./houses.js";
+import { addRapport, atWar, houseDef, houseList, tierFx, tierOf } from "./houses.js";
+import { endWar } from "./war.js";
 import { addRenown } from "./legacy.js";
 import { D, NAMES, active, ageY, isAdult, living, log, r, rng } from "./state.js";
 

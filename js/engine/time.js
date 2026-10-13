@@ -17,6 +17,7 @@ import { minionDay } from "./minions.js";
 import { eatDay, mealHeal, moraleSpeed } from "./food.js";
 import { household, householdDay, suitorsTick } from "./courtship.js";
 import { housesDay } from "./houses.js";
+import { introsDay } from "./intros.js";
 import { normalize } from "./save.js";
 import { gainXp } from "./skills.js";
 import { D, T, Y, active, ageY, bl, furn, living, log, r, rng } from "./state.js";
@@ -204,7 +205,7 @@ for (const [n, f] of [
   ["tutorial", tutorialDay],
   ["estate", estateDay],
   ["suitors", suitorsDay],
-  ["houses", s => (housesDay(s), householdDay(s))],
+  ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],
 ])
   registerDayHook(n, f);

@@ -227,25 +227,24 @@ export function setOrder(s, id, order) {
   m.action = null;
 }
 
-// ---- eras (eras only ADD systems; nothing earlier is ever locked)
-export const ERAS = [
-  { n: 1, name: "Solo Adventurer", icon: "🧭" },
-  { n: 2, name: "Established Family", icon: "🏡" },
-  { n: 3, name: "Ruling Power", icon: "👑" },
-];
-
-export function era(s) {
-  const fam = living(s).length > 1 || s.members.some(m => m.spouse);
-  if (s.renown >= 5000 && ["Manor", "Prosperous Estate"].includes(estateStage(s))) return ERAS[2];
-  if ((established(s) && fam) || s.renown >= 300) return ERAS[1];
-  return ERAS[0];
+// ---- phases (data/phases.json; each phase only ADDS systems; nothing earlier is ever locked)
+const PH = () => D.phases.list;
+export const ERAS = new Proxy([], { get: (_, k) => PH()[k] });
+const stageAt = (s, st) => { const o = D.estate.stages.map(x => x[1]); return o.indexOf(estateStage(s)) >= o.indexOf(st); };
+export function phaseReached(s, p) {
+  const q = p.need;
+  if (!q || p.planned) return p.n === 1;
+  if (q.homeAndFamily) return (established(s) && (living(s).length > 1 || s.members.some(m => m.spouse))) || s.renown >= q.orRenown;
+  if (living(s).length < (q.living || 0)) return false;
+  return stageAt(s, q.stage) && s.renown >= (q.renown || 0);
 }
-
+export function era(s) {
+  let cur = PH()[0];
+  for (const p of PH()) if (p.n > 1 && !p.planned && phaseReached(s, p) && p.n === cur.n + 1) cur = p;
+  return cur;
+}
+export const phase = era;
 export function nextEraHint(s) {
-  const e = era(s).n;
-  return e === 1
-    ? "Next: build a home on your land and start a family (or reach 300 Renown)."
-    : e === 2
-      ? "Next: 5,000 Renown and a Manor-tier estate (Era 3 systems coming in a later update)."
-      : "Era 3 systems (titles, vassals, taxes) are planned.";
+  const nx = PH().find(p => p.n === era(s).n + 1);
+  return !nx ? "" : nx.planned ? `${nx.hint} (Phase ${nx.n}).` : `Next: ${nx.hint}.`;
 }
