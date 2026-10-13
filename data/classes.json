@@ -768,7 +768,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "blacksmith",
@@ -789,7 +790,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "carpenter",
@@ -810,7 +812,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "alchemist",
@@ -831,7 +834,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "tailor",
@@ -852,7 +856,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "armorer",
@@ -873,7 +878,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "architect",
@@ -894,7 +900,8 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  },
  {
   "id": "masteralchemist",
@@ -915,27 +922,7 @@
    "INT",
    "STR"
   ],
-  "cpSkills": []
- },
- {
-  "id": "couturier",
-  "name": "Leatherworker-Couturier",
-  "tier": 2,
-  "from": "tailor",
-  "req": {
-   "tailoring": 45
-  },
-  "cost": 1600,
-  "crafterRank": 2,
-  "line": "artisan",
-  "profession": true,
-  "spec": "tailor",
-  "craftBonus": 0.3,
-  "icon": "👘",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": []
+  "cpSkills": [],
+  "retired": true
  }
 ]

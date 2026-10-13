@@ -118,6 +118,34 @@
    ]
   },
   {
+   "id": "paths",
+   "name": "Craft paths",
+   "icon": "🧭",
+   "tab": "main",
+   "when": "crafterGuild",
+   "intro": "The Crafters' Guild ranks you by craft path: Apprentice → Journeyman → Master → Grandmaster.",
+   "finale": "A true journeyman. Each rank opens one more path, and Master brings a specialty.",
+   "steps": [
+    {
+     "id": "pa_open",
+     "title": "Pick a main path (Main → 🔨 Craft paths)",
+     "check": "pathOpen",
+     "reward": {
+      "coin": 60
+     }
+    },
+    {
+     "id": "pa_rank",
+     "title": "Reach Journeyman in any path (XP in its skills)",
+     "check": "pathRank",
+     "reward": {
+      "coin": 200,
+      "renown": 15
+     }
+    }
+   ]
+  },
+  {
    "id": "food",
    "name": "Food & meals",
    "icon": "🍲",

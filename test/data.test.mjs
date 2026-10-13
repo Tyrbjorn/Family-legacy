@@ -59,6 +59,7 @@ for (const st of D.estate.structures) for (const p of st.fixed || []) src.add(p)
   src.add(k),
 ); // minion jobs
 for (const t of D.towns) (t.market || []).forEach(k => src.add(k));
+for (const P of [...D.paths.paths, ...D.paths.comboPaths]) for (const f of [...P.fx, ...P.specs.flatMap(x => x.fx)]) if (f.kind === "find") src.add(f.res); // craft-path finds (mushrooms)
 const need = new Set();
 for (const rc of D.crafting.recipes) Object.keys(rc.mats).forEach(k => need.add(k));
 for (const st of D.estate.structures) Object.keys(st.cost).forEach(k => need.add(k));
@@ -172,5 +173,46 @@ for (const q of D.quests.filter(q => q.house || q.against)) {
   ok(D.map.points[q.id], `quest ${q.id} map point`);
 }
 ok(MD.stages[MD.stages.length - 1].at === 100 && MD.stages[0].at === 0, "courtship stages span 0..100");
-console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));
 if (fail) process.exit(1);
+
+// ---- craft paths (data/paths.json)
+{
+  const PP = D.paths, all = [...PP.paths, ...PP.comboPaths], ids = all.map(x => x.id);
+  const skillIds = new Set(D.skills.map(x => x.id)), pieceIds = new Set(D.estate.pieces.map(x => x.id));
+  ok(new Set(ids).size === ids.length, "path ids unique (paths + combos)");
+  ok(PP.ranks.length === 4 && PP.ranks.every((r, i) => !i || (r.xp > PP.ranks[i - 1].xp && r.skill >= PP.ranks[i - 1].skill)), "4 ranks with rising thresholds");
+  ok(PP.maxPaths >= 2 && PP.secondaryGap >= 1 && PP.specAt > 0 && PP.specAt < PP.ranks.length, "path cap / gap / specAt sane");
+  const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing"];
+  const specIds = [];
+  for (const P of all) {
+    ok(P.skills.length && P.skills.every(k => skillIds.has(k)), `path ${P.id} skills real`);
+    ok(pieceIds.has(P.station) && skillIds.has(P.craftSkill), `path ${P.id} station/craftSkill real`);
+    ok(P.specs.length >= 2, `path ${P.id} offers 2+ specialties`);
+    for (const f of [...P.fx, ...P.specs.flatMap(x => x.fx)]) ok(KINDS.includes(f.kind) && f.v > 0, `path ${P.id} fx ${f.kind} known`);
+    for (const f of P.specs.flatMap(x => x.fx)) for (const b of f.bases || []) ok(!!E.itemDef(b), `spec base ${b} exists`);
+    specIds.push(...P.specs.map(x => x.id));
+  }
+  ok(new Set(specIds).size === specIds.length, "specialty ids unique");
+  for (const C of PP.comboPaths) {
+    ok(C.requires.length >= 2, `combo ${C.id} has 2+ inputs`);
+    for (const q of C.requires)
+      ok(q.classLine ? D.classes.some(c => c.id === q.classLine) : q.skill ? skillIds.has(q.skill) : PP.paths.some(x => x.id === q.path) && (!q.spec || PP.paths.find(x => x.id === q.path).specs.some(z => z.id === q.spec)), `combo ${C.id} input ${q.path || q.skill} real`);
+  }
+  for (const [k, q] of Object.entries(PP.classMap))
+    ok((q.paths === "*" || q.paths.every(x => ids.includes(x))) && (!q.spec || all.some(P => P.specs.some(z => z.id === q.spec))), `classMap ${k} maps to real paths/specs`);
+  for (const [k, plan] of Object.entries(PP.migrate))
+    ok(plan.every(([p, r, sp]) => ids.includes(p) && PP.ranks[r] && (!sp || all.find(x => x.id === p).specs.some(z => z.id === sp))) && plan.slice(1).every(([p, r]) => all.find(x => x.id === p).comboPaths || PP.comboPaths.some(c => c.id === p) || r <= plan[0][1] - PP.secondaryGap), `migrate ${k} valid and within secondary caps`);
+  ok(PP.comboPaths.every(C => C.requires.some(q => q.path === "scribe")), "every combo needs Scribe");
+  ok(PP.comboPaths.find(C => C.id === "artificer").requires.some(q => q.classLine === "apprentice") && PP.comboPaths.find(C => C.id === "battlesmith").requires.some(q => q.classLine === "fighter"), "class-gated combos (Artificer mage line, Battle Smith warrior line)");
+  ok(!D.classes.some(c => c.id === "couturier"), "Couturier dropped");
+  ok(D.classes.filter(c => c.line === "artisan").every(c => c.retired), "old crafter classes retired");
+  const rcs = D.crafting.recipes;
+  for (const P of PP.paths) for (const c of PP.classLines) ok(rcs.some(r => r.path === P.id && r.forClass === c && E.itemDef(r.base)), `${P.name} has a class recipe for ${c}`);
+  ok(rcs.filter(r => r.forClass).every(r => r.path && D.classes.some(c => c.id === r.forClass)), "class recipes name real path + class");
+  ok(rcs.filter(r => r.path === "carpenter" && r.forClass === "hunter").length && rcs.some(r => r.path === "carpenter" && r.forClass === "apprentice" && /staff/i.test(r.name)), "Carpenter: Rangers get bows, Mages staves");
+  ok(PP.paths.some(x => x.id === "woodsman") && D.estate.meals.menu.mushrooms, "Woodsman + mushrooms resource");
+  ok(!PP.paths.find(x => x.id === "carpenter").specs.some(z => z.id === "shipwright") && PP.comboPaths.some(c => c.id === "shipwright"), "Shipwright moved to a combo");
+  ok(PP.paths.find(x => x.id === "smithing").specs.some(z => z.id === "jeweler"), "Jeweler is a Smithing specialty");
+  ok(!PP.paths.find(x => x.id === "mason").specs.some(z => z.id === "architect"), "Architect is not a Mason specialty");
+}
+console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));

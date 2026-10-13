@@ -175,13 +175,18 @@
    "icon": "🔨",
    "town": "millbrook",
    "path": [
-    "artisan",
-    "blacksmith",
+    "smithing",
+    "armorer",
     "carpenter",
-    "alchemist",
-    "tailor"
+    "tailor",
+    "alchemy",
+    "woodsman",
+    "mason",
+    "farmer",
+    "cook",
+    "scribe"
    ],
-   "desc": "Hearthstone Builders: open to everyone (doesn't count toward the one-guild rule). Teaches the Artisan profession.",
+   "desc": "Open to all. Pick a main craft path; your guild rank follows it. Combo paths (Architect, Engineer, Artificer, Apothecary, Shipwright) open when one member ranks the right paths.",
    "req": {
     "skills": {
      "carpentry": 5,
@@ -198,7 +203,7 @@
     "appraisal"
    ],
    "open": true,
-   "profession": "artisan"
+   "pathRanks": true
   }
  ],
  "adventurers": {

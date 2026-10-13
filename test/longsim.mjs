@@ -14,6 +14,9 @@ const T = D.tuning,
 const issues = [];
 const seen = {
   enchants: 0,
+  pathOpens: 0,
+  specs: 0,
+  combos: 0,
   picks: 0,
   evolves: 0,
   setWorn: 0,
@@ -115,6 +118,20 @@ function check(s, seed) {
 }
 
 function bot(s, m) {
+  // craft paths: main by best skill, more as slots open, a specialty at Master, any combo that qualifies
+  if (s.day % 30 === 6 && E.daysOfStock(s) > 10)
+    for (const o of E.living(s).filter(x => E.isAdult(x))) {
+      if (!o.craft && s.res.coin > 1500 && s.day > 5 * YD && !E.joinIssues(s, o, "hearth").length) E.joinGuild(s, o, "hearth");
+      if (!o.craft) continue;
+      const lv = P => Math.max(...P.skills.map(k => o.skills[k].lvl)) + ((o.id + P.id.length) % 4);
+      const opts = E.pathDefs().filter(P => !P.advanced && !E.openPathIssue(s, o, P.id)).sort((a, b) => lv(b) - lv(a));
+      if (opts.length && E.openPath(s, o, opts[0].id)) seen.pathOpens++;
+      for (const e of E.memberPaths(o)) {
+        const ch = E.specChoices(o, e.id);
+        if (ch.length && E.chooseSpec(s, o, e.id, ch[o.id % ch.length].id)) seen.specs++;
+      }
+      for (const P of E.pathDefs().filter(P => P.advanced)) if (!E.openPathIssue(s, o, P.id) && E.openPath(s, o, P.id)) seen.combos++;
+    }
   const g = s;
   if (s.pendingEnc) {
     seen.enc++;
@@ -197,7 +214,7 @@ function bot(s, m) {
     else if (!E.tutActive(s) && (!E.isBusy(m) || E.daysOfStock(s) < 1) && !(m.action && m.action.target === "chores")) {
       E.setAction(s, { type: "activity", target: "chores" });
       return;
-    }
+    } else if (!(s.structures || []).length && m.action && m.action.target === "chores") return; // fresh lineage: stay on chores until stocked
   }
   if (E.isAdult(m) && !E.isBusy(m) && !E.tutActive(s) && s.day % 50 < 3 && E.daysOfStock(s) >= 10) {
     const q = D.quests.find(q => (q.house || q.needsFeud) && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp <= E.cp(s, m));
@@ -259,6 +276,7 @@ function bot(s, m) {
   for (const gd of D.guilds.guilds || D.guilds)
     if (!E.joinIssues(s, m, gd.id).length && E.joinGuild(s, m, gd.id)) seen.guilds.add(gd.id);
   if (m.guild) E.rankUp(s, m);
+
   if (m.adv !== undefined && !m.adv && m.cls) E.joinAdventurers && E.joinAdventurers(s, m);
   if (m.adv) E.advRankUp && E.advRankUp(s, m);
   // others work quests
@@ -404,6 +422,12 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
   for (const id of [...s.vault, ...s.members.flatMap(m => Object.values(m.equip || {})), ...(s.minions || []).flatMap(x => Object.values(x.equip || {}))]) if (!E.itemDef(id)) bad(seed, s.day, 'unloadable item ' + id);
+  for (const o of s.members.filter(x => x.alive !== false)) {
+    if (o.prof) bad(seed, s.day, 'old m.prof survived migration ' + o.name);
+    const ps = E.memberPaths(o);
+    if (ps.filter(e => !E.pathDef(e.id).advanced).length > D.paths.maxPaths) bad(seed, s.day, 'over the path cap ' + o.name);
+    for (const e of ps) if (e.rank > E.pathCap(o, e) || (e.spec && e.srank > e.rank)) bad(seed, s.day, 'path rank over its cap ' + o.name + ' ' + e.id);
+  }
   for (const mi of s.minions || []) {
     if ((mi.pending || []).length > D.minions.milestones.maxPending) bad(seed, s.day, 'pending upgrades over cap ' + mi.name);
     for (const sl of Object.keys(mi.equip || {})) if (!E.minionSlots(mi).includes(sl)) bad(seed, s.day, 'follower gear in a locked slot ' + sl);
@@ -435,6 +459,13 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
     phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),
+    paths: (() => {
+      const o = {};
+      for (const m of s.members) for (const e of E.memberPaths(m)) o[e.id] = Math.max(o[e.id] || 0, e.rank);
+      return o;
+    })(),
+    pathXp: s.members.filter(m => m.alive !== false).flatMap(m => E.memberPaths(m).map(e => e.id + ':' + Math.round(e.xp) + '/L' + Math.max(...E.pathDef(e.id).skills.map(k => m.skills[k].lvl)))),
+    pathSpecs: s.members.flatMap(m => E.memberPaths(m).filter(e => e.spec).map(e => e.spec)),
     minionUps: (s.minions || []).reduce((a, mi) => a + (mi.ups || []).length, 0),
     fullSetFollowers: (s.minions || []).filter(mi => E.setProgress(mi.equip).some(p => p.n >= 4)).length,
     sets: s.vault.concat(s.members.flatMap(m => Object.values(m.equip || {}))).filter(id => (E.itemDef(id) || {}).set).length,
@@ -498,7 +529,7 @@ console.log(
   JSON.stringify(Object.fromEntries(Object.entries(coinBy).map(([k, v]) => [k, Math.round(v)]))),
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
-console.log("enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
+console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

@@ -9,6 +9,7 @@ const errs = [];
 p.on("pageerror", e => errs.push(e.message));
 p.on("dialog", d => d.accept());
 await p.goto("http://localhost:" + (process.env.PORT || 8137) + "/");
+await p.waitForFunction(() => window.__game); // let the first load finish before clearing + reloading (avoids aborted data fetches)
 await p.evaluate(() => localStorage.clear());
 await p.reload();
 await p.waitForFunction(() => window.__game);

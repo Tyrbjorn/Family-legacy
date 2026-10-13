@@ -5,6 +5,7 @@ import * as E from "../engine.js";
 import { suitorCard } from "./houses-tab.js";
 import { badges, cl, costStr, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
+import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
 
 export function hero() {
@@ -16,9 +17,9 @@ export function hero() {
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b ${sheetOpen ? "sel" : ""}" data-a="sheet">📋 Character Sheet ${sheetOpen ? "▴" : "▾"}</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
   if (sheetOpen) h += sheet(m);
-  h += trainingv(m) + activities(m);
+  h += trainingv(m) + activities(m) + pathsCard(s, m);
   const evo = D.classes.filter(
-    c => (c.from === m.cls && !c.profession) || (m.prof && c.from === m.prof && c.profession),
+    c => c.from === m.cls && !c.profession && !c.retired,
   );
   if (evo.length)
     h +=
@@ -103,8 +104,9 @@ export function activities(m) {
 
 export function craftv(m) {
   const a = m.action;
-  const pf = m.prof && cl(m.prof);
-  let h = `<h3>🔨 Crafting ${pf ? `<span class="muted">· ${pf.icon} ${pf.name}</span>` : ""}</h3><div class="muted">Needs stations in your buildings and materials. Quality (Crude→Masterwork) comes from skill, stations, synergies and profession.</div>`;
+  const mp = E.mainPath(m),
+    pf = mp && E.pathDef(mp.id);
+  let h = `<h3>🔨 Crafting ${pf ? `<span class="muted">· ${pf.icon} ${E.pathRankName(mp.rank)} ${pf.name}</span>` : ""}</h3><div class="muted">Needs stations in your buildings and materials. Quality (Crude→Masterwork) comes from skill, stations, synergies and profession.</div>`;
   for (const rc of D.crafting.recipes) {
     const iss = E.recipeIssue(s, m, rc),
       on = a && a.type === "craft" && a.target === rc.id;
@@ -190,7 +192,7 @@ export function guildCard(m) {
     advLine(m) +
     guildCard0(m) +
     (m.craft
-      ? `<div class="card row"><span>🔨 Crafters' Guild (open)</span><span>${E.rankName(m.craft.rank)} · ${m.prof ? cl(m.prof).name : ""}</span></div>`
+      ? `<div class="card row"><span>🔨 Crafters' Guild (open)</span><span>${E.mainPath(m) ? E.pathRankName(E.mainPath(m).rank) + " " + E.pathDef(E.mainPath(m).id).name : "choose a main path"}</span></div>`
       : "")
   );
 }

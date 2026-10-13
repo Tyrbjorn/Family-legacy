@@ -1,4 +1,5 @@
 import { backfillMilestones } from "./minionups.js";
+import { migratePaths } from "./paths.js";
 import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
 import { startTutorial } from "./tutorial.js";
@@ -356,6 +357,12 @@ const STEPS = [
     once: true,
     name: "follower milestone upgrades: backfill earned milestones (auto, quiet), default Auto mode",
     run: s => backfillMilestones(s),
+  },
+  {
+    n: 11,
+    once: true,
+    name: "craft paths: Crafter classes (m.prof) become path ranks; Couturier → Master Tailor (Leatherworker); Architect → Carpenter/Mason/Scribe + Architect combo",
+    run: s => migratePaths(s),
   },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));

@@ -1,3 +1,4 @@
+import { famFx } from "./paths.js";
 import { extraSlots, onMinionEvolve, onMinionLevel, upJobMult, upVigor } from "./minionups.js";
 import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
@@ -453,7 +454,8 @@ export function minionGearMult(mi, job) {
   return m + minionSetMult(mi, job) + upJobMult(mi, job);
 }
 
-export const minionSurvival = mi => 1 / (1 + ((itemDef((mi.equip || {}).armor) || {}).cp || 0) / 20 + upVigor(mi));
+export const minionSurvival = (mi, s) =>
+  1 / (1 + ((itemDef((mi.equip || {}).armor) || {}).cp || 0) / 20 + upVigor(mi) + (s ? famFx(s, "survival") : 0));
 export const minionSlots = mi => [...CR().minionSlots, ...extraSlots(mi)];
 
 export function equipMinion(s, uid, id) {

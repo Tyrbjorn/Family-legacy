@@ -21,6 +21,7 @@ import { defaultAction } from "./actions.js";
 import { eff } from "./estate.js";
 import { cp } from "./family.js";
 import { lineBonus } from "./guilds.js";
+import { memberFx, pathFinds } from "./paths.js";
 import { addToVault, itemDef } from "./inventory.js";
 import { addMinion, minionRoom } from "./minions.js";
 import { dungeonClear, dungeonDef, dungeonFloor, questIssue, resolveQuest, rollRare } from "./quests.js";
@@ -86,7 +87,8 @@ export function travelTick(s, m, a, eff) {
         Math.max(0.2, 1 + buffSum(s, "gather")) *
         seasonGather(s);
       const gb = lineBonus(m);
-      for (const [k, v] of Object.entries(n.res)) s.res[k] = (s.res[k] || 0) + v * mul * (1 + (gb[k] || 0));
+      for (const [k, v] of Object.entries(n.res)) s.res[k] = (s.res[k] || 0) + v * mul * (1 + (gb[k] || 0) + memberFx(m, "gather", k));
+      for (const [k, v] of Object.entries(pathFinds(m, n.skill))) s.res[k] = (s.res[k] || 0) + v * mul;
       gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
       rollRare(s, n, m);
     }

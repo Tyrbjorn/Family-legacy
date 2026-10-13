@@ -29,6 +29,7 @@ export const structReqText = reqs =>
   (reqs || []).map(r => r.buildings.map(id => structDef(id).name).join("/") + (r.up ? " upg " + r.up : "")).join(" + ");
 
 export function canEvolve(s, m, c) {
+  if (c.retired) return false;
   if (c.needsBuildings && !structReqOk(s, c.needsBuildings)) return false;
   const mg = c.guild && memberGuild(m, c.guild);
   return (
@@ -104,10 +105,7 @@ export function joinGuild(s, m, gid) {
   s.res.coin -= g.req.coin || 0;
   if (g.open) {
     m.craft = { id: gid, rank: 0, rep: 0 };
-    if (g.profession && !m.prof) {
-      m.prof = g.profession;
-      log(s, `🧑‍🔧 ${m.name} took up the ${D.classes.find(c => c.id === m.prof).name} profession.`);
-    }
+    if (!m.paths) m.paths = [];
   } else {
     m.guild = { id: gid, rank: 0, rep: 0 };
     if (g.grantsClass && (!m.cls || m.cls === "adventurer")) {
@@ -136,6 +134,7 @@ export function nextRank(m, gid) {
 export function canRankUp(s, m, gid) {
   const g = mgOf(m, gid),
     n = nextRank(m, gid);
+  if (g && guildDef(g.id || gid) && guildDef(g.id || gid).pathRanks) return false; // Crafters' rank follows the main path
   return !!n && g.rep >= n.rep && s.res.coin >= n.cost;
 }
 

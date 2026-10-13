@@ -845,5 +845,550 @@
   "cp": 18,
   "value": 600,
   "set": "moonlit"
+ },
+ {
+  "id": "training_weights",
+  "name": "Training Weights",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "hunting_knife",
+  "name": "Hunting Knife",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "copper_focus_ring",
+  "name": "Copper Focus Ring",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "censer_chain",
+  "name": "Censer Chain",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "lockpick_set",
+  "name": "Lockpick Set",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true,
+  "toolFor": "craft"
+ },
+ {
+  "id": "trail_pitons",
+  "name": "Trail Pitons",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true,
+  "toolFor": "craft"
+ },
+ {
+  "id": "bastard_sword",
+  "name": "Bastard Sword",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "barbed_arrowheads",
+  "name": "Barbed Arrowheads",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "runed_gauntlets",
+  "name": "Runed Gauntlets",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "sunsteel_mace",
+  "name": "Sunsteel Mace",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "twin_stilettos",
+  "name": "Twin Stilettos",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "explorers_brigandine",
+  "name": "Explorer's Brigandine",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "oak_tower_shield",
+  "name": "Oak Tower Shield",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "hunters_recurve",
+  "name": "Hunter's Recurve",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "rowan_staff",
+  "name": "Rowan Staff",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "pilgrims_staff",
+  "name": "Pilgrim's Staff",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "hidden_blade_cane",
+  "name": "Hidden-blade Cane",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "rangers_flatbow",
+  "name": "Ranger's Flatbow",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "padded_gambeson",
+  "name": "Padded Gambeson",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "camouflage_cloak",
+  "name": "Camouflage Cloak",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "starweave_robe",
+  "name": "Starweave Robe",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "vestment_of_dawn",
+  "name": "Vestment of Dawn",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "shadow_hood",
+  "name": "Shadow Hood",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "travelers_pack_coat",
+  "name": "Traveler's Pack Coat",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "battle_tonic_flask",
+  "name": "Battle Tonic Flask",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "scent_mask_pouch",
+  "name": "Scent-mask Pouch",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "mana_vial_bandolier",
+  "name": "Mana Vial Bandolier",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "holy_water_phial",
+  "name": "Holy Water Phial",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "venom_vial",
+  "name": "Venom Vial",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "explorers_elixir_kit",
+  "name": "Explorer's Elixir Kit",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "boar_tusk_charm",
+  "name": "Boar Tusk Charm",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "snare_kit",
+  "name": "Snare Kit",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true,
+  "toolFor": "gather"
+ },
+ {
+  "id": "mushroom_satchel",
+  "name": "Mushroom Satchel",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "sacred_grove_sprig",
+  "name": "Sacred Grove Sprig",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "bane_oil",
+  "name": "Bane Oil",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "pathfinders_kit",
+  "name": "Pathfinder's Kit",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true,
+  "toolFor": "gather"
+ },
+ {
+  "id": "granite_buckler",
+  "name": "Granite Buckler",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "slingstones_pouch",
+  "name": "Slingstones Pouch",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "runestone_tablet",
+  "name": "Runestone Tablet",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "shrine_icon",
+  "name": "Shrine Icon",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "shadow_tincture_stone",
+  "name": "Shadow Tincture Stone",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "wayfinder_cairnstone",
+  "name": "Wayfinder Cairnstone",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "field_flail",
+  "name": "Field Flail",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "falconers_glove",
+  "name": "Falconer's Glove",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "mandrake_charm",
+  "name": "Mandrake Charm",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "harvest_blessing_wreath",
+  "name": "Harvest Blessing Wreath",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "smugglers_grain_sack",
+  "name": "Smuggler's Grain Sack",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "jerky_pouch",
+  "name": "Jerky Pouch",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "hearty_ration_tin",
+  "name": "Hearty Ration Tin",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "smoked_trail_strips",
+  "name": "Smoked Trail Strips",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "spiced_tea_flask",
+  "name": "Spiced Tea Flask",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "blessed_loaf",
+  "name": "Blessed Loaf",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "pickpockets_sweets",
+  "name": "Pickpocket's Sweets",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "expedition_stew_pot",
+  "name": "Expedition Stew Pot",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true,
+  "toolFor": "craft"
+ },
+ {
+  "id": "drill_manual",
+  "name": "Drill Manual",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "hunting_grounds_map",
+  "name": "Hunting Grounds Map",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "spellbook_primer",
+  "name": "Spellbook Primer",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "book_of_hours",
+  "name": "Book of Hours",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "forged_papers",
+  "name": "Forged Papers",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 110,
+  "pathItem": true
+ },
+ {
+  "id": "explorers_atlas",
+  "name": "Explorer's Atlas",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 18,
+  "value": 110,
+  "pathItem": true
  }
 ]

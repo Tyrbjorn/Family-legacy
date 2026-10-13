@@ -33,7 +33,7 @@ export function top() {
 
 export function memberLine(m) {
   const c = cl(m.cls);
-  return `${m.gender === "f" ? "👩" : "👨"} <b>${m.name}</b> · ${E.ageY(m)}y · ${c ? c.icon + " " + c.name : E.isAdult(m) ? "Commoner" : "Child"}${m.prof ? " + " + cl(m.prof).icon + " " + cl(m.prof).name : ""} · CP ${E.cp(s, m)} · ⭐ ${fmt(m.renown || 0)}`;
+  return `${m.gender === "f" ? "👩" : "👨"} <b>${m.name}</b> · ${E.ageY(m)}y · ${c ? c.icon + " " + c.name : E.isAdult(m) ? "Commoner" : "Child"}${E.mainPath(m) ? " + " + E.pathDef(E.mainPath(m).id).icon + " " + E.pathRankName(E.mainPath(m).rank) + " " + E.pathDef(E.mainPath(m).id).name : ""}${E.pendingPathChoices(m) ? " 🎯" : ""} · CP ${E.cp(s, m)} · ⭐ ${fmt(m.renown || 0)}`;
 }
 
 export function badges(m) {

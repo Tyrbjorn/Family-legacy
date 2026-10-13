@@ -3,13 +3,15 @@
 import { seasonYield } from "./seasons.js";
 import { resGain } from "./legacy.js";
 import { mtype } from "./minions.js";
+import { famFx } from "./paths.js";
 import { D, ageY, isAdult, living } from "./state.js";
 import { ES, activeSynergies, baseId, classSynMult, pieceDef, pieceTier, scaledPiece } from "./estate.js";
 
 // cooked food quality: station tier and the best cook's skill
 export function foodQualityOf(s, p) {
   const q = ES().foodQuality || { perTier: 0, perCookLvl: 0, skill: "cooking" };
-  return 1 + pieceTier(p.id) * q.perTier + operatorLvl(s, q.skill) * q.perCookLvl;
+  const out = ((p.bonus && p.bonus.processes) || [{}])[0].out;
+  return 1 + pieceTier(p.id) * q.perTier + operatorLvl(s, q.skill) * q.perCookLvl + famFx(s, "foodQ", out);
 }
 
 export function blendFoodQ(s, res, n, q) {
@@ -85,7 +87,7 @@ export function inputQuality(s, inp) {
 function cropQ(s, p, pr) {
   const c = ES().cropQuality;
   if (!c || Object.keys(pr.in || {}).length || !c.res.includes(pr.out)) return 0;
-  return 1 + operatorLvl(s, c.skill) * c.perLvl;
+  return 1 + operatorLvl(s, c.skill) * c.perLvl + famFx(s, "cropQ", pr.out);
 }
 
 export function processDay(s, mul = 1) {
@@ -100,7 +102,7 @@ export function processDay(s, mul = 1) {
         if (n <= 0) continue;
         const inQ = inputQuality(s, pr.in);
         for (const [k, v] of Object.entries(pr.in)) s.res[k] -= v * n;
-        const made = n * yl * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
+        const made = n * yl * (1 + famFx(s, "yield", pr.out)) * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
         const cq = cropQ(s, p, pr);
         if (pr.food) blendFoodQ(s, pr.out, made, Math.min(Q_MAX, foodQualityOf(s, p) * inQ));
         else if (cq) blendFoodQ(s, pr.out, made, cq);

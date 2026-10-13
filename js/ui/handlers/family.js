@@ -24,4 +24,6 @@ export const familyActions = ({ v, b, m }) => ({
     return sel ? E.marryOut(s, +sel.value, v) : false;
   },
   evolve: () => E.evolve(s, m, v),
+  openpath: () => E.openPath(s, m, v),
+  pickspec: () => E.chooseSpec(s, m, v, b.dataset.w),
 });

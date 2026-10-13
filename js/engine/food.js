@@ -4,6 +4,7 @@ import { introNote } from "./intros.js";
 // the ration level trades consumption for morale; shortages drag morale (and so output) down.
 import { ES, reserveOf } from "./estate.js";
 import { D, living } from "./state.js";
+import { famFx } from "./paths.js";
 import { household } from "./courtship.js";
 import { wearyMorale } from "./war.js";
 
@@ -96,6 +97,7 @@ export function eatDay(s) {
       M.max,
       rationDef(s).morale +
         varietyMorale(menu.length) +
+        (menu.length > 1 ? famFx(s, "variety") : 0) +
         drinks +
         M.shortageMorale * short +
         household(s, "morale") +

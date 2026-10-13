@@ -37,6 +37,7 @@ const names = [
   "phases",
   "intros",
   "gear",
+  "paths",
 ];
 
 export const D = {};

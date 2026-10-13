@@ -155,3 +155,13 @@ The bottom bar has 6 groups: Main · Work (Jobs, Guilds) · Map · Bag · Estate
 
 ### Follower milestones
 Every `minions.milestones.every` levels (4 by default) a follower gains an upgrade from `data/minions.json` → `milestones.pool`. Upgrades include extra gear slots (offhand, then accessory, so an evolved follower can wear a full 4-piece set), vault packs, carry, might, vigor, wits and job perks. Evolution grants a bigger upgrade (×`bigMult`). Each follower is **Auto** by default (picks by branch/class `prefs`) or **Manual** (you choose from `offer` options; waiting choices show a 🎯 badge, never block play, and overflow past `maxPending` auto-picks).
+
+### Craft paths (Crafters' Guild)
+Family members rank craft paths from `data/paths.json`: Apprentice → Journeyman → Master → Grandmaster. Ranks need path XP (earned 1:1 from XP in the path's skills; `openCredit` gives back half of what's already learned) plus a skill gate. Followers keep their NPC classes.
+- **Paths:** Smithing, Armorer, Carpenter, Tailor, Alchemy, Woodsman (gathering; finds 🍄 mushrooms), Mason, Farmer, Cook and Scribe. Join the Crafters' Guild, pick one main path, and each rank gained opens one more (up to `maxPaths` 3). Secondaries stay `secondaryGap` ranks below the main. Guild rank follows the main path.
+- **Specialties:** chosen once per path at Master. They rank the same way, capped at the path's rank. Examples: Jeweler/Toolsmith/Locksmith, Bowyer/Luthier/Cooper, Rancher/Orchardist/Brewer, Baker/Chef/Butcher-Smoker, Sculptor/Castellan, Cartographer/Bookbinder.
+- **Combo paths** (`comboPaths`): Architect, Engineer, Artificer, Apothecary, Shipwright and Battle Smith. Inputs are `{path,rank}`, `{path,spec}`, `{skill,lvl}` or `{classLine}`, all on ONE member, and every combo also needs Scribe. Combos don't use a slot, aren't capped, and never block their inputs. Locked requirements are listed in the UI.
+- **Class recipes:** every path has a recipe per adventuring class line (`forClass`, Journeyman). For example, Carpenter gives Rangers bows and Mages staves.
+- **Effects** are data-driven `fx` kinds: craft, yield, gather, find, foodQ, cropQ, variety, vault, survival, trainXp, enchant, land, blessing. They hook into the food chain (cook/crop quality, process yields, variety morale), gathering, the vault, war, training and enchanting.
+- **Old crafter classes** migrate (save step 11) through `migrate`/`classMap`, so `requiresClass` and `classPerks` keep working. Couturier is dropped and becomes Master Tailor (Leatherworker). Architect becomes Carpenter, Mason and Scribe plus the Architect combo.
+- Add a path or combo by appending to the lists. The engine and UI read them.

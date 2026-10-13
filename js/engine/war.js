@@ -65,7 +65,7 @@ export function battle(s, id) {
     if (hurt) hurt.injured = Math.max(hurt.injured, W.injureDays);
     const g = (s.minions || []).filter(x => x.job === "guard" && !x.special);
     let gone = null;
-    if (g.length && rng() < W.minionLossChance * minionSurvival(g[0])) {
+    if (g.length && rng() < W.minionLossChance * minionSurvival(g[0], s)) {
       gone = g[Math.floor(rng() * g.length)];
       s.minions = s.minions.filter(x => x !== gone);
     }

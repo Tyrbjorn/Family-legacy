@@ -4,12 +4,13 @@ import { guildDef, memberGuild } from "./guilds.js";
 import { regionKnown } from "./map.js";
 import { D, afford, ageY, bl, cost, isAdult, living, log, pay } from "./state.js";
 import { inLine } from "./skills.js";
+import { famFx, pathReqName } from "./paths.js";
 export * from "./production.js";
 
 // ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
 const CPK = () => Object.entries(D.crafting.classPerks || {}).filter(([k]) => k[0] !== "_");
 export const famHasClass = (s, c) => living(s).some(m => inLine(m, c));
-export const className = c => (D.classes.find(x => x.id === c) || { name: c }).name;
+export const className = c => pathReqName(c) || (D.classes.find(x => x.id === c) || { name: c }).name;
 export const classLock = (s, c) => (c && !famHasClass(s, c) ? `needs ${/^[AEIOU]/.test(className(c)) ? "an" : "a"} ${className(c)} in the family` : null);
 export const piecePerk = (s, pid) =>
   CPK().reduce((a, [c, k]) => a + (k.pieces.includes(baseId(pid)) && famHasClass(s, c) ? k.furniture : 0), 0);
@@ -181,7 +182,8 @@ export const hasLand = s => (s.land || []).length > 0;
 
 export const established = s => hasLand(s) && (s.structures || []).length > 0;
 
-export const landSlots = s => (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0);
+export const landSlots = s =>
+  (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0) + ((s.land || []).length ? Math.floor(famFx(s, "land")) : 0);
 
 export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +

@@ -4208,7 +4208,8 @@
   "eggs": 1,
   "honey": 1,
   "vegetables": 1,
-  "berries": 1
+  "berries": 1,
+  "mushrooms": 1
  },
  "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output.",
  "foodQuality": {
@@ -4233,7 +4234,8 @@
    "eggs": 1,
    "honey": 1,
    "vegetables": 1,
-   "berries": 1
+   "berries": 1,
+   "mushrooms": 1
   },
   "defaultOff": [
    "meat",

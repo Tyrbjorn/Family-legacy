@@ -54,3 +54,5 @@ Everything from Eras 1–2 keeps working alongside these.
 
 - [x] Follower milestone upgrades (Auto/Manual, extra slots → 4-piece follower sets, save step 10)
 - [x] estate.js split: production.js
+- [x] Craft paths for family members (10 paths, specialties, 6 combo paths, class recipes, save step 11)
+- [ ] Jeweler as its own path? (now a Smithing specialty); more combos

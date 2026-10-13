@@ -1,9 +1,10 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
+const asProf=(m,c)=>{m.paths=null;m.prof=c||undefined;if(c)m.craft=m.craft||{id:'hearth',rank:0,rep:0};if(c)E.migratePaths({members:[m]});else m.paths=[];};
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
 const t0=1_700_000_000_000; let s=E.newGame(t0);
@@ -57,7 +58,7 @@ ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest
 gm2.skills.swordsmanship.lvl=5; const _st=gm2.stats.STR; gm2.stats.STR=1; ok(!E.joinGuild(G,gm2,'vanguard')&&E.joinIssues(G,gm2,'vanguard').length,'join requirements enforced'); gm2.stats.STR=_st;
 gm2.skills.swordsmanship.lvl=12; ok(E.joinGuild(G,gm2,'vanguard')&&gm2.guild.id==='vanguard','join guild');
 gm2.skills.archery.lvl=20;gm2.stats.AGI=20; ok(!E.joinGuild(G,gm2,'lodge')&&E.joinIssues(G,gm2,'lodge')[0].startsWith('sworn'),'membership blocks other class guilds');
-gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(E.joinGuild(G,gm2,'hearth')&&gm2.guild.id==='vanguard'&&gm2.craft&&gm2.prof==='artisan','Crafters open to sworn members, grants Artisan profession');
+gm2.skills.carpentry.lvl=20;gm2.skills.smithing.lvl=20; ok(E.joinGuild(G,gm2,'hearth')&&gm2.guild.id==='vanguard'&&gm2.craft&&Array.isArray(gm2.paths)&&E.pendingPathChoices(gm2)===1,'Crafters open to sworn members; a main path is offered');
 ok(E.setAction(G,{type:'train',target:'tactics'})!==false&&E.canTrain(gm2,'tactics'),'guild unlocks new skill');
 ok(!E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank-gated guild items');
 gm2.guild.rep=60; ok(E.rankUp(G,gm2)&&gm2.guild.rank===1&&E.buyGuildItem(G,gm2,'vanguard_tabard'),'rank up unlocks special item');
@@ -145,9 +146,9 @@ cm.ageDays=16*360; cm.stats.STR=3; ok(E.joinIssues(CG,cm,'vanguard').some(x=>x.s
 cm.stats.STR=10; ok(E.joinGuild(CG,cm,'vanguard')&&cm.cls==='fighter','Warriors grant Fighter');
 const grants={lodge:'hunter',collegium:'apprentice',church:'acolyte',rogues:'cutpurse'};
 for(const [gid,c] of Object.entries(grants)){ const X=E.newGame(t0); const xm=X.members[0]; xm.ageDays=20*360; X.res.coin=1e4; for(const k of E.STATS) xm.stats[k]=20; for(const k in xm.skills) xm.skills[k].lvl=10; ok(E.joinGuild(X,xm,gid)&&xm.cls===c,`${gid} grants ${c}`); }
-const CR=E.newGame(t0); const cr=CR.members[0]; cr.ageDays=20*360; CR.res.coin=1e4; cr.skills.carpentry.lvl=6; cr.skills.smithing.lvl=4; ok(E.joinGuild(CR,cr,'hearth')&&!cr.cls&&cr.prof==='artisan','Crafters give the Artisan profession, no primary class');
-ok(E.joinAdventurers(CR,cr)&&cr.cls==='adventurer'&&cr.prof==='artisan',"Adventurers' Guild grants Adventurer as primary class (classless members)");
-ok(D.classes.filter(c=>c.tier>0).every(c=>{const g=E.classGuild(c.id);return g&&(!c.guild||c.guild===g.id);}),'every evolution stays inside its guild line');
+const CR=E.newGame(t0); const cr=CR.members[0]; cr.ageDays=20*360; CR.res.coin=1e4; cr.skills.carpentry.lvl=6; cr.skills.smithing.lvl=4; ok(E.joinGuild(CR,cr,'hearth')&&!cr.cls&&E.openPath(CR,cr,'carpenter')&&E.mainPath(cr).id==='carpenter','Crafters: pick a main path, no primary class');
+ok(E.joinAdventurers(CR,cr)&&cr.cls==='adventurer'&&E.mainPath(cr).id==='carpenter',"Adventurers' Guild grants Adventurer as primary class (classless members)");
+ok(D.classes.filter(c=>c.tier>0&&!c.retired).every(c=>{const g=E.classGuild(c.id);return g&&(!c.guild||c.guild===g.id);}),'every evolution stays inside its guild line');
 const MG=JSON.parse(E.serialize(G,t0)); delete MG.schema; MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
 // crafting, inventory, professions, minion gear
 const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e5; K.res.wood=300; K.res.planks=100; K.res.ingots=100; K.res.hides=50; K.res.cloth=50; K.res.potions=20; K.res.ore=30; K.res.stone=300;
@@ -155,8 +156,8 @@ const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e
 ok(E.itemDef('c|iron_sword|masterwork').cp>E.itemDef('c|iron_sword|crude').cp&&E.itemDef('c|iron_sword|fine').value>E.itemDef('iron_sword').value,'crafted quality tiers scale stats and value');
 ok(E.rollQuality(-1)==='crude'&&E.rollQuality(2)==='masterwork','quality roll spans Crude→Masterwork');
 const low=E.qualityScore(K,km2,E.recipeDef('r_sword')); km2.skills.smithing.lvl=50; const hi=E.qualityScore(K,km2,E.recipeDef('r_sword')); ok(hi>low,'skill raises craft quality');
-km2.craft={id:'hearth',rank:1,rep:0}; km2.prof='artisan'; ok(E.evolve(K,km2,'blacksmith')&&km2.prof==='blacksmith'&&!km2.cls,'Artisan → Blacksmith profession (no primary class needed)');
-ok(E.profBonus(km2,E.recipeDef('r_sword'))>E.profBonus(km2,E.recipeDef('r_staff')),'profession specialty boosts matching recipes');
+km2.craft={id:'hearth',rank:0,rep:0}; ok(!E.evolve(K,km2,'blacksmith'),'old crafter classes are retired (now path ranks)'); asProf(km2,'blacksmith');
+ok(E.profBonus(km2,E.recipeDef('r_sickle'))>E.profBonus(km2,E.recipeDef('r_staff')),'path rank boosts that path\'s recipes only');
 const ing0=K.res.ingots; E.setAction(K,{type:'craft',target:'r_sword'}); E.advanceReal(K,10*4); ok(K.vault.some(x=>x.startsWith('c|iron_sword|')),'family member crafts a quality item from materials');
 ok(E.recipeIssue(K,km2,E.recipeDef('r_jerkin'))==='needs Loom','recipes need their station');
 const cs=K.vault.find(x=>x.startsWith('c|')); ok(E.listForSale(K,cs)&&K.forSale.includes(cs),'list crafted item in stock for sale');
@@ -177,7 +178,7 @@ const AV=E.newGame(t0); const av=AV.members[0]; av.ageDays=20*360; AV.res.coin=1
 av.skills.monsterlore.lvl=30; av.skills.swordsmanship.lvl=30; ok(!E.evolve(AV,av,'monsterhunter'),'adventurer branch gated by rank'); av.adv.rank=3; ok(E.evolve(AV,av,'monsterhunter'),'Rank C unlocks Monster Hunter');
 const AV2=E.newGame(t0); const a2=AV2.members[0]; a2.ageDays=20*360; AV2.res.coin=1e5; a2.stats.STR=10; a2.skills.swordsmanship.lvl=6; E.joinAdventurers(AV2,a2); ok(E.joinGuild(AV2,a2,'vanguard')&&a2.cls==='fighter'&&a2.adv,'class guild replaces Adventurer as primary; rank track kept');
 // crafter playstyle without questing: idle crafter on standing order + merchant
-const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smithing.lvl=30; cz.prof='blacksmith'; CP.res.coin=2000; CP.res.wood=200; CP.res.planks=200; CP.res.ingots=200; CP.res.stone=200; CP.res.food=400;
+const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smithing.lvl=30; asProf(cz,'blacksmith'); CP.res.coin=2000; CP.res.wood=200; CP.res.planks=200; CP.res.ingots=200; CP.res.stone=200; CP.res.food=400;
 ['plot','acre'].forEach(l=>E.buyLand(CP,l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','forge','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p));
 CP.members.push({...JSON.parse(JSON.stringify(cz)),id:99,name:'Kip'}); CP.activeId=99; E.setOrder(CP,cz.id,{type:'craft'});
 E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'idle family member crafts on standing order');
@@ -403,7 +404,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 // Crafting tab, tick speed, legacy prestige
 { const C=E.newGame(t0); E.normalize(C); const m=C.members[0]; m.ageDays=20*360;
  ok(!E.craftingUnlocked(C),'Crafting tab hidden without a crafter');
- m.prof='artisan'; ok(E.craftingUnlocked(C),'Artisan-line member unlocks Crafting'); m.prof=null; ok(E.craftingUnlocked(C),'Crafting stays unlocked once seen');
+ asProf(m,'artisan'); ok(E.craftingUnlocked(C),'Crafter (any path) unlocks Crafting'); asProf(m,null); ok(E.craftingUnlocked(C),'Crafting stays unlocked once seen');
  const C2=E.newGame(t0); estate(C2,['minionbunk'],'shack'); const mi=E.addMinion(C2,'laborer','t'); mi.cls='n_herbalist'; ok(E.craftingUnlocked(C2),'Herbalist minion unlocks Crafting');
  const rc=D.crafting.recipes[0]; const odds=E.qualityOdds(C,m,rc); ok(Math.abs(odds.reduce((a,b)=>a+b.p,0)-1)<1e-6,'quality odds sum to 100%');
  m.skills[rc.skill].lvl=60; const o2=E.qualityOdds(C,m,rc); ok(o2.at(-1).id!==odds.at(-1).id||o2.at(-1).p>odds.at(-1).p,'more skill shifts odds up');
@@ -761,11 +762,11 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
 }
 // Class crafting perks: exclusive recipes/furniture/upgrades + quality bonus on what they build
 { const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; estate(G,['bunk','forge','loom','workbench']); Object.assign(G.res,{ingots:50,leather:10,planks:20,copper:20,cloth:20,dust:20});
- const rc=E.recipeDef('r_warden_mail'); ok(/Blacksmith only/.test(E.recipeIssue(G,m,rc)||''),'class recipe locked, names the class'); m.prof='blacksmith'; m.skills.smithing.lvl=20; ok(!E.recipeIssue(G,m,rc),'Blacksmith can craft it'); m.prof='armorer'; ok(!E.recipeIssue(G,m,rc)||!/only/.test(E.recipeIssue(G,m,rc)),'advanced classes in the line inherit');
- m.prof=null; ok(/needs a Blacksmith/.test(E.pieceLock(G,E.pieceDef('runedanvil'))||''),'class furniture is locked with the class named');
- const st=G.structures[0]; const pm0=E.pieceMult(st,'forge'); m.prof='blacksmith'; ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'forge'); E.placePiece(G,st.uid,'forge',G.pieceStore.includes('forge')); ok(E.pieceMult(st,'forge')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
+ const rc=E.recipeDef('r_warden_mail'); ok(/Journeyman Smith only/.test(E.recipeIssue(G,m,rc)||''),'class recipe locked, names the class'); asProf(m,'blacksmith'); m.skills.smithing.lvl=20; ok(!E.recipeIssue(G,m,rc),'Blacksmith can craft it'); asProf(m,'armorer'); ok(!E.recipeIssue(G,m,rc)||!/only/.test(E.recipeIssue(G,m,rc)),'advanced classes in the line inherit');
+ asProf(m,null); ok(/needs a Journeyman Smith/.test(E.pieceLock(G,E.pieceDef('runedanvil'))||''),'class furniture is locked with the class named');
+ const st=G.structures[0]; const pm0=E.pieceMult(st,'forge'); asProf(m,'blacksmith'); ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'forge'); E.placePiece(G,st.uid,'forge',G.pieceStore.includes('forge')); ok(E.pieceMult(st,'forge')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
  const ws={uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:2}; G.structures.push(ws); G.res.coin=1e5; G.res.blocks=100; G.res.moonpetal=50; ok(/needs an Apprentice/.test(E.specialUpIssue(G,'w')||''),'class-gated building upgrade');
- for(const [c,k] of Object.entries(D.crafting.classPerks)) if(c[0]!=='_') ok(D.classes.some(x=>x.id===c)&&k.pieces.every(p=>E.pieceDef(p)),'perk '+c+' references real classes/pieces');
+ for(const [c,k] of Object.entries(D.crafting.classPerks)) if(c[0]!=='_') ok((D.classes.some(x=>x.id===c)||!!D.paths.classMap[c])&&k.structures.every(t=>D.estate.structures.some(x=>x.id===t))&&k.pieces.every(p=>E.pieceDef(p)),'perk '+c+' references real classes/pieces');
 }
 // Follower milestone upgrades: every N levels + double on evolution; Auto by class preference, Manual waits
 { const MS=D.minions.milestones; const G=E.newGame(t0); E.skipTutorial(G); const mk=(cls,uid)=>{const mi={uid,type:'laborer',name:'F'+uid,job:'farm',lvl:1,xp:0,equip:{},loyalty:10,cls};G.minions.push(mi);return mi;};
@@ -790,5 +791,69 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  // migration: old followers get earned milestones, quietly
  const O=E.newGame(t0); O.minions.push({uid:'o',type:'laborer',name:'Old',job:'farm',lvl:2*MS.every+1,xp:0,equip:{},loyalty:10,cls:'n_militia'}); const ol=JSON.parse(E.serialize(O,t0)); delete ol.minions[0].ups; ol.schema=9; ol._norm=false; const nl=ol.log.length; E.normalize(ol);
  ok(ol.minions[0].ups.length===3&&ol.minions[0].upMode==='auto','migration backfills milestones (+1 for the evolved class)'); ok(!ol.log.slice(nl).some(l=>/🔓/.test(l.msg)),'backfill is quiet');
+}
+
+// Craft paths for family members: ranks, extra paths capped under the main, specialties, combos, migration
+{
+  const G=E.newGame(t0), m=G.members[0]; m.ageDays=20*360; G.res.coin=1e5; m.skills.carpentry.lvl=8; m.skills.smithing.lvl=5;
+  const R=D.paths.ranks;
+  ok(/Crafters/.test(E.openPathIssue(G,m,'carpenter')||''),'paths need the Crafters\' Guild');
+  ok(E.joinGuild(G,m,'hearth')&&E.pendingPathChoices(m)===1,'joining offers a main path (badge count)');
+  ok(E.openPathIssue(G,m,'architect')==='pick a main path first','combo needs a main path first');
+  ok(E.openPath(G,m,'carpenter')&&E.mainPath(m).id==='carpenter'&&E.mainPath(m).rank===0,'main path starts at Apprentice');
+  ok(/gain a rank/.test(E.openPathIssue(G,m,'mason')||''),'no second path before a rank-up');
+  const nl=G.log.length; E.gainXp(G,m,'carpentry',R[1].xp+10); m.skills.carpentry.lvl=Math.max(m.skills.carpentry.lvl,R[1].skill); E.refreshPaths(G,m);
+  ok(E.mainPath(m).rank===1&&G.log.some(l=>/🔨.*Journeyman Carpenter/.test(l.msg)),'skill XP feeds the path; rank-up logged (🔨 craft notify)');
+  ok(m.craft.rank===1,'Crafters\' Guild rank follows the main path');
+  ok(!E.canRankUp(G,m,'hearth'),'guild rep no longer ranks Crafters');
+  ok(E.openPath(G,m,'mason')&&!E.openPathIssue(G,m,'mason')===false,'a rank-up opens one more path');
+  const ms=E.pathOf(m,'mason'); m.skills.masonry.lvl=60; E.gainXp(G,m,'masonry',R[3].xp*2);
+  ok(ms.rank===0&&E.pathCap(m,ms)===0,'secondary capped just under the main path');
+  ok(E.pathProgress(m,ms).capped,'capped progress is flagged for the UI');
+  m.skills.carpentry.lvl=R[2].skill; E.gainXp(G,m,'carpentry',R[2].xp); 
+  ok(E.mainPath(m).rank===2&&ms.rank===1,'main rank lifts the secondary cap; secondary catches up');
+  ok(E.pathSlots(m)===D.paths.maxPaths,'slots grow per rank, capped by maxPaths');
+  ok(E.openPath(G,m,'scribe'),'third path');
+  ok(/at most 3/.test(E.openPathIssue(G,m,'cook')||''),'maxPaths cap enforced');
+  // specialty at Master
+  ok(E.specChoices(m,'carpenter').map(x=>x.id).includes('cooper')&&!E.specChoices(m,'carpenter').some(x=>x.id==='shipwright'),'Master offers Carpenter specialties (Cooper; Shipwright moved to a combo)');
+  ok(!E.chooseSpec(G,m,'carpenter','weaver')&&E.chooseSpec(G,m,'carpenter','bowyer'),'only that path\'s specialties');
+  ok(E.specChoices(m,'carpenter').length===0,'one specialty per path');
+  const e=E.pathOf(m,'carpenter'); E.gainXp(G,m,'carpentry',R[3].xp); ok(e.srank>=1&&e.srank<=e.rank,'specialty ranks the same way, capped by the path');
+  ok(E.profBonus(m,E.recipeDef('r_bow'))>E.profBonus(m,E.recipeDef('r_staff')),'Bowyer boosts bows over staves');
+  // combo: Architect (Mason J + Carpenter J + Scribe) does not use a slot, inputs keep ranking
+  ok(E.advancedReqs(m,'architect').every(x=>x.ok)&&!E.openPathIssue(G,m,'architect'),'Architect unlocks on one member with Mason + Carpenter + Scribe');
+  ok(E.openPath(G,m,'architect')&&E.pathSlots(m)===3,'combo path opened beyond the 3-path cap');
+  const sx=E.pathOf(m,'scribe').xp; E.gainXp(G,m,'reading',500); ok(E.pathOf(m,'scribe').xp>sx,'combo inputs are never blocked');
+  ok(E.pathCap(m,E.pathOf(m,'architect'))===R.length-1,'combos uncapped by the main path');
+  ok(E.famHasClass(G,'architect')&&E.upgradePerk(G,'house')>0,'old Architect perks now come from the Architect path');
+  const ar=E.advancedReqs(m,'artificer'); ok(ar.some(x=>!x.ok&&/Jeweler/.test(x.text))&&ar.some(x=>!x.ok&&/line class/.test(x.text)),'locked combo lists its requirements (specialty + class line)');
+  ok(/Warrior|Fighter/.test(E.advancedReqs(m,'battlesmith').map(x=>x.text).join())||E.advancedReqs(m,'battlesmith').some(x=>/line class/.test(x.text)),'Battle Smith needs a Warriors\' class line');
+  // class recipes
+  const bow=D.crafting.recipes.find(r=>r.path==='carpenter'&&r.forClass==='hunter');
+  ok(/Hunters only/.test(E.recipePathIssue(m,bow,E.inLine)||''),'class recipe gated by adventuring class line');
+  m.cls='ranger'; ok(!E.recipePathIssue(m,bow,E.inLine),'a Ranger (hunter line) on the path gets the bow');
+  const tl=D.crafting.recipes.find(r=>r.path==='tailor'&&r.forClass==='hunter'); ok(/Journeyman Tailor/.test(E.recipePathIssue(m,tl,E.inLine)||''),'needs the path rank, named');
+}
+// path effects hook the food chain and gathering
+{
+  const G=E.newGame(t0), m=G.members[0]; m.ageDays=20*360; G.res.coin=1e5; E.joinGuild(G,m,'hearth');
+  const v0=E.famFx(G,'variety'); m.paths=[{id:'cook',xp:0,rank:2,spec:'chef',sxp:0,srank:1,}];
+  ok(E.famFx(G,'variety')>v0&&E.famFx(G,'foodQ','stew')>E.famFx(G,'foodQ','bread'),'Cook: variety bonus; Chef lifts stews more than bread');
+  m.paths=[{id:'farmer',xp:0,rank:1,spec:null,sxp:0,srank:0}]; ok(E.famFx(G,'cropQ','wheat')>0&&E.famFx(G,'cropQ','ale')===0,'Farmer: crop quality on crops only');
+  m.paths=[{id:'woodsman',xp:0,rank:1,spec:'herbalist',sxp:0,srank:0}]; ok((E.pathFinds(m,'foraging').mushrooms||0)>0&&E.memberFx(m,'gather','thyme')>E.memberFx(m,'gather','wood'),'Woodsman finds mushrooms; Herbalist favours herbs');
+  m.paths=[{id:'scribe',xp:0,rank:1,spec:'bookbinder',sxp:0,srank:0}]; ok(E.famFx(G,'trainXp')>0.05,'Scribe/Bookbinder boost family training');
+  m.paths=[{id:'smithing',xp:0,rank:2,spec:'locksmith',sxp:0,srank:1}]; const vc=E.vaultCap(G); m.paths[0].spec=null; ok(vc>E.vaultCap(G),'Locksmith adds vault space');
+}
+// migration: crafter classes → paths; FL1 code still loads
+{
+  const G=E.newGame(t0); const a=G.members[0]; a.ageDays=30*360; a.skills.tailoring.lvl=40;
+  const raw=JSON.parse(E.serialize(G,t0)); raw.schema=10; raw.members[0].prof='couturier'; delete raw.members[0].paths; raw.members[0].craft={id:'hearth',rank:3,rep:500};
+  const b={...raw.members[0],id:999,name:'Arch',prof:'architect',craft:null}; raw.members.push(b); raw._norm=false; E.normalize(raw);
+  const A=raw.members[0], B=raw.members.find(x=>x.id===999);
+  ok(!A.prof&&E.mainPath(A).id==='tailor'&&E.mainPath(A).rank===2&&E.mainPath(A).spec==='leatherworker','Couturier → Master Tailor (Leatherworker)');
+  ok(A.craft.rank===2,'guild rank re-synced to the path');
+  ok(E.pathOf(B,'architect')&&E.mainPath(B).id==='carpenter'&&E.pathOf(B,'mason')&&E.pathOf(B,'scribe')&&B.craft,'Architect → Carpenter main + Mason + Scribe + Architect combo');
+  ok(E.inLine(B,'carpenter')&&E.inLine(B,'architect')&&!E.inLine(B,'blacksmith'),'requiresClass ids map to path ranks');
 }
 console.log(pass,'tests passed');

@@ -1,4 +1,5 @@
 import { upPacks } from "./minionups.js";
+import { famFx, memberFx, recipePathIssue } from "./paths.js";
 import { introNote } from "./intros.js";
 import { houseSellMult } from "./houses.js";
 import { seasonPrice } from "./seasons.js";
@@ -145,7 +146,7 @@ export function itemDef(id) {
   return D.items.find(i => i.id === id) || null;
 }
 
-export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9) + upPacks(s);
+export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9) + upPacks(s) + Math.floor(famFx(s, "vault"));
 
 export const vaultRoom = s => s.vault.length < vaultCap(s);
 
@@ -163,6 +164,8 @@ export function recipeIssue(s, m, rc) {
   if (rc.hidden && !s.unlocks.includes("recipe:" + rc.id)) return "recipe not found";
   if (rc.legacy && !hasLegacy(s, rc.legacy)) return "needs Legacy upgrade";
   if (rc.requiresClass && !(m && inLine(m, rc.requiresClass))) return `${className(rc.requiresClass)} only`;
+  const pi = rc.forClass && recipePathIssue(m, rc, inLine);
+  if (pi) return pi;
   if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
     return `${D.skills.find(k => k.id === rc.skill).name} ${rc.minSkill}`;
@@ -180,9 +183,7 @@ export function bestRecipe(s, m) {
 }
 
 export function profBonus(m, rc) {
-  const p = m && m.prof && D.classes.find(c => c.id === m.prof);
-  if (!p) return 0;
-  return p.craftBonus + (p.spec && p.spec === rc.line ? 0.15 : 0);
+  return m ? memberFx(m, "craft", null, rc, itemDef) : 0;
 }
 
 export function qualityScore(s, m, rc, mi, apt = 1) {

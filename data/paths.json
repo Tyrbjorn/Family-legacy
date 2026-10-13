@@ -1,0 +1,1417 @@
+{
+ "_note": "Crafting paths for FAMILY MEMBERS (followers keep their NPC classes). Each path ranks Apprentice→Journeyman→Master→Grandmaster by path XP (earned 1:1 from XP in the path's skills) plus a skill gate. A member starts one main path; every rank gained anywhere opens one more slot (up to maxPaths). Secondary paths are capped at secondaryGap below the main path. At specAt (Master) a path offers ONE specialty, which ranks the same way (capped at the path's rank). fx values scale by (rank+1). Add a path by appending here (e.g. Jeweler, Scribe): engine and UI read this list. comboPaths: `requires` is a list of {path,rank} | {path,spec} | {skill,lvl} | {classLine} (adventuring class line, e.g. apprentice = mage line) on ONE member; Scribe (business, drafting, writing) is an input of every combo; combos have their own ranks and specialties, never use a path slot, are uncapped, and never block their input paths. openCredit: share of the XP already in the path's best skill credited when the path is opened.",
+ "maxPaths": 3,
+ "secondaryGap": 1,
+ "specAt": 2,
+ "xpRate": 1,
+ "ranks": [
+  {
+   "id": "apprentice",
+   "name": "Apprentice",
+   "icon": "🔰",
+   "xp": 0,
+   "skill": 0
+  },
+  {
+   "id": "journeyman",
+   "name": "Journeyman",
+   "icon": "🥉",
+   "xp": 1000,
+   "skill": 12
+  },
+  {
+   "id": "master",
+   "name": "Master",
+   "icon": "🥈",
+   "xp": 8000,
+   "skill": 28
+  },
+  {
+   "id": "grandmaster",
+   "name": "Grandmaster",
+   "icon": "🥇",
+   "xp": 40000,
+   "skill": 45
+  }
+ ],
+ "paths": [
+  {
+   "id": "smithing",
+   "name": "Smithing",
+   "icon": "⚒️",
+   "skills": [
+    "smithing",
+    "mining"
+   ],
+   "desc": "Smelting, basic metal items, tools and parts.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "ingots",
+      "copper"
+     ],
+     "v": 0.04
+    }
+   ],
+   "specs": [
+    {
+     "id": "toolsmith",
+     "name": "Toolsmith",
+     "icon": "🔧",
+     "desc": "Better tools and sickles.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "tool"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "locksmith",
+     "name": "Locksmith",
+     "icon": "🔐",
+     "desc": "Locks, pins and fine metal trinkets; a bigger vault.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "accessory",
+        "charm"
+       ]
+      },
+      {
+       "kind": "vault",
+       "v": 1
+      }
+     ]
+    },
+    {
+     "id": "jeweler",
+     "name": "Jeweler",
+     "icon": "💍",
+     "desc": "Rings, charms and gem setting; pieces take enchantments well.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.08,
+       "slots": [
+        "accessory",
+        "charm"
+       ]
+      },
+      {
+       "kind": "enchant",
+       "v": 2
+      }
+     ]
+    }
+   ],
+   "station": "forge",
+   "craftSkill": "smithing"
+  },
+  {
+   "id": "armorer",
+   "name": "Armorer",
+   "icon": "🛡️",
+   "skills": [
+    "smithing"
+   ],
+   "desc": "Metal weapons, shields and armor.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.06
+    }
+   ],
+   "specs": [
+    {
+     "id": "weaponsmith",
+     "name": "Weaponsmith",
+     "icon": "🗡️",
+     "desc": "Finer blades and weapons.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.07,
+       "slots": [
+        "weapon"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "plate",
+     "name": "Plate Armorer",
+     "icon": "🦾",
+     "desc": "Heavier armor and shields.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.07,
+       "slots": [
+        "armor",
+        "offhand"
+       ]
+      }
+     ]
+    }
+   ],
+   "station": "forge",
+   "craftSkill": "smithing"
+  },
+  {
+   "id": "carpenter",
+   "name": "Carpenter",
+   "icon": "🪚",
+   "skills": [
+    "carpentry"
+   ],
+   "desc": "Wooden items, bows, staves and furniture.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "planks"
+     ],
+     "v": 0.04
+    }
+   ],
+   "specs": [
+    {
+     "id": "bowyer",
+     "name": "Bowyer",
+     "icon": "🏹",
+     "desc": "Bows and quivers.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.08,
+       "bases": [
+        "yew_longbow",
+        "green_bow",
+        "hunters_recurve",
+        "rangers_flatbow"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "luthier",
+     "name": "Luthier",
+     "icon": "🪕",
+     "desc": "Instruments and fine charms that lift spirits.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "accessory",
+        "charm"
+       ]
+      },
+      {
+       "kind": "variety",
+       "v": 0.5
+      }
+     ]
+    },
+    {
+     "id": "cooper",
+     "name": "Cooper",
+     "icon": "🛢️",
+     "desc": "Barrels and casks: preserves and ale keep better.",
+     "fx": [
+      {
+       "kind": "foodQ",
+       "res": [
+        "ale",
+        "preserves"
+       ],
+       "v": 0.04
+      },
+      {
+       "kind": "yield",
+       "res": [
+        "ale",
+        "preserves"
+       ],
+       "v": 0.03
+      }
+     ]
+    }
+   ],
+   "station": "workbench",
+   "craftSkill": "carpentry"
+  },
+  {
+   "id": "tailor",
+   "name": "Tailor",
+   "icon": "🧵",
+   "skills": [
+    "tailoring"
+   ],
+   "desc": "Textiles, cloth and basic leather.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "cloth",
+      "leather"
+     ],
+     "v": 0.04
+    }
+   ],
+   "specs": [
+    {
+     "id": "leatherworker",
+     "name": "Leatherworker",
+     "icon": "👞",
+     "desc": "Leathers, collars and quivers.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.07,
+       "mats": [
+        "leather",
+        "hides"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "weaver",
+     "name": "Weaver",
+     "icon": "🧶",
+     "desc": "Robes and cloaks.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.07,
+       "mats": [
+        "cloth"
+       ]
+      }
+     ]
+    }
+   ],
+   "station": "loom",
+   "craftSkill": "tailoring"
+  },
+  {
+   "id": "alchemy",
+   "name": "Alchemy",
+   "icon": "⚗️",
+   "skills": [
+    "alchemy",
+    "herbalism"
+   ],
+   "desc": "Potions, remedies and reagents.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "potions",
+      "remedies"
+     ],
+     "v": 0.05
+    }
+   ],
+   "specs": [
+    {
+     "id": "poisoner",
+     "name": "Poisoner",
+     "icon": "☠️",
+     "desc": "Venoms and dark draughts.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.08,
+       "bases": [
+        "venom_vial",
+        "shadow_tincture_stone",
+        "bane_oil"
+       ]
+      },
+      {
+       "kind": "yield",
+       "res": [
+        "potions"
+       ],
+       "v": 0.04
+      }
+     ]
+    },
+    {
+     "id": "healerbrewer",
+     "name": "Healer-brewer",
+     "icon": "💚",
+     "desc": "Remedies and restoratives.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "remedies"
+       ],
+       "v": 0.08
+      },
+      {
+       "kind": "craft",
+       "v": 0.05,
+       "slots": [
+        "accessory"
+       ]
+      }
+     ]
+    }
+   ],
+   "station": "herbrack",
+   "craftSkill": "alchemy"
+  },
+  {
+   "id": "woodsman",
+   "name": "Woodsman",
+   "icon": "🪓",
+   "skills": [
+    "foraging",
+    "hunting",
+    "herbalism"
+   ],
+   "desc": "Gathering: wood, meat, hides, herbs and mushrooms (replaces Herbalism as the gathering trade).",
+   "fx": [
+    {
+     "kind": "gather",
+     "res": [
+      "wood",
+      "meat",
+      "hides",
+      "thyme",
+      "food",
+      "mushrooms"
+     ],
+     "v": 0.05
+    },
+    {
+     "kind": "find",
+     "res": "mushrooms",
+     "skills": [
+      "foraging",
+      "hunting"
+     ],
+     "v": 0.15
+    }
+   ],
+   "specs": [
+    {
+     "id": "forester",
+     "name": "Forester",
+     "icon": "🌲",
+     "desc": "More wood from every trip.",
+     "fx": [
+      {
+       "kind": "gather",
+       "res": [
+        "wood"
+       ],
+       "v": 0.1
+      }
+     ]
+    },
+    {
+     "id": "trapper",
+     "name": "Trapper",
+     "icon": "🪤",
+     "desc": "More meat and hides.",
+     "fx": [
+      {
+       "kind": "gather",
+       "res": [
+        "meat",
+        "hides"
+       ],
+       "v": 0.1
+      }
+     ]
+    },
+    {
+     "id": "herbalist",
+     "name": "Herbalist",
+     "icon": "🌿",
+     "desc": "More herbs and mushrooms.",
+     "fx": [
+      {
+       "kind": "gather",
+       "res": [
+        "thyme",
+        "mushrooms"
+       ],
+       "v": 0.1
+      },
+      {
+       "kind": "find",
+       "res": "mushrooms",
+       "skills": [
+        "foraging",
+        "hunting"
+       ],
+       "v": 0.1
+      }
+     ]
+    }
+   ],
+   "station": "tanrack",
+   "craftSkill": "hunting"
+  },
+  {
+   "id": "mason",
+   "name": "Mason",
+   "icon": "🧱",
+   "skills": [
+    "masonry",
+    "mining"
+   ],
+   "desc": "Stonework and building upgrades.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "blocks"
+     ],
+     "v": 0.05
+    }
+   ],
+   "specs": [
+    {
+     "id": "sculptor",
+     "name": "Sculptor",
+     "icon": "🗿",
+     "desc": "Hearths and stone pieces built better.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.05,
+       "slots": [
+        "charm",
+        "accessory"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "castellan",
+     "name": "Castellan",
+     "icon": "🏯",
+     "desc": "Walls and barracks built stronger; followers survive more.",
+     "fx": [
+      {
+       "kind": "survival",
+       "v": 0.05
+      }
+     ]
+    }
+   ],
+   "station": "masontable",
+   "craftSkill": "masonry"
+  },
+  {
+   "id": "farmer",
+   "name": "Farmer",
+   "icon": "🌾",
+   "skills": [
+    "farming",
+    "animal"
+   ],
+   "desc": "Crops, animals and crop quality.",
+   "fx": [
+    {
+     "kind": "cropQ",
+     "res": [
+      "wheat",
+      "barley",
+      "vegetables",
+      "berries",
+      "milk"
+     ],
+     "v": 0.04
+    },
+    {
+     "kind": "yield",
+     "res": [
+      "wheat",
+      "barley",
+      "vegetables",
+      "berries"
+     ],
+     "v": 0.03
+    }
+   ],
+   "specs": [
+    {
+     "id": "rancher",
+     "name": "Rancher",
+     "icon": "🐄",
+     "desc": "Milk, eggs and meat from the animals.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "milk",
+        "eggs",
+        "meat"
+       ],
+       "v": 0.07
+      },
+      {
+       "kind": "cropQ",
+       "res": [
+        "milk"
+       ],
+       "v": 0.05
+      }
+     ]
+    },
+    {
+     "id": "orchardist",
+     "name": "Orchardist",
+     "icon": "🍎",
+     "desc": "Fruit trees, berries and honey.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "berries",
+        "honey"
+       ],
+       "v": 0.07
+      },
+      {
+       "kind": "cropQ",
+       "res": [
+        "berries"
+       ],
+       "v": 0.05
+      }
+     ]
+    },
+    {
+     "id": "brewer",
+     "name": "Brewer",
+     "icon": "🍺",
+     "desc": "Ale from the vats, and better of it.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "ale"
+       ],
+       "v": 0.08
+      },
+      {
+       "kind": "foodQ",
+       "res": [
+        "ale"
+       ],
+       "v": 0.06
+      }
+     ]
+    }
+   ],
+   "station": "workbench",
+   "craftSkill": "farming"
+  },
+  {
+   "id": "cook",
+   "name": "Cook",
+   "icon": "🍲",
+   "skills": [
+    "cooking"
+   ],
+   "desc": "Meals, food buffs and a bigger variety bonus.",
+   "fx": [
+    {
+     "kind": "foodQ",
+     "res": [
+      "*"
+     ],
+     "v": 0.03
+    },
+    {
+     "kind": "variety",
+     "v": 0.5
+    }
+   ],
+   "specs": [
+    {
+     "id": "baker",
+     "name": "Baker",
+     "icon": "🥖",
+     "desc": "Bread, pies and cakes.",
+     "fx": [
+      {
+       "kind": "foodQ",
+       "res": [
+        "bread",
+        "pie"
+       ],
+       "v": 0.06
+      },
+      {
+       "kind": "yield",
+       "res": [
+        "bread",
+        "pie"
+       ],
+       "v": 0.05
+      }
+     ]
+    },
+    {
+     "id": "chef",
+     "name": "Chef",
+     "icon": "👨‍🍳",
+     "desc": "Stews and fine dishes; the table stays interesting.",
+     "fx": [
+      {
+       "kind": "foodQ",
+       "res": [
+        "stew",
+        "porridge",
+        "cheese"
+       ],
+       "v": 0.06
+      },
+      {
+       "kind": "variety",
+       "v": 0.5
+      }
+     ]
+    },
+    {
+     "id": "butcher",
+     "name": "Butcher/Smoker",
+     "icon": "🥓",
+     "desc": "Smoked meat and preserves.",
+     "fx": [
+      {
+       "kind": "foodQ",
+       "res": [
+        "smokedmeat",
+        "preserves",
+        "meat"
+       ],
+       "v": 0.06
+      },
+      {
+       "kind": "yield",
+       "res": [
+        "smokedmeat",
+        "preserves"
+       ],
+       "v": 0.05
+      }
+     ]
+    }
+   ],
+   "station": "larder",
+   "craftSkill": "cooking"
+  },
+  {
+   "id": "scribe",
+   "name": "Scribe",
+   "icon": "📜",
+   "skills": [
+    "reading",
+    "arcana",
+    "runecraft",
+    "history"
+   ],
+   "desc": "Scrolls, maps and books that boost the family's training.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.05
+    },
+    {
+     "kind": "trainXp",
+     "v": 0.02
+    }
+   ],
+   "specs": [
+    {
+     "id": "cartographer",
+     "name": "Cartographer",
+     "icon": "🗺️",
+     "desc": "Maps: better hauls on every trip.",
+     "fx": [
+      {
+       "kind": "gather",
+       "res": [
+        "*"
+       ],
+       "v": 0.03
+      }
+     ]
+    },
+    {
+     "id": "bookbinder",
+     "name": "Bookbinder",
+     "icon": "📚",
+     "desc": "Bound books: the whole family trains faster.",
+     "fx": [
+      {
+       "kind": "trainXp",
+       "v": 0.03
+      }
+     ]
+    }
+   ],
+   "station": "arcanefocus",
+   "craftSkill": "arcana"
+  }
+ ],
+ "classMap": {
+  "artisan": {
+   "paths": "*",
+   "rank": 0,
+   "name": "Crafter"
+  },
+  "blacksmith": {
+   "paths": [
+    "smithing",
+    "armorer"
+   ],
+   "rank": 1,
+   "name": "Journeyman Smith"
+  },
+  "armorer": {
+   "paths": [
+    "armorer"
+   ],
+   "rank": 2,
+   "name": "Master Armorer"
+  },
+  "carpenter": {
+   "paths": [
+    "carpenter"
+   ],
+   "rank": 1,
+   "name": "Journeyman Carpenter"
+  },
+  "architect": {
+   "paths": [
+    "architect"
+   ],
+   "rank": 0,
+   "name": "Architect"
+  },
+  "alchemist": {
+   "paths": [
+    "alchemy"
+   ],
+   "rank": 1,
+   "name": "Journeyman Alchemist"
+  },
+  "masteralchemist": {
+   "paths": [
+    "alchemy"
+   ],
+   "rank": 2,
+   "name": "Master Alchemist"
+  },
+  "tailor": {
+   "paths": [
+    "tailor"
+   ],
+   "rank": 1,
+   "name": "Journeyman Tailor"
+  },
+  "couturier": {
+   "paths": [
+    "tailor"
+   ],
+   "rank": 2,
+   "name": "Master Tailor"
+  },
+  "sculptor": {
+   "paths": [
+    "mason"
+   ],
+   "spec": "sculptor",
+   "name": "Sculptor (Mason)"
+  },
+  "castellan": {
+   "paths": [
+    "mason"
+   ],
+   "spec": "castellan",
+   "name": "Castellan (Mason)"
+  },
+  "cathedralbuilder": {
+   "paths": [
+    "architect"
+   ],
+   "spec": "cathedral",
+   "name": "Cathedral Builder"
+  },
+  "militaryengineer": {
+   "paths": [
+    "architect"
+   ],
+   "spec": "military",
+   "name": "Military Engineer"
+  }
+ },
+ "migrate": {
+  "artisan": [],
+  "blacksmith": [
+   [
+    "smithing",
+    1
+   ]
+  ],
+  "armorer": [
+   [
+    "armorer",
+    2
+   ],
+   [
+    "smithing",
+    1
+   ]
+  ],
+  "carpenter": [
+   [
+    "carpenter",
+    1
+   ]
+  ],
+  "architect": [
+   [
+    "carpenter",
+    2
+   ],
+   [
+    "mason",
+    1
+   ],
+   [
+    "scribe",
+    0
+   ],
+   [
+    "architect",
+    0
+   ]
+  ],
+  "alchemist": [
+   [
+    "alchemy",
+    1
+   ]
+  ],
+  "masteralchemist": [
+   [
+    "alchemy",
+    2
+   ]
+  ],
+  "tailor": [
+   [
+    "tailor",
+    1
+   ]
+  ],
+  "couturier": [
+   [
+    "tailor",
+    2,
+    "leatherworker"
+   ]
+  ]
+ },
+ "classLines": [
+  "fighter",
+  "hunter",
+  "apprentice",
+  "acolyte",
+  "cutpurse",
+  "adventurer"
+ ],
+ "comboPaths": [
+  {
+   "id": "architect",
+   "name": "Architect",
+   "icon": "📐",
+   "requires": [
+    {
+     "path": "mason",
+     "rank": 1
+    },
+    {
+     "path": "carpenter",
+     "rank": 1
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    }
+   ],
+   "skills": [
+    "masonry",
+    "carpentry"
+   ],
+   "desc": "Combo path: Mason and Carpenter (Journeyman) plus Scribe on one member. Carries the old Architect building perks.",
+   "fx": [
+    {
+     "kind": "yield",
+     "res": [
+      "blocks",
+      "planks"
+     ],
+     "v": 0.03
+    }
+   ],
+   "specs": [
+    {
+     "id": "cathedral",
+     "name": "Cathedral Builder",
+     "icon": "⛪",
+     "desc": "Divine buildings built and upgraded better.",
+     "fx": [
+      {
+       "kind": "blessing",
+       "v": 0.01
+      }
+     ]
+    },
+    {
+     "id": "military",
+     "name": "Military Engineer",
+     "icon": "🏰",
+     "desc": "Forts and siege works: barracks upgrades and follower survival.",
+     "fx": [
+      {
+       "kind": "survival",
+       "v": 0.04
+      }
+     ]
+    },
+    {
+     "id": "planner",
+     "name": "Estate Planner",
+     "icon": "🗺️",
+     "desc": "Land efficiency and village layout: extra land slots.",
+     "fx": [
+      {
+       "kind": "land",
+       "v": 0.5
+      }
+     ]
+    }
+   ],
+   "station": "masontable",
+   "craftSkill": "masonry"
+  },
+  {
+   "id": "engineer",
+   "name": "Engineer",
+   "icon": "⚙️",
+   "requires": [
+    {
+     "path": "smithing",
+     "rank": 1
+    },
+    {
+     "path": "carpenter",
+     "rank": 1
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    }
+   ],
+   "skills": [
+    "smithing",
+    "carpentry"
+   ],
+   "desc": "Combo path: Smithing + Carpenter. Mills, siege engines and clockwork.",
+   "fx": [
+    {
+     "kind": "yield",
+     "res": [
+      "flour",
+      "planks",
+      "ingots"
+     ],
+     "v": 0.03
+    }
+   ],
+   "specs": [
+    {
+     "id": "millwright",
+     "name": "Millwright",
+     "icon": "🌀",
+     "desc": "Mills and wheels turn faster.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "flour",
+        "planks"
+       ],
+       "v": 0.06
+      }
+     ]
+    },
+    {
+     "id": "siegewright",
+     "name": "Siegewright",
+     "icon": "🪨",
+     "desc": "Siege engines: wars go better.",
+     "fx": [
+      {
+       "kind": "survival",
+       "v": 0.05
+      }
+     ]
+    },
+    {
+     "id": "clockmaker",
+     "name": "Clockmaker",
+     "icon": "🕰️",
+     "desc": "Clockwork: every workshop process a little quicker.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "*"
+       ],
+       "v": 0.015
+      }
+     ]
+    }
+   ],
+   "station": "workbench",
+   "craftSkill": "carpentry"
+  },
+  {
+   "id": "artificer",
+   "name": "Artificer",
+   "icon": "🔮",
+   "requires": [
+    {
+     "path": "smithing",
+     "spec": "jeweler"
+    },
+    {
+     "skill": "enchanting",
+     "lvl": 10
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    },
+    {
+     "classLine": "apprentice",
+     "name": "Mage-line class (Magic Guild)"
+    }
+   ],
+   "skills": [
+    "enchanting",
+    "smithing"
+   ],
+   "desc": "Combo path: a Jeweler who enchants. Magic items.",
+   "fx": [
+    {
+     "kind": "enchant",
+     "v": 2
+    },
+    {
+     "kind": "craft",
+     "v": 0.04
+    }
+   ],
+   "specs": [
+    {
+     "id": "runesmith",
+     "name": "Runesmith",
+     "icon": "ᚱ",
+     "desc": "Stronger enchantments.",
+     "fx": [
+      {
+       "kind": "enchant",
+       "v": 3
+      }
+     ]
+    },
+    {
+     "id": "wandwright",
+     "name": "Wandwright",
+     "icon": "🪄",
+     "desc": "Staves, wands and foci.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "weapon",
+        "offhand"
+       ]
+      }
+     ]
+    }
+   ],
+   "station": "enchtable",
+   "craftSkill": "enchanting"
+  },
+  {
+   "id": "apothecary",
+   "name": "Apothecary",
+   "icon": "🏺",
+   "requires": [
+    {
+     "path": "alchemy",
+     "rank": 1
+    },
+    {
+     "path": "woodsman",
+     "rank": 1
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    }
+   ],
+   "skills": [
+    "alchemy",
+    "herbalism"
+   ],
+   "desc": "Combo path: Alchemy + Woodsman. Rare remedies from wild ingredients.",
+   "fx": [
+    {
+     "kind": "yield",
+     "res": [
+      "remedies",
+      "potions"
+     ],
+     "v": 0.05
+    }
+   ],
+   "specs": [
+    {
+     "id": "physician",
+     "name": "Physician",
+     "icon": "🩺",
+     "desc": "Remedies of real potency.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "remedies"
+       ],
+       "v": 0.08
+      }
+     ]
+    },
+    {
+     "id": "mycologist",
+     "name": "Mycologist",
+     "icon": "🍄",
+     "desc": "Mushroom lore: more found, better eaten.",
+     "fx": [
+      {
+       "kind": "find",
+       "res": "mushrooms",
+       "skills": [
+        "foraging",
+        "hunting"
+       ],
+       "v": 0.15
+      },
+      {
+       "kind": "foodQ",
+       "res": [
+        "mushrooms"
+       ],
+       "v": 0.05
+      }
+     ]
+    }
+   ],
+   "station": "herbrack",
+   "craftSkill": "alchemy"
+  },
+  {
+   "id": "shipwright",
+   "name": "Shipwright",
+   "icon": "⛵",
+   "requires": [
+    {
+     "path": "carpenter",
+     "rank": 1
+    },
+    {
+     "path": "tailor",
+     "rank": 1
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    }
+   ],
+   "skills": [
+    "carpentry",
+    "tailoring",
+    "sailing"
+   ],
+   "desc": "Combo path: Carpenter + Tailor (hulls and sails).",
+   "fx": [
+    {
+     "kind": "yield",
+     "res": [
+      "fish"
+     ],
+     "v": 0.06
+    },
+    {
+     "kind": "gather",
+     "res": [
+      "fish"
+     ],
+     "v": 0.08
+    }
+   ],
+   "specs": [
+    {
+     "id": "boatwright",
+     "name": "Boatwright",
+     "icon": "🚣",
+     "desc": "Fishing boats: more fish.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "fish"
+       ],
+       "v": 0.06
+      },
+      {
+       "kind": "gather",
+       "res": [
+        "fish"
+       ],
+       "v": 0.06
+      }
+     ]
+    },
+    {
+     "id": "sailmaker",
+     "name": "Sailmaker",
+     "icon": "⛵",
+     "desc": "Sails and rigging: cloth goes further.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "cloth"
+       ],
+       "v": 0.06
+      }
+     ]
+    }
+   ],
+   "station": "workbench",
+   "craftSkill": "carpentry"
+  },
+  {
+   "id": "battlesmith",
+   "name": "Battle Smith",
+   "icon": "⚔️",
+   "requires": [
+    {
+     "path": "armorer",
+     "rank": 1
+    },
+    {
+     "path": "scribe",
+     "rank": 0
+    },
+    {
+     "classLine": "fighter",
+     "name": "Warrior-line class (Warriors' Guild)"
+    }
+   ],
+   "skills": [
+    "smithing",
+    "swordsmanship"
+   ],
+   "desc": "Combo path: Armorer + Scribe + a Warriors' Guild class. Field-forges and battle-tested gear.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.04
+    },
+    {
+     "kind": "survival",
+     "v": 0.03
+    }
+   ],
+   "specs": [
+    {
+     "id": "fieldforger",
+     "name": "Field Forger",
+     "icon": "🔥",
+     "desc": "Repairs and arms followers on campaign.",
+     "fx": [
+      {
+       "kind": "survival",
+       "v": 0.05
+      }
+     ]
+    },
+    {
+     "id": "bladewright",
+     "name": "Bladewright",
+     "icon": "🗡️",
+     "desc": "Weapons forged for the forger's own hand.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.07,
+       "slots": [
+        "weapon"
+       ]
+      }
+     ]
+    }
+   ],
+   "station": "forge",
+   "craftSkill": "smithing"
+  }
+ ],
+ "openCredit": 0.5
+}

@@ -1,3 +1,4 @@
+import { memberFx } from "./paths.js";
 // Gear sets (2/4-piece bonuses scaled by the worn pieces' quality/rarity) and enchanting (data/gear.json).
 // Enchants ride on the item id as a suffix: "<id>#keen.vigor*" ("*" = greater). Slots come from quality/rarity.
 // Enchanting stations follow the general home-furniture + dedicated-workshop pattern (gear.stations).
@@ -122,7 +123,7 @@ export const stationCraftQ = (s, piece) =>
 export function enchanters(s) {
   const out = living(s)
     .filter(m => isAdult(m) && inLine(m, EN().line))
-    .map(m => ({ key: "m:" + m.id, name: m.name, skill: m.skills[EN().skill]?.lvl || 0, m }));
+    .map(m => ({ key: "m:" + m.id, name: m.name, skill: (m.skills[EN().skill]?.lvl || 0) + memberFx(m, "enchant"), m }));
   for (const mi of s.minions || [])
     if (EN().minionClasses.includes(mi.cls) && isHoused(s, mi))
       out.push({ key: "n:" + mi.uid, name: mi.name, skill: minionLvl(mi) * EN().minionSkillPerLvl + (EN().minionClassBonus[mi.cls] || 0) + upEnchant(mi), mi });

@@ -50,7 +50,8 @@
     "planks": 1
    },
    "days": 4,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "armorer"
   },
   {
    "id": "r_chain",
@@ -62,7 +63,8 @@
     "ingots": 5
    },
    "days": 6,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "armorer"
   },
   {
    "id": "r_scale",
@@ -76,7 +78,8 @@
    },
    "days": 8,
    "minSkill": 20,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "armorer"
   },
   {
    "id": "r_kite",
@@ -89,7 +92,8 @@
     "copper": 2
    },
    "days": 4,
-   "line": "carpenter"
+   "line": "carpenter",
+   "path": "carpenter"
   },
   {
    "id": "r_staff",
@@ -101,7 +105,8 @@
     "planks": 3
    },
    "days": 3,
-   "line": "carpenter"
+   "line": "carpenter",
+   "path": "carpenter"
   },
   {
    "id": "r_bow",
@@ -115,7 +120,8 @@
    },
    "days": 5,
    "minSkill": 10,
-   "line": "carpenter"
+   "line": "carpenter",
+   "path": "carpenter"
   },
   {
    "id": "r_jerkin",
@@ -128,7 +134,8 @@
     "cloth": 1
    },
    "days": 4,
-   "line": "tailor"
+   "line": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_robe",
@@ -142,7 +149,8 @@
    },
    "days": 6,
    "minSkill": 15,
-   "line": "tailor"
+   "line": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_cloak",
@@ -155,7 +163,8 @@
     "hides": 2
    },
    "days": 5,
-   "line": "tailor"
+   "line": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_vigor",
@@ -168,7 +177,8 @@
     "copper": 2
    },
    "days": 4,
-   "line": "alchemist"
+   "line": "alchemist",
+   "path": "alchemy"
   },
   {
    "id": "r_wit",
@@ -182,7 +192,8 @@
    },
    "days": 5,
    "minSkill": 10,
-   "line": "alchemist"
+   "line": "alchemist",
+   "path": "alchemy"
   },
   {
    "id": "r_cakes",
@@ -195,7 +206,8 @@
     "thyme": 1
    },
    "days": 2,
-   "line": "tailor"
+   "line": "tailor",
+   "path": "cook"
   },
   {
    "id": "r_sickle",
@@ -208,7 +220,8 @@
     "copper": 2
    },
    "days": 2,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "smithing"
   },
   {
    "id": "r_axe",
@@ -221,7 +234,8 @@
     "planks": 1
    },
    "days": 3,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "smithing"
   },
   {
    "id": "r_hammer",
@@ -233,7 +247,8 @@
     "ingots": 3
    },
    "days": 3,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "smithing"
   },
   {
    "id": "r_collar",
@@ -245,7 +260,8 @@
     "leather": 2
    },
    "days": 2,
-   "line": "tailor"
+   "line": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_heirblade",
@@ -260,7 +276,8 @@
    },
    "days": 6,
    "line": "blacksmith",
-   "hidden": true
+   "hidden": true,
+   "path": "armorer"
   },
   {
    "id": "r_wyrmmail",
@@ -274,7 +291,8 @@
    },
    "days": 8,
    "line": "blacksmith",
-   "hidden": true
+   "hidden": true,
+   "path": "armorer"
   },
   {
    "id": "r_scroll",
@@ -287,7 +305,8 @@
     "cloth": 1
    },
    "days": 3,
-   "line": "scribe"
+   "line": "scribe",
+   "path": "scribe"
   },
   {
    "id": "r_sigil",
@@ -300,7 +319,8 @@
     "copper": 1
    },
    "days": 3,
-   "line": "scribe"
+   "line": "scribe",
+   "path": "scribe"
   },
   {
    "id": "r_heirloom",
@@ -315,7 +335,8 @@
    },
    "days": 8,
    "line": "blacksmith",
-   "legacy": "heirloom"
+   "legacy": "heirloom",
+   "path": "armorer"
   },
   {
    "id": "r_whittle",
@@ -327,7 +348,8 @@
     "wood": 2
    },
    "days": 1,
-   "hidden": true
+   "hidden": true,
+   "path": "carpenter"
   },
   {
    "id": "r_mentorknife",
@@ -341,7 +363,8 @@
    },
    "days": 3,
    "hidden": true,
-   "line": "blacksmith"
+   "line": "blacksmith",
+   "path": "armorer"
   },
   {
    "id": "r_warden_blade",
@@ -356,7 +379,8 @@
    "days": 5,
    "line": "blacksmith",
    "minSkill": 5,
-   "set": "warden"
+   "set": "warden",
+   "path": "armorer"
   },
   {
    "id": "r_warden_shield",
@@ -371,7 +395,8 @@
    "days": 5,
    "line": "blacksmith",
    "minSkill": 5,
-   "set": "warden"
+   "set": "warden",
+   "path": "armorer"
   },
   {
    "id": "r_warden_mail",
@@ -387,7 +412,8 @@
    "line": "blacksmith",
    "minSkill": 10,
    "set": "warden",
-   "requiresClass": "blacksmith"
+   "requiresClass": "blacksmith",
+   "path": "armorer"
   },
   {
    "id": "r_warden_sigil",
@@ -402,7 +428,8 @@
    "days": 4,
    "line": "blacksmith",
    "minSkill": 5,
-   "set": "warden"
+   "set": "warden",
+   "path": "smithing"
   },
   {
    "id": "r_storm_staff",
@@ -417,7 +444,8 @@
    "days": 5,
    "line": "carpenter",
    "minSkill": 5,
-   "set": "storm"
+   "set": "storm",
+   "path": "carpenter"
   },
   {
    "id": "r_storm_tome",
@@ -432,7 +460,8 @@
    "days": 5,
    "line": "scribe",
    "minSkill": 5,
-   "set": "storm"
+   "set": "storm",
+   "path": "scribe"
   },
   {
    "id": "r_storm_robe",
@@ -448,7 +477,8 @@
    "line": "tailor",
    "minSkill": 10,
    "set": "storm",
-   "requiresClass": "tailor"
+   "requiresClass": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_storm_circlet",
@@ -464,7 +494,8 @@
    "line": "scribe",
    "minSkill": 5,
    "set": "storm",
-   "requiresClass": "apprentice"
+   "requiresClass": "apprentice",
+   "path": "scribe"
   },
   {
    "id": "r_green_bow",
@@ -480,7 +511,8 @@
    "line": "carpenter",
    "minSkill": 8,
    "set": "greenwood",
-   "requiresClass": "carpenter"
+   "requiresClass": "carpenter",
+   "path": "carpenter"
   },
   {
    "id": "r_green_quiver",
@@ -495,7 +527,8 @@
    "days": 4,
    "line": "tailor",
    "minSkill": 5,
-   "set": "greenwood"
+   "set": "greenwood",
+   "path": "tailor"
   },
   {
    "id": "r_green_leathers",
@@ -511,7 +544,8 @@
    "line": "tailor",
    "minSkill": 8,
    "set": "greenwood",
-   "requiresClass": "tailor"
+   "requiresClass": "tailor",
+   "path": "tailor"
   },
   {
    "id": "r_green_pin",
@@ -525,7 +559,968 @@
    "days": 3,
    "line": "blacksmith",
    "minSkill": 3,
-   "set": "greenwood"
+   "set": "greenwood",
+   "path": "smithing"
+  },
+  {
+   "id": "r_training_weights",
+   "name": "Training Weights",
+   "base": "training_weights",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_hunting_knife",
+   "name": "Hunting Knife",
+   "base": "hunting_knife",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_copper_focus_ring",
+   "name": "Copper Focus Ring",
+   "base": "copper_focus_ring",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_censer_chain",
+   "name": "Censer Chain",
+   "base": "censer_chain",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_lockpick_set",
+   "name": "Lockpick Set",
+   "base": "lockpick_set",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_trail_pitons",
+   "name": "Trail Pitons",
+   "base": "trail_pitons",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "smithing",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_bastard_sword",
+   "name": "Bastard Sword",
+   "base": "bastard_sword",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_barbed_arrowheads",
+   "name": "Barbed Arrowheads",
+   "base": "barbed_arrowheads",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_runed_gauntlets",
+   "name": "Runed Gauntlets",
+   "base": "runed_gauntlets",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_sunsteel_mace",
+   "name": "Sunsteel Mace",
+   "base": "sunsteel_mace",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_twin_stilettos",
+   "name": "Twin Stilettos",
+   "base": "twin_stilettos",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_explorers_brigandine",
+   "name": "Explorer's Brigandine",
+   "base": "explorers_brigandine",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 5,
+    "leather": 1
+   },
+   "days": 4,
+   "path": "armorer",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_oak_tower_shield",
+   "name": "Oak Tower Shield",
+   "base": "oak_tower_shield",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_hunters_recurve",
+   "name": "Hunter's Recurve",
+   "base": "hunters_recurve",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rowan_staff",
+   "name": "Rowan Staff",
+   "base": "rowan_staff",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_pilgrims_staff",
+   "name": "Pilgrim's Staff",
+   "base": "pilgrims_staff",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_hidden_blade_cane",
+   "name": "Hidden-blade Cane",
+   "base": "hidden_blade_cane",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rangers_flatbow",
+   "name": "Ranger's Flatbow",
+   "base": "rangers_flatbow",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "cloth": 1
+   },
+   "days": 4,
+   "path": "carpenter",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_padded_gambeson",
+   "name": "Padded Gambeson",
+   "base": "padded_gambeson",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_camouflage_cloak",
+   "name": "Camouflage Cloak",
+   "base": "camouflage_cloak",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_starweave_robe",
+   "name": "Starweave Robe",
+   "base": "starweave_robe",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_vestment_of_dawn",
+   "name": "Vestment of Dawn",
+   "base": "vestment_of_dawn",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_shadow_hood",
+   "name": "Shadow Hood",
+   "base": "shadow_hood",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_travelers_pack_coat",
+   "name": "Traveler's Pack Coat",
+   "base": "travelers_pack_coat",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 4,
+    "leather": 2
+   },
+   "days": 4,
+   "path": "tailor",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_battle_tonic_flask",
+   "name": "Battle Tonic Flask",
+   "base": "battle_tonic_flask",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_scent_mask_pouch",
+   "name": "Scent-mask Pouch",
+   "base": "scent_mask_pouch",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_mana_vial_bandolier",
+   "name": "Mana Vial Bandolier",
+   "base": "mana_vial_bandolier",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_holy_water_phial",
+   "name": "Holy Water Phial",
+   "base": "holy_water_phial",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_venom_vial",
+   "name": "Venom Vial",
+   "base": "venom_vial",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_explorers_elixir_kit",
+   "name": "Explorer's Elixir Kit",
+   "base": "explorers_elixir_kit",
+   "skill": "alchemy",
+   "station": "herbrack",
+   "mats": {
+    "potions": 2,
+    "copper": 1
+   },
+   "days": 4,
+   "path": "alchemy",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_boar_tusk_charm",
+   "name": "Boar Tusk Charm",
+   "base": "boar_tusk_charm",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_snare_kit",
+   "name": "Snare Kit",
+   "base": "snare_kit",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_mushroom_satchel",
+   "name": "Mushroom Satchel",
+   "base": "mushroom_satchel",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_sacred_grove_sprig",
+   "name": "Sacred Grove Sprig",
+   "base": "sacred_grove_sprig",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_bane_oil",
+   "name": "Bane Oil",
+   "base": "bane_oil",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_pathfinders_kit",
+   "name": "Pathfinder's Kit",
+   "base": "pathfinders_kit",
+   "skill": "hunting",
+   "station": "tanrack",
+   "mats": {
+    "hides": 3,
+    "wood": 3
+   },
+   "days": 4,
+   "path": "woodsman",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_granite_buckler",
+   "name": "Granite Buckler",
+   "base": "granite_buckler",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_slingstones_pouch",
+   "name": "Slingstones Pouch",
+   "base": "slingstones_pouch",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_runestone_tablet",
+   "name": "Runestone Tablet",
+   "base": "runestone_tablet",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_shrine_icon",
+   "name": "Shrine Icon",
+   "base": "shrine_icon",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_shadow_tincture_stone",
+   "name": "Shadow Tincture Stone",
+   "base": "shadow_tincture_stone",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_wayfinder_cairnstone",
+   "name": "Wayfinder Cairnstone",
+   "base": "wayfinder_cairnstone",
+   "skill": "masonry",
+   "station": "masontable",
+   "mats": {
+    "blocks": 4,
+    "stone": 2
+   },
+   "days": 4,
+   "path": "mason",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_field_flail",
+   "name": "Field Flail",
+   "base": "field_flail",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_falconers_glove",
+   "name": "Falconer's Glove",
+   "base": "falconers_glove",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_mandrake_charm",
+   "name": "Mandrake Charm",
+   "base": "mandrake_charm",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_harvest_blessing_wreath",
+   "name": "Harvest Blessing Wreath",
+   "base": "harvest_blessing_wreath",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_smugglers_grain_sack",
+   "name": "Smuggler's Grain Sack",
+   "base": "smugglers_grain_sack",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_jerky_pouch",
+   "name": "Jerky Pouch",
+   "base": "jerky_pouch",
+   "skill": "farming",
+   "station": "workbench",
+   "mats": {
+    "food": 20,
+    "planks": 1
+   },
+   "days": 4,
+   "path": "farmer",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_hearty_ration_tin",
+   "name": "Hearty Ration Tin",
+   "base": "hearty_ration_tin",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_smoked_trail_strips",
+   "name": "Smoked Trail Strips",
+   "base": "smoked_trail_strips",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_spiced_tea_flask",
+   "name": "Spiced Tea Flask",
+   "base": "spiced_tea_flask",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_blessed_loaf",
+   "name": "Blessed Loaf",
+   "base": "blessed_loaf",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_pickpockets_sweets",
+   "name": "Pickpocket's Sweets",
+   "base": "pickpockets_sweets",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_expedition_stew_pot",
+   "name": "Expedition Stew Pot",
+   "base": "expedition_stew_pot",
+   "skill": "cooking",
+   "station": "larder",
+   "mats": {
+    "food": 30,
+    "thyme": 1
+   },
+   "days": 4,
+   "path": "cook",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
+  },
+  {
+   "id": "r_drill_manual",
+   "name": "Drill Manual",
+   "base": "drill_manual",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_hunting_grounds_map",
+   "name": "Hunting Grounds Map",
+   "base": "hunting_grounds_map",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_spellbook_primer",
+   "name": "Spellbook Primer",
+   "base": "spellbook_primer",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_book_of_hours",
+   "name": "Book of Hours",
+   "base": "book_of_hours",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_forged_papers",
+   "name": "Forged Papers",
+   "base": "forged_papers",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_explorers_atlas",
+   "name": "Explorer's Atlas",
+   "base": "explorers_atlas",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "cloth": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "path": "scribe",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
   }
  ],
  "minionSlots": [
@@ -552,7 +1547,7 @@
   ]
  },
  "classPerks": {
-  "_note": "Crafter classes (by class line, so advanced classes inherit) improve furniture and structure upgrades in their domain when the family has one at build time (stored on the structure), and unlock requiresClass recipes, furniture and upgrades.",
+  "_note": "Crafter perks: keys are path-requirement names from data/paths.json classMap (old crafter classes map to path ranks; architect/sculptor/fortifier are Mason specialties) or adventuring classes. Stored on the structure when built.",
   "blacksmith": {
    "pieces": [
     "forge",
@@ -654,6 +1649,50 @@
    ],
    "furniture": 0.1,
    "upgrade": 0.1
+  },
+  "sculptor": {
+   "pieces": [
+    "hearth",
+    "stonehearth",
+    "masontable"
+   ],
+   "structures": [],
+   "furniture": 0.12,
+   "upgrade": 0
+  },
+  "castellan": {
+   "pieces": [
+    "weaponrack"
+   ],
+   "structures": [
+    "barracks",
+    "masonyard",
+    "quarry"
+   ],
+   "furniture": 0.05,
+   "upgrade": 0.15
+  },
+  "cathedralbuilder": {
+   "pieces": [],
+   "structures": [
+    "shrinehouse",
+    "ancestorhall",
+    "graveyard"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.15
+  },
+  "militaryengineer": {
+   "pieces": [
+    "weaponrack"
+   ],
+   "structures": [
+    "barracks",
+    "advlodge",
+    "thievesden"
+   ],
+   "furniture": 0.05,
+   "upgrade": 0.15
   }
  }
 }

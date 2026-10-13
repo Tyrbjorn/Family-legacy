@@ -1,4 +1,5 @@
 import { gearFx } from "./gear.js";
+import { famFx, pathReqOk, pathXp, setPathInLine } from "./paths.js";
 import { household } from "./courtship.js";
 import { isFed, moraleXp, starving, stockValue, tonicXp } from "./food.js";
 import { traitSkillXp } from "./traits.js";
@@ -26,7 +27,7 @@ export function xpMult(s, m, skillId) {
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
   mult += moraleXp(s) + tonicXp(s, sk.family);
   if (!isAdult(m)) mult += household(s, "childXp");
-  mult += eff(s, "blessing");
+  mult += eff(s, "blessing") + famFx(s, "trainXp") + famFx(s, "blessing");
   for (const st of s.structures || []) {
     const d = structDef(st.type);
     if (d.guildBoost && (d.guildBoost.guild === "adventurers" ? !!m.adv : memberGuild(m, d.guildBoost.guild)))
@@ -53,7 +54,9 @@ export function gainXp(s, m, skillId, amt) {
   if (!k) return;
   if (!skillOpen(m, skillId)) return;
   if (k.lvl >= softCap(m)) amt *= 0.1;
-  k.xp += amt * xpMult(s, m, skillId);
+  const gained = amt * xpMult(s, m, skillId);
+  k.xp += gained;
+  pathXp(s, m, skillId, gained);
   while (k.xp >= xpNeed(k.lvl)) {
     k.xp -= xpNeed(k.lvl);
     k.lvl++;
@@ -102,7 +105,7 @@ export const clsLine = id => {
   return out;
 };
 
-export const inLine = (m, cid) => [m.cls, m.prof].some(x => x && clsLine(x).includes(cid));
+export const inLine = (m, cid) => [m.cls, m.prof].some(x => x && clsLine(x).includes(cid)) || pathReqOk(m, cid);
 
 export const ownsItem = (s, m, id) =>
   (s.vault || []).some(x => x === id || String(x).endsWith(id)) ||
@@ -164,3 +167,5 @@ export function activityOk(s, m, ac) {
 export const ACT_TIERS = { basic: 1, advanced: 2, master: 3 };
 
 export const activityGains = ac => ({ stats: Object.entries(ac.stats), skills: ac.skills });
+
+setPathInLine(inLine);
