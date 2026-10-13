@@ -39,6 +39,14 @@
    {
     "id": "ancient_coin",
     "chance": 0.05
+   },
+   {
+    "id": "moon_edge",
+    "chance": 0.04
+   },
+   {
+    "id": "warden_blade",
+    "chance": 0.06
    }
   ],
   "skill": "brawling"
@@ -88,6 +96,14 @@
    {
     "id": "recipe:r_heirblade",
     "chance": 0.02
+   },
+   {
+    "id": "moon_aegis",
+    "chance": 0.04
+   },
+   {
+    "id": "storm_tome",
+    "chance": 0.06
    }
   ],
   "skill": "monsterlore"
@@ -133,6 +149,14 @@
    {
     "id": "recipe:r_wyrmmail",
     "chance": 0.04
+   },
+   {
+    "id": "moon_plate",
+    "chance": 0.04
+   },
+   {
+    "id": "green_leathers",
+    "chance": 0.06
    }
   ],
   "skill": "monsterlore"
@@ -182,6 +206,14 @@
    {
     "id": "oathstone",
     "chance": 0.03
+   },
+   {
+    "id": "moon_locket",
+    "chance": 0.04
+   },
+   {
+    "id": "warden_sigil",
+    "chance": 0.06
    }
   ],
   "skill": "history"
@@ -226,6 +258,14 @@
    {
     "id": "moonsilver_bow",
     "chance": 0.04
+   },
+   {
+    "id": "moon_edge",
+    "chance": 0.04
+   },
+   {
+    "id": "green_bow",
+    "chance": 0.06
    }
   ],
   "skill": "tactics"

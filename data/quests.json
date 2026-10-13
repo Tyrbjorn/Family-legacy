@@ -431,6 +431,10 @@
    {
     "id": "recipe:r_wyrmmail",
     "chance": 0.02
+   },
+   {
+    "id": "warden_blade",
+    "chance": 0.03
    }
   ]
  },
@@ -453,6 +457,10 @@
   "rare": [
    {
     "id": "dryad_tear",
+    "chance": 0.03
+   },
+   {
+    "id": "warden_shield",
     "chance": 0.03
    }
   ]
@@ -505,6 +513,10 @@
    {
     "id": "moonsilver_bow",
     "chance": 0.015
+   },
+   {
+    "id": "warden_mail",
+    "chance": 0.03
    }
   ]
  },
@@ -560,6 +572,10 @@
    {
     "id": "ancient_coin",
     "chance": 0.04
+   },
+   {
+    "id": "warden_sigil",
+    "chance": 0.03
    }
   ]
  },
@@ -654,6 +670,14 @@
    {
     "id": "wolfking_pelt",
     "chance": 0.01
+   },
+   {
+    "id": "storm_staff",
+    "chance": 0.03
+   },
+   {
+    "id": "moon_aegis",
+    "chance": 0.015
    }
   ]
  },
@@ -782,6 +806,14 @@
    {
     "id": "oathstone",
     "chance": 0.03
+   },
+   {
+    "id": "storm_tome",
+    "chance": 0.03
+   },
+   {
+    "id": "moon_plate",
+    "chance": 0.015
    }
   ]
  },
@@ -931,6 +963,14 @@
    {
     "id": "recipe:r_heirblade",
     "chance": 0.05
+   },
+   {
+    "id": "storm_robe",
+    "chance": 0.03
+   },
+   {
+    "id": "moon_locket",
+    "chance": 0.015
    }
   ]
  },
@@ -1370,6 +1410,14 @@
    {
     "id": "moonsilver_bow",
     "chance": 0.02
+   },
+   {
+    "id": "storm_circlet",
+    "chance": 0.03
+   },
+   {
+    "id": "moon_edge",
+    "chance": 0.015
    }
   ]
  },
@@ -1414,6 +1462,14 @@
    {
     "id": "stormglass_orb",
     "chance": 0.05
+   },
+   {
+    "id": "green_bow",
+    "chance": 0.03
+   },
+   {
+    "id": "moon_aegis",
+    "chance": 0.015
    }
   ]
  },

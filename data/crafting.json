@@ -342,6 +342,190 @@
    "days": 3,
    "hidden": true,
    "line": "blacksmith"
+  },
+  {
+   "id": "r_warden_blade",
+   "name": "Warden's Blade",
+   "base": "warden_blade",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 4,
+    "planks": 1
+   },
+   "days": 5,
+   "line": "blacksmith",
+   "minSkill": 5,
+   "set": "warden"
+  },
+  {
+   "id": "r_warden_shield",
+   "name": "Warden's Shield",
+   "base": "warden_shield",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 3,
+    "planks": 2
+   },
+   "days": 5,
+   "line": "blacksmith",
+   "minSkill": 5,
+   "set": "warden"
+  },
+  {
+   "id": "r_warden_mail",
+   "name": "Warden's Mail",
+   "base": "warden_mail",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 6,
+    "leather": 1
+   },
+   "days": 7,
+   "line": "blacksmith",
+   "minSkill": 10,
+   "set": "warden",
+   "requiresClass": "blacksmith"
+  },
+  {
+   "id": "r_warden_sigil",
+   "name": "Warden's Sigil",
+   "base": "warden_sigil",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 1,
+    "copper": 3
+   },
+   "days": 4,
+   "line": "blacksmith",
+   "minSkill": 5,
+   "set": "warden"
+  },
+  {
+   "id": "r_storm_staff",
+   "name": "Stormcaller Staff",
+   "base": "storm_staff",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 4,
+    "dust": 2
+   },
+   "days": 5,
+   "line": "carpenter",
+   "minSkill": 5,
+   "set": "storm"
+  },
+  {
+   "id": "r_storm_tome",
+   "name": "Storm Tome",
+   "base": "storm_tome",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "dust": 4,
+    "cloth": 2
+   },
+   "days": 5,
+   "line": "scribe",
+   "minSkill": 5,
+   "set": "storm"
+  },
+  {
+   "id": "r_storm_robe",
+   "name": "Stormcaller Robe",
+   "base": "storm_robe",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 6,
+    "dust": 2
+   },
+   "days": 7,
+   "line": "tailor",
+   "minSkill": 10,
+   "set": "storm",
+   "requiresClass": "tailor"
+  },
+  {
+   "id": "r_storm_circlet",
+   "name": "Storm Circlet",
+   "base": "storm_circlet",
+   "skill": "enchanting",
+   "station": "enchtable",
+   "mats": {
+    "copper": 4,
+    "dust": 2
+   },
+   "days": 4,
+   "line": "scribe",
+   "minSkill": 5,
+   "set": "storm",
+   "requiresClass": "apprentice"
+  },
+  {
+   "id": "r_green_bow",
+   "name": "Greenwood Bow",
+   "base": "green_bow",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 5,
+    "cloth": 1
+   },
+   "days": 5,
+   "line": "carpenter",
+   "minSkill": 8,
+   "set": "greenwood",
+   "requiresClass": "carpenter"
+  },
+  {
+   "id": "r_green_quiver",
+   "name": "Greenwood Quiver",
+   "base": "green_quiver",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "leather": 2,
+    "cloth": 1
+   },
+   "days": 4,
+   "line": "tailor",
+   "minSkill": 5,
+   "set": "greenwood"
+  },
+  {
+   "id": "r_green_leathers",
+   "name": "Greenwood Leathers",
+   "base": "green_leathers",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "leather": 4,
+    "cloth": 1
+   },
+   "days": 6,
+   "line": "tailor",
+   "minSkill": 8,
+   "set": "greenwood",
+   "requiresClass": "tailor"
+  },
+  {
+   "id": "r_green_pin",
+   "name": "Greenwood Pin",
+   "base": "green_pin",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "copper": 3
+   },
+   "days": 3,
+   "line": "blacksmith",
+   "minSkill": 3,
+   "set": "greenwood"
   }
  ],
  "minionSlots": [
@@ -366,5 +550,110 @@
    "n_masterherbalist",
    "n_enchanter"
   ]
+ },
+ "classPerks": {
+  "_note": "Crafter classes (by class line, so advanced classes inherit) improve furniture and structure upgrades in their domain when the family has one at build time (stored on the structure), and unlock requiresClass recipes, furniture and upgrades.",
+  "blacksmith": {
+   "pieces": [
+    "forge",
+    "steelanvil",
+    "weaponrack",
+    "toolrack",
+    "runedanvil",
+    "orecart"
+   ],
+   "structures": [
+    "smithy",
+    "barracks",
+    "mineshaft"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.1
+  },
+  "carpenter": {
+   "pieces": [
+    "workbench",
+    "sawtable",
+    "storage",
+    "studydesk",
+    "bunk",
+    "featherbed",
+    "carvedcase",
+    "enchdesk",
+    "reagentshelf",
+    "stall"
+   ],
+   "structures": [
+    "sawmill",
+    "hall",
+    "cabin",
+    "house",
+    "bunkhouse"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.1
+  },
+  "tailor": {
+   "pieces": [
+    "loom",
+    "tanrack",
+    "tanvats",
+    "featherbed"
+   ],
+   "structures": [
+    "tannery"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.1
+  },
+  "alchemist": {
+   "pieces": [
+    "alchbench",
+    "herbrack",
+    "remedybench",
+    "herbbeds",
+    "reagentshelf",
+    "distillery"
+   ],
+   "structures": [
+    "herbalistshack",
+    "herbgarden"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.1
+  },
+  "architect": {
+   "pieces": [
+    "masontable",
+    "quarrypit",
+    "hearth",
+    "shaftlift",
+    "stonehearth"
+   ],
+   "structures": [
+    "masonyard",
+    "quarry",
+    "house",
+    "ancestorhall",
+    "magestower",
+    "arcaneworkshop"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.15
+  },
+  "apprentice": {
+   "pieces": [
+    "enchdesk",
+    "enchtable",
+    "arcanefocus",
+    "glyphlectern"
+   ],
+   "structures": [
+    "magestower",
+    "arcaneworkshop"
+   ],
+   "furniture": 0.1,
+   "upgrade": 0.1
+  }
  }
 }

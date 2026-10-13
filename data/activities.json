@@ -1336,5 +1336,28 @@
     "piece": "milkstalls"
    }
   ]
+ },
+ {
+  "id": "glyphs",
+  "name": "Bind Glyphs",
+  "icon": "✨",
+  "minAge": 14,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "enchanting"
+  ],
+  "tier": "basic",
+  "desc": "Practise binding glyphs into trinkets",
+  "unlock": [
+   {
+    "cls": "apprentice"
+   },
+   {
+    "guild": "collegium",
+    "rank": 1
+   }
+  ]
  }
 ]

@@ -119,6 +119,24 @@ for (const l of D.intros.lines) {
     if (st.check.startsWith("view:")) ok(TABSET.has(st.check.slice(5)), `intro step ${st.id} view tab`);
   }
 }
+// gear sets, enchanting, stations, class perks
+{ const GD = D.gear, IT = new Set(D.items.map(i => i.id)), PC = new Set(D.estate.pieces.map(p => p.id)), RES = new Set([...Object.keys(D.towns[0].prices), ...D.towns.flatMap(t => Object.keys(t.prices))]);
+  for (const st of GD.sets) {
+    ok(st.pieces.length === 4 && st.pieces.every(p => IT.has(p) && D.items.find(i => i.id === p).set === st.id), `set ${st.id}: 4 real pieces tagged with the set`);
+    ok(new Set(st.pieces.map(p => D.items.find(i => i.id === p).slot)).size === 4, `set ${st.id}: one piece per member slot`);
+    ok(st.bonus["2"] && st.bonus["4"], `set ${st.id}: 2- and 4-piece bonuses`);
+  }
+  for (const e of GD.enchants) {
+    ok(e.on.length && e.days > 0 && e.minSkill >= 0, `enchant ${e.id} fields`);
+    for (const k of Object.keys(e.reagents)) ok(RES.has(k) || D.estate.pieces.some(p => JSON.stringify(p.bonus || {}).includes('"' + k + '"')), `enchant ${e.id} reagent ${k} obtainable`);
+  }
+  ok(D.skills.some(k => k.id === GD.enchanting.skill) && D.activities.some(a => a.skills.includes(GD.enchanting.skill)), "Enchanting skill + a themed activity");
+  for (const [k, list] of Object.entries(GD.stations)) if (Array.isArray(list)) for (const st of list) ok(PC.has(st.piece) && (!st.structure || D.estate.structures.some(x => x.id === st.structure)), `station ${k}/${st.piece}`);
+  for (const y of GD.stations.synergies) ok(PC.has(y.piece), `synergy piece ${y.piece}`);
+  for (const p of D.estate.pieces.filter(p => p.tiers)) ok(p.tiers.length === D.estate.pieceTiers.length && p.tiers.every((t, i) => !i || (t.slots || 1) >= (p.tiers[i - 1].slots || 1)), `piece ${p.id}: tier slots never shrink`);
+  for (const x of [...D.crafting.recipes, ...D.estate.pieces, ...D.estate.structures.flatMap(s => s.upgrades || [])].filter(x => x.requiresClass)) ok(D.classes.some(c => c.id === x.requiresClass), `requiresClass ${x.requiresClass} exists`);
+  for (const r of D.crafting.recipes.filter(r => r.set)) ok(PC.has(r.station), `set recipe ${r.id} station`);
+}
 // marriage & diplomacy data
 const MD = D.marriage,
   HS = new Set(MD.houses.list.map(h => h.id)),

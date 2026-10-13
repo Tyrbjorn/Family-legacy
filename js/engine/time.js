@@ -1,3 +1,4 @@
+import { enchantDay } from "./gear.js";
 import { notify } from "./notify.js";
 import { evolveOptions, minionEvolveIssue } from "./minions.js";
 import { taintDev } from "./dev.js";
@@ -203,7 +204,7 @@ for (const [n, f] of [
   ["world", worldDay],
   ["milestones", milestonesDay],
   ["tutorial", tutorialDay],
-  ["estate", estateDay],
+  ["estate", s => (estateDay(s), enchantDay(s))],
   ["suitors", suitorsDay],
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],

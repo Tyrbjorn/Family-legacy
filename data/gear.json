@@ -1,0 +1,389 @@
+{
+ "_note": "Gear sets (2/4-piece bonuses, scaled by the worn pieces' quality/rarity) and enchanting. Item ids carry enchants as a suffix: <id>#ench1.ench2 (empty slots implicit).",
+ "qualityScale": {
+  "crude": 0.8,
+  "common": 1,
+  "fine": 1.1,
+  "superior": 1.25,
+  "masterwork": 1.45
+ },
+ "rarityScale": {
+  "Common": 1,
+  "Fine": 1.05,
+  "Rare": 1.2,
+  "Epic": 1.4,
+  "Legendary": 1.7,
+  "Heirloom": 1.4,
+  "Unique": 1.4
+ },
+ "slots": {
+  "quality": {
+   "crude": 0,
+   "common": 1,
+   "fine": 1,
+   "superior": 2,
+   "masterwork": 3
+  },
+  "rarity": {
+   "Common": 0,
+   "Fine": 1,
+   "Rare": 1,
+   "Epic": 2,
+   "Legendary": 3,
+   "Heirloom": 2,
+   "Unique": 2
+  },
+  "maxSlots": 3
+ },
+ "sets": [
+  {
+   "id": "warden",
+   "name": "Warden's Watch",
+   "icon": "🛡️",
+   "desc": "Steel for those who stand the line.",
+   "pieces": [
+    "warden_blade",
+    "warden_shield",
+    "warden_mail",
+    "warden_sigil"
+   ],
+   "bonus": {
+    "2": {
+     "cp": 6
+    },
+    "4": {
+     "cpPct": 0.1,
+     "stats": {
+      "VIT": 2
+     }
+    }
+   },
+   "minion": {
+    "2": {
+     "guard": 0.15,
+     "adventure": 0.05
+    }
+   }
+  },
+  {
+   "id": "storm",
+   "name": "Stormcaller's Regalia",
+   "icon": "⚡",
+   "desc": "Robes and focus for the mage line.",
+   "pieces": [
+    "storm_staff",
+    "storm_tome",
+    "storm_robe",
+    "storm_circlet"
+   ],
+   "bonus": {
+    "2": {
+     "stats": {
+      "INT": 2
+     }
+    },
+    "4": {
+     "cpPct": 0.08,
+     "xpPct": 0.08
+    }
+   },
+   "minion": {
+    "2": {
+     "guard": 0.1,
+     "adventure": 0.1
+    }
+   }
+  },
+  {
+   "id": "greenwood",
+   "name": "Greenwood Kit",
+   "icon": "🌲",
+   "desc": "Bow, leathers and the forest's patience.",
+   "pieces": [
+    "green_bow",
+    "green_quiver",
+    "green_leathers",
+    "green_pin"
+   ],
+   "bonus": {
+    "2": {
+     "stats": {
+      "AGI": 2
+     }
+    },
+    "4": {
+     "cpPct": 0.08,
+     "xpPct": 0.05
+    }
+   },
+   "minion": {
+    "2": {
+     "adventure": 0.15,
+     "hunt": 0.15
+    }
+   }
+  },
+  {
+   "id": "moonlit",
+   "name": "Moonlit Panoply",
+   "icon": "🌙",
+   "desc": "Found only: old silver from forgotten vaults.",
+   "found": true,
+   "pieces": [
+    "moon_edge",
+    "moon_aegis",
+    "moon_plate",
+    "moon_locket"
+   ],
+   "bonus": {
+    "2": {
+     "cp": 10
+    },
+    "4": {
+     "cpPct": 0.15,
+     "stats": {
+      "STR": 1,
+      "AGI": 1,
+      "INT": 1,
+      "VIT": 1,
+      "WIL": 1
+     }
+    }
+   },
+   "minion": {
+    "2": {
+     "guard": 0.2,
+     "adventure": 0.2
+    }
+   }
+  }
+ ],
+ "enchanting": {
+  "skill": "enchanting",
+  "line": "apprentice",
+  "minionClasses": [
+   "n_hedgemage",
+   "n_adept",
+   "n_battlemage",
+   "n_loremaster",
+   "n_enchanter"
+  ],
+  "minionSkillPerLvl": 2,
+  "minionClassBonus": {
+   "n_enchanter": 15,
+   "n_loremaster": 5
+  },
+  "speedPerSkill": 0.02,
+  "xpPerDay": 30,
+  "disenchantRefund": 0.5,
+  "jobsPerTable": 1,
+  "greaterAt": 1.0,
+  "greaterMult": 1.5
+ },
+ "enchants": [
+  {
+   "id": "keen",
+   "name": "Keen",
+   "icon": "🗡️",
+   "on": [
+    "weapon"
+   ],
+   "fx": {
+    "cp": 4
+   },
+   "reagents": {
+    "dust": 2,
+    "copper": 1
+   },
+   "days": 3,
+   "minSkill": 0
+  },
+  {
+   "id": "warding",
+   "name": "Warding",
+   "icon": "🔰",
+   "on": [
+    "armor",
+    "offhand"
+   ],
+   "fx": {
+    "cp": 3
+   },
+   "reagents": {
+    "dust": 2,
+    "mandrake": 1
+   },
+   "days": 3,
+   "minSkill": 3
+  },
+  {
+   "id": "vigor",
+   "name": "Vigor",
+   "icon": "💚",
+   "on": [
+    "armor",
+    "accessory",
+    "charm"
+   ],
+   "fx": {
+    "stats": {
+     "VIT": 1
+    }
+   },
+   "reagents": {
+    "thyme": 3,
+    "mandrake": 1
+   },
+   "days": 4,
+   "minSkill": 5
+  },
+  {
+   "id": "insight",
+   "name": "Insight",
+   "icon": "🔮",
+   "on": [
+    "weapon",
+    "offhand",
+    "accessory"
+   ],
+   "fx": {
+    "stats": {
+     "INT": 1
+    }
+   },
+   "reagents": {
+    "moonpetal": 2,
+    "dust": 1
+   },
+   "days": 4,
+   "minSkill": 8
+  },
+  {
+   "id": "guardian",
+   "name": "Guardian",
+   "icon": "🪖",
+   "on": [
+    "weapon",
+    "armor"
+   ],
+   "fx": {
+    "minion": {
+     "guard": 0.1
+    }
+   },
+   "reagents": {
+    "ingots": 1,
+    "dust": 2,
+    "mandrake": 1
+   },
+   "days": 4,
+   "minSkill": 5
+  },
+  {
+   "id": "learning",
+   "name": "Learning",
+   "icon": "📚",
+   "on": [
+    "accessory",
+    "offhand"
+   ],
+   "fx": {
+    "xpPct": 0.05
+   },
+   "reagents": {
+    "moonpetal": 2,
+    "mandrake": 2,
+    "dust": 2
+   },
+   "days": 6,
+   "minSkill": 15
+  },
+  {
+   "id": "moonfire",
+   "name": "Moonfire",
+   "icon": "🌙",
+   "on": [
+    "weapon"
+   ],
+   "fx": {
+    "cp": 9
+   },
+   "reagents": {
+    "moonpetal": 3,
+    "dust": 4,
+    "ingots": 1
+   },
+   "days": 7,
+   "minSkill": 25
+  }
+ ],
+ "stations": {
+  "_note": "General pattern: cheap home furniture (per-tier gains, more slots at high tiers) + a dedicated workshop (per-upgrade gains). Base home < base workshop; home synergies (paired pieces, set gear on the enchanter, skill) can beat a low workshop; a full workshop with its synergies is the ceiling.",
+  "enchanting": [
+   {
+    "piece": "enchdesk",
+    "tier": "home",
+    "quality": 0,
+    "speed": 0.7,
+    "jobs": 1,
+    "maxSlots": 1,
+    "perTier": {
+     "quality": 0.03,
+     "speed": 0.08,
+     "maxSlots": 0.5
+    }
+   },
+   {
+    "piece": "enchtable",
+    "tier": "workshop",
+    "structure": "arcaneworkshop",
+    "quality": 0.1,
+    "speed": 1,
+    "jobs": 1,
+    "maxSlots": 2,
+    "craftQuality": 0.1,
+    "perUpgrade": {
+     "quality": 0.05,
+     "speed": 0.15,
+     "jobs": 0.34,
+     "maxSlots": 0.34,
+     "craftQuality": 0.05
+    }
+   }
+  ],
+  "synergies": [
+   {
+    "piece": "reagentshelf",
+    "quality": 0.04,
+    "speed": 0.1,
+    "maxSlots": 0.5,
+    "desc": "Reagent Shelf in the same building"
+   },
+   {
+    "piece": "studydesk",
+    "quality": 0.02,
+    "speed": 0.05,
+    "desc": "Study Desk in the same building"
+   },
+   {
+    "piece": "arcanefocus",
+    "quality": 0.05,
+    "speed": 0.15,
+    "desc": "Arcane Focus in the same building"
+   },
+   {
+    "piece": "glyphlectern",
+    "quality": 0.03,
+    "speed": 0.08,
+    "desc": "Glyph Lectern in the same building"
+   }
+  ],
+  "enchanterSet": {
+   "set": "storm",
+   "pieces": 2,
+   "quality": 0.05,
+   "speed": 0.15,
+   "desc": "Enchanter wears 2+ Stormcaller pieces"
+  }
+ }
+}

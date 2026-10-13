@@ -14,6 +14,8 @@ Each phase only ADDS systems; nothing earlier is ever locked. Thresholds are dat
 
 **Unlock intros** (`data/intros.json`): each new system (Crafting, Food, Minions, Guilds, Houses, Dynasty) starts a 1-3 step do-it line with small rewards, after the apprentice prologue. Every line is skippable and never blocks play. Old saves mark already-unlocked systems done quietly.
 
+**Gear sets & enchanting** (shipped): sets, enchanting, the home-furniture + workshop station pattern, furniture tiers that take slots, and crafter class perks. Next in the backlog: town trading, party system, map detail.
+
 *The "Era" sections below are the historical design notes; read "Era 3" as Dynasty + Titles.*
 
 ## Era 1 — Solo Adventurer 🧭 (built)

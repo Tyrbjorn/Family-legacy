@@ -337,6 +337,19 @@ const STEPS = [
       introsMigrate(s); // systems this save already unlocked are marked done quietly (no spam)
     },
   },
+  {
+    n: 9,
+    once: true,
+    name: "gear sets & enchanting: enchant jobs; tiered furniture that now takes more slots is grandfathered",
+    run: s => {
+      if (!s.enchants) s.enchants = [];
+      for (const st of s.structures || []) {
+        const over = -freeSlots(s, st);
+        if (over > 0) st.bonusSlots = (st.bonusSlots || 0) + over;
+      }
+      introsMigrate(s);
+    },
+  },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
 export const migrationSteps = () => STEPS.map(({ n, once, name }) => ({ n, once: !!once, name }));

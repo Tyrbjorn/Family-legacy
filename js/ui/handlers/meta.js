@@ -21,6 +21,8 @@ export const metaActions = ({ v, b, m }) => ({
   bellread: () => E.markNotesRead(s),
   mentorcraft: () => E.mentorCraft(s),
   introskip: () => E.introSkip(s, v),
+  enchgo: () => E.startEnchant(s, v, b.dataset.w, b.dataset.x, +b.dataset.i),
+  disench: () => E.disenchant(s, v, +b.dataset.w),
   tutskip: () => confirm("Skip the apprenticeship? You keep what you've earned so far.") && E.skipTutorial(s),
   tourstart: () => {
     U.tour = 0;

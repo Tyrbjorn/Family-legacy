@@ -73,16 +73,16 @@ export function estate() {
       nx = D.estate.structures.find(x => x.upgradeFrom === st.type),
       ui = E.upgradeIssue(s, st.uid);
     const syn = E.activeSynergies(st);
-    h += `<div class="card"><div class="row"><b>${d.icon} ${E.structName(st)} #${k + 1}</b>${d.special ? ' <span class="tb" style="border-color:#d9b44a">special</span>' : ""}<span class="muted">Lv ${d.level || 1} (+${((d.level || 1) - 1) * 5}% to furniture) · ${st.pieces.length - (d.fixed || []).length}/${d.slots} slots · ${d.land} land</span></div>${d.builtin ? `<div class="muted">Built-in: houses ${d.builtin.housing.bunk} followers</div>` : ""}${syn.length ? `<div>${syn.map(y => `<span class="tb" style="border-color:#d9b44a">${y.icon} ${y.name}</span>`).join("")}</div>` : ""}
+    h += `<div class="card"><div class="row"><b>${d.icon} ${E.structName(st)} #${k + 1}</b>${d.special ? ' <span class="tb" style="border-color:#d9b44a">special</span>' : ""}<span class="muted">Lv ${d.level || 1} (+${((d.level || 1) - 1) * 5}% to furniture) · ${d.slots + (d.fixed || []).length + (st.bonusSlots || 0) - E.freeSlots(s, st) - (d.fixed || []).length}/${d.slots + (st.bonusSlots || 0)} slots · ${d.land} land</span></div>${d.builtin ? `<div class="muted">Built-in: houses ${d.builtin.housing.bunk} followers</div>` : ""}${syn.length ? `<div>${syn.map(y => `<span class="tb" style="border-color:#d9b44a">${y.icon} ${y.name}</span>`).join("")}</div>` : ""}
   ${st.pieces
     .map(pid => {
       const p = E.pieceDef(pid);
       const rates = E.processRates(s, st, pid);
       const t = E.pieceTier(pid),
-        nt = D.estate.pieceTiers[t + 1],
+        nt = E.pieceTiers(pid)[t + 1],
         ui = E.pieceUpIssue(s, st.uid, pid);
       const pz = E.isPaused(s, st.uid, pid);
-      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${p.desc} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
+      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}${E.pieceSlots(pid) > 1 ? " · " + E.pieceSlots(pid) + " slots" : ""}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${p.desc} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
     })
     .join("")}${
     d.houses

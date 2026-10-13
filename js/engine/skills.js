@@ -1,3 +1,4 @@
+import { gearFx } from "./gear.js";
 import { household } from "./courtship.js";
 import { isFed, moraleXp, starving, stockValue, tonicXp } from "./food.js";
 import { traitSkillXp } from "./traits.js";
@@ -19,6 +20,7 @@ export function xpMult(s, m, skillId) {
   const sk = D.skills.find(x => x.id === skillId);
   let mult = 1;
   mult += traitSum(m, "xp");
+  mult += gearFx(m.equip).xpPct || 0;
   mult += buffSum(s, "xp");
   mult += traitSkillXp(m, skillId);
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");

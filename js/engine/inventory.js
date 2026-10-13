@@ -4,9 +4,10 @@ import { seasonPrice } from "./seasons.js";
 import { inc } from "./achievements.js";
 import { buyMult, priceMult, sellMult } from "./worldevents.js";
 import { LG, addRenown, hasLegacy } from "./legacy.js";
-import { craftQuality, eff, hasPiece, pieceDef } from "./estate.js";
+import { className, craftQuality, eff, hasPiece, pieceDef } from "./estate.js";
+import { enchCp, noteSets, splitId, stationCraftQ } from "./gear.js";
 import { hasService } from "./guilds.js";
-import { gainXp } from "./skills.js";
+import { gainXp, inLine } from "./skills.js";
 import { D, T, afford, log, pay, rng } from "./state.js";
 
 export function equip(s, m, itemId, from = "vault") {
@@ -17,6 +18,7 @@ export function equip(s, m, itemId, from = "vault") {
   src.splice(i, 1);
   if (m.equip[it.slot]) m.bag.push(m.equip[it.slot]);
   m.equip[it.slot] = itemId;
+  noteSets(s, m);
   return true;
 }
 
@@ -115,6 +117,13 @@ export const qualities = () => CR().qualities;
 
 export function itemDef(id) {
   if (typeof id !== "string") return null;
+  if (id.includes("#")) {
+    const { base, ench } = splitId(id),
+      b = itemDef(base);
+    if (!b) return null;
+    const ec = enchCp(ench);
+    return { ...b, id, baseId: base, enchants: ench, name: b.name + " ✨", cp: (b.cp || 0) + ec, value: Math.round(b.value * (1 + 0.2 * ench.length)) };
+  }
   if (id.startsWith("c|")) {
     const [, b, q] = id.split("|");
     const base = D.items.find(i => i.id === b),
@@ -152,6 +161,7 @@ export const recipeDef = id => CR().recipes.find(r => r.id === id);
 export function recipeIssue(s, m, rc) {
   if (rc.hidden && !s.unlocks.includes("recipe:" + rc.id)) return "recipe not found";
   if (rc.legacy && !hasLegacy(s, rc.legacy)) return "needs Legacy upgrade";
+  if (rc.requiresClass && !(m && inLine(m, rc.requiresClass))) return `${className(rc.requiresClass)} only`;
   if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
     return `${D.skills.find(k => k.id === rc.skill).name} ${rc.minSkill}`;
@@ -176,7 +186,7 @@ export function profBonus(m, rc) {
 
 export function qualityScore(s, m, rc, mi, apt = 1) {
   const sk = m ? m.skills[rc.skill].lvl : 10 * apt;
-  return sk / 50 + craftQuality(s) + profBonus(m, rc);
+  return sk / 50 + craftQuality(s) + profBonus(m, rc) + stationCraftQ(s, rc.station);
 }
 
 export function rollQuality(score) {

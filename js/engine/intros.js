@@ -3,6 +3,7 @@
 // Also announces phase changes once (data/phases.json). State: s.intros = { lines: {id: {step, state}}, flags }.
 import { chron } from "./chronicle.js";
 import { craftingUnlocked } from "./crafting.js";
+import { enchanters, stationFx } from "./gear.js";
 import { era } from "./family.js";
 import { houseList, tierOf } from "./houses.js";
 import { tutActive } from "./tutorial.js";
@@ -25,6 +26,8 @@ const PRED = {
   phase2: s => era(s).n >= 2,
   phase3: s => era(s).n >= 3,
   minion: s => (s.minions || []).length > 0,
+  enchantReady: s => enchanters(s).length > 0 && (s.land || []).length > 0,
+  enchStation: s => stationFx(s).jobs > 0,
   guild: s => living(s).some(m => m.guild),
   courted: s => (s.suitors || []).some(x => x.affinity > 0) || living(s).some(m => m.spouse),
   friendly: s => houseList().some(h => ["friendly", "allied"].includes(tierOf(s, h.id))),

@@ -1,3 +1,4 @@
+import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
 import { ES, buildingReqMet, eff, established, hasStruct, jobCap, scaledPiece, specDef, structDef } from "./estate.js";
@@ -446,7 +447,7 @@ export function minionGearMult(mi, job) {
   if (job === "guard") m += (cp("weapon") + cp("armor")) / 50;
   const t = itemDef(g.tool);
   if (t && t.toolFor === job) m += t.cp / 40;
-  return m;
+  return m + minionSetMult(mi, job);
 }
 
 export const minionSurvival = mi => 1 / (1 + ((itemDef((mi.equip || {}).armor) || {}).cp || 0) / 20);

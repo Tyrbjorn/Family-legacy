@@ -3,7 +3,8 @@ import { warTimer } from "./war.js";
 // Every running timer in one list (for progress bars and the Timers dock).
 // Each entry: { key, icon, who, what, p (0..1), left (in-game days, null = ongoing), tab }
 import { activeBuffs } from "./encounters.js";
-import { recipeDef } from "./inventory.js";
+import { itemDef, recipeDef } from "./inventory.js";
+import { enchDef, enchTimer } from "./gear.js";
 import { MLV, minionXpNeed } from "./minions.js";
 import { tripLeft, tripPhase, tripTotal } from "./map.js";
 import { D, T, living, xpNeed } from "./state.js";
@@ -163,6 +164,10 @@ export function timers(s) {
       const n = FEUD().warnDays;
       out.push({ key: "feud" + h.id, icon: "🔥", who: h.name, what: "mustering for war", p: clamp((s.day - st.warned) / n), left: Math.max(0, n - (s.day - st.warned)), tab: "houses" });
     }
+  }
+  for (const j of s.enchants || []) {
+    const t = enchTimer(s, j);
+    out.push({ key: j.uid, icon: "✨", who: (itemDef(j.item) || {}).name || j.item, what: `enchanting: ${(enchDef(j.ench) || {}).name}`, p: t.p, left: t.left, tab: "inv" });
   }
   return out;
 }

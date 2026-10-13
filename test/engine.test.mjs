@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
@@ -711,5 +711,60 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  const Bs=E.makeSuitor(B,{house:'skye'}); ok(Bs.dowry.coin>0,'house marriages from the start');
  let tr=0; B.res.coin=1e4; for(let d=0;d<30*40;d++){B.day++; if(B.day%30===0){B.houses.vey.r=-60; const c=B.res.coin; E.housesDay(B); if(B.res.coin<c) tr++;}} ok(tr===0,'no rival trouble events before Established');
  ok(D.marriage.houses.list.every(h=>h.rank&&h.seat&&h.kind),'house model has rank/seat/kind for future lords & titles');
+}
+// Gear sets: 2/4-piece bonuses, quality carries through, minions wear sets
+{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; m.cls='fighter';
+ const base=E.cp(G,m); const SW=D.gear.sets.find(x=>x.id==='warden');
+ G.vault.push('c|warden_blade|common','c|warden_shield|common'); E.equip(G,m,'c|warden_blade|common'); const one=E.cp(G,m); E.equip(G,m,'c|warden_shield|common');
+ const two=E.cp(G,m); ok(E.setProgress(m.equip)[0].n===2&&two>one+E.itemDef('c|warden_shield|common').cp,'2-piece set bonus adds CP on top of the pieces');
+ const vit0=E.statVal(m,'VIT'); G.vault.push('c|warden_mail|masterwork','c|warden_sigil|masterwork'); E.equip(G,m,'c|warden_mail|masterwork'); E.equip(G,m,'c|warden_sigil|masterwork');
+ ok(E.statVal(m,'VIT')>vit0&&G.log.some(l=>/🧩 .*completed the .*Warden/.test(l.msg)),'4-piece: stats + completion logged (Chronicle hook)');
+ const sc=E.setProgress(m.equip)[0].scale; ok(sc>1,'quality carries through: masterwork pieces scale the set bonus ('+sc.toFixed(2)+')');
+ const lo=E.gearFx({a:'c|warden_blade|crude',b:'c|warden_shield|crude'}).cp, hi=E.gearFx({a:'c|warden_blade|masterwork',b:'c|warden_shield|masterwork'}).cp; ok(hi>lo,'higher quality → bigger set bonus');
+ ok(E.gearFx({a:'moon_edge',b:'moon_aegis'}).cp>E.gearFx({a:'warden_blade',b:'warden_shield'}).cp,'found Epic set pieces scale by rarity');
+ const mi={uid:'x',equip:{weapon:'warden_blade',armor:'warden_mail'}}; ok(E.minionGearMult(mi,'guard')>E.minionGearMult({uid:'y',equip:{weapon:'iron_sword',armor:'chain_shirt'}},'guard')-0.0001+0.1,'minions wearing 2 set pieces get the minion set bonus');
+ ok(D.quests.some(q=>(q.rare||[]).some(r=>r.id==='moon_edge'||r.id.startsWith('moon_')))&&D.dungeons.some(d=>(d.rare||[]).some(r=>r.id.startsWith('moon_'))),'found-only set drops from quests and dungeons');
+ ok(D.gear.sets.filter(x=>!x.found).every(x=>x.pieces.every(pc=>D.crafting.recipes.some(r=>r.base===pc))),'craftable sets have a recipe for every piece');
+}
+// Enchanting: slots by quality/rarity, timed jobs with progress, greater rolls, replace + disenchant
+{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; m.cls='apprentice'; estate(G,['bunk','enchdesk']);
+ ok(E.enchSlots(E.itemDef('c|iron_sword|crude'))===0&&E.enchSlots(E.itemDef('c|iron_sword|masterwork'))===3&&E.enchSlots(E.itemDef('moon_edge'))===2,'enchant slots grow with quality / rarity');
+ ok(E.enchanters(G).length===1,'mage-line adult can enchant'); const F=E.stationFx(G); ok(F.jobs===1&&F.maxSlots===1,'home Rune Desk: 1 job, first slot only');
+ Object.assign(G.res,{dust:50,copper:10,mandrake:10,moonpetal:10,thyme:20,ingots:5}); G.vault.push('c|iron_sword|superior');
+ ok(/slot 1 and below/.test(E.enchantIssue(G,'m:'+m.id,'c|iron_sword|superior','keen',1)||''),'home desk cannot work the 2nd slot');
+ ok(/doesn't go on/.test(E.enchantIssue(G,'m:'+m.id,'c|iron_sword|superior','warding',0)||''),'enchants are slot-specific');
+ const cp0=E.itemDef('c|iron_sword|superior').cp; ok(E.startEnchant(G,'m:'+m.id,'c|iron_sword|superior','keen'),'start enchant'); ok(!G.vault.includes('c|iron_sword|superior')&&E.timers(G).some(x=>x.icon==='✨'),'item is on the table; enchant timer listed');
+ const x0=m.skills.enchanting.xp+m.skills.enchanting.lvl*1e6; for(let i=0;i<10&&G.enchants.length;i++){G.day++;E.enchantDay(G);} const nid=G.vault.find(id=>id.startsWith('c|iron_sword|superior#'));
+ ok(nid&&E.itemDef(nid).cp>cp0&&E.splitId(nid).ench[0].startsWith('keen'),'enchanted item returns with more CP'); ok(m.skills.enchanting.xp+m.skills.enchanting.lvl*1e6>x0,'enchanting trains the Enchanting skill');
+ ok(G.log.some(l=>/✨ .*enchanted/.test(l.msg))&&G.intros,'enchant logged (notify craft category)');
+ const back=E.disenchant(G,nid,0); ok(back==='c|iron_sword|superior'&&G.vault.includes(back),'disenchant clears the slot (half reagents back)');
+ m.skills.enchanting.lvl=60; let greater=0; for(let k=0;k<6;k++){const id='c|oak_staff|fine'; G.vault.push(id); E.startEnchant(G,'m:'+m.id,id,'keen'); for(let i=0;i<10&&G.enchants.length;i++){G.day++;E.enchantDay(G);} const r=G.vault.find(v=>v.startsWith('c|oak_staff|fine#')); if(r&&E.isGreater(E.splitId(r).ench[0]))greater++; G.vault=G.vault.filter(v=>!v.startsWith('c|oak_staff'));} ok(greater>0,'skilled enchanter rolls Greater enchants');
+ // replace: workshop opens slot 2, replace slot 1
+ G.structures.push({uid:'ws',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:0}); const id2='c|iron_sword|superior#keen'; G.vault.push(id2); ok(E.startEnchant(G,'m:'+m.id,id2,'moonfire',0),'replace an existing enchant'); for(let i=0;i<20&&G.enchants.length;i++){G.day++;E.enchantDay(G);} ok(G.vault.some(v=>/#moonfire/.test(v)&&!/keen/.test(v)),'replacement swaps the enchant');
+ const dm={uid:'d1',name:'Hedge',cls:'n_enchanter',lvl:5,equip:{}}; G.minions.push(dm); ok(E.enchanters(G).some(w=>w.key==='n:d1')===E.isHoused(G,dm),'magic followers can be enchanters (when housed)');
+ const ol=JSON.parse(E.serialize(G,t0)); delete ol.enchants; ol.schema=8; ol._norm=false; E.normalize(ol); ok(Array.isArray(ol.enchants)&&ol.vault.every(id=>E.itemDef(id)),'migration n:9 keeps enchanted ids loadable');
+}
+{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; m.cls='apprentice'; estate(G,['bunk']); for(let i=0;i<5;i++){E.introsDay(G); for(const l of E.introsActive(G)) if(l.id!=='enchanting') E.introSkip(G,l.id);} ok(G.intros.lines.enchanting&&G.intros.lines.enchanting.state==='active','Enchanting intro starts for a mage with land'); G.structures[0].pieces.push('enchdesk'); E.introsDay(G); ok(G.intros.lines.enchanting.step===1,'intro step 1: a station'); }
+{ const G=E.newGame(t0); E.skipTutorial(G); const mi={uid:'mm',type:'laborer',name:'Bo',equip:{},lvl:1,loyalty:10}; G.minions.push(mi); G.vault.push('warden_blade','warden_mail'); ok(E.equipMinion(G,mi.uid,'warden_blade')&&E.equipMinion(G,mi.uid,'warden_mail')&&E.setProgress(mi.equip)[0].n===2,'minions can wear set gear'); }
+// Stations: home furniture tiers vs workshop upgrades; synergies can beat a low workshop; full workshop is the ceiling
+{ const mk=()=>{const G=E.newGame(t0); E.skipTutorial(G); return G;}; const Q=G=>E.stationFx(G).quality+E.stationFx(G).speed;
+ const H0=mk(); H0.structures=[{uid:'h',type:'house',pieces:['enchdesk'],up:0}]; const W0=mk(); W0.structures=[{uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:0}];
+ const HM=mk(); HM.structures=[{uid:'h',type:'house',pieces:['enchdesk@3'],up:0}]; ok(Q(H0)<Q(HM)&&Q(HM)<Q(W0),'home tiers improve but stay below a base workshop');
+ const HS=mk(); HS.structures=[{uid:'h',type:'house',pieces:['enchdesk@3','reagentshelf','studydesk','glyphlectern'],up:0}]; ok(Q(HS)>Q(W0),'home + synergies outclass a low-tier workshop');
+ const WM=mk(); WM.structures=[{uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus','reagentshelf','glyphlectern'],up:3}]; ok(Q(WM)>Q(HS)&&E.stationFx(WM).maxSlots>E.stationFx(HS).maxSlots-1&&E.stationFx(WM).jobs>=2,'full workshop with synergies is the ceiling');
+ ok(E.stationCraftQ(WM,'enchtable')>E.stationCraftQ(W0,'enchtable')&&E.stationCraftQ(W0,'forge')===0,'workshop upgrades add crafting quality at its station');
+ ok(E.pieceSlots('enchdesk@3')===3&&E.pieceSlots('enchdesk')===1&&E.pieceSlots('forge@3')===2,'higher furniture tiers take more slots');
+ ok(Object.keys(E.pieceTiers('enchdesk')[3].cost).some(k=>['moonpetal','mandrake','dust'].includes(k)),'top tiers need higher-tier resources');
+ const G=mk(); const st=estate(G,['enchdesk@1']); G.res.coin=1e4; G.res.blocks=50; G.res.dust=50; G.res.moonpetal=20; const free=E.freeSlots(G,st); st.pieces.push(...Array(free).fill(0).map((_,i)=>'bunk')); ok(/more free slot/.test(E.pieceUpIssue(G,st.uid,'enchdesk@1')||''),'upgrading to a bigger tier needs room');
+ const O=mk(); const s2=estate(O,['forge@3']); const cap=E.freeSlots(O,s2); s2.pieces.push(...Array(Math.max(0,cap+1)).fill('bunk')); const ol=JSON.parse(E.serialize(O,t0)); ol.schema=8; ol._norm=false; E.normalize(ol); ok(E.freeSlots(ol,ol.structures.find(x=>x.uid===s2.uid))>=0,'old saves: over-full buildings are grandfathered');
+ ok(/needs a Mage/.test(E.structIssue(mk(),'arcaneworkshop')||'')||/buy land|needs a/.test(E.structIssue(mk(),'arcaneworkshop')||''),'workshop requires the Mage\'s Tower');
+}
+// Class crafting perks: exclusive recipes/furniture/upgrades + quality bonus on what they build
+{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; estate(G,['bunk','forge','loom','workbench']); Object.assign(G.res,{ingots:50,leather:10,planks:20,copper:20,cloth:20,dust:20});
+ const rc=E.recipeDef('r_warden_mail'); ok(/Blacksmith only/.test(E.recipeIssue(G,m,rc)||''),'class recipe locked, names the class'); m.prof='blacksmith'; m.skills.smithing.lvl=20; ok(!E.recipeIssue(G,m,rc),'Blacksmith can craft it'); m.prof='armorer'; ok(!E.recipeIssue(G,m,rc)||!/only/.test(E.recipeIssue(G,m,rc)),'advanced classes in the line inherit');
+ m.prof=null; ok(/needs a Blacksmith/.test(E.pieceLock(G,E.pieceDef('runedanvil'))||''),'class furniture is locked with the class named');
+ const st=G.structures[0]; const pm0=E.pieceMult(st,'forge'); m.prof='blacksmith'; ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'forge'); E.placePiece(G,st.uid,'forge',G.pieceStore.includes('forge')); ok(E.pieceMult(st,'forge')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
+ const ws={uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:2}; G.structures.push(ws); G.res.coin=1e5; G.res.blocks=100; G.res.moonpetal=50; ok(/needs an Apprentice/.test(E.specialUpIssue(G,'w')||''),'class-gated building upgrade');
+ for(const [c,k] of Object.entries(D.crafting.classPerks)) if(c[0]!=='_') ok(D.classes.some(x=>x.id===c)&&k.pieces.every(p=>E.pieceDef(p)),'perk '+c+' references real classes/pieces');
 }
 console.log(pass,'tests passed');

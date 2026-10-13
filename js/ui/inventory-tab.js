@@ -1,6 +1,7 @@
 import * as E from "../engine.js";
 import { MATS, QC, RI, fmt, it, itemRow } from "./common.js";
 import { D, invF, s } from "../main.js";
+import { enchantCard, gearTags, setsCard } from "./gear-ui.js";
 
 export function vault() {
   const m = E.active(s);
@@ -16,7 +17,7 @@ export function vault() {
 export function invv() {
   const m = E.active(s);
   const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
-  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> (+${it(m.equip[sl]).cp} CP)` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}</div>`;
+  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> (+${it(m.equip[sl]).cp} CP)${gearTags(it(m.equip[sl]))}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}</div>` + setsCard(m.equip) + enchantCard();
   h +=
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(

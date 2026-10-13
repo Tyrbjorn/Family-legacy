@@ -32,7 +32,7 @@ function filters() {
     `<select data-a="craftf" data-v="${key}"><option value="all">${name}: all</option>${list
       .map(
         x =>
-          `<option value="${x}" ${f[key] === x ? "selected" : ""}>${key === "station" ? E.pieceDef(x).name : sk(x).name}</option>`,
+          `<option value="${x}" ${f[key] === x ? "selected" : ""}>${key === "station" ? (E.pieceDef(x) || { name: "Mentor's bench" }).name : sk(x).name}</option>`,
       )
       .join("")}</select>`;
   const who = `<select data-a="crafter">${crafterOptions()
@@ -59,7 +59,7 @@ function recipeCard(rc, who) {
     btns += `<button class="b ${on ? "sel" : ""}" data-a="craft" data-v="${rc.id}" ${iss || !E.isAdult(m) ? "disabled" : ""}>${on ? "Crafting" : "Craft now"}</button>`;
   if (mi)
     btns += `<button class="b ${mi.craftOrder === rc.id ? "sel" : ""}" data-a="mcraft" data-v="${mi.uid}" data-w="${rc.id}">${mi.craftOrder === rc.id ? "Assigned" : "Assign"}</button>`;
-  return `<div class="card" style="padding:6px 8px;margin:4px 0"><div class="row"><b>${rc.name}</b><span class="muted">${E.pieceDef(rc.station).name} · ${sk(rc.skill).name} · ${rc.days}d</span></div>
+  return `<div class="card" style="padding:6px 8px;margin:4px 0"><div class="row"><b>${rc.name}${rc.requiresClass ? ` <span class="tb">🎓 ${E.className(rc.requiresClass)}</span>` : ""}${rc.set ? ` <span class="tb">${E.setDef(rc.set).icon} ${E.setDef(rc.set).name}</span>` : ""}</b><span class="muted">${(E.pieceDef(rc.station) || { name: "Mentor's bench" }).name} · ${sk(rc.skill).name} · ${rc.days}d</span></div>
  <div class="muted">${mats}</div><div class="muted">🎲 ${odds}${iss ? " · 🔒 " + iss : ""}</div><div class="row" style="justify-content:flex-end;gap:4px">${btns}</div></div>`;
 }
 

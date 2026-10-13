@@ -1,3 +1,4 @@
+import { gearTags } from "./gear-ui.js";
 import { bellv } from "./progress.js";
 import * as E from "../engine.js";
 import { D, invF, s } from "../main.js";
@@ -176,7 +177,7 @@ export const MATS = [
 ];
 
 export function itemRow(x, btns) {
-  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.toolFor ? " · tool: " + x.toolFor : ""}${x.affinity ? " +" + x.affinity + "❤️" : ""} · ${x.value}🪙</span></span><span style="text-align:right">${btns}</span></div>`;
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.toolFor ? " · tool: " + x.toolFor : ""}${x.affinity ? " +" + x.affinity + "❤️" : ""} · ${x.value}🪙</span>${gearTags(x)}</span><span style="text-align:right">${btns}</span></div>`;
 }
 
 export const secDay = () => D.tuning.secPerDayActive / (s.turbo.on ? D.tuning.turboMult : 1);

@@ -17,6 +17,21 @@ import { guildDef, memberGuild } from "./guilds.js";
 import { regionKnown } from "./map.js";
 import { mtype } from "./minions.js";
 import { D, afford, ageY, bl, cost, isAdult, living, log, pay } from "./state.js";
+import { inLine } from "./skills.js";
+
+// ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
+const CPK = () => Object.entries(D.crafting.classPerks || {}).filter(([k]) => k[0] !== "_");
+export const famHasClass = (s, c) => living(s).some(m => inLine(m, c));
+export const className = c => (D.classes.find(x => x.id === c) || { name: c }).name;
+export const classLock = (s, c) => (c && !famHasClass(s, c) ? `needs ${/^[AEIOU]/.test(className(c)) ? "an" : "a"} ${className(c)} in the family` : null);
+export const piecePerk = (s, pid) =>
+  CPK().reduce((a, [c, k]) => a + (k.pieces.includes(baseId(pid)) && famHasClass(s, c) ? k.furniture : 0), 0);
+export const upgradePerk = (s, type) =>
+  CPK().reduce((a, [c, k]) => a + (k.structures.includes(type) && famHasClass(s, c) ? k.upgrade : 0), 0);
+const markPerk = (s, st, pid) => {
+  const v = piecePerk(s, pid);
+  if (v) (st.perk = st.perk || {})[baseId(pid)] = Math.max(v, (st.perk || {})[baseId(pid)] || 0);
+};
 
 export const ES = () => D.estate;
 
@@ -29,12 +44,17 @@ export const pieceDef = id => {
   return ES().pieces.find(p => p.id === b) || D.furniture.find(p => p.id === b);
 };
 
-export const tierName = id => ES().pieceTiers[pieceTier(id)].name;
+// Per-piece tier tables (piece.tiers) override the generic pieceTiers: higher tiers can need rarer resources
+// and take more furniture slots (tier.slots).
+export const pieceTiers = id => (pieceDef(id) || {}).tiers || ES().pieceTiers;
+export const pieceTierDef = id => pieceTiers(id)[Math.min(pieceTier(id), pieceTiers(id).length - 1)];
+export const pieceSlots = id => pieceTierDef(id).slots || 1;
+export const tierName = id => pieceTierDef(id).name;
 
 export const structLevel = st => structDef(st.type).level || 1;
 
 export const pieceMult = (st, id) =>
-  ES().pieceTiers[pieceTier(id)].mult * (1 + ES().levelBonus * (structLevel(st) - 1)) * (1 + upgMult(st));
+  pieceTierDef(id).mult * (1 + ES().levelBonus * (structLevel(st) - 1)) * (1 + upgMult(st)) * (1 + ((st.perk || {})[baseId(id)] || 0));
 
 export const INTK = new Set(["beds"]);
 
@@ -59,6 +79,7 @@ export const scaledPiece = (st, id) => {
 export const STAGE_ORDER = () => ES().stages.map(x => x[1]);
 
 export function pieceLock(s, p) {
+  if (p.requiresClass && !famHasClass(s, p.requiresClass)) return classLock(s, p.requiresClass);
   const u = p.unlock;
   if (!u) return null;
   if (u.stage && STAGE_ORDER().indexOf(estateStage(s)) < STAGE_ORDER().indexOf(u.stage))
@@ -80,8 +101,10 @@ export function pieceUpIssue(s, uid, pid) {
   const st = s.structures.find(x => x.uid === uid);
   if (!st || !st.pieces.includes(pid)) return "missing";
   const t = pieceTier(pid);
-  const nx = ES().pieceTiers[t + 1];
+  const nx = pieceTiers(pid)[t + 1];
   if (!nx) return "max";
+  const more = (nx.slots || 1) - pieceSlots(pid);
+  if (more > 0 && freeSlots(s, st) < more) return `needs ${more} more free slot${more > 1 ? "s" : ""}`;
   if (!afford(s, nx.cost)) return "cannot afford";
   return null;
 }
@@ -90,9 +113,10 @@ export function upgradePiece(s, uid, pid) {
   if (pieceUpIssue(s, uid, pid)) return false;
   const st = s.structures.find(x => x.uid === uid);
   const t = pieceTier(pid) + 1,
-    nx = ES().pieceTiers[t];
+    nx = pieceTiers(pid)[t];
   pay(s, nx.cost);
   st.pieces[st.pieces.indexOf(pid)] = baseId(pid) + "@" + t;
+  markPerk(s, st, pid);
   log(s, `🔧 ${pieceDef(pid).name} upgraded to ${nx.name}.`);
   return true;
 }
@@ -209,6 +233,8 @@ export function structIssue(s, type) {
   const d = structDef(type);
   if (!hasLand(s)) return "buy land first";
   if (landUsed(s) + d.land > landSlots(s)) return "no free land slot";
+  if (d.requires && !(s.structures || []).some(x => x.type === d.requires || structDef(x.type).upgradeFrom === d.requires))
+    return `needs a ${structDef(d.requires).name}`;
   if (d.legacy && !hasLegacy(s, d.legacy)) return "needs Legacy upgrade";
   if (!afford(s, d.cost)) return "cannot afford";
   return null;
@@ -245,11 +271,11 @@ export function upgradeStructure(s, uid) {
 }
 
 export const freeSlots = (s, st) =>
-  structDef(st.type).slots + (structDef(st.type).fixed || []).length - st.pieces.length;
+  structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
 
 export const isFixed = (st, pid) => (structDef(st.type).fixed || []).includes(baseId(pid));
 
-export const upgMult = st => (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + u.mult, 0);
+export const upgMult = st => (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + u.mult, 0) + (st.upPerk || 0);
 
 export function specialUpIssue(s, uid) {
   const st = s.structures.find(x => x.uid === uid);
@@ -257,6 +283,7 @@ export function specialUpIssue(s, uid) {
   if (!ups) return "missing";
   const nx = ups[st.up || 0];
   if (!nx) return "max";
+  if (nx.requiresClass && !famHasClass(s, nx.requiresClass)) return classLock(s, nx.requiresClass);
   if (!afford(s, nx.cost)) return "cannot afford";
   return null;
 }
@@ -267,6 +294,8 @@ export function upgradeSpecial(s, uid) {
   const nx = structDef(st.type).upgrades[st.up || 0];
   pay(s, nx.cost);
   st.up = (st.up || 0) + 1;
+  const pk = upgradePerk(s, st.type);
+  if (pk) st.upPerk = (st.upPerk || 0) + nx.mult * pk;
   log(s, `🔧 ${structDef(st.type).name}: ${nx.name} installed (+${nx.mult * 100}% output).`);
   return true;
 }
@@ -293,6 +322,7 @@ export function placePiece(s, uid, pid, fromStore = false) {
   if (fromStore) s.pieceStore.splice(s.pieceStore.indexOf(pid), 1);
   else pay(s, p.cost);
   st.pieces.push(pid);
+  markPerk(s, st, pid);
   const before = new Set();
   log(s, `🪑 Placed ${p.name} in the ${structDef(st.type).name}.`);
   for (const y of activeSynergies(st)) if (y.pieces.includes(pid)) log(s, `✨ Synergy: ${y.name} (${y.desc}).`);

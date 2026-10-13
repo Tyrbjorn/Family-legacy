@@ -1,3 +1,4 @@
+import { gearFx, gearStat } from "./gear.js";
 import { rollTraits, traitStat } from "./traits.js";
 import { bankRenown } from "./legacy.js";
 import { actionAllowed, defaultAction } from "./actions.js";
@@ -86,7 +87,7 @@ export function lifeStageMult(m) {
 }
 
 export function statVal(m, k) {
-  let v = m.stats[k] + traitStat(m, k);
+  let v = m.stats[k] + traitStat(m, k) + gearStat(m, k);
   for (const sk of D.skills) if (sk.stat === k) v += m.skills[sk.id].lvl * 0.2;
   if (["STR", "AGI", "VIT"].includes(k)) v *= lifeStageMult(m);
   return Math.round(v * 10) / 10;
@@ -108,6 +109,8 @@ export function cp(s, m) {
     const it = itemDef(id);
     if (it) v += it.cp || 0;
   }
+  const gf = gearFx(m.equip);
+  v = (v + (gf.cp || 0)) * (1 + (gf.cpPct || 0));
   v *= 1 + traitSum(m, "cp");
   return Math.round(v);
 }

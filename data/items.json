@@ -701,5 +701,149 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 90
+ },
+ {
+  "id": "warden_blade",
+  "name": "Warden's Blade",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 17,
+  "value": 120,
+  "set": "warden"
+ },
+ {
+  "id": "warden_shield",
+  "name": "Warden's Shield",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 13,
+  "value": 110,
+  "set": "warden"
+ },
+ {
+  "id": "warden_mail",
+  "name": "Warden's Mail",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 120,
+  "set": "warden"
+ },
+ {
+  "id": "warden_sigil",
+  "name": "Warden's Sigil",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 9,
+  "value": 110,
+  "set": "warden"
+ },
+ {
+  "id": "storm_staff",
+  "name": "Stormcaller Staff",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 110,
+  "set": "storm"
+ },
+ {
+  "id": "storm_tome",
+  "name": "Storm Tome",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 120,
+  "set": "storm"
+ },
+ {
+  "id": "storm_robe",
+  "name": "Stormcaller Robe",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 140,
+  "set": "storm"
+ },
+ {
+  "id": "storm_circlet",
+  "name": "Storm Circlet",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 11,
+  "value": 130,
+  "set": "storm"
+ },
+ {
+  "id": "green_bow",
+  "name": "Greenwood Bow",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 19,
+  "value": 130,
+  "set": "greenwood"
+ },
+ {
+  "id": "green_quiver",
+  "name": "Greenwood Quiver",
+  "slot": "offhand",
+  "rarity": "Fine",
+  "cp": 10,
+  "value": 90,
+  "set": "greenwood"
+ },
+ {
+  "id": "green_leathers",
+  "name": "Greenwood Leathers",
+  "slot": "armor",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 110,
+  "set": "greenwood"
+ },
+ {
+  "id": "green_pin",
+  "name": "Greenwood Pin",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 9,
+  "value": 100,
+  "set": "greenwood"
+ },
+ {
+  "id": "moon_edge",
+  "name": "Moonlit Edge",
+  "slot": "weapon",
+  "rarity": "Epic",
+  "cp": 34,
+  "value": 700,
+  "set": "moonlit"
+ },
+ {
+  "id": "moon_aegis",
+  "name": "Moonlit Aegis",
+  "slot": "offhand",
+  "rarity": "Epic",
+  "cp": 24,
+  "value": 600,
+  "set": "moonlit"
+ },
+ {
+  "id": "moon_plate",
+  "name": "Moonlit Plate",
+  "slot": "armor",
+  "rarity": "Epic",
+  "cp": 30,
+  "value": 700,
+  "set": "moonlit"
+ },
+ {
+  "id": "moon_locket",
+  "name": "Moonlit Locket",
+  "slot": "accessory",
+  "rarity": "Epic",
+  "cp": 18,
+  "value": 600,
+  "set": "moonlit"
  }
 ]

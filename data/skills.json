@@ -338,5 +338,21 @@
   "family": "craft",
   "stat": "WIL",
   "icon": "🌿"
+ },
+ {
+  "id": "enchanting",
+  "name": "Enchanting",
+  "family": "magic",
+  "stat": "INT",
+  "icon": "✨",
+  "guild": "collegium",
+  "exclusive": {
+   "guilds": [
+    "collegium"
+   ],
+   "classes": [
+    "apprentice"
+   ]
+  }
  }
 ]

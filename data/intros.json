@@ -65,6 +65,33 @@
    ]
   },
   {
+   "id": "enchanting",
+   "name": "Enchanting",
+   "icon": "✨",
+   "tab": "inv",
+   "when": "enchantReady",
+   "intro": "Mages of the family can bind enchantments into gear: a Rune Desk at home, or the Mage's Tower's Arcane Workshop.",
+   "steps": [
+    {
+     "id": "en_station",
+     "title": "Place a Rune Desk (home) or build the Arcane Workshop",
+     "check": "enchStation",
+     "reward": {
+      "coin": 120
+     }
+    },
+    {
+     "id": "en_do",
+     "title": "Enchant any item",
+     "check": "flag:enchanted",
+     "reward": {
+      "coin": 200,
+      "dust": 3
+     }
+    }
+   ]
+  },
+  {
    "id": "craft",
    "name": "Crafting",
    "icon": "🔨",

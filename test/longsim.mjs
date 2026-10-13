@@ -13,6 +13,7 @@ const T = D.tuning,
   YD = T.daysPerYear;
 const issues = [];
 const seen = {
+  enchants: 0,
   quests: new Set(),
   structs: new Set(),
   pieces: new Set(),
@@ -165,6 +166,17 @@ function bot(s, m) {
       if (!E.placeIssue(s, st.uid, p) && s.res.coin > 300) E.placePiece(s, st.uid, p) && seen.pieces.add(p);
     if (!E.upgradeIssue(s, st.uid) && s.res.coin > 2000) E.upgradeStructure(s, st.uid);
   }
+  // enchanting: when a station + enchanter exist, enchant the best gear now and then
+  if (s.day % 40 === 0 && E.stationFx(s).jobs > E.enchJobs(s).length) {
+    const w = E.enchanters(s).find(w => !E.enchJobs(s).some(j => j.who === w.key));
+    const id = w && s.vault.find(v => E.enchSlots(E.itemDef(v)) > E.splitId(v).ench.length);
+    const en = id && D.gear.enchants.find(e => !E.enchantIssue(s, w.key, id, e.id));
+    if (en && E.startEnchant(s, w.key, id, en.id)) seen.enchants++;
+  }
+  if (s.day % 200 === 0 && !E.hasPiece(s, "enchdesk") && E.enchanters(s).length && s.res.coin > 600) {
+    const st = s.structures.find(x => !E.placeIssue(s, x.uid, "enchdesk"));
+    if (st) E.placePiece(s, st.uid, "enchdesk");
+  }
   // diplomacy: occasionally work for a friendly house, gift a rival, buy peace when rich
   for (const h of D.marriage.houses.list) {
     const st = E.houseState(s, h.id);
@@ -176,7 +188,7 @@ function bot(s, m) {
   // food: never let the larder run dry — buy provisions, else do chores (the starter path)
   if (E.daysOfStock(s) < 4) {
     if (s.res.coin >= E.townBuyPrice(s, "millbrook", "food") * 30) E.buyRes(s, "millbrook", "food", 30);
-    else if (!E.isBusy(m) && !E.tutActive(s) && s.day % 9 < 3) {
+    else if (!E.tutActive(s) && (!E.isBusy(m) || E.daysOfStock(s) < 1) && !(m.action && m.action.target === "chores")) {
       E.setAction(s, { type: "activity", target: "chores" });
       return;
     }
@@ -364,6 +376,9 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     }
   }
   for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
+  for (const id of [...s.vault, ...s.members.flatMap(m => Object.values(m.equip || {})), ...(s.minions || []).flatMap(x => Object.values(x.equip || {}))]) if (!E.itemDef(id)) bad(seed, s.day, 'unloadable item ' + id);
+  for (const j of s.enchants || []) if (s.day - j.start > 365) bad(seed, s.day, 'enchant job stuck ' + j.item);
+  for (const st of s.structures) if (E.freeSlots(s, st) < 0) bad(seed, s.day, 'over-full building ' + st.type);
   for (const [id, l] of Object.entries((s.intros || {}).lines || {})) if (!['active', 'done', 'skipped'].includes(l.state)) bad(seed, s.day, 'bad intro state ' + id);
   if (noSuitor.max > YD * 2) bad(seed, s.day, `no suitors for ${noSuitor.max} days (marriage soft-lock)`);
   if (food.starving > food.days * 0.02) bad(seed, s.day, `starvation on ${food.starving}/${food.days} days`);
@@ -388,6 +403,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
     phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),
+    sets: s.vault.concat(s.members.flatMap(m => Object.values(m.equip || {}))).filter(id => (E.itemDef(id) || {}).set).length,
+    enchanted: s.vault.concat(s.members.flatMap(m => Object.values(m.equip || {}))).filter(id => String(id).includes('#')).length,
     intros: Object.fromEntries(Object.entries((s.intros || {}).lines || {}).map(([k, l]) => [k, l.state])),
     food: {
       shortDays: food.short,
@@ -447,6 +464,7 @@ console.log(
   JSON.stringify(Object.fromEntries(Object.entries(coinBy).map(([k, v]) => [k, Math.round(v)]))),
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
+console.log("enchant jobs started by bot:", seen.enchants);
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

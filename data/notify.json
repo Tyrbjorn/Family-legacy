@@ -48,7 +48,9 @@
    "name": "Crafting",
    "icon": "🔨",
    "prefixes": [
-    "🔨"
+    "🔨",
+    "✨",
+    "🧩"
    ]
   },
   "event": {
