@@ -2,7 +2,7 @@ const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 const p=await (await b.newContext({viewport:{width:390,height:1400},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
-await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
+await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
 await p.evaluate(()=>{const g=__game,s=g.s,m=s.members[0];m.ageDays=20*360;m.cls='apprentice';m.guild={id:'collegium',rank:0,rep:0};s.vault.push('runed_orb');m.action={type:'activity',target:'orb',progress:0};});
 await p.click('[data-tab="jobs"]');await p.waitForTimeout(200);await p.click('[data-tab="main"]');await p.waitForTimeout(500);
 const h=await p.evaluateHandle(()=>[...document.querySelectorAll('h3')].find(x=>x.textContent.includes('Training & Activities')));

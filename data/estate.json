@@ -1597,6 +1597,91 @@
     "guild": "adventurers",
     "xp": 0.1
    }
+  },
+  {
+   "id": "graveyard",
+   "name": "Graveyard",
+   "icon": "🪦",
+   "fixed": [
+    "headstones"
+   ],
+   "allowed": [
+    "shrine",
+    "altar"
+   ],
+   "cost": {
+    "coin": 150,
+    "stone": 40
+   },
+   "upgrades": [
+    {
+     "name": "Stone Walls",
+     "cost": {
+      "coin": 300,
+      "blocks": 20
+     },
+     "mult": 0.25,
+     "cap": 0
+    },
+    {
+     "name": "Crypt Vaults",
+     "cost": {
+      "coin": 900,
+      "blocks": 50,
+      "ingots": 10
+     },
+     "mult": 0.25,
+     "cap": 0
+    },
+    {
+     "name": "Mausoleum Dome",
+     "cost": {
+      "coin": 2500,
+      "blocks": 100,
+      "ingots": 30
+     },
+     "mult": 0.5,
+     "cap": 0
+    }
+   ],
+   "upName": {
+    "2": "Crypt",
+    "3": "Mausoleum"
+   },
+   "capture": [
+    0.25,
+    0.35,
+    0.5,
+    0.75
+   ],
+   "desc": "Banks a fallen member's renown as Legacy Renown (25% → Crypt 50% → Mausoleum 75%)",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
+  },
+  {
+   "id": "ancestorhall",
+   "name": "Hall of Ancestors",
+   "icon": "🏛️",
+   "fixed": [
+    "ancestorshrine"
+   ],
+   "allowed": [
+    "studydesk",
+    "hourglass",
+    "clock"
+   ],
+   "cost": {
+    "coin": 1500,
+    "blocks": 40
+   },
+   "legacy": "hall",
+   "desc": "Legacy building: ancestors' blessing (+XP, morale)",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1
   }
  ],
  "pieces": [
@@ -2397,6 +2482,58 @@
    },
    "bonus": {},
    "desc": "Posts and straw dummies: unlocks Spar at the Pells and Loose at the Butts"
+  },
+  {
+   "id": "hourglass",
+   "name": "Hourglass",
+   "icon": "⏳",
+   "kind": "furniture",
+   "cost": {
+    "coin": 80,
+    "planks": 4
+   },
+   "bonus": {
+    "tick": 0.05
+   },
+   "desc": "+5% game tick speed; unlocks Count the Sands"
+  },
+  {
+   "id": "clock",
+   "name": "Grandfather Clock",
+   "icon": "🕰️",
+   "kind": "furniture",
+   "cost": {
+    "coin": 400,
+    "planks": 12,
+    "ingots": 6
+   },
+   "bonus": {
+    "tick": 0.1
+   },
+   "desc": "+10% game tick speed; unlocks Tend the Clockwork"
+  },
+  {
+   "id": "headstones",
+   "name": "Headstones",
+   "icon": "🪦",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {},
+   "desc": "Rest for the dead: banks their renown as Legacy Renown"
+  },
+  {
+   "id": "ancestorshrine",
+   "name": "Ancestor Altar",
+   "icon": "🕯️",
+   "kind": "furniture",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "blessing": 0.05,
+    "morale": 0.2
+   },
+   "desc": "+5% XP, follower morale"
   }
  ],
  "synergies": [

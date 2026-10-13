@@ -324,5 +324,12 @@
   "family": "gathering",
   "stat": "STR",
   "icon": "⚓"
+ },
+ {
+  "id": "focus",
+  "name": "Focus",
+  "family": "lore",
+  "stat": "WIL",
+  "icon": "⏳"
  }
 ]

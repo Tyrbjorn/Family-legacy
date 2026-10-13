@@ -1,0 +1,134 @@
+{
+ "tickCap": 4,
+ "memberTickCap": 1.5,
+ "speedTiers": [
+  1,
+  1.25,
+  1.5,
+  2,
+  3
+ ],
+ "renown": {
+  "perSkillLevel": 0.2,
+  "masterwork": 5
+ },
+ "upgrades": [
+  {
+   "id": "speed",
+   "name": "Quickened Years",
+   "icon": "⏩",
+   "desc": "Unlock a faster global game speed",
+   "tiers": [
+    {
+     "cost": 50,
+     "value": 1.25
+    },
+    {
+     "cost": 150,
+     "value": 1.5
+    },
+    {
+     "cost": 400,
+     "value": 2
+    },
+    {
+     "cost": 1200,
+     "value": 3
+    }
+   ],
+   "headline": true
+  },
+  {
+   "id": "life",
+   "name": "Long-Lived Blood",
+   "icon": "🧬",
+   "desc": "+2 years life expectancy per tier",
+   "tiers": [
+    {
+     "cost": 40,
+     "value": 2
+    },
+    {
+     "cost": 100,
+     "value": 4
+    },
+    {
+     "cost": 250,
+     "value": 6
+    },
+    {
+     "cost": 600,
+     "value": 8
+    }
+   ]
+  },
+  {
+   "id": "tick",
+   "name": "Steady Hands",
+   "icon": "⏳",
+   "desc": "+5% tick speed per tier (stacks under the cap)",
+   "tiers": [
+    {
+     "cost": 60,
+     "value": 0.05
+    },
+    {
+     "cost": 180,
+     "value": 0.1
+    },
+    {
+     "cost": 500,
+     "value": 0.15
+    }
+   ]
+  },
+  {
+   "id": "resgain",
+   "name": "Family Fortune",
+   "icon": "💰",
+   "desc": "+5% resource gains per tier",
+   "tiers": [
+    {
+     "cost": 40,
+     "value": 0.05
+    },
+    {
+     "cost": 120,
+     "value": 0.1
+    },
+    {
+     "cost": 300,
+     "value": 0.15
+    },
+    {
+     "cost": 800,
+     "value": 0.25
+    }
+   ]
+  },
+  {
+   "id": "heirloom",
+   "name": "Heirloom Smithing",
+   "icon": "🗡️",
+   "desc": "Unlocks the Ancestral Blade recipe",
+   "tiers": [
+    {
+     "cost": 120,
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "hall",
+   "name": "Hall of Ancestors",
+   "icon": "🏛️",
+   "desc": "Unlocks the Hall of Ancestors building",
+   "tiers": [
+    {
+     "cost": 200,
+     "value": 1
+    }
+   ]
+  }
+ ]
+}

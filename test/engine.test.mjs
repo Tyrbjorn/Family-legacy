@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy'])D[n]=L(n);
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
@@ -397,4 +397,37 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const lines=['fighter','hunter','apprentice','acolyte','cutpurse','adventurer','artisan']; ok(lines.every(c=>D.skills.some(k=>k.exclusive&&k.exclusive.classes.includes(c))),'every class line has an exclusive skill');
  const W=E.newGame(t0); const wm=W.members[0]; wm.ageDays=20*360; wm.action={type:'train',target:'farming'}; E.normalize(W); ok(wm.action.type==='activity'&&wm.action.target==='chores','old Train action migrates to a themed activity');
  wm.action={type:'activity',target:'sparring'}; E.normalize(W); ok(!wm.action,'removed activity cleared on load'); }
+// Crafting tab, tick speed, legacy prestige
+{ const C=E.newGame(t0); E.normalize(C); const m=C.members[0]; m.ageDays=20*360;
+ ok(!E.craftingUnlocked(C),'Crafting tab hidden without a crafter');
+ m.prof='artisan'; ok(E.craftingUnlocked(C),'Artisan-line member unlocks Crafting'); m.prof=null; ok(E.craftingUnlocked(C),'Crafting stays unlocked once seen');
+ const C2=E.newGame(t0); estate(C2,['minionbunk'],'shack'); const mi=E.addMinion(C2,'laborer','t'); mi.cls='n_herbalist'; ok(E.craftingUnlocked(C2),'Herbalist minion unlocks Crafting');
+ const rc=D.crafting.recipes[0]; const odds=E.qualityOdds(C,m,rc); ok(Math.abs(odds.reduce((a,b)=>a+b.p,0)-1)<1e-6,'quality odds sum to 100%');
+ m.skills[rc.skill].lvl=60; const o2=E.qualityOdds(C,m,rc); ok(o2.at(-1).id!==odds.at(-1).id||o2.at(-1).p>odds.at(-1).p,'more skill shifts odds up');
+ const ms=E.matsStatus(C,rc); ok(ms.length===Object.keys(rc.mats).length&&ms.every(x=>'have' in x&&'need' in x),'materials have/need');
+ estate(C,['workbench'],'shack'); const fst=C.structures.at(-1); fst.pieces.push('forge'); Object.assign(C.res,{ingots:100,planks:100,coin:1e4});
+ const v0=C.vault.length; ok(E.queueCraft(C,m,'r_sword')&&E.queueCraft(C,m,'r_sword')&&m.craftQueue.length===2,'queue two crafts');
+ m.action={type:'craft',target:null,progress:0}; E.advanceReal(C,10*12); ok(C.vault.length>=v0+2&&m.craftQueue.length===0,'queued crafts complete in order');
+ ok(E.unqueueCraft(m,0)===false,'empty queue');
+ mi.job='craft'; ok(E.setMinionCraft(C2,mi,'r_sword')&&mi.craftOrder==='r_sword','assign a recipe to a crafter minion'); }
+{ const S=E.newGame(t0); E.normalize(S); ok(E.globalTick(S)===1&&E.speedOptions(S).join()==='1','base speed 1x, no faster tiers');
+ ok(!E.setSpeed(S,2),'cannot pick locked speed'); S.legacy.renown=1e4; for(let i=0;i<4;i++) E.buyLegacy(S,'speed'); ok(E.maxSpeed(S)===3&&E.speedOptions(S).join()==='1,1.25,1.5,2,3','legacy speed tiers 1.25/1.5/2/3x');
+ ok(E.setSpeed(S,2)&&E.globalTick(S)===2,'speed selector sets 2x'); const d0=S.day; E.advanceReal(S,100); ok(S.day-d0===20,'2x speed doubles game days');
+ S.turbo.charge=0; ok(!S.turbo.on,'turbo separate from speed');
+ estate(S,['clock','hourglass'],'shack'); ok(Math.abs(E.globalTick(S)-2*1.15)<1e-9,'clock + hourglass add tick bonus');
+ E.setSpeed(S,3); for(let i=0;i<3;i++) E.buyLegacy(S,'tick'); ok(E.globalTick(S)<=D.legacy.tickCap,'global tick capped');
+ const m=S.members[0]; const t1=E.memberTick(m); m.skills.focus.lvl=50; m.stats.WIL=40; ok(E.memberTick(m)>t1&&E.memberTick(m)<=D.legacy.memberTickCap,'Focus skill + WIL raise member tick, capped');
+ ok(D.activities.some(a=>a.skills.includes('focus')),'Focus has a themed activity'); }
+{ const G=E.newGame(t0); E.normalize(G); const m=G.members[0]; m.renown=0; E.addRenown(G,m,40); ok(m.renown===40&&G.renown>=40,'renown credited to member and family');
+ const sp=E.newMember(G,{age:30}); G.members.push(sp); sp.renown=100; E.kill(G,sp,'died'); ok(G.legacy.renown===0,'no graveyard: renown not banked');
+ estate(G,[],'shack'); Object.assign(G.res,{coin:1e5,stone:500,blocks:500,ingots:200}); E.buyLand(G,'hillside'); const gy=E.buildStructure(G,'graveyard'); ok(gy&&E.captureRate(G)===0.25,'Graveyard captures 25%');
+ const b=E.newMember(G,{age:30}); G.members.push(b); b.renown=100; E.kill(G,b,'died'); ok(G.legacy.renown===25,'banked 25 Legacy Renown');
+ E.upgradeSpecial(G,gy.uid); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Crypt'&&E.captureRate(G)===0.5,'Crypt captures 50%'); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Mausoleum'&&E.captureRate(G)===0.75,'Mausoleum 75%');
+ G.legacy.renown=1000; const ls=m.lifespan; ok(E.buyLegacy(G,'life')&&E.lifeBonus(G)===2,'Long-Lived Blood +2 years');
+ ok(E.recipeIssue(G,m,D.crafting.recipes.find(r=>r.id==='r_heirloom'))==='needs Legacy upgrade'&&E.buyLegacy(G,'heirloom')&&E.recipeIssue(G,m,D.crafting.recipes.find(r=>r.id==='r_heirloom'))!=='needs Legacy upgrade','legacy unlocks special recipe');
+ ok(E.structIssue(G,'ancestorhall')==='needs Legacy upgrade'&&E.buyLegacy(G,'hall')&&E.structIssue(G,'ancestorhall')!=='needs Legacy upgrade','legacy unlocks special building');
+ const r0=G.res.wood; E.buyLegacy(G,'resgain'); ok(E.resGain(G)===1.05,'Family Fortune +5% resources');
+ const N=E.newLineage(G,t0); ok(N.legacy.ups.life===1&&N.legacy.renown===G.legacy.renown&&N.members.length>=1,'legacy persists into a new lineage');
+ const R=E.deserialize(E.serialize(G)); ok(R.legacy.ups.speed===G.legacy.ups.speed&&R.legacy.renown===G.legacy.renown,'legacy persists through save/load');
+ const O=JSON.parse(E.serialize(E.newGame(t0))); delete O.legacy; delete O.speed; O.members.forEach(x=>{delete x.renown; delete x.skills.focus;}); E.normalize(O); ok(O.legacy.renown===0&&O.speed===1&&O.members[0].renown===0&&O.members[0].skills.focus,'old saves migrate (legacy, speed, renown, Focus)'); }
 console.log(pass,'tests passed');

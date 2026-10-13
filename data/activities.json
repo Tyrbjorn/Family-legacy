@@ -1180,5 +1180,48 @@
     "quest": "q_river"
    }
   ]
+ },
+ {
+  "id": "sands",
+  "name": "Count the Sands",
+  "icon": "⏳",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "focus"
+  ],
+  "tier": "basic",
+  "desc": "Still the mind beside a turning hourglass",
+  "unlock": [
+   {
+    "piece": "hourglass"
+   },
+   {
+    "piece": "clock"
+   }
+  ]
+ },
+ {
+  "id": "clockwork",
+  "name": "Tend the Clockwork",
+  "icon": "🕰️",
+  "minAge": 16,
+  "stats": {
+   "WIL": 0.02,
+   "INT": 0.015
+  },
+  "skills": [
+   "focus",
+   "carpentry"
+  ],
+  "tier": "advanced",
+  "desc": "Wind, oil and regulate the great clock",
+  "unlock": [
+   {
+    "piece": "clock"
+   }
+  ]
  }
 ]

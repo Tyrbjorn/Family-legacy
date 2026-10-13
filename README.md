@@ -57,3 +57,12 @@ Each class building is a chain: stage 1 base → stage 2 (upgrade 2) → stage 3
 - Divine: Wayside Shrine → Chapel → Temple (High Priest) / Order House (Order Knight) / Monastery (Monk)
 - Economic: Workshop → Guild Hall → Master Forge (Master Smith) / Carpenters' Hall (Master Carpenter) / Trading House (Merchant)
 NPC tier 1 needs stage 1, tier 2 needs stage 2 (upgrade 2), tier 3 needs upgrade 3; specialist classes need their specialty. Specialties add a bonus, +2 class beds and house their specialist. Paladin needs Shrine/Chapel AND Guardhouse/Barracks both at upgrade 3. Data: `specs`/`stages`/`upName` in estate.json, `needs.spec` in minions.json.
+
+## Code layout (plain ES modules, no build step)
+- `js/engine.js` re-exports `js/engine/*`: state, save (new game, migrations), time (day tick, offline, turbo), family, skills (+activities), actions, guilds (+classes), estate, minions, map (travel/explore), quests (+dungeons, drops), inventory (+crafting core), crafting (queues, odds, unlock), legacy (renown, prestige, speed).
+- `js/main.js` boots the data and save and wires events; `js/ui/*` has one module per tab plus common, render and state.
+
+## Crafting tab, game speed, Legacy
+- The Crafting tab appears with the first crafter (Artisan line, Crafters' Guild, or an Artisan/Herbalist-type follower) and then stays. It has station/skill filters, quality odds, materials have/need, per-member queues, minion craft orders, stations and reserves.
+- Speed: the global speed selector (1× up to the Legacy-unlocked 1.25/1.5/2/3×) × furniture (Hourglass, Grandfather Clock) and the Steady Hands bonus, capped at 4×. Each member also gets a personal tick from Focus + WIL (capped at 1.5×). All of this is separate from Turbo.
+- Legacy: members earn renown from quests, dungeons, ranks, exploring, skill levels and masterworks. On death it is banked as Legacy Renown only with a Graveyard (25%) → Crypt (50%) → Mausoleum (75%). Upgrades (`data/legacy.json`) cover speed tiers, lifespan, tick, resource gain, the Ancestral Blade recipe and the Hall of Ancestors. They persist through saves and new lineages.

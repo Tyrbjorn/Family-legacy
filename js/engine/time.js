@@ -1,0 +1,202 @@
+import { globalTick, lifeBonus, memberTick } from "./legacy.js";
+import { actionAllowed, autoQuest, doAction, standingTick } from "./actions.js";
+import { ES, bedrooms, estEff, established, foodCap, matCap, processDay } from "./estate.js";
+import { inherit, kill, newMember, spawnSuitor } from "./family.js";
+import { hasService } from "./guilds.js";
+import { isBusy } from "./map.js";
+import { minionDay, minionFood, pantry } from "./minions.js";
+import { normalize } from "./save.js";
+import { gainXp } from "./skills.js";
+import { D, T, Y, ageY, bl, furn, living, log, r, rng } from "./state.js";
+
+export const idleEff = s => T.idleEff + bl(s, "yard") * 0.05;
+
+export const turboCapSec = s => (T.turboCapMin + bl(s, "hourglass") * 30) * 60;
+
+export const offlineCapSec = s => (T.offlineCapHours + bl(s, "hourglass") * 2) * 3600;
+
+export function dayTick(s, effActive, effIdle) {
+  if (s.gameOver) return;
+  if (!s._norm) normalize(s);
+  s.day++;
+  // estate production & food
+  const lv = s.buildings;
+  s.res.food += lv.farm * 5 + (lv.garden || 0) * 2 + furn(s).reduce((x, f) => x + (f.bonus.food || 0), 0);
+  s.res.wood += lv.lumber * 3;
+  s.res.stone += lv.lumber * 1;
+  pantry(s, living(s).length + minionFood(s));
+  s.res.food -= living(s).length;
+  if (s.res.food < 0) s.res.food = 0;
+  if (s.day % 30 === 0) {
+    const up = Object.values(lv).reduce((a, b) => a + b, 0) * T.upkeepPerBuildingMonth;
+    s.res.coin = Math.max(0, s.res.coin - up);
+    s.renown += furn(s).reduce((x, f) => x + (f.bonus.renown || 0), 0) * 30;
+  }
+  minionDay(s);
+  processDay(s);
+  s.res.food = Math.min(s.res.food, foodCap(s));
+  for (const k of ES().caps.capped) if ((s.res[k] || 0) > matCap(s)) s.res[k] = matCap(s);
+  for (const m of living(s))
+    if (m.injured > 1 && (s.res.potions || 0) >= 1) {
+      s.res.potions -= 1;
+      m.injured = 0;
+    }
+  // suitors spawn
+  if (s.suitors.length < 2 && s.day % 45 === 0) spawnSuitor(s);
+  for (const m of [...living(s)]) {
+    m.ageDays++;
+    const a = ageY(m);
+    if (m.ageDays % Y() === 0) {
+      // birthday
+      if (a === T.adultAge) {
+        if (m.parents) inherit(s, m);
+        log(s, `🎂 ${m.name} came of age (16): guild halls will now consider them.`);
+      }
+      if (a >= m.lifespan + lifeBonus(s) - 3 && !m.warned) {
+        m.warned = true;
+        log(s, `⚠️ ${m.name} is growing frail (lifespan ~${m.lifespan}).`);
+      }
+    }
+    if (a >= m.lifespan + lifeBonus(s) && rng() < 0.002 * (a - m.lifespan - lifeBonus(s) + 1)) {
+      kill(s, m, "died of old age");
+      if (s.gameOver) return;
+      continue;
+    }
+    if (a < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
+      // child passive xp
+      const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
+      gainXp(s, m, r(D.skills).id, T.xpPerDay * 0.15 * f);
+      continue;
+    }
+    const isAct = m.id === s.activeId;
+    const eff = (isAct ? effActive : effIdle) * memberTick(m);
+    if (m.injured > 0) {
+      let h = 1 + estEff(s, "healBoost");
+      if ((s.res.remedies || 0) >= 1) {
+        s.res.remedies -= 1;
+        h += 2;
+      }
+      m.injured = hasService(s, "healer") ? 0 : Math.max(0, m.injured - h);
+      continue;
+    }
+    if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type))
+      m.standing = m.order.type;
+    else if (!isAct && m.standing) m.standing = null;
+    if (m.standing) {
+      standingTick(s, m);
+      if (m.action) doAction(s, m, m.action, eff);
+      continue;
+    }
+    if (isAct) doAction(s, m, m.action, eff);
+    else {
+      const o = established(s) ? m.order : { type: "work" };
+      if (o.type === "quest") {
+        if (!m.action || m.action.type !== "quest") {
+          const q = autoQuest(s, m, o.target);
+          m.action = q ? { type: "quest", target: q.id, progress: 0 } : null;
+        }
+        doAction(s, m, m.action, eff);
+      } else if (o.type === "craft") {
+        if (!m.action || m.action.type !== "craft")
+          m.action = { type: "craft", target: o.target, progress: 0 };
+        doAction(s, m, m.action, eff);
+      } else if (o.type === "gather") {
+        if (!m.action || m.action.type !== "gather" || m.action.target !== o.target) {
+          if (!isBusy(m)) m.action = { type: "gather", target: o.target, progress: 0 };
+        }
+        doAction(s, m, m.action, eff);
+      } else doAction(s, m, { type: o.type, target: o.target }, eff);
+    }
+    // children
+    const sp = s.members.find(x => x.id === m.spouse && x.alive);
+    if (
+      sp &&
+      m.gender === "f" &&
+      a < 45 &&
+      m.kids < T.maxKidsPerCouple &&
+      s.day - m.lastChild >= T.childEvery &&
+      living(s).length < bedrooms(s) &&
+      rng() < 0.01
+    ) {
+      const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
+      c.ageDays = 0;
+      s.members.push(c);
+      m.kids++;
+      sp.kids++;
+      m.lastChild = s.day;
+      log(s, `👶 ${c.name} was born to ${m.name} and ${sp.name}!`);
+    }
+  }
+}
+
+export function toggleTurbo(s) {
+  if (!s.turbo.on && s.turbo.charge < T.turboMinMin * 60) return false;
+  s.turbo.on = !s.turbo.on;
+  return true;
+}
+
+// ---- time
+// real seconds elapsed while app is open. Turbo: 3x game time (aging included) and burns 1s charge per real second.
+export function advanceReal(s, sec) {
+  if (s.gameOver) return;
+  let mult = 1;
+  sec *= globalTick(s);
+  if (s.turbo.on) {
+    const use = Math.min(sec, s.turbo.charge);
+    s.turbo.charge -= use;
+    s._turboSec = (s._turboSec || 0) + use;
+    if (s.turbo.charge <= 0) {
+      s.turbo.on = false;
+      s.turbo.charge = 0;
+    }
+    s.acc += (use * T.turboMult) / T.secPerDayActive + (sec - use) / T.secPerDayActive;
+  } else s.acc += sec / T.secPerDayActive;
+  while (s.acc >= 1 && !s.gameOver) {
+    s.acc--;
+    dayTick(s, 1, idleEff(s));
+  }
+}
+
+export function applyOffline(s, now = Date.now()) {
+  let elapsed = (now - s.lastSave) / 1000;
+  if (!(elapsed > 0) || elapsed > 3600 * 24 * 365) {
+    s.lastSave = now;
+    return null;
+  }
+  const sim = Math.min(elapsed, offlineCapSec(s));
+  const days = Math.floor((sim * globalTick(s)) / T.secPerDayOffline);
+  const before = {
+    coin: s.res.coin,
+    food: s.res.food,
+    wood: s.res.wood,
+    stone: s.res.stone,
+    day: s.day,
+    turbo: s.turbo.charge,
+    log: s.log.length,
+    members: living(s).length,
+  };
+  const logStart = s.log[0];
+  for (let i = 0; i < days && !s.gameOver; i++)
+    dayTick(
+      s,
+      T.offlineEffActive,
+      T.idleEff * T.offlineEffActive + bl(s, "yard") * 0.05 * T.offlineEffActive,
+    );
+  const charge = elapsed * T.turboChargeRatio;
+  s.turbo.charge = Math.min(turboCapSec(s), s.turbo.charge + charge);
+  s.lastSave = now;
+  const idx = s.log.indexOf(logStart);
+  const events = (idx < 0 ? s.log : s.log.slice(0, idx)).slice(0, 12).map(l => l.msg);
+  return {
+    elapsed,
+    sim,
+    days,
+    coin: Math.round(s.res.coin - before.coin),
+    food: Math.round(s.res.food - before.food),
+    wood: s.res.wood - before.wood,
+    stone: s.res.stone - before.stone,
+    turboAdded: Math.round(s.turbo.charge - before.turbo),
+    turboFull: s.turbo.charge >= turboCapSec(s),
+    events,
+  };
+}

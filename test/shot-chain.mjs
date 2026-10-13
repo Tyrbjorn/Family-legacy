@@ -2,7 +2,7 @@ const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
-await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
+await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
 await p.evaluate(()=>{const g=__game,s=g.s,E=g.E;s.members[0].ageDays=25*360;Object.assign(s.res,{coin:1e6,wood:9e3,stone:9e3,planks:3e3,blocks:3e3,ingots:2e3,copper:900,cloth:300,dust:300,food:1e4,herbs:500});
  for(let k=0;k<3;k++) for(const l of g.D.estate.lands) E.buyLand(s,l.id); window.__iss=['barracks','shrinehouse','magestower'].map(t=>E.structIssue(s,t));
  const bh=E.buildStructure(s,'bunkhouse')||s.structures.push({uid:'bhz',type:'bunkhouse',pieces:[],up:0});

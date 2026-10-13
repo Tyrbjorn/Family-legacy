@@ -2,7 +2,7 @@ const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
-await p.goto('http://localhost:'+(process.env.PORT||8080)+'/');await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+await p.goto('http://localhost:'+(process.env.PORT||8080)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
 console.log('teen tabs',await p.$$eval('#tabs button',b=>b.map(x=>x.dataset.tab).join()));await p.screenshot({path:'/workspace/family-legacy-idle/screenshot-teen.png'});
 console.log('day',await p.evaluate(()=>__game.s.day));
 // fast-forward a played game and simulate 14h away via save tamper

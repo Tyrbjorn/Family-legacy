@@ -1,0 +1,80 @@
+import * as E from "../engine.js";
+import { MATS, QC, RI, fmt, it, itemRow } from "./common.js";
+import { D, invF, s } from "../main.js";
+
+export function vault() {
+  const m = E.active(s);
+  let h = `<h3>Equipped (${m.name})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div>${sl}: ${m.equip[sl] ? it(m.equip[sl]).name + " (+" + it(m.equip[sl]).cp + " CP)" : "—"}</div>`).join("")}</div><h3>Family Vault</h3>`;
+  if (!s.vault.length) h += `<div class="muted">Empty. Quests drop loot.</div>`;
+  s.vault.forEach(id => {
+    const x = it(id);
+    h += `<div class="card row"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.affinity ? " +" + x.affinity + " ❤️" : ""}</span></span><span>${x.slot !== "gift" ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="sell" data-v="${id}">Sell ${Math.round(x.value / 2)}</button></span></div>`;
+  });
+  return h;
+}
+
+export function invv() {
+  const m = E.active(s);
+  const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
+  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> (+${it(m.equip[sl]).cp} CP)` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}</div>`;
+  h +=
+    `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
+    MATS.map(
+      k =>
+        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${town.prices[k]}🪙</button>` : ""}</div>`,
+    ).join("") +
+    `<div class="muted">Sells at ${town.name}.</div></div>`;
+  h +=
+    `<h3>🎒 Personal pack (${m.bag.length}/${E.packCap()})</h3>` +
+    (m.bag.length
+      ? m.bag
+          .map(id =>
+            itemRow(
+              it(id),
+              `${["weapon", "offhand", "armor", "accessory"].includes(it(id).slot) ? `<button class="b" data-a="equipbag" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tovault" data-v="${id}">→ Vault</button>`,
+            ),
+          )
+          .join("")
+      : '<div class="muted">Empty.</div>');
+  const types = ["all", "weapon", "offhand", "armor", "accessory", "tool", "charm", "gift"],
+    qs = ["all", "Crude", "Common", "Fine", "Superior", "Masterwork", "Rare", "Epic"];
+  let list = s.vault
+    .map((id, k) => ({ id, k, x: it(id) }))
+    .filter(
+      o =>
+        o.x && (invF.type === "all" || o.x.slot === invF.type) && (invF.q === "all" || o.x.rarity === invF.q),
+    );
+  list.sort((a, b) =>
+    invF.sort === "value"
+      ? b.x.value - a.x.value
+      : invF.sort === "cp"
+        ? (b.x.cp || 0) - (a.x.cp || 0)
+        : a.x.name.localeCompare(b.x.name),
+  );
+  h += `<h3>🏛️ Family vault (${s.vault.length}/${E.vaultCap(s)}) <span class="muted">+10 per Storage Chest</span></h3>
+ <div class="row" style="flex-wrap:wrap;gap:4px"><select data-a="invf" data-v="type">${types.map(t => `<option ${invF.type === t ? "selected" : ""}>${t}</option>`).join("")}</select><select data-a="invf" data-v="q">${qs.map(t => `<option ${invF.q === t ? "selected" : ""}>${t}</option>`).join("")}</select><select data-a="invf" data-v="sort">${["value", "cp", "name"].map(t => `<option ${invF.sort === t ? "selected" : ""}>${t}</option>`).join("")}</select>
+ <button class="b" data-a="bulksell" ${list.length ? "" : "disabled"}>Sell ${list.length} shown (${list.reduce((a, o) => a + E.sellValue(s, o.x), 0)}🪙)</button><button class="b" data-a="bulklist" ${list.length ? "" : "disabled"}>Stock all shown</button></div>`;
+  h += list.length
+    ? list
+        .map(({ id, x }) =>
+          itemRow(
+            x,
+            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>`,
+          ),
+        )
+        .join("")
+    : '<div class="muted">Nothing matches.</div>';
+  const sellers =
+    s.minions.filter(x => x.job === "merchant" && E.isHoused(s, x)).length +
+    E.living(s).filter(
+      x =>
+        (x.action && x.action.type === "job" && x.action.target === "shop") ||
+        (x.id !== s.activeId && x.order && x.order.type === "job" && x.order.target === "shop"),
+    ).length;
+  h +=
+    `<h3>🏷️ Stock for sale (${s.forSale.length})</h3><div class="muted">${sellers ? `${sellers} seller(s) working: about 1 item every ${D.crafting.stallDaysPerItem} days at full value.` : "No seller. Put a follower on Selling (needs a Market Stall) or have a family member work the General Store."}</div>` +
+    s.forSale
+      .map(id => itemRow(it(id), `<button class="b" data-a="unlist" data-v="${id}">Unlist</button>`))
+      .join("");
+  return h;
+}
