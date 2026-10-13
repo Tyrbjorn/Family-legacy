@@ -26,7 +26,8 @@
   "region": "outskirts",
   "res": {
    "stone": 2,
-   "copperore": 1
+   "copperore": 1,
+   "fish": 1
   },
   "skill": "mining",
   "icon": "🪨",
@@ -91,7 +92,8 @@
   "name": "Game Trail",
   "region": "forest",
   "res": {
-   "food": 5,
+   "food": 3,
+   "meat": 2,
    "hides": 1
   },
   "skill": "hunting",

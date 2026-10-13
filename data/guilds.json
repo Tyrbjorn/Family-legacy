@@ -69,7 +69,7 @@
      "AGI": 7
     },
     "skills": {
-     "archery": 5
+     "hunting": 3
     },
     "coin": 100
    },
@@ -79,7 +79,7 @@
     "foraging",
     "tracking"
    ],
-   "grantsClass": "scout"
+   "grantsClass": "hunter"
   },
   {
    "id": "collegium",

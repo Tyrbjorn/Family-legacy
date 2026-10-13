@@ -151,7 +151,7 @@ export function setReserve(s,k,n){ if(!(k in DEFAULT_RESERVE)) return false; s.r
 const pkey=(uid,id)=>uid+':'+baseId(id);
 export const isPaused=(s,uid,id)=>(s.paused||[]).includes(pkey(uid,id));
 export function togglePiece(s,uid,id){ const k=pkey(uid,id); const i=s.paused.indexOf(k); if(i>=0) s.paused.splice(i,1); else s.paused.push(k); return i<0; }
-function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.filter(id=>!isPaused(s,st.uid,id)).map(id=>scaledPiece(st,id))) for(const pr0 of (p&&p.bonus.processes)||[]){ const pr={...pr0,rate:pr0.rate*skillSpeed(s,p)}; const yl=skillYield(s,p);
+function processDay(s,mul=1){ for(const st of s.structures||[]){ const syn=activeSynergies(st); for(const p of st.pieces.filter(id=>!isPaused(s,st.uid,id)).map(id=>scaledPiece(st,id))) for(const pr0 of (p&&p.bonus.processes)||[]){ const pr={...pr0,rate:pr0.rate*skillSpeed(s,p)*classSynMult(s,st)}; const yl=skillYield(s,p);
   let n=pr.rate*mul*syn.reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1); for(const[k,v]of Object.entries(pr.in)) n=Math.min(n,Math.max(0,(s.res[k]||0)-reserveOf(s,k))/v); if(n<=0) continue;
   for(const[k,v]of Object.entries(pr.in)) s.res[k]-=v*n; s.res[pr.out]=(s.res[pr.out]||0)+n*yl; } } }
 export const processRates=(s,st,pid)=>((scaledPiece(st,pid).bonus.processes)||[]).map(pr=>({out:pr.out,rate:Math.round(pr.rate*skillSpeed(s,pieceDef(pid))*skillYield(s,pieceDef(pid))*activeSynergies(st).reduce((a,y)=>a*((y.bonus.processMult||{})[pr.out]||1),1)*100)/100}));
@@ -180,6 +180,8 @@ function doAction(s,m,a,eff){
     su.affinity=Math.min(100,su.affinity+(1+statVal(m,'CHA')*0.1+m.skills.etiquette.lvl*0.1)*eff*(1+traitSum(m,'court'))*(1+furn(s).reduce((x,f)=>x+(f.bonus.court||0),0)));
     gainXp(s,m,'etiquette',T.xpPerDay*.5*eff); }
 }
+function lineBonus(m){ let c=cls(m); while(c){ if(c.gatherBonus) return c.gatherBonus; c=c.from&&D.classes.find(x=>x.id===c.from); } return {}; }
+export const classSynMult=(s,st)=>{ const cs=structDef(st.type).classSynergy; return cs&&living(s).some(m=>cs.classes.includes(m.cls))?1+cs.mult:1; };
 function travelTick(s,m,a,eff){
   if(a.type==='quest'&&!D.quests.find(x=>x.id===a.target)){ m.action=null; return; }
   if(a.type==='gather'&&!D.nodes.find(x=>x.id===a.target)){ m.action=null; return; }
@@ -190,7 +192,7 @@ function travelTick(s,m,a,eff){
     if(a.type==='quest'){ const q=D.quests.find(x=>x.id===a.target); gainXp(s,m,q.skill,T.xpPerDay*0.6*eff); }
     if(a.type==='dungeon'){ const dg=dungeonDef(a.target); gainXp(s,m,dg.skill,T.xpPerDay*0.7*eff); let cum=t.out; t.floor=t.floor||0;
       for(let i=0;i<dg.floors.length;i++){ cum+=dg.floors[i].days; if(i===t.floor&&t.t>=cum&&!t.resolved){ if(!dungeonFloor(s,m,dg,i)){ t.resolved=true; t.t=t.out+t.task; break; } t.floor++; if(t.floor>=dg.floors.length){ t.resolved=true; dungeonClear(s,m,dg); } } } }
-    if(a.type==='gather'){ const n=D.nodes.find(x=>x.id===a.target); const mul=(1+m.skills[n.skill].lvl*0.03)*eff; for(const[k,v]of Object.entries(n.res)) s.res[k]=(s.res[k]||0)+v*mul; gainXp(s,m,n.skill,T.xpPerDay*.6*eff); rollRare(s,n,m); } }
+    if(a.type==='gather'){ const n=D.nodes.find(x=>x.id===a.target); const mul=(1+m.skills[n.skill].lvl*0.03)*eff; const gb=lineBonus(m); for(const[k,v]of Object.entries(n.res)) s.res[k]=(s.res[k]||0)+v*mul*(1+(gb[k]||0)); gainXp(s,m,n.skill,T.xpPerDay*.6*eff); rollRare(s,n,m); } }
   if(!t.resolved&&t.t>=t.out+t.task){ t.resolved=true;
     if(a.type==='quest') resolveQuest(s,m,D.quests.find(x=>x.id===a.target),eff);
     if(a.type==='explore') exploreArea(s,m,areaDef(a.target)); }
@@ -239,7 +241,7 @@ function dayTick(s,effActive,effIdle){
   const lv=s.buildings;
   s.res.food+=lv.farm*5+(lv.garden||0)*2+furn(s).reduce((x,f)=>x+(f.bonus.food||0),0);
   s.res.wood+=lv.lumber*3; s.res.stone+=lv.lumber*1;
-  s.res.food-=living(s).length; if(s.res.food<0) s.res.food=0;
+  pantry(s,living(s).length+minionFood(s)); s.res.food-=living(s).length; if(s.res.food<0) s.res.food=0;
   if(s.day%30===0){ const up=Object.values(lv).reduce((a,b)=>a+b,0)*T.upkeepPerBuildingMonth; s.res.coin=Math.max(0,s.res.coin-up); s.renown+=furn(s).reduce((x,f)=>x+(f.bonus.renown||0),0)*30; }
   minionDay(s);
   processDay(s);
@@ -258,7 +260,7 @@ function dayTick(s,effActive,effIdle){
     if(a<T.adultAge && !(m.id===s.activeId&&actionAllowed(s,m,m.action))){ // child passive xp
       const f=1+furn(s).reduce((x,f)=>x+(f.bonus.childxp||0),0); gainXp(s,m,r(D.skills).id,T.xpPerDay*.15*f); continue; }
     const isAct=m.id===s.activeId; const eff=isAct?effActive:effIdle;
-    if(m.injured>0){ m.injured=hasService(s,'healer')?0:Math.max(0,m.injured-1); continue; }
+    if(m.injured>0){ let h=1; if((s.res.remedies||0)>=1){ s.res.remedies-=1; h+=2; } m.injured=hasService(s,'healer')?0:Math.max(0,m.injured-h); continue; }
     if(!isAct&&established(s)&&['explore','adventure'].includes((m.order||{}).type)) m.standing=m.order.type; else if(!isAct&&m.standing) m.standing=null;
     if(m.standing){ standingTick(s,m); if(m.action) doAction(s,m,m.action,eff); continue; }
     if(isAct) doAction(s,m,m.action,eff);
@@ -415,12 +417,20 @@ export function rumor(s,regionId){ if(s.res.coin<T.rumorCost) return null; const
 
 // ---- minions (followers, hired help, retainers)
 export const minionCap=s=>D.minions.baseCap+(s.structures||[]).length*D.minions.capPerHouse+(hasService(s,'storage')?2:0);
+// other foods (meat, fish, eggs, honey) top up the food pool when it runs short
+export function pantry(s,need){ const fv=ES().foodValue||{}; for(const[k,v]of Object.entries(fv)){ if(s.res.food>=need) break; const have=s.res[k]||0; if(have<=0) continue; const use=Math.min(have,(need-s.res.food)/v); s.res[k]-=use; s.res.food+=use*v; } }
+export const foodTypes=s=>['food',...Object.keys(ES().foodValue||{})].filter(k=>(s.res[k]||0)>=1).length;
+// class housing: special buildings house followers of matching NPC classes (like a Bunkhouse)
+export function classHomeCap(st){ const d=structDef(st.type); if(!d.houses) return 0; return d.houses.cap+(d.upgrades||[]).slice(0,st.up||0).reduce((a,u)=>a+(u.cap||0),0); }
+export function homeMap(s){ const out={}; const pool=(s.minions||[]).filter(x=>!x.special); for(const st of s.structures||[]){ const d=structDef(st.type); if(!d.houses) continue; let n=classHomeCap(st);
+  for(const mi of pool) if(n>0&&!out[mi.uid]&&d.houses.classes.includes(mi.cls)){ out[mi.uid]=st.uid; n--; } } return out; }
+export const classResidents=(s,st)=>Object.entries(homeMap(s)).filter(([,u])=>u===st.uid).map(([id])=>s.minions.find(x=>x.uid===id));
 export function housingCap(s,kind){ if(kind==='none') return Infinity; if(kind==='garden') return bl(s,'garden')>0?Infinity:0;
   return (s.structures||[]).reduce((a,st)=>a+(((structDef(st.type).builtin||{}).housing||{})[kind]||0)+st.pieces.map(id=>scaledPiece(st,id)).reduce((b,p)=>b+(((p&&p.bonus.housing)||{})[kind]||0),0),0); }
 export const housingKind=mi=>(D.minions.types.find(t=>t.id===(mi.type||mi.id))||{}).housing||'bunk';
-export function isHoused(s,mi){ const k=housingKind(mi); const same=s.minions.filter(x=>housingKind(x)===k); return same.indexOf(mi)<housingCap(s,k); }
-export const housingUsed=(s,kind)=>Math.min(s.minions.filter(x=>housingKind(x)===kind).length,housingCap(s,kind));
-export const freeHousing=(s,kind='bunk')=>housingCap(s,kind)-s.minions.filter(x=>housingKind(x)===kind).length;
+export function isHoused(s,mi){ const hm=homeMap(s); if(hm[mi.uid]) return true; const k=housingKind(mi); const same=s.minions.filter(x=>housingKind(x)===k&&!hm[x.uid]); return same.indexOf(mi)<housingCap(s,k); }
+export const housingUsed=(s,kind)=>{ const hm=homeMap(s); return Math.min(s.minions.filter(x=>housingKind(x)===kind&&!hm[x.uid]).length,housingCap(s,kind)); };
+export const freeHousing=(s,kind='bunk')=>{ const hm=homeMap(s); return housingCap(s,kind)-s.minions.filter(x=>housingKind(x)===kind&&!hm[x.uid]).length; };
 export const minionFood=s=>s.minions.length*ES().minionFoodPerDay;
 export const minionRoom=s=>s.minions.filter(x=>!x.special).length<minionCap(s)&&freeHousing(s,'bunk')>0;
 const mtype=id=>D.minions.types.find(t=>t.id===id);
@@ -430,7 +440,7 @@ export const minionXpNeed=lv=>Math.round(MLV().xpBase*Math.pow(lv,MLV().xpGrowth
 export function minionPerks(mi,job=mi.job){ const p=(D.minions.perks||{})[job]||{}; return Object.entries(p).filter(([l])=>minionLvl(mi)>=+l).map(([l,t])=>({lvl:+l,text:t})); }
 export const npcClass=id=>(D.minions.npcClasses||[]).find(c=>c.id===id);
 export const minionSkillLvl=(mi,job=mi.job)=>Math.floor(Math.sqrt(((mi.skills||{})[job]||0)/4));
-export const minionLvlMult=(mi,job=mi.job)=>(1+MLV().aptPerLvl*(minionLvl(mi)-1))*(1+minionPerks(mi,job).length*0.1)*(1+((npcClass(mi.cls)||{bonus:{}}).bonus[job]||0))*(1+0.02*minionSkillLvl(mi,job));
+export const minionLvlMult=(mi,job=mi.job)=>(1+MLV().aptPerLvl*(minionLvl(mi)-1))*(1+minionPerks(mi,job).length*0.1)*(1+((npcClass(mi.cls)||{bonus:{}}).bonus[job]||0))*(1+0.02*minionSkillLvl(mi,job))*(mi.home?1.15:1);
 export const evolveOptions=mi=>mi.special?[]:(D.minions.npcClasses||[]).filter(c=>c.from===(mi.cls||'n_peasant'));
 export function minionEvolveIssue(s,mi,cid){ const c=npcClass(cid); if(!c||mi.special) return 'not possible'; if(c.from!==(mi.cls||'n_peasant')) return 'wrong path'; if(minionLvl(mi)<c.lvl) return 'Lv '+c.lvl; return null; }
 export function evolveMinion(s,uid,cid){ const mi=s.minions.find(x=>x.uid===uid); if(!mi||minionEvolveIssue(s,mi,cid)) return false; mi.cls=cid; log(s,`🌟 ${mi.name} became a ${npcClass(cid).name}.`); return true; }
@@ -450,7 +460,7 @@ export const monthlyWages=s=>s.minions.reduce((a,x)=>a+mtype(x.type).wage,0);
 function minionDay(s){
   if(!s.minions){s.minions=[];s.repLevel=0;}
   checkSpecialMinions(s);
-  const fed=s.res.food>=minionFood(s);
+  const fed=s.res.food>=minionFood(s); const hm=homeMap(s); for(const mi of s.minions) mi.home=hm[mi.uid]||null;
   for(const mi of s.minions){ if(!fed){ mi.hunger=(mi.hunger||0)+1; mi.loyalty-=D.minions.hungerLoyaltyLoss*minionSurvival(mi); } else mi.hunger=0;
     if(!isHoused(s,mi)){ mi.unhoused=true; continue; } mi.unhoused=false;
     const a=(mtype(mi.type).apt[mi.job]||1)*(fed?1:D.minions.hungryOutput)*minionGearMult(mi,mi.job)*minionLvlMult(mi); minionGainXp(s,mi,MLV().xpPerDay*(fed?1:0.5));
@@ -460,6 +470,8 @@ function minionDay(s){
     else if(mi.job==='scout'){ mi.prog=(mi.prog||0)+a; if(mi.prog>=6){ mi.prog=0; const pm={name:mi.name+' (scout)',minion:true,skills:{tracking:{lvl:5}}}; const ar=pickExplore(s,pm); if(ar) exploreArea(s,pm,ar); } }
     else if(mi.job==='adventure'){ mi.prog=(mi.prog||0)+a; if(mi.prog>=5){ mi.prog=0; const pw=8*mtype(mi.type).apt.adventure||8; const q=D.quests.filter(q=>!q.story&&!q.once&&known(s,q)&&regionOpen(s,q.region)&&q.risk==='safe'&&q.cp<=pw*3).sort((a,b)=>b.cp-a.cp)[0];
       if(q){ for(const[k,v]of Object.entries(q.reward)) s.res[k]=(s.res[k]||0)+Math.round(v*0.6*minionGearMult(mi,'adventure')); rollRare(s,q,null); } } }
+    else if(mi.job==='hunt'){ s.res.meat=(s.res.meat||0)+1.5*a; s.res.hides=(s.res.hides||0)+0.5*a; }
+    else if(mi.job==='fish'){ s.res.fish=(s.res.fish||0)+2*a; }
     else if(mi.job==='herbs') s.res.herbs=(s.res.herbs||0)+1.5*a;
     else if(mi.job==='craft'){ mi.prog=(mi.prog||0)+0.2*a; const rc=bestRecipe(s,null); if(rc&&mi.prog>=rc.days){ mi.prog=0; craftItem(s,null,rc,mi,a); } }
     else if(mi.job==='merchant'){ sellTick(s,a*(1+(mi.equip?0:0))); } }

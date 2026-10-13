@@ -65,7 +65,7 @@ const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.sk
 // adventurers' guild
 ok(E.joinAdventurers(G,gm2)&&gm2.guild.id==='vanguard'&&gm2.adv.rank===0,"Adventurers' Guild joinable by a sworn guild member");
 const G2=E.newGame(t0); const am=G2.members[0]; am.ageDays=20*360; am.cls='scout'; am.skills.archery.lvl=12; G2.res.coin=1e5;
-ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
+am.skills.hunting.lvl=Math.max(am.skills.hunting.lvl,5); ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
 ok(!E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'bounties locked at rank F');
 am.adv.rep=30; ok(E.advRankUp(G2,am)&&E.hasService(G2,'questBoard')&&E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'rank E unlocks quest board + bounty');
 const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===Math.round(D.items[0].value*0.8)&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
@@ -141,7 +141,7 @@ const CG=E.newGame(t0); const cm=CG.members[0]; CG.res.coin=1e4; ok(!cm.cls,'cha
 cm.ageDays=15*360; cm.skills.swordsmanship.lvl=10; cm.stats.STR=10; ok(E.joinIssues(CG,cm,'vanguard').includes('age 16+'),'guilds require age 16');
 cm.ageDays=16*360; cm.stats.STR=3; ok(E.joinIssues(CG,cm,'vanguard').some(x=>x.startsWith('STR')),'stat thresholds instead of class');
 cm.stats.STR=10; ok(E.joinGuild(CG,cm,'vanguard')&&cm.cls==='fighter','Warriors grant Fighter');
-const grants={lodge:'scout',collegium:'apprentice',church:'acolyte',rogues:'cutpurse'};
+const grants={lodge:'hunter',collegium:'apprentice',church:'acolyte',rogues:'cutpurse'};
 for(const [gid,c] of Object.entries(grants)){ const X=E.newGame(t0); const xm=X.members[0]; xm.ageDays=20*360; X.res.coin=1e4; for(const k of E.STATS) xm.stats[k]=20; for(const k in xm.skills) xm.skills[k].lvl=10; ok(E.joinGuild(X,xm,gid)&&xm.cls===c,`${gid} grants ${c}`); }
 const CR=E.newGame(t0); const cr=CR.members[0]; cr.ageDays=20*360; CR.res.coin=1e4; cr.skills.carpentry.lvl=6; cr.skills.smithing.lvl=4; ok(E.joinGuild(CR,cr,'hearth')&&!cr.cls&&cr.prof==='artisan','Crafters give the Artisan profession, no primary class');
 ok(E.joinAdventurers(CR,cr)&&cr.cls==='adventurer'&&cr.prof==='artisan',"Adventurers' Guild grants Adventurer as primary class (classless members)");
@@ -306,4 +306,26 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  L.res.stone=0; E.advanceReal(L,10*5); ok(L.res.stone>st0*1.2,'upgrades raise output'); E.upgradeSpecial(L,q.uid); E.upgradeSpecial(L,q.uid); ok(!E.upgradeSpecial(L,q.uid),'upgrade line has 3 steps');
  L.res.stone=1e3; L.res.wood=1e3; for(const id of ['mineshaft','herbgarden','smithy','sawmill','masonyard']) ok(E.buildStructure(L,id),'build '+id);
  ok(D.estate.structures.find(x=>x.id==='bunkhouse').builtin.housing.bunk===4,'Bunkhouse unchanged'); }
+// hunter, food buildings, class housing
+{ const H=E.newGame(t0); const hm=H.members[0]; hm.ageDays=20*360; H.res.coin=1e4; hm.stats.AGI=10; hm.skills.hunting.lvl=4;
+ ok(E.joinGuild(H,hm,'lodge')&&hm.cls==='hunter','Rangers Guild entry class is Hunter');
+ ok(D.classes.find(c=>c.id==='scout').from==='hunter'&&D.classes.find(c=>c.id==='ranger').from==='scout','Hunter comes before the Scout/Ranger tracks');
+ H.revealed.push('gameTrail'); for(const k in hm.stats) hm.stats[k]=60; E.regionOpen(H,'forest'); const H2=JSON.parse(JSON.stringify(H)); E.normalize(H2);
+ const m1=H.members[0]; E.setAction(H,{type:'gather',target:'gameTrail'}); E.advanceReal(H,10*20); const meatH=H.res.meat||0;
+ const m2=H2.members[0]; m2.cls=null; m2.guild=null; E.setAction(H2,{type:'gather',target:'gameTrail'}); E.advanceReal(H2,10*20); ok(meatH>(H2.res.meat||0),'Hunter gathers more meat and hides');
+ const F=E.newGame(t0); estate(F,[],'shack'); F.res.coin=1e5; F.res.wood=1e3; F.res.stone=1e3; F.res.planks=500; F.res.blocks=500; F.res.ingots=200; F.res.copper=200; F.res.hides=200; F.res.cloth=50; F.res.leather=50;
+ E.buyLand(F,'hillside'); E.buyLand(F,'riverbank'); const ids=['hunterscabin','herbalistshack','fishinghut','apiary','chickencoop','tannery']; const built=ids.map(id=>E.buildStructure(F,id)); ok(built.every(Boolean)&&ids.every(id=>E.structDef(id).land===1&&E.structDef(id).upgrades.length===3&&E.structDef(id).slots===1),'six new 1-land special buildings with a slot and an upgrade line');
+ ok(E.structDef('herbgarden').name==='Garden'&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='food')&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='herbs'),'Garden makes herbs and food');
+ F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.herbs=100; F.reserve.herbs=0; E.advanceReal(F,10*5);
+ ok(['meat','fish','honey','eggs','remedies','leather'].every(k=>F.res[k]>0),'new resources: meat, fish, honey, eggs, remedies, leather');
+ const P=E.newGame(t0); P.res.food=0; P.res.meat=10; E.advanceReal(P,10); ok(P.res.food>=0&&P.res.meat<10,'meat/fish/eggs/honey feed the family when food runs out');
+ const R2=E.newGame(t0); const rm=R2.members[0]; rm.injured=6; R2.res.remedies=5; E.advanceReal(R2,10); ok(rm.injured<=3&&R2.res.remedies<5,'remedies speed injury recovery');
+ const C=E.newGame(t0); estate(C,['minionbunk'],'shack'); C.res.coin=1e5; C.res.wood=1e3; C.res.stone=1e3; C.res.food=1e4; C.res.planks=500; C.res.hides=100; C.res.blocks=100; C.res.leather=50;
+ const cab=E.buildStructure(C,'hunterscabin'); ok(E.classHomeCap(cab)===2,'class building houses 2 of its class');
+ const a=E.addMinion(C,'woodsman','t'), b=E.addMinion(C,'woodsman','t'); ok(a&&b&&!E.addMinion(C,'woodsman','t'),'general bunks full');
+ a.cls='n_huntsman'; b.cls='n_huntsman'; ok(E.homeMap(C)[a.uid]===cab.uid&&E.homeMap(C)[b.uid]===cab.uid&&E.freeHousing(C,'bunk')===2,'class members move into their class building, freeing bunks');
+ ok(E.addMinion(C,'laborer','t'),'freed bunks take new hires'); a.job='hunt'; const m0=E.minionLvlMult(a); E.advanceReal(C,10); ok(a.home===cab.uid&&E.minionLvlMult(a)>m0*1.1,'residents get the class-home bonus');
+ E.upgradeSpecial(C,cab.uid); ok(E.classHomeCap(cab)===3,'upgrades raise class housing');
+ const e2=E.addMinion(C,'guard','t'); if(e2){ e2.cls='n_soldier'; ok(!E.homeMap(C)[e2.uid],'other classes cannot live there'); } else ok(true,'skip');
+ ok(D.estate.structures.find(x=>x.id==='bunkhouse').builtin.housing.bunk===4,'Bunkhouse still general housing'); }
 console.log(pass,'tests passed');

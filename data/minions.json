@@ -65,6 +65,18 @@
    "name": "Adventuring",
    "icon": "⚔️",
    "desc": "Auto-runs safe known quests/dungeon floors for a share of the loot"
+  },
+  {
+   "id": "hunt",
+   "name": "Hunting",
+   "icon": "🦌",
+   "desc": "+meat and hides; spots from Hunter's Cabins"
+  },
+  {
+   "id": "fish",
+   "name": "Fishing",
+   "icon": "🎣",
+   "desc": "+fish; spots from Fishing Huts"
   }
  ],
  "types": [
@@ -78,7 +90,8 @@
     "farm": 1.5,
     "gather": 1.3,
     "merchant": 1.0,
-    "mine": 1.3
+    "mine": 1.3,
+    "fish": 1.2
    },
    "housing": "bunk"
   },
@@ -90,7 +103,8 @@
    "wage": 10,
    "apt": {
     "gather": 1.8,
-    "herbs": 1.2
+    "herbs": 1.2,
+    "hunt": 1.4
    },
    "housing": "bunk"
   },
@@ -507,6 +521,14 @@
   "adventure": {
    "5": "Seasoned: +10% loot",
    "10": "Veteran: +20% loot"
+  },
+  "hunt": {
+   "5": "Tracker: +10% game",
+   "10": "Master Hunter: +20% game"
+  },
+  "fish": {
+   "5": "Patient Line: +10% fish",
+   "10": "Net Master: +20% fish"
   }
  },
  "npcClasses": [
@@ -565,6 +587,19 @@
    "bonus": {
     "scout": 0.5,
     "adventure": 0.2
+   }
+  },
+  {
+   "id": "n_huntsman",
+   "name": "Huntsman",
+   "icon": "🏹",
+   "branch": "military",
+   "from": "n_militia",
+   "lvl": 10,
+   "bonus": {
+    "hunt": 0.5,
+    "fish": 0.3,
+    "scout": 0.2
    }
   },
   {

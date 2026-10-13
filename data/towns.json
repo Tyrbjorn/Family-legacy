@@ -14,7 +14,13 @@
    "ingots": 14,
    "potions": 12,
    "hides": 5,
-   "cloth": 7
+   "cloth": 7,
+   "meat": 3,
+   "fish": 2,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9
   },
   "shop": [
    "rusty_sword",
@@ -50,7 +56,13 @@
    "ingots": 14,
    "potions": 12,
    "hides": 5,
-   "cloth": 7
+   "cloth": 7,
+   "meat": 3,
+   "fish": 2,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9
   },
   "shop": [
    "iron_sword",
@@ -84,7 +96,13 @@
    "ingots": 12,
    "potions": 12,
    "hides": 4,
-   "cloth": 7
+   "cloth": 7,
+   "meat": 3,
+   "fish": 2,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9
   },
   "shop": [
    "hunting_bow",
@@ -115,7 +133,13 @@
    "ingots": 10,
    "potions": 12,
    "hides": 5,
-   "cloth": 7
+   "cloth": 7,
+   "meat": 3,
+   "fish": 2,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9
   },
   "shop": [
    "iron_sword",

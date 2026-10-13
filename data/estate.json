@@ -282,7 +282,8 @@
       "coin": 150,
       "planks": 10
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Blasting Powder",
@@ -290,7 +291,8 @@
       "coin": 400,
       "blocks": 10
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Deep Cut",
@@ -299,14 +301,23 @@
       "blocks": 30,
       "ingots": 8
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
    "desc": "Passive stone; upgrades raise output",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_laborer",
+     "n_foreman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   },
   {
    "id": "mineshaft",
@@ -332,7 +343,8 @@
       "coin": 200,
       "planks": 15
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Pumps",
@@ -340,7 +352,8 @@
       "coin": 500,
       "copper": 10
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Deep Gallery",
@@ -349,18 +362,27 @@
       "ingots": 12,
       "blocks": 20
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
    "desc": "Passive iron & copper ore",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_laborer",
+     "n_foreman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   },
   {
    "id": "herbgarden",
-   "name": "Herb Garden",
+   "name": "Garden",
    "icon": "🌿",
    "fixed": [
     "herbbeds"
@@ -368,7 +390,8 @@
    "allowed": [
     "herbrack",
     "storage",
-    "alchbench"
+    "alchbench",
+    "larder"
    ],
    "cost": {
     "coin": 90,
@@ -381,7 +404,8 @@
       "coin": 100,
       "planks": 8
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Irrigation",
@@ -389,7 +413,8 @@
       "coin": 300,
       "blocks": 8
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Greenhouse",
@@ -398,14 +423,24 @@
       "planks": 20,
       "cloth": 10
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
-   "desc": "Passive herbs",
+   "desc": "Herbs and food; replaces the old Herb Garden",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer",
+     "n_foreman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   },
   {
    "id": "smithy",
@@ -431,7 +466,8 @@
       "coin": 250,
       "planks": 10
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Fire-brick Hearth",
@@ -439,7 +475,8 @@
       "coin": 600,
       "blocks": 20
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Master Crucible",
@@ -448,14 +485,23 @@
       "ingots": 15,
       "blocks": 20
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
    "desc": "A Forge with its own upgrade line",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_artisan",
+     "n_master"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   },
   {
    "id": "sawmill",
@@ -480,7 +526,8 @@
       "coin": 200,
       "planks": 10
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Twin Blades",
@@ -488,7 +535,8 @@
       "coin": 500,
       "copper": 8
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Steam Saw",
@@ -496,14 +544,23 @@
       "coin": 1200,
       "ingots": 10
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
    "desc": "A Saw Table with its own upgrade line",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_laborer",
+     "n_foreman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   },
   {
    "id": "masonyard",
@@ -527,7 +584,8 @@
       "coin": 200,
       "planks": 8
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Crane",
@@ -535,7 +593,8 @@
       "coin": 500,
       "planks": 20
      },
-     "mult": 0.25
+     "mult": 0.25,
+     "cap": 1
     },
     {
      "name": "Guild Masons",
@@ -543,14 +602,397 @@
       "coin": 1200,
       "blocks": 40
      },
-     "mult": 0.5
+     "mult": 0.5,
+     "cap": 1
     }
    ],
    "desc": "A Mason's Table with its own upgrade line",
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_laborer",
+     "n_foreman"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "hunterscabin",
+   "name": "Hunter's Cabin",
+   "icon": "🛖",
+   "fixed": [
+    "gamerack"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "tanrack",
+    "kennel"
+   ],
+   "cost": {
+    "coin": 140,
+    "wood": 40
+   },
+   "upgrades": [
+    {
+     "name": "Smokehouse",
+     "cost": {
+      "coin": 150,
+      "planks": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Trophy Wall",
+     "cost": {
+      "coin": 400,
+      "planks": 15,
+      "hides": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Lodge Hall",
+     "cost": {
+      "coin": 900,
+      "blocks": 20,
+      "leather": 10
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Meat + hides; +25% while a Hunter-line family member lives",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_huntsman",
+     "n_scoutnpc"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "classSynergy": {
+    "classes": [
+     "hunter",
+     "scout",
+     "trapper",
+     "ranger",
+     "beastmaster",
+     "warden"
+    ],
+    "mult": 0.25
+   }
+  },
+  {
+   "id": "herbalistshack",
+   "name": "Herbalist's Shack",
+   "icon": "🏚️",
+   "fixed": [
+    "remedybench"
+   ],
+   "allowed": [
+    "herbrack",
+    "storage",
+    "alchbench",
+    "shrine"
+   ],
+   "cost": {
+    "coin": 120,
+    "wood": 30
+   },
+   "upgrades": [
+    {
+     "name": "Drying Lines",
+     "cost": {
+      "coin": 120,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Mortar & Pestle",
+     "cost": {
+      "coin": 350,
+      "copper": 6
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Apothecary",
+     "cost": {
+      "coin": 900,
+      "blocks": 15,
+      "potions": 5
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Herbs → remedies & potions",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_hedgemage",
+     "n_adept",
+     "n_magus",
+     "n_acolyte",
+     "n_priest",
+     "n_curate"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "fishinghut",
+   "name": "Fishing Hut",
+   "icon": "🎣",
+   "fixed": [
+    "fishrack"
+   ],
+   "allowed": [
+    "storage",
+    "larder"
+   ],
+   "cost": {
+    "coin": 100,
+    "wood": 30
+   },
+   "upgrades": [
+    {
+     "name": "Nets",
+     "cost": {
+      "coin": 120,
+      "cloth": 5
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Jetty",
+     "cost": {
+      "coin": 350,
+      "planks": 20
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Smoke Shed",
+     "cost": {
+      "coin": 800,
+      "blocks": 15
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Fish for the pantry",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "apiary",
+   "name": "Apiary",
+   "icon": "🍯",
+   "fixed": [
+    "hives"
+   ],
+   "allowed": [
+    "storage",
+    "larder",
+    "herbrack"
+   ],
+   "cost": {
+    "coin": 110,
+    "wood": 25
+   },
+   "upgrades": [
+    {
+     "name": "Smoker",
+     "cost": {
+      "coin": 120,
+      "planks": 6
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Wildflower Meadow",
+     "cost": {
+      "coin": 300,
+      "herbs": 40
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Royal Hives",
+     "cost": {
+      "coin": 800,
+      "planks": 20,
+      "copper": 8
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Honey and a few herbs",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "chickencoop",
+   "name": "Chicken Coop",
+   "icon": "🐔",
+   "fixed": [
+    "nestboxes"
+   ],
+   "allowed": [
+    "storage",
+    "larder"
+   ],
+   "cost": {
+    "coin": 80,
+    "wood": 25
+   },
+   "upgrades": [
+    {
+     "name": "Bigger Run",
+     "cost": {
+      "coin": 100,
+      "planks": 8
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Heated Roost",
+     "cost": {
+      "coin": 280,
+      "stone": 40
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Prize Flock",
+     "cost": {
+      "coin": 700,
+      "planks": 20
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Eggs every day",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_peasant",
+     "n_laborer"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
+  },
+  {
+   "id": "tannery",
+   "name": "Tannery",
+   "icon": "🧴",
+   "fixed": [
+    "tanvats"
+   ],
+   "allowed": [
+    "storage",
+    "loom",
+    "workbench"
+   ],
+   "cost": {
+    "coin": 160,
+    "wood": 30,
+    "stone": 20
+   },
+   "upgrades": [
+    {
+     "name": "Scraping Frames",
+     "cost": {
+      "coin": 150,
+      "planks": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Bark Pits",
+     "cost": {
+      "coin": 400,
+      "blocks": 10
+     },
+     "mult": 0.25,
+     "cap": 1
+    },
+    {
+     "name": "Master Tanner",
+     "cost": {
+      "coin": 1000,
+      "ingots": 8
+     },
+     "mult": 0.5,
+     "cap": 1
+    }
+   ],
+   "desc": "Hides → leather, fast",
+   "land": 1,
+   "slots": 1,
+   "special": true,
+   "level": 1,
+   "houses": {
+    "classes": [
+     "n_artisan",
+     "n_master"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   }
   }
  ],
  "pieces": [
@@ -1071,7 +1513,7 @@
   },
   {
    "id": "herbbeds",
-   "name": "Herb Beds",
+   "name": "Garden Beds",
    "icon": "🌿",
    "kind": "station",
    "cost": {},
@@ -1081,14 +1523,171 @@
      {
       "in": {},
       "out": "herbs",
+      "rate": 2.5
+     },
+     {
+      "in": {},
+      "out": "food",
       "rate": 3
      }
     ],
     "jobs": {
-     "herbs": 2
+     "herbs": 1,
+     "farm": 1
     }
    },
-   "desc": "Grows 3 herbs/day; 2 herb-picking spots"
+   "desc": "Grows 2.5 herbs + 3 food/day; 1 herb + 1 farming spot"
+  },
+  {
+   "id": "gamerack",
+   "name": "Game Rack",
+   "icon": "🦌",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "meat",
+      "rate": 2
+     },
+     {
+      "in": {},
+      "out": "hides",
+      "rate": 0.8
+     }
+    ],
+    "jobs": {
+     "hunt": 2
+    }
+   },
+   "desc": "Brings in 2 meat + 0.8 hides/day; 2 hunting spots",
+   "skill": "hunting"
+  },
+  {
+   "id": "remedybench",
+   "name": "Remedy Bench",
+   "icon": "🌱",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "herbs": 2
+      },
+      "out": "remedies",
+      "rate": 3
+     },
+     {
+      "in": {
+       "herbs": 3
+      },
+      "out": "potions",
+      "rate": 1
+     }
+    ],
+    "jobs": {
+     "herbs": 1
+    }
+   },
+   "desc": "2 herbs → 1 remedy (3/day), 3 herbs → 1 potion; remedies speed injury recovery",
+   "skill": "alchemy"
+  },
+  {
+   "id": "fishrack",
+   "name": "Drying Racks",
+   "icon": "🐟",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "fish",
+      "rate": 3
+     }
+    ],
+    "jobs": {
+     "fish": 2
+    }
+   },
+   "desc": "3 fish/day; 2 fishing spots",
+   "skill": "fishing"
+  },
+  {
+   "id": "hives",
+   "name": "Beehives",
+   "icon": "🐝",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "honey",
+      "rate": 1.5
+     },
+     {
+      "in": {},
+      "out": "herbs",
+      "rate": 0.5
+     }
+    ],
+    "jobs": {
+     "farm": 1
+    }
+   },
+   "desc": "1.5 honey + 0.5 herbs/day"
+  },
+  {
+   "id": "nestboxes",
+   "name": "Nest Boxes",
+   "icon": "🥚",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "eggs",
+      "rate": 3
+     }
+    ],
+    "jobs": {
+     "farm": 1
+    }
+   },
+   "desc": "3 eggs/day"
+  },
+  {
+   "id": "tanvats",
+   "name": "Tanning Vats",
+   "icon": "🟫",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "hides": 2
+      },
+      "out": "leather",
+      "rate": 4
+     }
+    ],
+    "jobs": {
+     "craft": 1
+    }
+   },
+   "desc": "2 hides → 1 leather, 4/day",
+   "skill": "tailoring"
   }
  ],
  "synergies": [
@@ -1194,19 +1793,24 @@
   "foodBase": 150,
   "matBase": 300,
   "capped": [
-   "wood",
-   "stone",
-   "herbs",
-   "planks",
-   "ingots",
-   "potions",
-   "ore",
-   "hides",
-   "cloth",
-   "copperore",
-   "copper",
    "blocks",
-   "leather"
+   "cloth",
+   "copper",
+   "copperore",
+   "eggs",
+   "fish",
+   "herbs",
+   "hides",
+   "honey",
+   "ingots",
+   "leather",
+   "meat",
+   "ore",
+   "planks",
+   "potions",
+   "remedies",
+   "stone",
+   "wood"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -1253,7 +1857,11 @@
     "ore",
     "copperore",
     "herbs",
-    "hides"
+    "hides",
+    "meat",
+    "fish",
+    "honey",
+    "eggs"
    ]
   },
   "2": {
@@ -1265,7 +1873,8 @@
     "copper",
     "potions",
     "leather",
-    "cloth"
+    "cloth",
+    "remedies"
    ]
   },
   "3": {
@@ -1282,5 +1891,12 @@
   "speedPerLvl": 0.03,
   "yieldPerLvl": 0.01,
   "minionLvlPerApt": 10
- }
+ },
+ "foodValue": {
+  "meat": 2,
+  "fish": 1.5,
+  "eggs": 1,
+  "honey": 1
+ },
+ "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output."
 }
