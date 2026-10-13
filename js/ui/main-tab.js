@@ -122,10 +122,7 @@ export function jobsv() {
       on = a && a.type === "job" && a.target === j.id;
     h += `<div class="card row"><span>${j.icon} <b>${j.name}</b><br><span class="muted">${j.desc}<br>${Object.keys(j.stats).join("/")} · ${j.skills.map(k => sk(k).name).join(", ")} · apprentice ${j.payChild}🪙/day · adult ${j.payAdult}🪙/day · age ${j.minAge}+</span></span><button class="b ${on ? "sel" : ""}" data-a="job" data-v="${j.id}" ${ok ? "" : "disabled"}>${ok ? (on ? "Working" : "Work") : "🔒"}</button></div>`;
   }
-  return (
-    h +
-    `<div class="card row"><span>🔨 Crafting has its own tab.</span>${E.craftingUnlocked(s) ? '<button class="b" data-tab="craft">Open Crafting</button>' : '<span class="muted">Unlocks with your first crafter (Artisan line, Crafters\' Guild, or an Artisan/Herbalist follower)</span>'}</div>`
-  );
+  return h;
 }
 
 export function quests() {
