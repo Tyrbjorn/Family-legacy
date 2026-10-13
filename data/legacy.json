@@ -129,6 +129,82 @@
      "value": 1
     }
    ]
+  },
+  {
+   "id": "goodblood",
+   "name": "Good Breeding",
+   "icon": "🌿",
+   "desc": "Shifts trait odds from bad to good",
+   "tiers": [
+    {
+     "cost": 60,
+     "value": 8
+    },
+    {
+     "cost": 160,
+     "value": 15
+    },
+    {
+     "cost": 400,
+     "value": 22
+    }
+   ]
+  },
+  {
+   "id": "rareblood",
+   "name": "Rare Blood",
+   "icon": "💠",
+   "desc": "Multiplies rare and epic trait chances",
+   "tiers": [
+    {
+     "cost": 100,
+     "value": 1.5
+    },
+    {
+     "cost": 300,
+     "value": 2
+    },
+    {
+     "cost": 800,
+     "value": 3
+    }
+   ]
+  },
+  {
+   "id": "bloodline",
+   "name": "Bloodline",
+   "icon": "🩸",
+   "desc": "Every child also carries the family's best trait forever",
+   "tiers": [
+    {
+     "cost": 350,
+     "value": 1
+    }
+   ]
   }
- ]
+ ],
+ "traits": {
+  "order": [
+   "bad",
+   "common",
+   "good",
+   "rare",
+   "epic"
+  ],
+  "colors": {
+   "bad": "#e06b6b",
+   "common": "#bbbbbb",
+   "good": "#6bd36b",
+   "rare": "#5fa8ff",
+   "epic": "#c27cff"
+  },
+  "weights": {
+   "bad": 25,
+   "common": 40,
+   "good": 25,
+   "rare": 8,
+   "epic": 2
+  },
+  "fromParent": 0.5
+ }
 }

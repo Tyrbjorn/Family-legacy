@@ -1,0 +1,60 @@
+// Family tree: generations as rows in a pannable canvas; tap a member to open their card.
+import * as E from "../engine.js";
+import { D, s } from "../main.js";
+import { badges, cl, memberLine } from "./common.js";
+import { U } from "./state.js";
+
+const rcol = id => {
+  const d = E.traitDef(id);
+  return (D.legacy?.traits?.colors || {})[d?.rarity || "common"] || "#aaa";
+};
+
+function node(n) {
+  const icon = n.gender === "f" ? "👩" : "👨";
+  const t = n.best && E.traitDef(n.best);
+  return `<button class="tnode ${n.alive ? "" : "dead"} ${U.treeSel === n.id ? "sel" : ""}" data-a="treesel" data-v="${n.id}">
+<span class="ticon">${n.alive ? icon : "🕯️"}</span><b>${n.name}</b>
+<span class="muted">${n.alive ? `${n.age}y` : `† Y${n.died}, aged ${n.age}`}</span>
+<span>${n.cls || "Commoner"} · ⭐${n.renown}</span>
+${t ? `<span style="color:${rcol(n.best)}">${t.icon || ""} ${t.name}</span>` : ""}</button>`;
+}
+
+export function familyv() {
+  const gens = E.familyTree(s);
+  const byId = Object.fromEntries(gens.flat().map(n => [n.id, n]));
+  const rows = gens
+    .map((g, i) => {
+      // keep couples adjacent
+      const seen = new Set(),
+        order = [];
+      for (const n of g) {
+        if (seen.has(n.id)) continue;
+        seen.add(n.id);
+        const sp = g.find(x => x.id === n.spouse);
+        order.push(
+          sp && !seen.has(sp.id)
+            ? (seen.add(sp.id), `<div class="couple">${node(n)}<span class="ring">💍</span>${node(sp)}</div>`)
+            : node(n),
+        );
+      }
+      return `<div class="gen"><div class="genlbl">Gen ${i + 1}</div><div class="genrow">${order.join("")}</div></div>`;
+    })
+    .join('<div class="genlink">│</div>');
+  let card = "";
+  const m = U.treeSel && s.members.find(x => x.id === U.treeSel);
+  if (m) {
+    const n = byId[m.id];
+    const kids = (n?.children || []).map(id => byId[id]?.name).filter(Boolean);
+    const sp = byId[n?.spouse];
+    const ps = (n?.parents || []).map(id => byId[id]?.name).filter(Boolean);
+    card = `<div class="card"><div class="row">${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
+<div class="muted">${m.alive ? "Living" : `Died Y${n.died}${m.diedDay != null ? "" : ""}`} · lifespan ~${m.lifespan}y</div>
+<div>${badges(m)}</div>
+${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: <a data-a="treesel" data-v="${sp.id}">${sp.name}</a></div>` : ""}
+${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}
+${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${m.id}">Play as ${m.name}</button>` : ""}</div>`;
+  }
+  return `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
+<div class="muted">Drag to pan · tap someone to open their card${s.bloodline ? ` · Bloodline trait: <b style="color:${rcol(s.bloodline)}">${E.traitDef(s.bloodline)?.name}</b>` : ""}</div>
+<div class="treewrap" id="treewrap"><div class="tree">${rows}</div></div></div>${card}`;
+}

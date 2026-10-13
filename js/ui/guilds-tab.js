@@ -7,8 +7,7 @@ export function guildHall(m, g) {
     mine = !!mg;
   const iss = E.joinIssues(s, m, g.id);
   let h = `<div class="card" style="margin:6px 0"><div class="row"><b>${g.icon} ${g.name}</b>${mine ? `<span>🎖️ ${E.rankName(mg.rank)}</span>` : `<button class="b" data-a="join" data-v="${g.id}" ${iss.length ? "disabled" : ""}>Join ${g.req.coin}🪙</button>`}</div><div class="muted">${g.desc} ${g.grantsClass ? `Joining grants: <b>${cl(g.grantsClass).icon} ${cl(g.grantsClass).name}</b>.` : g.profession ? `Open to all. Grants the <b>${cl(g.profession).icon} ${cl(g.profession).name}</b> profession track.` : ""} Paths: ${g.path.join(", ")}.</div>`;
-  if (!mine)
-    h += `<div class="muted">${iss.length ? "Needs: " + iss.join(" · ") : "Requirements met."}</div>`;
+  if (!mine) h += `<div class="muted">${iss.length ? "Needs: " + iss.join(" · ") : "Requirements met."}</div>`;
   else {
     const n = E.nextRank(m, g.id);
     h += n

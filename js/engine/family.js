@@ -1,3 +1,4 @@
+import { rollTraits, traitStat } from "./traits.js";
 import { bankRenown } from "./legacy.js";
 import { actionAllowed, defaultAction } from "./actions.js";
 import { bedrooms, established, estateStage } from "./estate.js";
@@ -29,7 +30,7 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
     warned: false,
     diedDay: null,
   };
-  m.traits = pickTraits(2);
+  m.traits = rollTraits(s, 2);
   m.lifespan = T.baseLifespan + traitSum(m, "life") + Math.round((rng() - 0.5) * 8);
   for (const sk of D.skills) m.skills[sk.id] = { lvl: 0, xp: 0 };
   return m;
@@ -76,7 +77,7 @@ export function lifeStageMult(m) {
 }
 
 export function statVal(m, k) {
-  let v = m.stats[k];
+  let v = m.stats[k] + traitStat(m, k);
   for (const sk of D.skills) if (sk.stat === k) v += m.skills[sk.id].lvl * 0.2;
   if (["STR", "AGI", "VIT"].includes(k)) v *= lifeStageMult(m);
   return Math.round(v * 10) / 10;
@@ -125,8 +126,7 @@ export function kill(s, m, why) {
   }
   if (s.head === m.id) {
     const h =
-      alive.filter(isAdult).sort((a, b) => b.ageDays - a.ageDays)[0] ||
-      alive.sort((a, b) => b.ageDays - a.ageDays)[0];
+      alive.filter(isAdult).sort((a, b) => b.ageDays - a.ageDays)[0] || alive.sort((a, b) => b.ageDays - a.ageDays)[0];
     s.head = h.id;
     log(s, `📜 ${h.name} is now Head of Family.`);
   }
@@ -143,10 +143,6 @@ export function inherit(s, child) {
   for (const sk of D.skills) {
     const best = Math.max(0, ...ps.map(p => p.skills[sk.id].lvl));
     child.skills[sk.id].lvl = Math.max(child.skills[sk.id].lvl, Math.floor(best * share));
-  }
-  if (ps.length && rng() < 0.5) {
-    const t = r(r(ps).traits);
-    if (t && !child.traits.includes(t)) child.traits[1] = t;
   }
 }
 
@@ -168,8 +164,7 @@ export function propose(s, suitorId) {
   const m = active(s);
   const su = s.suitors.find(x => x.id === suitorId);
   const cost = 200;
-  if (!su || su.affinity < 100 || m.spouse || s.res.coin < cost || living(s).length >= bedrooms(s))
-    return false;
+  if (!su || su.affinity < 100 || m.spouse || s.res.coin < cost || living(s).length >= bedrooms(s)) return false;
   s.res.coin -= cost;
   const sp = newMember(s, { gender: su.gender, age: su.age, cls: su.cls });
   sp.name = su.name;

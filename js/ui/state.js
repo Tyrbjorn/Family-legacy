@@ -6,4 +6,12 @@ export const U = {
   mv: null,
   craftF: { station: "all", skill: "all" },
   crafter: null,
+  chronF: "all",
+  exportText: "",
+  saveMsg: "",
+  bell: false,
+  tour: null,
+  treeSel: null,
+  devRevealed: false,
+  verTaps: 0,
 };

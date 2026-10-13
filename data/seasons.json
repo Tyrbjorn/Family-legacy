@@ -1,0 +1,85 @@
+{
+ "order": [
+  "spring",
+  "summer",
+  "autumn",
+  "winter"
+ ],
+ "list": [
+  {
+   "id": "spring",
+   "name": "Spring",
+   "icon": "🌱",
+   "yield": {
+    "food": 1.0,
+    "herbs": 1.3,
+    "sage": 1.3,
+    "moonpetal": 1.2
+   },
+   "gather": 1.1,
+   "travel": 1.0,
+   "events": 1.0,
+   "price": {
+    "food": 1.0,
+    "herbs": 0.9
+   },
+   "desc": "Herbs flourish"
+  },
+  {
+   "id": "summer",
+   "name": "Summer",
+   "icon": "☀️",
+   "yield": {
+    "food": 1.15,
+    "herbs": 1.1,
+    "honey": 1.3
+   },
+   "gather": 1.15,
+   "travel": 1.1,
+   "events": 1.2,
+   "price": {
+    "food": 0.95
+   },
+   "desc": "Long days: faster travel, busy roads"
+  },
+  {
+   "id": "autumn",
+   "name": "Autumn",
+   "icon": "🍂",
+   "yield": {
+    "food": 1.35,
+    "herbs": 1.0,
+    "mandrake": 1.4,
+    "meat": 1.2
+   },
+   "gather": 1.0,
+   "travel": 1.0,
+   "events": 1.0,
+   "price": {
+    "food": 0.85
+   },
+   "desc": "Harvest: food is plentiful and cheap"
+  },
+  {
+   "id": "winter",
+   "name": "Winter",
+   "icon": "❄️",
+   "yield": {
+    "food": 0.6,
+    "herbs": 0.3,
+    "sage": 0.3,
+    "mandrake": 0.5,
+    "moonpetal": 1.0,
+    "honey": 0.4
+   },
+   "gather": 0.8,
+   "travel": 0.7,
+   "events": 1.4,
+   "price": {
+    "food": 1.35,
+    "herbs": 1.3
+   },
+   "desc": "Slow travel, scarce food, more trouble"
+  }
+ ]
+}

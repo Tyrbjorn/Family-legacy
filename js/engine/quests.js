@@ -1,3 +1,4 @@
+import { chron } from "./chronicle.js";
 import { addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
 import { ES } from "./estate.js";
@@ -10,7 +11,7 @@ import { gainXp } from "./skills.js";
 import { D, T, isAdult, known, log, r, rng } from "./state.js";
 
 export function resolveQuest(s, m, q, eff) {
-  const ok = rng() < successChance(s, m, q);
+  const ok = (q.apprentice && !isAdult(m)) || rng() < successChance(s, m, q); // the mentor watches the apprentice
   if (!ok) {
     log(s, `❌ ${m.name} failed ${q.name}.`);
     if (q.risk !== "safe") {
@@ -41,6 +42,7 @@ export function resolveQuest(s, m, q, eff) {
   gain.push(...grantRewards(s, m, q));
   rollRare(s, q, m);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
+  if (q.story) chron(s, "story", `📖 Chapter ${q.story}: ${m.name} completed ${q.name}.`, m.name);
   if (q.unlocks && !s.unlocks.includes(q.unlocks)) {
     s.unlocks.push(q.unlocks);
     const [k, id] = q.unlocks.split(":");

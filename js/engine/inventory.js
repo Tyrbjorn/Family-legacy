@@ -1,3 +1,6 @@
+import { seasonPrice } from "./seasons.js";
+import { inc } from "./achievements.js";
+import { buyMult, priceMult, sellMult } from "./worldevents.js";
 import { LG, addRenown, hasLegacy } from "./legacy.js";
 import { craftQuality, eff, hasPiece, pieceDef } from "./estate.js";
 import { hasService } from "./guilds.js";
@@ -43,13 +46,18 @@ export function moveItem(s, m, id, toBag) {
   return true;
 }
 
-export const buyPrice = it => Math.round(it.value * T.buyMarkup);
+export const buyPrice = (it, s, townId) => Math.round(it.value * T.buyMarkup * (s && townId ? buyMult(s, townId) : 1));
+
+export const townSellPrice = (s, townId, res) => {
+  const t = D.towns.find(x => x.id === townId);
+  return Math.round(t.prices[res] * priceMult(s, townId, res) * sellMult(s, townId) * seasonPrice(s, res) * 100) / 100;
+};
 
 export function buyItem(s, townId, itemId) {
   const t = D.towns.find(x => x.id === townId);
   const it = itemDef(itemId);
-  if (!t.shop.includes(itemId) || s.res.coin < buyPrice(it) || !vaultRoom(s)) return false;
-  s.res.coin -= buyPrice(it);
+  if (!t.shop.includes(itemId) || s.res.coin < buyPrice(it, s, townId) || !vaultRoom(s)) return false;
+  s.res.coin -= buyPrice(it, s, townId);
   s.vault.push(itemId);
   log(s, `🛒 Bought ${it.name}.`);
   return true;
@@ -60,7 +68,7 @@ export function sellRes(s, townId, res, n) {
   n = Math.min(n, Math.floor(s.res[res]));
   if (n <= 0) return false;
   s.res[res] -= n;
-  s.res.coin += n * t.prices[res];
+  s.res.coin += n * townSellPrice(s, townId, res);
   return true;
 }
 
@@ -91,8 +99,7 @@ export function itemDef(id) {
   return D.items.find(i => i.id === id) || null;
 }
 
-export const vaultCap = s =>
-  CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9);
+export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9);
 
 export const vaultRoom = s => s.vault.length < vaultCap(s);
 
@@ -109,7 +116,7 @@ export const recipeDef = id => CR().recipes.find(r => r.id === id);
 export function recipeIssue(s, m, rc) {
   if (rc.hidden && !s.unlocks.includes("recipe:" + rc.id)) return "recipe not found";
   if (rc.legacy && !hasLegacy(s, rc.legacy)) return "needs Legacy upgrade";
-  if (!hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
+  if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
     return `${D.skills.find(k => k.id === rc.skill).name} ${rc.minSkill}`;
   if (!afford(s, rc.mats)) return "missing materials";
@@ -154,6 +161,7 @@ export function craftItem(s, m, rc, mi, apt = 1) {
     if (m.craft) m.craft.rep += 2 + CR().qualities.findIndex(x => x.id === q);
     if (q === CR().qualities[CR().qualities.length - 1].id) addRenown(s, m, LG().renown.masterwork || 5);
   }
+  if (q === CR().qualities[CR().qualities.length - 1].id) inc(s, "masterworks");
   log(s, `🔨 ${(m || mi).name} crafted ${itemDef(id).name}.`);
   return id;
 }

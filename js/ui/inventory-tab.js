@@ -21,7 +21,7 @@ export function invv() {
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
       k =>
-        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${town.prices[k]}🪙</button>` : ""}</div>`,
+        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙</button>` : ""}</div>`,
     ).join("") +
     `<div class="muted">Sells at ${town.name}.</div></div>`;
   h +=
@@ -40,10 +40,7 @@ export function invv() {
     qs = ["all", "Crude", "Common", "Fine", "Superior", "Masterwork", "Rare", "Epic"];
   let list = s.vault
     .map((id, k) => ({ id, k, x: it(id) }))
-    .filter(
-      o =>
-        o.x && (invF.type === "all" || o.x.slot === invF.type) && (invF.q === "all" || o.x.rarity === invF.q),
-    );
+    .filter(o => o.x && (invF.type === "all" || o.x.slot === invF.type) && (invF.q === "all" || o.x.rarity === invF.q));
   list.sort((a, b) =>
     invF.sort === "value"
       ? b.x.value - a.x.value
@@ -73,8 +70,6 @@ export function invv() {
     ).length;
   h +=
     `<h3>🏷️ Stock for sale (${s.forSale.length})</h3><div class="muted">${sellers ? `${sellers} seller(s) working: about 1 item every ${D.crafting.stallDaysPerItem} days at full value.` : "No seller. Put a follower on Selling (needs a Market Stall) or have a family member work the General Store."}</div>` +
-    s.forSale
-      .map(id => itemRow(it(id), `<button class="b" data-a="unlist" data-v="${id}">Unlist</button>`))
-      .join("");
+    s.forSale.map(id => itemRow(it(id), `<button class="b" data-a="unlist" data-v="${id}">Unlist</button>`)).join("");
   return h;
 }

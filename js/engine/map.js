@@ -1,3 +1,21 @@
+import { seasonGather, seasonTravel } from "./seasons.js";
+import { chron } from "./chronicle.js";
+import { buffSum, maybeEncounter } from "./encounters.js";
+import { resGain } from "./legacy.js";
+import { gatherMult, travelRisk } from "./worldevents.js";
+
+const targetRegion = a =>
+  ([...D.quests, ...D.nodes, ...(D.dungeons || []), ...(D.map.areas || [])].find(x => x.id === a.target) || {}).region;
+
+// One day on the road: world-event travel risk, then a chance of a choice encounter.
+function roadDay(s, m, a, eff) {
+  const risk = travelRisk(s, targetRegion(a));
+  if (risk && !m.minion && rng() < risk * eff) {
+    m.injured = Math.max(m.injured || 0, 3);
+    log(s, `🗡️ ${m.name} was waylaid on the road and is hurt.`);
+  }
+  if (a.type !== "auto") maybeEncounter(s, m, eff);
+}
 import { addRenown } from "./legacy.js";
 import { defaultAction } from "./actions.js";
 import { eff } from "./estate.js";
@@ -29,8 +47,9 @@ export function travelTick(s, m, a, eff) {
   if (!a.trip) a.trip = newTrip(a);
   const t = a.trip;
   const ph = tripPhase(a);
-  t.t += eff;
+  t.t += ph === "out" || ph === "back" ? eff * seasonTravel(s) : eff;
   a.progress = t.t;
+  if (ph === "out" || ph === "back") roadDay(s, m, a, eff);
   if (ph === "task") {
     if (a.type === "quest") {
       const q = D.quests.find(x => x.id === a.target);
@@ -59,7 +78,13 @@ export function travelTick(s, m, a, eff) {
     }
     if (a.type === "gather") {
       const n = D.nodes.find(x => x.id === a.target);
-      const mul = (1 + m.skills[n.skill].lvl * 0.03) * eff;
+      const mul =
+        (1 + m.skills[n.skill].lvl * 0.03) *
+        eff *
+        resGain(s) *
+        gatherMult(s, n.region) *
+        Math.max(0.2, 1 + buffSum(s, "gather")) *
+        seasonGather(s);
       const gb = lineBonus(m);
       for (const [k, v] of Object.entries(n.res)) s.res[k] = (s.res[k] || 0) + v * mul * (1 + (gb[k] || 0));
       gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
@@ -142,13 +167,7 @@ export function newTrip(a) {
 export function tripPhase(a) {
   const t = a && a.trip;
   if (!t) return null;
-  return t.t < t.out
-    ? "out"
-    : t.t < t.out + t.task
-      ? "task"
-      : t.t < t.out + t.task + t.back
-        ? "back"
-        : "done";
+  return t.t < t.out ? "out" : t.t < t.out + t.task ? "task" : t.t < t.out + t.task + t.back ? "back" : "done";
 }
 
 export const tripTotal = a => (a.trip ? a.trip.out + a.trip.task + a.trip.back : 0);
@@ -162,8 +181,7 @@ export function tripPos(a) {
   const t = a.trip,
     h = MP().home,
     p = ptOf(a.target);
-  let f =
-    t.t < t.out ? t.t / t.out : t.t < t.out + t.task ? 1 : Math.max(0, 1 - (t.t - t.out - t.task) / t.back);
+  let f = t.t < t.out ? t.t / t.out : t.t < t.out + t.task ? 1 : Math.max(0, 1 - (t.t - t.out - t.task) / t.back);
   return { x: h.x + (p.x - h.x) * f, y: h.y + (p.y - h.y) * f, f };
 }
 
@@ -229,6 +247,8 @@ export function exploreArea(s, m, ar) {
     s,
     `🧭 ${m.name} explored ${ar.name}${first ? " (fog cleared)" : ""}: ${found.length ? found.join(" · ") : "nothing new"}.`,
   );
+  if (found.length && !m.minion)
+    chron(s, "discovery", `🔍 ${m.name} explored ${ar.name}: ${found.join(" · ")}`, m.name);
   return found;
 }
 
@@ -239,17 +259,11 @@ export const rumorCost = s => Math.round(T.rumorCost * (1 - Math.min(0.5, eff(s,
 
 export function rumor(s, regionId) {
   if (s.res.coin < rumorCost(s)) return null;
-  const pool = [...D.quests, ...D.nodes].filter(
-    x => x.region === regionId && x.hidden && !s.revealed.includes(x.id),
-  );
+  const pool = [...D.quests, ...D.nodes].filter(x => x.region === regionId && x.hidden && !s.revealed.includes(x.id));
   s.res.coin -= rumorCost(s);
   gainXp(s, active(s), "etiquette", T.xpPerDay);
   if (rng() < D.minions.rumorRecruitChance && minionRoom(s)) {
-    addMinion(
-      s,
-      r(D.minions.types.filter(t => !t.special && t.id !== "refugee")).id,
-      "found through a rumor",
-    );
+    addMinion(s, r(D.minions.types.filter(t => !t.special && t.id !== "refugee")).id, "found through a rumor");
     return { recruit: true };
   }
   if (!pool.length || rng() < 0.3) {

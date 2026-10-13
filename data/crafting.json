@@ -316,6 +316,32 @@
    "days": 8,
    "line": "blacksmith",
    "legacy": "heirloom"
+  },
+  {
+   "id": "r_whittle",
+   "name": "Whittled Charm",
+   "base": "whittled_charm",
+   "skill": "carpentry",
+   "station": "mentor",
+   "mats": {
+    "wood": 2
+   },
+   "days": 1,
+   "hidden": true
+  },
+  {
+   "id": "r_mentorknife",
+   "name": "Mentor's Knife",
+   "base": "mentor_knife",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 2,
+    "planks": 1
+   },
+   "days": 3,
+   "hidden": true,
+   "line": "blacksmith"
   }
  ],
  "minionSlots": [

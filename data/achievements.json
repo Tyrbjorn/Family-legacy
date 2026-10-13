@@ -1,0 +1,172 @@
+[
+ {
+  "id": "a_crafter",
+  "name": "Hands of the Maker",
+  "icon": "🔨",
+  "desc": "Gain your first crafter",
+  "metric": "crafters",
+  "goal": 1,
+  "reward": {
+   "renown": 10
+  }
+ },
+ {
+  "id": "a_dungeon",
+  "name": "Into the Dark",
+  "icon": "🕳️",
+  "desc": "Clear your first dungeon",
+  "metric": "dungeons",
+  "goal": 1,
+  "reward": {
+   "renown": 15
+  }
+ },
+ {
+  "id": "a_dungeon5",
+  "name": "Delver",
+  "icon": "🏆",
+  "desc": "Clear 5 dungeons",
+  "metric": "dungeons",
+  "goal": 5,
+  "reward": {
+   "renown": 40,
+   "legacy": 10
+  }
+ },
+ {
+  "id": "a_gen3",
+  "name": "Three Generations",
+  "icon": "🌳",
+  "desc": "See a third generation born",
+  "metric": "generations",
+  "goal": 3,
+  "reward": {
+   "renown": 50,
+   "legacy": 20
+  }
+ },
+ {
+  "id": "a_minlv100",
+  "name": "A Loyal Household",
+  "icon": "🧑‍🤝‍🧑",
+  "desc": "100 total follower levels",
+  "metric": "minionLevels",
+  "goal": 100,
+  "reward": {
+   "renown": 40
+  }
+ },
+ {
+  "id": "a_quest25",
+  "name": "Seasoned",
+  "icon": "⚔️",
+  "desc": "Complete 25 quests",
+  "metric": "quests",
+  "goal": 25,
+  "reward": {
+   "coin": 500
+  }
+ },
+ {
+  "id": "a_master",
+  "name": "Masterwork",
+  "icon": "💎",
+  "desc": "Craft a Masterwork",
+  "metric": "masterworks",
+  "goal": 1,
+  "reward": {
+   "renown": 25
+  }
+ },
+ {
+  "id": "a_rare",
+  "name": "Lucky Find",
+  "icon": "🌟",
+  "desc": "Find a rare drop",
+  "metric": "rareDrops",
+  "goal": 1,
+  "reward": {
+   "renown": 10
+  }
+ },
+ {
+  "id": "a_land",
+  "name": "Landholder",
+  "icon": "📜",
+  "desc": "Own 3 land plots",
+  "metric": "land",
+  "goal": 3,
+  "reward": {
+   "coin": 300
+  }
+ },
+ {
+  "id": "a_build8",
+  "name": "Builder of Halls",
+  "icon": "🛖",
+  "desc": "Raise 8 buildings",
+  "metric": "buildings",
+  "goal": 8,
+  "reward": {
+   "renown": 20
+  }
+ },
+ {
+  "id": "a_legacy",
+  "name": "Remembered",
+  "icon": "🪦",
+  "desc": "Bank Legacy Renown",
+  "metric": "legacyEarned",
+  "goal": 1,
+  "reward": {
+   "renown": 10
+  }
+ },
+ {
+  "id": "a_enc5",
+  "name": "Roadwise",
+  "icon": "🧙",
+  "desc": "Resolve 5 road encounters",
+  "metric": "encounters",
+  "goal": 5,
+  "reward": {
+   "renown": 15
+  }
+ },
+ {
+  "id": "a_witch",
+  "name": "Friend of the Crone",
+  "icon": "🧙‍♀️",
+  "desc": "???",
+  "hidden": true,
+  "metric": "crone",
+  "goal": 1,
+  "reward": {
+   "renown": 30,
+   "legacy": 5
+  }
+ },
+ {
+  "id": "a_cursed",
+  "name": "Should Have Been Nicer",
+  "icon": "🪬",
+  "desc": "???",
+  "hidden": true,
+  "metric": "curses",
+  "goal": 1,
+  "reward": {
+   "coin": 50
+  }
+ },
+ {
+  "id": "a_renown1k",
+  "name": "Name in the Songs",
+  "icon": "🎶",
+  "desc": "Reach 1,000 renown",
+  "metric": "renown",
+  "goal": 1000,
+  "reward": {
+   "legacy": 15
+  }
+ }
+]

@@ -1,0 +1,15 @@
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const p=await (await b.newContext({viewport:{width:390,height:900},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(800);
+await p.evaluate(()=>{const g=__game,s=g.s,E=g.E,m=s.members[0];m.ageDays=20*360;s.res.coin=5000;
+ for(let i=0;i<300;i++) E.advanceReal(s,10);
+ E.startEvent(s,'badharvest','millbrook',30);E.startEvent(s,'bandits','forest',20);E.startEvent(s,'festival','ashford',10);
+ E.log(s,`👶 Wren was born to ${m.name} and Ysolde.`); E.buyLand(s,'plot'); E.checkAchievements(s);
+ s.pendingEnc={id:'crone',mid:m.id,day:s.day};});
+await p.click('[data-tab="main"]');await p.waitForTimeout(400);await p.screenshot({path:'screenshot-encounter.png'});
+await p.click('[data-a="enc"][data-v="alms"]');await p.waitForTimeout(300);
+await p.click('[data-tab="chron"]');await p.waitForTimeout(400);await p.screenshot({path:'screenshot-chronicle.png',fullPage:true});
+await p.click('[data-tab="map"]');await p.waitForTimeout(600);await p.screenshot({path:'screenshot-map-events.png'});
+console.log('errs',errs);await b.close();

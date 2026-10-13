@@ -1,3 +1,4 @@
+import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { RI, dur, sk, unlockName } from "./common.js";
@@ -47,6 +48,9 @@ export function mapSvg(m) {
     if (E.townKnown(s, t) && E.regionKnown(s, t.region)) {
       const p = MP.towns[t.id];
       g += pin(t.id, p.x, p.y, t.icon, "#fff", t.name, "t");
+      const ev = E.eventsAtTown(s, t.id);
+      if (ev.length)
+        g += `<text x="${p.x + 20}" y="${p.y - 14}" font-size="18">${ev.map(e => E.eventType(e.type).icon).join("")}</text>`;
     }
   for (const n of D.nodes)
     if (E.known(s, n) && E.regionKnown(s, n.region)) {
@@ -127,9 +131,7 @@ export function mapDetail(m) {
       n.res,
     )
       .map(([k, v]) => `+${v}${RI[k] || k}/day`)
-      .join(
-        " ",
-      )} · ${sk(n.skill).name} · trip ${D.map.gatherTripDays}d gathering · 🚶 ${trav}</div>${rareLine(n)}
+      .join(" ")} · ${sk(n.skill).name} · trip ${D.map.gatherTripDays}d gathering · 🚶 ${trav}</div>${rareLine(n)}
   <div class="row"><span class="muted">${ok ? (busy && !on ? "🚶 busy" : "") : "🔒 age 10+ / region"}</span><button class="b ${on ? "sel" : ""}" data-a="gather" data-v="${id}" ${!ok || (busy && !on) ? "disabled" : ""}>${on ? "Gathering" : "Gather"}</button></div></div>`;
   }
   if (k === "a") {
@@ -159,7 +161,8 @@ export function mapDetail(m) {
   }
   if (k === "t") {
     const t = D.towns.find(x => x.id === id);
-    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div></div>`;
+    const ev = E.eventsAtTown(s, t.id);
+    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
   }
   return h;
 }
@@ -189,7 +192,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + standingv(m) + storyv(m);
+  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + worldEventsCard() + standingv(m) + storyv(m);
   h += E.isAdult(m) ? "" : `<div class="card muted">Children can gather but not quest or explore.</div>`;
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);
@@ -218,9 +221,7 @@ export function mapv() {
         .filter(n => n.region === rg.id && E.known(s, n))
         .map(n => {
           const on = m.action && m.action.type === "gather" && m.action.target === n.id;
-          return `<div class="card row"><span>${n.icon} ${n.name}<br><span class="muted">${Object.entries(
-            n.res,
-          )
+          return `<div class="card row"><span>${n.icon} ${n.name}<br><span class="muted">${Object.entries(n.res)
             .map(([k, v]) => `+${v}${RI[k]}/day`)
             .join(
               " ",
@@ -240,4 +241,21 @@ export function mapv() {
     }
   }
   return h;
+}
+
+export function worldEventsCard() {
+  const ev = E.activeEvents(s);
+  const pol = D.encounters.policies;
+  return `<div class="card"><b>🌍 World events</b>${ev.length ? ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)} <span class="muted">(${e.until - s.day}d left)</span></div>`).join("") : '<div class="muted">All quiet across the land.</div>'}
+ <div class="row" style="justify-content:flex-start;gap:6px;margin-top:4px"><span class="muted">Road encounters on automated orders:</span><select data-a="encpolicy">${Object.entries(
+   pol,
+ )
+   .map(([k, n]) => `<option value="${k}" ${s.encPolicy === k ? "selected" : ""}>${n}</option>`)
+   .join("")}</select></div>${
+   E.activeBuffs(s).length
+     ? `<div class="muted">${E.activeBuffs(s)
+         .map(b => `${b.curse ? "🪬" : "✨"} ${b.name} (${b.until - s.day}d)`)
+         .join(" · ")}</div>`
+     : ""
+ }</div>`;
 }

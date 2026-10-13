@@ -22,7 +22,14 @@
    "remedies": 8,
    "leather": 9,
    "salves": 14,
-   "dust": 10
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12
   },
   "shop": [
    "rusty_sword",
@@ -66,7 +73,14 @@
    "remedies": 8,
    "leather": 9,
    "salves": 14,
-   "dust": 10
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12
   },
   "shop": [
    "iron_sword",
@@ -108,7 +122,14 @@
    "remedies": 8,
    "leather": 9,
    "salves": 14,
-   "dust": 10
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12
   },
   "shop": [
    "hunting_bow",
@@ -147,7 +168,14 @@
    "remedies": 8,
    "leather": 9,
    "salves": 14,
-   "dust": 10
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12
   },
   "shop": [
    "iron_sword",

@@ -1,3 +1,12 @@
+import { notify } from "./notify.js";
+import { evolveOptions, minionEvolveIssue } from "./minions.js";
+import { taintDev } from "./dev.js";
+import { tutCheck } from "./tutorial.js";
+import { seasonYield } from "./seasons.js";
+import { inheritTraits } from "./traits.js";
+import { checkAchievements } from "./achievements.js";
+import { expireBuffs } from "./encounters.js";
+import { eventsDay } from "./worldevents.js";
 import { globalTick, lifeBonus, memberTick } from "./legacy.js";
 import { actionAllowed, autoQuest, doAction, standingTick } from "./actions.js";
 import { ES, bedrooms, estEff, established, foodCap, matCap, processDay } from "./estate.js";
@@ -7,7 +16,7 @@ import { isBusy } from "./map.js";
 import { minionDay, minionFood, pantry } from "./minions.js";
 import { normalize } from "./save.js";
 import { gainXp } from "./skills.js";
-import { D, T, Y, ageY, bl, furn, living, log, r, rng } from "./state.js";
+import { D, T, Y, active, ageY, bl, furn, living, log, r, rng } from "./state.js";
 
 export const idleEff = s => T.idleEff + bl(s, "yard") * 0.05;
 
@@ -19,9 +28,24 @@ export function dayTick(s, effActive, effIdle) {
   if (s.gameOver) return;
   if (!s._norm) normalize(s);
   s.day++;
+  eventsDay(s);
+  expireBuffs(s);
+  if (s.day % 5 === 0) checkAchievements(s);
+  if (s.day % 5 === 0)
+    for (const mi of s.minions || [])
+      if (mi.evoNoted !== mi.cls && evolveOptions(mi).some(c => !minionEvolveIssue(s, mi, c.id))) {
+        mi.evoNoted = mi.cls;
+        notify(s, "evolution", `🌟 ${mi.name} is ready to evolve.`);
+      }
+  if (s.tut && s.tut.started && !s.tut.skipped && s.tut.step < (D.tutorial?.steps.length || 0)) {
+    if (active(s)?.action?.type === "activity") s.tut.flags.activity = true;
+    tutCheck(s);
+  }
   // estate production & food
   const lv = s.buildings;
-  s.res.food += lv.farm * 5 + (lv.garden || 0) * 2 + furn(s).reduce((x, f) => x + (f.bonus.food || 0), 0);
+  s.res.food +=
+    (lv.farm * 5 + (lv.garden || 0) * 2) * seasonYield(s, "food") +
+    furn(s).reduce((x, f) => x + (f.bonus.food || 0), 0);
   s.res.wood += lv.lumber * 3;
   s.res.stone += lv.lumber * 1;
   pantry(s, living(s).length + minionFood(s));
@@ -79,8 +103,7 @@ export function dayTick(s, effActive, effIdle) {
       m.injured = hasService(s, "healer") ? 0 : Math.max(0, m.injured - h);
       continue;
     }
-    if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type))
-      m.standing = m.order.type;
+    if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
     else if (!isAct && m.standing) m.standing = null;
     if (m.standing) {
       standingTick(s, m);
@@ -97,8 +120,7 @@ export function dayTick(s, effActive, effIdle) {
         }
         doAction(s, m, m.action, eff);
       } else if (o.type === "craft") {
-        if (!m.action || m.action.type !== "craft")
-          m.action = { type: "craft", target: o.target, progress: 0 };
+        if (!m.action || m.action.type !== "craft") m.action = { type: "craft", target: o.target, progress: 0 };
         doAction(s, m, m.action, eff);
       } else if (o.type === "gather") {
         if (!m.action || m.action.type !== "gather" || m.action.target !== o.target) {
@@ -119,6 +141,7 @@ export function dayTick(s, effActive, effIdle) {
       rng() < 0.01
     ) {
       const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
+      inheritTraits(s, c, [m, sp]);
       c.ageDays = 0;
       s.members.push(c);
       m.kids++;
@@ -139,6 +162,7 @@ export function toggleTurbo(s) {
 // real seconds elapsed while app is open. Turbo: 3x game time (aging included) and burns 1s charge per real second.
 export function advanceReal(s, sec) {
   if (s.gameOver) return;
+  taintDev(s);
   let mult = 1;
   sec *= globalTick(s);
   if (s.turbo.on) {
@@ -157,46 +181,19 @@ export function advanceReal(s, sec) {
   }
 }
 
+// Time away does not simulate the world: it only charges the turbo bar.
 export function applyOffline(s, now = Date.now()) {
-  let elapsed = (now - s.lastSave) / 1000;
+  const elapsed = (now - s.lastSave) / 1000;
   if (!(elapsed > 0) || elapsed > 3600 * 24 * 365) {
     s.lastSave = now;
     return null;
   }
-  const sim = Math.min(elapsed, offlineCapSec(s));
-  const days = Math.floor((sim * globalTick(s)) / T.secPerDayOffline);
-  const before = {
-    coin: s.res.coin,
-    food: s.res.food,
-    wood: s.res.wood,
-    stone: s.res.stone,
-    day: s.day,
-    turbo: s.turbo.charge,
-    log: s.log.length,
-    members: living(s).length,
-  };
-  const logStart = s.log[0];
-  for (let i = 0; i < days && !s.gameOver; i++)
-    dayTick(
-      s,
-      T.offlineEffActive,
-      T.idleEff * T.offlineEffActive + bl(s, "yard") * 0.05 * T.offlineEffActive,
-    );
-  const charge = elapsed * T.turboChargeRatio;
-  s.turbo.charge = Math.min(turboCapSec(s), s.turbo.charge + charge);
+  const before = s.turbo.charge;
+  s.turbo.charge = Math.min(turboCapSec(s), s.turbo.charge + elapsed * T.turboChargeRatio);
   s.lastSave = now;
-  const idx = s.log.indexOf(logStart);
-  const events = (idx < 0 ? s.log : s.log.slice(0, idx)).slice(0, 12).map(l => l.msg);
   return {
     elapsed,
-    sim,
-    days,
-    coin: Math.round(s.res.coin - before.coin),
-    food: Math.round(s.res.food - before.food),
-    wood: s.res.wood - before.wood,
-    stone: s.res.stone - before.stone,
-    turboAdded: Math.round(s.turbo.charge - before.turbo),
+    turboAdded: Math.round(s.turbo.charge - before),
     turboFull: s.turbo.charge >= turboCapSec(s),
-    events,
   };
 }

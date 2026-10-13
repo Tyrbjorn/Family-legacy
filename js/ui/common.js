@@ -1,3 +1,4 @@
+import { bellv } from "./progress.js";
 import * as E from "../engine.js";
 import { D, invF, s } from "../main.js";
 
@@ -7,8 +8,7 @@ export const fmt = n => Math.floor(n).toLocaleString();
 
 export const mmss = sec => `${Math.floor(sec / 60)}m ${String(Math.floor(sec % 60)).padStart(2, "0")}s`;
 
-export const hm = sec =>
-  `${Math.floor(sec / 3600)}h ${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}m`;
+export const hm = sec => `${Math.floor(sec / 3600)}h ${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}m`;
 
 export const sk = id => D.skills.find(x => x.id === id),
   it = id => E.itemDef(id),
@@ -19,7 +19,7 @@ export const yr = d => Math.floor(d / D.tuning.daysPerYear);
 export function top() {
   const t = s.turbo,
     cap = E.turboCapSec(s);
-  return `<div class="row"><b>🏰 Family Legacy</b><span class="muted">${E.estateStage(s)} · Y${yr(s.day) + 1}, day ${(s.day % D.tuning.daysPerYear) + 1} · Renown ${fmt(s.renown)}</span></div><div class="muted" title="${E.nextEraHint(s)} Eras only add systems; questing, crafting, jobs and training stay available forever.">${E.era(s).icon} Era ${E.era(s).n}: ${E.era(s).name} · <span style="font-size:11px">${E.nextEraHint(s)}</span></div>
+  return `<div class="row"><b>🏰 Family Legacy</b>${E.devOn() ? '<span class="devbadge">DEV</span>' : ""}${bellv()}<span class="muted">${E.season(s).icon} ${E.season(s).name} · ${E.estateStage(s)} · Y${yr(s.day) + 1}, day ${(s.day % D.tuning.daysPerYear) + 1} · Renown ${fmt(s.renown)}</span></div><div class="muted" title="${E.nextEraHint(s)} Eras only add systems; questing, crafting, jobs and training stay available forever.">${E.era(s).icon} Era ${E.era(s).n}: ${E.era(s).name} · <span style="font-size:11px">${E.nextEraHint(s)}</span></div>
  <div class="res"><span>🪙 <b>${fmt(s.res.coin)}</b></span><span>🍞 <b>${fmt(s.res.food)}</b></span><span>🪵 <b>${fmt(s.res.wood)}</b></span><span>🪨 <b>${fmt(s.res.stone)}</b></span><span>🌱 <b>${fmt(s.res.herbs || 0)}</b></span>${s.res.planks ? `<span>🪚 <b>${fmt(s.res.planks)}</b></span>` : ""}${s.res.ingots ? `<span>⛓️ <b>${fmt(s.res.ingots)}</b></span>` : ""}${s.res.potions ? `<span>🧪 <b>${fmt(s.res.potions)}</b></span>` : ""}</div>
  <div class="row"><div style="flex:1"><div class="bar t"><i style="width:${(t.charge / cap) * 100}%"></i></div><span class="muted">⚡ Turbo ${mmss(t.charge)} / ${cap / 60}m · charges only while away (1h → 6m)</span></div>
  <label class="muted" title="Game speed (Legacy unlocks faster tiers); separate from Turbo">⏱ <select data-a="speed">${E.speedOptions(
@@ -39,7 +39,9 @@ export function badges(m) {
   return m.traits
     .map(t => {
       const d = E.traitDef(t);
-      return d ? `<span class="tb" title="${d.desc}">${d.icon} ${d.name}</span>` : "";
+      return d
+        ? `<span class="tb" style="border-color:${E.rarityColor(t)};color:${E.rarityColor(t)}" title="${d.rarity || "common"} · ${d.desc}">${d.icon} ${d.name}</span>`
+        : "";
     })
     .join("");
 }
@@ -52,6 +54,14 @@ export const stage = m => {
 export const LOCK = { guild: "🔒 guild", quest: "🔒 quest", age12: "🔒 age 12", age14: "🔒 age 14" };
 
 export const RI = {
+  bread: "🍞",
+  stew: "🍲",
+  smokedmeat: "🥓",
+  cheese: "🧀",
+  preserves: "🫙",
+  sage: "🌿",
+  mandrake: "🫚",
+  moonpetal: "🌸",
   coin: "🪙",
   wood: "🪵",
   stone: "🪨",
@@ -118,6 +128,14 @@ export const QC = {
 
 export const MATS = [
   "food",
+  "bread",
+  "stew",
+  "smokedmeat",
+  "cheese",
+  "preserves",
+  "sage",
+  "mandrake",
+  "moonpetal",
   "wood",
   "planks",
   "stone",

@@ -23,14 +23,10 @@ export function chooseClass(s, mid, cid) {
 }
 
 export const structReqOk = (s, reqs) =>
-  (reqs || []).every(r =>
-    (s.structures || []).some(st => r.buildings.includes(st.type) && (st.up || 0) >= r.up),
-  );
+  (reqs || []).every(r => (s.structures || []).some(st => r.buildings.includes(st.type) && (st.up || 0) >= r.up));
 
 export const structReqText = reqs =>
-  (reqs || [])
-    .map(r => r.buildings.map(id => structDef(id).name).join("/") + (r.up ? " upg " + r.up : ""))
-    .join(" + ");
+  (reqs || []).map(r => r.buildings.map(id => structDef(id).name).join("/") + (r.up ? " upg " + r.up : "")).join(" + ");
 
 export function canEvolve(s, m, c) {
   if (c.needsBuildings && !structReqOk(s, c.needsBuildings)) return false;
@@ -95,8 +91,7 @@ export function joinIssues(s, m, gid) {
   else if (!g.open && m.guild) out.push(`sworn to ${guildDef(m.guild.id).name}`);
   if (!isAdult(m)) out.push("must be an adult");
   if (ageY(m) < (D.guilds.minJoinAge || 16)) out.push("age 16+");
-  for (const [k, v] of Object.entries(q.stats || {}))
-    if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
+  for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
   for (const [k, v] of Object.entries(q.skills || {}))
     if (m.skills[k].lvl < v) out.push(`${D.skills.find(x => x.id === k).name} ${m.skills[k].lvl}/${v}`);
   if (s.res.coin < (q.coin || 0)) out.push(`${q.coin} coin`);
@@ -208,10 +203,7 @@ export function advRankUp(s, m) {
   s.res.coin -= n.cost;
   m.adv.rank++;
   addRenown(s, m, 5 * m.adv.rank);
-  log(
-    s,
-    `⚔️ ${m.name} is now Rank ${n.name} in the Adventurers' Guild${n.unlocks ? " – unlocked " + n.unlocks : ""}.`,
-  );
+  log(s, `⚔️ ${m.name} is now Rank ${n.name} in the Adventurers' Guild${n.unlocks ? " – unlocked " + n.unlocks : ""}.`);
   return true;
 }
 
@@ -219,8 +211,7 @@ export const advShop = () => D.items.filter(i => i.adv);
 
 export function buyAdvItem(s, m, id) {
   const it = itemDef(id);
-  if (!it || !it.adv || !m.adv || m.adv.rank < it.adv || s.res.coin < buyPrice(it) || !vaultRoom(s))
-    return false;
+  if (!it || !it.adv || !m.adv || m.adv.rank < it.adv || s.res.coin < buyPrice(it) || !vaultRoom(s)) return false;
   s.res.coin -= buyPrice(it);
   s.vault.push(id);
   log(s, `🛒 Bought ${it.name} from the Adventurers' Guild.`);

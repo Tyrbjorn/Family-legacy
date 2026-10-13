@@ -21,10 +21,7 @@ import { D, T, active, ageY, furn, isAdult, known } from "./state.js";
 
 export function successChance(s, m, q) {
   const c = cp(s, m);
-  return Math.max(
-    0.1,
-    Math.min(0.98, 0.5 + (c - q.cp) / (q.cp + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03)),
-  );
+  return Math.max(0.1, Math.min(0.98, 0.5 + (c - q.cp) / (q.cp + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03)));
 }
 
 export function doAction(s, m, a, eff) {
@@ -80,8 +77,7 @@ export function doAction(s, m, a, eff) {
       m.action = null;
       return;
     }
-    s.res.coin +=
-      (isAdult(m) ? j.payAdult : j.payChild) * (1 + level(m) * 0.02) * eff * (1 + traitSum(m, "coin"));
+    s.res.coin += (isAdult(m) ? j.payAdult : j.payChild) * (1 + level(m) * 0.02) * eff * (1 + traitSum(m, "coin"));
     for (const [k, v] of Object.entries(j.stats)) m.stats[k] += v * eff;
     for (const k of j.skills) gainXp(s, m, k, T.xpPerDay * 0.5 * eff);
     if (j.id === "shop") sellTick(s, eff * (1 + m.skills.haggling.lvl * 0.02));
@@ -130,9 +126,7 @@ export function autoQuest(s, m, region) {
 // ---- standing orders: Explore / Adventure
 export function pickExplore(s, m) {
   const h = MP().home;
-  const ok = (MP().areas || []).filter(
-    a => !exploreIssue(s, m, a.id) || (m.minion && regionOpen(s, a.region)),
-  );
+  const ok = (MP().areas || []).filter(a => !exploreIssue(s, m, a.id) || (m.minion && regionOpen(s, a.region)));
   const fresh = ok.filter(a => !explored(s, a.id)),
     left = ok.filter(a => areaSecretsLeft(s, a) > 0);
   const pool = fresh.length ? fresh : left.length ? left : ok;
@@ -192,9 +186,7 @@ export function setAction(s, a) {
   }
   if (isBusy(m)) return true;
   if (
-    ["train", "job", "activity", "quest", "court", "gather", "rest", "explore", "dungeon", "auto"].includes(
-      a.type,
-    ) &&
+    ["train", "job", "activity", "quest", "court", "gather", "rest", "explore", "dungeon", "auto"].includes(a.type) &&
     !actionAllowed(s, m, a)
   )
     return false;
@@ -239,7 +231,7 @@ export function actionAllowed(s, m, a) {
   }
   if (t === "quest") {
     const q = D.quests.find(x => x.id === a.target);
-    return !!q && isAdult(m) && !questIssue(s, m, q);
+    return !!q && (isAdult(m) || (q.apprentice && ageY(m) >= 14)) && !questIssue(s, m, q);
   }
   if (t === "explore") return !exploreIssue(s, m, a.target);
   if (t === "dungeon") return !dungeonIssue(s, m, dungeonDef(a.target));

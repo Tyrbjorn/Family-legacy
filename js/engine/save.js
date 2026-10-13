@@ -1,3 +1,8 @@
+import { startTutorial } from "./tutorial.js";
+import { devOn } from "./dev.js";
+import { LG } from "./legacy.js";
+const LG_CAP = () => Math.max(...(LG().speedTiers || [1]));
+import { noteBloodline } from "./traits.js";
 import { legacyState } from "./legacy.js";
 import { DEFAULT_RESERVE, ES, freeSlots, landSlots, landUsed } from "./estate.js";
 import { fixTraits, newMember, traitDef } from "./family.js";
@@ -12,6 +17,7 @@ export function newGame(now = Date.now()) {
   _s.structures = [];
   _s.pieceStore = [];
   normalize(_s);
+  startTutorial(_s);
   return _s;
 }
 
@@ -52,7 +58,7 @@ export function _newGame(now) {
     pendingClass: [],
   };
   for (const b of D.buildings) s.buildings[b.id] = b.start;
-  const f = newMember(s, { age: 15 });
+  const f = newMember(s, { age: D.tuning.founderAge ?? 15 });
   s.members.push(f);
   f.action = { type: "activity", target: "hiking", progress: 0 };
   log(s, `🏡 ${f.name} founds the family estate.`);
@@ -73,7 +79,19 @@ export function deserialize(str) {
 export function normalize(s) {
   if (!s.unlocks) s.unlocks = [];
   legacyState(s);
+  if (!s.foodQ) s.foodQ = {};
+  if (s.bloodline === undefined) {
+    s.bloodline = null;
+    for (const m of s.members || []) noteBloodline(s, m);
+  }
+  for (const k of ["chronicle", "wevents", "buffs"]) if (!Array.isArray(s[k])) s[k] = [];
+  if (!s.ach) s.ach = {};
+  if (!s.counts) s.counts = {};
+  if (s.pendingEnc === undefined) s.pendingEnc = null;
+  if (!s.encPolicy) s.encPolicy = "kind";
   if (!s.speed) s.speed = 1;
+  if (!s.tut) s.tut = { step: 0, done: [], skipped: s.day > 0, flags: {}, tourSeen: s.day > 0, started: s.day > 0 };
+  if (!s.speed || (s.speed > LG_CAP() && !devOn())) s.speed = 1;
   for (const m of s.members || []) {
     if (m.renown == null) m.renown = 0;
     if (!m.craftQueue) m.craftQueue = [];
@@ -84,8 +102,7 @@ export function normalize(s) {
     if (a && a.type === "train" && m.skills) {
       const t = themedFor(s, m, a.target);
       m.action = t ? { type: "activity", target: t, progress: 0 } : null;
-    } else if (a && a.type === "activity" && !(D.activities || []).some(x => x.id === a.target))
-      m.action = null;
+    } else if (a && a.type === "activity" && !(D.activities || []).some(x => x.id === a.target)) m.action = null;
     if (m.order && m.order.type === "activity" && !(D.activities || []).some(x => x.id === m.order.target))
       m.order = { type: "rest" };
   }
@@ -170,10 +187,7 @@ export function normalize(s) {
   if (!s.specialGranted) s.specialGranted = [];
   for (const m of s.members) {
     if (fixTraits(m))
-      log(
-        s,
-        `🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t => traitDef(t).name).join(", ")}.`,
-      );
+      log(s, `🔧 ${m.name}'s conflicting traits were resolved: ${m.traits.map(t => traitDef(t).name).join(", ")}.`);
     for (const sk of D.skills) if (!m.skills[sk.id]) m.skills[sk.id] = { lvl: 0, xp: 0 };
     if (m.guild === undefined) m.guild = null;
     if (m.guild && !guildDef(m.guild.id)) m.guild = null;

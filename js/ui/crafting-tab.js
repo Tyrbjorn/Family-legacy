@@ -1,3 +1,4 @@
+import { timerBar } from "./progress.js";
 // Crafting tab: recipes (filters, quality odds, materials), crafter queues, minion orders, stations and reserves.
 import * as E from "../engine.js";
 import { U } from "./state.js";
@@ -47,10 +48,7 @@ function recipeCard(rc, who) {
     .map(o => `${o.name} ${pct(o.p)}`)
     .join(" · ");
   const mats = E.matsStatus(s, rc)
-    .map(
-      x =>
-        `<span style="color:${x.ok ? "#7c7" : "#e77"}">${RI[x.k] || ""}${x.k} ${fmt(x.have)}/${x.need}</span>`,
-    )
+    .map(x => `<span style="color:${x.ok ? "#7c7" : "#e77"}">${RI[x.k] || ""}${x.k} ${fmt(x.have)}/${x.need}</span>`)
     .join(" ");
   const act = E.active(s);
   const on = act.action && act.action.type === "craft" && act.action.target === rc.id;
@@ -67,9 +65,7 @@ function recipeCard(rc, who) {
 
 function queues() {
   let h = `<h3>📋 Queues & orders</h3>`;
-  for (const m of E.living(s).filter(
-    x => (x.craftQueue || []).length || (x.action && x.action.type === "craft"),
-  )) {
+  for (const m of E.living(s).filter(x => (x.craftQueue || []).length || (x.action && x.action.type === "craft"))) {
     const a = m.action && m.action.type === "craft" ? m.action : null;
     const cur = a && (a.target || a.rc);
     h += `<div class="card"><b>${m.name}</b> <span class="muted">${cur ? "now: " + E.recipeDef(cur).name + ` (${Math.floor(a.progress || 0)}/${E.recipeDef(cur).days}d)` : "idle"}</span>${(
@@ -79,7 +75,7 @@ function queues() {
         (id, i) =>
           `<div class="row"><span>${i + 1}. ${E.recipeDef(id).name}</span><button class="b" data-a="cunq" data-v="${m.id}" data-w="${i}">✕</button></div>`,
       )
-      .join("")}</div>`;
+      .join("")}${a ? timerBar(E.memberTimer(s, m)) : ""}</div>`;
   }
   for (const mi of s.minions.filter(E.isMinionCrafter))
     h += `<div class="muted">${mi.name}: ${mi.job === "craft" ? "crafting " + (mi.craftOrder ? E.recipeDef(mi.craftOrder).name : "best available") : "not on the craft job (set it on the Minions tab)"}</div>`;

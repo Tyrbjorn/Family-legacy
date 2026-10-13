@@ -391,7 +391,8 @@
     "herbrack",
     "storage",
     "alchbench",
-    "larder"
+    "larder",
+    "jars"
    ],
    "cost": {
     "coin": 90,
@@ -697,7 +698,8 @@
     "storage",
     "larder",
     "tanrack",
-    "kennel"
+    "kennel",
+    "smoker"
    ],
    "cost": {
     "coin": 140,
@@ -2092,6 +2094,21 @@
       },
       "out": "potions",
       "rate": 4
+     },
+     {
+      "in": {
+       "mandrake": 1,
+       "herbs": 1
+      },
+      "out": "potions",
+      "rate": 5
+     },
+     {
+      "in": {
+       "moonpetal": 2
+      },
+      "out": "dust",
+      "rate": 1
      }
     ],
     "craftQuality": 0.05,
@@ -2218,6 +2235,16 @@
       "in": {},
       "out": "food",
       "rate": 3
+     },
+     {
+      "in": {},
+      "out": "sage",
+      "rate": 0.6
+     },
+     {
+      "in": {},
+      "out": "mandrake",
+      "rate": 0.2
      }
     ],
     "jobs": {
@@ -2284,6 +2311,13 @@
       },
       "out": "salves",
       "rate": 2
+     },
+     {
+      "in": {
+       "sage": 2
+      },
+      "out": "remedies",
+      "rate": 4
      }
     ],
     "jobs": {
@@ -2534,6 +2568,114 @@
     "morale": 0.2
    },
    "desc": "+5% XP, follower morale"
+  },
+  {
+   "id": "oven",
+   "name": "Bread Oven",
+   "icon": "🍞",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 60,
+    "stone": 20,
+    "planks": 4
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "food": 3
+      },
+      "out": "bread",
+      "rate": 2,
+      "food": true
+     },
+     {
+      "in": {
+       "meat": 2,
+       "herbs": 1
+      },
+      "out": "stew",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Bakes bread; simmers stew (cooking skill + oven tier raise quality)"
+  },
+  {
+   "id": "smoker",
+   "name": "Smoke Rack",
+   "icon": "🥓",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 45,
+    "wood": 20
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "meat": 2
+      },
+      "out": "smokedmeat",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Smokes meat into long-keeping provisions"
+  },
+  {
+   "id": "churn",
+   "name": "Cheese Press",
+   "icon": "🧀",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 50,
+    "planks": 6
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "eggs": 2,
+       "food": 1
+      },
+      "out": "cheese",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Presses cheese"
+  },
+  {
+   "id": "jars",
+   "name": "Preserve Jars",
+   "icon": "🫙",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 40,
+    "copper": 2
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "honey": 1,
+       "herbs": 1
+      },
+      "out": "preserves",
+      "rate": 2,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Honey-and-herb preserves"
   }
  ],
  "synergies": [
@@ -2658,7 +2800,15 @@
    "remedies",
    "salves",
    "stone",
-   "wood"
+   "wood",
+   "bread",
+   "cheese",
+   "preserves",
+   "smokedmeat",
+   "stew",
+   "sage",
+   "mandrake",
+   "moonpetal"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2709,7 +2859,10 @@
     "meat",
     "fish",
     "honey",
-    "eggs"
+    "eggs",
+    "sage",
+    "mandrake",
+    "moonpetal"
    ]
   },
   "2": {
@@ -2724,7 +2877,12 @@
     "cloth",
     "remedies",
     "dust",
-    "salves"
+    "salves",
+    "bread",
+    "cheese",
+    "preserves",
+    "smokedmeat",
+    "stew"
    ]
   },
   "3": {
@@ -2746,7 +2904,17 @@
   "meat": 2,
   "fish": 1.5,
   "eggs": 1,
-  "honey": 1
+  "honey": 1,
+  "bread": 2,
+  "cheese": 2.5,
+  "preserves": 2.5,
+  "smokedmeat": 3,
+  "stew": 3.5
  },
- "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output."
+ "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output.",
+ "foodQuality": {
+  "perTier": 0.15,
+  "perCookLvl": 0.005,
+  "skill": "cooking"
+ }
 }

@@ -1,3 +1,4 @@
+import { DEV_SPEEDS, devOn } from "./dev.js";
 // Prestige: per-member renown, Legacy Renown banked at the Graveyard, permanent Legacy upgrades,
 // and game speed (global speed selector + tick bonuses from skill, stat, furniture and legacy).
 import { estEff, structDef } from "./estate.js";
@@ -83,7 +84,7 @@ export function bankRenown(s, m) {
 // ---- speed
 export const maxSpeed = s => Math.max(1, legacyValue(s, "speed"));
 
-export const speedOptions = s => LG().speedTiers.filter(v => v <= maxSpeed(s));
+export const speedOptions = s => [...LG().speedTiers.filter(v => v <= maxSpeed(s)), ...(devOn() ? DEV_SPEEDS : [])];
 
 export function setSpeed(s, v) {
   if (!speedOptions(s).includes(v)) return false;
@@ -93,7 +94,11 @@ export function setSpeed(s, v) {
 
 export const tickBonus = s => estEff(s, "tick") + legacyValue(s, "tick");
 
-export const globalTick = s => Math.min(LG().tickCap, Math.max(1, s.speed || 1) * (1 + tickBonus(s)));
+export const globalTick = s => {
+  const v = Math.max(1, s.speed || 1);
+  if (devOn() && DEV_SPEEDS.includes(v)) return v * (1 + tickBonus(s)); // dev speeds bypass the cap
+  return Math.min(LG().tickCap, v * (1 + tickBonus(s)));
+};
 
 export function memberTick(m) {
   const focus = (m.skills && m.skills.focus && m.skills.focus.lvl) || 0;

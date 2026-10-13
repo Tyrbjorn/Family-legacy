@@ -1,0 +1,118 @@
+{
+ "cap": 300,
+ "minor": [
+  "build",
+  "purchase"
+ ],
+ "fromLog": [
+  [
+   "👶",
+   "birth"
+  ],
+  [
+   "🕯️",
+   "death"
+  ],
+  [
+   "🪦",
+   "legacy"
+  ],
+  [
+   "💍",
+   "family"
+  ],
+  [
+   "📜 Bought",
+   "purchase"
+  ],
+  [
+   "📜",
+   "family"
+  ],
+  [
+   "🎓",
+   "class"
+  ],
+  [
+   "🧑‍🔧",
+   "class"
+  ],
+  [
+   "🧭",
+   "class"
+  ],
+  [
+   "🌟 RARE DROP",
+   "drop"
+  ],
+  [
+   "🌟",
+   "evolution"
+  ],
+  [
+   "🎖️",
+   "guild"
+  ],
+  [
+   "🏆",
+   "dungeon"
+  ],
+  [
+   "🗝️",
+   "dungeon"
+  ],
+  [
+   "🗣️",
+   "discovery"
+  ],
+  [
+   "🛖",
+   "build"
+  ],
+  [
+   "🏗️",
+   "build"
+  ],
+  [
+   "🏅",
+   "build"
+  ],
+  [
+   "🏺",
+   "legacy"
+  ],
+  [
+   "🏡",
+   "family"
+  ],
+  [
+   "🤝",
+   "follower"
+  ],
+  [
+   "⚔️",
+   "guild"
+  ]
+ ],
+ "guildIcons": true,
+ "cats": {
+  "birth": "👶 Births",
+  "death": "🕯️ Deaths",
+  "legacy": "🏺 Legacy",
+  "family": "👪 Family",
+  "class": "🎓 Classes",
+  "guild": "🏛️ Guilds",
+  "evolution": "🌟 Evolutions",
+  "discovery": "🔍 Discoveries",
+  "story": "📖 Story",
+  "dungeon": "🏆 Dungeons",
+  "craft": "🔨 Masterworks",
+  "drop": "💎 Rare drops",
+  "purchase": "📜 Land",
+  "build": "🛖 Buildings",
+  "event": "🌍 World events",
+  "encounter": "🧙 Encounters",
+  "achievement": "🏅 Achievements",
+  "follower": "🤝 Followers"
+ }
+}

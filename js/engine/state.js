@@ -1,3 +1,5 @@
+import { noteFromLog } from "./notify.js";
+import { chronFromLog } from "./chronicle.js";
 import { effects } from "./estate.js";
 
 // Pure game engine (no DOM). Works in browser and Node.
@@ -38,6 +40,8 @@ export const furn = (s, k) => effects(s);
 
 export function log(s, msg) {
   s.log.unshift({ d: s.day, msg });
+  chronFromLog(s, msg);
+  noteFromLog(s, msg);
   if (s.log.length > 80) s.log.length = 80;
 }
 
@@ -51,9 +55,7 @@ export const known = (s, x) => !x.hidden || s.revealed.includes(x.id);
 
 export function cost(s, b) {
   const lv = s.buildings[b.id];
-  return Object.fromEntries(
-    Object.entries(b.cost).map(([k, v]) => [k, Math.round(v * Math.pow(T.buildCostMult, lv))]),
-  );
+  return Object.fromEntries(Object.entries(b.cost).map(([k, v]) => [k, Math.round(v * Math.pow(T.buildCostMult, lv))]));
 }
 
 export const afford = (s, c) => Object.entries(c).every(([k, v]) => s.res[k] >= v);

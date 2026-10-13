@@ -1,0 +1,14 @@
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const ctx=await b.newContext({viewport:{width:390,height:900},deviceScaleFactor:2,acceptDownloads:true});const p=await ctx.newPage();
+const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
+p.on('dialog',d=>d.accept());
+await p.goto('http://localhost:'+(process.env.PORT||8137)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(800);
+await p.evaluate(()=>{const g=__game,s=g.s,m=s.members[0];m.traits=['chosen','ironblood','nimble','curious','lazy'];s.day=Math.floor(g.D.tuning.daysPerYear*0.8);Object.assign(s.res,{bread:12,stew:5,cheese:4,sage:9,mandrake:2});});
+await p.click('[data-tab="main"]');await p.waitForTimeout(400);await p.screenshot({path:'screenshot-traits-season.png',clip:{x:0,y:0,width:390,height:330}});
+const dl=p.waitForEvent('download');await p.click('[data-a="exportsave"]');const d=await dl;console.log('download',d.suggestedFilename());await p.waitForTimeout(300);
+const code=await p.$eval('#savecode',x=>x.value);console.log('code',code.slice(0,10),code.length);
+await p.evaluate(()=>{__game.s.res.coin=1;});await p.click('[data-a="importsave"]');await p.waitForTimeout(400);
+console.log('coin after import',await p.evaluate(()=>__game.s.res.coin));
+const sc=await p.$('#savecode');await sc.scrollIntoViewIfNeeded();await p.waitForTimeout(200);await (await p.evaluateHandle(()=>document.querySelector('#savecode').closest('.card'))).asElement().screenshot({path:'screenshot-save-io.png'});
+console.log('errs',errs);await b.close();

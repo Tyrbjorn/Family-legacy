@@ -1,3 +1,4 @@
+import { toggleDock } from "./ui/progress.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
 import { curList } from "./ui/common.js";
@@ -26,6 +27,13 @@ const names = [
   "map",
   "dungeons",
   "legacy",
+  "chronicle",
+  "achievements",
+  "events",
+  "encounters",
+  "seasons",
+  "tutorial",
+  "notify",
 ];
 
 export const D = {};
@@ -33,6 +41,16 @@ export const D = {};
 await Promise.all(names.map(async n => (D[n] = await (await fetch(`data/${n}.json`)).json())));
 
 E.setData(D);
+
+// Dev Mode lives in its own localStorage key (never in saves/exports). ?dev=1 reveals + enables, ?dev=0 disables.
+const DEV_KEY = "fl-dev";
+{
+  const q = new URLSearchParams(location.search).get("dev");
+  if (q === "1") localStorage.setItem(DEV_KEY, "1");
+  if (q === "0") localStorage.removeItem(DEV_KEY);
+  E.setDevMode(localStorage.getItem(DEV_KEY) === "1");
+  if (q === "1") U.devRevealed = true;
+}
 
 export let s,
   sheetOpen = false,
@@ -71,9 +89,14 @@ document.addEventListener("click", e => {
     window._mapSuppress = false;
     if (e.target.closest("#worldmap")) return;
   }
+  if (window._treeDragged) {
+    window._treeDragged = false;
+    if (e.target.closest("#treewrap")) return;
+  }
   const t = e.target.closest("[data-tab]");
   if (t) {
     U.tab = t.dataset.tab;
+    if (U.tab === "estate") E.tutNote(s, "estate");
     U.lastHTML = "";
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     render.force = true;
@@ -88,6 +111,40 @@ document.addEventListener("click", e => {
     m = E.active(s);
   ({
     turbo: () => E.toggleTurbo(s),
+    dock: () => toggleDock(),
+    gotab: () => {
+      U.tab = v;
+      if (v === "estate") E.tutNote(s, "estate");
+      scrollTo(0, 0);
+    },
+    bell: () => {
+      U.bell = !U.bell;
+      if (!U.bell) E.markNotesRead(s);
+    },
+    bellread: () => E.markNotesRead(s),
+    mentorcraft: () => E.mentorCraft(s),
+    tutskip: () => confirm("Skip the apprenticeship? You keep what you've earned so far.") && E.skipTutorial(s),
+    tourstart: () => {
+      U.tour = 0;
+      U.tab = "main";
+    },
+    tournext: () => {
+      U.tour++;
+      const st = E.tourSteps().filter(x => document.querySelector(`[data-tab="${x.tab}"]`))[U.tour];
+      if (st) U.tab = st.tab;
+    },
+    tourend: () => {
+      U.tour = null;
+      E.markTourSeen(s);
+    },
+    ver: () => {
+      if (++U.verTaps >= 5) U.devRevealed = true;
+    },
+    dev: () => E.devCheat(s, v),
+    devtut: () => E.completeTutorial(s),
+    treesel: () => {
+      U.treeSel = v ? +v : null;
+    },
     train: () => E.setAction(s, { type: "train", target: v }),
     sheet: () => {
       sheetOpen = !sheetOpen;
@@ -149,6 +206,7 @@ document.addEventListener("click", e => {
       E.setMinionCraft(s, mi, mi && mi.craftOrder === b.dataset.w ? null : b.dataset.w);
     },
     legacy: () => E.buyLegacy(s, v),
+    enc: () => E.resolvePending(s, v),
     equip: () => E.equip(s, m, v),
     equipbag: () => E.equip(s, m, v, "bag"),
     unequip: () => E.unequip(s, m, v),
@@ -183,19 +241,13 @@ document.addEventListener("click", e => {
     close: () => {
       report = null;
     },
-    export: () => {
-      prompt("Copy your save:", btoa(unescape(encodeURIComponent(E.serialize(s)))));
-    },
-    import: () => {
-      const t = prompt("Paste save:");
-      if (t) {
-        try {
-          s = E.deserialize(decodeURIComponent(escape(atob(t))));
-        } catch (err) {
-          alert("Invalid save");
-        }
-      }
-    },
+    export: () => exportSave(),
+    exportsave: () => exportSave(),
+    import: () =>
+      importText(
+        document.querySelector("#savecode") ? document.querySelector("#savecode").value : prompt("Paste save code:"),
+      ),
+    importsave: () => importText(document.querySelector("#savecode") && document.querySelector("#savecode").value),
     reset: () => {
       if (s.gameOver || confirm("Abandon this lineage and start over?")) {
         s = E.newLineage(s);
@@ -216,9 +268,29 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "reserve") {
     E.setReserve(s, el.dataset.v, el.value);
   }
+  if (el.dataset.a === "importfile" && el.files && el.files[0]) {
+    el.files[0].text().then(t => {
+      importText(t);
+      U.lastHTML = "";
+      render();
+    });
+  }
+  if (el.dataset.a === "chronf") U.chronF = el.value;
+  if (el.dataset.a === "encpolicy") s.encPolicy = el.value;
   if (el.dataset.a === "craftf") U.craftF[el.dataset.v] = el.value;
   if (el.dataset.a === "crafter") U.crafter = el.value;
   if (el.dataset.a === "speed") E.setSpeed(s, +el.value);
+  if (el.dataset.a === "notecat") E.setNoteCat(s, el.dataset.v, el.checked);
+  if (el.dataset.a === "devmode") {
+    if (el.checked && !confirm("Enable Dev Mode? This run will be marked as a dev run and stop earning achievements."))
+      el.checked = false;
+    E.setDevMode(el.checked);
+    if (el.checked) localStorage.setItem(DEV_KEY, "1");
+    else {
+      localStorage.removeItem(DEV_KEY);
+      if (!E.speedOptions(s).includes(s.speed)) s.speed = 1;
+    }
+  }
   if (el.dataset.a === "invf") {
     invF[el.dataset.v] = el.value;
   }
@@ -239,8 +311,7 @@ document.addEventListener("change", e => {
     const t = el.value;
     E.setOrder(s, id, {
       type: t,
-      target:
-        t === "train" ? "swordsmanship" : t === "quest" ? "outskirts" : t === "gather" ? "scrub" : undefined,
+      target: t === "train" ? "swordsmanship" : t === "quest" ? "outskirts" : t === "gather" ? "scrub" : undefined,
     });
   }
   if (el.dataset.a === "ordt") {
@@ -362,4 +433,63 @@ render();
     },
     { passive: false },
   );
+}
+
+function exportSave() {
+  const code = E.exportCode(s);
+  U.exportText = code;
+  U.saveMsg = "Code shown below; a .txt file was downloaded too.";
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
+  a.download = `family-legacy-Y${Math.floor(s.day / D.tuning.daysPerYear) + 1}.txt`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importText(text) {
+  if (!text || !String(text).trim()) {
+    U.saveMsg = "Paste a code or choose a file first.";
+    return;
+  }
+  let next;
+  try {
+    next = E.importSave(text);
+  } catch (err) {
+    U.saveMsg = "❌ " + err.message;
+    return;
+  }
+  const who = (next.members.find(m => m.id === next.activeId) || next.members[0] || {}).name;
+  if (
+    !confirm(
+      `Overwrite the current game with this save (${who}, year ${Math.floor(next.day / D.tuning.daysPerYear) + 1})?`,
+    )
+  )
+    return;
+  s = next;
+  report = null;
+  U.exportText = "";
+  U.saveMsg = "✅ Save imported.";
+  save();
+}
+
+// family tree: drag to pan (touch uses native scrolling)
+{
+  let d = null;
+  document.addEventListener("pointerdown", e => {
+    const w = e.target.closest("#treewrap");
+    if (w && e.pointerType === "mouse")
+      d = { w, x: e.clientX, y: e.clientY, l: w.scrollLeft, t: w.scrollTop, moved: false };
+  });
+  addEventListener("pointermove", e => {
+    if (!d) return;
+    const dx = e.clientX - d.x,
+      dy = e.clientY - d.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) d.moved = true;
+    d.w.scrollLeft = d.l - dx;
+    d.w.scrollTop = d.t - dy;
+  });
+  addEventListener("pointerup", () => {
+    if (d && d.moved) window._treeDragged = true;
+    d = null;
+  });
 }

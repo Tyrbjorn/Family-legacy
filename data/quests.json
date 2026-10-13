@@ -2,6 +2,7 @@
  {
   "id": "rats",
   "name": "Rats in the Cellar",
+  "apprentice": true,
   "region": "outskirts",
   "type": "errand",
   "cp": 0,

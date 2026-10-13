@@ -1,6 +1,6 @@
 {
- "secPerDayActive": 10,
- "secPerDayOffline": 20,
+ "secPerDayActive": 5,
+ "secPerDayOffline": 10,
  "daysPerYear": 360,
  "offlineCapHours": 8,
  "offlineEffActive": 0.5,
@@ -8,10 +8,10 @@
  "idleEff": 0.4,
  "turboMult": 3,
  "turboChargeRatio": 0.1,
- "turboCapMin": 60,
+ "turboCapMin": 40,
  "turboMinMin": 1,
- "xpBase": 50,
- "xpGrowth": 1.12,
+ "xpBase": 30,
+ "xpGrowth": 1.14,
  "xpPerDay": 20,
  "softCap": [
   50,
@@ -19,12 +19,12 @@
   100
  ],
  "baseLifespan": 70,
- "courtAge": 18,
+ "courtAge": 16,
  "adultAge": 16,
- "childEvery": 720,
+ "childEvery": 540,
  "maxKidsPerCouple": 3,
  "inheritShare": 0.1,
- "buildCostMult": 2.2,
+ "buildCostMult": 2.5,
  "upkeepPerBuildingMonth": 5,
  "deadlyDeathChance": 0.05,
  "autosaveSec": 30,
@@ -35,5 +35,6 @@
  },
  "craftDays": 5,
  "buyMarkup": 1.5,
- "sellRate": 0.5
+ "sellRate": 0.5,
+ "founderAge": 15.75
 }

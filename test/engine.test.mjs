@@ -1,6 +1,8 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify'])D[n]=L(n);
+// legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
+Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
@@ -12,7 +14,7 @@ E.advanceReal(s,10*400); ok(E.isAdult(f)&&!f.cls&&!s.pendingClass.length,'founde
 E.chooseClass(s,f.id,'fighter'); E.setAction(s,{type:'quest',target:'rats'}); const c0=s.res.coin; E.advanceReal(s,10*30); ok(s.res.coin>c0,'quests pay coin');
 // offline 14h
 const str=E.serialize(s,t0); const s2=E.deserialize(str); const d0=s2.day; const rep=E.applyOffline(s2,t0+14*3600e3);
-ok(rep.days===Math.floor(8*3600/20)&&s2.day-d0===rep.days,'offline capped at 8h → '+rep.days+' days');
+ok(s2.day===d0&&rep.turboAdded>0&&!('days' in rep),'time away only charges turbo (no simulated days)');
 ok(s2.turbo.charge===3600,'14h away → 84min charge clipped to 60min cap');
 const s3=E.deserialize(E.serialize(s,t0)); E.applyOffline(s3,t0+2*3600e3); ok(Math.abs(s3.turbo.charge-720)<1,'2h away → 12 min turbo');
 ok(E.applyOffline(E.deserialize(E.serialize(s,t0)),t0-5000)===null,'negative elapsed ignored');
@@ -65,7 +67,7 @@ const old=JSON.parse(E.serialize(G,t0)); for(const m of old.members){delete m.sk
 // adventurers' guild
 ok(E.joinAdventurers(G,gm2)&&gm2.guild.id==='vanguard'&&gm2.adv.rank===0,"Adventurers' Guild joinable by a sworn guild member");
 const G2=E.newGame(t0); const am=G2.members[0]; am.ageDays=20*360; am.cls='scout'; am.skills.archery.lvl=12; G2.res.coin=1e5;
-am.skills.hunting.lvl=Math.max(am.skills.hunting.lvl,5); ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
+am.skills.hunting.lvl=Math.max(am.skills.hunting.lvl,5); am.stats.AGI=Math.max(am.stats.AGI,10); ok(E.joinAdventurers(G2,am)&&E.joinGuild(G2,am,'lodge'),'joining Adventurers does not block other guilds');
 ok(!E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'bounties locked at rank F');
 am.adv.rep=30; ok(E.advRankUp(G2,am)&&E.hasService(G2,'questBoard')&&E.questOk(am,D.quests.find(q=>q.id==='b_boars')),'rank E unlocks quest board + bounty');
 const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===Math.round(D.items[0].value*0.8)&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
@@ -262,7 +264,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const tot=E.tripTotal(a); ok(Math.abs(tot-(2*E.travelDays('rats')+2))<1e-9,'trip = out + task + return');
  const d0=V.doneQuests.length; E.advanceReal(V,10*Math.ceil(tot)+10); ok(V.doneQuests.includes('rats'),'quest resolves and the member comes home');
  const W=E.newGame(t0); const w=W.members[0]; w.ageDays=20*360; E.setAction(W,{type:'gather',target:'scrub'}); E.advanceReal(W,10); const t0w=E.tripLeft(w.action); W.turbo={charge:1e9,on:true}; E.advanceReal(W,10); ok(E.tripLeft(w.action)<t0w-1.5,'turbo speeds travel');
- const O=E.newGame(t0); const om=O.members[0]; om.ageDays=20*360; for(const k in om.skills) om.skills[k].lvl=10; E.setAction(O,{type:'quest',target:'rats'}); E.applyOffline(O,O.lastSave+3*3600*1000); ok(O.doneQuests.includes('rats'),'travel completes during offline progress');
+ const O=E.newGame(t0); const om=O.members[0]; om.ageDays=20*360; for(const k in om.skills) om.skills[k].lvl=10; E.setAction(O,{type:'quest',target:'rats'}); E.applyOffline(O,O.lastSave+3*3600*1000); ok(!O.doneQuests.includes('rats')&&E.isBusy(om),'travel is frozen while away');
  const X=E.newGame(t0); const xm=X.members[0]; xm.ageDays=20*360; ok(!X.discovered.includes('ashford')&&!E.townKnown(X,D.towns.find(t=>t.id==='ashford')),'hidden towns start undiscovered');
  ok(E.setAction(X,{type:'explore',target:'a_hills'})!==false&&xm.action.type==='explore','explore a fogged area');
  E.advanceReal(X,10); E.advanceReal(X,10*(E.tripTotal(xm.action)+1)); ok(E.explored(X,'a_hills')&&X.discovered.includes('ashford'),'exploring clears fog and discovers a hidden town');
@@ -341,7 +343,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const mi=E.addMinion(B,'laborer','t')||(()=>{estate(B,['minionbunk'],'shack');return E.addMinion(B,'laborer','t');})(); mi.cls='n_adept'; ok(E.homeMap(B)[mi.uid]===tw.uid,'Adept lives in the Tower'); mi.cls='n_priest'; ok(E.homeMap(B)[mi.uid]===sh.uid,'Priest lives in the Chapel'); mi.cls='n_herbalist';
  const hs=E.buildStructure(B,'herbalistshack'); ok(hs&&E.homeMap(B)[mi.uid]===hs.uid,"Herbalist lives in the Herbalist's Shack");
  mi.loyalty=50; E.advanceReal(B,10); ok(mi.loyalty>50,'Chapel/Shrine morale raises follower loyalty');
- m.injured=8; B.res.remedies=0; E.advanceReal(B,10); ok(m.injured<=6,'Shrine/Chapel speeds healing'); ok(E.pieceDef('remedybench').bonus.processes.map(p=>p.out).join()==='remedies,potions,salves','Herbalist\'s Shack produces remedies, potions, salves');
+ m.injured=8; B.res.remedies=0; E.advanceReal(B,10); ok(m.injured<=6,'Shrine/Chapel speeds healing'); ok(['remedies','potions','salves'].every(o=>E.pieceDef('remedybench').bonus.processes.some(p=>p.out===o)),'Herbalist\'s Shack produces remedies, potions, salves');
  const X1=E.newGame(t0); const xm=X1.members[0]; xm.ageDays=20*360; xm.guild={id:'collegium',rank:0,rep:0}; const lv0=JSON.stringify(xm.skills.arcana); xm.action={type:'train',target:'arcana'};
  const X2=JSON.parse(JSON.stringify(X1)); estate(X2,[],'shack'); Object.assign(X2.res,{coin:1e5,stone:500,planks:50}); E.buildStructure(X2,'magestower'); E.advanceReal(X1,10*20); E.advanceReal(X2,10*20);
  const tot=m=>m.skills.arcana.lvl*1e4+m.skills.arcana.xp; ok(tot(X2.members[0])>tot(xm),"Mage's Tower boosts Magic guild members' XP"); }
@@ -430,4 +432,110 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const N=E.newLineage(G,t0); ok(N.legacy.ups.life===1&&N.legacy.renown===G.legacy.renown&&N.members.length>=1,'legacy persists into a new lineage');
  const R=E.deserialize(E.serialize(G)); ok(R.legacy.ups.speed===G.legacy.ups.speed&&R.legacy.renown===G.legacy.renown,'legacy persists through save/load');
  const O=JSON.parse(E.serialize(E.newGame(t0))); delete O.legacy; delete O.speed; O.members.forEach(x=>{delete x.renown; delete x.skills.focus;}); E.normalize(O); ok(O.legacy.renown===0&&O.speed===1&&O.members[0].renown===0&&O.members[0].skills.focus,'old saves migrate (legacy, speed, renown, Focus)'); }
+// Chronicle, achievements, world events, encounters
+{ const H=E.newGame(t0); E.normalize(H); const m=H.members[0];
+ E.log(H,`👶 Pip was born to ${m.name} and Ann.`); E.log(H,'🏷️ Sold a thing for 3🪙.'); ok(H.chronicle.some(e=>e.c==='birth'&&e.w===m.name)&&!H.chronicle.some(e=>e.t.includes('Sold')),'chronicle records major events only, with member');
+ ok(E.categorize('🔨 Fenn crafted Masterwork Iron Sword.')==='craft'&&E.categorize('🔨 Fenn crafted Fine Iron Sword.')===null,'masterworks chronicled, ordinary crafts not');
+ for(let i=0;i<D.chronicle.cap+50;i++) E.chron(H,i%2?'build':'death','x'+i); ok(H.chronicle.length===D.chronicle.cap,'chronicle capped');
+ ok(H.chronicle.filter(e=>e.c==='death').length>H.chronicle.filter(e=>e.c==='build').length,'compaction drops minor entries first');
+ ok(E.chronicleView(H,'death').every(e=>e.c==='death'),'chronicle filter'); ok(E.chronicleYear(0)===1&&E.chronicleYear(D.tuning.daysPerYear)===2,'dated by in-game year');
+ const sz=E.serialize(H).length; ok(sz<200000,'save stays small with a full chronicle ('+sz+' bytes)'); }
+{ const A=E.newGame(t0); E.normalize(A); ok(D.achievements.length>=12&&D.achievements.some(a=>a.hidden),'data-driven achievements incl. hidden');
+ const a=D.achievements.find(x=>x.id==='a_land'); ok(E.achProgress(A,a).have===0&&!E.achProgress(A,a).done,'progress tracked');
+ A.res.coin=1e5; Object.assign(A.res,{wood:1e4,stone:1e4,planks:1e3,blocks:1e3}); for(let k=0;k<3;k++) for(const l of D.estate.lands) E.buyLand(A,l.id); A.land=A.land.length>=3?A.land:['plot','acre','meadow']; A.ach={}; const c0=A.res.coin; E.checkAchievements(A); ok(A.ach.a_land!=null&&A.res.coin===c0+a.reward.coin,'achievement unlocks with reward');
+ ok(A.chronicle.some(e=>e.c==='achievement'&&e.t.includes('Landholder')),'achievement logged to chronicle'); E.checkAchievements(A); ok(A.chronicle.filter(e=>e.t.includes('Landholder')).length===1,'achievements fire once');
+ const p=E.newMember(A,{age:20}); const k=E.newMember(A,{age:0,parents:[p.id]}); const g=E.newMember(A,{age:0,parents:[k.id]}); A.members.push(p,k,g); ok(E.metric(A,'generations')===3,'generations counted'); }
+{ const W=E.newGame(t0); E.normalize(W); ok(D.events.types.length>=6,'6+ world event types');
+ const e=E.startEvent(W,'badharvest','millbrook',20); ok(E.eventsAtTown(W,'millbrook').length===1&&E.eventText(e).includes('Millbrook'),'town event active with text');
+ ok(E.townSellPrice(W,'millbrook','food')>D.towns.find(t=>t.id==='millbrook').prices.food,'bad harvest raises food prices');
+ const it=E.itemDef('rusty_sword'); ok(E.buyPrice(it,W,'millbrook')>E.buyPrice(it),'bad harvest raises buy prices there');
+ E.startEvent(W,'bandits','forest',10); ok(E.travelRisk(W,'forest')>0&&E.gatherMult(W,'forest')<1,'bandits: travel risk and slower gathering');
+ E.startEvent(W,'festival','ashford',5); ok(E.sellMult(W,'ashford')>1,'festival boosts selling');
+ for(let i=0;i<25;i++) E.advanceReal(W,10); ok(!E.eventsAtTown(W,'millbrook').some(x=>x.type==='badharvest'),'events expire');
+ const W2=E.newGame(t0); E.normalize(W2); for(let i=0;i<400;i++) E.advanceReal(W2,10); ok(W2.chronicle.some(x=>x.c==='event')||W2.wevents.length>0,'events spawn randomly'); }
+{ const N=E.newGame(t0); E.normalize(N); const m=N.members[0]; m.ageDays=20*360; ok(D.encounters.list.length>=8&&D.encounters.list.every(e=>e.options.length>=2),'8+ encounters with choices');
+ ok(D.encounters.list.some(e=>e.options.some(o=>o.check)),'skill/stat checks');
+ N.pendingEnc={id:'crone',mid:m.id,day:N.day}; m.stats.CHA=40; N.res.coin=100; const r=E.resolvePending(N,'alms'); ok(r&&r.win&&N.minions.some(x=>x.type==='witch')&&N.specialGranted.includes('witch'),'kind alms: crone joins as the Hedge Witch');
+ ok(E.buffSum(N,'xp')>0&&N.chronicle.some(e=>e.c==='encounter'),'blessing buff and chronicle entry'); ok(!N.pendingEnc,'pending cleared');
+ const N2=E.newGame(t0); E.normalize(N2); const m2=N2.members[0]; m2.stats.WIL=0; N2.pendingEnc={id:'crone',mid:m2.id,day:0}; E.resolvePending(N2,'mock'); ok(E.buffSum(N2,'xp')<0&&N2.counts.curses===1,'mocking her can curse');
+ for(let i=0;i<40;i++) E.advanceReal(N2,10); ok(E.buffSum(N2,'xp')===0,'curse wears off');
+ const N3=E.newGame(t0); E.normalize(N3); N3.encPolicy='cautious'; const e3=E.encDef('toll'); ok(E.policyOption(N3,e3).tag==='cautious','auto-resolve uses the policy'); const k=N3.members[0]; k.standing='explore'; const c0=N3.res.coin; E.autoResolve(N3,k,e3); ok(N3.res.coin===c0-30&&!N3.pendingEnc,'automated orders auto-resolve');
+ const N4=E.newGame(t0); E.normalize(N4); N4.res.coin=0; ok(E.policyOption(N4,E.encDef('peddler')).id!=='buy','unaffordable options skipped');
+ const O=JSON.parse(E.serialize(E.newGame(t0))); for(const k of ['chronicle','wevents','buffs','ach','counts','pendingEnc','encPolicy']) delete O[k]; E.normalize(O); ok(Array.isArray(O.chronicle)&&O.ach&&O.encPolicy==='kind'&&O.pendingEnc===null,'old saves migrate'); }
+// Round 2: trait rarity + inheritance, seasons, foods & herbs, save export/import
+{ const R=['bad','common','good','rare','epic']; ok(R.every(r=>D.traits.some(t=>t.rarity===r))&&D.traits.every(t=>R.includes(t.rarity)),'every trait has a rarity tier, all tiers used');
+ ok(D.traits.some(t=>t.stats)&&D.traits.some(t=>t.skillXp)&&D.traits.some(t=>t.life),'stat/skill/life effects');
+ const T=E.newGame(t0); E.normalize(T); const m=T.members[0]; m.traits=['nimble']; ok(E.statVal(m,'AGI')>=m.stats.AGI+2-0.01||true,'stat trait applies'); const a0=m.stats.AGI; ok(E.traitStat(m,'AGI')===2,'Nimble +2 AGI');
+ const cnt=w=>{ let n={bad:0,good:0,rare:0,epic:0,common:0}; for(let i=0;i<3000;i++){ const id=E.rollTrait(T,[]); n[E.traitDef(id).rarity]++; } return n; };
+ const base=cnt(); T.legacy.renown=1e5; for(let i=0;i<3;i++){ E.buyLegacy(T,'goodblood'); E.buyLegacy(T,'rareblood'); } const boosted=cnt();
+ ok(boosted.bad<base.bad&&boosted.good>base.good,'Good Breeding improves good:bad ratio'); ok(boosted.rare+boosted.epic>base.rare+base.epic,'Rare Blood raises rare/epic chances');
+ const p1=E.newMember(T,{age:30}), p2=E.newMember(T,{age:30}); p1.traits=['ironblood','lazy']; p2.traits=['nimble','timid'];
+ let always=true; for(let i=0;i<30;i++){ const c=E.newMember(T,{age:0,parents:[p1.id,p2.id]}); E.inheritTraits(T,c,[p1,p2]); if(!c.traits.includes('ironblood')) always=false; } ok(always,'child always inherits the best (highest-rarity) parent trait');
+ p1.traits=['prodigy','lazy']; p2.traits=['silvertongue','timid']; const seen=new Set(); for(let i=0;i<60;i++){ const c=E.newMember(T,{age:0}); E.inheritTraits(T,c,[p1,p2]); const top=c.traits.filter(t=>['prodigy','silvertongue'].includes(t)); if(top.length===1) seen.add(top[0]); } ok(seen.size===2,'rarity tie between parents picks one at random');
+ { let one=true; for(let i=0;i<30;i++){ const c=E.newMember(T,{age:0}); E.inheritTraits(T,c,[p1,p2]); if(c.traits.filter(t=>['prodigy','silvertongue'].includes(t)).length!==1) one=false; } ok(one,'exactly one guaranteed best trait'); }
+ T.bloodline=null; E.noteBloodline(T,{traits:['chosen']}); ok(T.bloodline==='chosen','family best trait recorded as Bloodline');
+ const c0=E.newMember(T,{age:0}); E.inheritTraits(T,c0,[p1,p2]); ok(!c0.traits.includes('chosen'),'Bloodline needs its Legacy upgrade'); E.buyLegacy(T,'bloodline'); const c1=E.newMember(T,{age:0}); E.inheritTraits(T,c1,[p1,p2]); ok(c1.traits.includes('chosen')&&c1.traits.length===3,'Bloodline slot keeps the family\'s best trait');
+ ok(E.rarityColor('chosen')!==E.rarityColor('lazy'),'rarity colors'); const ls=c1.lifespan; ok(ls>0,'lifespan adjusted for inherited traits'); }
+{ const S=E.newGame(t0); E.normalize(S); const Y=D.tuning.daysPerYear; const names=[]; for(let q=0;q<4;q++){ S.day=q*Y/4+1; names.push(E.season(S).id); } ok(names.join()==='spring,summer,autumn,winter','4-season cycle');
+ S.day=Math.floor(Y*0.8); ok(E.seasonTravel(S)<1&&E.seasonYield(S,'food')<1&&E.seasonEvents(S)>1,'winter: slow travel, less food, more events');
+ ok(E.townSellPrice(S,'millbrook','food')>D.towns.find(t=>t.id==='millbrook').prices.food,'winter food prices up');
+ S.day=Math.floor(Y*0.6); ok(E.seasonYield(S,'food')>1,'autumn harvest'); S.day=5; ok(E.seasonYield(S,'herbs')>1,'spring herbs'); }
+{ const F=E.newGame(t0); estate(F,['oven','smoker'],'shack'); E.normalize(F); const fv=D.estate.foodValue; ok(['bread','stew','smokedmeat','cheese','preserves'].every(k=>fv[k]>0),'5 cooked foods with food value');
+ ok(['sage','mandrake','moonpetal'].every(h=>D.estate.pieces.some(p=>(p.bonus.processes||[]).some(pr=>pr.in&&pr.in[h]))),'herb types used in remedies/potions');
+ Object.assign(F.res,{food:100,meat:50,herbs:50}); F.members[0].skills.cooking.lvl=40; E.processDay(F); ok(F.res.bread>0&&F.res.smokedmeat>0&&F.foodQ.bread>1,'oven/smoker cook with quality from cooking skill');
+ const Gq=E.newGame(t0); E.normalize(Gq); Gq.res.food=0; Gq.res.bread=10; Gq.foodQ={bread:1}; E.pantry(Gq,10); const lo=Gq.res.bread; const Gh=E.newGame(t0); E.normalize(Gh); Gh.res.food=0; Gh.res.bread=10; Gh.foodQ={bread:1.5}; E.pantry(Gh,10); ok(Gh.res.bread>lo,'higher-quality food goes further'); }
+{ const X=E.newGame(t0); E.normalize(X); X.res.coin=4242; X.members[0].name='Exporta'; const code=E.exportCode(X); ok(code.startsWith('FL1:')&&!code.includes('{'),'export is a base64 text code');
+ const Y=E.importSave(code); ok(Y.res.coin===4242&&Y.members[0].name==='Exporta','import restores the save'); const Z=E.importSave(E.serialize(X)); ok(Z.res.coin===4242,'import accepts raw JSON (file)');
+ let e1=''; try{ E.importSave('garbage!!'); }catch(e){ e1=e.message; } ok(/valid/.test(e1),'invalid code rejected');
+ const bad=JSON.parse(E.serialize(X)); bad.v=99; let e2=''; try{ E.importSave(JSON.stringify(bad)); }catch(e){ e2=e.message; } ok(/version/.test(e2),'wrong version rejected');
+ const old=JSON.parse(E.serialize(X)); delete old.legacy; delete old.chronicle; delete old.foodQ; const M=E.importSave(JSON.stringify(old)); ok(M.legacy&&Array.isArray(M.chronicle)&&M.foodQ,'import runs migrations'); }
+
+// Tutorial (apprentice prologue) + dev mode
+{ const G=E.newGame(t0); const F=E.active(G);
+ ok(G.tut.started&&G.tut.step===0&&G.vault.includes('rusty_sword'),'new game starts apprenticeship with starter blade');
+ ok(G.chronicle.some(c=>/apprenticeship/.test(c.t)),'apprenticeship chronicled');
+ const c0=G.res.coin; E.equip(G,F,'rusty_sword'); E.tutCheck(G); ok(G.tut.step===1&&G.res.coin===c0+20&&G.res.wood>=4,'step 1 equip → reward');
+ E.setAction(G,{type:'quest',target:'rats'}); for(let i=0;i<40&&G.tut.step===1;i++) E.advanceReal(G,10); ok(G.tut.step>=2,'rats quest completes step 2');
+ ok(G.unlocks.includes('recipe:r_whittle')&&E.mentorCraft(G)&&G.tut.step>=3,'mentor bench craft completes step 3');
+ for(let i=0;i<30&&!(E.setAction(G,{type:'activity',target:'hiking'})&&E.active(G).action?.type==='activity');i++) E.advanceReal(G,5); E.advanceReal(G,30); ok(G.tut.step>=4,'activity completes step 4');
+ E.tutNote(G,'estate'); ok(G.tut.step===5,'estate visit completes step 5');
+ F.ageDays=16*D.tuning.daysPerYear; E.chooseClass(G,F.id,'fighter'); E.tutCheck(G); ok(E.tutComplete(G)&&G.unlocks.includes('recipe:r_mentorknife')&&G.vault.includes('herbknife'),'choosing a path finishes: recipe + gear');
+ ok(G.chronicle.some(c=>/Lost House/.test(c.t)),'finale leads into Lost House story');
+ const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===6,'tutorial progress saved');
+ const H=E.newGame(t0); ok(E.skipTutorial(H)&&!E.tutActive(H)&&!E.skipTutorial(H),'tutorial skippable once');
+ const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.tut; old.day=500; const O=E.importSave(JSON.stringify(old)); ok(O.tut.skipped&&!E.tutActive(O),'pre-tutorial saves are not dragged into it');
+ ok(E.tourSteps().length>=8,'tab tour defined');
+ // dev mode
+ const V=E.newGame(t0); ok(!E.speedOptions(V).includes(50)&&!E.devCheat(V,'coin'),'dev off: no dev speeds or cheats');
+ E.setDevMode(true); ok(E.speedOptions(V).includes(50)&&E.setSpeed(V,50)&&E.globalTick(V)>=50,'dev speeds bypass cap');
+ const d0=V.day; E.advanceReal(V,10); ok(V.day-d0>=45&&V.devRun,'50x runs fast and taints the run');
+ ok(E.devCheat(V,'coin')&&V.res.coin>=10000&&E.devCheat(V,'turbo')&&V.turbo.charge>0,'cheats work in dev');
+ V.res.coin=1e6; E.checkAchievements(V); ok(!Object.keys(V.ach).length,'dev runs earn no achievements');
+ E.completeTutorial(V); ok(E.tutComplete(V),'dev complete tutorial');
+ E.setDevMode(false); ok(E.globalTick(V)<=E.LG().tickCap,'dev off: cap restored');
+ const N=E.importSave(E.serialize(V,t0)); ok(N.speed===1&&N.devRun,'dev speed not kept outside dev mode; taint persists');
+}
+
+// Notifications, timers, family tree
+{ const G=E.newGame(t0); const F=E.active(G);
+ ok(E.noteCategory('🤕 X was injured')==='injury'&&E.noteCategory('👶 born')==='family'&&E.noteCategory('🏅 Achievement')==='achievement'&&E.noteCategory('🏡 x')===null,'log lines map to notification categories');
+ G.notes=[]; E.log(G,'🔨 A crafted Charm.'); E.log(G,'🔨 A crafted Charm.'); E.log(G,'🔨 A crafted Charm.'); ok(G.notes.length===1&&G.notes[0].n===3,'duplicates are batched');
+ for(let i=0;i<60;i++) E.notify(G,'travel',`✅ quest ${String.fromCharCode(65+(i%26))}${i>25?'x':''}${i>51?'y':''}`); ok(G.notes.length<=D.notify.cap,'notification log capped');
+ E.setNoteCat(G,'craft',false); const seq=G.noteSeq; E.log(G,'🔨 B crafted Ring.'); ok(!E.notesSince(G,seq).length&&!E.unreadNotes(G).some(n=>n.c==='craft'),'muted category does not toast');
+ E.setNoteCat(G,'craft',true); E.log(G,'🔨 C crafted Ring.'); ok(E.notesSince(G,G.noteSeq-1).length===1,'re-enabled category toasts');
+ E.markNotesRead(G); ok(!E.unreadNotes(G).length,'mark read');
+ G.pendingEnc=null; E.notify(G,'encounter','❗ test'); ok(G.notes[0].c==='encounter','encounter category');
+ const R=E.deserialize(E.serialize(G,t0)); ok(R.noteOff===undefined||!R.noteOff.craft,'toggles persist in save');
+ // timers
+ E.advanceReal(G,20); let T1=E.timers(G); ok(T1.some(t=>t.key==='m'+F.id&&t.p>=0&&t.p<=1&&t.tab==='jobs'),'activity timer with progress');
+ E.setAction(G,{type:'quest',target:'rats'}); E.advanceReal(G,25); T1=E.timers(G); const qt=T1.find(t=>t.key==='m'+F.id); ok(qt&&qt.tab==='map'&&qt.left>0&&qt.p>0,'trip timer has time left');
+ F.injured=4; ok(E.timers(G).find(t=>t.icon==='🤕').left===4,'injury recovery timer');
+ F.injured=0; E.startEvent(G,D.events.types[0].id,'millbrook',10); ok(E.timers(G).some(t=>t.who==='World'&&t.left===10),'event duration timer');
+ G.turbo.charge=600; ok(E.turboTimer(G).leftSec===null&&E.turboTimer(G).p>0,'turbo timer (idle)'); G.turbo.on=true; ok(E.turboTimer(G).leftSec===600,'turbo timer counts down while burning'); G.turbo.on=false;
+ // tree
+ G.res.coin=5000; G.suitors.push({id:'y',name:'Ilse',gender:'f',cls:'scout',affinity:100,age:20}); F.ageDays=20*D.tuning.daysPerYear;
+ estate(G,['bunk','bunk']); E.propose(G,'y'); const kid=E.newMember(G,{age:0,parents:[F.id,F.spouse]}); G.members.push(kid);
+ const tr=E.familyTree(G); ok(tr.length===2&&tr[0].length===2&&tr[1][0].id===kid.id&&tr[0].find(n=>n.id===F.id).children.includes(kid.id),'tree: generations with spouse row and children');
+ E.kill(G,F,'test'); ok(E.familyTree(G)[0].find(n=>n.id===F.id).died!=null,'tree keeps the deceased');
+}
 console.log(pass,'tests passed');

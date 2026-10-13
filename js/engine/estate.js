@@ -1,3 +1,17 @@
+import { seasonYield } from "./seasons.js";
+
+// cooked food quality: station tier and the best cook's skill
+export function foodQualityOf(s, p) {
+  const q = ES().foodQuality || { perTier: 0, perCookLvl: 0, skill: "cooking" };
+  return 1 + pieceTier(p.id) * q.perTier + operatorLvl(s, q.skill) * q.perCookLvl;
+}
+
+export function blendFoodQ(s, res, n, q) {
+  if (!s.foodQ) s.foodQ = {};
+  const have = Math.max(0, s.res[res] || 0);
+  const old = s.foodQ[res] || 1;
+  s.foodQ[res] = (old * have + q * n) / Math.max(1e-9, have + n);
+}
 import { hasLegacy, resGain } from "./legacy.js";
 import { guildDef, memberGuild } from "./guilds.js";
 import { regionKnown } from "./map.js";
@@ -85,8 +99,7 @@ export function upgradePiece(s, uid, pid) {
 
 export const structDef = id => ES().structures.find(x => x.id === id);
 
-export const specDef = st =>
-  st && st.spec ? (structDef(st.type).specs || []).find(x => x.id === st.spec) : null;
+export const specDef = st => (st && st.spec ? (structDef(st.type).specs || []).find(x => x.id === st.spec) : null);
 
 export const structStage = st =>
   specDef(st) ? 3 : Object.keys(structDef(st.type).upName || {}).some(k => (st.up || 0) >= +k) ? 2 : 1;
@@ -122,8 +135,7 @@ export const structName = st => {
   return u ? u[1] : d.name;
 };
 
-export const placed = s =>
-  (s.structures || []).flatMap(st => st.pieces.map(id => scaledPiece(st, id)).filter(Boolean));
+export const placed = s => (s.structures || []).flatMap(st => st.pieces.map(id => scaledPiece(st, id)).filter(Boolean));
 
 export function activeSynergies(st) {
   return ES().synergies.filter(y => y.pieces.every(p => st.pieces.map(baseId).includes(p)));
@@ -133,19 +145,13 @@ export const allSynergies = s =>
   (s.structures || []).flatMap(st => activeSynergies(st).map(y => ({ ...y, where: st.uid })));
 
 // every placed piece + every active synergy, as {bonus} objects (old furniture code reads f.bonus)
-export const effects = s => [
-  ...placed(s),
-  ...allSynergies(s),
-  ...(s.structures || []).map(specDef).filter(Boolean),
-];
+export const effects = s => [...placed(s), ...allSynergies(s), ...(s.structures || []).map(specDef).filter(Boolean)];
 
 export const estEff = (s, k) => eff(s, k);
 
-export const eff = (s, k) =>
-  effects(s).reduce((a, f) => a + (typeof f.bonus[k] === "number" ? f.bonus[k] : 0), 0);
+export const eff = (s, k) => effects(s).reduce((a, f) => a + (typeof f.bonus[k] === "number" ? f.bonus[k] : 0), 0);
 
-export const hasPiece = (s, id) =>
-  (s.structures || []).some(st => st.pieces.map(baseId).includes(baseId(id)));
+export const hasPiece = (s, id) => (s.structures || []).some(st => st.pieces.map(baseId).includes(baseId(id)));
 
 export const bedrooms = s => 1 + eff(s, "beds");
 
@@ -153,8 +159,7 @@ export const hasLand = s => (s.land || []).length > 0;
 
 export const established = s => hasLand(s) && (s.structures || []).length > 0;
 
-export const landSlots = s =>
-  (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0);
+export const landSlots = s => (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0);
 
 export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +
@@ -233,8 +238,7 @@ export const freeSlots = (s, st) =>
 
 export const isFixed = (st, pid) => (structDef(st.type).fixed || []).includes(baseId(pid));
 
-export const upgMult = st =>
-  (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + u.mult, 0);
+export const upgMult = st => (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + u.mult, 0);
 
 export function specialUpIssue(s, uid) {
   const st = s.structures.find(x => x.uid === uid);
@@ -280,8 +284,7 @@ export function placePiece(s, uid, pid, fromStore = false) {
   st.pieces.push(pid);
   const before = new Set();
   log(s, `🪑 Placed ${p.name} in the ${structDef(st.type).name}.`);
-  for (const y of activeSynergies(st))
-    if (y.pieces.includes(pid)) log(s, `✨ Synergy: ${y.name} (${y.desc}).`);
+  for (const y of activeSynergies(st)) if (y.pieces.includes(pid)) log(s, `✨ Synergy: ${y.name} (${y.desc}).`);
   return true;
 }
 
@@ -307,8 +310,7 @@ export const skillSpeed = (s, p) => 1 + ES().skillProcess.speedPerLvl * operator
 
 export const skillYield = (s, p) => 1 + ES().skillProcess.yieldPerLvl * operatorLvl(s, p && p.skill);
 
-export const resTier = k =>
-  +(Object.entries(ES().resourceTiers).find(([, t]) => t.res.includes(k)) || [0])[0];
+export const resTier = k => +(Object.entries(ES().resourceTiers).find(([, t]) => t.res.includes(k)) || [0])[0];
 
 export const DEFAULT_RESERVE = { wood: 50, stone: 50, ore: 0, copperore: 0, hides: 0, herbs: 0 };
 
@@ -340,11 +342,12 @@ export function processDay(s, mul = 1) {
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
         const yl = skillYield(s, p);
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);
-        for (const [k, v] of Object.entries(pr.in))
-          n = Math.min(n, Math.max(0, (s.res[k] || 0) - reserveOf(s, k)) / v);
+        for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, Math.max(0, (s.res[k] || 0) - reserveOf(s, k)) / v);
         if (n <= 0) continue;
         for (const [k, v] of Object.entries(pr.in)) s.res[k] -= v * n;
-        s.res[pr.out] = (s.res[pr.out] || 0) + n * yl * resGain(s);
+        const made = n * yl * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
+        if (pr.food) blendFoodQ(s, pr.out, made, foodQualityOf(s, p));
+        s.res[pr.out] = (s.res[pr.out] || 0) + made;
       }
   }
 }

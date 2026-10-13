@@ -1,3 +1,5 @@
+import { traitSkillXp } from "./traits.js";
+import { buffSum } from "./encounters.js";
 import { LG, addMemberRenown } from "./legacy.js";
 import { ES, eff, hasPiece, structDef, upgMult } from "./estate.js";
 import { level, traitSum } from "./family.js";
@@ -15,6 +17,8 @@ export function xpMult(s, m, skillId) {
   const sk = D.skills.find(x => x.id === skillId);
   let mult = 1;
   mult += traitSum(m, "xp");
+  mult += buffSum(s, "xp");
+  mult += traitSkillXp(m, skillId);
   if (s.res.food > 0) mult += eff(s, "foodQuality");
   mult += eff(s, "blessing");
   for (const st of s.structures || []) {
@@ -48,8 +52,7 @@ export function gainXp(s, m, skillId, amt) {
     k.xp -= xpNeed(k.lvl);
     k.lvl++;
     addMemberRenown(m, LG().renown.perSkillLevel || 0);
-    if (k.lvl % 10 === 0)
-      log(s, `⭐ ${m.name} reached ${D.skills.find(x => x.id === skillId).name} ${k.lvl}.`);
+    if (k.lvl % 10 === 0) log(s, `⭐ ${m.name} reached ${D.skills.find(x => x.id === skillId).name} ${k.lvl}.`);
     const before = level(m);
     if (level(m) > before) {
     }
@@ -108,8 +111,7 @@ export function srcOk(s, m, u, ac) {
     const g = memberGuild(m, u.guild);
     return !!g && (g.rank || 0) >= (u.rank || 0);
   }
-  if (u.quest)
-    return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
+  if (u.quest) return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
   if (u.building) return bl(s, u.building) > 0;
   return true;
 }
@@ -118,23 +120,18 @@ export function srcText(u) {
   if (u.cls) return (D.classes.find(c => c.id === u.cls) || {}).name + " line";
   if (u.piece) return (ES().pieces.find(p => p.id === u.piece) || {}).name || u.piece;
   if (u.item) return (itemDef(u.item) || {}).name || u.item;
-  if (u.guild)
-    return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
+  if (u.guild) return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
   if (u.quest) return "quest “" + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest) + "”";
   if (u.building) return "build " + ((D.buildings.find(b => b.id === u.building) || {}).name || u.building);
   return "";
 }
 
-export const activityReq = ac =>
-  !ac.unlock ? "" : "Requires: " + [].concat(ac.unlock).map(srcText).join(" or ");
+export const activityReq = ac => (!ac.unlock ? "" : "Requires: " + [].concat(ac.unlock).map(srcText).join(" or "));
 
 export function skillOpen(m, skillId) {
   const x = (D.skills.find(k => k.id === skillId) || {}).exclusive;
   if (!x) return true;
-  return (
-    x.guilds.some(g => memberGuild(m, g) || (g === "adventurers" && m.adv)) ||
-    x.classes.some(c => inLine(m, c))
-  );
+  return x.guilds.some(g => memberGuild(m, g) || (g === "adventurers" && m.adv)) || x.classes.some(c => inLine(m, c));
 }
 
 export function themedFor(s, m, skillId) {

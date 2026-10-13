@@ -1,3 +1,4 @@
+import { pbar, timerBar } from "./progress.js";
 import * as E from "../engine.js";
 import { QC, fmt, it } from "./common.js";
 import { D, s } from "../main.js";
@@ -9,7 +10,7 @@ export function minionsv() {
   if (!s.minions.length) h += `<div class="muted">No followers yet.</div>`;
   for (const mi of s.minions) {
     const t = mt(mi.type);
-    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div><div class="bar" title="XP"><i style="width:${((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi))) * 100}%"></i></div>${
+    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div>${mi.job ? timerBar(E.minionTimer(s, mi)) : pbar((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi)), "XP · idle")}${
       E.evolveOptions(mi).length
         ? `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Evolve:</span>${E.evolveOptions(
             mi,

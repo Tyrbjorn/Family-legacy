@@ -5,7 +5,8 @@
   "icon": "⚡",
   "xp": 0.1,
   "desc": "+10% all skill XP",
-  "opposes": "lazy"
+  "opposes": "lazy",
+  "rarity": "good"
  },
  {
   "id": "lazy",
@@ -13,7 +14,8 @@
   "icon": "🥱",
   "xp": -0.1,
   "desc": "−10% all skill XP",
-  "opposes": "quick"
+  "opposes": "quick",
+  "rarity": "bad"
  },
  {
   "id": "hardy",
@@ -21,7 +23,8 @@
   "icon": "💪",
   "life": 5,
   "desc": "+5 years lifespan",
-  "opposes": "frail"
+  "opposes": "frail",
+  "rarity": "good"
  },
  {
   "id": "frail",
@@ -29,7 +32,8 @@
   "icon": "🥀",
   "life": -5,
   "desc": "−5 years lifespan",
-  "opposes": "hardy"
+  "opposes": "hardy",
+  "rarity": "bad"
  },
  {
   "id": "charming",
@@ -37,7 +41,8 @@
   "icon": "😊",
   "court": 0.5,
   "desc": "+50% courtship affinity gain",
-  "opposes": "awkward"
+  "opposes": "awkward",
+  "rarity": "good"
  },
  {
   "id": "awkward",
@@ -45,7 +50,8 @@
   "icon": "😬",
   "court": -0.3,
   "desc": "−30% courtship affinity gain",
-  "opposes": "charming"
+  "opposes": "charming",
+  "rarity": "bad"
  },
  {
   "id": "thrifty",
@@ -53,7 +59,8 @@
   "icon": "🪙",
   "coin": 0.1,
   "desc": "+10% coin from jobs",
-  "opposes": "spendthrift"
+  "opposes": "spendthrift",
+  "rarity": "common"
  },
  {
   "id": "spendthrift",
@@ -61,7 +68,8 @@
   "icon": "💸",
   "coin": -0.1,
   "desc": "−10% coin from jobs",
-  "opposes": "thrifty"
+  "opposes": "thrifty",
+  "rarity": "bad"
  },
  {
   "id": "brave",
@@ -69,7 +77,8 @@
   "icon": "🦁",
   "cp": 0.1,
   "desc": "+10% Combat Power",
-  "opposes": "timid"
+  "opposes": "timid",
+  "rarity": "good"
  },
  {
   "id": "timid",
@@ -77,7 +86,8 @@
   "icon": "🐭",
   "cp": -0.1,
   "desc": "−10% Combat Power",
-  "opposes": "brave"
+  "opposes": "brave",
+  "rarity": "bad"
  },
  {
   "id": "dreamer",
@@ -85,6 +95,167 @@
   "icon": "💭",
   "xp": 0.05,
   "court": 0.2,
-  "desc": "+5% XP, +20% courtship"
+  "desc": "+5% XP, +20% courtship",
+  "rarity": "common"
+ },
+ {
+  "id": "curious",
+  "name": "Curious",
+  "icon": "🔎",
+  "rarity": "common",
+  "xp": 0.03,
+  "desc": "+3% all skill XP"
+ },
+ {
+  "id": "stubborn",
+  "name": "Stubborn",
+  "icon": "🐂",
+  "rarity": "common",
+  "stats": {
+   "WIL": 1
+  },
+  "court": -0.1,
+  "desc": "+1 WIL, −10% courtship"
+ },
+ {
+  "id": "nimble",
+  "name": "Nimble",
+  "icon": "🤸",
+  "rarity": "good",
+  "stats": {
+   "AGI": 2
+  },
+  "desc": "+2 AGI",
+  "opposes": "clumsy"
+ },
+ {
+  "id": "clumsy",
+  "name": "Clumsy",
+  "icon": "🫨",
+  "rarity": "bad",
+  "stats": {
+   "AGI": -2
+  },
+  "desc": "−2 AGI",
+  "opposes": "nimble"
+ },
+ {
+  "id": "keeneyed",
+  "name": "Keen-Eyed",
+  "icon": "🦅",
+  "rarity": "good",
+  "stats": {
+   "AGI": 1
+  },
+  "skillXp": {
+   "archery": 0.2,
+   "hunting": 0.2
+  },
+  "desc": "+1 AGI, +20% Archery/Hunting XP"
+ },
+ {
+  "id": "bookish",
+  "name": "Bookish",
+  "icon": "📖",
+  "rarity": "good",
+  "stats": {
+   "INT": 1
+  },
+  "skillXp": {
+   "reading": 0.2,
+   "history": 0.2
+  },
+  "desc": "+1 INT, +20% Reading/History XP"
+ },
+ {
+  "id": "greenthumb",
+  "name": "Green Thumb",
+  "icon": "🌱",
+  "rarity": "good",
+  "skillXp": {
+   "farming": 0.25,
+   "foraging": 0.25
+  },
+  "desc": "+25% Farming/Foraging XP"
+ },
+ {
+  "id": "sickly",
+  "name": "Sickly",
+  "icon": "🤧",
+  "rarity": "bad",
+  "life": -8,
+  "stats": {
+   "VIT": -1
+  },
+  "desc": "−8 years, −1 VIT",
+  "opposes": "ironblood"
+ },
+ {
+  "id": "prodigy",
+  "name": "Prodigy",
+  "icon": "🌠",
+  "rarity": "rare",
+  "xp": 0.2,
+  "stats": {
+   "INT": 2
+  },
+  "desc": "+20% all XP, +2 INT"
+ },
+ {
+  "id": "ironblood",
+  "name": "Ironblood",
+  "icon": "🛡️",
+  "rarity": "rare",
+  "life": 10,
+  "stats": {
+   "VIT": 3
+  },
+  "desc": "+10 years, +3 VIT",
+  "opposes": "sickly"
+ },
+ {
+  "id": "silvertongue",
+  "name": "Silver Tongue",
+  "icon": "🗣️",
+  "rarity": "rare",
+  "stats": {
+   "CHA": 3
+  },
+  "court": 0.5,
+  "skillXp": {
+   "haggling": 0.3,
+   "etiquette": 0.3
+  },
+  "desc": "+3 CHA, +50% courtship, +30% Bartering/Etiquette XP"
+ },
+ {
+  "id": "chosen",
+  "name": "Chosen",
+  "icon": "👑",
+  "rarity": "epic",
+  "xp": 0.25,
+  "life": 8,
+  "stats": {
+   "STR": 2,
+   "AGI": 2,
+   "INT": 2,
+   "WIL": 2,
+   "CHA": 2,
+   "VIT": 2
+  },
+  "desc": "+25% XP, +8 years, +2 all stats"
+ },
+ {
+  "id": "dragonblood",
+  "name": "Dragonblooded",
+  "icon": "🐉",
+  "rarity": "epic",
+  "cp": 0.25,
+  "life": 5,
+  "stats": {
+   "STR": 3,
+   "VIT": 3
+  },
+  "desc": "+25% Combat Power, +5 years, +3 STR/VIT"
  }
 ]

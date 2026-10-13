@@ -1,26 +1,8 @@
+import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
-import {
-  ES,
-  buildingReqMet,
-  eff,
-  established,
-  hasStruct,
-  jobCap,
-  scaledPiece,
-  specDef,
-  structDef,
-} from "./estate.js";
+import { ES, buildingReqMet, eff, established, hasStruct, jobCap, scaledPiece, specDef, structDef } from "./estate.js";
 import { cls, guildDef, hasService, rankName, structReqOk, structReqText } from "./guilds.js";
-import {
-  CR,
-  bestRecipe,
-  craftItem,
-  itemDef,
-  recipeDef,
-  recipeIssue,
-  sellTick,
-  vaultRoom,
-} from "./inventory.js";
+import { CR, bestRecipe, craftItem, itemDef, recipeDef, recipeIssue, sellTick, vaultRoom } from "./inventory.js";
 import { resGain } from "./legacy.js";
 import { exploreArea, regionOpen } from "./map.js";
 import { rollRare } from "./quests.js";
@@ -28,34 +10,31 @@ import { D, bl, known, living, log, r } from "./state.js";
 
 // ---- minions (followers, hired help, retainers)
 export const minionCap = s =>
-  D.minions.baseCap +
-  (s.structures || []).length * D.minions.capPerHouse +
-  (hasService(s, "storage") ? 2 : 0);
+  D.minions.baseCap + (s.structures || []).length * D.minions.capPerHouse + (hasService(s, "storage") ? 2 : 0);
 
 // other foods (meat, fish, eggs, honey) top up the food pool when it runs short
 export function pantry(s, need) {
   const fv = ES().foodValue || {};
+  const fq = s.foodQ || {};
   for (const [k, v] of Object.entries(fv)) {
     if (s.res.food >= need) break;
     const have = s.res[k] || 0;
     if (have <= 0) continue;
-    const use = Math.min(have, (need - s.res.food) / v);
+    const val = v * (fq[k] || 1);
+    const use = Math.min(have, (need - s.res.food) / val);
     s.res[k] -= use;
-    s.res.food += use * v;
+    s.res.food += use * val;
   }
 }
 
-export const foodTypes = s =>
-  ["food", ...Object.keys(ES().foodValue || {})].filter(k => (s.res[k] || 0) >= 1).length;
+export const foodTypes = s => ["food", ...Object.keys(ES().foodValue || {})].filter(k => (s.res[k] || 0) >= 1).length;
 
 // class housing: special buildings house followers of matching NPC classes (like a Bunkhouse)
 export function classHomeCap(st) {
   const d = structDef(st.type);
   if (!d.houses) return 0;
   return (
-    d.houses.cap +
-    (specDef(st) ? 2 : 0) +
-    (d.upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + (u.cap || 0), 0)
+    d.houses.cap + (specDef(st) ? 2 : 0) + (d.upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + (u.cap || 0), 0)
   );
 }
 
@@ -93,15 +72,12 @@ export function housingCap(s, kind) {
     (a, st) =>
       a +
       (((structDef(st.type).builtin || {}).housing || {})[kind] || 0) +
-      st.pieces
-        .map(id => scaledPiece(st, id))
-        .reduce((b, p) => b + (((p && p.bonus.housing) || {})[kind] || 0), 0),
+      st.pieces.map(id => scaledPiece(st, id)).reduce((b, p) => b + (((p && p.bonus.housing) || {})[kind] || 0), 0),
     0,
   );
 }
 
-export const housingKind = mi =>
-  (D.minions.types.find(t => t.id === (mi.type || mi.id)) || {}).housing || "bunk";
+export const housingKind = mi => (D.minions.types.find(t => t.id === (mi.type || mi.id)) || {}).housing || "bunk";
 
 export function isHoused(s, mi) {
   const hm = homeMap(s);
@@ -123,8 +99,7 @@ export const freeHousing = (s, kind = "bunk") => {
 
 export const minionFood = s => s.minions.length * ES().minionFoodPerDay;
 
-export const minionRoom = s =>
-  s.minions.filter(x => !x.special).length < minionCap(s) && freeHousing(s, "bunk") > 0;
+export const minionRoom = s => s.minions.filter(x => !x.special).length < minionCap(s) && freeHousing(s, "bunk") > 0;
 
 export const mtype = id => D.minions.types.find(t => t.id === id);
 
@@ -252,12 +227,7 @@ export const jobUsed = (s, job, except) => s.minions.filter(x => x.job === job &
 
 export function assignMinion(s, uid, job) {
   const mi = s.minions.find(x => x.uid === uid);
-  if (
-    !mi ||
-    !jobOpen(s, job) ||
-    (job !== "idle" && !isHoused(s, mi)) ||
-    jobUsed(s, job, uid) >= jobCap(s, job)
-  )
+  if (!mi || !jobOpen(s, job) || (job !== "idle" && !isHoused(s, mi)) || jobUsed(s, job, uid) >= jobCap(s, job))
     return false;
   mi.job = job;
   return true;
@@ -302,7 +272,7 @@ export function minionDay(s) {
       minionLvlMult(mi);
     const rg = resGain(s);
     minionGainXp(s, mi, MLV().xpPerDay * (fed ? 1 : 0.5));
-    if (mi.job === "farm") s.res.food += 3 * a * rg * (1 + bl(s, "farm") * 0.2);
+    if (mi.job === "farm") s.res.food += 3 * a * rg * seasonYield(s, "food") * (1 + bl(s, "farm") * 0.2);
     else if (mi.job === "gather") {
       s.res.wood += 2 * a * rg;
       s.res.stone += 1 * a * rg;
@@ -325,13 +295,7 @@ export function minionDay(s) {
         const pw = 8 * mtype(mi.type).apt.adventure || 8;
         const q = D.quests
           .filter(
-            q =>
-              !q.story &&
-              !q.once &&
-              known(s, q) &&
-              regionOpen(s, q.region) &&
-              q.risk === "safe" &&
-              q.cp <= pw * 3,
+            q => !q.story && !q.once && known(s, q) && regionOpen(s, q.region) && q.risk === "safe" && q.cp <= pw * 3,
           )
           .sort((a, b) => b.cp - a.cp)[0];
         if (q) {
@@ -345,8 +309,12 @@ export function minionDay(s) {
       s.res.hides = (s.res.hides || 0) + 0.5 * a * rg;
     } else if (mi.job === "fish") {
       s.res.fish = (s.res.fish || 0) + 2 * a * rg;
-    } else if (mi.job === "herbs") s.res.herbs = (s.res.herbs || 0) + 1.5 * a * rg;
-    else if (mi.job === "craft") {
+    } else if (mi.job === "herbs") {
+      s.res.herbs = (s.res.herbs || 0) + 1.5 * a * rg * seasonYield(s, "herbs");
+      s.res.sage = (s.res.sage || 0) + 0.3 * a * rg * seasonYield(s, "sage");
+      s.res.mandrake = (s.res.mandrake || 0) + 0.1 * a * rg * seasonYield(s, "mandrake");
+      s.res.moonpetal = (s.res.moonpetal || 0) + 0.05 * a * rg * seasonYield(s, "moonpetal");
+    } else if (mi.job === "craft") {
       mi.prog = (mi.prog || 0) + 0.2 * a;
       const ord = mi.craftOrder && recipeDef(mi.craftOrder);
       const rc = ord && !recipeIssue(s, null, ord) ? ord : bestRecipe(s, null);
@@ -406,9 +374,7 @@ export function specialSource(s, t) {
     return m ? `${rankName(src.rank)} of ${guildDef(src.guild).name}` : null;
   }
   if (src.quest)
-    return (s.doneQuests || []).includes(src.quest)
-      ? `quest: ${D.quests.find(q => q.id === src.quest).name}`
-      : null;
+    return (s.doneQuests || []).includes(src.quest) ? `quest: ${D.quests.find(q => q.id === src.quest).name}` : null;
   if (src.buildings)
     return buildingReqMet(s, src.buildings)
       ? "drawn by your " + src.buildings.map(g => structDef(g.find(id => hasStruct(s, id))).name).join(" + ")

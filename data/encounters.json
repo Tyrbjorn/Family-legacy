@@ -1,0 +1,504 @@
+{
+ "chancePerTravelDay": 0.05,
+ "policies": {
+  "kind": "Be generous",
+  "cautious": "Play it safe",
+  "bold": "Take risks"
+ },
+ "list": [
+  {
+   "id": "crone",
+   "name": "A crone on the road",
+   "icon": "🧓",
+   "text": "A bent old crone asks {who} for alms.",
+   "options": [
+    {
+     "id": "alms",
+     "label": "Give alms (10🪙)",
+     "tag": "kind",
+     "cost": {
+      "coin": 10
+     },
+     "check": {
+      "stat": "CHA",
+      "dc": 8
+     },
+     "success": {
+      "text": "She smiles: \"Kindness remembered.\" She reveals she is a hedge witch and offers to come with you.",
+      "special": "witch",
+      "buff": {
+       "id": "blessed",
+       "name": "Crone's blessing",
+       "days": 30,
+       "xp": 0.1
+      },
+      "count": "crone"
+     },
+     "fail": {
+      "text": "She blesses you and shuffles on.",
+      "buff": {
+       "id": "blessed",
+       "name": "Crone's blessing",
+       "days": 20,
+       "xp": 0.1
+      }
+     }
+    },
+    {
+     "id": "ignore",
+     "label": "Walk on",
+     "tag": "cautious",
+     "success": {
+      "text": "Nothing happens."
+     }
+    },
+    {
+     "id": "mock",
+     "label": "Mock her",
+     "tag": "bold",
+     "check": {
+      "stat": "WIL",
+      "dc": 12
+     },
+     "success": {
+      "text": "She cackles and vanishes.",
+      "renown": 1
+     },
+     "fail": {
+      "text": "\"Withered be your hands!\" A curse settles on you.",
+      "curse": {
+       "id": "crone_curse",
+       "name": "Crone's curse",
+       "days": 30,
+       "xp": -0.15,
+       "gather": -0.2
+      },
+      "count": "curses"
+     }
+    }
+   ]
+  },
+  {
+   "id": "wounded",
+   "name": "A wounded traveller",
+   "icon": "🤕",
+   "text": "{who} finds a traveller bleeding by the road.",
+   "options": [
+    {
+     "id": "tend",
+     "label": "Tend the wounds",
+     "tag": "kind",
+     "check": {
+      "skill": "healing",
+      "dc": 5,
+      "alt": {
+       "stat": "WIL",
+       "dc": 10
+      }
+     },
+     "success": {
+      "text": "The traveller recovers and rewards you.",
+      "coin": 80,
+      "renown": 3
+     },
+     "fail": {
+      "text": "You do what you can; they thank you.",
+      "renown": 1
+     }
+    },
+    {
+     "id": "pass",
+     "label": "Pass by",
+     "tag": "cautious",
+     "success": {
+      "text": "You hurry on."
+     }
+    },
+    {
+     "id": "rob",
+     "label": "Search their pack",
+     "tag": "bold",
+     "check": {
+      "skill": "thievery",
+      "dc": 5
+     },
+     "success": {
+      "text": "You find a few coins.",
+      "coin": 40
+     },
+     "fail": {
+      "text": "Their friends return. You barely escape.",
+      "injure": 4
+     }
+    }
+   ]
+  },
+  {
+   "id": "toll",
+   "name": "A false toll",
+   "icon": "🚧",
+   "text": "Thugs demand a toll from {who}.",
+   "options": [
+    {
+     "id": "pay",
+     "label": "Pay 30🪙",
+     "tag": "cautious",
+     "cost": {
+      "coin": 30
+     },
+     "success": {
+      "text": "They let you pass."
+     }
+    },
+    {
+     "id": "talk",
+     "label": "Talk your way through",
+     "tag": "kind",
+     "check": {
+      "stat": "CHA",
+      "dc": 12
+     },
+     "success": {
+      "text": "You talk them down.",
+      "renown": 2
+     },
+     "fail": {
+      "text": "They take more than the toll.",
+      "coin": -50
+     }
+    },
+    {
+     "id": "fight",
+     "label": "Fight",
+     "tag": "bold",
+     "check": {
+      "stat": "STR",
+      "dc": 12
+     },
+     "success": {
+      "text": "The thugs flee, leaving loot.",
+      "coin": 60,
+      "renown": 3
+     },
+     "fail": {
+      "text": "You are beaten.",
+      "injure": 6
+     }
+    }
+   ]
+  },
+  {
+   "id": "shrine",
+   "name": "A roadside shrine",
+   "icon": "⛩️",
+   "text": "{who} passes a mossy roadside shrine.",
+   "options": [
+    {
+     "id": "pray",
+     "label": "Pray",
+     "tag": "kind",
+     "check": {
+      "skill": "faith",
+      "dc": 3,
+      "alt": {
+       "stat": "WIL",
+       "dc": 9
+      }
+     },
+     "success": {
+      "text": "A warmth settles over you.",
+      "buff": {
+       "id": "shrine",
+       "name": "Shrine's grace",
+       "days": 20,
+       "xp": 0.08
+      }
+     },
+     "fail": {
+      "text": "Silence."
+     }
+    },
+    {
+     "id": "pass",
+     "label": "Pass by",
+     "tag": "cautious",
+     "success": {
+      "text": "You walk on."
+     }
+    },
+    {
+     "id": "loot",
+     "label": "Take the offerings",
+     "tag": "bold",
+     "success": {
+      "text": "A few coins, and an uneasy feeling.",
+      "coin": 25,
+      "curse": {
+       "id": "shrine_curse",
+       "name": "Ill omen",
+       "days": 15,
+       "gather": -0.15
+      },
+      "count": "curses"
+     }
+    }
+   ]
+  },
+  {
+   "id": "peddler",
+   "name": "A strange peddler",
+   "icon": "🧳",
+   "text": "A peddler offers {who} a 'secret recipe' for 60🪙.",
+   "options": [
+    {
+     "id": "buy",
+     "label": "Buy it (60🪙)",
+     "tag": "bold",
+     "cost": {
+      "coin": 60
+     },
+     "check": {
+      "skill": "appraisal",
+      "dc": 3,
+      "alt": {
+       "stat": "INT",
+       "dc": 11
+      }
+     },
+     "success": {
+      "text": "It's genuine!",
+      "recipe": "r_heirblade"
+     },
+     "fail": {
+      "text": "Scribbles. You've been had."
+     }
+    },
+    {
+     "id": "haggle",
+     "label": "Haggle",
+     "tag": "kind",
+     "check": {
+      "skill": "haggling",
+      "dc": 5
+     },
+     "success": {
+      "text": "He gives you a trinket for your trouble.",
+      "item": "lucky_charm"
+     },
+     "fail": {
+      "text": "He packs up in a huff."
+     }
+    },
+    {
+     "id": "decline",
+     "label": "Decline",
+     "tag": "cautious",
+     "success": {
+      "text": "You move on."
+     }
+    }
+   ]
+  },
+  {
+   "id": "wolfcub",
+   "name": "An orphaned cub",
+   "icon": "🐺",
+   "text": "{who} finds a whimpering wolf cub.",
+   "options": [
+    {
+     "id": "feed",
+     "label": "Feed it (5🍞)",
+     "tag": "kind",
+     "cost": {
+      "food": 5
+     },
+     "check": {
+      "skill": "animal",
+      "dc": 3,
+      "alt": {
+       "stat": "CHA",
+       "dc": 10
+      }
+     },
+     "success": {
+      "text": "The cub follows you for a while, then leaves a gift: a wolf tooth.",
+      "item": "wolf_tooth"
+     },
+     "fail": {
+      "text": "It eats and runs off."
+     }
+    },
+    {
+     "id": "leave",
+     "label": "Leave it",
+     "tag": "cautious",
+     "success": {
+      "text": "You leave it be."
+     }
+    },
+    {
+     "id": "hunt",
+     "label": "Hunt the mother",
+     "tag": "bold",
+     "check": {
+      "skill": "hunting",
+      "dc": 8
+     },
+     "success": {
+      "text": "A fine pelt.",
+      "res": {
+       "hides": 4,
+       "meat": 4
+      }
+     },
+     "fail": {
+      "text": "The she-wolf mauls you.",
+      "injure": 6
+     }
+    }
+   ]
+  },
+  {
+   "id": "scholar",
+   "name": "A lost scholar",
+   "icon": "📚",
+   "text": "A lost scholar asks {who} the way.",
+   "options": [
+    {
+     "id": "guide",
+     "label": "Guide them",
+     "tag": "kind",
+     "success": {
+      "text": "Grateful, they share their notes.",
+      "buff": {
+       "id": "notes",
+       "name": "Scholar's notes",
+       "days": 20,
+       "xp": 0.1
+      }
+     }
+    },
+    {
+     "id": "debate",
+     "label": "Debate philosophy",
+     "tag": "bold",
+     "check": {
+      "stat": "INT",
+      "dc": 12
+     },
+     "success": {
+      "text": "You win the debate and gain renown.",
+      "renown": 4
+     },
+     "fail": {
+      "text": "You lose, embarrassingly."
+     }
+    },
+    {
+     "id": "ignore",
+     "label": "Ignore",
+     "tag": "cautious",
+     "success": {
+      "text": "You walk on."
+     }
+    }
+   ]
+  },
+  {
+   "id": "cache",
+   "name": "A buried cache",
+   "icon": "🪙",
+   "text": "{who} spots freshly turned earth.",
+   "options": [
+    {
+     "id": "dig",
+     "label": "Dig",
+     "tag": "bold",
+     "check": {
+      "stat": "STR",
+      "dc": 8
+     },
+     "success": {
+      "text": "A small cache!",
+      "coin": 90
+     },
+     "fail": {
+      "text": "Just rocks.",
+      "res": {
+       "stone": 5
+      }
+     }
+    },
+    {
+     "id": "mark",
+     "label": "Mark it and leave",
+     "tag": "cautious",
+     "success": {
+      "text": "You note the spot.",
+      "renown": 1
+     }
+    },
+    {
+     "id": "tell",
+     "label": "Tell the nearest village",
+     "tag": "kind",
+     "success": {
+      "text": "The villagers thank you.",
+      "renown": 3
+     }
+    }
+   ]
+  },
+  {
+   "id": "duelist",
+   "name": "A wandering duelist",
+   "icon": "🤺",
+   "text": "A duelist challenges {who}.",
+   "options": [
+    {
+     "id": "accept",
+     "label": "Accept",
+     "tag": "bold",
+     "check": {
+      "skill": "swordsmanship",
+      "dc": 10,
+      "alt": {
+       "stat": "AGI",
+       "dc": 13
+      }
+     },
+     "success": {
+      "text": "Victory! Word spreads.",
+      "renown": 6
+     },
+     "fail": {
+      "text": "You yield, bruised.",
+      "injure": 3
+     }
+    },
+    {
+     "id": "spar",
+     "label": "Offer a friendly spar",
+     "tag": "kind",
+     "success": {
+      "text": "You trade techniques.",
+      "buff": {
+       "id": "spar",
+       "name": "Fresh technique",
+       "days": 15,
+       "xp": 0.06
+      }
+     }
+    },
+    {
+     "id": "decline",
+     "label": "Decline",
+     "tag": "cautious",
+     "success": {
+      "text": "You decline politely."
+     }
+    }
+   ]
+  }
+ ]
+}

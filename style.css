@@ -16,3 +16,43 @@ h3{margin:12px 0 4px;font-size:15px;color:#f4d58d}.grid{display:grid;grid-templa
 #modal[hidden]{display:none}
 .tb{display:inline-block;background:#2e2840;border:1px solid #5a4d78;border-radius:10px;padding:1px 7px;margin:2px 3px 0 0;font-size:12px}
 nav button{font-size:11px}
+/* --- progress bar component --- */
+.pb{position:relative;height:18px;background:#2d2838;border-radius:5px;overflow:hidden;margin:4px 0;font-size:11px;line-height:18px}
+.pb>i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#4f8f55,#7bc47f);transition:width .5s linear;will-change:width}
+.pb>span{position:relative;padding:0 6px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:calc(100% - 56px)}
+.pb>b{position:absolute;right:6px;top:0;color:#f4d58d;font-weight:600}
+@media (prefers-reduced-motion:reduce){.pb>i{transition:none}}
+/* --- nav scrolls when there are many tabs --- */
+nav{overflow-x:auto;scrollbar-width:none;z-index:3}nav button{flex:1 0 auto;min-width:58px}
+body{padding-bottom:110px}
+/* --- timers dock --- */
+#dock{position:fixed;left:0;right:0;bottom:56px;z-index:3;max-width:640px;margin:auto;padding:0 6px}
+.dockhead{width:100%;text-align:left;background:#2a2434ee;color:#e8e2d4;border:1px solid #4a405c;border-radius:8px 8px 0 0;padding:6px 10px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;padding-right:24px}
+.dockhead .caret{position:absolute;right:8px}
+.docklist{background:#211d29f5;border:1px solid #4a405c;border-top:0;max-height:45vh;overflow:auto;padding:4px 6px;-webkit-overflow-scrolling:touch}
+.trow{display:flex;gap:6px;width:100%;background:none;border:0;border-bottom:1px solid #2f2939;color:inherit;text-align:left;padding:4px 0;font-size:12px}
+.trow .ti{font-size:18px;width:24px}.trow .tw{flex:1;min-width:0}
+/* --- toasts & bell --- */
+#toasts{position:fixed;top:70px;left:0;right:0;z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
+.toast{pointer-events:auto;background:#2f2840f2;border:1px solid #f4d58d55;border-radius:8px;padding:6px 10px;font-size:13px;max-width:92vw;animation:tin .25s ease-out}
+@keyframes tin{from{opacity:0;transform:translateY(-6px)}}
+button.bell{background:none;border:0;color:inherit;font-size:16px;position:relative;margin-left:auto}
+button.bell b{position:absolute;top:-4px;right:-6px;background:#c0392b;color:#fff;border-radius:8px;font-size:10px;padding:0 4px}
+.bellpanel{position:fixed;top:56px;right:6px;left:6px;max-width:480px;margin:auto;z-index:6;max-height:60vh;overflow:auto}
+.devbadge{background:#c0392b;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:1px 5px;margin-left:6px}
+.chip{background:#2d2838;border-radius:12px;padding:2px 8px;font-size:12px}
+.ver{color:#6d6580;cursor:default;user-select:none}
+/* --- tutorial / tour --- */
+.card.tut{border-color:#f4d58d88}
+.tourmask{position:fixed;inset:0;background:#0009;z-index:7}
+.tourhole{position:fixed;z-index:8;border:2px solid #f4d58d;border-radius:8px;box-shadow:0 0 0 4px #f4d58d44;pointer-events:none}
+.tourtip{position:fixed;left:8px;right:8px;max-width:420px;margin:auto;z-index:9}
+/* --- family tree --- */
+.treewrap{overflow:auto;touch-action:pan-x pan-y;cursor:grab;max-height:60vh;border:1px solid #2f2939;border-radius:6px;padding:8px;-webkit-overflow-scrolling:touch}
+.tree{display:inline-flex;flex-direction:column;align-items:center;min-width:100%}
+.gen{display:flex;flex-direction:column;align-items:center}.genlbl{font-size:11px;color:#8f86a0}
+.genrow{display:flex;gap:8px;flex-wrap:nowrap}.genlink{color:#5a4d78;text-align:center}
+.couple{display:flex;align-items:center;gap:2px}.ring{font-size:12px}
+.tnode{display:flex;flex-direction:column;align-items:center;min-width:104px;background:#2a2434;border:1px solid #4a405c;border-radius:8px;color:inherit;padding:4px 6px;font-size:12px}
+.tnode.dead{opacity:.6;filter:grayscale(.5)}.tnode.sel{border-color:#f4d58d}.ticon{font-size:20px}
+.pb.thin{height:12px;line-height:12px;font-size:9px}

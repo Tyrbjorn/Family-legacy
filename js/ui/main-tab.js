@@ -1,3 +1,6 @@
+import { settingsCard, tourPrompt, tutorialCard } from "./guide.js";
+import { timerBar } from "./progress.js";
+import { U } from "./state.js";
 import * as E from "../engine.js";
 import { badges, cl, costStr, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
@@ -8,7 +11,7 @@ export function hero() {
   if (!m) return "";
   const a = m.action;
   let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div><div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
- <div class="muted">Doing: ${doing(a)}</div>
+ <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b ${sheetOpen ? "sel" : ""}" data-a="sheet">📋 Character Sheet ${sheetOpen ? "▴" : "▾"}</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
   if (sheetOpen) h += sheet(m);
@@ -169,7 +172,7 @@ export function family() {
       : ""
   }</div>`;
   }
-  h += `<h3>💌 Suitors ${E.ageY(m) < D.tuning.courtAge ? "(active member must be 18+)" : ""}</h3>`;
+  h += `<h3>💌 Suitors ${E.ageY(m) < D.tuning.courtAge ? "(active member must be ${D.tuning.courtAge}+)" : ""}</h3>`;
   if (!s.suitors.length) h += `<div class="muted">None yet. They appear in town every ~45 days.</div>`;
   const gifts = [...new Set(s.vault.filter(i => it(i).slot === "gift"))];
   for (const su of s.suitors) {
@@ -180,8 +183,7 @@ export function family() {
   }
   const dead = s.members.filter(x => !x.alive);
   if (dead.length)
-    h +=
-      `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
+    h += `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
   return h;
 }
 
@@ -209,9 +211,14 @@ export function guildCard0(m) {
  <div class="muted">Perks: +${5 * (m.guild.rank + 1)}% XP in ${g.skills.map(k => sk(k).name).join(", ")}</div></div>`;
 }
 
+export function saveCard() {
+  return `<div class="card"><b>💾 Save export / import</b><div class="row" style="gap:6px;justify-content:flex-start;flex-wrap:wrap;margin:4px 0"><button class="b" data-a="exportsave">Export code + file</button><button class="b" data-a="importsave">Import code</button><label class="b">Import file <input type="file" accept=".txt,.json,application/json,text/plain" data-a="importfile" style="display:none"></label></div>
+ <textarea id="savecode" rows="3" style="width:100%" placeholder="Paste a save code here to import, or press Export">${U.exportText || ""}</textarea>${U.saveMsg ? `<div class="muted">${U.saveMsg}</div>` : ""}</div>`;
+}
+
 export function mainv() {
   const m = E.active(s);
-  let h = busyBanner(m) + hero();
+  let h = tourPrompt() + tutorialCard() + busyBanner(m) + hero();
   const others = E.living(s).filter(x => x.id !== m.id);
   if (others.length)
     h =
@@ -233,7 +240,7 @@ export function mainv() {
           t.shop
             .map(id => {
               const x = it(id);
-              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.affinity ? " +" + x.affinity + "❤️ gift" : ""}</span></span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x) ? "" : "disabled"}>${E.buyPrice(x)}🪙</button></div>`;
+              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.affinity ? " +" + x.affinity + "❤️ gift" : ""}</span></span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x, s, t.id) ? "" : "disabled"}>${E.buyPrice(x, s, t.id)}🪙</button></div>`;
             })
             .join(""),
       )
@@ -244,7 +251,9 @@ export function mainv() {
       .slice(0, 8)
       .map(l => `<div class="muted">Y${yr(l.d) + 1} D${(l.d % D.tuning.daysPerYear) + 1} · ${l.msg}</div>`)
       .join("") +
-    `<h3>Save</h3><div class="row"><button class="b" data-a="export">Export</button><button class="b" data-a="import">Import</button><button class="b" data-a="reset">New Lineage</button></div>`;
+    saveCard() +
+    settingsCard() +
+    `<div class="row"><button class="b" data-a="reset">New Lineage</button></div>`;
   return h;
 }
 
@@ -262,5 +271,5 @@ export function busyBanner(m) {
         : a.type === "quest"
           ? D.quests.find(q => q.id === a.target).name
           : D.nodes.find(n => n.id === a.target).name;
-  return `<div class="card" style="border-color:#d9b44a"><b>🚶 ${m.name} is busy</b> <span class="muted">· ${{ out: "travelling to", task: a.type === "quest" ? "questing at" : a.type === "explore" ? "exploring" : "gathering at", back: "returning from" }[ph]} ${nm}</span><div class="bar"><i style="width:${(a.trip.t / E.tripTotal(a)) * 100}%"></i></div><div class="muted">⏳ ${E.tripLeft(a).toFixed(1)} days left (~${dur(E.tripLeft(a))}) · locked until home</div></div>`;
+  return `<div class="card" style="border-color:#d9b44a"><b>🚶 ${m.name} is busy</b> <span class="muted">· ${{ out: "travelling to", task: a.type === "quest" ? "questing at" : a.type === "explore" ? "exploring" : "gathering at", back: "returning from" }[ph]} ${nm}</span>${timerBar(E.memberTimer(s, m))}<div class="muted">⏳ ${E.tripLeft(a).toFixed(1)} days left · locked until home</div></div>`;
 }

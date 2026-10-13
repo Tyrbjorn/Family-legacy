@@ -13,10 +13,7 @@ export function isMemberCrafter(m) {
 
 export const isMinionCrafter = mi => unlockCfg().minionClasses.includes(mi.cls);
 
-export const crafters = s => [
-  ...living(s).filter(isMemberCrafter),
-  ...(s.minions || []).filter(isMinionCrafter),
-];
+export const crafters = s => [...living(s).filter(isMemberCrafter), ...(s.minions || []).filter(isMinionCrafter)];
 
 // Sticky: once any crafter exists the Crafting tab stays visible.
 export function craftingUnlocked(s) {

@@ -9,9 +9,14 @@ import { jobsv, mainv } from "./main-tab.js";
 import { mapv } from "./map-tab.js";
 import { minionsv } from "./minions-tab.js";
 import { craftingv } from "./crafting-tab.js";
+import { chroniclev } from "./chronicle-tab.js";
+import { familyv } from "./family-tab.js";
+import { bellPanel, dockv, toastsv } from "./progress.js";
+import { tourOverlay } from "./guide.js";
 
 export const TABS = {
   main: ["🧝", "Main", mainv],
+  family: ["🌳", "Family", familyv],
   jobs: ["💼", "Jobs", jobsv],
   inv: ["🎒", "Inventory", invv],
   estate: ["🏰", "Estate", estatev],
@@ -19,6 +24,7 @@ export const TABS = {
   minions: ["🧑‍🤝‍🧑", "Minions", minionsv],
   guilds: ["🏛️", "Guilds", guildsv],
   craft: ["🔨", "Crafting", craftingv],
+  chron: ["📜", "Chronicle", chroniclev],
 };
 
 export function modal() {
@@ -33,7 +39,20 @@ export function modal() {
   }
   if (report) {
     el.hidden = false;
-    el.innerHTML = `<div class="card"><h3>While you were away</h3><p>${hm(report.sim)} simulated, ${hm(report.elapsed)} total (${report.days} game days)</p><p>${report.coin >= 0 ? "+" : ""}${fmt(report.coin)}🪙 · ${report.food >= 0 ? "+" : ""}${fmt(report.food)}🍞 · +${fmt(report.wood)}🪵 · +${fmt(report.stone)}🪨</p><p>⚡ Turbo +${Math.round(report.turboAdded / 60)} min${report.turboFull ? " (bar full)" : ""}</p>${report.events.map(e => `<div class="muted">${e}</div>`).join("")}<p><button class="b" data-a="close">Continue</button></p></div>`;
+    el.innerHTML = `<div class="card"><h3>While you were away</h3><p>You were away ${hm(report.elapsed)}: ⚡ +${Math.round(report.turboAdded / 60)} min turbo${report.turboFull ? " (bar full)" : ""}.</p><p class="muted">The world waits for you: no aging, production or travel happens while away.</p><p><button class="b" data-a="close">Continue</button></p></div>`;
+    return;
+  }
+  if (s.pendingEnc) {
+    const p = s.pendingEnc;
+    const e = E.encDef(p.id);
+    const m = s.members.find(x => x.id === p.mid);
+    el.hidden = false;
+    el.innerHTML = `<div class="card"><h3>${e.icon} ${e.name}</h3><p>${e.text.replace("{who}", m.name)}</p>${e.options
+      .map(
+        o =>
+          `<p><button class="b" data-a="enc" data-v="${o.id}" ${E.optionOk(s, o) ? "" : "disabled"}>${o.label}</button> <span class="muted">${o.check ? Math.round(E.optionChance(s, m, o) * 100) + "% success" : ""}</span></p>`,
+      )
+      .join("")}</div>`;
     return;
   }
   const pc = s.pendingClass[0];
@@ -84,7 +103,10 @@ export function render() {
   const h = TABS[U.tab][2]();
   if (h !== U.lastHTML) {
     const y = scrollY;
+    const tw = $("#treewrap"),
+      tl = tw && [tw.scrollLeft, tw.scrollTop];
     $("#view").innerHTML = h;
+    if (tl && $("#treewrap")) [$("#treewrap").scrollLeft, $("#treewrap").scrollTop] = tl;
     U.lastHTML = h;
     scrollTo(0, y);
   }
@@ -96,5 +118,15 @@ export function render() {
     $("#tabs").innerHTML = tb;
     window._tb = tb;
   }
+  setIf("#dock", dockv());
+  setIf("#toasts", toastsv());
+  setIf("#overlay", tourOverlay() + bellPanel());
   modal();
+}
+
+const _html = {};
+function setIf(sel, h) {
+  if (_html[sel] === h) return;
+  _html[sel] = h;
+  $(sel).innerHTML = h;
 }

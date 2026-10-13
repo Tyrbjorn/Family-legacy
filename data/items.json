@@ -685,5 +685,21 @@
   "rarity": "Fine",
   "cp": 10,
   "value": 140
+ },
+ {
+  "id": "whittled_charm",
+  "name": "Whittled Charm",
+  "slot": "offhand",
+  "rarity": "Common",
+  "cp": 3,
+  "value": 15
+ },
+ {
+  "id": "mentor_knife",
+  "name": "Mentor's Knife",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 90
  }
 ]

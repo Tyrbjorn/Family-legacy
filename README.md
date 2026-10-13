@@ -66,3 +66,44 @@ NPC tier 1 needs stage 1, tier 2 needs stage 2 (upgrade 2), tier 3 needs upgrade
 - The Crafting tab appears with the first crafter (Artisan line, Crafters' Guild, or an Artisan/Herbalist-type follower) and then stays. It has station/skill filters, quality odds, materials have/need, per-member queues, minion craft orders, stations and reserves.
 - Speed: the global speed selector (1× up to the Legacy-unlocked 1.25/1.5/2/3×) × furniture (Hourglass, Grandfather Clock) and the Steady Hands bonus, capped at 4×. Each member also gets a personal tick from Focus + WIL (capped at 1.5×). All of this is separate from Turbo.
 - Legacy: members earn renown from quests, dungeons, ranks, exploring, skill levels and masterworks. On death it is banked as Legacy Renown only with a Graveyard (25%) → Crypt (50%) → Mausoleum (75%). Upgrades (`data/legacy.json`) cover speed tiers, lifespan, tick, resource gain, the Ancestral Blade recipe and the Hall of Ancestors. They persist through saves and new lineages.
+
+## Time away (changed)
+Time away no longer simulates the world. It only charges the turbo bar (same cap and rate), and the return popup says "You were away Xh: +Y turbo". No aging, production, travel or deaths happen while away.
+
+## Chronicle, achievements, world events, encounters
+- Chronicle tab: a dated (in-game year), filterable history of births, deaths, Legacy banking, classes, guilds, evolutions, discoveries, story chapters, dungeons, masterworks, rare drops, land and buildings, world events, encounters and achievements. It is capped at 300 entries (`data/chronicle.json`) and trims minor entries first.
+- Achievements (`data/achievements.json`): progress bars, hidden entries, and renown/coin/Legacy rewards, all logged to the Chronicle.
+- World events (`data/events.json`): timed town or regional events (bad or bountiful harvest, bandits, plague, festival, caravan, wild bloom, storms). They change buy/sell prices, travel risk and gathering, and are shown on the map, the town details and the World events card.
+- Road encounters (`data/encounters.json`): 9 choice encounters with stat/skill checks (odds shown). They pop up for the member you're playing during live play. Automated Explore/Adventure orders resolve them with a chosen policy (Map → World events). The Crone can join as the Hedge Witch, or curse you.
+
+## Traits, seasons, foods & saves (Round E)
+- **Traits** come in rarity tiers (bad / common / good / rare / epic), and each tier has its own badge color. A child inherits exactly one "best" trait: the highest-rarity trait either parent has, with ties broken at random. Its other trait slots roll from both parents' pools plus fresh random traits. The Legacy upgrades *Good Blood* and *Rare Blood* improve those odds. *Bloodline* keeps the family's best trait in every generation.
+- **Seasons** cycle through spring, summer, autumn and winter. They change food and herb yields, gathering, travel speed (winter is slower), event odds and prices. The current season is shown in the header.
+- **Foods:** bread, stew, smoked meat, cheese and preserves come from the oven, smoker, churn and jars. Food quality multiplies food value. Sage, mandrake and moonpetal are new herbs used in remedies.
+- **Save export/import** is on the main tab. *Export* shows an `FL1:` code and downloads a `.txt` file. *Import* takes a pasted code (or raw JSON) or a file. It checks the version, runs the migrations and asks for confirmation before overwriting your game.
+
+## Pacing
+One in-game day takes **5 s** of active play (it used to take 10 s). The founder starts at 15¾. Courtship opens at 16, and the first skill levels are cheaper (`xpBase` 30, `xpGrowth` 1.14), so level-30 costs stay about the same as before. To keep the mid and late game balanced, the turbo cap is now 40 min, build costs are ×2.5 and children are spaced 540 days apart. A founder's life is about 35 h of active play. `node test/pacing.test.mjs` plays a scripted new player through the game and checks these milestone windows: first level and first coin within 1 min, adulthood within 10 min, first guild within 15 min, and a suitor fully courted within 30 min. It also checks the lifetime, turbo and late-cost guard rails. The main engine suite pins the old tuning so its exact-day assertions still hold.
+
+## Apprentice prologue & tab tour
+A new game opens with **Master Orrin's apprenticeship**, a 6-step rewarded prologue to *The Lost House* story:
+1. Equip the starter blade.
+2. Clear *Rats in the Cellar*. Apprentices aged 14+ can take it, and the mentor guarantees success.
+3. Whittle a charm at the mentor's bench (the hidden `r_whittle` recipe, which needs no station).
+4. Run any activity.
+5. Visit the Estate tab.
+6. Choose a path (class, craft or guild).
+
+Rewards are coin, resources, a Herb Knife and the hidden *Mentor's Knife* recipe. The prologue is skippable, its progress is stored in `s.tut`, and each step is logged to the Chronicle. Older saves are marked as already past the prologue. A first-run prompt (also available from Settings) starts a **tab tour** overlay that highlights each tab. Content lives in `data/tutorial.json`.
+
+## Progress bars, Timers dock, notifications, family tree
+- `ui/progress.js` provides one reusable bar, `pbar(p, label, secondsLeft)`. Its width uses a CSS transition matched to the 500 ms tick, so it moves smoothly without JS animation. The bar is used for:
+  - activity/job progress to the next skill level, trips (travel/quest/explore/gather) and dungeon floors
+  - crafting, the daily station cycle, minion XP on their job, injury recovery, world events and buffs
+- Construction is instant in this game, so it has no timer.
+- `engine/timers.js` collects every running timer. The **Timers dock** above the tab bar is collapsed by default and shows the count and the soonest-finishing timer. Tap it to expand, then tap a row to jump to its tab. Open/closed state is saved in `localStorage["fl-dock"]`.
+- **Notifications** (`engine/notify.js`, `data/notify.json`) are in-game only. Log lines are matched to categories by emoji prefix. Encounters and evolution-ready minions notify directly. Duplicates are batched (×n) and the log is capped at 40. The 🔔 bell shows unread notes and up to 3 toasts appear at once. Each category can be toggled in Settings.
+- The **Family tab** shows the tree (`engine/tree.js`): generations with spouses side by side, deceased members greyed out, and each member's class, renown and best trait in its rarity color. Drag or swipe to pan, and tap a member to open their card.
+
+## Dev Mode
+Open with `?dev=1` (use `?dev=0` to turn it off), or tap the version label in Settings 5 times to reveal the toggle. Dev Mode is stored in `localStorage["fl-dev"]`, never in saves or exports. While on, it shows a **DEV** badge and adds 5×/10×/50× speeds that bypass the tick cap, plus cheats: coin, resources, max turbo, unlock tabs, and complete/skip the tutorial. Any game ticked in dev mode is marked `s.devRun` and earns no achievements. Saves loaded outside dev mode fall back to 1× speed.

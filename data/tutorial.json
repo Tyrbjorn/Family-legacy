@@ -1,0 +1,125 @@
+{
+ "mentor": {
+  "name": "Master Orrin",
+  "icon": "🧔",
+  "title": "Hearthwright of Millbrook",
+  "guild": "hearth"
+ },
+ "intro": "You are an apprentice under Master Orrin, a Hearthwright of Millbrook. He knows a secret about your bloodline, but first he'll teach you how to survive.",
+ "steps": [
+  {
+   "id": "gear",
+   "icon": "🗡️",
+   "title": "Gear Up",
+   "text": "Orrin tosses you an old blade. Equip it (Inventory → Vault → Equip).",
+   "check": "equipped",
+   "start": {
+    "items": [
+     "rusty_sword"
+    ]
+   },
+   "reward": {
+    "coin": 20,
+    "wood": 4
+   }
+  },
+  {
+   "id": "rats",
+   "icon": "🐀",
+   "title": "Rats in the Cellar",
+   "text": "The guildhall cellar is crawling. Take the 'Rats in the Cellar' quest for your first fight.",
+   "check": "quest:rats",
+   "reward": {
+    "coin": 30,
+    "food": 20
+   }
+  },
+  {
+   "id": "craft",
+   "icon": "🔨",
+   "title": "First Craft",
+   "text": "At Orrin's bench, whittle a charm from 2 wood (button below, or the Crafting tab later).",
+   "check": "crafted",
+   "start": {
+    "unlock": "recipe:r_whittle"
+   },
+   "reward": {
+    "coin": 25
+   }
+  },
+  {
+   "id": "activity",
+   "icon": "🥾",
+   "title": "Stretch Your Legs",
+   "text": "Pick any activity in the Jobs tab and do it for a few days.",
+   "check": "activity",
+   "reward": {
+    "coin": 25,
+    "herbs": 3
+   }
+  },
+  {
+   "id": "estate",
+   "icon": "🏡",
+   "title": "Your Own Ground",
+   "text": "Visit the Estate tab: one day this is where your family will live.",
+   "check": "estate",
+   "reward": {
+    "coin": 40
+   }
+  },
+  {
+   "id": "path",
+   "icon": "🧭",
+   "title": "Choose a Path",
+   "text": "Come of age (16) and choose a class (adventurer), take up a craft, or join a guild.",
+   "check": "path",
+   "reward": {
+    "coin": 60,
+    "unlock": "recipe:r_mentorknife",
+    "items": [
+     "herbknife"
+    ]
+   }
+  }
+ ],
+ "finale": "Orrin smiles: \"Your family once had a name in these lands, the Lost House. Find the ledger.\" The story begins.",
+ "tour": [
+  {
+   "tab": "main",
+   "text": "Main: your active member, traits, suitors, story and save tools."
+  },
+  {
+   "tab": "jobs",
+   "text": "Jobs: activities, jobs and training. This is what your member does each day."
+  },
+  {
+   "tab": "inv",
+   "text": "Inventory: the vault, bags, equipment and foods."
+  },
+  {
+   "tab": "estate",
+   "text": "Estate: land, buildings, stations and production."
+  },
+  {
+   "tab": "map",
+   "text": "Map: travel, towns, quests, dungeons and world events."
+  },
+  {
+   "tab": "minions",
+   "text": "Minions: helpers who gather, craft and level up."
+  },
+  {
+   "tab": "guilds",
+   "text": "Guilds: join, rank up and unlock exclusive skills."
+  },
+  {
+   "tab": "craft",
+   "text": "Crafting: queues and quality odds (opens once you have a crafter)."
+  },
+  {
+   "tab": "chron",
+   "text": "Chronicle: family history and achievements."
+  }
+ ]
+}

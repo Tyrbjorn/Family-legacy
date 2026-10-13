@@ -1,0 +1,132 @@
+{
+ "chancePerDay": 0.03,
+ "maxActive": 3,
+ "types": [
+  {
+   "id": "badharvest",
+   "name": "Bad harvest",
+   "icon": "🥀",
+   "scope": "town",
+   "days": [
+    20,
+    45
+   ],
+   "text": "Bad harvest in {place}: food prices soar",
+   "effects": {
+    "price": {
+     "food": 1.8
+    },
+    "buyMult": 1.15
+   }
+  },
+  {
+   "id": "bounty",
+   "name": "Bountiful harvest",
+   "icon": "🌾",
+   "scope": "town",
+   "days": [
+    20,
+    40
+   ],
+   "text": "Bountiful harvest in {place}: food is cheap",
+   "effects": {
+    "price": {
+     "food": 0.6,
+     "herbs": 0.8
+    }
+   }
+  },
+  {
+   "id": "bandits",
+   "name": "Bandits on the road",
+   "icon": "🗡️",
+   "scope": "region",
+   "days": [
+    15,
+    35
+   ],
+   "text": "Bandits prowl the roads of {place}",
+   "effects": {
+    "travelRisk": 0.03,
+    "gather": 0.85
+   }
+  },
+  {
+   "id": "plague",
+   "name": "Plague",
+   "icon": "🤒",
+   "scope": "town",
+   "days": [
+    20,
+    40
+   ],
+   "text": "Plague in {place}: prices up, travellers fall ill",
+   "effects": {
+    "buyMult": 1.25,
+    "price": {
+     "herbs": 1.6,
+     "remedies": 1.8
+    },
+    "travelRisk": 0.02
+   }
+  },
+  {
+   "id": "festival",
+   "name": "Festival",
+   "icon": "🎉",
+   "scope": "town",
+   "days": [
+    8,
+    15
+   ],
+   "text": "Festival in {place}: merchants pay well",
+   "effects": {
+    "sellMult": 1.25,
+    "buyMult": 0.9
+   }
+  },
+  {
+   "id": "caravan",
+   "name": "Merchant caravan",
+   "icon": "🐫",
+   "scope": "town",
+   "days": [
+    6,
+    12
+   ],
+   "text": "A merchant caravan visits {place}: goods are cheap",
+   "effects": {
+    "buyMult": 0.75
+   }
+  },
+  {
+   "id": "bloom",
+   "name": "Wild bloom",
+   "icon": "🌸",
+   "scope": "region",
+   "days": [
+    15,
+    30
+   ],
+   "text": "Herbs and game abound in {place}",
+   "effects": {
+    "gather": 1.3
+   }
+  },
+  {
+   "id": "storm",
+   "name": "Storm season",
+   "icon": "⛈️",
+   "scope": "region",
+   "days": [
+    10,
+    20
+   ],
+   "text": "Storms lash {place}: travel and gathering are slow",
+   "effects": {
+    "gather": 0.8,
+    "travelRisk": 0.01
+   }
+  }
+ ]
+}

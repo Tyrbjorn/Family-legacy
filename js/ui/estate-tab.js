@@ -1,3 +1,4 @@
+import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { RI, costStr, doing, fmt, memberLine } from "./common.js";
 import { D, s } from "../main.js";
@@ -60,7 +61,7 @@ export function estate() {
         nt = D.estate.pieceTiers[t + 1],
         ui = E.pieceUpIssue(s, st.uid, pid);
       const pz = E.isPaused(s, st.uid, pid);
-      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${p.desc} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span></span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
+      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${p.desc} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
     })
     .join("")}${
     d.houses
@@ -143,8 +144,7 @@ export function estatev() {
     if (x.id !== s.activeId) {
       h += `<div class="row" style="margin-top:4px">`;
       if (!E.isAdult(x)) h += `<span class="muted">growing up</span>`;
-      else if (!E.established(s))
-        h += `<span class="muted">Works odd jobs (orders unlock with a House)</span>`;
+      else if (!E.established(s)) h += `<span class="muted">Works odd jobs (orders unlock with a House)</span>`;
       else {
         h += `<select data-a="order" data-v="${x.id}">${["train", "quest", "gather", "craft", "work", "rest", "explore", "adventure"].map(t => `<option ${o.type === t ? "selected" : ""}>${t}</option>`).join("")}</select>`;
         const opts = {
@@ -163,8 +163,7 @@ export function estatev() {
     h += `<div class="muted">Craft: uses ${costStr(D.tuning.craftCost)} per item every ${D.tuning.craftDays} days.</div>`;
   const dead = s.members.filter(x => !x.alive);
   if (dead.length)
-    h +=
-      `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
+    h += `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
   return h;
 }
 
