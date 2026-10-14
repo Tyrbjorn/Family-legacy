@@ -1,4 +1,6 @@
 import { famFx } from "./paths.js";
+import { haulTier, parcelJobMult } from "./world.js";
+import { deliverLoad, gatherInto, travelDays } from "./map.js";
 import { extraSlots, onMinionEvolve, onMinionLevel, upJobMult, upVigor } from "./minionups.js";
 import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
@@ -230,6 +232,14 @@ export function jobOpen(s, jobId) {
   return !!j && (jobId === "idle" || (established(s) && jobCap(s, jobId) > 0));
 }
 
+export function setMinionNode(s, uid, nodeId) {
+  const mi = s.minions.find(x => x.uid === uid),
+    n = D.nodes.find(x => x.id === nodeId);
+  if (!mi || !n || !known(s, n)) return false;
+  mi.node = nodeId;
+  mi.trip = null;
+  return true;
+}
 export const jobUsed = (s, job, except) => s.minions.filter(x => x.job === job && x.uid !== except).length;
 
 export function assignMinion(s, uid, job) {
@@ -328,6 +338,23 @@ export const MINION_JOBS = {
   merchant: (s, mi, a, rg) => {
     sellTick(s, a);
   },
+  // node runs: out → gather → haul home (timed trip on the follower; resources land on return)
+  noderun: (s, mi, a, rg) => {
+    const n = mi.node && D.nodes.find(x => x.id === mi.node);
+    if (!n || !known(s, n)) return;
+    if (!mi.trip) {
+      const out = travelDays(n.id);
+      mi.trip = { out, task: D.world.noderun.gatherDays, back: Math.round((out / haulTier(s).haulSpeed) * 10) / 10, t: 0 };
+    }
+    const t = mi.trip;
+    t.t += 1;
+    if (t.t > t.out && t.t <= t.out + t.task)
+      gatherInto(s, t, n, (1 + D.world.noderun.skillLvl * 0.03) * a * rg, () => 0);
+    if (t.t >= t.out + t.task + t.back) {
+      if (t.load) deliverLoad(s, mi.name, t);
+      mi.trip = null;
+    }
+  },
 };
 
 export function minionDay(s) {
@@ -359,7 +386,7 @@ export function minionDay(s) {
       minionLvlMult(mi);
     const rg = resGain(s);
     minionGainXp(s, mi, MLV().xpPerDay * (fed ? 1 : 0.5));
-    MINION_JOBS[mi.job]?.(s, mi, a, rg);
+    MINION_JOBS[mi.job]?.(s, mi, D.world ? a * parcelJobMult(s, mi.job) : a, rg);
   }
   for (const mi of [...s.minions])
     if (mi.loyalty <= 0) {

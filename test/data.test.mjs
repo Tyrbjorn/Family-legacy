@@ -182,7 +182,7 @@ if (fail) process.exit(1);
   ok(new Set(ids).size === ids.length, "path ids unique (paths + combos)");
   ok(PP.ranks.length === 4 && PP.ranks.every((r, i) => !i || (r.xp > PP.ranks[i - 1].xp && r.skill >= PP.ranks[i - 1].skill)), "4 ranks with rising thresholds");
   ok(PP.maxPaths >= 2 && PP.secondaryGap >= 1 && PP.specAt > 0 && PP.specAt < PP.ranks.length, "path cap / gap / specAt sane");
-  const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing"];
+  const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing", "haul"];
   const specIds = [];
   for (const P of all) {
     ok(P.skills.length && P.skills.every(k => skillIds.has(k)), `path ${P.id} skills real`);
@@ -214,5 +214,48 @@ if (fail) process.exit(1);
   ok(!PP.paths.find(x => x.id === "carpenter").specs.some(z => z.id === "shipwright") && PP.comboPaths.some(c => c.id === "shipwright"), "Shipwright moved to a combo");
   ok(PP.paths.find(x => x.id === "smithing").specs.some(z => z.id === "jeweler"), "Jeweler is a Smithing specialty");
   ok(!PP.paths.find(x => x.id === "mason").specs.some(z => z.id === "architect"), "Architect is not a Mason specialty");
+}
+
+// ---- map round (data/world.json)
+{
+  const WW = D.world, TT = Object.keys(WW.terrain);
+  ok(["forest", "hills", "mountains", "river", "lake", "swamp", "plains", "coast"].every(k => TT.includes(k)), "8 terrain types");
+  for (const [k, t] of Object.entries(WW.terrain)) ok(t.speed > 0 && t.speed <= 1.2 && t.risk > 0 && t.discover > 0 && /^#/.test(t.fill), `terrain ${k} numbers + colour`);
+  ok(WW.zones.every(z => TT.includes(z.t) && ["rect", "ellipse", "line"].includes(z.shape)), "zones use known terrain/shapes");
+  ok(Object.values(WW.regionTerrain).every(t => TT.includes(t)) && D.regions.filter(r => !r.future).every(r => WW.regionTerrain[r.id]), "every live region has a default terrain");
+  ok(["track", "road", "highway"].every(k => WW.roadTypes[k]) && WW.roadTypes.track.speed < WW.roadTypes.road.speed && WW.roadTypes.road.speed < WW.roadTypes.highway.speed && WW.roadTypes.highway.risk < WW.roadTypes.track.risk && WW.roadTypes.track.speed > WW.offroad.speed && WW.offroad.discover > WW.roadTypes.track.discover, "roads: faster + safer by tier; off-road discovers more");
+  ok(WW.roads.every(r => WW.roadTypes[r.type] && r.pts.length >= 2 && r.pts.every(([x, y]) => x >= 0 && y >= 0 && x <= D.map.size.w && y <= D.map.size.h)), "roads valid and on the map");
+  ok(WW.roadWorks && WW.roadWorks.builder.path === "mason", "road works hook (Mason) present");
+  const LT = Object.keys(WW.locTypes);
+  ok(["town", "village", "ruins", "cave", "shrine", "camp", "mine", "grove", "hidden", "port"].every(k => LT.includes(k)), "location types");
+  ok(new Set(WW.locations.map(l => l.id)).size === WW.locations.length, "location ids unique");
+  for (const l of WW.locations) ok(LT.includes(l.type) && D.regions.some(r => r.id === l.region) && (!l.town || D.towns.some(t => t.id === l.town)) && (!l.link || [...D.quests, ...D.nodes, ...D.dungeons].some(x => x.id === l.link)), `location ${l.id} valid`);
+  ok(WW.locations.some(l => l.id === "l_crone" && l.hidden && l.link === "witch"), "crone/witch is a hidden place");
+  ok(WW.locations.some(l => l.stub === "runecarver" && l.locked && l.hidden), "dwarven hold stub (locked, hidden)");
+  ok(WW.locations.some(l => l.port && l.sea === "future"), "a coast/port stub for future sea access");
+  const secretLocs = D.map.areas.flatMap(a => a.secrets).filter(x => x.type === "location");
+  ok(WW.locations.filter(l => l.hidden && !l.town && !l.link).every(l => secretLocs.some(x => x.id === l.id)) && secretLocs.every(x => WW.locations.some(l => l.id === x.id)), "hidden locations are reachable via explore secrets");
+  const NN = D.nodes.filter(n => n.terrainNode);
+  const want = { mountains: ["ore", "gems"], forest: ["wood", "mushrooms"], plains: ["thyme"], river: ["fish"], lake: ["fish"], swamp: ["clay", "peat"], coast: ["salt"] };
+  for (const [tr, rs] of Object.entries(want)) ok(rs.every(k => NN.some(n => n.terrain === tr && n.res[k])), `terrain ${tr} has nodes for ${rs.join("/")}`);
+  ok(NN.some(n => n.remote && n.hidden && n.rare), "a rare remote find");
+  ok(D.nodes.every(n => TT.includes(n.terrain) && D.map.points[n.id]), "every node has a terrain and a map point");
+  ok(NN.every(n => n.fog), "terrain nodes are discovered through fog");
+  ok(WW.nodeDefaults.stock > 0 && WW.nodeDefaults.depleted > 0 && WW.nodeDefaults.depleted < 1 && Object.keys(WW.regrowBySeason).length === 4, "stock / depletion / seasonal regrowth numbers");
+  const H = WW.haul; ok(H.tiers.length >= 4 && H.tiers.every(t => t.carry > H.base.carry && t.haulSpeed >= 1), "hauling tiers beat walking");
+  ok(H.tiers.filter(t => t.item).every(t => D.items.some(i => i.id === t.item && i.slot === "haul") && D.crafting.recipes.some(r => r.base === t.item && r.path === "carpenter")), "carts/wagons crafted by Carpenter");
+  ok(D.paths.paths.find(p => p.id === "carpenter").specs.some(x => /Wainwright/.test(x.name) && x.fx.some(f => (f.bases || []).includes("wagon"))), "Cooper & Wainwright specialty boosts carts/wagons");
+  ok(H.tiers.filter(t => t.animal).every(t => H.animals[t.animal] && H.animals[t.animal].feed && H.animals[t.animal].towns.every(id => D.towns.some(x => x.id === id))), "animals have feed and real towns");
+  ok(D.estate.pieces.some(p => p.id === H.stall && p.bonus.stalls), "stable stall piece exists");
+  for (const [k, f] of Object.entries(WW.features)) ok(Object.keys(f.res).length && D.skills.some(x => x.id === f.skill) && (!f.structures || f.structures.every(st => D.estate.structures.some(x => x.id === st))), `feature ${k} valid`);
+  ok(D.estate.lands.every(l => (WW.landFeatures[l.id] || []).length && WW.landFeatures[l.id].every(f => WW.features[f])), "every land parcel shows features");
+  for (const [st, f] of Object.entries(WW.structureFeature)) ok([].concat(f).every(x => WW.features[x]) && D.estate.lands.some(l => [].concat(f).some(x => WW.landFeatures[l.id].includes(x))), `structure ${st} has a land with its feature`);
+  ok(D.regions.every(r => r.requires) && D.regions.some(r => r.future && r.requires.location), "regions carry unlock requirements; a future coast region stub");
+  const EV = D.events.types; ok(["bandits", "storm", "merchant", "lost", "monsters", "festival"].every(id => EV.some(e => e.id === id)) && EV.some(e => e.season) && EV.some(e => e.regions), "world events incl. season/region-tied ones");
+  ok(EV.every(e => (e.season || []).every(x => D.seasons.order.includes(x)) && (e.regions || []).every(x => D.regions.some(r => r.id === x))), "event season/region filters valid");
+  const EN = D.encounters.list; ok(["ambush", "lostsoul", "wmerchant", "sighting", "stormroad", "festband"].every(id => EN.some(e => e.id === id)), "road encounters added");
+  ok(EN.every(e => !e.when || ((e.when.terrain || []).every(x => TT.includes(x)) && (!e.when.road || ["on", "off"].includes(e.when.road)) && (e.when.season || []).every(x => D.seasons.order.includes(x)))), "encounter filters valid");
+  ok(EN.filter(e => e.when && e.when.road === "off").length >= 2, "off-road has its own (riskier) encounters");
+  for (const k of ["gems", "clay", "peat", "salt"]) ok(D.towns.every(t => t.prices[k]), `${k} sells in towns`);
 }
 console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));

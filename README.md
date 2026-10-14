@@ -33,6 +33,13 @@ The header shows your era (Solo Adventurer → Established Family → Ruling Pow
 - **One-time side quests** are marked ⭐. Quests, nodes, dungeons and encounters have **rare drops** (≤5%), shown as "Rare drops: ???" until found.
 - **Minion levels:** every working minion gains XP from its job. Levels add +5% output each, and perks at Lv 5 and Lv 10 add more. The Minions tab shows level, an XP bar and perks.
 
+### World map (map round)
+- `data/world.json` holds everything: 8 terrains (speed, risk, discovery and gathering multipliers), zones that paint the parchment SVG, roads (track, road, highway; off-road is slower but finds more), fog cells, locations (villages, ruins, cave, shrine, camp, mine, grove, the hidden crone, the locked Dwarfhold stub and the Gullport port stub), node stock and seasonal regrowth, hauling tiers and animals, land features.
+- Engine: `js/engine/world.js`. Gather trips go out, gather into a load up to the hauling carry, then haul home (haul speed shortens the way back). Followers on **Node runs** do the same with a progress bar.
+- Hauling: on foot 80 → handcart 140 → pack mule 200 → ox wagon 400 / horse wagon 320. Carts and wagons come from the Carpenter's Cooper & Wainwright line; animals need feed and a stable stall.
+- Owned land shows its features. **Work** a feature for resources with no travel (+25%). Quarries and mine shafts need a stone outcrop or ore/gem vein.
+- Save step 12 seeds fog from what an older save had already seen.
+
 ## Follower classes, land and special buildings
 - Every hired follower starts as a **Peasant** and can evolve at Lv 5/10/15 into NPC classes in four branches, chosen by the player on the Minions tab: Military (Militia → Soldier → Sergeant, or Outrider), Economic (Laborer → Artisan → Master Artisan, or Foreman), Magic (Hedge Mage → Adept → Magus), Divine (Acolyte → Village Priest → Curate). NPC classes only boost job output (max +70%), so they stay weaker than family classes. Followers also build per-job skills (+2% per skill level). Special companions keep their own path.
 - **Land:** 9 parcels with rising cost (Riverbank, Woodlot, Ridge, Greenvale, plus a Highland Claim once the highlands are discovered), sold in every town. Locked parcels show what they need.

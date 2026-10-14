@@ -3,7 +3,7 @@ import { D, s } from "../../main.js";
 import { U } from "../state.js";
 
 // Click actions for the map area. ctx = { v, w, b, m } from the clicked element.
-export const mapActions = ({ v, b, m }) => ({
+export const mapActions = ({ v, w, b, m }) => ({
   quest: () => {
     E.setAction(s, { type: "quest", target: v });
   },
@@ -30,6 +30,8 @@ export const mapActions = ({ v, b, m }) => ({
     }
   },
   gather: () => E.setAction(s, { type: "gather", target: v }),
+  parcel: () => E.setAction(s, { type: "parcel", target: v }),
+  buyanimal: () => E.buyAnimal(s, v, w),
   rumor: () => E.rumor(s, v),
   advjoin: () => E.joinAdventurers(s, m),
   advrank: () => E.advRankUp(s, m),

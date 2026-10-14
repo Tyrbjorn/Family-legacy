@@ -81,7 +81,7 @@ export function minionsv() {
   )
     .map(([j, v]) => M.jobs.find(x => x.id === j).name + " ×" + v)
     .join(", ")}</div>
-  <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j => `<option value="${j.id}" ${mi.job === j.id ? "selected" : ""} ${E.jobOpen(s, j.id) ? "" : "disabled"}>${j.icon} ${j.name}${j.id === "idle" || j.id === "guard" ? "" : " " + E.jobUsed(s, j.id) + "/" + (isFinite(E.jobCap(s, j.id)) ? E.jobCap(s, j.id) : "∞")}${E.jobOpen(s, j.id) ? "" : " 🔒"}</option>`).join("")}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div></div>`;
+  <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j => `<option value="${j.id}" ${mi.job === j.id ? "selected" : ""} ${E.jobOpen(s, j.id) ? "" : "disabled"}>${j.icon} ${j.name}${j.id === "idle" || j.id === "guard" ? "" : " " + E.jobUsed(s, j.id) + "/" + (isFinite(E.jobCap(s, j.id)) ? E.jobCap(s, j.id) : "∞")}${E.jobOpen(s, j.id) ? "" : " 🔒"}</option>`).join("")}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div>${mi.job === "noderun" ? nodeRunRow(mi) : ""}</div>`;
   }
   const locked = M.types.filter(t => t.special && !s.specialGranted.includes(t.id));
   h +=
@@ -119,4 +119,15 @@ export function minionsv() {
         )
         .join("");
   return h;
+}
+
+// Node runs: pick a known node; the trip shows out → gather → haul home.
+function nodeRunRow(mi) {
+  const ns = D.nodes.filter(n => E.known(s, n) && E.regionOpen(s, n.region));
+  const t = mi.trip,
+    tot = t ? t.out + t.task + t.back : 1;
+  const ph = !t ? "" : t.t < t.out ? "🚶 travelling out" : t.t < t.out + t.task ? "⛏️ gathering" : "🛒 hauling home";
+  return `<div class="row" style="margin-top:4px;gap:4px"><span class="muted">Node:</span><select data-a="setnode" data-v="${mi.uid}"><option value="">(choose)</option>${ns
+    .map(n => `<option value="${n.id}" ${mi.node === n.id ? "selected" : ""}>${n.icon} ${n.name} · ${E.travelDays(n.id)}d · ${Math.round(E.nodeStock(s, n))} left</option>`)
+    .join("")}</select></div>${t ? `<div class="muted">${ph}${t.load ? " · 🎒 " + Math.round(Object.values(t.load).reduce((a, b) => a + b, 0)) + "/" + E.haulTier(s).carry : ""}</div>${pbar(t.t, tot)}` : ""}`;
 }

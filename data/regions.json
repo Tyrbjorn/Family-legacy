@@ -3,19 +3,43 @@
   "id": "outskirts",
   "name": "Village Outskirts",
   "cp": 10,
-  "icon": "🏘️"
+  "icon": "🏘️",
+  "requires": {
+   "cp": 10
+  }
  },
  {
   "id": "forest",
   "name": "Old Forest",
   "cp": 50,
-  "icon": "🌲"
+  "icon": "🌲",
+  "requires": {
+   "cp": 50
+  }
  },
  {
   "id": "highlands",
   "name": "Stormcrest Highlands",
   "cp": 110,
   "icon": "🏔️",
-  "hidden": true
+  "hidden": true,
+  "requires": {
+   "cp": 110,
+   "discovered": "highlands"
+  }
+ },
+ {
+  "id": "saltcoast",
+  "name": "Saltmere Coast",
+  "icon": "⚓",
+  "cp": 80,
+  "hidden": true,
+  "future": true,
+  "requires": {
+   "cp": 80,
+   "discovered": "saltcoast",
+   "location": "l_gullport"
+  },
+  "desc": "Future: sea access from Gull's Landing (not yet open)."
  }
 ]

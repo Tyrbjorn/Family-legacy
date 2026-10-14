@@ -5,6 +5,7 @@ import { regionKnown } from "./map.js";
 import { D, afford, ageY, bl, cost, isAdult, living, log, pay } from "./state.js";
 import { inLine } from "./skills.js";
 import { famFx, pathReqName } from "./paths.js";
+import { stalls, structFeatureIssue } from "./world.js";
 export * from "./production.js";
 
 // ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
@@ -225,6 +226,8 @@ export function structIssue(s, type) {
   if (d.requires && !(s.structures || []).some(x => x.type === d.requires || structDef(x.type).upgradeFrom === d.requires))
     return `needs a ${structDef(d.requires).name}`;
   if (d.legacy && !hasLegacy(s, d.legacy)) return "needs Legacy upgrade";
+  const fi = D.world ? structFeatureIssue(s, type) : null;
+  if (fi) return fi;
   if (!afford(s, d.cost)) return "cannot afford";
   return null;
 }
@@ -330,6 +333,7 @@ export const ADVENTURE_BASE_CAP = 2;
 
 export function jobCap(s, job) {
   if (["idle", "guard", "scout"].includes(job)) return Infinity;
+  if (job === "noderun") return D.world ? D.world.noderun.cap + Math.floor(stalls(s) / 2) : 0;
   // Balance: adventuring was uncapped and out-earned the whole family ~3:1 in long sims.
   // Now 2 parties, +cap of every building that houses adventurers (Adventurers' Lodge: +2).
   if (job === "adventure")

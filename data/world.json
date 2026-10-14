@@ -1,0 +1,966 @@
+{
+ "_note": "Map round. Terrain zones paint the parchment map and set travel speed, risk, discovery and gathering per terrain. Roads (track/road/highway) are faster and safer; off-road is slower but discovers more. Locations, nodes and markers are revealed through fog cells. Nodes deplete and regrow by season. Gathering runs out → gather → haul back; carry per trip and haul speed come from the hauling tier. Land parcels carry features you can work with no travel. Regions unlock by requirements; ports are stubs for future sea access.",
+ "baseSpeed": 150,
+ "terrain": {
+  "plains": {
+   "name": "Plains",
+   "icon": "🌾",
+   "fill": "#e9d9a6",
+   "ink": "#9a8550",
+   "speed": 1.0,
+   "risk": 1.0,
+   "discover": 1.0,
+   "gather": {
+    "thyme": 1.1,
+    "food": 1.1
+   }
+  },
+  "forest": {
+   "name": "Forest",
+   "icon": "🌲",
+   "fill": "#bfcf95",
+   "ink": "#4f6a32",
+   "speed": 0.75,
+   "risk": 1.15,
+   "discover": 1.2,
+   "gather": {
+    "wood": 1.25,
+    "mushrooms": 1.3,
+    "meat": 1.1,
+    "hides": 1.1
+   }
+  },
+  "hills": {
+   "name": "Hills",
+   "icon": "⛰️",
+   "fill": "#d9c58e",
+   "ink": "#8a6d3b",
+   "speed": 0.8,
+   "risk": 1.05,
+   "discover": 1.1,
+   "gather": {
+    "stone": 1.2,
+    "copperore": 1.1
+   }
+  },
+  "mountains": {
+   "name": "Mountains",
+   "icon": "🏔️",
+   "fill": "#cdbf9d",
+   "ink": "#6b5a44",
+   "speed": 0.55,
+   "risk": 1.3,
+   "discover": 1.3,
+   "gather": {
+    "ore": 1.25,
+    "gems": 1.3,
+    "stone": 1.2
+   }
+  },
+  "river": {
+   "name": "River",
+   "icon": "〰️",
+   "fill": "#a9c7c9",
+   "ink": "#3f6f7a",
+   "speed": 0.7,
+   "risk": 1.0,
+   "discover": 1.0,
+   "gather": {
+    "fish": 1.25
+   }
+  },
+  "lake": {
+   "name": "Lake",
+   "icon": "💧",
+   "fill": "#a9c3cf",
+   "ink": "#3f6a80",
+   "speed": 0.6,
+   "risk": 0.9,
+   "discover": 0.9,
+   "gather": {
+    "fish": 1.35
+   }
+  },
+  "swamp": {
+   "name": "Swamp",
+   "icon": "🪷",
+   "fill": "#b9c29a",
+   "ink": "#55603a",
+   "speed": 0.5,
+   "risk": 1.35,
+   "discover": 1.25,
+   "gather": {
+    "clay": 1.2,
+    "peat": 1.2,
+    "thyme": 1.1
+   }
+  },
+  "coast": {
+   "name": "Coast",
+   "icon": "🏖️",
+   "fill": "#e8dcb5",
+   "ink": "#7a7357",
+   "speed": 0.9,
+   "risk": 0.95,
+   "discover": 1.0,
+   "gather": {
+    "salt": 1.25,
+    "fish": 1.15
+   }
+  }
+ },
+ "regionTerrain": {
+  "outskirts": "plains",
+  "forest": "forest",
+  "highlands": "mountains"
+ },
+ "zones": [
+  {
+   "t": "coast",
+   "shape": "rect",
+   "x": 20,
+   "y": 20,
+   "w": 38,
+   "h": 680
+  },
+  {
+   "t": "hills",
+   "shape": "ellipse",
+   "x": 115,
+   "y": 165,
+   "rx": 95,
+   "ry": 75
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 430,
+   "y": 85,
+   "rx": 85,
+   "ry": 60
+  },
+  {
+   "t": "forest",
+   "shape": "ellipse",
+   "x": 290,
+   "y": 195,
+   "rx": 70,
+   "ry": 48
+  },
+  {
+   "t": "forest",
+   "shape": "ellipse",
+   "x": 470,
+   "y": 420,
+   "rx": 45,
+   "ry": 120
+  },
+  {
+   "t": "swamp",
+   "shape": "ellipse",
+   "x": 145,
+   "y": 625,
+   "rx": 90,
+   "ry": 62
+  },
+  {
+   "t": "lake",
+   "shape": "ellipse",
+   "x": 410,
+   "y": 585,
+   "rx": 48,
+   "ry": 32
+  },
+  {
+   "t": "river",
+   "shape": "line",
+   "w": 16,
+   "pts": [
+    [
+     160,
+     40
+    ],
+    [
+     230,
+     140
+    ],
+    [
+     285,
+     246
+    ],
+    [
+     318,
+     330
+    ],
+    [
+     290,
+     430
+    ],
+    [
+     230,
+     520
+    ],
+    [
+     175,
+     600
+    ]
+   ]
+  },
+  {
+   "t": "hills",
+   "shape": "ellipse",
+   "x": 840,
+   "y": 660,
+   "rx": 120,
+   "ry": 45
+  },
+  {
+   "t": "lake",
+   "shape": "ellipse",
+   "x": 640,
+   "y": 600,
+   "rx": 38,
+   "ry": 26
+  },
+  {
+   "t": "swamp",
+   "shape": "ellipse",
+   "x": 760,
+   "y": 560,
+   "rx": 60,
+   "ry": 30
+  },
+  {
+   "t": "mountains",
+   "shape": "rect",
+   "x": 20,
+   "y": 715,
+   "w": 960,
+   "h": 170
+  },
+  {
+   "t": "hills",
+   "shape": "ellipse",
+   "x": 250,
+   "y": 760,
+   "rx": 160,
+   "ry": 40
+  }
+ ],
+ "roadTypes": {
+  "track": {
+   "name": "Dirt track",
+   "speed": 1.25,
+   "risk": 0.75,
+   "discover": 0.85,
+   "stroke": "#8a6a3a",
+   "dash": "6 6",
+   "width": 3
+  },
+  "road": {
+   "name": "Road",
+   "speed": 1.55,
+   "risk": 0.55,
+   "discover": 0.7,
+   "stroke": "#7a5a2a",
+   "dash": "",
+   "width": 4
+  },
+  "highway": {
+   "name": "Old stone highway",
+   "speed": 1.9,
+   "risk": 0.4,
+   "discover": 0.6,
+   "stroke": "#6b6157",
+   "dash": "",
+   "width": 6,
+   "double": true
+  }
+ },
+ "offroad": {
+  "name": "Off-road",
+  "speed": 1.0,
+  "risk": 1.0,
+  "discover": 1.35
+ },
+ "roadSnap": 40,
+ "roadWorks": {
+  "_note": "Data hook only (not built yet): road building/repair by the Mason path.",
+  "builder": {
+   "path": "mason",
+   "rank": 1
+  },
+  "build": {
+   "track": {
+    "coin": 200,
+    "stone": 40
+   },
+   "road": {
+    "coin": 800,
+    "blocks": 40
+   }
+  },
+  "repair": {
+   "decayPerYear": 0.05,
+   "cost": {
+    "stone": 10
+   }
+  }
+ },
+ "roads": [
+  {
+   "id": "kingsway",
+   "type": "highway",
+   "name": "Old King's Way",
+   "pts": [
+    [
+     90,
+     150
+    ],
+    [
+     200,
+     230
+    ],
+    [
+     330,
+     300
+    ],
+    [
+     520,
+     340
+    ],
+    [
+     700,
+     380
+    ]
+   ]
+  },
+  {
+   "id": "homeroad",
+   "type": "road",
+   "name": "Mill Road",
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     260,
+     350
+    ],
+    [
+     330,
+     300
+    ]
+   ]
+  },
+  {
+   "id": "creektrack",
+   "type": "track",
+   "name": "Creek Track",
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     150,
+     500
+    ],
+    [
+     97,
+     628
+    ]
+   ]
+  },
+  {
+   "id": "herbtrack",
+   "type": "track",
+   "name": "Herb Path",
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     128,
+     376
+    ],
+    [
+     108,
+     454
+    ]
+   ]
+  },
+  {
+   "id": "minetrack",
+   "type": "track",
+   "name": "Miners' Track",
+   "pts": [
+    [
+     330,
+     300
+    ],
+    [
+     350,
+     210
+    ],
+    [
+     358,
+     139
+    ],
+    [
+     430,
+     90
+    ]
+   ]
+  },
+  {
+   "id": "laketrack",
+   "type": "track",
+   "name": "Lakeside Track",
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     300,
+     500
+    ],
+    [
+     410,
+     560
+    ]
+   ]
+  },
+  {
+   "id": "coasttrack",
+   "type": "track",
+   "name": "Salt Track",
+   "pts": [
+    [
+     200,
+     400
+    ],
+    [
+     110,
+     430
+    ],
+    [
+     45,
+     470
+    ]
+   ]
+  },
+  {
+   "id": "eyrietrack",
+   "type": "track",
+   "name": "High Pass",
+   "pts": [
+    [
+     700,
+     380
+    ],
+    [
+     780,
+     600
+    ],
+    [
+     820,
+     790
+    ]
+   ]
+  }
+ ],
+ "fog": {
+  "cell": 50,
+  "home": 170,
+  "town": 90,
+  "travel": 70,
+  "offroadBonus": 30,
+  "explore": 1.1
+ },
+ "locTypes": {
+  "town": {
+   "name": "Town",
+   "icon": "🏘️"
+  },
+  "village": {
+   "name": "Village",
+   "icon": "🏡"
+  },
+  "ruins": {
+   "name": "Ruins",
+   "icon": "🏛️"
+  },
+  "cave": {
+   "name": "Cave",
+   "icon": "🕳️"
+  },
+  "shrine": {
+   "name": "Shrine",
+   "icon": "⛩️"
+  },
+  "camp": {
+   "name": "Camp",
+   "icon": "⛺"
+  },
+  "mine": {
+   "name": "Mine",
+   "icon": "⛏️"
+  },
+  "grove": {
+   "name": "Grove",
+   "icon": "🌳"
+  },
+  "hidden": {
+   "name": "Hidden place",
+   "icon": "✨"
+  },
+  "port": {
+   "name": "Port",
+   "icon": "⚓"
+  }
+ },
+ "locations": [
+  {
+   "id": "l_millbrook",
+   "type": "town",
+   "name": "Millbrook",
+   "x": 330,
+   "y": 300,
+   "region": "outskirts",
+   "town": "millbrook"
+  },
+  {
+   "id": "l_ashford",
+   "type": "town",
+   "name": "Ashford",
+   "x": 90,
+   "y": 150,
+   "region": "outskirts",
+   "town": "ashford",
+   "hidden": true
+  },
+  {
+   "id": "l_thornwick",
+   "type": "town",
+   "name": "Thornwick",
+   "x": 700,
+   "y": 380,
+   "region": "forest",
+   "town": "thornwick"
+  },
+  {
+   "id": "l_hollyford",
+   "type": "village",
+   "name": "Hollyford",
+   "x": 250,
+   "y": 585,
+   "region": "outskirts",
+   "desc": "A ford village. Travellers rest here, and the roads south are watched.",
+   "reward": {
+    "coin": 30,
+    "renown": 2
+   }
+  },
+  {
+   "id": "l_pennick",
+   "type": "village",
+   "name": "Pennick Cross",
+   "x": 440,
+   "y": 250,
+   "region": "outskirts",
+   "desc": "Crossroads hamlet on the King's Way.",
+   "reward": {
+    "coin": 30,
+    "renown": 2
+   }
+  },
+  {
+   "id": "l_watchruin",
+   "type": "ruins",
+   "name": "Old Watchtower",
+   "x": 405,
+   "y": 470,
+   "region": "outskirts",
+   "desc": "A broken tower from the old kingdom.",
+   "reward": {
+    "coin": 80,
+    "renown": 4
+   }
+  },
+  {
+   "id": "l_ratcave",
+   "type": "cave",
+   "name": "Warren Cave",
+   "x": 260,
+   "y": 520,
+   "region": "outskirts",
+   "link": "d_ratwarren",
+   "desc": "Entrance to the Rat Warren."
+  },
+  {
+   "id": "l_wayshrine",
+   "type": "shrine",
+   "name": "Wayside Shrine",
+   "x": 160,
+   "y": 300,
+   "region": "outskirts",
+   "desc": "Travellers leave tokens here. A blessing for the road.",
+   "buff": {
+    "id": "wayshrine",
+    "name": "Wayshrine blessing",
+    "days": 20,
+    "xp": 0.03
+   }
+  },
+  {
+   "id": "l_banditcamp",
+   "type": "camp",
+   "name": "Bandit Camp",
+   "x": 278,
+   "y": 401,
+   "region": "outskirts",
+   "link": "bandit_scout",
+   "desc": "Smoke from a hidden camp."
+  },
+  {
+   "id": "l_oldmine",
+   "type": "mine",
+   "name": "Abandoned Mine",
+   "x": 358,
+   "y": 139,
+   "region": "outskirts",
+   "link": "oldmine",
+   "hidden": true
+  },
+  {
+   "id": "l_elmgrove",
+   "type": "grove",
+   "name": "Elder Grove",
+   "x": 300,
+   "y": 175,
+   "region": "outskirts",
+   "desc": "Ancient elms; mushrooms ring the roots.",
+   "reward": {
+    "mushrooms": 6
+   }
+  },
+  {
+   "id": "l_crone",
+   "type": "hidden",
+   "name": "Crone's Hut",
+   "x": 698,
+   "y": 565,
+   "region": "forest",
+   "link": "witch",
+   "hidden": true,
+   "desc": "The hedge witch's crooked hut."
+  },
+  {
+   "id": "l_dwarfhold",
+   "type": "hidden",
+   "name": "Sealed Dwarven Gate",
+   "x": 560,
+   "y": 845,
+   "region": "highlands",
+   "hidden": true,
+   "locked": true,
+   "stub": "runecarver",
+   "desc": "A rune-sealed door in the mountain. Something waits beyond. (Not yet open.)"
+  },
+  {
+   "id": "l_gullport",
+   "type": "port",
+   "name": "Gull's Landing",
+   "x": 42,
+   "y": 470,
+   "region": "outskirts",
+   "port": true,
+   "sea": "future",
+   "desc": "A fishing jetty on the coast. Ships may call here one day."
+  }
+ ],
+ "nodeDefaults": {
+  "stock": 240,
+  "regrow": 0.6,
+  "depleted": 0.25
+ },
+ "haul": {
+  "base": {
+   "id": "foot",
+   "name": "On foot",
+   "icon": "🎒",
+   "carry": 80,
+   "haulSpeed": 1.0
+  },
+  "tiers": [
+   {
+    "id": "handcart",
+    "name": "Handcart",
+    "icon": "🛒",
+    "carry": 140,
+    "haulSpeed": 1.0,
+    "item": "handcart"
+   },
+   {
+    "id": "mule",
+    "name": "Pack mule",
+    "icon": "🫏",
+    "carry": 200,
+    "haulSpeed": 1.3,
+    "animal": "mule"
+   },
+   {
+    "id": "oxwagon",
+    "name": "Ox wagon",
+    "icon": "🐂",
+    "carry": 400,
+    "haulSpeed": 1.15,
+    "item": "wagon",
+    "animal": "ox"
+   },
+   {
+    "id": "horsewagon",
+    "name": "Horse wagon",
+    "icon": "🐎",
+    "carry": 320,
+    "haulSpeed": 1.6,
+    "item": "wagon",
+    "animal": "horse"
+   }
+  ],
+  "qualityCarry": 0.08,
+  "animals": {
+   "mule": {
+    "name": "Mule",
+    "icon": "🫏",
+    "cost": {
+     "coin": 300
+    },
+    "feed": {
+     "food": 1
+    },
+    "towns": [
+     "millbrook",
+     "ashford",
+     "thornwick"
+    ]
+   },
+   "ox": {
+    "name": "Ox",
+    "icon": "🐂",
+    "cost": {
+     "coin": 650
+    },
+    "feed": {
+     "food": 2
+    },
+    "towns": [
+     "millbrook",
+     "ashford"
+    ]
+   },
+   "horse": {
+    "name": "Draft horse",
+    "icon": "🐎",
+    "cost": {
+     "coin": 1000
+    },
+    "feed": {
+     "food": 1.5
+    },
+    "towns": [
+     "thornwick",
+     "ashford",
+     "eyrie"
+    ]
+   }
+  },
+  "stall": "stablestall",
+  "stallsPer": 2,
+  "stableSpecStalls": 4
+ },
+ "features": {
+  "scrubland": {
+   "name": "Scrubland",
+   "icon": "🌿",
+   "res": {
+    "wood": 1,
+    "food": 1
+   },
+   "skill": "foraging"
+  },
+  "topsoil": {
+   "name": "Good topsoil",
+   "icon": "🟫",
+   "res": {
+    "food": 2
+   },
+   "skill": "farming",
+   "jobs": {
+    "farm": 0.15
+   }
+  },
+  "stone_outcrop": {
+   "name": "Stone outcrop",
+   "icon": "🪨",
+   "res": {
+    "stone": 2
+   },
+   "skill": "mining",
+   "jobs": {
+    "gather": 0.1
+   },
+   "structures": [
+    "quarry",
+    "masonyard"
+   ],
+   "structMult": 0.3
+  },
+  "stream": {
+   "name": "Stream",
+   "icon": "🏞️",
+   "res": {
+    "fish": 1.5
+   },
+   "skill": "fishing",
+   "jobs": {
+    "fish": 0.25
+   }
+  },
+  "woods": {
+   "name": "Woods",
+   "icon": "🌲",
+   "res": {
+    "wood": 3
+   },
+   "skill": "foraging",
+   "jobs": {
+    "gather": 0.2
+   }
+  },
+  "mushroom_patch": {
+   "name": "Mushroom patch",
+   "icon": "🍄",
+   "res": {
+    "mushrooms": 1.5
+   },
+   "skill": "foraging",
+   "jobs": {
+    "herbs": 0.1
+   }
+  },
+  "ore_vein": {
+   "name": "Ore vein",
+   "icon": "⛏️",
+   "res": {
+    "ore": 1.5,
+    "copperore": 0.5
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.25
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.3
+  },
+  "clay_bank": {
+   "name": "Clay bank",
+   "icon": "🧱",
+   "res": {
+    "clay": 1.5
+   },
+   "skill": "mining"
+  },
+  "pasture": {
+   "name": "Pasture",
+   "icon": "🐑",
+   "res": {
+    "food": 1.5
+   },
+   "skill": "animal",
+   "jobs": {
+    "hunt": 0.1
+   }
+  },
+  "gem_vein": {
+   "name": "Gem vein",
+   "icon": "💎",
+   "res": {
+    "gems": 0.3,
+    "ore": 1
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.15
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.2
+  }
+ },
+ "landFeatures": {
+  "plot": [
+   "scrubland"
+  ],
+  "acre": [
+   "topsoil",
+   "stone_outcrop"
+  ],
+  "meadow": [
+   "stream",
+   "topsoil"
+  ],
+  "hillside": [
+   "stone_outcrop",
+   "ore_vein"
+  ],
+  "riverbank": [
+   "stream",
+   "clay_bank"
+  ],
+  "woodlot": [
+   "woods",
+   "mushroom_patch"
+  ],
+  "ridge": [
+   "stone_outcrop",
+   "pasture"
+  ],
+  "valley": [
+   "stream",
+   "woods",
+   "topsoil"
+  ],
+  "highclaim": [
+   "ore_vein",
+   "gem_vein"
+  ]
+ },
+ "parcelBonus": 0.25,
+ "structureFeature": {
+  "quarry": "stone_outcrop",
+  "mineshaft": [
+   "ore_vein",
+   "gem_vein"
+  ]
+ },
+ "discoverPerOffroadDay": 0.08,
+ "regrowBySeason": {
+  "spring": 1.0,
+  "summer": 0.8,
+  "autumn": 0.6,
+  "winter": 0.2
+ },
+ "noderun": {
+  "cap": 2,
+  "gatherDays": 4,
+  "skillLvl": 6
+ }
+}

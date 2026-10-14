@@ -8,7 +8,8 @@
    "food": 1
   },
   "skill": "foraging",
-  "icon": "🌿"
+  "icon": "🌿",
+  "terrain": "plains"
  },
  {
   "id": "berries",
@@ -18,7 +19,8 @@
    "food": 3
   },
   "skill": "foraging",
-  "icon": "🫐"
+  "icon": "🫐",
+  "terrain": "plains"
  },
  {
   "id": "creek",
@@ -36,7 +38,8 @@
     "id": "giant_pearl",
     "chance": 0.005
    }
-  ]
+  ],
+  "terrain": "river"
  },
  {
   "id": "herbpatch",
@@ -46,7 +49,8 @@
    "thyme": 2
   },
   "skill": "foraging",
-  "icon": "🌱"
+  "icon": "🌱",
+  "terrain": "plains"
  },
  {
   "id": "oldmine",
@@ -69,7 +73,8 @@
     "id": "recipe:r_heirblade",
     "chance": 0.003
    }
-  ]
+  ],
+  "terrain": "hills"
  },
  {
   "id": "deadfall",
@@ -85,7 +90,8 @@
     "id": "ancient_coin",
     "chance": 0.004
    }
-  ]
+  ],
+  "terrain": "forest"
  },
  {
   "id": "gameTrail",
@@ -97,7 +103,8 @@
    "hides": 1
   },
   "skill": "hunting",
-  "icon": "🦌"
+  "icon": "🦌",
+  "terrain": "forest"
  },
  {
   "id": "moonherbs",
@@ -114,7 +121,8 @@
     "id": "dryad_tear",
     "chance": 0.004
    }
-  ]
+  ],
+  "terrain": "forest"
  },
  {
   "id": "coppervein",
@@ -132,7 +140,8 @@
     "id": "goblin_crown",
     "chance": 0.003
    }
-  ]
+  ],
+  "terrain": "hills"
  },
  {
   "id": "silverseam",
@@ -146,6 +155,156 @@
   "skill": "mining",
   "icon": "🪨",
   "hidden": true,
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.004
+   }
+  ],
+  "terrain": "mountains"
+ },
+ {
+  "id": "n_gemvein",
+  "name": "Glittering Vein",
+  "region": "outskirts",
+  "res": {
+   "ore": 1,
+   "gems": 0.3
+  },
+  "skill": "mining",
+  "icon": "💎",
+  "terrain": "mountains",
+  "terrainNode": true,
+  "fog": true,
+  "rare": [
+   {
+    "id": "ancient_coin",
+    "chance": 0.005
+   }
+  ]
+ },
+ {
+  "id": "n_timber",
+  "name": "Millwood Timber",
+  "region": "outskirts",
+  "res": {
+   "wood": 5
+  },
+  "skill": "foraging",
+  "icon": "🪓",
+  "terrain": "forest",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_mushrooms",
+  "name": "Mushroom Hollow",
+  "region": "outskirts",
+  "res": {
+   "mushrooms": 2,
+   "food": 1
+  },
+  "skill": "foraging",
+  "icon": "🍄",
+  "terrain": "forest",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_meadow",
+  "name": "Meadow Herbs",
+  "region": "outskirts",
+  "res": {
+   "thyme": 2,
+   "sage": 0.4
+  },
+  "skill": "foraging",
+  "icon": "🌼",
+  "terrain": "plains",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_riverpool",
+  "name": "River Pool",
+  "region": "outskirts",
+  "res": {
+   "fish": 3
+  },
+  "skill": "fishing",
+  "icon": "🎣",
+  "terrain": "river",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_lake",
+  "name": "Mirrormere Shallows",
+  "region": "outskirts",
+  "res": {
+   "fish": 4
+  },
+  "skill": "fishing",
+  "icon": "🐟",
+  "terrain": "lake",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_clay",
+  "name": "Clay Bank",
+  "region": "outskirts",
+  "res": {
+   "clay": 2
+  },
+  "skill": "mining",
+  "icon": "🧱",
+  "terrain": "swamp",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_peat",
+  "name": "Peat Cuttings",
+  "region": "outskirts",
+  "res": {
+   "peat": 2
+  },
+  "skill": "foraging",
+  "icon": "🟤",
+  "terrain": "swamp",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_salt",
+  "name": "Salt Pans",
+  "region": "outskirts",
+  "res": {
+   "salt": 1.5
+  },
+  "skill": "foraging",
+  "icon": "🧂",
+  "terrain": "coast",
+  "terrainNode": true,
+  "fog": true
+ },
+ {
+  "id": "n_starfall",
+  "name": "Starfall Crater",
+  "region": "outskirts",
+  "res": {
+   "ore": 1,
+   "gems": 0.5,
+   "dust": 0.3
+  },
+  "skill": "mining",
+  "icon": "☄️",
+  "terrain": "mountains",
+  "terrainNode": true,
+  "fog": true,
+  "hidden": true,
+  "remote": true,
   "rare": [
    {
     "id": "stormglass_orb",

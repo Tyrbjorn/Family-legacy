@@ -8,6 +8,8 @@ import { inheritTraits } from "./traits.js";
 import { checkAchievements } from "./achievements.js";
 import { expireBuffs } from "./encounters.js";
 import { eventsDay } from "./worldevents.js";
+import { worldDay as mapDay } from "./world.js";
+import { season, seasonDay } from "./seasons.js";
 import { globalTick, lifeBonus, memberTick } from "./legacy.js";
 import { actionAllowed, autoQuest, doAction, standingTick } from "./actions.js";
 import { ES, bedrooms, estEff, established, foodCap, matCap, processDay } from "./estate.js";
@@ -46,6 +48,7 @@ export function dayTick(s, effActive, effIdle) {
 function worldDay(s) {
   eventsDay(s);
   expireBuffs(s);
+  if (D.world) mapDay(s, seasonDay(s) === 0, season(s).id);
 }
 
 function milestonesDay(s) {

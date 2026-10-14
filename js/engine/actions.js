@@ -1,3 +1,4 @@
+import { hasFeature, parcelDay } from "./world.js";
 import { proposeIssue } from "./family.js";
 import { courtMult, noteStage } from "./courtship.js";
 import { nextQueued } from "./crafting.js";
@@ -119,6 +120,7 @@ export function doAction(s, m, a, eff) {
     return;
   }
   if (TRAVEL_TYPES.includes(a.type)) return travelTick(s, m, a, eff);
+  if (a.type === "parcel") return parcelDay(s, m, a, eff, gainXp);
   const h = ACTIONS[a.type];
   if (h) h(s, m, a, eff);
 }
@@ -239,6 +241,7 @@ export function actionAllowed(s, m, a) {
     return !!ac && activityOk(s, m, ac);
   }
   if (t === "rest") return true;
+  if (t === "parcel") return ageY(m) >= 10 && !!D.world && hasFeature(s, a.target);
   if (t === "gather") {
     const n = D.nodes.find(x => x.id === a.target);
     return ageY(m) >= 10 && (!n || (known(s, n) && regionOpen(s, n.region)));

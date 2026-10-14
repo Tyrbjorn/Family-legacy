@@ -12,6 +12,8 @@ const SEEDS = +(process.argv[2] || 3),
 const T = D.tuning,
   YD = T.daysPerYear;
 const issues = [];
+let lastS = null;
+const mapTick = new WeakMap();
 const seen = {
   enchants: 0,
   pathOpens: 0,
@@ -21,6 +23,11 @@ const seen = {
   evolves: 0,
   setWorn: 0,
   setCrafts: 0,
+  animals: 0,
+  noderuns: 0,
+  parcels: 0,
+  haulCrafts: 0,
+  maxCarry: 0,
   quests: new Set(),
   structs: new Set(),
   pieces: new Set(),
@@ -234,6 +241,25 @@ function bot(s, m) {
       for (const j of ["farm", "gather", "herbs", "mine", "hunt", "craft", "merchant", "adventure", "fish", "scout"])
         if (E.assignMinion(s, mi.uid, j)) break;
   }
+  if (process.env.DBGS && s.day % 1800 < 3) console.log("DBGM", s.day, Math.round(E.daysOfStock(s)), Math.round(s.res.coin), E.established(s), s.minions.map(x => x.job + (x.special ? "*" : "")).join(","), E.jobCap(s, "noderun"), E.stalls(s));
+  // map round: hauling animals, a follower on node runs, a cart now and then (gated so travel never starves the family)
+  if (s.day - (mapTick.get(s) ?? -99) >= 30 && E.daysOfStock(s) > 15 && s.res.coin > 1500) {
+    mapTick.set(s, s.day);
+    for (const id of ["mule", "ox"]) {
+      const town = D.world.haul.animals[id].towns.find(x => E.townKnown(s, D.towns.find(t => t.id === x)));
+      if (town && !E.animalCount(s) && E.buyAnimal(s, id, town)) seen.animals++;
+    }
+    if (!E.stalls(s)) for (const st of s.structures) if (!E.placeIssue(s, st.uid, "stablestall") && E.placePiece(s, st.uid, "stablestall")) break;
+    if (s.minions.length >= 1 && !s.minions.some(x => x.job === "noderun")) {
+      const mi = s.minions.find(x => ["gather", "herbs", "idle"].includes(x.job));
+      const n = D.nodes.filter(x => E.known(s, x) && E.regionOpen(s, x.region) && E.nodeStock(s, x) > 0).sort((a, b) => E.travelDays(a.id) - E.travelDays(b.id))[0];
+      if (mi && n && E.assignMinion(s, mi.uid, "noderun") && E.setMinionNode(s, mi.uid, n.id)) seen.noderuns++;
+    }
+    if (s.day % 4 === 0 && E.isAdult(m) && !E.isBusy(m) && !E.ownsVehicle(s, "handcart").length) {
+      const rc = D.crafting.recipes.find(r => r.id === "r_handcart");
+      if (rc && !E.recipeIssue(s, m, rc)) { E.setAction(s, { type: "craft", target: rc.id }); seen.haulCrafts++; }
+    }
+  }
   // followers: evolve (magic branch when possible), Manual mode on some to exercise choices
   if (s.day % 30 === 0 && E.daysOfStock(s) > 10)
     for (const mi of s.minions) {
@@ -255,6 +281,7 @@ function bot(s, m) {
       if (rc) { E.setAction(s, { type: "craft", target: rc.id }); seen.setCrafts++; }
     }
   }
+  seen.maxCarry = Math.max(seen.maxCarry, E.haulTier(s).carry);
   // legacy
   for (const u of D.legacy.upgrades) if (E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
   // family
@@ -268,7 +295,8 @@ function bot(s, m) {
   }
   // materials: gather when short of wood/stone for the next build
   if (E.isAdult(m) && !E.isBusy(m) && ((s.res.wood || 0) < 40 || (s.res.stone || 0) < 20) && s.day % 60 < 20) {
-    const n = D.nodes.find(x => E.actionAllowed(s, m, { type: "gather", target: x.id }));
+    const ok = D.nodes.filter(x => E.actionAllowed(s, m, { type: "gather", target: x.id }));
+    const n = ok.find(x => E.nodeStock(s, x) > 0 && (x.res.wood || x.res.stone)) || ok[0];
     if (n) E.setAction(s, { type: "gather", target: n.id });
     return;
   }
@@ -317,6 +345,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   let sd = seed * 104729;
   E.setRng(() => ((sd = (sd * 16807) % 2147483647), sd / 2147483647));
   let s = E.newGame(1e12);
+  lastS = s;
   let lineages = 1,
     maxGen = 1,
     peakCoin = 0,
@@ -376,7 +405,11 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     for (const e of s.wevents) seen.events.add(e.type);
     for (const id of s.vault) if (id.startsWith("c|")) seen.recipes.add(id.split("|")[1]);
     peakCoin = Math.max(peakCoin, s.res.coin);
+    if (process.env.DBGS && day % (YD * 5) === 0) console.log("DBG", day / YD, Math.round(s.res.coin), E.daysOfStock(s), s.minions.map(x => x.job).join(","), E.stalls(s), s.structures.map(x => E.placeIssue(s, x.uid, "stablestall")).join("|"));
     if (day % (YD * 10) === 0) coinAt.push(Math.round(s.res.coin));
+    for (const x of E.living(s)) if (x.action && x.action.load && Object.values(x.action.load).reduce((a, b) => a + b, 0) > E.haulTier(s).carry * 1.01 + 1) bad(seed, day, "trip load over haul cap");
+    for (const mi of s.minions) if (mi.trip && mi.trip.load && Object.values(mi.trip.load).reduce((a, b) => a + b, 0) > E.haulTier(s).carry * 1.01 + 1) bad(seed, day, "follower load over haul cap");
+    for (const [k, v] of Object.entries(s.nodeStock || {})) if (!(v >= 0)) bad(seed, day, "node stock negative " + k);
     if (day % 30 === 0) {
       const gens = E.familyTree(s).length;
       maxGen = Math.max(maxGen, gens);
@@ -530,6 +563,7 @@ console.log(
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
 console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
+console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

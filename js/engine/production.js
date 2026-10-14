@@ -4,6 +4,7 @@ import { seasonYield } from "./seasons.js";
 import { resGain } from "./legacy.js";
 import { mtype } from "./minions.js";
 import { famFx } from "./paths.js";
+import { structFeatureMult } from "./world.js";
 import { D, ageY, isAdult, living } from "./state.js";
 import { ES, activeSynergies, baseId, classSynMult, pieceDef, pieceTier, scaledPiece } from "./estate.js";
 
@@ -102,7 +103,7 @@ export function processDay(s, mul = 1) {
         if (n <= 0) continue;
         const inQ = inputQuality(s, pr.in);
         for (const [k, v] of Object.entries(pr.in)) s.res[k] -= v * n;
-        const made = n * yl * (1 + famFx(s, "yield", pr.out)) * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
+        const made = n * yl * (1 + famFx(s, "yield", pr.out)) * (D.world ? structFeatureMult(s, st.type) : 1) * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
         const cq = cropQ(s, p, pr);
         if (pr.food) blendFoodQ(s, pr.out, made, Math.min(Q_MAX, foodQualityOf(s, p) * inQ));
         else if (cq) blendFoodQ(s, pr.out, made, cq);

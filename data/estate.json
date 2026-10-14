@@ -14,7 +14,10 @@
     "ashford",
     "eyrie"
    ],
-   "desc": "A small patch of scrub land outside Millbrook"
+   "desc": "A small patch of scrub land outside Millbrook",
+   "features": [
+    "scrubland"
+   ]
   },
   {
    "id": "acre",
@@ -30,7 +33,11 @@
     "ashford",
     "eyrie"
    ],
-   "requires": "plot"
+   "requires": "plot",
+   "features": [
+    "topsoil",
+    "stone_outcrop"
+   ]
   },
   {
    "id": "meadow",
@@ -47,7 +54,11 @@
     "ashford",
     "eyrie"
    ],
-   "requires": "acre"
+   "requires": "acre",
+   "features": [
+    "stream",
+    "topsoil"
+   ]
   },
   {
    "id": "hillside",
@@ -64,7 +75,11 @@
     "ashford",
     "eyrie"
    ],
-   "requires": "meadow"
+   "requires": "meadow",
+   "features": [
+    "stone_outcrop",
+    "ore_vein"
+   ]
   },
   {
    "id": "riverbank",
@@ -81,6 +96,10 @@
     "thornwick",
     "ashford",
     "eyrie"
+   ],
+   "features": [
+    "stream",
+    "clay_bank"
    ]
   },
   {
@@ -99,6 +118,10 @@
     "thornwick",
     "ashford",
     "eyrie"
+   ],
+   "features": [
+    "woods",
+    "mushroom_patch"
    ]
   },
   {
@@ -116,6 +139,10 @@
     "thornwick",
     "ashford",
     "eyrie"
+   ],
+   "features": [
+    "stone_outcrop",
+    "pasture"
    ]
   },
   {
@@ -135,6 +162,11 @@
     "thornwick",
     "ashford",
     "eyrie"
+   ],
+   "features": [
+    "stream",
+    "woods",
+    "topsoil"
    ]
   },
   {
@@ -154,6 +186,10 @@
     "thornwick",
     "ashford",
     "eyrie"
+   ],
+   "features": [
+    "ore_vein",
+    "gem_vein"
    ]
   }
  ],
@@ -3941,6 +3977,21 @@
    "bonus": {},
    "requiresClass": "apprentice",
    "desc": "Mage-made: pairs with a Rune Desk or Enchanter's Table (better, faster enchanting)"
+  },
+  {
+   "id": "stablestall",
+   "name": "Stable Stalls",
+   "icon": "🐴",
+   "kind": "station",
+   "cost": {
+    "coin": 120,
+    "wood": 40,
+    "planks": 10
+   },
+   "bonus": {
+    "stalls": 2
+   },
+   "desc": "Stalls and a feed trough for 2 draft animals"
   }
  ],
  "synergies": [

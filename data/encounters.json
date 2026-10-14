@@ -499,6 +499,274 @@
      }
     }
    ]
+  },
+  {
+   "id": "ambush",
+   "name": "Bandit ambush",
+   "icon": "🗡️",
+   "when": {
+    "road": "off",
+    "terrain": [
+     "forest",
+     "hills",
+     "swamp"
+    ]
+   },
+   "weight": 2,
+   "text": "Bandits step out of the brush around {who}.",
+   "options": [
+    {
+     "id": "fight",
+     "label": "Fight",
+     "tag": "bold",
+     "check": {
+      "stat": "STR",
+      "dc": 10,
+      "alt": {
+       "skill": "swordsmanship",
+       "dc": 8
+      }
+     },
+     "success": {
+      "text": "They scatter, dropping a purse.",
+      "coin": 60,
+      "renown": 2
+     },
+     "fail": {
+      "text": "Beaten and robbed.",
+      "injure": 4,
+      "coin": -30
+     }
+    },
+    {
+     "id": "pay",
+     "label": "Pay them off (25🪙)",
+     "tag": "cautious",
+     "cost": {
+      "coin": 25
+     },
+     "success": {
+      "text": "They let you pass."
+     }
+    },
+    {
+     "id": "talk",
+     "label": "Talk your way out",
+     "tag": "kind",
+     "check": {
+      "stat": "CHA",
+      "dc": 10
+     },
+     "success": {
+      "text": "You share a joke and a pipe. They point out a shortcut.",
+      "renown": 1
+     },
+     "fail": {
+      "text": "They take your boots for good measure.",
+      "coin": -15
+     }
+    }
+   ]
+  },
+  {
+   "id": "lostsoul",
+   "name": "A lost traveler",
+   "icon": "🧭",
+   "weight": 1,
+   "text": "A lost traveler asks {who} the way.",
+   "options": [
+    {
+     "id": "guide",
+     "label": "Guide them",
+     "tag": "kind",
+     "success": {
+      "text": "Grateful, they tell you of a hidden spot nearby.",
+      "reveal": true,
+      "renown": 1
+     }
+    },
+    {
+     "id": "point",
+     "label": "Point the way",
+     "tag": "cautious",
+     "success": {
+      "text": "They thank you and go."
+     }
+    }
+   ]
+  },
+  {
+   "id": "wmerchant",
+   "name": "Traveling merchant",
+   "icon": "🧳",
+   "when": {
+    "road": "on"
+   },
+   "weight": 1,
+   "text": "A merchant's cart rattles up beside {who}.",
+   "options": [
+    {
+     "id": "buy",
+     "label": "Buy supplies (40🪙)",
+     "tag": "kind",
+     "cost": {
+      "coin": 40
+     },
+     "success": {
+      "text": "Good salt pork and rope.",
+      "res": {
+       "food": 30,
+       "salt": 3
+      }
+     }
+    },
+    {
+     "id": "sell",
+     "label": "Trade gossip",
+     "tag": "cautious",
+     "check": {
+      "skill": "haggling",
+      "dc": 4
+     },
+     "success": {
+      "text": "He pays for news of the road.",
+      "coin": 25
+     },
+     "fail": {
+      "text": "He's heard it all before."
+     }
+    }
+   ]
+  },
+  {
+   "id": "sighting",
+   "name": "Monster sighting",
+   "icon": "🐺",
+   "when": {
+    "road": "off",
+    "terrain": [
+     "forest",
+     "mountains",
+     "swamp",
+     "hills"
+    ]
+   },
+   "weight": 1,
+   "text": "Fresh tracks, huge ones. Something big hunts near {who}.",
+   "options": [
+    {
+     "id": "track",
+     "label": "Track it",
+     "tag": "bold",
+     "check": {
+      "skill": "tracking",
+      "dc": 6,
+      "alt": {
+       "skill": "hunting",
+       "dc": 8
+      }
+     },
+     "success": {
+      "text": "You find its lair and a cache of bones and coin.",
+      "coin": 90,
+      "renown": 3
+     },
+     "fail": {
+      "text": "It found you first.",
+      "injure": 5
+     }
+    },
+    {
+     "id": "avoid",
+     "label": "Steer clear",
+     "tag": "cautious",
+     "success": {
+      "text": "You take the long way round."
+     }
+    }
+   ]
+  },
+  {
+   "id": "stormroad",
+   "name": "Sudden storm",
+   "icon": "⛈️",
+   "when": {
+    "season": [
+     "autumn",
+     "winter"
+    ]
+   },
+   "weight": 1,
+   "text": "A storm breaks over {who}.",
+   "options": [
+    {
+     "id": "shelter",
+     "label": "Shelter and wait",
+     "tag": "cautious",
+     "success": {
+      "text": "You lose a day but stay dry.",
+      "delay": 1
+     }
+    },
+    {
+     "id": "push",
+     "label": "Push on",
+     "tag": "bold",
+     "check": {
+      "stat": "VIT",
+      "dc": 9,
+      "alt": {
+       "stat": "STR",
+       "dc": 11
+      }
+     },
+     "success": {
+      "text": "Soaked but on time."
+     },
+     "fail": {
+      "text": "A chill sets in.",
+      "injure": 2
+     }
+    }
+   ]
+  },
+  {
+   "id": "festband",
+   "name": "Festival-goers",
+   "icon": "🎉",
+   "when": {
+    "road": "on",
+    "season": [
+     "summer",
+     "autumn"
+    ]
+   },
+   "weight": 1,
+   "text": "Merry festival-goers invite {who} to march along.",
+   "options": [
+    {
+     "id": "join",
+     "label": "Join the dancing",
+     "tag": "kind",
+     "success": {
+      "text": "A night to remember.",
+      "buff": {
+       "id": "festive",
+       "name": "Festive cheer",
+       "days": 10,
+       "xp": 0.05
+      }
+     }
+    },
+    {
+     "id": "decline",
+     "label": "Move on",
+     "tag": "cautious",
+     "success": {
+      "text": "You keep walking."
+     }
+    }
+   ]
   }
  ]
 }

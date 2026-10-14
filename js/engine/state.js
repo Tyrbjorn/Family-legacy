@@ -51,7 +51,15 @@ export const active = s => s.members.find(m => m.id === s.activeId);
 
 export const isAdult = m => ageY(m) >= T.adultAge;
 
-export const known = (s, x) => !x.hidden || s.revealed.includes(x.id);
+export const known = (s, x) => (!x.hidden || s.revealed.includes(x.id)) && (!x.fog || fogCellSeen(s, x.id));
+// fog-gated markers (data/world.json fog): cell of the map point must be seen
+function fogCellSeen(s, id) {
+  const p = D.map && D.map.points[id];
+  if (!s.fog || !p || !D.world) return true;
+  const k = D.world.fog.cell,
+    c = Math.ceil(D.map.size.w / k);
+  return s.fog[Math.floor(p.y / k) * c + Math.floor(p.x / k)] === "1";
+}
 
 export function cost(s, b) {
   const lv = s.buildings[b.id];

@@ -1521,6 +1521,37 @@
    "pathRank": 1,
    "forClass": "adventurer",
    "minSkill": 5
+  },
+  {
+   "id": "r_handcart",
+   "name": "Handcart",
+   "base": "handcart",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 8,
+    "ingots": 1
+   },
+   "days": 4,
+   "line": "carpenter",
+   "path": "carpenter"
+  },
+  {
+   "id": "r_wagon",
+   "name": "Wagon",
+   "base": "wagon",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 20,
+    "ingots": 4,
+    "leather": 2
+   },
+   "days": 8,
+   "line": "carpenter",
+   "path": "carpenter",
+   "pathRank": 1,
+   "minSkill": 12
   }
  ],
  "minionSlots": [

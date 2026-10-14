@@ -1390,5 +1390,21 @@
   "cp": 18,
   "value": 110,
   "pathItem": true
+ },
+ {
+  "id": "handcart",
+  "name": "Handcart",
+  "slot": "haul",
+  "rarity": "Common",
+  "cp": 0,
+  "value": 80
+ },
+ {
+  "id": "wagon",
+  "name": "Wagon",
+  "slot": "haul",
+  "rarity": "Fine",
+  "cp": 0,
+  "value": 300
  }
 ]

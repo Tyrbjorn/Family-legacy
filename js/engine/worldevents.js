@@ -1,4 +1,5 @@
-import { seasonEvents } from "./seasons.js";
+import { season, seasonEvents } from "./seasons.js";
+const seasonId = s => season(s).id;
 // Random world events: timed town/regional effects on prices, travel risk and gathering.
 import { chron } from "./chronicle.js";
 import { D, log, rng } from "./state.js";
@@ -42,8 +43,14 @@ export function eventsDay(s) {
     log(s, `${eventType(e.type).icon} ${eventType(e.type).name} in ${placeName(e)} has ended.`);
   s.wevents = s.wevents.filter(x => x.until > s.day);
   if (s.wevents.length >= CFG().maxActive || rng() >= CFG().chancePerDay * seasonEvents(s)) return;
-  const t = CFG().types[Math.floor(rng() * CFG().types.length)];
-  const pool = t.scope === "town" ? D.towns : D.regions;
+  const sid = (D.seasons ? seasonId(s) : null);
+  const types = CFG().types.filter(t => !t.season || !sid || t.season.includes(sid));
+  const t = types[Math.floor(rng() * types.length)];
+  if (!t) return;
+  const pool = (t.scope === "town" ? D.towns : D.regions.filter(r => !r.future)).filter(
+    x => !t.regions || t.regions.includes(t.scope === "town" ? x.region : x.id),
+  );
+  if (!pool.length) return;
   const place = pool[Math.floor(rng() * pool.length)].id;
   if (s.wevents.some(x => x.place === place && x.type === t.id)) return;
   startEvent(s, t.id, place);
@@ -57,3 +64,4 @@ export const buyMult = (s, townId) => prod(eventsAtTown(s, townId), x => x.buyMu
 export const sellMult = (s, townId) => prod(eventsAtTown(s, townId), x => x.sellMult || 1);
 export const travelRisk = (s, region) => sum(eventsInRegion(s, region), x => x.travelRisk || 0);
 export const gatherMult = (s, region) => prod(eventsInRegion(s, region), x => x.gather || 1);
+export const eventMult = (s, region, key) => prod(eventsInRegion(s, region), x => x[key] || 1);

@@ -43,7 +43,11 @@
    "pie": 8.0,
    "porridge": 3.0,
    "draught": 16.0,
-   "manatonic": 20.0
+   "manatonic": 20.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2
   },
   "shop": [
    "rusty_sword",
@@ -118,7 +122,11 @@
    "pie": 9.5,
    "porridge": 3.5,
    "draught": 19.0,
-   "manatonic": 24.0
+   "manatonic": 24.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2
   },
   "shop": [
    "iron_sword",
@@ -188,7 +196,11 @@
    "pie": 9.0,
    "porridge": 3.5,
    "draught": 17.5,
-   "manatonic": 22.0
+   "manatonic": 22.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2
   },
   "shop": [
    "hunting_bow",
@@ -257,7 +269,11 @@
    "pie": 10.0,
    "porridge": 4.0,
    "draught": 20.0,
-   "manatonic": 25.0
+   "manatonic": 25.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2
   },
   "shop": [
    "iron_sword",

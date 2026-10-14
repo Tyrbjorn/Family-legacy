@@ -38,6 +38,7 @@ const names = [
   "intros",
   "gear",
   "paths",
+  "world",
 ];
 
 export const D = {};
@@ -185,6 +186,9 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "pickpiece" && el.value) {
     const st = el.value.startsWith("store:");
     E.placePiece(s, el.dataset.v, el.value.replace("store:", ""), st);
+  }
+  if (el.dataset.a === "setnode" && el.value) {
+    E.setMinionNode(s, el.dataset.v, el.value);
   }
   if (el.dataset.a === "mjob") {
     E.assignMinion(s, el.dataset.v, el.value);

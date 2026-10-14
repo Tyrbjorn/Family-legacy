@@ -22,21 +22,118 @@ export function rareLine(src) {
   return `<div class="muted">🌟 Rare drops: ${src.rare.map(d => (E.dropFound(s, d.id) ? `<b>${E.dropName(d.id)}</b> (${d.chance * 100}%)` : "???")).join(", ")}</div>`;
 }
 
+// Parchment base: terrain zones (data/world.json), roads, then fog of war on top.
+let _parch = null;
+function parchment(MP, WD) {
+  if (_parch && _parch.src === WD) return _parch.svg;
+  const T = WD.terrain;
+  let d = `<defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>`;
+  for (const [id, te] of Object.entries(T))
+    d += `<pattern id="tp-${id}" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="${te.fill}"/>${TPAT[id] ? TPAT[id](te.ink) : ""}</pattern>`;
+  d += "</defs>";
+  let g = d + `<rect x="0" y="0" width="${MP.size.w}" height="${MP.size.h}" fill="#e9d8ae"/>`;
+  for (const z of WD.zones) {
+    const f = `fill="url(#tp-${z.t})" stroke="${T[z.t].ink}" stroke-opacity=".5" filter="url(#rough)"`;
+    if (z.shape === "rect") g += `<rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.h}" ${f}/>`;
+    else if (z.shape === "ellipse") g += `<ellipse cx="${z.x}" cy="${z.y}" rx="${z.rx}" ry="${z.ry}" ${f}/>`;
+    else if (z.shape === "line") g += `<polyline points="${z.pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${T[z.t].ink}" stroke-width="${z.width || 10}" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"/>`;
+  }
+  const RS = { highway: ["#5a3a1a", 6, ""], road: ["#7a5530", 4, ""], track: ["#8a6a40", 2.5, "6 6"] };
+  for (const r of WD.roads) {
+    const [c, w, da] = RS[r.type] || RS.track;
+    g += `<polyline points="${r.pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}" stroke-linecap="round" stroke-linejoin="round" opacity=".85"><title>${r.name} (${WD.roadTypes[r.type].name || r.type})</title></polyline>`;
+  }
+  _parch = { src: WD, svg: g };
+  return g;
+}
+const TPAT = {
+  forest: c => `<path d="M6 18l4-9 4 9zM17 10l3-7 3 7z" fill="${c}" opacity=".7"/>`,
+  hills: c => `<path d="M2 18q6-8 12 0M14 10q5-6 10 0" fill="none" stroke="${c}" stroke-width="1.4"/>`,
+  mountains: c => `<path d="M2 22l8-15 8 15M12 22l7-12 6 12" fill="none" stroke="${c}" stroke-width="1.6"/>`,
+  river: c => `<path d="M0 13q6-4 13 0t13 0" fill="none" stroke="${c}" stroke-width="1"/>`,
+  lake: c => `<path d="M3 9q4-3 8 0M14 19q4-3 8 0" fill="none" stroke="${c}" stroke-width="1"/>`,
+  swamp: c => `<path d="M4 18h8M7 18v-5M16 9h7M19 9v-5" stroke="${c}" stroke-width="1.2"/>`,
+  plains: c => `<circle cx="7" cy="8" r="1" fill="${c}"/><circle cx="19" cy="18" r="1" fill="${c}"/>`,
+  coast: c => `<path d="M0 6q6 4 13 0t13 0M0 18q6 4 13 0t13 0" fill="none" stroke="${c}" stroke-width="1"/>`,
+};
+// Fog: unseen cells merged into row runs so the overlay stays light on mobile.
+function fogLayer(MP, WD) {
+  if (!s.fog) return "";
+  const k = WD.fog.cell,
+    c = Math.ceil(MP.size.w / k),
+    r = Math.ceil(MP.size.h / k);
+  let g = `<g fill="#d8c79c" opacity="1" pointer-events="none">`;
+  for (let j = 0; j < r; j++)
+    for (let i = 0; i < c; i++) {
+      if (s.fog[j * c + i] !== "0") continue;
+      let e = i;
+      while (e + 1 < c && s.fog[j * c + e + 1] === "0") e++;
+      g += `<rect x="${i * k - 1}" y="${j * k - 1}" width="${(e - i + 1) * k + 2}" height="${k + 2}"/>`;
+      i = e;
+    }
+  return g + "</g>";
+}
+
+export function routeLine(id, pt) {
+  const r = pt ? E.routeTo(pt) : E.routeOf(id, E.ptOf),
+    te = D.world.terrain[r.terrain];
+  return `${te.icon} ${te.name} · ${r.road ? `${Math.round(r.roadFrac * 100)}% on ${r.road.name}` : "off-road"} · risk ×${r.risk.toFixed(2)} · finds ×${r.discover.toFixed(2)}`;
+}
+
+export function haulCard() {
+  const H = D.world.haul,
+    t = E.haulTier(s),
+    st = E.stalls(s),
+    an = E.animalCount(s);
+  const towns = D.towns.filter(x => E.townKnown(s, x)).map(x => x.id);
+  return `<div class="card"><b>${t.icon || "🎒"} Hauling</b> <span class="muted">· ${t.name} · carry ${t.carry}/trip · haul speed ×${t.haulSpeed}</span>
+ <div class="muted">Tiers: ${[H.base, ...H.tiers].map(x => `${x.icon || "🎒"} ${x.name} ${x.carry}`).join(" → ")}. Carts and wagons are made by a Cooper &amp; Wainwright (Carpenter); animals need feed and a stable stall.</div>
+ <div class="muted">🐴 Animals ${an}/${st} stalls${an ? (s.animalsFed === false ? " · ⚠️ unfed" : " · fed") : ""}</div>
+ <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${Object.entries(H.animals)
+   .map(([id, a]) => {
+     const town = a.towns.find(x => towns.includes(x)),
+       iss = town ? E.buyAnimalIssue(s, id, town) : "no known market";
+     return `<button class="b" data-a="buyanimal" data-v="${id}" data-w="${town || ""}" ${iss ? "disabled" : ""} title="${iss || ""}">${a.icon} ${a.name} ${a.cost.coin}🪙 (${(s.animals || {})[id] || 0})${iss ? " · " + iss : ""}</button>`;
+   })
+   .join("")}</div></div>`;
+}
+
+export function parcelCard(m) {
+  const fs = E.ownedFeatures(s);
+  if (!fs.length) return `<div class="card muted">🏞️ Own land to work its features here with no travel (+${D.world.parcelBonus * 100}%). Land is sold in towns.</div>`;
+  const busy = E.isBusy(m);
+  return `<div class="card"><b>🏞️ Your land</b> <span class="muted">· work features with no travel (+${D.world.parcelBonus * 100}%)</span>${(s.land || [])
+    .map(id => `<div class="muted">${(D.estate.lands.find(x => x.id === id) || { name: id }).name}: ${(D.world.landFeatures[id] || []).map(f => E.featureDef(f).icon + " " + E.featureDef(f).name).join(", ") || "no features"}</div>`)
+    .join("")}
+ ${fs
+   .map(f => {
+     const fd = E.featureDef(f),
+       on = m.action && m.action.type === "parcel" && m.action.target === f;
+     return `<div class="row"><span>${fd.icon} ${fd.name} <span class="muted">${Object.entries(fd.res).map(([k, v]) => `+${v}${RI[k] || k}/day`).join(" ")} · ${sk(fd.skill).name}</span></span><button class="b ${on ? "sel" : ""}" data-a="parcel" data-v="${f}" ${busy && !on ? "disabled" : ""}>${on ? "Working" : "Work"}</button></div>`;
+   })
+   .join("")}</div>`;
+}
+
 export function mapSvg(m) {
   const MP = D.map,
     W = MP.size.w,
     H = MP.size.h;
   if (!U.mv) U.mv = { x: 0, y: 0, w: W, h: H };
-  let g = "";
+  const WD = D.world;
+  let g = parchment(MP, WD) + fogLayer(MP, WD);
   for (const r of MP.regions) {
     const rg = D.regions.find(x => x.id === r.id),
       kn = E.regionKnown(s, r.id),
       op = E.regionOpen(s, r.id);
-    g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="${r.color}" stroke="#000" stroke-opacity=".4"/>`;
-    g += `<text x="${r.x + 12}" y="${r.y + 26}" font-size="20" fill="#fff" opacity=".8">${kn ? rg.icon + " " + rg.name : "❔ Uncharted"}${kn && !op ? " 🔒 CP " + rg.cp : ""}</text>`;
-    if (!op)
-      g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="#9aa" opacity="${kn ? 0.45 : 0.8}"/>`;
+    g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="none" stroke="#6b4a26" stroke-width="2" stroke-dasharray="10 6" stroke-opacity=".6"/>`;
+    g += `<text x="${r.x + 12}" y="${r.y + 26}" font-size="20" fill="#4a3018" font-family="serif" font-style="italic">${kn ? rg.icon + " " + rg.name : "❔ Uncharted"}${kn && !op ? " 🔒 CP " + rg.cp : ""}</text>`;
+    if (!op) g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="#8a7a5a" opacity="${kn ? 0.3 : 0.55}"/>`;
   }
+  for (const l of WD.locations)
+    if (E.locKnown(s, l) && E.regionKnown(s, l.region) && !l.town) {
+      const ty = WD.locTypes[l.type];
+      g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer"><rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${l.locked ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${l.locked ? "🔒" : ty.icon}</text><text x="${l.x}" y="${l.y + 32}" font-size="12" text-anchor="middle" fill="#3a2410" font-family="serif">${l.name}</text></g>`;
+    }
   for (const a of MP.areas.filter(a => E.regionKnown(s, a.region))) {
     const ex = E.explored(s, a.id),
       sel = U.mapSel === "a:" + a.id;
@@ -55,7 +152,7 @@ export function mapSvg(m) {
   for (const n of D.nodes)
     if (E.known(s, n) && E.regionKnown(s, n.region)) {
       const p = MP.points[n.id];
-      g += pin(n.id, p.x, p.y, n.icon, "#8fd18f", "", "n");
+      g += pin(n.id, p.x, p.y, n.icon, E.nodeStock(s, n) > 0 ? "#3f7a2f" : "#a33", "", "n");
     }
   for (const q of D.quests)
     if (
@@ -84,11 +181,11 @@ export function mapSvg(m) {
       const p = E.ptOf(x.action.target),
         d = E.tripPos(x.action),
         act = x.id === m.id;
-      g += `<line x1="${hm.x}" y1="${hm.y}" x2="${p.x}" y2="${p.y}" stroke="${act ? "#ffd34d" : "#bcd"}" stroke-width="${act ? 4 : 2.5}" stroke-dasharray="3 9" stroke-linecap="round"/><circle cx="${d.x}" cy="${d.y}" r="${act ? 11 : 8}" fill="${act ? "#ffd34d" : "#bcd"}" stroke="#000"><title>${x.name}</title></circle>`;
+      g += `<line x1="${hm.x}" y1="${hm.y}" x2="${p.x}" y2="${p.y}" stroke="${act ? "#b8860b" : "#5a6a7a"}" stroke-width="${act ? 4 : 2.5}" stroke-dasharray="3 9" stroke-linecap="round"/><circle cx="${d.x}" cy="${d.y}" r="${act ? 11 : 8}" fill="${act ? "#ffd34d" : "#bcd"}" stroke="#000"><title>${x.name}</title></circle>`;
     }
-  return `<div class="card" style="padding:4px"><div class="row" style="justify-content:flex-end;gap:4px"><button class="b" data-a="zoom" data-v="0.7">＋</button><button class="b" data-a="zoom" data-v="1.4">－</button><button class="b" data-a="zoom" data-v="0">⟲</button></div>
- <svg id="worldmap" viewBox="${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}" style="width:100%;height:58vh;touch-action:none;background:#0d1a12;border-radius:10px;user-select:none">${g}</svg>
- <div class="muted" style="font-size:11px">Drag to pan, pinch/scroll or ＋/－ to zoom, tap a marker. 📖 story · ⭐ one-time · 🔁 repeatable · 🌫️ unexplored.</div></div>`;
+  return `<div class="card" style="padding:4px"><div class="row" style="justify-content:flex-end;gap:4px"><span class="muted" style="margin-right:auto">🌫️ ${Math.round(E.fogPct(s) * 100)}% charted</span><button class="b" data-a="zoom" data-v="0.7">＋</button><button class="b" data-a="zoom" data-v="1.4">－</button><button class="b" data-a="zoom" data-v="0">⟲</button></div>
+ <svg id="worldmap" viewBox="${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}" style="width:100%;height:58vh;touch-action:none;background:#e9d8ae;border-radius:10px;user-select:none">${g}</svg>
+ <div class="muted" style="font-size:11px">Drag to pan, pinch/scroll or ＋/－ to zoom, tap a marker. 📖 story · ⭐ one-time · 🔁 repeatable · 🌫️ unexplored · ━ highway, ─ road, ┄ track · off-road is slower but finds more.</div></div>`;
 }
 
 export function mapDetail(m) {
@@ -131,8 +228,16 @@ export function mapDetail(m) {
       n.res,
     )
       .map(([k, v]) => `+${v}${RI[k] || k}/day`)
-      .join(" ")} · ${sk(n.skill).name} · trip ${D.map.gatherTripDays}d gathering · 🚶 ${trav}</div>${rareLine(n)}
+      .join(" ")} · ${sk(n.skill).name} · trip ${D.map.gatherTripDays}d gathering · 🚶 ${trav}</div>
+  <div class="muted">${routeLine(id)} · stock ${Math.round(E.nodeStock(s, n))}/${E.nodeMax(n)}${E.nodeStock(s, n) > 0 ? "" : " 🪫 worked out (regrows by season)"} · haul ${E.haulTier(s).carry}/trip</div>
+  <div class="bar"><i style="width:${(E.nodeStock(s, n) / E.nodeMax(n)) * 100}%"></i></div>
+  ${on && m.action.trip ? `<div class="muted">🎒 Load ${Math.round(Object.values(m.action.load || {}).reduce((a, b) => a + b, 0))}/${E.haulTier(s).carry}</div>${pbar(m.action.progress || 0, m.action.days || 1)}` : ""}${rareLine(n)}
   <div class="row"><span class="muted">${ok ? (busy && !on ? "🚶 busy" : "") : "🔒 age 10+ / region"}</span><button class="b ${on ? "sel" : ""}" data-a="gather" data-v="${id}" ${!ok || (busy && !on) ? "disabled" : ""}>${on ? "Gathering" : "Gather"}</button></div></div>`;
+  }
+  if (k === "l") {
+    const l = E.locDef(id),
+      ty = D.world.locTypes[l.type];
+    h = `<div class="card"><b>${ty.icon} ${l.name}</b> <span class="tb">${ty.name}${l.locked ? " · 🔒 sealed" : ""}</span>${l.desc ? `<div class="muted">${l.desc}</div>` : ""}<div class="muted">${routeLine(null, l)}</div>${l.locked ? '<div class="muted">The gates stay shut. Perhaps one day…</div>' : ""}${l.sea ? '<div class="muted">⚓ Ships and sea trade are not open yet.</div>' : ""}</div>`;
   }
   if (k === "a") {
     const a = E.areaDef(id),
@@ -192,7 +297,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + worldEventsCard() + standingv(m) + storyv(m);
+  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + parcelCard(m) + haulCard() + worldEventsCard() + standingv(m) + storyv(m);
   h += E.isAdult(m) ? "" : `<div class="card muted">Children can gather but not quest or explore.</div>`;
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);

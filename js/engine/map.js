@@ -2,19 +2,47 @@ import { seasonGather, seasonTravel } from "./seasons.js";
 import { chron } from "./chronicle.js";
 import { buffSum, maybeEncounter } from "./encounters.js";
 import { resGain } from "./legacy.js";
-import { gatherMult, travelRisk } from "./worldevents.js";
+import { eventMult, gatherMult, travelRisk } from "./worldevents.js";
+import { WD, drawNode, haulTier, locationsDay, nodeYieldMult, reveal, routeOf, terrainAt, terrainDef } from "./world.js";
 
 const targetRegion = a =>
   ([...D.quests, ...D.nodes, ...(D.dungeons || []), ...(D.map.areas || [])].find(x => x.id === a.target) || {}).region;
 
 // One day on the road: world-event travel risk, then a chance of a choice encounter.
 function roadDay(s, m, a, eff) {
-  const risk = travelRisk(s, targetRegion(a));
+  const rt = D.world ? routeOf(a.target, ptOf) : null;
+  const rmul = rt ? rt.risk * (rt.roadFrac < 0.5 ? eventMult(s, targetRegion(a), "offroadRisk") : 1) : 1;
+  const risk = travelRisk(s, targetRegion(a)) * rmul;
+  if (rt) {
+    // fog clears around the traveller; off-road walking clears more and turns up discoveries
+    const p = tripPos(a);
+    reveal(s, p.x, p.y, WD().fog.travel + WD().fog.offroadBonus * (1 - rt.roadFrac));
+    if (rng() < WD().discoverPerOffroadDay * (1 - rt.roadFrac) * rt.discover * eventMult(s, targetRegion(a), "discover") * eff) offroadFind(s, m, p);
+    locationsDay(s, m.name);
+  }
   if (risk && !m.minion && rng() < risk * eff) {
     m.injured = Math.max(m.injured || 0, 3);
     log(s, `🗡️ ${m.name} was waylaid on the road and is hurt.`);
   }
-  if (a.type !== "auto") maybeEncounter(s, m, eff);
+  if (a.type !== "auto")
+    maybeEncounter(s, m, eff * (rt ? rt.risk : 1), rt ? { terrain: rt.terrain, road: rt.roadFrac >= 0.5 ? "on" : "off" } : null);
+}
+
+// off-road discovery: clears a patch of fog nearby, sometimes reveals a remote node in that region
+function offroadFind(s, m, p) {
+  const an = rng() * 6.283,
+    x = p.x + Math.cos(an) * 90,
+    y = p.y + Math.sin(an) * 90;
+  reveal(s, x, y, 80);
+  const rm = D.nodes.filter(n => n.remote && n.hidden && !s.revealed.includes(n.id));
+  let msg = `🧭 ${m.name} strayed off the road and charted new ground`;
+  if (rm.length && rng() < 0.25) {
+    const n = rm[Math.floor(rng() * rm.length)];
+    s.revealed.push(n.id);
+    msg += `, and found ${n.icon} ${n.name}`;
+    chron(s, "discovery", `🔍 ${m.name} found ${n.name} off the beaten track.`, m.name);
+  }
+  log(s, msg + ".");
 }
 import { addRenown } from "./legacy.js";
 import { defaultAction } from "./actions.js";
@@ -45,7 +73,7 @@ export function travelTick(s, m, a, eff) {
     m.action = null;
     return;
   }
-  if (!a.trip) a.trip = newTrip(a);
+  if (!a.trip) a.trip = newTrip(a, s);
   const t = a.trip;
   const ph = tripPhase(a);
   t.t += ph === "out" || ph === "back" ? eff * seasonTravel(s) : eff;
@@ -87,8 +115,7 @@ export function travelTick(s, m, a, eff) {
         Math.max(0.2, 1 + buffSum(s, "gather")) *
         seasonGather(s);
       const gb = lineBonus(m);
-      for (const [k, v] of Object.entries(n.res)) s.res[k] = (s.res[k] || 0) + v * mul * (1 + (gb[k] || 0) + memberFx(m, "gather", k));
-      for (const [k, v] of Object.entries(pathFinds(m, n.skill))) s.res[k] = (s.res[k] || 0) + v * mul;
+      gatherInto(s, t, n, mul, k => (gb[k] || 0) + memberFx(m, "gather", k), pathFinds(m, n.skill));
       gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
       rollRare(s, n, m);
     }
@@ -104,6 +131,7 @@ export function travelTick(s, m, a, eff) {
       );
     if (a.type === "explore") exploreArea(s, m, areaDef(a.target));
   }
+  if (t.load && tripPhase(a) === "done") deliverLoad(s, m.name, t);
   if (m.alive && m.action === a && tripPhase(a) === "done") {
     if (m.standing) {
       m.action = null;
@@ -150,7 +178,37 @@ export const distTo = id => {
   return Math.hypot(p.x - h.x, p.y - h.y);
 };
 
-export const travelDays = id => Math.round(Math.max(MP().minTravel, distTo(id) / MP().speed) * 10) / 10;
+export const travelDays = id =>
+  Math.round(Math.max(MP().minTravel, D.world ? routeOf(id, ptOf).days : distTo(id) / MP().speed) * 10) / 10;
+
+// gathering fills a load (capped by the hauling tier's carry per trip); it reaches the larder when hauled home
+export function gatherInto(s, t, n, mul, bonusOf, finds = {}) {
+  const tr = D.world ? terrainDef(n.terrain || terrainAt(ptOf(n.id).x, ptOf(n.id).y)) : null;
+  const ym = D.world ? nodeYieldMult(s, n) : 1;
+  if (!t.load) t.load = {};
+  const cap = t.cap || (D.world ? haulTier(s).carry : Infinity);
+  t.cap = cap;
+  let have = Object.values(t.load).reduce((x, y) => x + y, 0),
+    took = 0;
+  const add = (k, v) => {
+    const q = Math.min(v, Math.max(0, cap - have));
+    if (q <= 0) return;
+    t.load[k] = (t.load[k] || 0) + q;
+    have += q;
+    took += q;
+  };
+  for (const [k, v] of Object.entries(n.res)) add(k, v * mul * ym * (tr ? tr.gather[k] || 1 : 1) * (1 + bonusOf(k)));
+  for (const [k, v] of Object.entries(finds)) add(k, v * mul);
+  if (D.world && took) drawNode(s, n, took);
+  return took;
+}
+export function deliverLoad(s, who, t) {
+  const bits = [];
+  for (const [k, v] of Object.entries(t.load)) if (v > 0) (s.res[k] = (s.res[k] || 0) + v), bits.push(`${Math.round(v * 10) / 10} ${k}`);
+  if (bits.length) log(s, `🛒 ${who} hauled home ${bits.join(", ")}.`);
+  t.load = null;
+  t.cap = 0;
+}
 
 export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon"];
 
@@ -161,9 +219,10 @@ export function taskDays(a) {
   return MP().gatherTripDays;
 }
 
-export function newTrip(a) {
+export function newTrip(a, s) {
   const out = travelDays(a.target);
-  return { out, task: taskDays(a), back: out, t: 0, resolved: false };
+  const hs = a.type === "gather" && s && D.world ? haulTier(s).haulSpeed : 1;
+  return { out, task: taskDays(a), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
 }
 
 export function tripPhase(a) {
@@ -200,6 +259,7 @@ export const explored = (s, id) => (s.explored || []).includes(id);
 export function exploreArea(s, m, ar) {
   const first = !explored(s, ar.id);
   if (first) s.explored.push(ar.id);
+  if (D.world) reveal(s, ar.x, ar.y, ar.r * WD().fog.explore);
   const found = [];
   for (const sc of ar.secrets) {
     const key = sc.type + ":" + sc.id;
@@ -222,6 +282,11 @@ export function exploreArea(s, m, ar) {
         s.revealed.push(x.id);
         found.push("🕳️ dungeon: " + x.name);
       } else continue;
+    } else if (sc.type === "location") {
+      const l = D.world && WD().locations.find(x => x.id === sc.id);
+      if (!l || s.discovered.includes("loc:" + l.id)) continue;
+      s.discovered.push("loc:" + l.id);
+      found.push(`${WD().locTypes[l.type].icon} ${l.name}`);
     } else if (sc.type === "cache") {
       for (const [k, v] of Object.entries(sc.reward)) s.res[k] = (s.res[k] || 0) + v;
       found.push(
@@ -243,6 +308,7 @@ export function exploreArea(s, m, ar) {
     }
     if (once) s.discovered.push(key);
   }
+  if (D.world) locationsDay(s, m.name);
   addRenown(s, m, first ? 3 : 1);
   if (!m.minion) gainXp(s, m, "tracking", T.xpPerDay * 2);
   log(

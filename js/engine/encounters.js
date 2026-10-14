@@ -7,6 +7,7 @@ import { addToVault, itemDef } from "./inventory.js";
 import { addRenown } from "./legacy.js";
 import { addMinion } from "./minions.js";
 import { D, afford, log, pay, rng } from "./state.js";
+import { season } from "./seasons.js";
 
 const CFG = () => D.encounters || { chancePerTravelDay: 0, list: [], policies: {} };
 
@@ -42,10 +43,28 @@ export const optionChance = (s, m, o) => checkChance(m, o.check);
 export const optionOk = (s, o) => !o.cost || afford(s, o.cost);
 
 // ---- trigger
-export function maybeEncounter(s, m, eff) {
+// ctx: { terrain, road: "on"|"off" } from the route; season from the calendar. `when` filters, `weight` biases.
+export function encounterPool(s, ctx) {
+  const sid = D.seasons ? season(s).id : null;
+  return CFG().list.filter(e => {
+    const w = e.when;
+    if (!w) return true;
+    if (w.season && sid && !w.season.includes(sid)) return false;
+    if (!ctx) return !w.road && !w.terrain;
+    if (w.road && w.road !== ctx.road) return false;
+    if (w.terrain && !w.terrain.includes(ctx.terrain)) return false;
+    return true;
+  });
+}
+export function maybeEncounter(s, m, eff, ctx) {
   if (m.minion || s.pendingEnc || !CFG().list.length) return null;
   if (rng() >= CFG().chancePerTravelDay * eff) return null;
-  const e = CFG().list[Math.floor(rng() * CFG().list.length)];
+  const pool = encounterPool(s, ctx);
+  const tot = pool.reduce((a, e) => a + (e.weight || 1), 0);
+  let x = rng() * tot,
+    e = pool[0];
+  for (const c of pool) if ((x -= c.weight || 1) < 0) { e = c; break; }
+  if (!e) return null;
   if (m.id === s.activeId && !m.standing) {
     s.pendingEnc = { id: e.id, mid: m.id, day: s.day };
     notify(s, "encounter", `❗ ${m.name}: ${e.name || "an encounter"} needs your choice.`);
@@ -110,6 +129,18 @@ function applyOutcome(s, m, out) {
   if (out.special && !s.specialGranted.includes(out.special)) {
     s.specialGranted.push(out.special);
     if (addMinion(s, out.special, "met on the road")) bits.push("🧙‍♀️ a new follower");
+  }
+  if (out.reveal) {
+    const pool = D.nodes.filter(n => n.hidden && !s.revealed.includes(n.id));
+    if (pool.length) {
+      const n = pool[Math.floor(rng() * pool.length)];
+      s.revealed.push(n.id);
+      bits.push("🔍 " + n.name);
+    }
+  }
+  if (out.delay && m.action && m.action.trip) {
+    m.action.trip.out += out.delay;
+    bits.push(`⏳ +${out.delay}d`);
   }
   if (out.count) inc(s, out.count);
   return bits;

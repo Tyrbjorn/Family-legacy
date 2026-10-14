@@ -56,3 +56,5 @@ Everything from Eras 1–2 keeps working alongside these.
 - [x] estate.js split: production.js
 - [x] Craft paths for family members (10 paths, specialties, 6 combo paths, class recipes, save step 11)
 - [ ] Jeweler as its own path? (now a Smithing specialty); more combos
+- [x] Map round: parchment terrain map, roads, fog of war, locations, terrain nodes with stock/regrowth, gather-and-haul trips, hauling tiers and animals, land features and parcel work, region requirements and coast stub (save step 12)
+- [ ] Mason road building/repair (data hook `world.roadWorks` only); boats and sea trade (Gullport stub); the Runecarver and the Dwarfhold (locked stub)

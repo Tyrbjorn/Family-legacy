@@ -407,6 +407,46 @@
   "hq_raid_skye": {
    "x": 490,
    "y": 670
+  },
+  "n_gemvein": {
+   "x": 455,
+   "y": 75
+  },
+  "n_timber": {
+   "x": 275,
+   "y": 215
+  },
+  "n_mushrooms": {
+   "x": 310,
+   "y": 170
+  },
+  "n_meadow": {
+   "x": 240,
+   "y": 470
+  },
+  "n_riverpool": {
+   "x": 296,
+   "y": 282
+  },
+  "n_lake": {
+   "x": 410,
+   "y": 600
+  },
+  "n_clay": {
+   "x": 110,
+   "y": 660
+  },
+  "n_peat": {
+   "x": 180,
+   "y": 665
+  },
+  "n_salt": {
+   "x": 40,
+   "y": 540
+  },
+  "n_starfall": {
+   "x": 495,
+   "y": 45
   }
  },
  "areas": [
@@ -442,6 +482,11 @@
      "type": "dungeon",
      "id": "d_ratwarren",
      "chance": 0.6
+    },
+    {
+     "type": "reveal",
+     "id": "n_starfall",
+     "chance": 0.35
     }
    ]
   },
@@ -528,6 +573,11 @@
      "type": "dungeon",
      "id": "d_spidercave",
      "chance": 0.6
+    },
+    {
+     "type": "location",
+     "id": "l_crone",
+     "chance": 0.4
     }
    ]
   },
@@ -611,6 +661,11 @@
      "type": "dungeon",
      "id": "d_stormhold",
      "chance": 0.6
+    },
+    {
+     "type": "location",
+     "id": "l_dwarfhold",
+     "chance": 0.3
     }
    ]
   }

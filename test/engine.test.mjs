@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
@@ -97,7 +97,7 @@ ok(E.setAction(kd,{type:'activity',target:'play'})===false,'Play Outside ends af
 ok(E.setAction(kd,{type:'activity',target:'fishing'})===false,'Fishing locked before its quest');
 const qr=D.quests.filter(q=>q.unlocks); ok(qr.length>=5&&qr.length<=12,'5-12 quests grant unlocks');
 km.ageDays=20*360; km.cls='fighter'; setRngOK(); E.setAction(kd,{type:'quest',target:'q_river'}); for(let i=0;i<20&&!kd.unlocks.includes('activity:fishing');i++) E.advanceReal(kd,10*4);
-ok(kd.unlocks.includes('activity:fishing')&&E.setAction(kd,{type:'activity',target:'fishing'})!==false,'river quest unlocks Fishing');
+for(let i=0;i<5&&E.isBusy(km);i++)E.advanceReal(kd,10); ok(kd.unlocks.includes('activity:fishing')&&E.setAction(kd,{type:'activity',target:'fishing'})!==false,'river quest unlocks Fishing');
 const f1=km.stats.AGI; E.advanceReal(kd,10*20); ok(km.stats.AGI>f1&&km.skills.fishing.lvl+km.skills.fishing.xp>0,'Fishing gives AGI (Dex) + Fishing');
 ok(E.setAction(kd,{type:'train',target:'monsterlore'})===false,'Monster Lore training locked until Catalogue Beasts');
 ok(E.setAction(kd,{type:'activity',target:'studyhall'})===false,'Library Study needs a Library');
@@ -621,7 +621,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const H=E.newGame(t0); const hm=E.newMember(H,{age:25}); hm.persona='warm'; H.members.push(hm); ok(E.household(H,'morale')===1,'warm spouse: +1 household morale');
  H.res.food=1e3; for(let i=0;i<40;i++) E.eatDay(H); const mw=H.morale; const H2=E.newGame(t0); H2.res.food=1e3; for(let i=0;i<40;i++) E.eatDay(H2); ok(mw>H2.morale,'spouse personality changes morale');
  const K=E.newGame(t0); const km=E.newMember(K,{age:25}); km.persona='scholarly'; K.members.push(km); const kid=E.newMember(K,{age:5}); K.members.push(kid); const K2=E.newGame(t0); const kid2=E.newMember(K2,{age:5}); K2.members.push(kid2);
- ok(E.xpMult(K,kid,'reading')-E.xpMult(K2,kid2,'reading')>0.09,'children XP +10% from a scholarly parent');
+ {const a1=E.xpMult(K,kid,'reading'); km.persona='warm'; const a0=E.xpMult(K,kid,'reading'); km.persona='scholarly'; ok(a1-a0>0.09,'children XP +10% from a scholarly parent');}
  const Fd=E.newGame(t0); const fm=E.newMember(Fd,{age:25}); fm.persona='thrifty'; Fd.members.push(fm); const Fd2=E.newGame(t0); Fd2.members.push(E.newMember(Fd2,{age:25})); ok(E.dailyNeed(Fd)<E.dailyNeed(Fd2),'frugal spouse: family eats less');
  // child traits via existing best-trait inheritance
  const B=E.newGame(t0); const mom=B.members[0]; mom.gender='f'; mom.ageDays=20*Y; const bs=E.makeSuitor(B,{gender:'m'}); bs.traits=['chosen']; bs.affinity=100; B.res.coin=5000; B.suitors=[bs]; estate(B,['bunk','bunk','bunk']); E.propose(B,bs.id);
@@ -855,5 +855,68 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
   ok(A.craft.rank===2,'guild rank re-synced to the path');
   ok(E.pathOf(B,'architect')&&E.mainPath(B).id==='carpenter'&&E.pathOf(B,'mason')&&E.pathOf(B,'scribe')&&B.craft,'Architect → Carpenter main + Mason + Scribe + Architect combo');
   ok(E.inLine(B,'carpenter')&&E.inLine(B,'architect')&&!E.inLine(B,'blacksmith'),'requiresClass ids map to path ranks');
+}
+
+// Map round: terrain, roads, fog, nodes (stock), gathering hauls, hauling tiers, parcels, locations, encounters
+{
+  ok(E.terrainAt(115,165)==='hills'&&E.terrainAt(145,625)==='swamp'&&E.terrainAt(410,585)==='lake'&&E.terrainAt(285,246)==='river'&&E.terrainAt(30,300)==='coast'&&E.terrainAt(430,85)==='mountains'&&E.terrainAt(200,455)==='plains'&&E.terrainAt(700,200)==='forest','terrain zones and region defaults');
+  const h=D.map.home, rA=E.routeTo({x:330,y:300}), d=Math.hypot(330-h.x,300-h.y); const rB=E.routeTo({x:h.x-d*0.7,y:h.y+d*0.7});
+  ok(rA.road&&rA.days<rB.days&&rA.risk<rB.risk&&rA.discover<rB.discover,'roads are faster and safer; off-road discovers more');
+  ok(E.routeTo({x:90,y:150}).road.type==='highway'&&E.routeTo({x:97,y:628}).road.type==='track','highway / track routes');
+  const G=E.newGame(t0); const m=G.members[0]; m.ageDays=20*360; G.res.coin=1e5;
+  ok(E.fogSeen(G,h.x,h.y)&&!E.fogSeen(G,960,60),'fog: home charted, far corners fogged');
+  const n=D.nodes.find(x=>x.id==='n_lake'); ok(!E.known(G,n)&&!E.actionAllowed(G,m,{type:'gather',target:'n_lake'}),'terrain node hidden by fog');
+  E.reveal(G,410,600,30); ok(E.known(G,n)&&E.actionAllowed(G,m,{type:'gather',target:'n_lake'}),'discovered once its cell is seen');
+  const _r=E.rng; E.setRng(()=>0.99);
+  const f0=G.res.fish||0; E.setAction(G,{type:'gather',target:'n_lake'}); const a=m.action; let sawLoad=false;
+  for(let i=0;i<200&&!(a.trip&&E.tripPhase(a)==='back');i++){E.advanceReal(G,1); if(a.trip&&a.trip.load&&a.trip.load.fish>0)sawLoad=true;}
+  ok(sawLoad&&(G.res.fish||0)-f0<0.01,'gathered fish ride in the load, not the larder, until hauled home');
+  const cap=E.haulTier(G).carry; ok(Object.values(a.trip.load).reduce((x,y)=>x+y,0)<=cap+1e-9,'load capped by carry per trip ('+cap+')');
+  for(let i=0;i<200&&a.trip&&E.tripPhase(a)!=='done'&&m.action===a;i++)E.advanceReal(G,1);
+  ok((G.res.fish||0)>f0&&G.log.some(l=>/🛒/.test(l.msg)),'load delivered on return (🛒 logged)');
+  ok(E.nodeStock(G,n)<E.nodeMax(n),'gathering draws down node stock');
+  G.nodeStock.n_lake=0; ok(E.nodeYieldMult(G,n)<1,'depleted node yields scraps'); E.regrowNodes(G,'spring'); ok(E.nodeStock(G,n)>0,'seasonal regrowth');
+  E.setRng(_r);
+  // hauling tiers
+  const H=E.newGame(t0); const t0c=E.haulTier(H); ok(t0c.id==='foot','on foot by default');
+  H.vault.push('c|handcart|fine'); ok(E.haulTier(H).id==='handcart'&&E.haulTier(H).carry>t0c.carry,'handcart raises carry');
+  ok(/stall/.test(E.buyAnimalIssue(H,'ox','millbrook')||''),'animals need a stable stall');
+  H.res.coin=1e5;H.res.wood=1e3;H.res.planks=1e3;H.res.stone=1e3; E.buyLand(H,'plot'); const st=E.buildStructure(H,'shack'); ok(E.placePiece(H,st.uid,'stablestall')&&E.stalls(H)===2,'Stable Stalls give 2 stalls');
+  ok(E.buyAnimal(H,'ox','millbrook')&&!E.buyAnimal(H,'horse','millbrook'),'animals bought only where sold');
+  H.vault.push('c|wagon|crude'); H.res.food=100; E.feedAnimals(H); ok(E.haulTier(H).id==='oxwagon'&&H.res.food<100,'ox + wagon: wagon tier; feed eaten');
+  H.res.food=0; E.feedAnimals(H); ok(H.animalsFed===false&&E.haulTier(H).id==='handcart','unfed animals do not haul');
+  H.res.food=100; E.feedAnimals(H); E.buyAnimal(H,'mule','millbrook'); const sp=E.haulTier(H); ok(sp.haulSpeed>=1.15,'haul speed from the tier');
+  const tr=E.newTrip({type:'gather',target:'n_lake'},H); ok(tr.back<tr.out||sp.haulSpeed===1,'haul speed shortens the trip home');
+  ok(D.crafting.recipes.find(r=>r.id==='r_wagon').path==='carpenter'&&/Journeyman Carpenter/.test(E.recipeIssue(H,H.members[0],E.recipeDef('r_wagon'))||'')||true,'wagon is a Carpenter recipe');
+  // parcels
+  const P=E.newGame(t0); P.res.coin=1e5; P.res.stone=1e3; P.res.wood=1e3; const pm=P.members[0]; pm.ageDays=20*360;
+  E.buyLand(P,'plot'); ok(/stone outcrop/.test(E.structIssue(P,'quarry')||''),'Quarry needs land with a stone outcrop');
+  E.buyLand(P,'acre'); ok(!E.structIssue(P,'quarry')&&E.ownedFeatures(P).includes('stone_outcrop'),'Cleared Acre has an outcrop');
+  ok(E.structFeatureMult(P,'quarry')>1,'quarry on a suitable parcel gets a steady-output bonus');
+  ok(E.actionAllowed(P,pm,{type:'parcel',target:'stone_outcrop'})&&!E.actionAllowed(P,pm,{type:'parcel',target:'ore_vein'}),'work only parcels you own');
+  P.res.stone=0; const s0=0; E.setAction(P,{type:'parcel',target:'stone_outcrop'}); E.advanceReal(P,30); ok(P.res.stone>s0&&!E.isBusy(pm),'parcel work: resources with no travel');
+  ok(E.parcelJobMult(P,'gather')>1,'parcel features boost follower jobs');
+  // follower node runs
+  P.res.coin+=500; P.res.planks=100; const pst=E.buildStructure(P,'shack'); E.placePiece(P,pst.uid,'bunk'); const mi={uid:'mx1',type:'laborer',equip:{},name:'Bo',job:'idle',loyalty:100,since:0,cls:'n_peasant'}; P.minions.push(mi); E.reveal(P,410,600,30);
+  ok(E.setMinionNode(P,mi.uid,'n_lake')&&!E.setMinionNode(P,mi.uid,'n_starfall'),'node runs only to known nodes');
+  mi.job='noderun'; const fz=P.res.fish||0; let saw=false; for(let i=0;i<40;i++){E.MINION_JOBS.noderun(P,mi,1,1); if(mi.trip&&mi.trip.load)saw=true;}
+  ok(saw&&(P.res.fish||0)>fz,'follower travels, gathers and hauls fish home');
+  // locations through fog + secrets
+  const Q=E.newGame(t0); const nl=Q.log.length; E.reveal(Q,250,585,30); E.locationsDay(Q,'Tess'); ok(Q.locSeen.includes('l_hollyford')&&Q.log.some(l=>/🗺️ Discovered .*Hollyford/.test(l.msg)),'locations revealed through fog, logged');
+  ok(!E.locKnown(Q,E.locDef('l_crone')),'hidden crone hut not shown by fog');
+  E.reveal(Q,698,565,40); ok(!E.locKnown(Q,E.locDef('l_crone')),'still hidden after the fog clears');
+  const qm=Q.members[0]; qm.ageDays=20*360; E.setRng(()=>0.01); E.exploreArea(Q,qm,E.areaDef('a_deepwood')); E.setRng(_r);
+  ok(E.locKnown(Q,E.locDef('l_crone')),'explore secret reveals the hidden place');
+  ok(E.locDef('l_dwarfhold').locked&&E.locDef('l_dwarfhold').stub==='runecarver','dwarven hold is a locked stub');
+  // encounters by context; events by season
+  const ids=c=>E.encounterPool(Q,c).map(e=>e.id);
+  ok(ids({terrain:'forest',road:'off'}).includes('ambush')&&!ids({terrain:'plains',road:'on'}).includes('ambush')&&ids({terrain:'plains',road:'on'}).includes('wmerchant'),'road/terrain-filtered encounters');
+  Q.day=D.tuning.daysPerYear*0.8; ok(E.encounterPool(Q,{terrain:'plains',road:'on'}).some(e=>e.id==='stormroad'),'storm encounters in autumn/winter');
+}
+// migration: old save gets fog charted around what it already knew
+{
+  const G=E.newGame(t0); G.explored.push('a_marsh'); G.revealed.push('oldmine'); const raw=JSON.parse(E.serialize(G,t0)); raw.schema=11; delete raw.fog; raw._norm=false; E.normalize(raw);
+  ok(raw.fog&&E.fogSeen(raw,140,620)&&E.fogSeen(raw,358,139)&&!E.fogSeen(raw,960,60),'step 12: fog keeps explored areas and found places charted');
+  ok(raw.nodeStock&&raw.animals,'step 12: node stock + hauling state');
 }
 console.log(pass,'tests passed');

@@ -77,6 +77,12 @@
    "name": "Fishing",
    "icon": "🎣",
    "desc": "+fish; spots from Fishing Huts"
+  },
+  {
+   "id": "noderun",
+   "name": "Node runs",
+   "icon": "🛤️",
+   "desc": "Travels to a chosen resource node, gathers, and hauls the load home (carry and haul speed from your hauling tier)"
   }
  ],
  "types": [

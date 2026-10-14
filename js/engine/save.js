@@ -1,5 +1,6 @@
 import { backfillMilestones } from "./minionups.js";
 import { migratePaths } from "./paths.js";
+import { fogBase, fogInit, reveal } from "./world.js";
 import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
 import { startTutorial } from "./tutorial.js";
@@ -363,6 +364,27 @@ const STEPS = [
     once: true,
     name: "craft paths: Crafter classes (m.prof) become path ranks; Couturier → Master Tailor (Leatherworker); Architect → Carpenter/Mason/Scribe + Architect combo",
     run: s => migratePaths(s),
+  },
+  {
+    n: 12,
+    once: true,
+    name: "map round: fog of war (home, known towns, explored areas and everything already found stay charted), node stock, hauling state",
+    run: s => {
+      if (!D.world) return;
+      fogInit(s);
+      fogBase(s);
+      for (const id of [...(s.revealed || []), ...(s.doneQuests || [])]) {
+        const p = D.map.points[id];
+        if (p) reveal(s, p.x, p.y, 60);
+      }
+      for (const m of s.members || []) {
+        const p = m.action && m.action.target && D.map.points[m.action.target];
+        if (p) reveal(s, p.x, p.y, 60);
+      }
+      s.locSeen = s.locSeen || [];
+      s.nodeStock = s.nodeStock || {};
+      s.animals = s.animals || {};
+    },
   },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
