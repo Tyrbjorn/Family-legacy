@@ -1,0 +1,16 @@
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
+const p=await b.newPage({viewport:{width:420,height:1400}});const errs=[];p.on('pageerror',e=>{errs.push(String(e));console.log('PAGEERR',String(e).slice(0,300));});p.on('dialog',d=>d.accept());
+await p.goto('http://localhost:'+(process.env.PORT||8080)+'/?dev=1');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(1200);
+await p.evaluate(()=>{const {s,E,D}=window.__game;const f=E.active(s);f.ageDays=20*D.tuning.daysPerYear;f.skills.haggling.lvl=30;for(const d of D.estate.structures){for(const k in d.cost||{})s.res[k]=(s.res[k]||0)+2e4;}s.res.coin=1e5;for(const l of D.estate.lands)E.buyLand(s,l.id);
+ const h=E.buildStructure(s,'shack');E.upgradeStructure(s,h.uid);E.upgradeStructure(s,h.uid);const w=E.buildStructure(s,'warehouse');E.upgradeStructure(s,w.uid);s.structures=[h,w];});
+await go(p,'estate');await p.waitForTimeout(800);
+const btns=await p.$$eval('[data-a="upstruct"]',a=>a.map(x=>x.dataset.w+':'+(x.disabled?'off':'on')));console.log('upgrade buttons',btns.join(' '));
+await p.click('[data-a="upstruct"][data-w="mansion"]');await p.waitForTimeout(600);
+const t1=await p.evaluate(()=>window.__game.s.structures.map(x=>x.type).join());console.log('types',t1);
+const resp=await p.$$eval('[data-a="respec"]',a=>a.map(x=>x.dataset.w+':'+(x.disabled?'off':'on')));console.log('respec',resp.join(' '));
+const el=await p.$('[data-a="respec"]');await el.scrollIntoViewIfNeeded();await p.screenshot({path:'/workspace/fl-screenshots/branches.png'});
+await p.click('[data-a="demolish"][data-v="'+await p.evaluate(()=>window.__game.s.structures[1].uid)+'"]');await p.waitForTimeout(500);
+console.log('after demolish',await p.evaluate(()=>window.__game.s.structures.map(x=>x.type).join()));
+console.log('errors',JSON.stringify(errs));await b.close();

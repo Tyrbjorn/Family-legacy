@@ -82,7 +82,7 @@ export const townSellPrice = (s, townId, res) => {
   return (
     Math.round(
       t.prices[res] *
-        sellDemand(s, townId, res) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
+        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );
 };

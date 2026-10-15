@@ -70,10 +70,9 @@ export function estate() {
   h += `<h3>🛖 Buildings & stations</h3>`;
   s.structures.forEach((st, k) => {
     const d = E.structDef(st.type),
-      nx = D.estate.structures.find(x => x.upgradeFrom === st.type),
-      ui = E.upgradeIssue(s, st.uid);
+      nxs = E.upgradeOptions(st.type);
     const syn = E.activeSynergies(st);
-    h += `<div class="card"><div class="row"><b>${d.icon} ${E.structName(st)} #${k + 1}</b>${d.special ? ' <span class="tb" style="border-color:#d9b44a">special</span>' : ""}<span class="muted">Lv ${d.level || 1} (+${((d.level || 1) - 1) * 5}% to furniture) · ${d.slots + (d.fixed || []).length + (st.bonusSlots || 0) - E.freeSlots(s, st) - (d.fixed || []).length}/${d.slots + (st.bonusSlots || 0)} slots · ${d.land} land</span></div>${d.builtin ? `<div class="muted">Built-in: houses ${d.builtin.housing.bunk} followers</div>` : ""}${syn.length ? `<div>${syn.map(y => `<span class="tb" style="border-color:#d9b44a">${y.icon} ${y.name}</span>`).join("")}</div>` : ""}
+    h += `<div class="card"><div class="row"><b>${d.icon} ${E.structName(st)} #${k + 1}</b>${d.special ? ' <span class="tb" style="border-color:#d9b44a">special</span>' : ""}<span class="muted">Lv ${d.level || 1} (+${((d.level || 1) - 1) * 5}% to furniture) · ${d.slots + (d.fixed || []).length + (st.bonusSlots || 0) - E.freeSlots(s, st) - (d.fixed || []).length}/${d.slots + (st.bonusSlots || 0)} slots · ${d.land} land</span></div>${d.builtin && d.builtin.housing ? `<div class="muted">Built-in: houses ${d.builtin.housing.bunk} followers</div>` : ""}${d.branch ? `<div class="muted">${d.desc}</div>` : ""}${syn.length ? `<div>${syn.map(y => `<span class="tb" style="border-color:#d9b44a">${y.icon} ${y.name}</span>`).join("")}</div>` : ""}
   ${st.pieces
     .map(pid => {
       const p = E.pieceDef(pid);
@@ -107,7 +106,7 @@ export function estate() {
             : `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Specialise (pick one):</span>${d.specs.map(sp => `<button class="b" data-a="spec" data-v="${st.uid}" data-w="${sp.id}" ${E.specIssue(s, st.uid, sp.id) ? "disabled" : ""} title="${sp.desc}">${sp.icon} ${sp.name}${E.specIssue(s, st.uid, sp.id) === "finish the upgrade line" ? "" : " " + costStr(sp.cost)}</button>`).join("")}${E.specIssue(s, st.uid, d.specs[0].id) === "finish the upgrade line" ? '<span class="muted">(after the full upgrade line)</span>' : ""}</div>`
         }`
       : ""
-  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${d.upgrades ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${d.upgrades.map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} +${u.mult * 100}%`).join(" · ")}</div>${d.upgrades[st.up || 0] ? `<div class="row"><span class="muted">Next: ${d.upgrades[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(d.upgrades[st.up || 0].cost)}</button></div>` : ""}` : ""}
+  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${d.upgrades ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${d.upgrades.map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} ${u.routes ? "+" + u.routes + " route" : "+" + u.mult * 100 + "%"}`).join(" · ")}</div>${d.upgrades[st.up || 0] ? `<div class="row"><span class="muted">Next: ${d.upgrades[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(d.upgrades[st.up || 0].cost)}</button></div>` : ""}` : ""}
   ${
     E.freeSlots(s, st) > 0
       ? `<div class="row" style="margin-top:4px"><select data-a="pickpiece" data-v="${st.uid}"><option value="">+ Place a piece…</option>${s.pieceStore
@@ -125,7 +124,22 @@ export function estate() {
           .join("")}</select></div>`
       : ""
   }
-  ${nx ? `<div class="row" style="margin-top:4px"><span class="muted">Upgrade → ${nx.name} (${nx.slots} slots, ${nx.land} land)</span><button class="b" data-a="upstruct" data-v="${st.uid}" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(nx.cost)}</button></div>` : ""}</div>`;
+  ${nxs
+    .map(nx => {
+      const ui = E.upgradeIssue(s, st.uid, nx.id);
+      return `<div class="row" style="margin-top:4px"><span class="muted">${nxs.length > 1 ? "Branch" : "Upgrade"} → ${nx.icon} ${nx.name} (${nx.slots} slots, ${nx.land} land)${nx.branch ? "<br>" + nx.desc : ""}</span><button class="b" data-a="upstruct" data-v="${st.uid}" data-w="${nx.id}" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(nx.cost)}</button></div>`;
+    })
+    .join("")}${
+    d.branch
+      ? E.upgradeOptions(d.upgradeFrom)
+          .filter(o => o.id !== d.id)
+          .map(o => {
+            const ri = E.respecIssue(s, st.uid, o.id);
+            return `<div class="row" style="margin-top:4px"><span class="muted">Respec → ${o.icon} ${o.name} (refund half, pay full)</span><button class="b" data-a="respec" data-v="${st.uid}" data-w="${o.id}" ${ri ? "disabled" : ""}>${ri && ri !== "cannot afford" ? "🔒 " + ri : costStr(o.cost)}</button></div>`;
+          })
+          .join("")
+      : ""
+  }<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span><button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button></div></div>`;
   });
   h +=
     `<div class="muted">Build new:</div>` +

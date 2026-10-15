@@ -2457,6 +2457,156 @@
     }
    ],
    "special": true
+  },
+  {
+   "id": "mansion",
+   "name": "Mansion",
+   "icon": "🏛️",
+   "branch": "merchant",
+   "cost": {
+    "coin": 3000,
+    "planks": 80,
+    "blocks": 60,
+    "ingots": 20,
+    "cloth": 20
+   },
+   "req": {
+    "skill": {
+     "haggling": 30
+    },
+    "building": {
+     "types": [
+      "tradingpost",
+      "countinghouse"
+     ],
+     "up": 0
+    }
+   },
+   "builtin": {
+    "bonus": {
+     "routeSlots": 1,
+     "tradeSell": 0.05
+    }
+   },
+   "desc": "Merchant manor: +1 trade route slot, +5% town sell prices.",
+   "land": 3,
+   "slots": 8,
+   "upgradeFrom": "house",
+   "level": 4
+  },
+  {
+   "id": "fort",
+   "name": "Fort",
+   "icon": "🏰",
+   "branch": "martial",
+   "cost": {
+    "coin": 3000,
+    "planks": 80,
+    "blocks": 60,
+    "ingots": 40
+   },
+   "req": {
+    "line": "fighter",
+    "building": {
+     "types": [
+      "barracks"
+     ],
+     "up": 3
+    }
+   },
+   "builtin": {
+    "housing": {
+     "bunk": 4
+    },
+    "bonus": {
+     "guardPower": 0.25,
+     "banditCut": 0.25
+    }
+   },
+   "desc": "Martial manor: +25% guard power, −25% bandit risk, houses 4 followers.",
+   "land": 3,
+   "slots": 8,
+   "upgradeFrom": "house",
+   "level": 4
+  },
+  {
+   "id": "towerkeep",
+   "name": "Tower Keep",
+   "icon": "🗼",
+   "branch": "magic",
+   "cost": {
+    "coin": 3000,
+    "planks": 80,
+    "blocks": 60,
+    "ingots": 20,
+    "dust": 20
+   },
+   "req": {
+    "line": "apprentice",
+    "building": {
+     "types": [
+      "magestower"
+     ],
+     "up": 3
+    }
+   },
+   "fixed": [
+    "enchtable"
+   ],
+   "skillBoost": {
+    "skills": [
+     "arcana",
+     "fire",
+     "frost",
+     "enchanting",
+     "runecraft"
+    ],
+    "xp": 0.1
+   },
+   "desc": "Magic manor: built-in enchanting table, +10% arcane XP.",
+   "land": 3,
+   "slots": 8,
+   "upgradeFrom": "house",
+   "level": 4
+  },
+  {
+   "id": "abbey",
+   "name": "Abbey",
+   "icon": "⛪",
+   "branch": "divine",
+   "cost": {
+    "coin": 3000,
+    "planks": 80,
+    "blocks": 100,
+    "ingots": 20
+   },
+   "req": {
+    "line": "cleric",
+    "building": {
+     "types": [
+      "shrinehouse"
+     ],
+     "up": 3
+    }
+   },
+   "builtin": {
+    "bonus": {
+     "rest": 1,
+     "familyMorale": 2
+    }
+   },
+   "skillBoost": {
+    "skills": [
+     "faith",
+     "healing"
+    ],
+    "xp": 0.1
+   },
+   "desc": "Divine manor: faster injury recovery, +2 morale, +10% faith/healing XP.",
+   "land": 3,
+   "slots": 8,
+   "upgradeFrom": "house",
+   "level": 4
   }
  ],
  "pieces": [

@@ -5,7 +5,7 @@ import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "
 import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
 import { famFx } from "./paths.js";
-import { structDef } from "./estate.js";
+import { eff, structDef } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
 import { haulTier } from "./world.js";
@@ -32,7 +32,7 @@ const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).inc
 
 export function routeSlotParts(s) {
   const tier = tradeTier(s);
-  if (!tier) return { building: 0, upgrades: 0, haggling: 0, steward: 0, merchants: 0, total: 0 };
+  if (!tier) return { building: 0, manor: 0, upgrades: 0, haggling: 0, steward: 0, merchants: 0, total: 0 };
   const parts = {
     building: TC().slotsByTier[tier - 1],
     upgrades: (s.structures || [])
@@ -41,8 +41,9 @@ export function routeSlotParts(s) {
     haggling: Math.min(TC().haggleSlotMax, Math.floor(bestHaggle(s) / TC().haggleLvlPerSlot)),
     steward: Math.min(TC().stewardSlotMax, stewards(s)),
     merchants: Math.min(TC().merchantSlotMax, factors(s)),
+    manor: Math.floor(eff(s, "routeSlots")),
   };
-  parts.total = parts.building + parts.upgrades + parts.haggling + parts.steward + parts.merchants;
+  parts.total = parts.building + parts.manor + parts.upgrades + parts.haggling + parts.steward + parts.merchants;
   return parts;
 }
 export const routeSlots = s => routeSlotParts(s).total;
@@ -76,7 +77,7 @@ export const patrolPower = (s, key) =>
   (s.trade.patrols || []).filter(p => p.seg === key).reduce((a, p) => a + p.members.reduce((b, u) => b + guardPow(minion(s, u)), 0), 0);
 // risk of a bandit attack on one road segment: guards and escorts deter, patrols on that road deter
 export const segRisk = (s, r, a, b) =>
-  TC().banditBase / (1 + crewPower(s, r) * TC().guardDeter + patrolPower(s, segKey(a, b)) * TC().patrolDeter);
+  (TC().banditBase * Math.max(0, 1 - eff(s, "banditCut"))) / (1 + crewPower(s, r) * TC().guardDeter + patrolPower(s, segKey(a, b)) * TC().patrolDeter);
 // roads a loaded cart travels (where bandits can strike)
 export const cargoLegs = r => (r.from && r.from !== HOME ? [[r.from, r.town], [r.town, HOME]] : [[HOME, r.town]]);
 export const banditChance = (s, r) => 1 - cargoLegs(r).reduce((a, [x, y]) => a * (1 - segRisk(s, r, x, y)), 1);

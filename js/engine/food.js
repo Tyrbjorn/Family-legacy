@@ -2,7 +2,7 @@ import { introNote } from "./intros.js";
 // Stronghold-style food: everyone eats evenly from every food on the menu each day.
 // Variety (distinct foods actually eaten) gives satiation + morale with diminishing returns;
 // the ration level trades consumption for morale; shortages drag morale (and so output) down.
-import { ES, reserveOf } from "./estate.js";
+import { ES, eff, reserveOf } from "./estate.js";
 import { D, living } from "./state.js";
 import { famFx } from "./paths.js";
 import { household } from "./courtship.js";
@@ -101,6 +101,7 @@ export function eatDay(s) {
         drinks +
         M.shortageMorale * short +
         household(s, "morale") +
+        eff(s, "familyMorale") +
         wearyMorale(s),
     ),
   );

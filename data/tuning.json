@@ -103,5 +103,6 @@
   "maxPatrol": 3,
   "produceMarkup": 1.2
  },
- "teenSafeLoss": 0.1
+ "teenSafeLoss": 0.1,
+ "demolishRefund": 0.5
 }

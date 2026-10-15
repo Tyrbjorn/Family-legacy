@@ -5,7 +5,11 @@ import { s } from "../../main.js";
 export const estateActions = ({ v, b, m }) => ({
   build: () => E.build(s, v),
   struct: () => E.buildStructure(s, v),
-  upstruct: () => E.upgradeStructure(s, v),
+  upstruct: () => E.upgradeStructure(s, v, b.dataset.w),
+  respec: () => E.respecStructure(s, v, b.dataset.w),
+  demolish: () => {
+    if (confirm("Demolish this building? Half its cost is refunded; furniture goes to storage.")) E.demolishStructure(s, v);
+  },
   unpiece: () => E.removePiece(s, v, b.dataset.w),
   upspecial: () => E.upgradeSpecial(s, v),
   spec: () => E.specialize(s, v, b.dataset.w),
