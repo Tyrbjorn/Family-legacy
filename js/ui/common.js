@@ -49,7 +49,7 @@ export function badges(m) {
 
 export const stage = m => {
   const a = E.ageY(m);
-  return a < 12 ? "Child" : a < 16 ? "Teen" : a < 50 ? "Adult" : a < 65 ? "Veteran" : "Elder";
+  return a < 12 ? "Child" : a < D.tuning.adultAge ? "Teen" : a < 50 ? "Adult" : a < 65 ? "Veteran" : "Elder";
 };
 
 export const LOCK = { guild: "🔒 guild", quest: "🔒 quest", age12: "🔒 age 12", age14: "🔒 age 14" };

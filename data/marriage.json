@@ -164,7 +164,7 @@
   ]
  },
  "marryOut": {
-  "minAge": 16,
+  "minAge": 18,
   "dowryBase": 250,
   "dowryPerLevel": 10,
   "renown": 15,

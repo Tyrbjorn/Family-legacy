@@ -89,6 +89,12 @@
    "name": "Trade route",
    "icon": "🛒",
    "desc": "Crewing a trade cart (set in Trade)"
+  },
+  {
+   "id": "patrol",
+   "name": "Road patrol",
+   "icon": "🛡️",
+   "desc": "Patrolling a trade road (set in Trade)"
   }
  ],
  "types": [

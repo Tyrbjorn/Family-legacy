@@ -72,7 +72,7 @@
    "id": "path",
    "icon": "🧭",
    "title": "Choose a Path",
-   "text": "Come of age (16) and choose a class (adventurer), take up a craft, or join a guild.",
+   "text": "Come of age (18) and choose a class (adventurer), take up a craft, or join a guild.",
    "check": "path",
    "reward": {
     "coin": 60,

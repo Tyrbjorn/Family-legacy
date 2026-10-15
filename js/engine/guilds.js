@@ -91,7 +91,7 @@ export function joinIssues(s, m, gid) {
   if (memberGuild(m, gid)) out.push("already a member");
   else if (!g.open && m.guild) out.push(`sworn to ${guildDef(m.guild.id).name}`);
   if (!isAdult(m)) out.push("must be an adult");
-  if (ageY(m) < (D.guilds.minJoinAge || 16)) out.push("age 16+");
+  if (ageY(m) < (D.guilds.minJoinAge || 16)) out.push("age " + (D.guilds.minJoinAge || 16) + "+");
   for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
   for (const [k, v] of Object.entries(q.skills || {}))
     if (m.skills[k].lvl < v) out.push(`${D.skills.find(x => x.id === k).name} ${m.skills[k].lvl}/${v}`);

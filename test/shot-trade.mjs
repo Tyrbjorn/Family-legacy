@@ -1,6 +1,6 @@
 const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
-const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};const p=await b.newPage({viewport:{width:420,height:900}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};const p=await b.newPage({viewport:{width:420,height:900}});const errs=[];p.on('pageerror',e=>{errs.push(String(e));console.log('PAGEERR',String(e).slice(0,300));});p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE',m.text().slice(0,300));});
 await p.goto('http://localhost:'+(process.env.PORT||8080)+'/?dev=1');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(1500);
 // teen: rats enabled on map
 const teen=await p.evaluate(async()=>{const {s,E,D}=window.__game;const m=E.active(s);m.ageDays=15*D.tuning.daysPerYear;return {teen:E.isTeen(m),rats:E.canQuest(m,D.quests.find(q=>q.id==='rats'))};});
@@ -15,6 +15,13 @@ await p.click('[data-a="tradd"]');await p.waitForTimeout(700);
 await p.click('[data-a="trcrew"][data-w="driver"]');await p.waitForTimeout(500);
 await p.click('[data-a="trcrew"][data-w="guard"]');await p.waitForTimeout(500);
 await p.click('[data-a="trq"][data-w="10"]');await p.waitForTimeout(500);
+await p.evaluate(()=>{const {s,D}=window.__game;s.discovered=[...(s.discovered||[]),...D.towns.map(x=>x.id)];const {E}=window.__game;const w=s.structures.find(x=>x.type==='warehouse');E.upgradeStructure(s,w.uid);s.minions.push({uid:'mi'+s.nextId++,type:'guard',equip:{},name:'Bran',job:'idle',loyalty:100,cls:'n_horseman'});});
+await p.waitForTimeout(800);
+await p.click('[data-a="trnew"][data-v="mode"]');await p.waitForTimeout(300);await p.click('[data-a="trnew"][data-v="mode"]');await p.waitForTimeout(300);
+await p.click('[data-a="tradd"]');await p.waitForTimeout(500);
+await p.click('[data-a="trpopen"]');await p.waitForTimeout(500);
+await p.click('[data-a="trpadd"]');await p.waitForTimeout(500);
+console.log('patrols',await p.evaluate(()=>JSON.stringify(window.__game.s.trade.patrols)));
 const st=await p.evaluate(()=>JSON.stringify(window.__game.s.trade.routes));console.log('routes',st);
 const el=await p.$('text=Trade routes');await el.scrollIntoViewIfNeeded();await p.screenshot({path:'/workspace/fl-screenshots/trade.png'});
 console.log('errors',JSON.stringify(errs));await b.close();

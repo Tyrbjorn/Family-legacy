@@ -19,8 +19,8 @@
   100
  ],
  "baseLifespan": 70,
- "courtAge": 16,
- "adultAge": 16,
+ "courtAge": 18,
+ "adultAge": 18,
  "childEvery": 540,
  "maxKidsPerCouple": 3,
  "inheritShare": 0.1,
@@ -36,7 +36,7 @@
  "craftDays": 5,
  "buyMarkup": 1.5,
  "sellRate": 0.5,
- "founderAge": 15.75,
+ "founderAge": 17.75,
  "resBuyMarkup": 2.5,
  "morale": {
   "xpPerPoint": 0.01,
@@ -45,7 +45,7 @@
   "speedPerPoint": 0.01,
   "speedMax": 0.1,
   "speedMin": -0.15,
-  "note": "morale \u221215\u2026+10 \u2192 skill XP and character speed (work, activities, travel) \u221215%\u2026+10%"
+  "note": "morale −15…+10 → skill XP and character speed (work, activities, travel) −15%…+10%"
  },
  "resBuyMarkupBy": {
   "food": 6
@@ -92,6 +92,16 @@
   "guardDeter": 0.6,
   "defaultQty": 50,
   "defaultKeep": 100,
-  "defaultBelow": 50
- }
+  "defaultBelow": 50,
+  "produceSupply": 1.5,
+  "wantSupply": 0.6,
+  "defaultMargin": 0.1,
+  "banditStrength": 3,
+  "guardDieChance": 0.3,
+  "fleeLoyaltyLoss": 20,
+  "patrolDeter": 0.4,
+  "maxPatrol": 3,
+  "produceMarkup": 1.2
+ },
+ "teenSafeLoss": 0.1
 }

@@ -1,6 +1,7 @@
 import * as E from "../../engine.js";
 import { D, s } from "../../main.js";
 import { U } from "../state.js";
+import { nextMode, routeDraft } from "../trade-ui.js";
 
 // Click actions for the map area. ctx = { v, w, b, m } from the clicked element.
 export const mapActions = ({ v, w, b, m }) => ({
@@ -39,34 +40,51 @@ export const mapActions = ({ v, w, b, m }) => ({
   trq: () => tradeAdj(v, "qty", +b.dataset.w, 10),
   trk: () => tradeAdj(v, "keep", +b.dataset.w, 0),
   trb: () => tradeAdj(v, "below", +b.dataset.w, 0),
+  trm: () => {
+    const r = route(v);
+    if (r) r.margin = Math.max(0, Math.round((r.margin + +b.dataset.w) * 100) / 100);
+  },
   trauto: () => {
     const r = route(v);
     if (r) r.auto = !r.auto;
   },
   trdel: () => E.removeRoute(s, v),
   trnew: () => {
-    const T2 = (U.tr = U.tr || { t: 0, mode: "sell", r: 0 });
-    if (v === "t") (T2.t++, (T2.r = 0));
-    else if (v === "mode") (T2.mode = T2.mode === "sell" ? "buy" : "sell"), (T2.r = 0);
+    const T2 = (U.tr = U.tr || { t: 0, f: 1, mode: "sell", r: 0 });
+    if (v === "t") T2.t++;
+    else if (v === "f") T2.f++;
+    else if (v === "mode") T2.mode = nextMode(T2.mode);
+    if (v !== "r") T2.r = 0;
     else T2.r++;
   },
   tradd: () => {
-    const T2 = U.tr || { t: 0, mode: "sell", r: 0 },
-      towns = E.tradeTowns(s),
-      town = towns[T2.t % towns.length];
-    const goods = T2.mode === "buy" ? E.marketOf(town.id) : Object.keys(town.prices).filter(k => (s.res[k] || 0) > 0 || !E.marketOf(town.id).includes(k));
-    if (goods.length) E.addRoute(s, town.id, T2.mode, goods[T2.r % goods.length]);
+    const d = routeDraft();
+    if (d && d.res) E.addRoute(s, d.town.id, d.T2.mode, d.res, d.from ? d.from.id : E.HOME);
   },
   trcrew: () => {
     const r = route(v);
     if (!r) return;
     const w = b.dataset.w;
     const cur = w === "escort" ? null : r[w];
-    const pool = s.minions.filter(x => x.job !== "trade" && (w !== "escort" || E.isEscort(x)));
+    const pool = s.minions.filter(x => x.job !== "trade" && x.job !== "patrol" && (w !== "escort" || E.isEscort(x)));
     const i = pool.findIndex(x => x.uid === cur);
     const nx = pool[(i + 1) % pool.length];
     if (nx) E.setCrew(s, v, w, nx.uid);
   },
+  trpnew: () => {
+    const P = (U.trp = U.trp || { a: 0, b: 1 });
+    P[v]++;
+  },
+  trpopen: () => {
+    const P = U.trp || { a: 0, b: 1 },
+      ends = [E.HOME, ...E.tradeTowns(s).map(t => t.id)];
+    E.addPatrol(s, ends[P.a % ends.length], ends[P.b % ends.length]);
+  },
+  trpadd: () => {
+    const nx = s.minions.find(x => x.job !== "trade" && x.job !== "patrol");
+    if (nx) E.setPatrol(s, v, nx.uid);
+  },
+  trpdel: () => E.removePatrol(s, v),
 });
 
 const route = id => ((s.trade || {}).routes || []).find(x => x.id === id);

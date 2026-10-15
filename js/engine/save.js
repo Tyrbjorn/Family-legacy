@@ -393,6 +393,7 @@ const STEPS = [
       s.trade = s.trade || {};
       s.trade.supply = s.trade.supply || {};
       s.trade.routes = s.trade.routes || [];
+      s.trade.patrols = s.trade.patrols || [];
       s.trade.nextId = s.trade.nextId || 1;
     },
   },

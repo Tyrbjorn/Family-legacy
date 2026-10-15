@@ -58,5 +58,6 @@ Everything from Eras 1–2 keeps working alongside these.
 - [ ] Jeweler as its own path? (now a Smithing specialty); more combos
 - [x] Map round: parchment terrain map, roads, fog of war, locations, terrain nodes with stock/regrowth, gather-and-haul trips, hauling tiers and animals, land features and parcel work, region requirements and coast stub (save step 12)
 - [x] Trade round: per-town supply and demand pricing, Warehouse > Trading Post > Counting House, trade routes with route slots (building, upgrades, haggling, Steward/Seneschal hook, Trade Factors), carts with driver + guard + Horseman escorts, bandits, auto-trade rules, Peddler > Travelling Merchant > Trade Factor (save step 13)
-- [x] Teens (14–15) can quest: safe errands, hunting, low-risk combat (CP ≤ 15); never deadly or dungeons
+- [x] Adulthood at 18. Teens (14–17) can quest: safe errands, hunting, combat at CP ≤ 15 or injury chance < 10%; never deadly or dungeons
+- [x] Trade pass 2: town-to-town haul routes, town specialties (produces/wants), bandit fights (win = cart continues; lose = goods lost, guards flee or die), road patrols
 - [ ] Mason road building/repair (data hook `world.roadWorks` only); boats and sea trade (Gullport stub); the Runecarver and the Dwarfhold (locked stub)

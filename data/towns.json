@@ -76,6 +76,14 @@
    "salt",
    "flour",
    "flax"
+  ],
+  "produces": [
+   "wheat",
+   "milk"
+  ],
+  "wants": [
+   "ingots",
+   "cloth"
   ]
  },
  {
@@ -150,6 +158,14 @@
    "berries",
    "vegetables",
    "flax"
+  ],
+  "produces": [
+   "wood",
+   "hides"
+  ],
+  "wants": [
+   "salt",
+   "ale"
   ]
  },
  {
@@ -223,6 +239,14 @@
    "barley",
    "milk",
    "ale"
+  ],
+  "produces": [
+   "ale",
+   "flour"
+  ],
+  "wants": [
+   "leather",
+   "planks"
   ]
  },
  {
@@ -300,6 +324,14 @@
    "salt",
    "berries",
    "flour"
+  ],
+  "produces": [
+   "ore",
+   "stone"
+  ],
+  "wants": [
+   "preserves",
+   "cloth"
   ]
  }
 ]

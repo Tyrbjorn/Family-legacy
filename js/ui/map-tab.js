@@ -6,6 +6,7 @@ import { landShop } from "./estate-tab.js";
 import { guildHall } from "./guilds-tab.js";
 import { D, s } from "../main.js";
 import { busyBanner } from "./main-tab.js";
+import { tradeCard } from "./trade-ui.js";
 
 export function qKind(q) {
   return q.story
@@ -197,7 +198,7 @@ export function mapDetail(m) {
   if (k === "q") {
     const q = D.quests.find(x => x.id === id),
       kd = qKind(q),
-      iss = E.questIssue(s, m, q) || E.questAgeIssue(m, q),
+      iss = E.questIssue(s, m, q) || E.questAgeIssue(m, q, s),
       on = m.action && m.action.type === "quest" && m.action.target === id;
     h = `<div class="card"><b>${kd[0]} ${q.name}</b> <span class="tb" style="border-color:${kd[1]}">${kd[2]}${q.story ? " · ch. " + q.story : ""}</span> <span class="risk-${q.risk}">[${q.risk}]</span>${q.desc ? `<div class="muted">${q.desc}</div>` : ""}
   <div class="muted">CP ${q.cp} · task ${q.days}d · 🚶 ${trav} · reward ${Object.entries(q.reward)
@@ -313,8 +314,8 @@ export function mapv() {
             `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"}>Sell 10${RI[k]} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙</button>`,
         )
         .join("")}</div>${
-        (t.market || []).length
-          ? `<div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${t.market
+        E.marketOf(t.id).length
+          ? `<div class="muted" style="margin-top:4px">Makes: ${(t.produces || []).map(k => (RI[k] || "") + k).join(", ") || "—"} · Wants: ${(t.wants || []).map(k => (RI[k] || "") + k).join(", ") || "—"}</div><div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${E.marketOf(t.id)
               .map(k => {
                 const p = E.townBuyPrice(s, t.id, k);
                 return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"}>Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙</button>`;
@@ -351,7 +352,7 @@ export function mapv() {
         .map(([k, v]) => v + RI[k])
         .join(
           " ",
-        )} · ${Math.round(E.successChance(s, m, q) * 100)}%${q.risk === "deadly" ? " · ☠️ death risk" : ""}${q.unlocks ? ` · 🔓 ${s.unlocks.includes(q.unlocks) ? "unlocked" : "unlocks"} ${unlockName(q.unlocks)}` : ""}</span>${on ? `<div class="bar"><i style="width:${(m.action.progress / q.days) * 100}%"></i></div>` : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q) ? "" : "disabled"}>Go</button></div>`;
+        )} · ${Math.round(E.successChance(s, m, q) * 100)}%${q.risk === "deadly" ? " · ☠️ death risk" : ""}${q.unlocks ? ` · 🔓 ${s.unlocks.includes(q.unlocks) ? "unlocked" : "unlocks"} ${unlockName(q.unlocks)}` : ""}</span>${on ? `<div class="bar"><i style="width:${(m.action.progress / q.days) * 100}%"></i></div>` : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q, s) ? "" : "disabled"}>Go</button></div>`;
     }
   }
   return h;
@@ -374,33 +375,3 @@ export function worldEventsCard() {
  }</div>`;
 }
 
-// ---- Trade round: routes, carts, crew, auto-trade rules
-export function tradeCard() {
-  const tier = E.tradeTier(s);
-  if (!tier) return `<div class="card"><b>🛒 Trade routes</b><div class="muted">Build a Warehouse (Estate) to send carts to town markets. It upgrades to a Trading Post, then a Counting House.</div></div>`;
-  const tr = E.tradeInit(s),
-    sp = E.routeSlotParts(s),
-    towns = E.tradeTowns(s);
-  const U2 = (U.tr = U.tr || { t: 0, mode: "sell", r: 0 });
-  const town = towns[U2.t % towns.length];
-  const goods = U2.mode === "buy" ? E.marketOf(town.id) : Object.keys(town.prices).filter(k => (s.res[k] || 0) > 0 || !E.marketOf(town.id).includes(k));
-  const res = goods[U2.r % Math.max(1, goods.length)];
-  const mname = uid => ((s.minions || []).find(x => x.uid === uid) || {}).name || "—";
-  const pool = (s.minions || []).filter(x => x.job !== "trade");
-  let h = `<div class="card"><b>🛒 Trade routes</b> <span class="muted">· ${tr.routes.length}/${sp.total} slots (building ${sp.building}${sp.upgrades ? ", upgrades " + sp.upgrades : ""}${sp.haggling ? ", haggling " + sp.haggling : ""}${sp.steward ? ", steward " + sp.steward : ""}${sp.merchants ? ", trade factors " + sp.merchants : ""}) · cart carries ${E.cartCarry(s)}</span>
- <div class="muted">Each cart needs a driver; a guard and up to ${D.tuning.trade.maxEscorts} Horseman escorts scare off bandits. Peddler → Travelling Merchant → Trade Factor drivers get better deals.</div>`;
-  for (const r of tr.routes) {
-    const tn = D.towns.find(t => t.id === r.town);
-    const price = r.mode === "sell" ? E.townSellPrice(s, r.town, r.res) : E.townBuyPrice(s, r.town, r.res);
-    const st = r.trip ? `${r.trip.sold ? "returning" : "on the road"} ${Math.round(r.trip.t)}/${r.trip.out + r.trip.back}d` : r.driver ? (r.auto ? "waiting on rule" : "paused") : "⚠️ no driver";
-    h += `<div class="card"><b>${r.mode === "sell" ? "Sell" : "Buy"} ${RI[r.res] || ""}${r.res}</b> at ${tn.icon} ${tn.name} <span class="muted">· now ${Math.round(price * 10) / 10}🪙 · ${st} · trips ${r.trips || 0}${r.robbed ? " · robbed " + r.robbed : ""} · bandit risk ${Math.round(E.banditChance(s, r) * 100)}%</span>
- <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Load ${r.qty}</span><button class="b" data-a="trq" data-v="${r.id}" data-w="-10">−</button><button class="b" data-a="trq" data-v="${r.id}" data-w="10">+</button>
- ${r.mode === "sell" ? `<span class="muted">Keep ${r.keep}</span><button class="b" data-a="trk" data-v="${r.id}" data-w="-25">−</button><button class="b" data-a="trk" data-v="${r.id}" data-w="25">+</button>` : `<span class="muted">Buy when below ${r.below}</span><button class="b" data-a="trb" data-v="${r.id}" data-w="-25">−</button><button class="b" data-a="trb" data-v="${r.id}" data-w="25">+</button>`}
- <button class="b ${r.auto ? "sel" : ""}" data-a="trauto" data-v="${r.id}">Auto ${r.auto ? "on" : "off"}</button><button class="b" data-a="trdel" data-v="${r.id}">✖ Close</button></div>
- <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">🧑‍🌾 Driver: ${mname(r.driver)} · 🗡️ Guard: ${mname(r.guard)} · 🏇 Escorts: ${(r.escorts || []).map(mname).join(", ") || "—"}</span>
- ${pool.length ? `<button class="b" data-a="trcrew" data-v="${r.id}" data-w="driver">Next driver</button><button class="b" data-a="trcrew" data-v="${r.id}" data-w="guard">Next guard</button>${pool.some(E.isEscort) ? `<button class="b" data-a="trcrew" data-v="${r.id}" data-w="escort">Add escort</button>` : ""}` : `<span class="muted">(no free followers)</span>`}</div></div>`;
-  }
-  if (tr.routes.length < sp.total && towns.length)
-    h += `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">New route:</span><button class="b" data-a="trnew" data-v="t">${town.icon} ${town.name}</button><button class="b" data-a="trnew" data-v="mode">${U2.mode === "sell" ? "Sell" : "Buy"}</button><button class="b" data-a="trnew" data-v="r" ${goods.length ? "" : "disabled"}>${res ? (RI[res] || "") + res : "—"}</button><button class="b" data-a="tradd" ${res ? "" : "disabled"}>＋ Open route</button></div>`;
-  return h + `</div>`;
-}

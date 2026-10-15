@@ -248,7 +248,7 @@ export function actionAllowed(s, m, a) {
   }
   if (t === "quest") {
     const q = D.quests.find(x => x.id === a.target);
-    return !!q && canQuest(m, q) && !questIssue(s, m, q);
+    return !!q && canQuest(m, q, s) && !questIssue(s, m, q);
   }
   if (t === "explore") return !exploreIssue(s, m, a.target);
   if (t === "dungeon") return !dungeonIssue(s, m, dungeonDef(a.target));
@@ -261,14 +261,17 @@ export function actionAllowed(s, m, a) {
   return false;
 }
 
-// Teens (teenAge..adult) may take safe errands, hunting, and low-injury combat (Oct 13 rule).
+// Teens (teenAge..adult) may take safe errands, hunting, and low-injury combat: CP <= teenRiskyMaxCp,
+// or (when the game state is known) an injury chance (= failure chance) under trade.teenSafeLoss.
 const TEEN_COMBAT = ["brawling", "swordsmanship", "archery", "shield", "tactics"];
-export function teenQuestOk(q) {
+export const teenInjuryChance = (s, m, q) => (q.risk === "safe" ? 0 : 1 - successChance(s, m, q));
+export function teenQuestOk(q, s, m) {
   if (!q || q.risk === "deadly" || q.type === "dungeon") return false;
   if (q.risk === "safe") return true;
-  const maxCp = T.teenRiskyMaxCp ?? 15;
-  return q.cp <= maxCp && (q.type === "hunt" || q.skill === "hunting" || TEEN_COMBAT.includes(q.skill));
+  if (!(q.type === "hunt" || q.skill === "hunting" || TEEN_COMBAT.includes(q.skill))) return false;
+  return q.cp <= (T.teenRiskyMaxCp ?? 15) || (!!s && !!m && teenInjuryChance(s, m, q) < (T.teenSafeLoss ?? 0.1));
 }
 export const isTeen = m => !isAdult(m) && ageY(m) >= (T.teenAge ?? 14);
-export const canQuest = (m, q) => isAdult(m) || (q && q.apprentice && ageY(m) >= (T.teenAge ?? 14)) || (isTeen(m) && teenQuestOk(q));
-export const questAgeIssue = (m, q) => (canQuest(m, q) ? null : isTeen(m) ? "too dangerous for a teen" : "too young");
+export const canQuest = (m, q, s) =>
+  isAdult(m) || (q && q.apprentice && ageY(m) >= (T.teenAge ?? 14)) || (isTeen(m) && teenQuestOk(q, s, m));
+export const questAgeIssue = (m, q, s) => (canQuest(m, q, s) ? null : isTeen(m) ? "too dangerous for a teen" : "too young");

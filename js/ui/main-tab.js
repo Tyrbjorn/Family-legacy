@@ -151,7 +151,7 @@ export function quests() {
         .join(
           ", ",
         )} · ${Math.round(E.successChance(s, m, q) * 100)}% success${q.risk === "deadly" ? ` · ☠️ ${D.tuning.deadlyDeathChance * 100}%+ death risk` : ""}</span></span>
-   <button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q) && qok ? "" : "disabled"}>Go</button></div>`;
+   <button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q, s) && qok ? "" : "disabled"}>Go</button></div>`;
     }
   }
   return h;

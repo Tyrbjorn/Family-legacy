@@ -2,7 +2,7 @@ import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
-Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720});
+Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720,adultAge:16,teenAge:14});D.guilds.minJoinAge=16;
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 const asProf=(m,c)=>{m.paths=null;m.prof=c||undefined;if(c)m.craft=m.craft||{id:'hearth',rank:0,rep:0};if(c)E.migratePaths({members:[m]});else m.paths=[];};
 let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
@@ -11,7 +11,7 @@ const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
 ok(Object.values(f.skills).some(k=>k.lvl>0),'activities gain levels');
 ok(s.turbo.charge===0,'active play does not charge turbo');
-E.advanceReal(s,10*400); ok(E.isAdult(f)&&!f.cls&&!s.pendingClass.length,'founder comes of age still classless (no auto pick at 16)');
+E.advanceReal(s,10*400); while(!E.isAdult(f)) E.advanceReal(s,10*30); ok(E.isAdult(f)&&!f.cls&&!s.pendingClass.length,'founder comes of age still classless (no auto pick at adulthood)');
 E.chooseClass(s,f.id,'fighter'); E.setAction(s,{type:'quest',target:'rats'}); const c0=s.res.coin; E.advanceReal(s,10*30); ok(s.res.coin>c0,'quests pay coin');
 // offline 14h
 const str=E.serialize(s,t0); const s2=E.deserialize(str); const d0=s2.day; const rep=E.applyOffline(s2,t0+14*3600e3);
@@ -51,7 +51,7 @@ while(E.minionRoom(h)) E.addMinion(h,'refugee','test'); ok(E.hire(h,'millbrook',
 h.res.food=500; const c1=h.res.coin; const wg=E.monthlyWages(h); h.day=29; h.acc=0; E.advanceReal(h,10); ok(wg>0&&h.res.coin<=c1-wg,'monthly wages paid');
 h.res.coin=0; for(let i=0;i<3;i++){h.res.coin=0;h.res.food=500;h.day=Math.ceil((h.day+1)/30)*30-1;E.advanceReal(h,10);} ok(h.minions.length===0,'unpaid minions leave');
 // guilds
-const G=E.newGame(t0); const gm2=G.members[0]; G.res.coin=1e5; E.advanceReal(G,10*360); E.chooseClass(G,gm2.id,'fighter');
+const G=E.newGame(t0); const gm2=G.members[0]; G.res.coin=1e5; E.advanceReal(G,10*360); while(!E.isAdult(gm2)) E.advanceReal(G,10*60); E.chooseClass(G,gm2.id,'fighter');
 ok(D.guilds.guilds.length>=4&&D.guilds.guilds.every(g=>D.towns.some(t=>t.id===g.town)),'4-5 guilds, each in a town');
 { const _c=gm2.cls; gm2.cls=null; ok(E.setAction(G,{type:'train',target:'tactics'})===false,'guild skill locked before joining'); gm2.cls=_c; }
 ok(E.setAction(G,{type:'quest',target:'g_vanguard_patrol'})===false,'guild quest locked before joining');

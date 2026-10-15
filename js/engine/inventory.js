@@ -62,14 +62,19 @@ export const buyPrice = (it, s, townId) =>
 // Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
 // buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).
 const TR = () => T.trade || {};
-export const townSupply = (s, townId, res) => ((s.trade && s.trade.supply[townId]) || {})[res] ?? 1;
+// Town specialties (towns.json produces / wants) set where a good's supply rests: plenty = cheaper, scarce = dearer.
+export const baseSupply = (townId, res) => {
+  const t = D.towns.find(x => x.id === townId) || {};
+  return (t.produces || []).includes(res) ? TR().produceSupply || 1 : (t.wants || []).includes(res) ? TR().wantSupply || 1 : 1;
+};
+export const townSupply = (s, townId, res) => ((s.trade && s.trade.supply[townId]) || {})[res] ?? baseSupply(townId, res);
 export const demandMult = (s, townId, res, lo, hi) => Math.min(hi, Math.max(lo, Math.pow(townSupply(s, townId, res), -(TR().elasticity || 0.6))));
 export const sellDemand = (s, townId, res) => demandMult(s, townId, res, TR().sellMin || 0.6, TR().sellMax || 1.6);
 export const buyDemand = (s, townId, res) => demandMult(s, townId, res, TR().buyMin || 0.8, TR().buyMax || 1.6);
 export function shiftSupply(s, townId, res, n) {
   if (!s.trade) return;
   const sp = (s.trade.supply[townId] = s.trade.supply[townId] || {});
-  sp[res] = Math.max(0.2, Math.min(3, (sp[res] ?? 1) + n / (TR().depth || 200)));
+  sp[res] = Math.max(0.2, Math.min(3, (sp[res] ?? baseSupply(townId, res)) + n / (TR().depth || 200)));
 }
 
 export const townSellPrice = (s, townId, res) => {
@@ -94,13 +99,16 @@ export function buyItem(s, townId, itemId) {
 
 // Town markets sell staple goods (salt, grain, milk...). Buying costs resBuyMarkup × the town's base price,
 // with the same event/season multipliers as selling, so resale can never profit (see data.test).
-export const marketOf = townId => (D.towns.find(x => x.id === townId) || {}).market || [];
+export const marketOf = townId => {
+  const t = D.towns.find(x => x.id === townId) || {};
+  return [...new Set([...(t.market || []), ...(t.produces || [])])];
+};
 export const townBuyPrice = (s, townId, res) => {
   const t = D.towns.find(x => x.id === townId);
   return (
     Math.round(
       t.prices[res] *
-        ((T.resBuyMarkupBy || {})[res] || T.resBuyMarkup || 2.5) *
+        (((D.towns.find(x => x.id === townId) || {}).produces || []).includes(res) ? TR().produceMarkup || 1.2 : (T.resBuyMarkupBy || {})[res] || T.resBuyMarkup || 2.5) *
         Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) *
         Math.max(1, priceMult(s, townId, res)) *
         seasonPrice(s, res) *

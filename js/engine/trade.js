@@ -1,7 +1,8 @@
 // Trade round: trade buildings (Warehouse > Trading Post > Counting House), route slots, carts with crew
-// (driver + guard + optional Horseman escorts), auto-trade rules, bandits, and per-town supply drift.
-import { marketOf, shiftSupply, townBuyPrice, townSellPrice } from "./inventory.js";
-import { townKnown, travelDays } from "./map.js";
+// (driver + guard + Horseman escorts), estate-town and town-town routes, auto-trade rules, bandit fights,
+// road patrols, and per-town supply drift (prices: inventory.js).
+import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "./inventory.js";
+import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
 import { famFx } from "./paths.js";
 import { structDef } from "./estate.js";
@@ -11,18 +12,18 @@ import { haulTier } from "./world.js";
 
 export const TC = () => T.trade;
 export const TRADE_BUILDINGS = ["warehouse", "tradingpost", "countinghouse"];
+export const HOME = "estate";
 
 export function tradeInit(s) {
   s.trade = s.trade || {};
   s.trade.supply = s.trade.supply || {};
   s.trade.routes = s.trade.routes || [];
+  s.trade.patrols = s.trade.patrols || [];
   s.trade.nextId = s.trade.nextId || 1;
   return s.trade;
 }
 
-// highest trade building tier built (0 = none)
-export const tradeTier = s =>
-  Math.max(0, ...(s.structures || []).map(st => TRADE_BUILDINGS.indexOf(st.type) + 1));
+export const tradeTier = s => Math.max(0, ...(s.structures || []).map(st => TRADE_BUILDINGS.indexOf(st.type) + 1));
 
 const bestHaggle = s => Math.max(0, ...living(s).map(m => (m.skills && m.skills.haggling ? m.skills.haggling.lvl : 0)));
 const stewards = s =>
@@ -31,66 +32,121 @@ const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).inc
 
 export function routeSlotParts(s) {
   const tier = tradeTier(s);
-  if (!tier) return { building: 0, haggling: 0, steward: 0, merchants: 0, upgrades: 0, total: 0 };
+  if (!tier) return { building: 0, upgrades: 0, haggling: 0, steward: 0, merchants: 0, total: 0 };
   const parts = {
     building: TC().slotsByTier[tier - 1],
-    haggling: Math.min(TC().haggleSlotMax, Math.floor(bestHaggle(s) / TC().haggleLvlPerSlot)),
-    steward: Math.min(TC().stewardSlotMax, stewards(s)),
-    merchants: Math.min(TC().merchantSlotMax, factors(s)),
     upgrades: (s.structures || [])
       .filter(st => TRADE_BUILDINGS.includes(st.type))
       .reduce((a, st) => a + (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((b, u) => b + (u.routes || 0), 0), 0),
+    haggling: Math.min(TC().haggleSlotMax, Math.floor(bestHaggle(s) / TC().haggleLvlPerSlot)),
+    steward: Math.min(TC().stewardSlotMax, stewards(s)),
+    merchants: Math.min(TC().merchantSlotMax, factors(s)),
   };
-  parts.total = parts.building + parts.haggling + parts.steward + parts.merchants + parts.upgrades;
+  parts.total = parts.building + parts.upgrades + parts.haggling + parts.steward + parts.merchants;
   return parts;
 }
 export const routeSlots = s => routeSlotParts(s).total;
 
 export const tradeTowns = s => D.towns.filter(t => townKnown(s, t));
+export const tradePlace = id => (id === HOME ? "Estate" : (D.towns.find(t => t.id === id) || { name: id }).name);
 const minion = (s, uid) => (s.minions || []).find(x => x.uid === uid);
 
-// driver: merchant-line class sets the price edge; guard/escorts: guard power deters bandits
-export const driverEdge = mi => (mi ? (TC().driverEdge[mi.cls] || 0) : 0);
-const guardPow = mi => (mi ? (mtype(mi.type).apt.guard || 1) * minionGearMult(mi, "guard") * minionLvlMult(mi, "guard") : 0);
-export const isEscort = mi => !!mi && (TC().escortClasses || []).includes(mi.cls);
-export function crewPower(s, r) {
-  return guardPow(minion(s, r.guard)) + (r.escorts || []).reduce((a, u) => a + guardPow(minion(s, u)), 0);
+// ---- roads: estate legs use the map's road time; town-to-town legs scale straight distance by the
+// average road-time-per-distance of the known towns.
+const daysPerDist = () => {
+  const ts = D.towns.map(t => travelDays(t.id) / Math.max(1, distTo(t.id)));
+  return ts.reduce((a, b) => a + b, 0) / ts.length;
+};
+export function legDays(a, b) {
+  if (a === b) return 0;
+  if (a === HOME) return travelDays(b);
+  if (b === HOME) return travelDays(a);
+  const p = ptOf(a),
+    q = ptOf(b);
+  return Math.round(Math.max(D.map.minTravel, Math.hypot(p.x - q.x, p.y - q.y) * daysPerDist()) * 10) / 10;
 }
-export const banditChance = (s, r) => TC().banditBase / (1 + crewPower(s, r) * TC().guardDeter);
+export const segKey = (a, b) => [a, b].sort().join("~");
+
+// ---- crew, patrols and bandits
+export const driverEdge = mi => (mi ? TC().driverEdge[mi.cls] || 0 : 0);
+export const guardPow = mi => (mi ? (mtype(mi.type).apt.guard || 1) * minionGearMult(mi, "guard") * minionLvlMult(mi, "guard") : 0);
+export const isEscort = mi => !!mi && (TC().escortClasses || []).includes(mi.cls);
+export const crewPower = (s, r) => guardPow(minion(s, r.guard)) + (r.escorts || []).reduce((a, u) => a + guardPow(minion(s, u)), 0);
+export const patrolPower = (s, key) =>
+  (s.trade.patrols || []).filter(p => p.seg === key).reduce((a, p) => a + p.members.reduce((b, u) => b + guardPow(minion(s, u)), 0), 0);
+// risk of a bandit attack on one road segment: guards and escorts deter, patrols on that road deter
+export const segRisk = (s, r, a, b) =>
+  TC().banditBase / (1 + crewPower(s, r) * TC().guardDeter + patrolPower(s, segKey(a, b)) * TC().patrolDeter);
+// roads a loaded cart travels (where bandits can strike)
+export const cargoLegs = r => (r.from && r.from !== HOME ? [[r.from, r.town], [r.town, HOME]] : [[HOME, r.town]]);
+export const banditChance = (s, r) => 1 - cargoLegs(r).reduce((a, [x, y]) => a * (1 - segRisk(s, r, x, y)), 1);
+// chance the crew beats the bandits once attacked
+export const winChance = (s, r) => {
+  const p = crewPower(s, r);
+  return p / (p + TC().banditStrength);
+};
 
 export function routeIssue(s, r) {
   if (!tradeTier(s)) return "needs a Warehouse";
-  if (!D.towns.find(t => t.id === r.town && townKnown(s, t))) return "unknown town";
+  const known = id => id === HOME || D.towns.some(t => t.id === id && townKnown(s, t));
+  if (!known(r.town) || !known(r.from || HOME)) return "unknown town";
+  if (r.from && r.from !== HOME) {
+    if (r.from === r.town) return "same town";
+    if (!marketOf(r.from).includes(r.res)) return "start town doesn't sell that";
+    if (!(D.towns.find(t => t.id === r.town).prices || {})[r.res]) return "town doesn't buy that";
+    return null;
+  }
   if (!["sell", "buy"].includes(r.mode)) return "bad mode";
   if (r.mode === "buy" && !marketOf(r.town).includes(r.res)) return "town doesn't sell that";
   if (r.mode === "sell" && !(D.towns.find(t => t.id === r.town).prices || {})[r.res]) return "town doesn't buy that";
   return null;
 }
 
-export function addRoute(s, town, mode, res) {
+// mode: "sell" | "buy" (estate ↔ town) or "haul" (buy at `from`, sell at `town`)
+export function addRoute(s, town, mode, res, from = HOME) {
   tradeInit(s);
   if (s.trade.routes.length >= routeSlots(s)) return null;
-  const r = { id: "r" + s.trade.nextId++, town, mode, res, qty: TC().defaultQty, keep: mode === "sell" ? TC().defaultKeep : 0, below: mode === "buy" ? TC().defaultBelow : 0, maxPrice: 0, auto: true, driver: null, guard: null, escorts: [], trip: null };
+  const r = {
+    id: "r" + s.trade.nextId++,
+    from: mode === "haul" ? from : HOME,
+    town,
+    mode,
+    res,
+    qty: TC().defaultQty,
+    keep: mode === "sell" ? TC().defaultKeep : 0,
+    below: mode === "buy" ? TC().defaultBelow : 0,
+    margin: mode === "haul" ? TC().defaultMargin : 0,
+    maxPrice: 0,
+    auto: true,
+    driver: null,
+    guard: null,
+    escorts: [],
+    trip: null,
+  };
   if (routeIssue(s, r)) return null;
   s.trade.routes.push(r);
-  log(s, `🧾 New trade route: ${mode} ${res} at ${D.towns.find(t => t.id === town).name}.`);
+  log(s, `🧾 New trade route: ${routeLabel(r)}.`);
   return r;
 }
+export const routeLabel = r =>
+  r.mode === "haul" ? `${r.res} ${tradePlace(r.from)} → ${tradePlace(r.town)}` : `${r.mode} ${r.res} at ${tradePlace(r.town)}`;
 
-const freeCrew = (s, r, uid) => {
+// pull a follower off every trade/patrol duty
+function release(s, uid, job = "idle") {
   for (const x of s.trade.routes) {
     if (x.driver === uid) x.driver = null;
     if (x.guard === uid) x.guard = null;
     x.escorts = (x.escorts || []).filter(u => u !== uid);
   }
+  for (const p of s.trade.patrols) p.members = p.members.filter(u => u !== uid);
   const mi = minion(s, uid);
-  if (mi && mi.job === "trade") mi.job = "idle";
-};
+  if (mi && (mi.job === "trade" || mi.job === "patrol")) mi.job = job;
+}
 
 export function removeRoute(s, id) {
   const r = s.trade.routes.find(x => x.id === id);
   if (!r) return false;
-  for (const u of [r.driver, r.guard, ...(r.escorts || [])]) if (u) freeCrew(s, r, u);
+  for (const u of [r.driver, r.guard, ...(r.escorts || [])]) if (u) release(s, u);
   s.trade.routes = s.trade.routes.filter(x => x !== r);
   return true;
 }
@@ -98,20 +154,41 @@ export function removeRoute(s, id) {
 // role: driver | guard | escort. Assigning pulls the follower off their old job.
 export function setCrew(s, id, role, uid) {
   const r = s.trade.routes.find(x => x.id === id);
-  if (!r) return false;
   const mi = uid ? minion(s, uid) : null;
-  if (uid && !mi) return false;
-  if (role === "escort" && mi && !isEscort(mi)) return false;
-  if (role === "escort" && mi && (r.escorts || []).length >= TC().maxEscorts) return false;
-  if (uid) freeCrew(s, r, uid);
-  if (role === "driver") {
-    if (r.driver) freeCrew(s, r, r.driver);
-    r.driver = uid || null;
-  } else if (role === "guard") {
-    if (r.guard) freeCrew(s, r, r.guard);
-    r.guard = uid || null;
-  } else if (role === "escort" && uid) r.escorts = [...(r.escorts || []), uid];
+  if (!r || (uid && !mi)) return false;
+  if (role === "escort" && (!mi || !isEscort(mi) || (r.escorts || []).length >= TC().maxEscorts)) return false;
+  if (uid) release(s, uid);
+  if (role === "driver" || role === "guard") {
+    if (r[role]) release(s, r[role]);
+    r[role] = uid || null;
+  } else if (role === "escort") r.escorts = [...(r.escorts || []), uid];
   if (mi) mi.job = "trade";
+  return true;
+}
+
+// ---- patrols: followers guarding one road (estate–town or town–town)
+export function addPatrol(s, a, b) {
+  tradeInit(s);
+  const seg = segKey(a, b);
+  if (a === b || s.trade.patrols.some(p => p.seg === seg)) return null;
+  const p = { id: "p" + s.trade.nextId++, seg, a, b, members: [] };
+  s.trade.patrols.push(p);
+  return p;
+}
+export function setPatrol(s, pid, uid) {
+  const p = s.trade.patrols.find(x => x.id === pid),
+    mi = minion(s, uid);
+  if (!p || !mi || p.members.length >= TC().maxPatrol) return false;
+  release(s, uid);
+  p.members.push(uid);
+  mi.job = "patrol";
+  return true;
+}
+export function removePatrol(s, pid) {
+  const p = s.trade.patrols.find(x => x.id === pid);
+  if (!p) return false;
+  for (const u of [...p.members]) release(s, u);
+  s.trade.patrols = s.trade.patrols.filter(x => x !== p);
   return true;
 }
 
@@ -120,11 +197,16 @@ export const cartCarry = s => haulTier(s).carry;
 // auto-trade rule check: does this route want to run now?
 export function routeWants(s, r) {
   if (!r.driver || !r.auto || routeIssue(s, r)) return false;
-  if (r.mode === "sell") return (s.res[r.res] || 0) - r.keep >= Math.min(r.qty, 1);
+  if (r.mode === "haul") {
+    const buy = townBuyPrice(s, r.from, r.res);
+    return townSellPrice(s, r.town, r.res) >= buy * (1 + r.margin) && s.res.coin >= buy;
+  }
+  if (r.mode === "sell") return (s.res[r.res] || 0) - r.keep >= 1;
   const p = townBuyPrice(s, r.town, r.res);
   return (s.res[r.res] || 0) < r.below && (!r.maxPrice || p <= r.maxPrice) && s.res.coin >= p;
 }
 
+// A trip is a list of stops; each stop has the day it is reached and what happens there.
 function startTrip(s, r) {
   const n = Math.min(r.qty, cartCarry(s));
   let load = 0;
@@ -133,74 +215,121 @@ function startTrip(s, r) {
     if (load <= 0) return;
     s.res[r.res] -= load;
   }
-  const days = travelDays(r.town);
-  r.trip = { t: 0, out: days, back: days, load, sold: false };
+  const path = r.mode === "haul" ? [HOME, r.from, r.town, HOME] : [HOME, r.town, HOME];
+  let d = 0;
+  const stops = [];
+  for (let i = 1; i < path.length; i++) {
+    d += legDays(path[i - 1], path[i]);
+    stops.push({ at: path[i], day: Math.round(d * 10) / 10, from: path[i - 1] });
+  }
+  r.trip = { t: 0, stops, step: 0, load, coin: 0, total: stops[stops.length - 1].day };
 }
 
-function arrive(s, r) {
-  const tn = D.towns.find(t => t.id === r.town).name;
-  const edge = 1 + driverEdge(minion(s, r.driver)) + famFx(s, "trade");
-  if (r.mode === "sell") {
-    const coin = Math.round(r.trip.load * townSellPrice(s, r.town, r.res) * edge);
-    shiftSupply(s, r.town, r.res, r.trip.load);
-    r.trip.coin = coin;
-  } else {
+const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + famFx(s, "trade");
+
+// bandits may strike a cart that is carrying goods or coin on this road
+function banditCheck(s, r, a, b) {
+  if (!r.trip.load && !r.trip.coin) return;
+  if (rng() >= segRisk(s, r, a, b)) return;
+  const road = `${tradePlace(a)}–${tradePlace(b)}`;
+  if (rng() < winChance(s, r)) {
+    r.won = (r.won || 0) + 1;
+    log(s, `⚔️ Bandits hit the ${routeLabel(r)} cart on the ${road} road; the guards drove them off.`);
+    return;
+  }
+  r.robbed = (r.robbed || 0) + 1;
+  r.trip.load = 0;
+  r.trip.coin = 0;
+  const lost = [];
+  for (const u of [r.guard, ...(r.escorts || [])].filter(Boolean)) {
+    const mi = minion(s, u);
+    if (!mi) continue;
+    if (rng() < TC().guardDieChance) {
+      release(s, u);
+      s.minions = s.minions.filter(x => x !== mi);
+      lost.push(`${mi.name} was killed`);
+    } else {
+      release(s, u);
+      mi.loyalty = Math.max(1, (mi.loyalty || 100) - TC().fleeLoyaltyLoss);
+      lost.push(`${mi.name} fled`);
+    }
+  }
+  log(s, `🏴‍☠️ Bandits robbed the ${routeLabel(r)} cart on the ${road} road${lost.length ? " (" + lost.join(", ") + ")" : ""}.`);
+}
+
+function atStop(s, r, st) {
+  const tr = r.trip;
+  banditCheck(s, r, st.from, st.at);
+  const edge = edgeOf(s, r);
+  if (st.at === HOME) return;
+  if (r.mode === "haul" && st.at === r.from) {
+    const p = townBuyPrice(s, r.from, r.res) / edge;
+    const n = Math.floor(Math.min(r.qty, cartCarry(s), s.res.coin / p));
+    if (n > 0) {
+      s.res.coin -= Math.round(n * p);
+      shiftSupply(s, r.from, r.res, -n);
+    }
+    tr.load = n;
+    tr.spent = Math.round(n * p);
+  } else if (st.at === r.town && (r.mode === "sell" || r.mode === "haul")) {
+    tr.coin = Math.round(tr.load * townSellPrice(s, r.town, r.res) * edge);
+    shiftSupply(s, r.town, r.res, tr.load);
+    tr.sold = tr.load;
+    tr.load = 0;
+  } else if (st.at === r.town && r.mode === "buy") {
     const p = townBuyPrice(s, r.town, r.res) / edge;
-    const n = Math.floor(Math.min(r.qty, cartCarry(s), s.res.coin / p, Math.max(0, r.below - (s.res[r.res] || 0)) || r.qty));
+    const want = Math.max(0, r.below - (s.res[r.res] || 0)) || r.qty;
+    const n = Math.floor(Math.min(r.qty, cartCarry(s), s.res.coin / p, want));
     if (n > 0) {
       s.res.coin -= Math.round(n * p);
       shiftSupply(s, r.town, r.res, -n);
     }
-    r.trip.load = n;
+    tr.load = n;
   }
-  if (rng() < banditChance(s, r)) {
-    const lost = r.mode === "sell" ? "the coin" : "the goods";
-    log(s, `🏴‍☠️ Bandits robbed the ${tn} cart and took ${lost}.`);
-    r.trip.coin = 0;
-    r.trip.load = 0;
-    r.robbed = (r.robbed || 0) + 1;
-  } else if (crewPower(s, r) > 0 && rng() < TC().banditBase) r.scared = (r.scared || 0) + 1;
 }
 
 function finish(s, r) {
-  const tn = D.towns.find(t => t.id === r.town).name;
-  if (r.mode === "sell" && r.trip.coin) {
-    s.res.coin += r.trip.coin;
-    log(s, `🛒 Cart back from ${tn}: sold ${r.trip.load} ${r.res} for ${r.trip.coin}🪙.`);
-  } else if (r.mode === "buy" && r.trip.load) {
-    s.res[r.res] = (s.res[r.res] || 0) + r.trip.load;
-    log(s, `🛒 Cart back from ${tn} with ${r.trip.load} ${r.res}.`);
+  const tr = r.trip;
+  if (tr.coin) {
+    s.res.coin += tr.coin;
+    log(s, `🛒 Cart home (${routeLabel(r)}): sold ${tr.sold} for ${tr.coin}🪙${tr.spent ? ` (paid ${tr.spent}🪙)` : ""}.`);
+  } else if (r.mode === "buy" && tr.load) {
+    s.res[r.res] = (s.res[r.res] || 0) + tr.load;
+    log(s, `🛒 Cart home from ${tradePlace(r.town)} with ${tr.load} ${r.res}.`);
   }
   r.trips = (r.trips || 0) + 1;
   r.trip = null;
 }
 
-// Supply drifts back to normal: towns consume gluts and restock shortages.
+// Supply drifts back to each town's resting level: towns consume gluts and restock shortages.
 function supplyDay(s) {
-  for (const sp of Object.values(s.trade.supply))
+  for (const [tid, sp] of Object.entries(s.trade.supply))
     for (const k of Object.keys(sp)) {
-      sp[k] += (1 - sp[k]) * TC().recovery;
-      if (Math.abs(sp[k] - 1) < 0.005) delete sp[k];
+      const b = baseSupply(tid, k);
+      sp[k] += (b - sp[k]) * TC().recovery;
+      if (Math.abs(sp[k] - b) < 0.005) delete sp[k];
     }
 }
 
 export function tradeDay(s) {
   tradeInit(s);
   supplyDay(s);
+  const on = (u, job) => (minion(s, u) || {}).job === job;
+  for (const p of s.trade.patrols) p.members = p.members.filter(u => on(u, "patrol"));
   for (const r of s.trade.routes) {
-    for (const k of ["driver", "guard"]) if (r[k] && (minion(s, r[k]) || {}).job !== "trade") r[k] = null;
-    r.escorts = (r.escorts || []).filter(u => (minion(s, u) || {}).job === "trade");
+    for (const k of ["driver", "guard"]) if (r[k] && !on(r[k], "trade")) r[k] = null;
+    r.escorts = (r.escorts || []).filter(u => on(u, "trade"));
     if (!r.trip) {
       if (routeWants(s, r)) startTrip(s, r);
       continue;
     }
     if (!r.driver) continue; // stalled until a driver is assigned
     r.trip.t += 1;
-    if (!r.trip.sold && r.trip.t >= r.trip.out) {
-      r.trip.sold = true;
-      arrive(s, r);
+    while (r.trip && r.trip.step < r.trip.stops.length && r.trip.t >= r.trip.stops[r.trip.step].day) {
+      atStop(s, r, r.trip.stops[r.trip.step]);
+      r.trip.step++;
     }
-    if (r.trip.t >= r.trip.out + r.trip.back) finish(s, r);
+    if (r.trip.step >= r.trip.stops.length) finish(s, r);
   }
 }
 
