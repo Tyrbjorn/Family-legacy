@@ -108,7 +108,7 @@ export function stationFx(s, kind = "enchanting") {
         sl = v("maxSlots");
       const syn = [];
       for (const y of G.synergies || [])
-        if (st.pieces.map(baseId).includes(y.piece)) (q += y.quality || 0), (sp += y.speed || 0), (sl += y.maxSlots || 0), syn.push(y.desc);
+        if ([...st.pieces, ...(st.fittings || [])].map(baseId).includes(y.piece)) (q += y.quality || 0), (sp += y.speed || 0), (sl += y.maxSlots || 0), syn.push(y.desc);
       out.jobs += Math.floor(v("jobs") + 1e-9);
       if (q + sp > out.quality + out.speed || !out.best)
         Object.assign(out, { quality: q, speed: sp, maxSlots: Math.floor(sl + 1e-9), craftQuality: v("craftQuality"), best: { piece: pieceDef(pid).name, tier: e.tier, structure: structDef(st.type).name, syn } });

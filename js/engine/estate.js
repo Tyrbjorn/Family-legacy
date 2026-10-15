@@ -7,6 +7,7 @@ import { inLine } from "./skills.js";
 import { famFx, pathReqName } from "./paths.js";
 import { stalls, structFeatureIssue } from "./world.js";
 export * from "./production.js";
+import { nightShare } from "./daynight.js";
 export * from "./tiers.js";
 export * from "./furnish.js";
 
@@ -66,7 +67,12 @@ export function scaleBonus(b, m) {
 
 // A Bed's effect depends on where it stands: family beds at home, follower beds in a bunkhouse/barracks/Fort.
 export const bedRole = st => structDef(st.type).bedRole || "family";
-export const pieceBonus = (st, p) => (p.followerBonus && bedRole(st) === "followers" ? p.followerBonus : p.bonus);
+// a building may also retune an item it hosts (e.g. the Counting House desk teaches Haggling)
+export const pieceBonus = (st, p) =>
+  (structDef(st.type).pieceBonus || {})[p.id] || (p.followerBonus && bedRole(st) === "followers" ? p.followerBonus : p.bonus);
+// wagon speed from Loading Docks / Lanterns: trips take 1/(1+x) as long (capped)
+// Lanterns add nightWagonSpeed for the night share of each day (wagons keep rolling after dark)
+export const wagonSpeed = s => 1 + Math.min(1, eff(s, "wagonSpeed") + nightShare() * eff(s, "nightWagonSpeed"));
 export const scaledPiece = (st, id) => {
   const p = pieceDef(id);
   return p && { ...p, bonus: scaleBonus(pieceBonus(st, p), pieceMult(st, id)) };
@@ -162,7 +168,10 @@ export const placed = s =>
 
 export function activeSynergies(st) {
   const ids = [...st.pieces, ...(st.fittings || [])].map(x => (pieceDef(x) || { id: baseId(x) }).id);
-  return ES().synergies.filter(y => y.pieces.every(p => ids.includes(p)));
+  // y.only / y.except limit a combo to (or keep it out of) certain building types
+  return ES().synergies.filter(
+    y => y.pieces.every(p => ids.includes(p)) && (!y.only || y.only.includes(st.type)) && !(y.except || []).includes(st.type),
+  );
 }
 
 export const allSynergies = s =>
@@ -259,8 +268,11 @@ export function buildStructure(s, type) {
   return st;
 }
 
+// non-manor (special) buildings gain slots with their upgrade level and unlock better items per level
+export const rankSlots = st => (structDef(st.type).special ? (ES().rankSlots || [])[Math.min(st.up || 0, (ES().rankSlots || [0]).length - 1)] || 0 : 0);
+export const itemUnlockUp = (st, pid) => (structDef(st.type).unlockUp || {})[baseId(pid)] || 0;
 export const freeSlots = (s, st) =>
-  structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
+  structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) + rankSlots(st) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
 
 export const isFixed = (st, pid) => (structDef(st.type).fixed || []).includes(baseId(pid));
 
@@ -299,6 +311,7 @@ export function placeIssue(s, uid, pid, fromStore) {
   if (p.fitting) return "slot-free fitting (buy it under Fittings)";
   if (sd.allowed && !sd.allowed.includes(baseId(pid))) return "not allowed here";
   if (!p.stack && st.pieces.map(baseId).includes(baseId(pid))) return "already here";
+  if ((st.up || 0) < itemUnlockUp(st, pid)) return `needs upgrade ${itemUnlockUp(st, pid)} (${(sd.upgrades || [])[itemUnlockUp(st, pid) - 1]?.name || "upgrade"})`;
   if (!fromStore && pieceLock(s, p)) return "🔒 " + pieceLock(s, p);
   if (!fromStore && !afford(s, p.cost)) return "cannot afford";
   if (fromStore && !s.pieceStore.includes(pid)) return "not in storage";
@@ -400,7 +413,7 @@ export function pieceLine(id, type) {
   const d = type ? structDef(type) : null;
   const base = (d && d.picks && d.picks[p.id]) || p.desc || "";
   const combos = ES()
-    .synergies.filter(y => y.pieces.includes(p.id))
+    .synergies.filter(y => y.pieces.includes(p.id) && (!d || ((!y.only || y.only.includes(d.id)) && !(y.except || []).includes(d.id))))
     // in a building, only combos it can actually hold (1-slot buildings pair with built-ins/fittings)
     .filter(y => !d || y.pieces.filter(x => x !== p.id).every(x => [...(d.fixed || []), ...(d.fittings || []), ...((d.slots || 0) > 1 ? d.allowed || [] : [])].includes(x)))
     .map(y => `${y.icon} +${y.pieces.filter(x => x !== p.id).map(x => pieceDef(x).name).join(" + ")}: ${y.desc}`);

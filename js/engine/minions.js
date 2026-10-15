@@ -5,7 +5,7 @@ import { extraSlots, onMinionEvolve, onMinionLevel, upJobMult, upVigor } from ".
 import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
-import { ES, buildingReqMet, eff, established, hasStruct, jobCap, scaledPiece, specDef, structDef } from "./estate.js";
+import { ES, buildingReqMet, eff, established, hasStruct, jobCap, fittingFx, scaledPiece, specDef, structDef } from "./estate.js";
 import { cls, guildDef, hasService, rankName, structReqOk, structReqText } from "./guilds.js";
 import { CR, bestRecipe, craftItem, itemDef, recipeDef, recipeIssue, sellTick, vaultRoom } from "./inventory.js";
 import { resGain } from "./legacy.js";
@@ -78,7 +78,7 @@ export function housingCap(s, kind) {
     (a, st) =>
       a +
       (((structDef(st.type).builtin || {}).housing || {})[kind] || 0) +
-      st.pieces.map(id => scaledPiece(st, id)).reduce((b, p) => b + (((p && p.bonus.housing) || {})[kind] || 0), 0),
+      [...st.pieces.map(id => scaledPiece(st, id)), ...fittingFx(st)].reduce((b, p) => b + (((p && p.bonus.housing) || {})[kind] || 0), 0),
     0,
   );
 }

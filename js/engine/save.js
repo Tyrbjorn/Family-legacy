@@ -403,6 +403,18 @@ const STEPS = [
     name: "furniture redo: merged items replaced (Cradle/Feather Bed/Bunk → Bed, Cold Cellar → Larder, Bookshelf/Desk → Study Corner), stat bumps → slot-free fittings, trimmed building lists",
     run: s => migrateFurniture(s),
   },
+  {
+    n: 15,
+    once: true,
+    name: "thin buildings + small items slot-free: Study Corner, Shrine, Perch, Brazier, Reagent Shelf, Glyph Lectern become fittings; reshuffled building lists",
+    run: s => migrateFurniture(s),
+  },
+  {
+    n: 16,
+    once: true,
+    name: "thin-building items, Hall of Ancestors upgrade line, Shopfront auto-sell, day/night (no data change: gated items stay placed)",
+    run: () => {},
+  },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
 export const migrationSteps = () => STEPS.map(({ n, once, name }) => ({ n, once: !!once, name }));

@@ -4,7 +4,7 @@ const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document
 const ctx=await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2});const p=await ctx.newPage();
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));p.on('dialog',d=>d.accept());
 const U='http://localhost:8137/';
-await p.goto(U);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(1500);
+await p.goto(U);await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(1500);
 await p.screenshot({path:'/workspace/fl-screenshots/screenshot-tutorial.png'});
 await p.click('[data-a="tourstart"]');await p.waitForTimeout(400);await p.click('[data-a="tournext"]');await p.waitForTimeout(700);await p.screenshot({path:'/workspace/fl-screenshots/screenshot-tour.png'});
 await p.click('.tourtip [data-a="tourend"]');

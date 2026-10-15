@@ -5,10 +5,11 @@ import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "
 import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
 import { famFx } from "./paths.js";
-import { eff, structDef } from "./estate.js";
+import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
 import { haulTier } from "./world.js";
+import { nightShare } from "./daynight.js";
 
 export const TC = () => T.trade;
 export const TRADE_BUILDINGS = ["warehouse", "tradingpost", "countinghouse"];
@@ -220,7 +221,7 @@ function startTrip(s, r) {
   let d = 0;
   const stops = [];
   for (let i = 1; i < path.length; i++) {
-    d += legDays(path[i - 1], path[i]);
+    d += legDays(path[i - 1], path[i]) / wagonSpeed(s);
     stops.push({ at: path[i], day: Math.round(d * 10) / 10, from: path[i - 1] });
   }
   r.trip = { t: 0, stops, step: 0, load, coin: 0, total: stops[stops.length - 1].day };
@@ -231,7 +232,9 @@ const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + famFx(s, "trade")
 // bandits may strike a cart that is carrying goods or coin on this road
 function banditCheck(s, r, a, b) {
   if (!r.trip.load && !r.trip.coin) return;
-  if (rng() >= segRisk(s, r, a, b)) return;
+  // the ambush hour is random; at night Lanterns cut the risk
+  const night = rng() < nightShare();
+  if (rng() >= segRisk(s, r, a, b) * (night ? 1 - Math.min(0.9, eff(s, "nightBanditCut")) : 1)) return;
   const road = `${tradePlace(a)}–${tradePlace(b)}`;
   if (rng() < winChance(s, r)) {
     r.won = (r.won || 0) + 1;

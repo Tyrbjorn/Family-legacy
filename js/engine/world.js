@@ -3,6 +3,7 @@ import { D, T, isAdult, living, log, rng } from "./state.js";
 import { chron } from "./chronicle.js";
 import { addBuff } from "./encounters.js";
 import { famFx } from "./paths.js";
+import { wagonSpeed } from "./estate.js";
 
 export const WD = () => D.world;
 const MPD = () => D.map;
@@ -182,6 +183,7 @@ export function haulTier(s) {
     if (carry * t.haulSpeed > best.carry * best.haulSpeed) best = { ...t, carry, q };
   }
   best.carry = Math.round(best.carry * (1 + famFx(s, "haul")));
+  best.haulSpeed *= wagonSpeed(s);
   return best;
 }
 export function buyAnimalIssue(s, id, town) {

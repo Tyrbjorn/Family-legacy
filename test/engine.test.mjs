@@ -123,8 +123,8 @@ ok(E.matCap(LS)===D.estate.caps.matBase+400,'Storage Chest raises material capac
 LS.res.planks=100; LS.res.blocks=100; ok(E.upgradeStructure(LS,s1x.uid)&&E.freeSlots(LS,s1x)===2&&E.structDef(s1x.type).slots===4,'Shack upgrades to Cabin (4 slots)');
 LS.res.coin+=1000; LS.res.stone+=100; const s3sm=E.buildStructure(LS,'smithy'); LS.land.push('meadow'); const s3w=s3sm||E.buildStructure(LS,'smithy'); ok(E.placePiece(LS,s3w.uid,'workbench')&&E.hasPiece(LS,'workbench')&&E.craftQuality(LS)>=0.15,'Workbench enables crafting; +Storage synergy raises quality');
 ok(E.activeSynergies(s3w).some(y=>y.id==='smithy')&&E.craftQuality(LS)>=0.3,'Workbench+Forge synergy: Smithy');
-const s3x=E.buildStructure(LS,'shack'); E.placePiece(LS,s3x.uid,'studydesk'); const lore0=E.eff(LS,'xp'); E.placePiece(LS,s3x.uid,'studycorner'); ok(E.activeSynergies(s3x).some(y=>y.id==='nook'),'Study Desk+Study Corner synergy: Scholar\'s Nook');
-ok(E.removePiece(LS,s3x.uid,'studycorner')&&LS.pieceStore.includes('studycorner')&&!E.activeSynergies(s3x).length&&E.placePiece(LS,s3x.uid,'studycorner',true),'remove to storage and re-place');
+const s3x=E.buildStructure(LS,'shack'); E.placePiece(LS,s3x.uid,'studydesk'); const lore0=E.eff(LS,'xp'); E.buyFitting(LS,s3x.uid,'studycorner'); ok(E.activeSynergies(s3x).some(y=>y.id==='nook'),'Study Desk+Study Corner synergy: Scholar\'s Nook');
+ok(E.removePiece(LS,s3x.uid,'studydesk')&&LS.pieceStore.includes('studydesk')&&!E.activeSynergies(s3x).length&&E.placePiece(LS,s3x.uid,'studydesk',true),'remove to storage and re-place');
 // minion housing & food
 ok(!E.addMinion(LS,'laborer','t'),'no bunk → follower cannot join'); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.planks=100; E.buyLand(LS,'meadow'); const bh=E.buildStructure(LS,'bunkhouse');
 ok(bh&&E.housingCap(LS,'bunk')===4,'Bunkhouse houses 4');
@@ -206,7 +206,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const L=E.newGame(t0); const sl=estate(L,[],'house'); L.res.ingots=50; L.res.cloth=20; L.res.copper=20;
  ok(E.placeIssue(L,sl.uid,'steelanvil')&&E.placeIssue(L,sl.uid,'coldcellar')&&E.placeIssue(L,sl.uid,'alchbench'),'better furniture locked by guild/quest/tier');
  L.doneQuests.push('mushrooms'); ok(E.pieceDef('coldcellar').id==='larder'&&E.placePiece(L,sl.uid,'larder'),'Cold Cellar merged into Larder');
- const lm=L.members[0]; lm.ageDays=20*360; lm.craft={id:'hearth',rank:1,rep:0}; L.res.coin+=5000; L.res.stone+=200; L.land.push('meadow'); const lsm=E.buildStructure(L,'smithy'); ok(E.placePiece(L,lsm.uid,'steelanvil')&&E.craftQuality(L)>=0.12,'Crafters rank unlocks Steel Anvil');
+ const lm=L.members[0]; lm.ageDays=20*360; lm.craft={id:'hearth',rank:1,rep:0}; L.res.coin+=5000; L.res.stone+=200; L.land.push('meadow'); const lsm=E.buildStructure(L,'smithy'); lsm.up=2; ok(E.placePiece(L,lsm.uid,'steelanvil')&&E.craftQuality(L)>=0.12,'Crafters rank unlocks Steel Anvil');
  const MM=E.newGame(t0); estate(MM,['orecart','minionbunk'],'shack'); MM.res.copper=5; ok(E.jobCap(MM,'mine')===2,'Ore Cart gives mining spots');
  const old=E.newGame(t0); estate(old,['forge','bunk']); const o2=JSON.parse(JSON.stringify(old)); E.normalize(o2); ok(o2.structures[0].pieces.every(p=>E.pieceTier(p)===0)&&E.bedrooms(o2)>=3,'old saves load as Crude tier'); }
 // resource tiers

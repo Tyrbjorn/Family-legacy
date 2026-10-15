@@ -104,5 +104,10 @@
   "produceMarkup": 1.2
  },
  "teenSafeLoss": 0.1,
- "demolishRefund": 0.5
+ "demolishRefund": 0.5,
+ "dayNight": {
+  "_note": "fraction of each game day; night wraps midnight",
+  "nightStart": 0.75,
+  "nightEnd": 0.2
+ }
 }

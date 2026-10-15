@@ -72,3 +72,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - Save migration step 14 remaps merged items (tier kept), moves stat items to fittings, sends disallowed items to storage.
 - Tests: test/furniture.test.mjs; screenshot test/shot-furniture.mjs.
 - Follow-up: specialty buildings keep 1 slot with ≤4 distinct picks, each with a tradeoff line (structure.picks). Root Cellar (mushroom quest) and Nursery are home fittings; Bed + Nursery combo; item one-liners list combos; bed-block reason names the shortfall.
+- Thin buildings round: Cask Rack (Cellared Ale), Loading Dock (wagonSpeed stat), Guard Post, Splitting Bench (Stoneworks), Depot, Shopfront; Lanterns fitting; Counting House desk teaches Haggling (structure.pieceBonus).
+- Small items slot-free (all buildings): Study Corner, Shrine, Perch, Brazier, Reagent Shelf, Glyph Lectern → fittings (save step 15).
+- Rank gating for non-manor buildings: estate.rankSlots by upgrade level, structure.unlockUp per item.
+- UI: building card split into js/ui/estate-card.js.
+- Five thin buildings filled (Moonpetal Planter, Infirmary Beds/Hospice, Yew Grove, Feast Table/Remembrance Feast); Hall of Ancestors upgrade line; Shopfront = auto-sell own output; minimal day/night (js/engine/daynight.js, tuning.dayNight) with night-only Lanterns; save step 16.
+- Counting House: Shopfront replaced by Ledger Hall combo (Study Desk + Stall: +10% trade sell); synergy only/except fields.

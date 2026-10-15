@@ -93,7 +93,8 @@ function cropQ(s, p, pr) {
 
 export function processDay(s, mul = 1) {
   for (const st of s.structures || []) {
-    const syn = activeSynergies(st);
+    const syn = activeSynergies(st),
+      out = {};
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))
       for (const pr0 of (p && p.bonus.processes) || []) {
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
@@ -109,7 +110,25 @@ export function processDay(s, mul = 1) {
         else if (cq) blendFoodQ(s, pr.out, made, cq);
         else if (inQ !== 1 && isIngredient(pr.out)) blendFoodQ(s, pr.out, made, inQ);
         s.res[pr.out] = (s.res[pr.out] || 0) + made;
+        out[pr.out] = (out[pr.out] || 0) + made;
       }
+    for (const y of syn) if (y.bonus.autoSell) autoSell(s, out, y.bonus.autoSell, mul);
+  }
+}
+
+// Shopfront: the building sells its own output at its door, up to rate/day each, at a cut of the towns' base price
+const basePrice = res => {
+  const ps = D.towns.map(t => (t.prices || {})[res]).filter(x => x > 0);
+  return ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : 0;
+};
+export function autoSell(s, out, cfg, mul = 1) {
+  for (const res of Object.keys(out)) {
+    const n = Math.min(cfg.rate * mul, s.res[res] || 0),
+      p = basePrice(res) * cfg.price;
+    if (n <= 0 || !p) continue;
+    s.res[res] -= n;
+    s.res.coin = (s.res.coin || 0) + n * p;
+    s.autoSold = (s.autoSold || 0) + n * p;
   }
 }
 
