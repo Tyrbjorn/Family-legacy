@@ -5,7 +5,7 @@ import { extraSlots, onMinionEvolve, onMinionLevel, upJobMult, upVigor } from ".
 import { minionSetMult } from "./gear.js";
 import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
-import { ES, buildingReqMet, eff, established, hasStruct, jobCap, fittingFx, scaledPiece, specDef, structDef } from "./estate.js";
+import { ES, buildingReqMet, eff, established, hasStruct, jobCap, boughtUps, fittingFx, scaledPiece, specDef, structDef } from "./estate.js";
 import { cls, guildDef, hasService, rankName, structReqOk, structReqText } from "./guilds.js";
 import { CR, bestRecipe, craftItem, itemDef, recipeDef, recipeIssue, sellTick, vaultRoom } from "./inventory.js";
 import { resGain } from "./legacy.js";
@@ -40,7 +40,7 @@ export function classHomeCap(st) {
   const d = structDef(st.type);
   if (!d.houses) return 0;
   return (
-    d.houses.cap + (specDef(st) ? 2 : 0) + (d.upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + (u.cap || 0), 0)
+    d.houses.cap + (specDef(st) ? 2 : 0) + boughtUps(st).reduce((a, u) => a + (u.cap || 0), 0)
   );
 }
 

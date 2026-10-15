@@ -56,7 +56,7 @@ function cardFeatures(st, k) {
             : `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Specialise (pick one):</span>${d.specs.map(sp => `<button class="b" data-a="spec" data-v="${st.uid}" data-w="${sp.id}" ${E.specIssue(s, st.uid, sp.id) ? "disabled" : ""} title="${sp.desc}">${sp.icon} ${sp.name}${E.specIssue(s, st.uid, sp.id) === "finish the upgrade line" ? "" : " " + costStr(sp.cost)}</button>`).join("")}${E.specIssue(s, st.uid, d.specs[0].id) === "finish the upgrade line" ? '<span class="muted">(after the full upgrade line)</span>' : ""}</div>`
         }`
       : ""
-  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${d.upgrades ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${d.upgrades.map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} ${u.routes ? "+" + u.routes + " route" : "+" + u.mult * 100 + "%"}`).join(" · ")}</div>${d.upgrades[st.up || 0] ? `<div class="row"><span class="muted">Next: ${d.upgrades[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(d.upgrades[st.up || 0].cost)}</button></div>` : ""}` : ""}`;
+  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${E.curUpgrades(st) ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${E.curUpgrades(st).map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} ${u.routes ? "+" + u.routes + " route" : "+" + u.mult * 100 + "%"}`).join(" · ")}</div>${E.curUpgrades(st)[st.up || 0] ? `<div class="row"><span class="muted">Next: ${E.curUpgrades(st)[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(E.curUpgrades(st)[st.up || 0].cost)}</button></div>` : ""}` : ""}`;
 }
 
 function cardPlace(st, k) {
@@ -73,7 +73,7 @@ function cardPlace(st, k) {
               `<option value="store:${pid}">📦 ${E.pieceDef(pid).name} [${E.tierName(pid)}] (from storage)</option>`,
           )
           .join("")}${[...D.estate.pieces, ...D.furniture]
-          .filter(p => !p.fixedOnly && !p.mergedInto && !p.fitting && (!d.allowed || d.allowed.includes(p.id)))
+          .filter(p => !p.fixedOnly && !p.mergedInto && !p.fitting && (!E.allowedOf(st) || E.allowedOf(st).includes(p.id)))
           .map(
             p =>
               `<option value="${p.id}" ${E.placeIssue(s, st.uid, p.id) ? "disabled" : ""}>${p.icon} ${p.name} – ${costStr(p.cost)}${E.placeIssue(s, st.uid, p.id) === "already here" ? " (here)" : E.pieceLock(s, p) ? " 🔒 " + E.pieceLock(s, p) : /^needs upgrade/.test(E.placeIssue(s, st.uid, p.id) || "") ? " 🔒 " + E.placeIssue(s, st.uid, p.id) : ""} — ${E.pieceLine(p.id, st.type)}</option>`,
@@ -94,6 +94,15 @@ function cardFittings(st, k) {
       return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${E.pieceLine(f.id)}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${E.pieceLine(f.id)} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(f.cost)}</button>`;
     })
     .join(" ")}</div>` : ""}`;
+}
+
+// production tier: next tier name, what it adds, button (needs the current upgrade line finished)
+function cardTier(st) {
+  const nx = E.nextTier(st);
+  if (!nx) return E.prodTier(st) ? `<div class="muted" style="margin-top:4px">🏛️ Top tier: ${E.prodTier(st).name}</div>` : "";
+  const ti = E.tierUpIssue(s, st.uid),
+    adds = [`output ×${nx.outputMult}`, nx.slots ? `+${nx.slots} slot` : "", nx.land ? `+${nx.land} land` : "", "new upgrade line; bought upgrades kept"].filter(Boolean).join(", ");
+  return `<div class="row" style="margin-top:4px"><span class="muted">🏛️ Tier ${(st.tier || 0) + 2} → ${nx.name} (${adds})</span><button class="b" data-a="tierup" data-v="${st.uid}" ${ti ? "disabled" : ""}>${ti && ti !== "cannot afford" ? "🔒 " + ti : costStr(nx.cost)}</button></div>`;
 }
 
 function cardNav(st, k) {
@@ -119,4 +128,5 @@ function cardNav(st, k) {
   }<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span>${E.demolishIssue(s, st.uid) ? `<span class="muted">🔒 ${E.demolishIssue(s, st.uid)}</span>` : `<button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button>`}</div></div>`;
 }
 
-export const buildingCard = (st, k) => cardHead(st, k) + cardPieces(st, k) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardNav(st, k);
+export const buildingCard = (st, k) =>
+  cardHead(st, k) + cardPieces(st, k) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);

@@ -1,0 +1,37 @@
+import fs from 'fs'; import * as E from '../js/engine.js';
+const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world'])D[n]=L(n);
+for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
+E.setData(D); let seed=11; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
+let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
+const ES=D.estate, P=new Set([...ES.pieces,...D.furniture].map(p=>p.id));
+const tiered=ES.structures.filter(d=>d.tiers);
+ok(tiered.length===17,'17 production buildings have tiers ('+tiered.length+')');
+ok(['herbalistshack','magestower','masonyard','kitchen'].every(id=>!E.structDef(id).tiers),'exceptions have no tiers');
+ok(tiered.every(d=>d.tiers.length===2&&d.tiers.every(t=>t.name&&t.outputMult>1&&t.upgrades.length===3&&t.allowed.length>=3&&t.allowed.length<=4&&t.allowed.every(a=>P.has(a)))),'each: 2 extra tiers, own 3-step line, 3-4 valid choices');
+ok(new Set(tiered.flatMap(d=>d.tiers.map(t=>t.name))).size===34,'34 distinct tier names');
+ok(ES.structureFiles.length===4&&ES.structures.length>=40,'buildings load from data/structures/*.json');
+const s=E.newGame(1_700_000_000_000); E.active(s).ageDays=20*360; E.normalize(s);
+for(const d of ES.structures){for(const k in d.cost||{})s.res[k]=(s.res[k]||0)+1e6;for(const u of d.upgrades||[])for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;for(const t of d.tiers||[]){for(const k in t.cost)s.res[k]=(s.res[k]||0)+1e6;for(const u of t.upgrades)for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;}}
+s.res.coin=1e8; for(const l of ES.lands) E.buyLand(s,l.id);
+const st=E.buildStructure(s,'sawmill'); ok(st&&!st.tier,'sawmill starts at tier 1');
+ok(/finish the upgrade line/.test(E.tierUpIssue(s,st.uid)||''),'tier-up needs the upgrade line finished');
+for(let i=0;i<3;i++) E.upgradeSpecial(s,st.uid);
+const m3=E.upgMult(st), sl3=E.rankSlots(st), out3=E.pieceMult(st,'sawtable');
+ok(!E.tierUpIssue(s,st.uid)&&E.tierUp(s,st.uid)&&st.tier===1&&st.up===0,'tier-up: level restarts at 0');
+ok(E.structName(st)==='Timber Yard','tier name shown');
+ok(Math.abs(E.upgMult(st)-m3)<1e-9&&E.rankSlots(st)===sl3,'bought upgrades and their slot bonus kept');
+ok(E.pieceMult(st,'sawtable')>out3*1.49,'tier 2 output ×1.5');
+ok(E.placeIssue(s,st.uid,'splitbench')!=='not allowed here','tier unlocks its item');
+ok(E.upgradeSpecial(s,st.uid)&&E.curUpgrades(st)[0].name==='Sturdier Frames'&&E.upgMult(st)>m3,'new upgrade line stacks on kept bonuses');
+const f1=E.freeSlots(s,st); E.upgradeSpecial(s,st.uid); ok(E.freeSlots(s,st)===f1+1,'new line adds a slot (Second Bay)');
+E.upgradeSpecial(s,st.uid); const lu=E.landUsed(s);
+ok(E.tierUp(s,st.uid)&&st.tier===2&&E.structName(st)==='Lumber Works'&&E.pieceMult(st,'sawtable')>out3*1.99,'tier 3 output ×2');
+ok(E.rankSlots(st)===sl3+1+1,'tier 3: kept slots + Second Bay + tier slot');
+ok(E.tierUpIssue(s,st.uid)==='max','3 tiers total');
+const gf=E.buildStructure(s,'fields'); for(let i=0;i<3;i++)E.upgradeSpecial(s,gf.uid); E.tierUp(s,gf.uid); for(let i=0;i<3;i++)E.upgradeSpecial(s,gf.uid); const l0=E.landUsed(s); E.tierUp(s,gf.uid); ok(E.landUsed(s)===l0+1,'Great Fields takes +1 land');
+const hc=E.buildStructure(s,'hunterscabin'); for(let i=0;i<3;i++)E.upgradeSpecial(s,hc.uid); const cap=E.classHomeCap(hc); E.tierUp(s,hc.uid); ok(E.classHomeCap(hc)===cap,'class-housing cap from kept upgrades survives tier-up');
+// save round-trip
+const r=JSON.parse(E.serialize(s,1_700_000_000_000)); E.normalize(r); const rs=r.structures.find(x=>x.uid===st.uid); ok(rs.tier===2&&rs.keptUps.length>=6,'tier state saves');
+ok(['prodTier','nextTier','tierUp','tierUpIssue','curUpgrades','boughtUps','allowedOf','rankSlots'].every(f=>typeof E[f]==='function'),'tier API exported (no name clashes)');
+console.log(pass+' tier tests passed');

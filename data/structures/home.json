@@ -1,0 +1,492 @@
+[
+ {
+  "id": "shack",
+  "name": "Shack",
+  "icon": "🛖",
+  "land": 1,
+  "slots": 2,
+  "cost": {
+   "coin": 40,
+   "wood": 15,
+   "stone": 5
+  },
+  "desc": "2 slots. A home, a sawmill, a workshop: the pieces decide.",
+  "level": 1,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ },
+ {
+  "id": "cabin",
+  "name": "Cabin",
+  "icon": "🏠",
+  "land": 1,
+  "slots": 4,
+  "cost": {
+   "coin": 200,
+   "planks": 15,
+   "blocks": 10
+  },
+  "upgradeFrom": "shack",
+  "desc": "4 slots",
+  "level": 2,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ },
+ {
+  "id": "house",
+  "name": "House",
+  "icon": "🏡",
+  "land": 2,
+  "slots": 6,
+  "cost": {
+   "coin": 600,
+   "planks": 40,
+   "blocks": 30,
+   "ingots": 5
+  },
+  "upgradeFrom": "cabin",
+  "desc": "6 slots, needs 2 land",
+  "level": 3,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ },
+ {
+  "id": "mansion",
+  "name": "Mansion",
+  "icon": "🏛️",
+  "branch": "merchant",
+  "cost": {
+   "coin": 3000,
+   "planks": 80,
+   "blocks": 60,
+   "ingots": 20,
+   "cloth": 20
+  },
+  "req": {
+   "skill": {
+    "haggling": 30
+   },
+   "building": {
+    "types": [
+     "tradingpost",
+     "countinghouse"
+    ],
+    "up": 0
+   }
+  },
+  "builtin": {
+   "bonus": {
+    "routeSlots": 1,
+    "tradeSell": 0.05
+   }
+  },
+  "desc": "Merchant manor: +1 trade route slot, +5% town sell prices.",
+  "land": 3,
+  "slots": 8,
+  "upgradeFrom": "house",
+  "level": 4,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ },
+ {
+  "id": "fort",
+  "name": "Fort",
+  "icon": "🏰",
+  "branch": "martial",
+  "cost": {
+   "coin": 3000,
+   "planks": 80,
+   "blocks": 60,
+   "ingots": 40
+  },
+  "req": {
+   "line": "fighter",
+   "building": {
+    "types": [
+     "barracks"
+    ],
+    "up": 3
+   }
+  },
+  "builtin": {
+   "housing": {
+    "bunk": 4
+   },
+   "bonus": {
+    "guardPower": 0.25,
+    "banditCut": 0.25
+   }
+  },
+  "desc": "Martial manor: +25% guard power, −25% bandit risk, houses 4 followers.",
+  "land": 3,
+  "slots": 8,
+  "upgradeFrom": "house",
+  "level": 4,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ],
+  "bedRole": "followers"
+ },
+ {
+  "id": "towerkeep",
+  "name": "Tower Keep",
+  "icon": "🗼",
+  "branch": "magic",
+  "cost": {
+   "coin": 3000,
+   "planks": 80,
+   "blocks": 60,
+   "ingots": 20,
+   "dust": 20
+  },
+  "req": {
+   "line": "apprentice",
+   "building": {
+    "types": [
+     "magestower"
+    ],
+    "up": 3
+   }
+  },
+  "fixed": [
+   "enchtable"
+  ],
+  "skillBoost": {
+   "skills": [
+    "arcana",
+    "fire",
+    "frost",
+    "enchanting",
+    "runecraft"
+   ],
+   "xp": 0.1
+  },
+  "desc": "Magic manor: built-in enchanting table, +10% arcane XP.",
+  "land": 3,
+  "slots": 8,
+  "upgradeFrom": "house",
+  "level": 4,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ },
+ {
+  "id": "abbey",
+  "name": "Abbey",
+  "icon": "⛪",
+  "branch": "divine",
+  "cost": {
+   "coin": 3000,
+   "planks": 80,
+   "blocks": 100,
+   "ingots": 20
+  },
+  "req": {
+   "line": "cleric",
+   "building": {
+    "types": [
+     "shrinehouse"
+    ],
+    "up": 3
+   }
+  },
+  "builtin": {
+   "bonus": {
+    "rest": 1,
+    "familyMorale": 2
+   }
+  },
+  "skillBoost": {
+   "skills": [
+    "faith",
+    "healing"
+   ],
+   "xp": 0.1
+  },
+  "desc": "Divine manor: faster injury recovery, +2 morale, +10% faith/healing XP.",
+  "land": 3,
+  "slots": 8,
+  "upgradeFrom": "house",
+  "level": 4,
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage",
+   "workbench",
+   "loom",
+   "herbrack",
+   "toolrack",
+   "studydesk",
+   "stall",
+   "alchbench",
+   "stablestall",
+   "kennel",
+   "quern",
+   "oven",
+   "hearth",
+   "churn",
+   "jars",
+   "smoker",
+   "tanrack",
+   "enchdesk"
+  ],
+  "fittings": [
+   "hourglass",
+   "clock",
+   "dummy",
+   "crystal",
+   "trophy",
+   "mirror",
+   "strongbox",
+   "pantry",
+   "carvedcase",
+   "stonehearth",
+   "distillery",
+   "rootcellar",
+   "nursery",
+   "lanterns",
+   "studycorner",
+   "shrine",
+   "perch",
+   "brazier"
+  ]
+ }
+]

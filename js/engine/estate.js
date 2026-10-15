@@ -48,7 +48,7 @@ export const tierName = id => pieceTierDef(id).name;
 export const structLevel = st => structDef(st.type).level || 1;
 
 export const pieceMult = (st, id) =>
-  pieceTierDef(id).mult * (1 + ES().levelBonus * (structLevel(st) - 1)) * (1 + upgMult(st)) * (1 + ((st.perk || {})[baseId(id)] || 0));
+  pieceTierDef(id).mult * (1 + ES().levelBonus * (structLevel(st) - 1)) * ((prodTier(st) || {}).outputMult || 1) * (1 + upgMult(st)) * (1 + ((st.perk || {})[baseId(id)] || 0));
 
 export const INTK = new Set(["beds"]);
 
@@ -138,7 +138,7 @@ export function specIssue(s, uid, id) {
   const sp = d && (d.specs || []).find(x => x.id === id);
   if (!sp) return "missing";
   if (st.spec) return "already specialised";
-  if ((st.up || 0) < (d.upgrades || []).length) return "finish the upgrade line";
+  if (!st.tier && (st.up || 0) < (d.upgrades || []).length) return "finish the upgrade line";
   if (!afford(s, sp.cost)) return "cannot afford";
   return null;
 }
@@ -156,6 +156,7 @@ export function specialize(s, uid, id) {
 export const structName = st => {
   const sp = specDef(st);
   if (sp) return sp.name;
+  if (prodTier(st)) return prodTier(st).name;
   const d = structDef(st.type);
   const u = Object.entries(d.upName || {})
     .filter(([k]) => (st.up || 0) >= +k)
@@ -214,7 +215,7 @@ export const landSlots = s =>
 
 export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +
-  (s.structures || []).reduce((a, st) => a + structDef(st.type).land, 0);
+  (s.structures || []).reduce((a, st) => a + structDef(st.type).land + ((prodTier(st) || {}).land || 0), 0);
 
 export const foodCap = s => ES().caps.foodBase + eff(s, "foodCap") + bl(s, "farm") * 100;
 
@@ -269,18 +270,26 @@ export function buildStructure(s, type) {
 }
 
 // non-manor (special) buildings gain slots with their upgrade level and unlock better items per level
-export const rankSlots = st => (structDef(st.type).special ? (ES().rankSlots || [])[Math.min(st.up || 0, (ES().rankSlots || [0]).length - 1)] || 0 : 0);
-export const itemUnlockUp = (st, pid) => (structDef(st.type).unlockUp || {})[baseId(pid)] || 0;
+const baseRank = st => (st.tier ? 0 : (ES().rankSlots || [])[Math.min(st.up || 0, (ES().rankSlots || [0]).length - 1)] || 0);
+export const rankSlots = st =>
+  structDef(st.type).special ? baseRank(st) + ((prodTier(st) || {}).slots || 0) + boughtUps(st).reduce((a, u) => a + (u.slots || 0), 0) : 0;
+export const itemUnlockUp = (st, pid) => ((prodTier(st) || structDef(st.type)).unlockUp || {})[baseId(pid)] || 0;
 export const freeSlots = (s, st) =>
   structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) + rankSlots(st) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
 
 export const isFixed = (st, pid) => (structDef(st.type).fixed || []).includes(baseId(pid));
 
-export const upgMult = st => (structDef(st.type).upgrades || []).slice(0, st.up || 0).reduce((a, u) => a + u.mult, 0) + (st.upPerk || 0);
+// Production tiers (structure.tiers): st.tier 0 = base. Each tier has its own upgrade line; tiering up restarts
+// st.up at 0 but keeps every upgrade already bought (st.keptUps), so their output and slot bonuses stay.
+export const prodTier = st => (st.tier ? (structDef(st.type).tiers || [])[st.tier - 1] : null);
+export const curUpgrades = st => (prodTier(st) || structDef(st.type)).upgrades || [];
+export const boughtUps = st => [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0)];
+export const allowedOf = st => (prodTier(st) || {}).allowed || structDef(st.type).allowed;
+export const upgMult = st => boughtUps(st).reduce((a, u) => a + (u.mult || 0), 0) + (st.upPerk || 0);
 
 export function specialUpIssue(s, uid) {
   const st = s.structures.find(x => x.uid === uid);
-  const ups = st && structDef(st.type).upgrades;
+  const ups = st && curUpgrades(st);
   if (!ups) return "missing";
   const nx = ups[st.up || 0];
   if (!nx) return "max";
@@ -292,7 +301,7 @@ export function specialUpIssue(s, uid) {
 export function upgradeSpecial(s, uid) {
   if (specialUpIssue(s, uid)) return false;
   const st = s.structures.find(x => x.uid === uid);
-  const nx = structDef(st.type).upgrades[st.up || 0];
+  const nx = curUpgrades(st)[st.up || 0];
   pay(s, nx.cost);
   st.up = (st.up || 0) + 1;
   const pk = upgradePerk(s, st.type);
@@ -309,9 +318,9 @@ export function placeIssue(s, uid, pid, fromStore) {
   const sd = structDef(st.type);
   if (p.fixedOnly || p.mergedInto) return "built-in only";
   if (p.fitting) return "slot-free fitting (buy it under Fittings)";
-  if (sd.allowed && !sd.allowed.includes(baseId(pid))) return "not allowed here";
+  if (allowedOf(st) && !allowedOf(st).includes(baseId(pid))) return "not allowed here";
   if (!p.stack && st.pieces.map(baseId).includes(baseId(pid))) return "already here";
-  if ((st.up || 0) < itemUnlockUp(st, pid)) return `needs upgrade ${itemUnlockUp(st, pid)} (${(sd.upgrades || [])[itemUnlockUp(st, pid) - 1]?.name || "upgrade"})`;
+  if ((st.up || 0) < itemUnlockUp(st, pid)) return `needs upgrade ${itemUnlockUp(st, pid)} (${curUpgrades(st)[itemUnlockUp(st, pid) - 1]?.name || "upgrade"})`;
   if (!fromStore && pieceLock(s, p)) return "🔒 " + pieceLock(s, p);
   if (!fromStore && !afford(s, p.cost)) return "cannot afford";
   if (fromStore && !s.pieceStore.includes(pid)) return "not in storage";

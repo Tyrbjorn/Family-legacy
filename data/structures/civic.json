@@ -1,0 +1,1066 @@
+[
+ {
+  "id": "hall",
+  "name": "Workshop Hall",
+  "icon": "🏭",
+  "land": 2,
+  "slots": 8,
+  "cost": {
+   "coin": 1200,
+   "planks": 80,
+   "blocks": 50,
+   "ingots": 15
+  },
+  "desc": "8 slots, needs 2 land",
+  "level": 3,
+  "allowed": [
+   "workbench",
+   "storage",
+   "loom",
+   "alchbench"
+  ],
+  "fittings": [
+   "stonehearth",
+   "distillery"
+  ]
+ },
+ {
+  "id": "bunkhouse",
+  "name": "Bunkhouse",
+  "icon": "🏚️",
+  "land": 1,
+  "slots": 2,
+  "cost": {
+   "coin": 150,
+   "wood": 40,
+   "stone": 10
+  },
+  "builtin": {
+   "housing": {
+    "bunk": 4
+   }
+  },
+  "desc": "Houses 4 followers built-in, plus 2 slots",
+  "level": 1,
+  "allowed": [
+   "bunk",
+   "storage",
+   "larder",
+   "toolrack"
+  ],
+  "bedRole": "followers"
+ },
+ {
+  "id": "masonyard",
+  "name": "Mason Yard",
+  "icon": "🧱",
+  "fixed": [
+   "masontable"
+  ],
+  "allowed": [
+   "splitbench",
+   "toolrack",
+   "storage"
+  ],
+  "cost": {
+   "coin": 150,
+   "stone": 40
+  },
+  "upgrades": [
+   {
+    "name": "Chisel Racks",
+    "cost": {
+     "coin": 200,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Crane",
+    "cost": {
+     "coin": 500,
+     "planks": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Guild Masons",
+    "cost": {
+     "coin": 1200,
+     "blocks": 40
+    },
+    "mult": 0.5,
+    "cap": 1,
+    "requiresClass": "architect"
+   }
+  ],
+  "desc": "A Mason's Table with its own upgrade line",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_laborer",
+    "n_foreman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "splitbench": "Stoneworks combo with the Mason Table: blocks ×1.5 — best for blocks",
+   "toolrack": "2 gathering + 1 herb follower spots — more stone coming in",
+   "storage": "+400 material storage — hold more stone and blocks"
+  },
+  "unlockUp": {
+   "splitbench": 1
+  }
+ },
+ {
+  "id": "herbalistshack",
+  "name": "Herbalist's Shack",
+  "icon": "🏚️",
+  "fixed": [
+   "remedybench"
+  ],
+  "allowed": [
+   "herbrack",
+   "storage",
+   "alchbench",
+   "stall"
+  ],
+  "cost": {
+   "coin": 120,
+   "wood": 30
+  },
+  "upgrades": [
+   {
+    "name": "Drying Lines",
+    "cost": {
+     "coin": 120,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Mortar & Pestle",
+    "cost": {
+     "coin": 350,
+     "copper": 6
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Apothecary",
+    "cost": {
+     "coin": 900,
+     "blocks": 15,
+     "potions": 5
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Herbalists live here; makes remedies, potions and salves",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_herbalist",
+    "n_masterherbalist"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "skillBoost": {
+   "skills": [
+    "alchemy",
+    "foraging"
+   ],
+   "xp": 0.1
+  },
+  "picks": {
+   "herbrack": "3 thyme → 1 potion, 2/day + 2 herb spots — steady potions",
+   "storage": "+400 storage for herbs",
+   "alchbench": "Fast potions plus draughts, dust & tonics — wider recipes",
+   "stall": "1 merchant spot; with Storage, Shopfront auto-sells what the shack makes"
+  },
+  "fittings": [
+   "shrine"
+  ],
+  "unlockUp": {
+   "alchbench": 1,
+   "stall": 2
+  }
+ },
+ {
+  "id": "magestower",
+  "name": "Hedge Mage's Hut",
+  "icon": "🗼",
+  "fixed": [
+   "arcanefocus"
+  ],
+  "allowed": [
+   "storage",
+   "moonplanter",
+   "studydesk",
+   "enchdesk"
+  ],
+  "cost": {
+   "coin": 400,
+   "stone": 60,
+   "planks": 10
+  },
+  "upgrades": [
+   {
+    "name": "Star Charts",
+    "cost": {
+     "coin": 300,
+     "cloth": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Scrying Pool",
+    "cost": {
+     "coin": 700,
+     "copper": 10,
+     "dust": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Spire",
+    "cost": {
+     "coin": 1500,
+     "blocks": 40,
+     "ingots": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Arcane dust and scrolls; boosts Magic guild members",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_hedgemage",
+    "n_adept"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "collegium",
+   "xp": 0.1
+  },
+  "upName": {
+   "2": "Mage's Tower"
+  },
+  "stages": [
+   "Hedge Mage's Hut",
+   "Mage's Tower",
+   "Specialty"
+  ],
+  "specs": [
+   {
+    "id": "warschool",
+    "name": "War College",
+    "icon": "🔥",
+    "bonus": {
+     "guardPower": 0.1,
+     "blessing": 0.03
+    },
+    "houses": [
+     "n_battlemage"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "guardPower +0.1, blessing +0.03"
+   },
+   {
+    "id": "lorelibrary",
+    "name": "Lore Library",
+    "icon": "📚",
+    "bonus": {
+     "blessing": 0.05
+    },
+    "houses": [
+     "n_loremaster"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "blessing +0.05"
+   },
+   {
+    "id": "enchantery",
+    "name": "Enchanter's Atelier",
+    "icon": "💠",
+    "bonus": {
+     "craftQuality": 0.08
+    },
+    "houses": [
+     "n_enchanter"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "craftQuality +0.08"
+   }
+  ],
+  "fittings": [
+   "crystal",
+   "perch",
+   "brazier",
+   "reagentshelf",
+   "glyphlectern"
+  ],
+  "picks": {
+   "storage": "+400 material storage",
+   "moonplanter": "Grows 0.3 moonpetal/day + 1 herb spot — feeds dust & tonics",
+   "studydesk": "+3% Lore XP, 2 tutor spots — teach the family",
+   "enchdesk": "Personal enchanting (1 job); pairs with Reagent Shelf / Glyph Lectern"
+  },
+  "unlockUp": {
+   "moonplanter": 1,
+   "studydesk": 1,
+   "enchdesk": 2
+  }
+ },
+ {
+  "id": "shrinehouse",
+  "name": "Wayside Shrine",
+  "icon": "🛐",
+  "fixed": [
+   "altar"
+  ],
+  "allowed": [
+   "studydesk",
+   "larder",
+   "herbrack",
+   "infirmary"
+  ],
+  "cost": {
+   "coin": 150,
+   "stone": 40
+  },
+  "upgrades": [
+   {
+    "name": "Candle Niche",
+    "cost": {
+     "coin": 150,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Bell Tower",
+    "cost": {
+     "coin": 450,
+     "blocks": 15,
+     "copper": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Consecrate as Chapel",
+    "cost": {
+     "coin": 1100,
+     "blocks": 40,
+     "ingots": 6
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Healers & clergy live here: blessings, morale, faster healing; becomes a Chapel",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_acolyte",
+    "n_priest",
+    "n_curate"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "church",
+   "xp": 0.1
+  },
+  "upName": {
+   "2": "Chapel"
+  },
+  "skillBoost": {
+   "skills": [
+    "healing",
+    "faith"
+   ],
+   "xp": 0.1
+  },
+  "stages": [
+   "Wayside Shrine",
+   "Chapel",
+   "Specialty"
+  ],
+  "specs": [
+   {
+    "id": "temple",
+    "name": "Temple",
+    "icon": "🏛️",
+    "bonus": {
+     "blessing": 0.05,
+     "healBoost": 1
+    },
+    "houses": [
+     "n_highpriest"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "blessing +0.05, healBoost +1"
+   },
+   {
+    "id": "orderhouse",
+    "name": "Order House",
+    "icon": "⚜️",
+    "bonus": {
+     "guardPower": 0.15,
+     "blessing": 0.03
+    },
+    "houses": [
+     "n_orderknight"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "guardPower +0.15, blessing +0.03"
+   },
+   {
+    "id": "monastery",
+    "name": "Monastery",
+    "icon": "📿",
+    "bonus": {
+     "morale": 0.3,
+     "rest": 0.5
+    },
+    "houses": [
+     "n_monk"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "morale +0.3, rest +0.5"
+   }
+  ],
+  "picks": {
+   "studydesk": "+3% Lore XP, 2 tutor spots",
+   "larder": "Pilgrims' stores: +300 food storage, +5% meal XP",
+   "herbrack": "Healing potions + 2 herb spots",
+   "infirmary": "Faster recovery & healing; Hospice combo with the Altar"
+  },
+  "fittings": [
+   "shrine"
+  ],
+  "unlockUp": {
+   "herbrack": 1,
+   "infirmary": 2
+  }
+ },
+ {
+  "id": "barracks",
+  "name": "Guardhouse",
+  "icon": "🏰",
+  "fixed": [
+   "weaponrack"
+  ],
+  "allowed": [
+   "bunk",
+   "pells",
+   "storage"
+  ],
+  "cost": {
+   "coin": 300,
+   "wood": 40,
+   "stone": 60
+  },
+  "upgrades": [
+   {
+    "name": "Drill Ground",
+    "cost": {
+     "coin": 250,
+     "planks": 15
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Armory",
+    "cost": {
+     "coin": 600,
+     "ingots": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Garrison Hall",
+    "cost": {
+     "coin": 1300,
+     "blocks": 40,
+     "ingots": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Soldiers live here; becomes Barracks at the 3rd upgrade; boosts Warriors guild members and guards",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_militia",
+    "n_soldier",
+    "n_sergeant",
+    "n_horseman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "vanguard",
+   "xp": 0.1
+  },
+  "upName": {
+   "2": "Barracks"
+  },
+  "stages": [
+   "Guardhouse",
+   "Barracks",
+   "Specialty"
+  ],
+  "specs": [
+   {
+    "id": "stable",
+    "name": "Stable",
+    "icon": "🐎",
+    "bonus": {
+     "guardPower": 0.1,
+     "rumorDiscount": 0.2
+    },
+    "houses": [
+     "n_horseman"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "guardPower +0.1, rumorDiscount +0.2"
+   },
+   {
+    "id": "knightshall",
+    "name": "Knight's Hall",
+    "icon": "🏰",
+    "bonus": {
+     "guardPower": 0.25
+    },
+    "houses": [
+     "n_knighterrant",
+     "n_paladinnpc"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "guardPower +0.25"
+   },
+   {
+    "id": "archeryrange",
+    "name": "Archery Range",
+    "icon": "🎯",
+    "bonus": {
+     "guardPower": 0.15,
+     "blessing": 0.02
+    },
+    "houses": [
+     "n_bowman"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "guardPower +0.15, blessing +0.02"
+   }
+  ],
+  "fittings": [
+   "dummy",
+   "shrine"
+  ],
+  "bedRole": "followers",
+  "picks": {
+   "bunk": "Beds for 2 more followers — a bigger garrison",
+   "pells": "Unlocks Spar at the Pells & Loose at the Butts — training activities",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "pells": 1
+  }
+ },
+ {
+  "id": "thievesden",
+  "name": "Thieves' Den",
+  "icon": "🕳️",
+  "fixed": [
+   "fencetable"
+  ],
+  "allowed": [
+   "stall",
+   "studydesk",
+   "storage"
+  ],
+  "cost": {
+   "coin": 250,
+   "wood": 30,
+   "planks": 10
+  },
+  "upgrades": [
+   {
+    "name": "Hidden Cellar",
+    "cost": {
+     "coin": 250,
+     "blocks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Fence Network",
+    "cost": {
+     "coin": 600,
+     "copper": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Guildmaster's Vault",
+    "cost": {
+     "coin": 1400,
+     "ingots": 10,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Lookouts live here; boosts Rogues guild members and sale prices",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_lookout"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "rogues",
+   "xp": 0.1
+  },
+  "picks": {
+   "stall": "1 merchant spot: sells your stock at full price — coin",
+   "studydesk": "+3% Lore XP, 2 tutor spots — learning",
+   "storage": "+400 material storage — stash the goods"
+  },
+  "unlockUp": {
+   "stall": 1
+  }
+ },
+ {
+  "id": "advlodge",
+  "name": "Adventurers' Lodge",
+  "icon": "⚔️",
+  "fixed": [
+   "questboard"
+  ],
+  "allowed": [
+   "bunk",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 300,
+   "wood": 40,
+   "planks": 15
+  },
+  "upgrades": [
+   {
+    "name": "Map Room",
+    "cost": {
+     "coin": 300,
+     "cloth": 6
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Trophy Hall",
+    "cost": {
+     "coin": 700,
+     "blocks": 15
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Guild Annex",
+    "cost": {
+     "coin": 1500,
+     "blocks": 40,
+     "ingots": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Adventuring/scouting followers live here; boosts Adventurers' Guild members",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [],
+   "jobs": [
+    "adventure",
+    "scout"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "adventurers",
+   "xp": 0.1
+  },
+  "bedRole": "followers",
+  "picks": {
+   "bunk": "Beds for 2 more followers",
+   "larder": "+300 food storage, +5% meal XP — feed the party",
+   "storage": "+400 material storage — keep loot"
+  },
+  "fittings": [
+   "shrine"
+  ],
+  "unlockUp": {
+   "bunk": 1
+  }
+ },
+ {
+  "id": "graveyard",
+  "name": "Graveyard",
+  "icon": "🪦",
+  "fixed": [
+   "headstones"
+  ],
+  "allowed": [
+   "herbrack",
+   "yewgrove",
+   "masontable",
+   "altar"
+  ],
+  "cost": {
+   "coin": 150,
+   "stone": 40
+  },
+  "upgrades": [
+   {
+    "name": "Stone Walls",
+    "cost": {
+     "coin": 300,
+     "blocks": 20
+    },
+    "mult": 0.25,
+    "cap": 0
+   },
+   {
+    "name": "Crypt Vaults",
+    "cost": {
+     "coin": 900,
+     "blocks": 50,
+     "ingots": 10
+    },
+    "mult": 0.25,
+    "cap": 0
+   },
+   {
+    "name": "Mausoleum Dome",
+    "cost": {
+     "coin": 2500,
+     "blocks": 100,
+     "ingots": 30
+    },
+    "mult": 0.5,
+    "cap": 0
+   }
+  ],
+  "upName": {
+   "2": "Crypt",
+   "3": "Mausoleum"
+  },
+  "capture": [
+   0.25,
+   0.35,
+   0.5,
+   0.75
+  ],
+  "desc": "Banks a fallen member's renown as Legacy Renown (25% → Crypt 50% → Mausoleum 75%)",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "picks": {
+   "herbrack": "Graveside herbs: potions + 2 herb spots",
+   "yewgrove": "Grows 1 wood/day + 1 gathering spot",
+   "masontable": "Cuts 3 stone → 1 block, 3/day",
+   "altar": "Healing, follower loyalty, +5% XP — costly but broad"
+  },
+  "fittings": [
+   "shrine"
+  ],
+  "unlockUp": {
+   "masontable": 1,
+   "altar": 2
+  }
+ },
+ {
+  "id": "ancestorhall",
+  "name": "Hall of Ancestors",
+  "icon": "🏛️",
+  "fixed": [
+   "ancestorshrine"
+  ],
+  "allowed": [
+   "studydesk",
+   "storage",
+   "feasttable"
+  ],
+  "cost": {
+   "coin": 1500,
+   "blocks": 40
+  },
+  "legacy": "hall",
+  "desc": "Legacy building: ancestors' blessing (+XP, morale)",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "fittings": [
+   "hourglass",
+   "clock",
+   "shrine"
+  ],
+  "picks": {
+   "studydesk": "+3% Lore XP, 2 tutor spots — elders teach the young",
+   "storage": "+400 storage and vault room for heirlooms",
+   "feasttable": "+300 food storage, meal XP, morale; Remembrance Feast combo with the Ancestor Shrine"
+  },
+  "unlockUp": {
+   "feasttable": 1
+  },
+  "upgrades": [
+   {
+    "name": "Portrait Gallery",
+    "cost": {
+     "coin": 300,
+     "planks": 30
+    },
+    "mult": 0.25,
+    "cap": 0
+   },
+   {
+    "name": "Family Archive",
+    "cost": {
+     "coin": 900,
+     "planks": 50,
+     "blocks": 20
+    },
+    "mult": 0.25,
+    "cap": 0
+   },
+   {
+    "name": "Heirloom Vault",
+    "cost": {
+     "coin": 2500,
+     "blocks": 60,
+     "ingots": 20
+    },
+    "mult": 0.5,
+    "cap": 0
+   }
+  ]
+ },
+ {
+  "id": "kitchen",
+  "name": "Kitchen",
+  "icon": "🍳",
+  "fixed": [
+   "range"
+  ],
+  "allowed": [
+   "oven",
+   "smoker",
+   "churn",
+   "hearth"
+  ],
+  "cost": {
+   "coin": 200,
+   "stone": 30,
+   "planks": 10
+  },
+  "upgrades": [
+   {
+    "name": "Spice Shelf",
+    "cost": {
+     "coin": 150,
+     "thyme": 15
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Copper Pots",
+    "cost": {
+     "coin": 400,
+     "copper": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Great Kitchen",
+    "cost": {
+     "coin": 1000,
+     "blocks": 20,
+     "ingots": 6
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Stew and porridge, plus 3 slots for oven, smoker, churn or jars",
+  "land": 1,
+  "slots": 3,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "unlockUp": {
+   "churn": 1,
+   "smoker": 2
+  }
+ },
+ {
+  "id": "arcaneworkshop",
+  "name": "Arcane Workshop",
+  "icon": "🔯",
+  "land": 1,
+  "slots": 2,
+  "cost": {
+   "coin": 900,
+   "stone": 40,
+   "planks": 20,
+   "dust": 10
+  },
+  "requires": "magestower",
+  "fixed": [
+   "enchtable",
+   "arcanefocus"
+  ],
+  "allowed": [
+   "enchdesk",
+   "studydesk"
+  ],
+  "special": true,
+  "level": 1,
+  "upgrades": [
+   {
+    "name": "Silver Inlay",
+    "cost": {
+     "coin": 600,
+     "copper": 10,
+     "dust": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Runed Circle",
+    "cost": {
+     "coin": 1200,
+     "ingots": 10,
+     "dust": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Star Lens",
+    "cost": {
+     "coin": 2500,
+     "blocks": 30,
+     "moonpetal": 10
+    },
+    "mult": 0.5,
+    "cap": 1,
+    "requiresClass": "apprentice"
+   }
+  ],
+  "desc": "Workshop wing of the Mage's Tower (one more land slot): Enchanter's Table and a crafting bench. Upgrades add enchant quality, speed, jobs and slots.",
+  "fittings": [
+   "reagentshelf",
+   "glyphlectern"
+  ]
+ }
+]

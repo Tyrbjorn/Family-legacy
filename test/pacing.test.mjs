@@ -6,6 +6,7 @@ const L = n => JSON.parse(fs.readFileSync(new URL("../data/" + n + ".json", impo
 const names = ["skills","classes","traits","buildings","furniture","items","quests","regions","tuning","nodes","towns","minions","guilds","jobs","activities","map","dungeons","estate","crafting","legacy","chronicle","achievements","events","encounters","seasons", "tutorial","notify","marriage","phases","intros","gear"];
 const D = {};
 for (const n of names) D[n] = L(n);
+for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D);
 let seed = 7;
 E.setRng(() => ((seed = (seed * 16807) % 2147483647), seed / 2147483647));

@@ -78,3 +78,4 @@ Everything from Eras 1–2 keeps working alongside these.
 - UI: building card split into js/ui/estate-card.js.
 - Five thin buildings filled (Moonpetal Planter, Infirmary Beds/Hospice, Yew Grove, Feast Table/Remembrance Feast); Hall of Ancestors upgrade line; Shopfront = auto-sell own output; minimal day/night (js/engine/daynight.js, tuning.dayNight) with night-only Lanterns; save step 16.
 - Counting House: Shopfront replaced by Ledger Hall combo (Study Desk + Stall: +10% trade sell); synergy only/except fields.
+- Production tiers: 17 buildings × 3 tiers (structure.tiers; st.tier/st.keptUps), tier upgrade lines with slot bonuses; data split into data/structures/{home,production,trade,civic}.json; save step 17.

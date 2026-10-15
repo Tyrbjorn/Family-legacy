@@ -4,8 +4,9 @@ import fs from "fs";
 import * as E from "../js/engine.js";
 const root = new URL("..", import.meta.url).pathname;
 const D = {};
-for (const f of fs.readdirSync(root + "data"))
+for (const f of fs.readdirSync(root + "data").filter(f => f.endsWith(".json")))
   D[f.replace(".json", "")] = JSON.parse(fs.readFileSync(root + "data/" + f));
+for (const f of D.estate.structureFiles) D["structures/" + f] = JSON.parse(fs.readFileSync(root + "data/structures/" + f + ".json"));
 E.setData(D);
 const SEEDS = +(process.argv[2] || 3),
   YEARS = +(process.argv[3] || 200);

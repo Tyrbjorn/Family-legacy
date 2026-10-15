@@ -1,0 +1,235 @@
+[
+ {
+  "id": "warehouse",
+  "name": "Warehouse",
+  "icon": "📦",
+  "land": 1,
+  "slots": 1,
+  "allowed": [
+   "storage",
+   "stablestall",
+   "loadingdock",
+   "guardpost"
+  ],
+  "cost": {
+   "coin": 300,
+   "planks": 20,
+   "stone": 20
+  },
+  "level": 1,
+  "desc": "Opens trade routes (1 route slot). Upgrades to Trading Post.",
+  "houses": {
+   "classes": [
+    "n_peddler",
+    "n_trademerchant",
+    "n_tradefactor"
+   ],
+   "cap": 1,
+   "bonus": 0.15
+  },
+  "upgrades": [
+   {
+    "name": "Loading Dock",
+    "cost": {
+     "coin": 300,
+     "planks": 15
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Ledger Office",
+    "cost": {
+     "coin": 800,
+     "planks": 20,
+     "cloth": 10
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Cart Yard",
+    "cost": {
+     "coin": 1800,
+     "blocks": 30,
+     "ingots": 8
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   }
+  ],
+  "special": true,
+  "picks": {
+   "storage": "+400 material storage (and vault room) — more goods on hand",
+   "stablestall": "Stalls for 2 draft animals — unlocks animal hauling",
+   "loadingdock": "Haul and route trips 15% quicker — faster wagons",
+   "guardpost": "−15% bandit chance on routes — safer cargo"
+  },
+  "fittings": [
+   "lanterns"
+  ],
+  "unlockUp": {
+   "loadingdock": 1,
+   "guardpost": 2
+  }
+ },
+ {
+  "id": "tradingpost",
+  "name": "Trading Post",
+  "icon": "🏪",
+  "land": 1,
+  "slots": 2,
+  "allowed": [
+   "storage",
+   "stall",
+   "loadingdock",
+   "guardpost"
+  ],
+  "upgradeFrom": "warehouse",
+  "cost": {
+   "coin": 900,
+   "planks": 40,
+   "blocks": 20
+  },
+  "level": 2,
+  "desc": "2 route slots. Upgrades to Counting House.",
+  "houses": {
+   "classes": [
+    "n_peddler",
+    "n_trademerchant",
+    "n_tradefactor"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "upgrades": [
+   {
+    "name": "Loading Dock",
+    "cost": {
+     "coin": 300,
+     "planks": 15
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Ledger Office",
+    "cost": {
+     "coin": 800,
+     "planks": 20,
+     "cloth": 10
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Cart Yard",
+    "cost": {
+     "coin": 1800,
+     "blocks": 30,
+     "ingots": 8
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   }
+  ],
+  "special": true,
+  "fittings": [
+   "lanterns"
+  ],
+  "unlockUp": {
+   "guardpost": 1
+  }
+ },
+ {
+  "id": "countinghouse",
+  "name": "Counting House",
+  "icon": "🏦",
+  "land": 1,
+  "slots": 3,
+  "allowed": [
+   "storage",
+   "stall",
+   "loadingdock",
+   "guardpost",
+   "studydesk"
+  ],
+  "upgradeFrom": "tradingpost",
+  "cost": {
+   "coin": 2500,
+   "planks": 40,
+   "blocks": 40,
+   "ingots": 10
+  },
+  "level": 3,
+  "desc": "3 route slots.",
+  "houses": {
+   "classes": [
+    "n_peddler",
+    "n_trademerchant",
+    "n_tradefactor"
+   ],
+   "cap": 3,
+   "bonus": 0.15
+  },
+  "upgrades": [
+   {
+    "name": "Loading Dock",
+    "cost": {
+     "coin": 300,
+     "planks": 15
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Ledger Office",
+    "cost": {
+     "coin": 800,
+     "planks": 20,
+     "cloth": 10
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   },
+   {
+    "name": "Cart Yard",
+    "cost": {
+     "coin": 1800,
+     "blocks": 30,
+     "ingots": 8
+    },
+    "mult": 0,
+    "routes": 1,
+    "cap": 0
+   }
+  ],
+  "special": true,
+  "pieceBonus": {
+   "studydesk": {
+    "skill": "haggling",
+    "xp": 0.05,
+    "jobs": {
+     "tutor": 2
+    }
+   }
+  },
+  "picks": {
+   "studydesk": "Ledger study: +5% Haggling XP, 2 tutor spots — trains merchants"
+  },
+  "fittings": [
+   "lanterns"
+  ],
+  "unlockUp": {
+   "studydesk": 1
+  }
+ }
+]

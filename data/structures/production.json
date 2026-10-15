@@ -1,0 +1,2917 @@
+[
+ {
+  "id": "quarry",
+  "name": "Quarry",
+  "icon": "🪨",
+  "fixed": [
+   "quarrypit"
+  ],
+  "allowed": [
+   "masontable",
+   "toolrack",
+   "storage"
+  ],
+  "cost": {
+   "coin": 120,
+   "wood": 30
+  },
+  "upgrades": [
+   {
+    "name": "Winch",
+    "cost": {
+     "coin": 150,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Blasting Powder",
+    "cost": {
+     "coin": 400,
+     "blocks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Deep Cut",
+    "cost": {
+     "coin": 900,
+     "blocks": 30,
+     "ingots": 8
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Passive stone; upgrades raise output",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_laborer",
+    "n_foreman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "masontable": "Cuts stone → blocks on site, 3/day — turns stone into building blocks",
+   "toolrack": "2 gathering + 1 herb follower spots — more raw stone",
+   "storage": "+400 material storage — hold more stone"
+  },
+  "unlockUp": {
+   "masontable": 1
+  },
+  "tiers": [
+   {
+    "name": "Deep Quarry",
+    "cost": {
+     "coin": 1800,
+     "blocks": 60,
+     "ingots": 16
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "masontable",
+     "toolrack",
+     "storage",
+     "orecart"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 900,
+       "blocks": 30,
+       "ingots": 8
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1800,
+       "blocks": 60,
+       "ingots": 16
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3600,
+       "blocks": 120,
+       "ingots": 32
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Quarry Works",
+    "cost": {
+     "coin": 4500,
+     "blocks": 150,
+     "ingots": 60
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "masontable",
+     "toolrack",
+     "orecart",
+     "splitbench"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2250,
+       "blocks": 75,
+       "ingots": 30
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4500,
+       "blocks": 150,
+       "ingots": 60
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 9000,
+       "blocks": 300,
+       "ingots": 120
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "mineshaft",
+  "name": "Mine Shaft",
+  "icon": "⛏️",
+  "fixed": [
+   "shaftlift"
+  ],
+  "allowed": [
+   "orecart",
+   "toolrack",
+   "storage"
+  ],
+  "cost": {
+   "coin": 250,
+   "wood": 40,
+   "stone": 20
+  },
+  "upgrades": [
+   {
+    "name": "Timber Props",
+    "cost": {
+     "coin": 200,
+     "planks": 15
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Pumps",
+    "cost": {
+     "coin": 500,
+     "copper": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Deep Gallery",
+    "cost": {
+     "coin": 1200,
+     "ingots": 12,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Passive iron & copper ore",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_laborer",
+    "n_foreman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "orecart": "2 mining spots — more iron & copper ore",
+   "toolrack": "2 gathering + 1 herb follower spots — general labour instead of ore",
+   "storage": "+400 material storage — hold more ore"
+  },
+  "unlockUp": {
+   "orecart": 1
+  },
+  "tiers": [
+   {
+    "name": "Deep Mine",
+    "cost": {
+     "coin": 2400,
+     "ingots": 24,
+     "blocks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "orecart",
+     "toolrack",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1200,
+       "ingots": 12,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2400,
+       "ingots": 24,
+       "blocks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 4800,
+       "ingots": 48,
+       "blocks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Ore Gallery",
+    "cost": {
+     "coin": 6000,
+     "ingots": 100,
+     "blocks": 100
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "orecart",
+     "toolrack",
+     "storage",
+     "loadingdock"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 3000,
+       "ingots": 50,
+       "blocks": 50
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 6000,
+       "ingots": 100,
+       "blocks": 100
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 12000,
+       "ingots": 200,
+       "blocks": 200
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "herbgarden",
+  "name": "Garden",
+  "icon": "🌿",
+  "fixed": [
+   "herbbeds"
+  ],
+  "allowed": [
+   "herbrack",
+   "alchbench",
+   "jars",
+   "storage"
+  ],
+  "cost": {
+   "coin": 90,
+   "wood": 20
+  },
+  "upgrades": [
+   {
+    "name": "Trellises",
+    "cost": {
+     "coin": 100,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Irrigation",
+    "cost": {
+     "coin": 300,
+     "blocks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Greenhouse",
+    "cost": {
+     "coin": 800,
+     "planks": 20,
+     "cloth": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Herbs and food; replaces the old Herb Garden",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer",
+    "n_foreman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "herbrack": "3 thyme → 1 potion, 2/day + 2 herb spots — potions and pickers",
+   "alchbench": "Fast potions plus draughts, dust & tonics — more recipes, fewer pickers",
+   "jars": "Berries/vegetables → preserves — food instead of potions",
+   "storage": "+400 storage — hoard herbs for later"
+  },
+  "unlockUp": {
+   "jars": 1,
+   "alchbench": 2
+  },
+  "tiers": [
+   {
+    "name": "Physic Garden",
+    "cost": {
+     "coin": 1600,
+     "planks": 40,
+     "cloth": 20
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "herbrack",
+     "alchbench",
+     "jars",
+     "moonplanter"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 800,
+       "planks": 20,
+       "cloth": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1600,
+       "planks": 40,
+       "cloth": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3200,
+       "planks": 80,
+       "cloth": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Herbarium",
+    "cost": {
+     "coin": 4000,
+     "planks": 100,
+     "cloth": 50,
+     "moonpetal": 10
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "herbrack",
+     "alchbench",
+     "jars",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2000,
+       "planks": 50,
+       "cloth": 25,
+       "moonpetal": 5
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4000,
+       "planks": 100,
+       "cloth": 50,
+       "moonpetal": 10
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 8000,
+       "planks": 200,
+       "cloth": 100,
+       "moonpetal": 20
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "smithy",
+  "name": "Workshop",
+  "icon": "⚒️",
+  "fixed": [
+   "forge"
+  ],
+  "allowed": [
+   "workbench",
+   "steelanvil",
+   "toolrack",
+   "storage"
+  ],
+  "cost": {
+   "coin": 300,
+   "stone": 60
+  },
+  "upgrades": [
+   {
+    "name": "Bellows",
+    "cost": {
+     "coin": 250,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Fire-brick Hearth",
+    "cost": {
+     "coin": 600,
+     "blocks": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Master Crucible",
+    "cost": {
+     "coin": 1400,
+     "ingots": 15,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1,
+    "requiresClass": "blacksmith"
+   }
+  ],
+  "desc": "Workshop → Guild Hall → Master specialty; Artisans live here",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_artisan",
+    "n_master"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "guildBoost": {
+   "guild": "hearth",
+   "xp": 0.1
+  },
+  "upName": {
+   "2": "Guild Hall"
+  },
+  "stages": [
+   "Workshop",
+   "Guild Hall",
+   "Specialty"
+  ],
+  "specs": [
+   {
+    "id": "masterforge",
+    "name": "Master Forge",
+    "icon": "⚒️",
+    "bonus": {
+     "craftQuality": 0.1
+    },
+    "houses": [
+     "n_mastersmith"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "craftQuality +0.1"
+   },
+   {
+    "id": "carpentryhall",
+    "name": "Carpenters' Hall",
+    "icon": "🪚",
+    "bonus": {
+     "craftQuality": 0.05,
+     "matCap": 200
+    },
+    "houses": [
+     "n_mastercarpenter"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "craftQuality +0.05, matCap +200"
+   },
+   {
+    "id": "tradinghouse",
+    "name": "Trading House",
+    "icon": "💰",
+    "bonus": {
+     "saleBonus": 0.1
+    },
+    "houses": [
+     "n_merchantnpc"
+    ],
+    "cost": {
+     "coin": 2500,
+     "blocks": 40,
+     "ingots": 15
+    },
+    "desc": "saleBonus +0.1"
+   }
+  ],
+  "fittings": [
+   "runedanvil"
+  ],
+  "picks": {
+   "workbench": "Smithy combo with the Forge: +20% craft quality, 2 craft spots — best for quality",
+   "steelanvil": "+12% quality, 2 craft spots, +3% craft XP — trains smiths faster (Crafters rank 2)",
+   "toolrack": "2 gathering + 1 herb follower spots — more labour, no crafting boost",
+   "storage": "+400 material storage — stockpile ingots, no crafting boost"
+  },
+  "unlockUp": {
+   "steelanvil": 2
+  },
+  "tiers": [
+   {
+    "name": "Forge Hall",
+    "cost": {
+     "coin": 2800,
+     "ingots": 30,
+     "blocks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "workbench",
+     "steelanvil",
+     "toolrack",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1400,
+       "ingots": 15,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2800,
+       "ingots": 30,
+       "blocks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 5600,
+       "ingots": 60,
+       "blocks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Foundry",
+    "cost": {
+     "coin": 7000,
+     "ingots": 75,
+     "blocks": 100,
+     "copper": 30
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "workbench",
+     "steelanvil",
+     "toolrack",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 3500,
+       "ingots": 38,
+       "blocks": 50,
+       "copper": 15
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 7000,
+       "ingots": 75,
+       "blocks": 100,
+       "copper": 30
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 14000,
+       "ingots": 150,
+       "blocks": 200,
+       "copper": 60
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sawmill",
+  "name": "Saw Mill",
+  "icon": "🪚",
+  "fixed": [
+   "sawtable"
+  ],
+  "allowed": [
+   "storage",
+   "workbench",
+   "toolrack"
+  ],
+  "cost": {
+   "coin": 150,
+   "wood": 40
+  },
+  "upgrades": [
+   {
+    "name": "Water Wheel",
+    "cost": {
+     "coin": 200,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Twin Blades",
+    "cost": {
+     "coin": 500,
+     "copper": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Steam Saw",
+    "cost": {
+     "coin": 1200,
+     "ingots": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "A Saw Table with its own upgrade line",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_laborer",
+    "n_foreman"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "storage": "Lumberyard combo with the Saw Table: planks ×1.5 — best for planks",
+   "workbench": "2 craft spots next to the timber — crafting instead of extra planks",
+   "toolrack": "2 gathering + 1 herb follower spots — more wood coming in"
+  },
+  "unlockUp": {
+   "workbench": 1
+  },
+  "tiers": [
+   {
+    "name": "Timber Yard",
+    "cost": {
+     "coin": 2400,
+     "ingots": 20
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "storage",
+     "workbench",
+     "toolrack",
+     "splitbench"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1200,
+       "ingots": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2400,
+       "ingots": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 4800,
+       "ingots": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Lumber Works",
+    "cost": {
+     "coin": 6000,
+     "ingots": 50,
+     "copper": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "workbench",
+     "toolrack",
+     "splitbench",
+     "loadingdock"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 3000,
+       "ingots": 25,
+       "copper": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 6000,
+       "ingots": 50,
+       "copper": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 12000,
+       "ingots": 100,
+       "copper": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hunterscabin",
+  "name": "Hunter's Cabin",
+  "icon": "🛖",
+  "fixed": [
+   "gamerack"
+  ],
+  "allowed": [
+   "tanrack",
+   "smoker",
+   "kennel",
+   "storage"
+  ],
+  "cost": {
+   "coin": 140,
+   "wood": 40
+  },
+  "upgrades": [
+   {
+    "name": "Smokehouse",
+    "cost": {
+     "coin": 150,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Trophy Wall",
+    "cost": {
+     "coin": 400,
+     "planks": 15,
+     "hides": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Lodge Hall",
+    "cost": {
+     "coin": 900,
+     "blocks": 20,
+     "leather": 10
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Meat + hides; +25% while a Hunter-line family member lives",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_huntsman",
+    "n_scoutnpc"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "classSynergy": {
+   "classes": [
+    "hunter",
+    "scout",
+    "trapper",
+    "ranger",
+    "beastmaster",
+    "warden"
+   ],
+   "mult": 0.25
+  },
+  "guildBoost": {
+   "guild": "lodge",
+   "xp": 0.1
+  },
+  "picks": {
+   "tanrack": "Hides → leather, 2/day — feeds tailors and armour",
+   "smoker": "Meat/fish + salt → smoked provisions — food that keeps",
+   "kennel": "Houses an animal companion — a pet instead of production",
+   "storage": "+400 material storage — hold more hides"
+  },
+  "unlockUp": {
+   "smoker": 1,
+   "kennel": 2
+  },
+  "tiers": [
+   {
+    "name": "Hunting Lodge",
+    "cost": {
+     "coin": 1800,
+     "blocks": 40,
+     "leather": 20
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "tanrack",
+     "smoker",
+     "kennel",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 900,
+       "blocks": 20,
+       "leather": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1800,
+       "blocks": 40,
+       "leather": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3600,
+       "blocks": 80,
+       "leather": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Game Reserve",
+    "cost": {
+     "coin": 4500,
+     "blocks": 100,
+     "leather": 90
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "tanrack",
+     "smoker",
+     "kennel",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2250,
+       "blocks": 50,
+       "leather": 45
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4500,
+       "blocks": 100,
+       "leather": 90
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 9000,
+       "blocks": 200,
+       "leather": 180
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ],
+    "land": 1
+   }
+  ]
+ },
+ {
+  "id": "fishinghut",
+  "name": "Fishing Hut",
+  "icon": "🎣",
+  "fixed": [
+   "fishrack"
+  ],
+  "allowed": [
+   "smoker",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 100,
+   "wood": 30
+  },
+  "upgrades": [
+   {
+    "name": "Nets",
+    "cost": {
+     "coin": 120,
+     "cloth": 5
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Jetty",
+    "cost": {
+     "coin": 350,
+     "planks": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Smoke Shed",
+    "cost": {
+     "coin": 800,
+     "blocks": 15
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Fish for the pantry",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "smoker": "Fish + salt → smoked provisions — turns the catch into food that keeps",
+   "larder": "+300 food storage, +5% meal XP — store the catch",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "smoker": 1
+  },
+  "tiers": [
+   {
+    "name": "Fishery",
+    "cost": {
+     "coin": 1600,
+     "blocks": 30
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "smoker",
+     "larder",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 800,
+       "blocks": 15
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1600,
+       "blocks": 30
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3200,
+       "blocks": 60
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Fish Market",
+    "cost": {
+     "coin": 4000,
+     "blocks": 75,
+     "ingots": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "smoker",
+     "larder",
+     "storage",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2000,
+       "blocks": 38,
+       "ingots": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4000,
+       "blocks": 75,
+       "ingots": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 8000,
+       "blocks": 150,
+       "ingots": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "apiary",
+  "name": "Apiary",
+  "icon": "🍯",
+  "fixed": [
+   "hives"
+  ],
+  "allowed": [
+   "jars",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 110,
+   "wood": 25
+  },
+  "upgrades": [
+   {
+    "name": "Smoker",
+    "cost": {
+     "coin": 120,
+     "planks": 6
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Wildflower Meadow",
+    "cost": {
+     "coin": 300,
+     "thyme": 40
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Royal Hives",
+    "cost": {
+     "coin": 800,
+     "planks": 20,
+     "copper": 8
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Honey and a few herbs",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "jars": "Berries + honey → preserves — uses your honey",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 material storage — stockpile honey"
+  },
+  "unlockUp": {
+   "jars": 1
+  },
+  "tiers": [
+   {
+    "name": "Bee Yard",
+    "cost": {
+     "coin": 1600,
+     "planks": 40,
+     "copper": 16
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "jars",
+     "larder",
+     "storage",
+     "herbrack"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 800,
+       "planks": 20,
+       "copper": 8
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1600,
+       "planks": 40,
+       "copper": 16
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3200,
+       "planks": 80,
+       "copper": 32
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Honey House",
+    "cost": {
+     "coin": 4000,
+     "planks": 100,
+     "copper": 40,
+     "cloth": 10
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "jars",
+     "larder",
+     "herbrack",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2000,
+       "planks": 50,
+       "copper": 20,
+       "cloth": 5
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4000,
+       "planks": 100,
+       "copper": 40,
+       "cloth": 10
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 8000,
+       "planks": 200,
+       "copper": 80,
+       "cloth": 20
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "chickencoop",
+  "name": "Chicken Coop",
+  "icon": "🐔",
+  "fixed": [
+   "nestboxes"
+  ],
+  "allowed": [
+   "oven",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 80,
+   "wood": 25
+  },
+  "upgrades": [
+   {
+    "name": "Bigger Run",
+    "cost": {
+     "coin": 100,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Heated Roost",
+    "cost": {
+     "coin": 280,
+     "stone": 40
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Prize Flock",
+    "cost": {
+     "coin": 700,
+     "planks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Eggs every day",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "oven": "Bakes bread (flour + eggs) and pies — uses your eggs",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "oven": 1
+  },
+  "tiers": [
+   {
+    "name": "Hen House",
+    "cost": {
+     "coin": 1400,
+     "planks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "oven",
+     "larder",
+     "storage"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 700,
+       "planks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1400,
+       "planks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 2800,
+       "planks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Poultry Yard",
+    "cost": {
+     "coin": 3500,
+     "planks": 100,
+     "blocks": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "oven",
+     "larder",
+     "storage",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 1750,
+       "planks": 50,
+       "blocks": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 3500,
+       "planks": 100,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 7000,
+       "planks": 200,
+       "blocks": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ],
+    "land": 1
+   }
+  ]
+ },
+ {
+  "id": "tannery",
+  "name": "Tannery",
+  "icon": "🧴",
+  "fixed": [
+   "tanvats"
+  ],
+  "allowed": [
+   "loom",
+   "workbench",
+   "storage"
+  ],
+  "cost": {
+   "coin": 160,
+   "wood": 30,
+   "stone": 20
+  },
+  "upgrades": [
+   {
+    "name": "Scraping Frames",
+    "cost": {
+     "coin": 150,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Bark Pits",
+    "cost": {
+     "coin": 400,
+     "blocks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Master Tanner",
+    "cost": {
+     "coin": 1000,
+     "ingots": 8
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Hides → leather, fast",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_artisan",
+    "n_master"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "loom": "2 flax → 1 cloth + 1 craft spot, +3% craft XP — cloth beside leather",
+   "workbench": "2 craft spots — make gear from the leather",
+   "storage": "+400 material storage — stockpile hides and leather"
+  },
+  "unlockUp": {
+   "loom": 1
+  },
+  "tiers": [
+   {
+    "name": "Leather Works",
+    "cost": {
+     "coin": 2000,
+     "ingots": 16
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "loom",
+     "workbench",
+     "storage",
+     "tanrack"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1000,
+       "ingots": 8
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2000,
+       "ingots": 16
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 4000,
+       "ingots": 32
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Tanner's Hall",
+    "cost": {
+     "coin": 5000,
+     "ingots": 40,
+     "cloth": 30
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "loom",
+     "workbench",
+     "tanrack",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2500,
+       "ingots": 20,
+       "cloth": 15
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 5000,
+       "ingots": 40,
+       "cloth": 30
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 10000,
+       "ingots": 80,
+       "cloth": 60
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fields",
+  "name": "Crop Fields",
+  "icon": "🌾",
+  "fixed": [
+   "furrows"
+  ],
+  "allowed": [
+   "quern",
+   "larder",
+   "toolrack",
+   "storage"
+  ],
+  "cost": {
+   "coin": 90,
+   "wood": 25
+  },
+  "upgrades": [
+   {
+    "name": "Drainage Ditches",
+    "cost": {
+     "coin": 120,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Crop Rotation",
+    "cost": {
+     "coin": 350,
+     "stone": 40
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Seed Drill",
+    "cost": {
+     "coin": 900,
+     "planks": 20,
+     "ingots": 5
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Wheat, barley, vegetables and flax (seasonal)",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "quern": "2 wheat → 1 flour, 1.5/day — flour for bread",
+   "larder": "+300 food storage, +5% meal XP — store the harvest",
+   "toolrack": "2 gathering + 1 herb follower spots — more hands in the fields",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "quern": 1
+  },
+  "tiers": [
+   {
+    "name": "Farmstead",
+    "cost": {
+     "coin": 1800,
+     "planks": 40,
+     "ingots": 10
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "quern",
+     "larder",
+     "toolrack",
+     "stablestall"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 900,
+       "planks": 20,
+       "ingots": 5
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1800,
+       "planks": 40,
+       "ingots": 10
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3600,
+       "planks": 80,
+       "ingots": 20
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Great Fields",
+    "cost": {
+     "coin": 4500,
+     "planks": 100,
+     "ingots": 55
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "quern",
+     "larder",
+     "toolrack",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2250,
+       "planks": 50,
+       "ingots": 28
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4500,
+       "planks": 100,
+       "ingots": 55
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 9000,
+       "planks": 200,
+       "ingots": 110
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ],
+    "land": 1
+   }
+  ]
+ },
+ {
+  "id": "orchard",
+  "name": "Orchard",
+  "icon": "🍎",
+  "fixed": [
+   "fruittrees"
+  ],
+  "allowed": [
+   "jars",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 160,
+   "wood": 30
+  },
+  "upgrades": [
+   {
+    "name": "Pruning",
+    "cost": {
+     "coin": 150,
+     "planks": 6
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Grafted Stock",
+    "cost": {
+     "coin": 400,
+     "thyme": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Walled Orchard",
+    "cost": {
+     "coin": 900,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Fruit and berries",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "jars": "Berries → preserves — food that keeps",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "jars": 1
+  },
+  "tiers": [
+   {
+    "name": "Fruit Garden",
+    "cost": {
+     "coin": 1800,
+     "blocks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "jars",
+     "larder",
+     "storage",
+     "herbrack"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 900,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1800,
+       "blocks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3600,
+       "blocks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Great Orchard",
+    "cost": {
+     "coin": 4500,
+     "blocks": 120
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "jars",
+     "larder",
+     "herbrack",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2250,
+       "blocks": 60
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4500,
+       "blocks": 120
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 9000,
+       "blocks": 240
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ],
+    "land": 1
+   }
+  ]
+ },
+ {
+  "id": "cowpen",
+  "name": "Cow Pen & Dairy",
+  "icon": "🐄",
+  "fixed": [
+   "milkstalls"
+  ],
+  "allowed": [
+   "churn",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 180,
+   "wood": 40
+  },
+  "upgrades": [
+   {
+    "name": "Hay Loft",
+    "cost": {
+     "coin": 150,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Good Pasture",
+    "cost": {
+     "coin": 400,
+     "stone": 40
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Prize Herd",
+    "cost": {
+     "coin": 900,
+     "planks": 20,
+     "copper": 6
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Milk for cheese, butter and porridge",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "churn": "Milk → cheese or butter — dairy food",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 material storage"
+  },
+  "unlockUp": {
+   "churn": 1
+  },
+  "tiers": [
+   {
+    "name": "Dairy Barn",
+    "cost": {
+     "coin": 1800,
+     "planks": 40,
+     "copper": 12
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "churn",
+     "larder",
+     "storage",
+     "stablestall"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 900,
+       "planks": 20,
+       "copper": 6
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1800,
+       "planks": 40,
+       "copper": 12
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3600,
+       "planks": 80,
+       "copper": 24
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Dairy",
+    "cost": {
+     "coin": 4500,
+     "planks": 100,
+     "copper": 30,
+     "ingots": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "churn",
+     "larder",
+     "stablestall",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2250,
+       "planks": 50,
+       "copper": 15,
+       "ingots": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4500,
+       "planks": 100,
+       "copper": 30,
+       "ingots": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 9000,
+       "planks": 200,
+       "copper": 60,
+       "ingots": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "gristmill",
+  "name": "Mill",
+  "icon": "⚙️",
+  "fixed": [
+   "millwheel"
+  ],
+  "allowed": [
+   "oven",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 220,
+   "wood": 40,
+   "stone": 30
+  },
+  "upgrades": [
+   {
+    "name": "Iron Gearing",
+    "cost": {
+     "coin": 200,
+     "ingots": 4
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Second Stones",
+    "cost": {
+     "coin": 450,
+     "blocks": 15
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Waterwheel",
+    "cost": {
+     "coin": 1000,
+     "planks": 25,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Wheat → flour",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "oven": "Bakes bread and pies from the flour — food on site",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 storage — stockpile flour"
+  },
+  "unlockUp": {
+   "oven": 1
+  },
+  "tiers": [
+   {
+    "name": "Watermill",
+    "cost": {
+     "coin": 2000,
+     "planks": 50,
+     "blocks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "oven",
+     "larder",
+     "storage",
+     "quern"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1000,
+       "planks": 25,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2000,
+       "planks": 50,
+       "blocks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 4000,
+       "planks": 100,
+       "blocks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Great Mill",
+    "cost": {
+     "coin": 5000,
+     "planks": 125,
+     "blocks": 100,
+     "ingots": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "oven",
+     "larder",
+     "quern",
+     "loadingdock"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2500,
+       "planks": 63,
+       "blocks": 50,
+       "ingots": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 5000,
+       "planks": 125,
+       "blocks": 100,
+       "ingots": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 10000,
+       "planks": 250,
+       "blocks": 200,
+       "ingots": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "smokehouse",
+  "name": "Smokehouse",
+  "icon": "🏚️",
+  "fixed": [
+   "smokepit"
+  ],
+  "allowed": [
+   "jars",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 150,
+   "wood": 40,
+   "stone": 10
+  },
+  "upgrades": [
+   {
+    "name": "Oak Racks",
+    "cost": {
+     "coin": 120,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Salt Store",
+    "cost": {
+     "coin": 300,
+     "salt": 20
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Great Chimney",
+    "cost": {
+     "coin": 800,
+     "blocks": 15
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Salted, smoked meat and fish",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "jars": "Berries/vegetables → preserves — a second food line",
+   "larder": "+300 food storage, +5% meal XP",
+   "storage": "+400 material storage — stock salt"
+  },
+  "unlockUp": {
+   "jars": 1
+  },
+  "tiers": [
+   {
+    "name": "Curing House",
+    "cost": {
+     "coin": 1600,
+     "blocks": 30
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "jars",
+     "larder",
+     "storage",
+     "smoker"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 800,
+       "blocks": 15
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1600,
+       "blocks": 30
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3200,
+       "blocks": 60
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Provisioner",
+    "cost": {
+     "coin": 4000,
+     "blocks": 75,
+     "copper": 10
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "jars",
+     "larder",
+     "smoker",
+     "loadingdock"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2000,
+       "blocks": 38,
+       "copper": 5
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4000,
+       "blocks": 75,
+       "copper": 10
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 8000,
+       "blocks": 150,
+       "copper": 20
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "brewery",
+  "name": "Brewery",
+  "icon": "🍺",
+  "fixed": [
+   "brewvats"
+  ],
+  "allowed": [
+   "caskrack",
+   "stall",
+   "storage"
+  ],
+  "cost": {
+   "coin": 250,
+   "planks": 15,
+   "copper": 4
+  },
+  "upgrades": [
+   {
+    "name": "Malting Floor",
+    "cost": {
+     "coin": 200,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Copper Kettle",
+    "cost": {
+     "coin": 450,
+     "copper": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Cellar Casks",
+    "cost": {
+     "coin": 1000,
+     "blocks": 20
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Barley → ale",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "caskrack": "+200 food storage; Cellared Ale combo: ale ×1.5 — best for ale",
+   "stall": "1 merchant spot: sells your stock over time — coin",
+   "storage": "+400 material storage — stockpile grain"
+  },
+  "unlockUp": {
+   "caskrack": 1
+  },
+  "tiers": [
+   {
+    "name": "Alehouse",
+    "cost": {
+     "coin": 2000,
+     "blocks": 40
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "caskrack",
+     "stall",
+     "storage",
+     "larder"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 1000,
+       "blocks": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 2000,
+       "blocks": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 4000,
+       "blocks": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Great Brewhouse",
+    "cost": {
+     "coin": 5000,
+     "blocks": 100,
+     "copper": 20
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "caskrack",
+     "stall",
+     "storage",
+     "larder"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2500,
+       "blocks": 50,
+       "copper": 10
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 5000,
+       "blocks": 100,
+       "copper": 20
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 10000,
+       "blocks": 200,
+       "copper": 40
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "preservery",
+  "name": "Preserving Pantry",
+  "icon": "🫙",
+  "fixed": [
+   "brinecrocks"
+  ],
+  "allowed": [
+   "jars",
+   "larder",
+   "storage"
+  ],
+  "cost": {
+   "coin": 140,
+   "wood": 30,
+   "stone": 20
+  },
+  "upgrades": [
+   {
+    "name": "Shelving",
+    "cost": {
+     "coin": 100,
+     "planks": 8
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Cool Cellar",
+    "cost": {
+     "coin": 350,
+     "stone": 50
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Sealed Crocks",
+    "cost": {
+     "coin": 800,
+     "copper": 6
+    },
+    "mult": 0.5,
+    "cap": 1
+   }
+  ],
+  "desc": "Pickles and preserves keep the menu varied through winter",
+  "land": 1,
+  "slots": 1,
+  "special": true,
+  "level": 1,
+  "houses": {
+   "classes": [
+    "n_peasant",
+    "n_laborer"
+   ],
+   "cap": 2,
+   "bonus": 0.15
+  },
+  "picks": {
+   "jars": "Berries/vegetables → preserves — more preserving",
+   "larder": "+300 food storage, +5% meal XP — store the jars",
+   "storage": "+400 material storage — stock salt and honey"
+  },
+  "unlockUp": {
+   "jars": 1
+  },
+  "tiers": [
+   {
+    "name": "Pantry House",
+    "cost": {
+     "coin": 1600,
+     "copper": 12
+    },
+    "outputMult": 1.5,
+    "allowed": [
+     "jars",
+     "larder",
+     "storage",
+     "caskrack"
+    ],
+    "upgrades": [
+     {
+      "name": "Sturdier Frames",
+      "cost": {
+       "coin": 800,
+       "copper": 6
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Second Bay",
+      "cost": {
+       "coin": 1600,
+       "copper": 12
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Skilled Foreman",
+      "cost": {
+       "coin": 3200,
+       "copper": 24
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   },
+   {
+    "name": "Provision Hall",
+    "cost": {
+     "coin": 4000,
+     "copper": 40
+    },
+    "outputMult": 2,
+    "slots": 1,
+    "allowed": [
+     "jars",
+     "larder",
+     "caskrack",
+     "stall"
+    ],
+    "upgrades": [
+     {
+      "name": "Stone Footings",
+      "cost": {
+       "coin": 2000,
+       "copper": 20
+      },
+      "mult": 0.25,
+      "cap": 0
+     },
+     {
+      "name": "Great Bay",
+      "cost": {
+       "coin": 4000,
+       "copper": 40
+      },
+      "mult": 0.25,
+      "cap": 0,
+      "slots": 1
+     },
+     {
+      "name": "Guild Charter",
+      "cost": {
+       "coin": 8000,
+       "copper": 80
+      },
+      "mult": 0.5,
+      "cap": 0
+     }
+    ]
+   }
+  ]
+ }
+]

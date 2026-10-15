@@ -2,7 +2,7 @@
 import { D, afford, isAdult, living, log, pay } from "./state.js";
 import { inLine } from "./skills.js";
 import { isHoused } from "./minions.js";
-import { ES, baseId, bedrooms, className, isFixed, landSlots, landUsed, structDef } from "./estate.js";
+import { ES, baseId, bedrooms, className, curUpgrades, isFixed, landSlots, landUsed, rankSlots, structDef, prodTier } from "./estate.js";
 
 // Next tiers: a building can have several (House → Mansion / Fort / Tower Keep / Abbey).
 export const upgradeOptions = type => ES().structures.filter(x => x.upgradeFrom === type);
@@ -127,3 +127,28 @@ export function demolishStructure(s, uid) {
   return true;
 }
 
+
+// ---- production tiers (3 total): same building type, st.tier 0→1→2; needs the current upgrade line finished
+export const nextTier = st => (structDef(st.type).tiers || [])[st.tier || 0];
+export function tierUpIssue(s, uid) {
+  const st = s.structures.find(x => x.uid === uid),
+    nx = st && nextTier(st);
+  if (!nx) return "max";
+  if ((st.up || 0) < curUpgrades(st).length) return "finish the upgrade line";
+  if (landUsed(s) + (nx.land || 0) - ((prodTier(st) || {}).land || 0) > landSlots(s)) return "no free land slot";
+  if (!afford(s, nx.cost)) return "cannot afford";
+  return null;
+}
+export function tierUp(s, uid) {
+  if (tierUpIssue(s, uid)) return false;
+  const st = s.structures.find(x => x.uid === uid),
+    nx = nextTier(st);
+  pay(s, nx.cost);
+  // bank what was bought: this line's upgrades (+ the base line's level-slot bonus) stay in effect
+  const base = st.tier ? 0 : rankSlots(st);
+  st.keptUps = [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0), ...(base ? [{ name: "base line slots", slots: base }] : [])];
+  st.tier = (st.tier || 0) + 1;
+  st.up = 0;
+  log(s, `🏗️ ${structDef(st.type).name} raised to ${nx.name}.`);
+  return true;
+}

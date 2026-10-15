@@ -44,6 +44,7 @@ const names = [
 export const D = {};
 
 await Promise.all(names.map(async n => (D[n] = await (await fetch(`data/${n}.json`)).json())));
+await Promise.all(D.estate.structureFiles.map(async f => (D["structures/" + f] = await (await fetch(`data/structures/${f}.json`)).json())));
 
 E.setData(D);
 

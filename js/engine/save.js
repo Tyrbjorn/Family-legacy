@@ -415,6 +415,12 @@ const STEPS = [
     name: "thin-building items, Hall of Ancestors upgrade line, Shopfront auto-sell, day/night (no data change: gated items stay placed)",
     run: () => {},
   },
+  {
+    n: 17,
+    once: true,
+    name: "production tiers (st.tier, st.keptUps; absent = tier 1) and building data split into data/structures/*.json (no data change)",
+    run: () => {},
+  },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
 export const migrationSteps = () => STEPS.map(({ n, once, name }) => ({ n, once: !!once, name }));
