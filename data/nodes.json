@@ -177,7 +177,7 @@
     "n": 1
    }
   ],
-  "terrain": "mountains"
+  "terrain": "highlands"
  },
  {
   "id": "n_gemvein",
@@ -189,7 +189,7 @@
   },
   "skill": "mining",
   "icon": "💎",
-  "terrain": "mountains",
+  "terrain": "highlands",
   "terrainNode": true,
   "fog": true,
   "rare": [
@@ -237,7 +237,8 @@
   "region": "outskirts",
   "res": {
    "thyme": 2,
-   "sage": 0.4
+   "sage": 0.4,
+   "hay": 2
   },
   "skill": "foraging",
   "icon": "🌼",
@@ -321,7 +322,7 @@
   },
   "skill": "mining",
   "icon": "☄️",
-  "terrain": "mountains",
+  "terrain": "highlands",
   "terrainNode": true,
   "fog": true,
   "hidden": true,
@@ -353,7 +354,7 @@
   },
   "skill": "mining",
   "icon": "⚪",
-  "terrain": "mountains",
+  "terrain": "highlands",
   "terrainNode": true,
   "fog": true,
   "rare": []
@@ -368,7 +369,7 @@
   },
   "skill": "mining",
   "icon": "⬛",
-  "terrain": "mountains",
+  "terrain": "highlands",
   "terrainNode": true,
   "fog": true,
   "rare": []
@@ -383,7 +384,7 @@
   },
   "skill": "mining",
   "icon": "🥇",
-  "terrain": "mountains",
+  "terrain": "highlands",
   "terrainNode": true,
   "fog": true,
   "rare": []

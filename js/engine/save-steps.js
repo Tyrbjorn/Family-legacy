@@ -375,6 +375,22 @@ export const STEPS = [
       for (const m of s.members || []) if (m.injured > 0 && !m.inj) m.inj = { tier: 2, day: s.day || 0, treated: true, counted: true };
     },
   },
+  {
+    n: 21,
+    once: true,
+    name: "map round 2: unfed draft animals carry an unfed-day count; tutorial step re-pointed after the 2 new intro steps",
+    run: s => {
+      s.unfed = s.unfed || {};
+      if (s.animalsFed === false) for (const id of Object.keys(s.animals || {})) s.unfed[id] = 1;
+      if (s.tut && D.tutorial && s.tut.done) {
+        // a new intro step counts as done when a later step is already done (no backtracking)
+        const ids = D.tutorial.steps.map(x => x.id);
+        for (const id of ["scout", "trade"]) if (!s.tut.done.includes(id) && ids.slice(ids.indexOf(id) + 1).some(x => s.tut.done.includes(x))) s.tut.done.push(id);
+        const i = ids.findIndex(id => !s.tut.done.includes(id));
+        s.tut.step = i < 0 ? ids.length : i;
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

@@ -1,4 +1,5 @@
 import { injure } from "./injuries.js";
+import { tutNote } from "./tutorial.js";
 import { seasonGather, seasonTravel } from "./seasons.js";
 import { chron } from "./chronicle.js";
 import { buffSum, maybeEncounter } from "./encounters.js";
@@ -238,12 +239,24 @@ export const tripLeft = a => (a && a.trip ? Math.max(0, tripTotal(a) - a.trip.t)
 
 export const isBusy = m => !!(m && m.action && m.action.trip && tripPhase(m.action) !== "done");
 
-// where on the map a traveller is (0..1 along home→target)
+// where on the map a traveller is (f: 0..1 along home→target)
 export function tripPos(a) {
   const t = a.trip,
     h = MP().home,
     p = ptOf(a.target);
   let f = t.t < t.out ? t.t / t.out : t.t < t.out + t.task ? 1 : Math.max(0, 1 - (t.t - t.out - t.task) / t.back);
+  // follow the route's detour points (around mountains and lakes)
+  const pts = D.world ? routeOf(a.target, ptOf).pts : [h, p];
+  const legs = pts.slice(1).map((q, i) => Math.hypot(q.x - pts[i].x, q.y - pts[i].y)),
+    L = legs.reduce((x, y) => x + y, 0);
+  let d = f * L;
+  for (let i = 0; i < legs.length; i++) {
+    if (d <= legs[i] || i === legs.length - 1) {
+      const g = legs[i] ? Math.min(1, d / legs[i]) : 1;
+      return { x: pts[i].x + (pts[i + 1].x - pts[i].x) * g, y: pts[i].y + (pts[i + 1].y - pts[i].y) * g, f };
+    }
+    d -= legs[i];
+  }
   return { x: h.x + (p.x - h.x) * f, y: h.y + (p.y - h.y) * f, f };
 }
 
@@ -259,6 +272,7 @@ export const explored = (s, id) => (s.explored || []).includes(id);
 
 export function exploreArea(s, m, ar) {
   const first = !explored(s, ar.id);
+  tutNote(s, "scouted");
   if (first) s.explored.push(ar.id);
   if (D.world) reveal(s, ar.x, ar.y, ar.r * WD().fog.explore);
   const found = [];

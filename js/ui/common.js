@@ -63,6 +63,7 @@ export const RI = {
   sage: "🍃",
   thyme: "🌿",
   wheat: "🌾",
+  hay: "🪹",
   barley: "🌱",
   vegetables: "🥕",
   berries: "🫐",

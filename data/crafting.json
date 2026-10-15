@@ -1537,6 +1537,22 @@
    "path": "carpenter"
   },
   {
+   "id": "r_smallboat",
+   "name": "Small Boat",
+   "base": "smallboat",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 14,
+    "ingots": 1,
+    "cloth": 2
+   },
+   "days": 5,
+   "line": "carpenter",
+   "path": "carpenter",
+   "needsStruct": "dock"
+  },
+  {
    "id": "r_wagon",
    "name": "Wagon",
    "base": "wagon",

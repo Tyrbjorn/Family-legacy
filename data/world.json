@@ -43,8 +43,22 @@
     "copperore": 1.1
    }
   },
+  "highlands": {
+   "name": "Highlands",
+   "icon": "🏔️",
+   "fill": "#d6c79a",
+   "ink": "#7a6448",
+   "speed": 0.6,
+   "risk": 1.3,
+   "discover": 1.3,
+   "gather": {
+    "ore": 1.25,
+    "gems": 1.3,
+    "stone": 1.2
+   }
+  },
   "mountains": {
-   "name": "Mountains",
+   "name": "Tall mountains",
    "icon": "🏔️",
    "fill": "#cdbf9d",
    "ink": "#6b5a44",
@@ -55,7 +69,9 @@
     "ore": 1.25,
     "gems": 1.3,
     "stone": 1.2
-   }
+   },
+   "impassable": true,
+   "edge": "at the mountain's edge"
   },
   "river": {
    "name": "River",
@@ -79,7 +95,10 @@
    "discover": 0.9,
    "gather": {
     "fish": 1.35
-   }
+   },
+   "impassable": true,
+   "boat": true,
+   "edge": "on the lakeshore"
   },
   "swamp": {
    "name": "Swamp",
@@ -112,7 +131,7 @@
  "regionTerrain": {
   "outskirts": "plains",
   "forest": "forest",
-  "highlands": "mountains"
+  "highlands": "highlands"
  },
  "zones": [
   {
@@ -231,7 +250,7 @@
    "ry": 30
   },
   {
-   "t": "mountains",
+   "t": "highlands",
    "shape": "rect",
    "x": 20,
    "y": 715,
@@ -245,6 +264,38 @@
    "y": 760,
    "rx": 160,
    "ry": 40
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 900,
+   "y": 858,
+   "rx": 70,
+   "ry": 26
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 670,
+   "y": 745,
+   "rx": 45,
+   "ry": 28
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 370,
+   "y": 755,
+   "rx": 35,
+   "ry": 35
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 130,
+   "y": 815,
+   "rx": 100,
+   "ry": 60
   }
  ],
  "roadTypes": {
@@ -740,9 +791,6 @@
     "cost": {
      "coin": 300
     },
-    "feed": {
-     "food": 1
-    },
     "towns": [
      "millbrook",
      "ashford",
@@ -755,9 +803,6 @@
     "cost": {
      "coin": 650
     },
-    "feed": {
-     "food": 2
-    },
     "towns": [
      "millbrook",
      "ashford"
@@ -769,9 +814,6 @@
     "cost": {
      "coin": 1000
     },
-    "feed": {
-     "food": 1.5
-    },
     "towns": [
      "thornwick",
      "ashford",
@@ -781,7 +823,15 @@
   },
   "stall": "stablestall",
   "stallsPer": 2,
-  "stableSpecStalls": 4
+  "stableSpecStalls": 4,
+  "wagonNoAnimal": {
+   "id": "wagoncart",
+   "name": "Wagon (hand-pulled)",
+   "icon": "🛒",
+   "item": "wagon",
+   "carryMult": 0.5,
+   "haulSpeed": 0.6
+  }
  },
  "features": {
   "scrubland": {
@@ -884,7 +934,8 @@
    "name": "Pasture",
    "icon": "🐑",
    "res": {
-    "food": 1.5
+    "food": 1.5,
+    "hay": 2
    },
    "skill": "animal",
    "jobs": {
@@ -1060,7 +1111,8 @@
   ],
   "meadow": [
    "stream",
-   "topsoil"
+   "topsoil",
+   "pasture"
   ],
   "hillside": [
    "stone_outcrop",
@@ -1108,6 +1160,10 @@
    "gold_vein",
    "mithril_vein",
    "adamant_vein"
+  ],
+  "dock": [
+   "stream",
+   "clay_bank"
   ]
  },
  "discoverPerOffroadDay": 0.08,
@@ -1121,5 +1177,88 @@
   "cap": 2,
   "gatherDays": 4,
   "skillLvl": 6
- }
+ },
+ "routing": {
+  "_note": "Mountains and lakes are impassable. A route checks points along its line (at least `samples`, one per `step` px); each blocked stretch adds a detour point just past that zone's edge, on the shorter side, up to maxDetours. A small boat kept at a Dock lets routes cross lakes. Larger ships (Port + Shipyard, coast/sea) are a later hook: add a terrain flag `ship` and a ship item the same way.",
+  "samples": 8,
+  "step": 25,
+  "margin": 18,
+  "maxDetours": 2,
+  "boat": {
+   "item": "smallboat",
+   "structure": "dock",
+   "speed": 1.0
+  }
+ },
+ "feed": {
+  "_note": "All livestock eat from storage each day, taking the first food in their diet list that covers the need. Unfed animals stop working; after runOffDays unfed days in a row one runs off. Herd heads lost come back one per regrowDays fed days. Sheep, goats and pigs have diets but no building keeps them yet.",
+  "diets": {
+   "graze": [
+    "hay",
+    "wheat",
+    "vegetables"
+   ],
+   "grain": [
+    "wheat",
+    "vegetables"
+   ]
+  },
+  "kinds": {
+   "mule": {
+    "diet": "graze",
+    "per": 1
+   },
+   "ox": {
+    "diet": "graze",
+    "per": 2
+   },
+   "horse": {
+    "diet": "graze",
+    "per": 1.5
+   },
+   "cattle": {
+    "diet": "graze",
+    "per": 1.5,
+    "name": "Cattle",
+    "icon": "🐄"
+   },
+   "sheep": {
+    "diet": "graze",
+    "per": 0.5,
+    "name": "Sheep",
+    "icon": "🐑"
+   },
+   "goats": {
+    "diet": "graze",
+    "per": 0.5,
+    "name": "Goats",
+    "icon": "🐐"
+   },
+   "fowl": {
+    "diet": "grain",
+    "per": 0.1,
+    "name": "Hens",
+    "icon": "🐔"
+   },
+   "pigs": {
+    "diet": "grain",
+    "per": 0.8,
+    "name": "Pigs",
+    "icon": "🐖"
+   }
+  },
+  "herds": {
+   "cowpen": {
+    "kind": "cattle",
+    "head": 2
+   },
+   "chickencoop": {
+    "kind": "fowl",
+    "head": 6
+   }
+  },
+  "runOffDays": 10,
+  "regrowDays": 20
+ },
+ "regrowDaily": true
 }

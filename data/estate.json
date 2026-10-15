@@ -2281,6 +2281,18 @@
     ]
    },
    "desc": "3 wood → 1 coal, 2/day"
+  },
+  {
+   "id": "boatslip",
+   "name": "Boat Slip",
+   "icon": "🛶",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "boats": 2
+   },
+   "desc": "Launches and keeps up to 2 small boats"
   }
  ],
  "synergies": [
@@ -2613,7 +2625,8 @@
     "silverore",
     "goldore",
     "mithrilore",
-    "adamantore"
+    "adamantore",
+    "hay"
    ]
   },
   "2": {

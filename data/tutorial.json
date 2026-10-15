@@ -35,6 +35,16 @@
    }
   },
   {
+   "id": "scout",
+   "icon": "🧭",
+   "title": "Scout Nearby",
+   "text": "Orrin wants to know what lies around Millbrook. Gather at a nearby spot or explore an area (Map tab).",
+   "check": "scouted",
+   "reward": {
+    "coin": 15
+   }
+  },
+  {
    "id": "craft",
    "icon": "🔨",
    "title": "First Craft",
@@ -43,6 +53,16 @@
    "start": {
     "unlock": "recipe:r_whittle"
    },
+   "reward": {
+    "coin": 25
+   }
+  },
+  {
+   "id": "trade",
+   "icon": "🪙",
+   "title": "First Trade",
+   "text": "Sell something in a town: resources from the Map tab, or set up a trade route.",
+   "check": "traded",
    "reward": {
     "coin": 25
    }

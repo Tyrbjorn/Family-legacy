@@ -4,6 +4,9 @@ import { chron } from "./chronicle.js";
 import { addBuff } from "./encounters.js";
 import { famFx } from "./paths.js";
 import { wagonSpeed } from "./estate.js";
+import { tutNote } from "./tutorial.js";
+export * from "./world-route.js";
+import { setBoatAccess } from "./world-route.js";
 
 export const WD = () => D.world;
 const MPD = () => D.map;
@@ -21,7 +24,7 @@ const lineD = (x, y, pts) => {
   for (let i = 1; i < pts.length; i++) d = Math.min(d, segD(x, y, ...pts[i - 1], ...pts[i]));
   return d;
 };
-function inZone(z, x, y) {
+export function inZone(z, x, y) {
   if (z.shape === "rect") return x >= z.x && x <= z.x + z.w && y >= z.y && y <= z.y + z.h;
   if (z.shape === "ellipse") return ((x - z.x) / z.rx) ** 2 + ((y - z.y) / z.ry) ** 2 <= 1;
   if (z.shape === "line") return lineD(x, y, z.pts) <= z.w;
@@ -46,37 +49,6 @@ export function nearestRoad(x, y) {
     if (!best || d < best.d || (d === best.d && roadDef(r.type).speed > roadDef(best.road.type).speed)) best = { road: r, d };
   }
   return best;
-}
-
-// ---- routes (home → point): road leg + off-road leg, terrain-weighted
-let _rc = {}, _rcSrc = null;
-export function routeTo(p) {
-  const h = MPD().home,
-    dist = Math.hypot(p.x - h.x, p.y - h.y);
-  const tr = terrainDef(terrainAt(p.x, p.y)),
-    mid = terrainDef(terrainAt((p.x + h.x) / 2, (p.y + h.y) / 2));
-  const nr = nearestRoad(p.x, p.y);
-  const onRoad = nr && nr.d <= WD().roadSnap ? nr : null;
-  const off = onRoad ? Math.min(dist, onRoad.d) : dist,
-    on = dist - off;
-  const rd = onRoad ? roadDef(onRoad.road.type) : null,
-    O = WD().offroad;
-  const tSpeed = (tr.speed + mid.speed) / 2;
-  const days = (on ? on / (WD().baseSpeed * rd.speed) : 0) + off / (WD().baseSpeed * O.speed * tSpeed);
-  const f = dist ? on / dist : 1;
-  return {
-    dist,
-    days,
-    road: onRoad ? onRoad.road : null,
-    roadFrac: f,
-    terrain: terrainAt(p.x, p.y),
-    risk: (rd ? rd.risk * f : 0) + O.risk * (1 - f) * ((tr.risk + mid.risk) / 2),
-    discover: (rd ? rd.discover * f : 0) + O.discover * (1 - f) * tr.discover,
-  };
-}
-export function routeOf(id, ptOf) {
-  if (_rcSrc !== WD()) (_rc = {}), (_rcSrc = WD());
-  return _rc[id] || (_rc[id] = routeTo(ptOf(id)));
 }
 
 // ---- fog of war: one char per cell ('1' seen)
@@ -136,7 +108,7 @@ export function locationsDay(s, who) {
 // fog-gated nodes (terrain nodes): visible once their cell is seen (and revealed if hidden)
 export const nodeFogOk = (s, n) => !n.fog || fogSeen(s, MPD().points[n.id].x, MPD().points[n.id].y);
 
-// ---- node stock: deplete while gathered, regrow each season
+// ---- node stock: deplete while gathered, regrow a little each day (same total per season as before)
 const ND = () => WD().nodeDefaults;
 export const nodeMax = n => n.stock || ND().stock;
 export const nodeStock = (s, n) => ((s.nodeStock || {})[n.id] ?? nodeMax(n));
@@ -145,10 +117,12 @@ export function drawNode(s, n, amt) {
   if (!s.nodeStock) s.nodeStock = {};
   const was = nodeStock(s, n);
   s.nodeStock[n.id] = Math.max(0, was - amt);
-  if (was > 0 && s.nodeStock[n.id] <= 0) log(s, `🪫 ${n.name} is worked out until it regrows next season.`);
+  tutNote(s, "scouted");
+  if (was > 0 && s.nodeStock[n.id] <= 0) log(s, `🪫 ${n.name} is worked out; it regrows day by day.`);
 }
-export function regrowNodes(s, seasonId) {
-  const f = (WD().regrowBySeason || {})[seasonId] ?? 1;
+// frac: share of a season's regrowth to apply (1 = a whole season, 1/seasonDays = one day)
+export function regrowNodes(s, seasonId, frac = 1) {
+  const f = ((WD().regrowBySeason || {})[seasonId] ?? 1) * frac;
   for (const n of D.nodes) {
     if (!s.nodeStock || s.nodeStock[n.id] == null) continue;
     s.nodeStock[n.id] = Math.min(nodeMax(n), s.nodeStock[n.id] + nodeMax(n) * (n.regrow ?? ND().regrow) * f);
@@ -177,10 +151,18 @@ export function haulTier(s) {
   for (const t of HL().tiers) {
     const veh = t.item ? ownsVehicle(s, t.item) : [true];
     if (!veh.length) continue;
-    if (t.animal && !((s.animals || {})[t.animal] > 0 && s.animalsFed !== false && animalCount(s) <= stalls(s))) continue;
+    if (t.animal && !animalWorks(s, t.animal)) continue;
     const q = t.item ? Math.max(...veh.map(QIDX)) : 0;
     const carry = t.carry * (1 + HL().qualityCarry * q);
     if (carry * t.haulSpeed > best.carry * best.haulSpeed) best = { ...t, carry, q };
+  }
+  // a wagon with no working animal is pulled by hand: slow, less cargo
+  const nw = HL().wagonNoAnimal;
+  if (nw && ownsVehicle(s, nw.item).length) {
+    const q = Math.max(...ownsVehicle(s, nw.item).map(QIDX)),
+      big = Math.max(...HL().tiers.filter(t => t.item === nw.item).map(t => t.carry));
+    const carry = big * nw.carryMult * (1 + HL().qualityCarry * q);
+    if (carry * nw.haulSpeed > best.carry * best.haulSpeed) best = { ...nw, carry, q };
   }
   best.carry = Math.round(best.carry * (1 + famFx(s, "haul")));
   best.haulSpeed *= wagonSpeed(s);
@@ -202,16 +184,61 @@ export function buyAnimal(s, id, town) {
   log(s, `${a.icon} Bought a ${a.name} for hauling.`);
   return true;
 }
+// ---- livestock feed (world.feed): draft animals (s.animals) and herds kept by buildings (cowpen, coop).
+// Each group eats per×head a day from the first food in its diet list that covers it.
+const FD = () => WD().feed;
+export const animalWorks = (s, id) => (s.animals || {})[id] > 0 && !((s.unfed || {})[id] > 0) && animalCount(s) <= stalls(s);
+export const herdMax = (s, type) => ((FD().herds || {})[type] ? FD().herds[type].head * (s.structures || []).filter(st => st.type === type).length : 0);
+export const herdHead = (s, type) => Math.min(herdMax(s, type), (s.herds || {})[type] ?? herdMax(s, type));
+// production share of a herd building: 0 while unfed, else heads left / full herd
+export const herdMult = (s, type) => {
+  const max = herdMax(s, type);
+  if (!max) return 1;
+  return (s.unfed || {})[type] > 0 ? 0 : herdHead(s, type) / max;
+};
+export function feedGroups(s) {
+  const g = Object.entries(s.animals || {})
+    .filter(([, n]) => n > 0)
+    .map(([id, n]) => ({ key: id, kind: id, n, herd: false }));
+  for (const type of Object.keys(FD().herds || {})) {
+    const n = herdHead(s, type);
+    if (herdMax(s, type)) g.push({ key: type, kind: FD().herds[type].kind, n, herd: true });
+  }
+  return g;
+}
+export const feedNeed = (s, g) => FD().kinds[g.kind].per * g.n;
 export function feedAnimals(s) {
-  if (!animalCount(s)) return;
-  let ok = true;
-  for (const [id, n] of Object.entries(s.animals))
-    for (const [k, v] of Object.entries(HL().animals[id].feed)) {
-      if ((s.res[k] || 0) >= v * n) s.res[k] -= v * n;
-      else ok = false;
+  if (!FD()) return;
+  s.unfed = s.unfed || {};
+  for (const g of feedGroups(s)) {
+    const k = FD().kinds[g.kind],
+      need = feedNeed(s, g);
+    const food = need > 0 && FD().diets[k.diet].find(r => (s.res[r] || 0) >= need);
+    if (food || !need) {
+      if (food) s.res[food] -= need;
+      if (s.unfed[g.key] > 0) log(s, `🌾 The ${g.herd ? (k.name || g.kind).toLowerCase() : HL().animals[g.key].name.toLowerCase() + "s"} are fed again.`);
+      delete s.unfed[g.key];
+      if (g.herd && herdHead(s, g.key) < herdMax(s, g.key)) {
+        s.herdFed = s.herdFed || {};
+        s.herdFed[g.key] = (s.herdFed[g.key] || 0) + 1;
+        if (s.herdFed[g.key] >= FD().regrowDays) {
+          s.herdFed[g.key] = 0;
+          s.herds[g.key] = herdHead(s, g.key) + 1;
+          if (s.herds[g.key] >= herdMax(s, g.key)) delete s.herds[g.key];
+        }
+      }
+      continue;
     }
-  if (ok !== (s.animalsFed !== false)) log(s, ok ? "🐴 The draft animals are fed again." : "🐴 No feed: draft animals won't haul until fed.");
-  s.animalsFed = ok;
+    const d = (s.unfed[g.key] = (s.unfed[g.key] || 0) + 1);
+    const nm = g.herd ? (k.name || g.kind).toLowerCase() : HL().animals[g.key].name.toLowerCase();
+    if (d === 1) log(s, `🌾 No ${FD().diets[k.diet].join("/")} for the ${nm}: they stop working until fed.`);
+    if (d % FD().runOffDays === 0) {
+      if (g.herd) (s.herds = s.herds || {})[g.key] = herdHead(s, g.key) - 1;
+      else s.animals[g.key]--;
+      log(s, `🏃 Unfed for ${FD().runOffDays} days, one of the ${nm} ran off.`);
+    }
+  }
+  s.animalsFed = !Object.keys(s.animals || {}).some(id => (s.unfed || {})[id] > 0);
 }
 
 // ---- land features (parcels): work with no travel, bonus; job and structure bonuses
@@ -241,6 +268,14 @@ export function parcelDay(s, m, a, eff, gainXp, skillMult) {
 export function worldDay(s, seasonStart, seasonId) {
   if (!WD()) return;
   feedAnimals(s);
-  if (seasonStart) regrowNodes(s, seasonId);
+  setBoatAccess(hasBoat(s));
+  if (WD().regrowDaily) regrowNodes(s, seasonId, 1 / Math.ceil(T.daysPerYear / 4));
+  else if (seasonStart) regrowNodes(s, seasonId);
   locationsDay(s);
+}
+
+// ---- boats: a Small Boat kept at a Dock lets routes cross lakes (routing.boat)
+export function hasBoat(s) {
+  const b = (WD().routing || {}).boat;
+  return !!b && (s.structures || []).some(st => st.type === b.structure) && ownsVehicle(s, b.item).length > 0;
 }

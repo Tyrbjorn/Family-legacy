@@ -103,7 +103,13 @@
   "maxPatrol": 3,
   "produceMarkup": 1.2,
   "fightScale": 10,
-  "banditCount": 2
+  "banditCount": 2,
+  "driverMinLoyalty": 30,
+  "skimBelow": 60,
+  "skimCut": 0.1,
+  "driverLvlEdge": 0.01,
+  "driverLvlEdgeMax": 0.1,
+  "runLoyalty": 1
  },
  "teenSafeLoss": 0.1,
  "demolishRefund": 0.5,

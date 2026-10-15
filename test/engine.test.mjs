@@ -321,7 +321,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const F=E.newGame(t0); estate(F,[],'shack'); F.res.coin=1e5; F.res.wood=1e3; F.res.stone=1e3; F.res.planks=500; F.res.blocks=500; F.res.ingots=200; F.res.copper=200; F.res.hides=200; F.res.cloth=50; F.res.leather=50;
  E.buyLand(F,'hillside'); E.buyLand(F,'riverbank'); const ids=['hunterscabin','herbalistshack','fishinghut','apiary','chickencoop','tannery']; const built=ids.map(id=>E.buildStructure(F,id)); ok(built.every(Boolean)&&ids.every(id=>E.structDef(id).land===1&&E.structDef(id).upgrades.length===3&&E.structDef(id).slots===1),'six new 1-land special buildings with a slot and an upgrade line');
  ok(E.structDef('herbgarden').name==='Garden'&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='food')&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='thyme'),'Garden makes herbs (thyme) and food');
- F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.thyme=100; F.reserve.thyme=0; E.advanceReal(F,10*5);
+ F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.thyme=100; F.res.wheat=50; F.reserve.thyme=0; E.advanceReal(F,10*5);
  ok(['meat','fish','honey','eggs','remedies','leather'].every(k=>F.res[k]>0),'new resources: meat, fish, honey, eggs, remedies, leather');
  const P=E.newGame(t0); P.res.food=0; P.res.meat=10; E.advanceReal(P,10); ok(P.res.food>=0&&P.res.meat<10,'meat/fish/eggs/honey feed the family when food runs out');
  const R2=E.newGame(t0); const rm=R2.members[0]; rm.injured=6; R2.res.remedies=5; E.advanceReal(R2,10); ok(rm.injured<=3&&R2.res.remedies<5,'remedies speed injury recovery');
@@ -499,12 +499,14 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(G.chronicle.some(c=>/apprenticeship/.test(c.t)),'apprenticeship chronicled');
  const c0=G.res.coin; E.equip(G,F,'rusty_sword'); E.tutCheck(G); ok(G.tut.step===1&&G.res.coin===c0+20&&G.res.wood>=4,'step 1 equip → reward');
  E.setAction(G,{type:'quest',target:'rats'}); for(let i=0;i<40&&G.tut.step===1;i++) E.advanceReal(G,10); ok(G.tut.step>=2,'rats quest completes step 2');
- ok(G.unlocks.includes('recipe:r_whittle')&&E.mentorCraft(G)&&G.tut.step>=3,'mentor bench craft completes step 3');
- for(let i=0;i<30&&!(E.setAction(G,{type:'activity',target:'hiking'})&&E.active(G).action?.type==='activity');i++) E.advanceReal(G,5); E.advanceReal(G,30); ok(G.tut.step>=4,'activity completes step 4');
- E.tutNote(G,'estate'); ok(G.tut.step===5,'estate visit completes step 5');
+ E.tutNote(G,'scouted'); ok(G.tut.step===3,'scouting a nearby spot completes step 3');
+ ok(G.unlocks.includes('recipe:r_whittle')&&E.mentorCraft(G)&&G.tut.step>=4,'mentor bench craft completes step 4');
+ E.tutNote(G,'traded'); ok(G.tut.step===5,'a first trade completes step 5');
+ for(let i=0;i<30&&!(E.setAction(G,{type:'activity',target:'hiking'})&&E.active(G).action?.type==='activity');i++) E.advanceReal(G,5); E.advanceReal(G,30); ok(G.tut.step>=6,'activity completes step 6');
+ E.tutNote(G,'estate'); ok(G.tut.step===7,'estate visit completes step 7');
  F.ageDays=16*D.tuning.daysPerYear; E.chooseClass(G,F.id,'fighter'); E.tutCheck(G); ok(E.tutComplete(G)&&G.unlocks.includes('recipe:r_mentorknife')&&G.vault.includes('herbknife'),'choosing a path finishes: recipe + gear');
  ok(G.chronicle.some(c=>/Lost House/.test(c.t)),'finale leads into Lost House story');
- const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===6,'tutorial progress saved');
+ const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===8,'tutorial progress saved');
  const H=E.newGame(t0); ok(E.skipTutorial(H)&&!E.tutActive(H)&&!E.skipTutorial(H),'tutorial skippable once');
  const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; delete old.tut; old.day=500; const O=E.importSave(JSON.stringify(old)); ok(O.tut.skipped&&!E.tutActive(O),'pre-tutorial saves are not dragged into it');
  ok(E.tourSteps().length>=8,'tab tour defined');
@@ -884,8 +886,8 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
   ok(/stall/.test(E.buyAnimalIssue(H,'ox','millbrook')||''),'animals need a stable stall');
   H.res.coin=1e5;H.res.wood=1e3;H.res.planks=1e3;H.res.stone=1e3; E.buyLand(H,'plot'); const st=E.buildStructure(H,'shack'); ok(E.placePiece(H,st.uid,'stablestall')&&E.stalls(H)===2,'Stable Stalls give 2 stalls');
   ok(E.buyAnimal(H,'ox','millbrook')&&!E.buyAnimal(H,'horse','millbrook'),'animals bought only where sold');
-  H.vault.push('c|wagon|crude'); H.res.food=100; E.feedAnimals(H); ok(E.haulTier(H).id==='oxwagon'&&H.res.food<100,'ox + wagon: wagon tier; feed eaten');
-  H.res.food=0; E.feedAnimals(H); ok(H.animalsFed===false&&E.haulTier(H).id==='handcart','unfed animals do not haul');
+  H.vault.push('c|wagon|crude'); H.res.hay=100; E.feedAnimals(H); ok(E.haulTier(H).id==='oxwagon'&&H.res.hay<100,'ox + wagon: wagon tier; feed eaten');
+  H.res.hay=0; H.res.wheat=0; H.res.vegetables=0; E.feedAnimals(H); ok(H.animalsFed===false&&E.haulTier(H).id==='handcart','unfed animals do not haul');
   H.res.food=100; E.feedAnimals(H); E.buyAnimal(H,'mule','millbrook'); const sp=E.haulTier(H); ok(sp.haulSpeed>=1.15,'haul speed from the tier');
   const tr=E.newTrip({type:'gather',target:'n_lake'},H); ok(tr.back<tr.out||sp.haulSpeed===1,'haul speed shortens the trip home');
   ok(D.crafting.recipes.find(r=>r.id==='r_wagon').path==='carpenter'&&/Journeyman Carpenter/.test(E.recipeIssue(H,H.members[0],E.recipeDef('r_wagon'))||'')||true,'wagon is a Carpenter recipe');

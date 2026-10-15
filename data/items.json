@@ -1411,5 +1411,13 @@
   "rarity": "Fine",
   "cp": 0,
   "value": 300
+ },
+ {
+  "id": "smallboat",
+  "name": "Small Boat",
+  "slot": "haul",
+  "rarity": "Common",
+  "cp": 0,
+  "value": 150
  }
 ]

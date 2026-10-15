@@ -170,6 +170,14 @@ function bot(s, m) {
     if (st.check === "crafted") E.mentorCraft(s);
     if (st.check === "activity") E.setAction(s, { type: "activity", target: "hiking" });
     if (st.check === "estate") E.tutNote(s, "estate");
+    if (st.check === "scouted" && !E.isBusy(m)) {
+      const n = D.nodes.find(x => E.known(s, x) && E.actionAllowed(s, m, { type: "gather", target: x.id }));
+      if (n) E.setAction(s, { type: "gather", target: n.id });
+    }
+    if (st.check === "traded") {
+      const k = Object.keys(D.towns[0].prices).find(r => (s.res[r] || 0) >= 1);
+      if (k) E.sellRes(s, D.towns[0].id, k, 1);
+    }
     E.tutCheck(s);
   }
   if (E.isAdult(m) && !m.cls) {

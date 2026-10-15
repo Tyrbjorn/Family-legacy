@@ -3,6 +3,7 @@ import { startTutorial } from "./tutorial.js";
 import { newMember } from "./family.js";
 import { D, SAVE_VERSION, log } from "./state.js";
 import { STEPS } from "./save-steps.js";
+import { hasBoat, setBoatAccess } from "./world.js";
 export { renameIds } from "./save-steps.js";
 
 export function newGame(now = Date.now()) {
@@ -82,5 +83,6 @@ export function normalize(s) {
   const from = s.schema || 0;
   for (const st of STEPS) if (!(st.once && from >= st.n)) st.run(s);
   s.schema = SCHEMA;
+  if (D.world) setBoatAccess(hasBoat(s));
   s._norm = true;
 }

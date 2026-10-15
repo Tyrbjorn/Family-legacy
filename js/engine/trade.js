@@ -1,4 +1,6 @@
 import { gameFx, gameLvl } from "./difficulty.js";
+import { pathLen } from "./world-route.js";
+import { tutNote } from "./tutorial.js";
 import { fight, fighter } from "./combat.js";
 // Trade round: trade buildings (Warehouse > Trading Post > Counting House), route slots, carts with crew
 // (driver + guard + Horseman escorts), estate-town and town-town routes, auto-trade rules, bandit fights,
@@ -65,9 +67,8 @@ export function legDays(a, b) {
   if (a === b) return 0;
   if (a === HOME) return travelDays(b);
   if (b === HOME) return travelDays(a);
-  const p = ptOf(a),
-    q = ptOf(b);
-  return Math.round(Math.max(D.map.minTravel, Math.hypot(p.x - q.x, p.y - q.y) * daysPerDist()) * 10) / 10;
+  // town to town: length of the detoured path (around mountains, and lakes without a boat)
+  return Math.round(Math.max(D.map.minTravel, pathLen(ptOf(a), ptOf(b)) * daysPerDist()) * 10) / 10;
 }
 export const segKey = (a, b) => [a, b].sort().join("~");
 
@@ -201,7 +202,7 @@ export const cartCarry = s => haulTier(s).carry;
 
 // auto-trade rule check: does this route want to run now?
 export function routeWants(s, r) {
-  if (!r.driver || !r.auto || routeIssue(s, r)) return false;
+  if (!r.driver || !r.auto || routeIssue(s, r) || driverIssue(minion(s, r.driver))) return false;
   if (r.mode === "haul") {
     const buy = townBuyPrice(s, r.from, r.res);
     return townSellPrice(s, r.town, r.res) >= buy * (1 + r.margin) && s.res.coin >= buy;
@@ -230,7 +231,11 @@ function startTrip(s, r) {
   r.trip = { t: 0, stops, step: 0, load, coin: 0, total: stops[stops.length - 1].day };
 }
 
-const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + famFx(s, "trade");
+// follower convoy leader: class edge plus a little per level (capped); low loyalty refuses or skims
+export const driverLvlEdge = mi => (mi ? Math.min(TC().driverLvlEdgeMax || 0, ((mi.lvl || 1) - 1) * (TC().driverLvlEdge || 0)) : 0);
+export const driverIssue = mi => (mi && (mi.loyalty ?? 100) < (TC().driverMinLoyalty || 0) ? `loyalty under ${TC().driverMinLoyalty}: won't lead` : null);
+export const driverSkim = mi => (mi && (mi.loyalty ?? 100) < (TC().skimBelow || 0) ? TC().skimCut || 0 : 0);
+const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + driverLvlEdge(minion(s, r.driver)) + famFx(s, "trade");
 
 // bandits may strike a cart that is carrying goods or coin on this road
 function banditCheck(s, r, a, b) {
@@ -301,6 +306,14 @@ function atStop(s, r, st) {
 
 function finish(s, r) {
   const tr = r.trip;
+  const dv = minion(s, r.driver);
+  if (tr.coin && driverSkim(dv)) {
+    const cut = Math.round(tr.coin * driverSkim(dv));
+    tr.coin -= cut;
+    log(s, `🫳 ${dv.name} pocketed ${cut}🪙 of the takings (loyalty ${Math.round(dv.loyalty)}).`);
+  }
+  if (dv) dv.loyalty = Math.min(100, (dv.loyalty ?? 100) + (TC().runLoyalty || 0));
+  tutNote(s, "traded");
   if (tr.coin) {
     s.res.coin += tr.coin;
     log(s, `🛒 Cart home (${routeLabel(r)}): sold ${tr.sold} for ${tr.coin}🪙${tr.spent ? ` (paid ${tr.spent}🪙)` : ""}.`);

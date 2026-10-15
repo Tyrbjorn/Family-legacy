@@ -55,6 +55,8 @@ const CHECKS = {
   crafted: s => !!s.tut.flags.crafted,
   activity: s => !!s.tut.flags.activity,
   estate: s => !!s.tut.flags.estate || (s.land || []).length > 0,
+  scouted: s => !!s.tut.flags.scouted || (s.explored || []).length > 0,
+  traded: s => !!s.tut.flags.traded,
   path: s => living(s).some(m => m.cls || m.guild || m.craft || m.prof),
 };
 export function stepDone(s, st) {

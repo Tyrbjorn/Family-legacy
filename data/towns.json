@@ -62,7 +62,8 @@
    "mithrilore": 40.0,
    "mithril": 120.0,
    "adamantore": 70.0,
-   "adamantium": 220.0
+   "adamantium": 220.0,
+   "hay": 1
   },
   "shop": [
    "rusty_sword",
@@ -90,7 +91,8 @@
    "milk",
    "salt",
    "flour",
-   "flax"
+   "flax",
+   "hay"
   ],
   "produces": [
    "wheat",
@@ -164,7 +166,8 @@
    "mithrilore": 40.0,
    "mithril": 120.0,
    "adamantore": 70.0,
-   "adamantium": 220.0
+   "adamantium": 220.0,
+   "hay": 1
   },
   "shop": [
    "iron_sword",
@@ -187,7 +190,8 @@
    "salt",
    "berries",
    "vegetables",
-   "flax"
+   "flax",
+   "hay"
   ],
   "produces": [
    "wood",
@@ -261,7 +265,8 @@
    "mithrilore": 34.3,
    "mithril": 102.9,
    "adamantore": 60.0,
-   "adamantium": 188.6
+   "adamantium": 188.6,
+   "hay": 1
   },
   "shop": [
    "hunting_bow",
@@ -357,7 +362,8 @@
    "mithrilore": 28.6,
    "mithril": 85.7,
    "adamantore": 50.0,
-   "adamantium": 157.1
+   "adamantium": 157.1,
+   "hay": 1.5
   },
   "shop": [
    "iron_sword",

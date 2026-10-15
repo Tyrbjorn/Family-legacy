@@ -107,3 +107,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - Treated = care within 3 days (remedies, potions, Infirmary/Shrine, healer, Field Dressing, bandages); Field Dressing and bandages lower the tier.
 - Death: Crippling roll 2/2/2/4/6% by difficulty (×2 Doomsworn); untreated load (tier points, −1 per 30 days) ≥6 → 25% infection on a new untreated Maimed/Crippling. Old age unchanged.
 - 5 lasting injuries (max 2, not inherited). Hooks: permanent entries take minTier/weight; removePerm() for restoration/prosthetics. Save step 20.
+
+## Map round 2 (save v21)
+- Mountains and lakes are impassable; routes detour around them (data/world.json `routing`). Highlands use 3-step elevation: hills (0.8) → highlands terrain (0.6, ore ×1.25, gems ×1.3) → four tall mountain ranges (impassable); the spots that were inside a mountain or lake moved to its edge and keep that terrain's gathering bonus.
+- Boats: build a Dock (trade building, needs stream or clay-bank land); then a Carpenter can make a Small Boat. With both, routes may cross lakes (whichever way is quicker). Later: Port + Shipyard for larger ships on the coast (add a `ship` terrain flag and a ship item the same way).
+- Livestock feed (`world.feed`): grazers eat hay→wheat→vegetables, hens and pigs eat wheat→vegetables. Unfed animals stop working; after 10 unfed days one runs off; herds regrow one head per 20 fed days. Sheep, goats and pigs have diets but no building yet.
+- A wagon with no animal is pulled by hand (half cargo, ×0.6 speed). Nodes regrow daily. Follower convoy drivers: loyalty under 30 won't go, 30–59 skim 10%, +1% edge per level (max +10%), +1 loyalty per run. Faint '?' hints for unfound places in the fog. Intro gained Scout Nearby and First Trade steps.

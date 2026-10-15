@@ -13,6 +13,7 @@ import { enchCp, noteSets, splitId, stationCraftQ } from "./gear.js";
 import { hasService } from "./guilds.js";
 import { gainXp, inLine } from "./skills.js";
 import { D, T, afford, log, pay, rng } from "./state.js";
+import { tutNote } from "./tutorial.js";
 
 export function equip(s, m, itemId, from = "vault") {
   const src = from === "bag" ? m.bag : s.vault;
@@ -34,6 +35,7 @@ export function sell(s, itemId) {
   if (i < 0) return;
   s.vault.splice(i, 1);
   s.res.coin += sellValue(s, itemDef(itemId));
+  tutNote(s, "traded");
 }
 
 export function unequip(s, m, slot) {
@@ -136,6 +138,7 @@ export function sellRes(s, townId, res, n) {
   s.res[res] -= n;
   s.res.coin += n * townSellPrice(s, townId, res);
   shiftSupply(s, townId, res, n);
+  tutNote(s, "traded");
   return true;
 }
 
@@ -194,6 +197,7 @@ export function recipeIssue(s, m, rc) {
   const pi = rc.forClass && recipePathIssue(m, rc, inLine);
   if (pi) return pi;
   if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
+  if (rc.needsStruct && !(s.structures || []).some(st => st.type === rc.needsStruct)) return `needs a ${(D.estate.structures.find(x => x.id === rc.needsStruct) || { name: rc.needsStruct }).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
     return `${D.skills.find(k => k.id === rc.skill).name} ${rc.minSkill}`;
   if (!afford(s, rc.mats)) return "missing materials";
