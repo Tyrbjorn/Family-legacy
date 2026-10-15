@@ -394,7 +394,7 @@
     "cap": 1
    }
   ],
-  "desc": "Healers & clergy live here: blessings, morale, faster healing; becomes a Chapel",
+  "desc": "Healers & clergy live here: blessings, contentment, faster healing; becomes a Chapel",
   "land": 1,
   "slots": 1,
   "special": true,
@@ -480,7 +480,7 @@
      "blocks": 40,
      "ingots": 15
     },
-    "desc": "morale +0.3, rest +0.5"
+    "desc": "contentment +0.3, rest +0.5"
    }
   ],
   "picks": {
@@ -885,7 +885,7 @@
    "blocks": 40
   },
   "legacy": "hall",
-  "desc": "Legacy building: ancestors' blessing (+XP, morale)",
+  "desc": "Legacy building: ancestors' blessing (+XP, contentment)",
   "land": 1,
   "slots": 1,
   "special": true,

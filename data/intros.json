@@ -151,7 +151,7 @@
    "icon": "🍲",
    "tab": "estate",
    "when": "land",
-   "intro": "Your land can feed the family. Rations and the menu set morale.",
+   "intro": "Your land can feed the family. Rations and the menu set contentment.",
    "steps": [
     {
      "id": "fd_view",

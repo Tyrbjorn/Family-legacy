@@ -45,7 +45,7 @@
   "speedPerPoint": 0.01,
   "speedMax": 0.1,
   "speedMin": -0.15,
-  "note": "morale −15…+10 → skill XP and character speed (work, activities, travel) −15%…+10%"
+  "note": "contentment −15…+10 → skill XP and character speed (work, activities, travel) −15%…+10%"
  },
  "resBuyMarkupBy": {
   "food": 6
@@ -101,7 +101,9 @@
   "fleeLoyaltyLoss": 20,
   "patrolDeter": 0.4,
   "maxPatrol": 3,
-  "produceMarkup": 1.2
+  "produceMarkup": 1.2,
+  "fightScale": 10,
+  "banditCount": 2
  },
  "teenSafeLoss": 0.1,
  "demolishRefund": 0.5,
@@ -277,5 +279,83 @@
     1.5
    ]
   }
+ },
+ "combat": {
+  "_note": "Turn-based fights (bandits, dungeon events). Each round every standing fighter trades one blow with a random foe; who lands it is rolled from r = (pow+20)/(foe+20): p = 0.5 + slope·(r−1). Damage = dmg × max HP (±25%). Morale loses morPerHp per 100% HP lost. Below fleeAt morale a fighter rolls to flee (fleeBase + game difficulty flee); group average below fleeAt = whole side flees. Calibrated to the old success formula (test/combat.test.mjs). Dungeons: between events +between morale and +betweenHp of max HP; fights before a floor's last fight are packs at packCp × floor power.",
+  "slope": 0.55,
+  "dmg": 0.35,
+  "maxRounds": 10,
+  "morPerHp": 90,
+  "fleeAt": 25,
+  "fleeBase": 0.5,
+  "allyLost": 10,
+  "leaderLost": 20,
+  "guardMorale": 10,
+  "guardMoraleMax": 30,
+  "between": 15,
+  "injuryBelow": 0.3,
+  "skills": {
+   "rally": {
+    "skill": "leadership",
+    "at": 50,
+    "v": 15
+   },
+   "shout": {
+    "skill": "brawling",
+    "v": 10
+   },
+   "hold": {
+    "skill": "tactics",
+    "v": 0.2
+   },
+   "dress": {
+    "skill": "healing",
+    "at": 0.4,
+    "v": 0.2
+   },
+   "foe": {
+    "skill": "monsterlore",
+    "v": 10
+   }
+  },
+  "dungeon": {
+   "tierAt": [
+    25,
+    60,
+    100
+   ],
+   "checkFail": 0.2,
+   "checkDc": [
+    0,
+    6,
+    10,
+    14,
+    18
+   ],
+   "checks": [
+    {
+     "skill": "tracking",
+     "text": "a hidden pit"
+    },
+    {
+     "skill": "monsterlore",
+     "text": "strange tracks"
+    },
+    {
+     "stat": "AGI",
+     "text": "a collapsing passage"
+    },
+    {
+     "stat": "WIL",
+     "text": "an eerie dread"
+    },
+    {
+     "skill": "reading",
+     "text": "a warded door"
+    }
+   ],
+   "packCp": 0.7
+  },
+  "betweenHp": 0.3
  }
 }

@@ -2,6 +2,7 @@ import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
+import { dungeonFloorRun, dungeonTier } from "./combat.js";
 import { addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
 import { ES } from "./estate.js";
@@ -114,14 +115,9 @@ export function rollRare(s, src, m) {
     }
 }
 
-export function dungeonFloor(s, m, dg, i) {
-  const f = dg.floors[i],
-    ok = rng() < successChance(s, m, { cp: f.cp });
-  if (!ok) {
-    m.injured = 3;
-    log(s, `❌ ${m.name} was driven out of ${dg.name} at ${f.name} (floor ${i + 1}/${dg.floors.length}).`);
-    return false;
-  }
+export function dungeonFloor(s, m, dg, i, t = {}) {
+  const f = dg.floors[i];
+  if (!dungeonFloorRun(s, m, dg, i, t)) return false;
   for (const [k, v] of Object.entries(f.reward)) s.res[k] = (s.res[k] || 0) + v;
   log(s, `🗝️ ${m.name} cleared ${dg.name}: ${f.name} (${i + 1}/${dg.floors.length}).`);
   return true;
@@ -131,7 +127,16 @@ export function dungeonClear(s, m, dg) {
   const first = !(s.cleared || []).includes(dg.id);
   if (first) s.cleared.push(dg.id);
   addRenown(s, m, first ? 15 : 4);
-  if (dg.loot.length && rng() < 0.6 && addToVault(s, r(dg.loot))) log(s, `🎁 ${dg.name} treasure claimed.`);
+  // one loot roll per tier at the last floor's power; the dungeon's list are the favorites
+  const lq = { cp: dg.floors[dg.floors.length - 1].cp, risk: "deadly", type: "dungeon", loot: dg.loot };
+  for (let k = 0; k < dungeonTier(dg); k++) {
+    const id = rollLoot(lq, (cls(m) || {}).lootBonus || 0, actLvl(s, m));
+    if (id && addToVault(s, id)) log(s, `🎁 ${dg.name} treasure: ${itemDef(id).name}.`);
+  }
+  if (dg.onClear && dg.onClear.unlock && !s.unlocks.includes(dg.onClear.unlock)) {
+    s.unlocks.push(dg.onClear.unlock);
+    if (dg.onClear.text) log(s, `📜 ${dg.onClear.text}`);
+  }
   rollRare(s, dg, m);
   if (m.adv) m.adv.rep += 8;
   log(s, `🏆 ${m.name} conquered ${dg.name}${first ? " for the first time" : ""}!`);

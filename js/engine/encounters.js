@@ -39,7 +39,7 @@ function checkChance(m, c) {
   return Math.max(one(c), c.alt ? one(c.alt) : 0);
 }
 
-export const optionChance = (s, m, o) => (o.check ? Math.max(0.05, Math.min(0.95, checkChance(m, o.check) + gameFx(s, "flee"))) : 1);
+export const optionChance = (s, m, o) => checkChance(m, o.check);
 
 export const optionOk = (s, o) => !o.cost || afford(s, o.cost);
 

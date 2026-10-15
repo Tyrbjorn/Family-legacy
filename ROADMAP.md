@@ -94,3 +94,10 @@ Everything from Eras 1–2 keeps working alongside these.
 - Hooks: successChance, encounter option checks + travel encounter chance, resGain, craft days, bandit segRisk, bad world-event weighting (events.types[].bad), loot drop/tilt, addRenown, gainXp.
 - Apothecary combo shown as Remedist (id kept); Woodsman Herbalist → Forest Sense; Farmer Brewer specialty cut (save step 19 clears it).
 - Dynasty: Manor stage (estate level 12) + 3 living adults; no Renown requirement.
+
+## Combat (unreleased)
+- js/engine/combat.js + tuning.combat: HP and Morale per fighter; each round every fighter trades a blow (odds from (pow+20)/(foe+20), calibrated to the old success formula); HP loss drains morale; below 25% a fighter rolls to flee (0.5 + game difficulty flee); groups of 2+ flee together below 25% average; 10 rounds max.
+- Morale skills: Rally (leadership), War Shout (brawling), Hold the Line (tactics), Field Dressing (healing), Know Your Foe (monsterlore).
+- Bandits fight turn-based (guard + escorts vs bandits). Dungeons: tier 1–4 by first-floor power, 2·tier+2 events (fights + stat checks), +15 morale/+30% HP between events, pack fights at 0.7×; loot rolls = tier; optional dg.story / dg.onClear. Normal quests stay a single roll.
+- Fleeing causes no injury; beaten = 5-day injury (3 with guards); ending badly hurt (<30% HP) = 2 days.
+- UI: household morale is shown as "Contentment". Difficulty flee adjust removed from encounter checks.

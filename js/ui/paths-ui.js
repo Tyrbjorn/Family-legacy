@@ -9,7 +9,7 @@ const fxText = fx =>
       f.kind === "craft"
         ? `+${Math.round(f.v * 100)}% craft quality${f.slots ? " (" + f.slots.join("/") + ")" : f.bases ? " (signature items)" : f.mats ? " (" + f.mats.join("/") + " work)" : ""}`
         : f.kind === "variety"
-          ? `+${f.v} variety morale`
+          ? `+${f.v} variety contentment`
           : f.kind === "find"
             ? `finds ${f.res}`
             : f.kind === "land"

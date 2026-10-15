@@ -1,4 +1,5 @@
-import { gameFx } from "./difficulty.js";
+import { gameFx, gameLvl } from "./difficulty.js";
+import { fight, fighter } from "./combat.js";
 // Trade round: trade buildings (Warehouse > Trading Post > Counting House), route slots, carts with crew
 // (driver + guard + Horseman escorts), estate-town and town-town routes, auto-trade rules, bandit fights,
 // road patrols, and per-town supply drift (prices: inventory.js).
@@ -84,9 +85,10 @@ export const segRisk = (s, r, a, b) =>
 export const cargoLegs = r => (r.from && r.from !== HOME ? [[r.from, r.town], [r.town, HOME]] : [[HOME, r.town]]);
 export const banditChance = (s, r) => 1 - cargoLegs(r).reduce((a, [x, y]) => a * (1 - segRisk(s, r, x, y)), 1);
 // chance the crew beats the bandits once attacked
+// rough chance the crew wins a bandit fight (the combat calibration: r − 0.5 with r = (crew+20)/(bandits+20))
 export const winChance = (s, r) => {
   const p = crewPower(s, r);
-  return p / (p + TC().banditStrength);
+  return p ? Math.max(0.05, Math.min(0.95, (p * TC().fightScale + 20) / (TC().banditStrength * TC().fightScale + 20) - 0.5)) : 0;
 };
 
 export function routeIssue(s, r) {
@@ -237,28 +239,32 @@ function banditCheck(s, r, a, b) {
   const night = rng() < nightShare();
   if (rng() >= segRisk(s, r, a, b) * (night ? 1 - Math.min(0.9, eff(s, "nightBanditCut")) : 1)) return;
   const road = `${tradePlace(a)}–${tradePlace(b)}`;
-  if (rng() < winChance(s, r)) {
+  // turn-based fight: the guard leads, escorts follow; the driver stays with the cart
+  const crew = [r.guard, ...(r.escorts || [])].map(u => minion(s, u)).filter(Boolean);
+  const A = crew.map((mi, i) => Object.assign(fighter(mi.name, guardPow(mi) * TC().fightScale, { leader: !i }), { mi })),
+    B = Array.from({ length: TC().banditCount }, (_, i) => fighter("bandit " + (i + 1), (TC().banditStrength * TC().fightScale) / TC().banditCount));
+  const res = A.length ? fight(s, A, B, { lvl: gameLvl(s) }) : { result: "defeat", rounds: 1 };
+  if (res.result === "win") {
     r.won = (r.won || 0) + 1;
-    log(s, `⚔️ Bandits hit the ${routeLabel(r)} cart on the ${road} road; the guards drove them off.`);
+    log(s, `⚔️ Bandits hit the ${routeLabel(r)} cart on the ${road} road; the guards drove them off after round ${res.rounds}.`);
     return;
   }
   r.robbed = (r.robbed || 0) + 1;
   r.trip.load = 0;
   r.trip.coin = 0;
   const lost = [];
-  for (const u of [r.guard, ...(r.escorts || [])].filter(Boolean)) {
-    const mi = minion(s, u);
-    if (!mi) continue;
-    if (rng() < TC().guardDieChance) {
-      release(s, u);
+  for (const f of A) {
+    const mi = f.mi;
+    release(s, mi.uid);
+    if (f.out === "down" && rng() < TC().guardDieChance) {
       s.minions = s.minions.filter(x => x !== mi);
       lost.push(`${mi.name} was killed`);
     } else {
-      release(s, u);
       mi.loyalty = Math.max(1, (mi.loyalty || 100) - TC().fleeLoyaltyLoss);
-      lost.push(`${mi.name} fled`);
+      lost.push(`${mi.name} ${f.out === "down" ? "was beaten" : "fled"}`);
     }
   }
+  lost.push(`${res.result === "withdraw" ? "gave up" : "fight ended"} after round ${res.rounds}`);
   log(s, `🏴‍☠️ Bandits robbed the ${routeLabel(r)} cart on the ${road} road${lost.length ? " (" + lost.join(", ") + ")" : ""}.`);
 }
 

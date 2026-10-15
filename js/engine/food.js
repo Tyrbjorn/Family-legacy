@@ -147,7 +147,7 @@ export function foodPanel(s) {
   const vm = varietyMorale(keys.length),
     sat = 1 - satiation(keys.length);
   if (sat > 0) bonuses.push(`Satiation −${Math.round(sat * 100)}% food eaten`);
-  if (vm) bonuses.push(`Variety +${vm} morale`);
+  if (vm) bonuses.push(`Variety +${vm} contentment`);
   const out = foodOutputMult(s) - 1,
     xp = moraleXp(s);
   if (Math.abs(out) > 0.004) bonuses.push(`Output ${out > 0 ? "+" : ""}${Math.round(out * 100)}%`);

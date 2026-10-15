@@ -28,12 +28,12 @@ export function foodPanelv() {
   const f = E.foodPanel(s);
   const days = f.days === Infinity ? "∞" : f.days >= 999 ? "999+" : fmt(f.days);
   const last = f.last;
-  const warn = last && last.short > 0.01 ? `<div style="color:#e77">⚠️ Shortage: ate ${Math.round(last.ratio * 100)}% of needs. Morale and output fall.</div>` : "";
+  const warn = last && last.short > 0.01 ? `<div style="color:#e77">⚠️ Shortage: ate ${Math.round(last.ratio * 100)}% of needs. Contentment and output fall.</div>` : "";
   const emerg = last && last.emergency && last.emergency.length ? `<div class="muted">Ate off-menu as a last resort: ${last.emergency.map(k => RI[k] || k).join(" ")}</div>` : "";
-  return `<div class="card" id="foodpanel"><div class="row"><b>🍽️ Food</b><span class="muted">${f.variety} type${f.variety === 1 ? "" : "s"} · ${fmt(f.need)}🍞/day · ${days} days of stock · morale ${f.morale >= 0 ? "+" : ""}${f.morale.toFixed(1)}</span></div>
- <div class="muted">Everyone eats evenly from every food on the menu. More types = more satiation and morale (diminishing). Quality makes each portion go further.</div>
+  return `<div class="card" id="foodpanel"><div class="row"><b>🍽️ Food</b><span class="muted">${f.variety} type${f.variety === 1 ? "" : "s"} · ${fmt(f.need)}🍞/day · ${days} days of stock · contentment ${f.morale >= 0 ? "+" : ""}${f.morale.toFixed(1)}</span></div>
+ <div class="muted">Everyone eats evenly from every food on the menu. More types = more satiation and contentment (diminishing). Quality makes each portion go further.</div>
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start;margin:4px 0"><span class="muted">Rations:</span>${E.RATIONS()
-   .map(r => `<button class="b ${f.ration.id === r.id ? "sel" : ""}" data-a="ration" data-v="${r.id}" title="${r.mult}× food, ${r.morale >= 0 ? "+" : ""}${r.morale} morale">${r.name}</button>`)
+   .map(r => `<button class="b ${f.ration.id === r.id ? "sel" : ""}" data-a="ration" data-v="${r.id}" title="${r.mult}× food, ${r.morale >= 0 ? "+" : ""}${r.morale} contentment">${r.name}</button>`)
    .join("")}</div>
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${f.all
    .map(

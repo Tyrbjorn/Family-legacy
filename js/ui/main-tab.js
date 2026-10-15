@@ -39,7 +39,7 @@ export function hero() {
 
 const pct = x => (x > 0 ? "+" : "") + Math.round(x * 100) + "%";
 export const moraleLine = () =>
-  `${(s.morale || 0) >= 0 ? "🙂" : "😟"} Morale ${(s.morale || 0) >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}: skill XP ${pct(E.moraleXp(s))} · speed ${pct(E.moraleSpeed(s))} (work, activities, travel)`;
+  `${(s.morale || 0) >= 0 ? "🙂" : "😟"} Contentment ${(s.morale || 0) >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}: skill XP ${pct(E.moraleXp(s))} · speed ${pct(E.moraleSpeed(s))} (work, activities, travel)`;
 
 export function sheet(m) {
   const a = m.action;

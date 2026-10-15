@@ -92,7 +92,7 @@ export function travelTick(s, m, a, eff) {
       for (let i = 0; i < dg.floors.length; i++) {
         cum += dg.floors[i].days;
         if (i === t.floor && t.t >= cum && !t.resolved) {
-          if (!dungeonFloor(s, m, dg, i)) {
+          if (!dungeonFloor(s, m, dg, i, t)) {
             t.resolved = true;
             t.t = t.out + t.task;
             break;

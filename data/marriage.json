@@ -43,7 +43,7 @@
    "household": {
     "morale": 1
    },
-   "desc": "+1 household morale"
+   "desc": "+1 household contentment"
   },
   {
    "id": "thrifty",
@@ -73,7 +73,7 @@
     "morale": 1.5,
     "foodNeed": 0.05
    },
-   "desc": "+1.5 morale, but +5% food eaten"
+   "desc": "+1.5 contentment, but +5% food eaten"
   },
   {
    "id": "scholarly",
@@ -104,7 +104,7 @@
     "childXp": 0.05,
     "morale": -0.5
    },
-   "desc": "+5% children's XP, −0.5 morale"
+   "desc": "+5% children's XP, −0.5 contentment"
   },
   {
    "id": "pious",
@@ -134,7 +134,7 @@
     "renownMonth": 3,
     "morale": -0.5
    },
-   "desc": "+3 renown/month, −0.5 morale"
+   "desc": "+3 renown/month, −0.5 contentment"
   },
   {
    "id": "homely",
@@ -149,7 +149,7 @@
     "foodNeed": -0.05,
     "morale": 0.5
    },
-   "desc": "−5% food eaten, +0.5 morale"
+   "desc": "−5% food eaten, +0.5 contentment"
   }
  ],
  "dowry": {

@@ -441,7 +441,7 @@
    ],
    "xp": 0.1
   },
-  "desc": "Divine manor: faster injury recovery, +2 morale, +10% faith/healing XP.",
+  "desc": "Divine manor: faster injury recovery, +2 contentment, +10% faith/healing XP.",
   "land": 3,
   "slots": 8,
   "upgradeFrom": "house",

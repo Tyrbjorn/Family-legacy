@@ -66,7 +66,7 @@ ok(E.removePatrol(s,P.id)&&pg.job==='idle','patrol removed');
   for(let i=0;i<40&&!h.robbed;i++) E.tradeDay(s);
   ok(h.robbed>0&&!h.guard&&!h.escorts.length,'loss: guards fled or died '+JSON.stringify({rb:h.robbed,g:h.guard,e:h.escorts,t:h.trips,w:h.won}));
   ok(s.minions.length<=n0,'some may die');
-  D.tuning.trade.banditStrength=1e-9; const g3=mk('guard'); E.setCrew(s,h.id,'guard',g3.uid); const w0=h.won||0; for(let i=0;i<40;i++) E.tradeDay(s);
+  D.tuning.trade.banditStrength=1e-9; const g3=mk('guard'); E.setCrew(s,h.id,'guard',g3.uid); const w0=h.won||0; for(let i=0;i<40&&(h.won||0)===w0;i++) E.tradeDay(s);
   ok((h.won||0)>w0&&h.guard===g3.uid,'win: cart continues, guard stays');
   D.tuning.trade.banditBase=0.12; D.tuning.trade.banditStrength=3; }
 const ser=E.deserialize(E.serialize(s,1_700_000_000_000)); ok(ser.trade.routes.length===s.trade.routes.length,'save roundtrip');

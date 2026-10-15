@@ -39,3 +39,4 @@ export * from "./engine/daynight.js";
 export * from "./engine/metals.js";
 export * from "./engine/loot.js";
 export * from "./engine/difficulty.js";
+export * from "./engine/combat.js";

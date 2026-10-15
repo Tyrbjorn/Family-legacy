@@ -1343,7 +1343,7 @@
     "blessing": 0.05,
     "morale": 0.2
    },
-   "desc": "+5% XP, follower morale"
+   "desc": "+5% XP, follower contentment"
   },
   {
    "id": "oven",
@@ -1751,7 +1751,7 @@
      }
     ]
    },
-   "desc": "3 barley → 1 ale, 2/day. Ale on the menu lifts morale"
+   "desc": "3 barley → 1 ale, 2/day. Ale on the menu lifts contentment"
   },
   {
    "id": "brinecrocks",
@@ -2162,7 +2162,7 @@
     "foodQuality": 0.05,
     "morale": 0.2
    },
-   "desc": "+300 food storage, +5% meal XP, +0.2 follower morale"
+   "desc": "+300 food storage, +5% meal XP, +0.2 follower contentment"
   },
   {
    "id": "winepress",
