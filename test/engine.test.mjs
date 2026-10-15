@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720,adultAge:16,teenAge:14});D.guilds.minJoinAge=16;
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
@@ -170,9 +170,9 @@ ok(E.sellMany(K,K.vault.filter(x=>x==='flowers'))>0&&!K.vault.includes('flowers'
 const kr=K.res.wood; ok(E.sellAllRes(K,'millbrook','wood')&&K.res.wood===0&&K.res.coin>0,'sell a whole material stack');
 for(let i=0;i<9;i++) K.vault.push('rusty_sword'); for(let i=0;i<8;i++) E.moveItem(K,km2,'rusty_sword',true); ok(km2.bag.length===8&&!E.moveItem(K,km2,'rusty_sword',true),'personal pack capacity');
 // minion gear
-const mw=K.minions[0]; K.vault.push('c|sickle|masterwork','woodaxe','collar','chain_shirt'); ok(E.equipMinion(K,mw.uid,'c|sickle|masterwork')&&mw.equip.tool,'minion tool slot');
+const mw=K.minions[0]; K.vault.push('c|sickle|masterwork','woodaxe','collar','iron_chainmail'); ok(E.equipMinion(K,mw.uid,'c|sickle|masterwork')&&mw.equip.tool,'minion tool slot');
 ok(E.minionGearMult(mw,'farm')>E.minionGearMult(mw,'gather')&&E.minionGearMult(mw,'farm')>1.3,'quality tool boosts matching job output');
-ok(!E.equipMinion(K,mw.uid,'collar'),'collar only for companions'); ok(E.equipMinion(K,mw.uid,'chain_shirt')&&E.minionSurvival(mw)<1&&E.minionGearMult(mw,'guard')>1,'armor boosts guard power and survival');
+ok(!E.equipMinion(K,mw.uid,'collar'),'collar only for companions'); ok(E.equipMinion(K,mw.uid,'iron_chainmail')&&E.minionSurvival(mw)<1&&E.minionGearMult(mw,'guard')>1,'armor boosts guard power and survival');
 ok(E.unequipMinion(K,mw.uid,'tool')&&K.vault.includes('c|sickle|masterwork'),'unequip minion gear to vault');
 // adventurer line
 const AV=E.newGame(t0); const av=AV.members[0]; av.ageDays=20*360; AV.res.coin=1e5; ok(E.joinAdventurers(AV,av)&&av.cls==='adventurer','classless join → Adventurer');
@@ -211,7 +211,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const MM=E.newGame(t0); estate(MM,['orecart','minionbunk'],'shack'); MM.res.copper=5; ok(E.jobCap(MM,'mine')===2,'Ore Cart gives mining spots');
  const old=E.newGame(t0); estate(old,['forge','bunk']); const o2=JSON.parse(JSON.stringify(old)); E.normalize(o2); ok(o2.structures[0].pieces.every(p=>E.pieceTier(p)===0)&&E.bedrooms(o2)>=3,'old saves load as Crude tier'); }
 // resource tiers
-{ ok(E.resTier('wood')===1&&E.resTier('hides')===1&&E.resTier('planks')===2&&E.resTier('blocks')===2&&E.resTier('leather')===2&&D.estate.resourceTiers['3'].planned.includes('steel'),'resource tiers: raw → processed, Tier 3 reserved');
+{ ok(E.resTier('wood')===1&&E.resTier('hides')===1&&E.resTier('planks')===2&&E.resTier('blocks')===2&&E.resTier('leather')===2&&E.resTier('steel')===3&&E.resTier('coal')===1&&E.resTier('bronze')===2,'resource tiers: raw → processed → refined metals');
  const R=E.newGame(t0); const st=estate(R,['masontable','tanrack'],'shack'); R.res.blocks=0; R.res.leather=0; R.res.stone=60; R.res.hides=10; R.reserve.stone=0; R.members.forEach(m=>m.skills.masonry.lvl=0); E.advanceReal(R,10); const b0=R.res.blocks;
  ok(b0>0&&R.res.leather>0,"Mason's Table cuts blocks, Tanning Rack makes leather");
  const R2=E.newGame(t0); estate(R2,['masontable'],'shack'); R2.res.blocks=0; R2.res.stone=60; R2.reserve.stone=0; R2.members[0].skills.masonry.lvl=30; E.advanceReal(R2,10);
@@ -665,7 +665,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  for(let d=0;d<Y*3;d++) E.dayTick(G,1,1); ok(E.houseState(G,'skye').state!=='war','a weak young family is never attacked');
  const P=est(E.newGame(t0)); E.skipTutorial(P); const pm=E.active(P); pm.ageDays=25*Y; E.chooseClass(P,pm.id,'fighter'); pm.stats.STR=60; pm.stats.VIT=60; E.addRapport(P,'skye',-90); P.houses.skye.r=-95;
  const fp=E.familyPower(P); ok(fp>=D.marriage.houses.feud.minPowerForAggression,'strong family can be targeted');
- let warned=null, war=null; for(let d=0;d<Y*30&&!war;d++){P.houses.skye.r=Math.min(P.houses.skye.r,-90); E.dayTick(P,1,1); if(P.houses.skye.warned!=null&&warned==null) warned=P.day; if(P.houses.skye.state==='war') war=P.day;}
+ let warned=null, war=null; for(let d=0;d<Y*30&&!war;d++){P.houses.skye.r=Math.min(P.houses.skye.r,-90); P.renown=Math.max(P.renown,1000); E.dayTick(P,1,1); if(P.houses.skye.warned!=null&&warned==null) warned=P.day; if(P.houses.skye.state==='war') war=P.day;}
  ok(warned!=null&&war!=null&&war-warned>=D.marriage.houses.feud.warnDays,'rival aggression warns first, then war');
  ok(P.chronicle.some(e=>/War with/.test(e.t)),'war reaches the Chronicle'); ok(E.timers(P).some(t=>t.key==='warskye'&&t.p>=0&&t.p<=1),'war has a timer/progress bar');
  const before=P.weary||0; let fights=0; const startDay=P.day; while(P.houses.skye.state==='war'&&fights<200){P.houses.skye.warDay=-999; E.housesDay(P); fights++;} ok(P.houses.skye.state==='peace','wars end (decisive wins or losses)'); ok((P.weary||0)>before&&E.wearyMorale(P)<0,'war weariness costs morale');
@@ -724,7 +724,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  const sc=E.setProgress(m.equip)[0].scale; ok(sc>1,'quality carries through: masterwork pieces scale the set bonus ('+sc.toFixed(2)+')');
  const lo=E.gearFx({a:'c|warden_blade|crude',b:'c|warden_shield|crude'}).cp, hi=E.gearFx({a:'c|warden_blade|masterwork',b:'c|warden_shield|masterwork'}).cp; ok(hi>lo,'higher quality → bigger set bonus');
  ok(E.gearFx({a:'moon_edge',b:'moon_aegis'}).cp>E.gearFx({a:'warden_blade',b:'warden_shield'}).cp,'found Epic set pieces scale by rarity');
- const mi={uid:'x',equip:{weapon:'warden_blade',armor:'warden_mail'}}; ok(E.minionGearMult(mi,'guard')>E.minionGearMult({uid:'y',equip:{weapon:'iron_sword',armor:'chain_shirt'}},'guard')-0.0001+0.1,'minions wearing 2 set pieces get the minion set bonus');
+ const mi={uid:'x',equip:{weapon:'warden_blade',armor:'warden_mail'}}; ok(E.minionGearMult(mi,'guard')>E.minionGearMult({uid:'y',equip:{weapon:'iron_sword',armor:'iron_chainmail'}},'guard')-0.0001+0.1,'minions wearing 2 set pieces get the minion set bonus');
  ok(D.quests.some(q=>(q.rare||[]).some(r=>r.id==='moon_edge'||r.id.startsWith('moon_')))&&D.dungeons.some(d=>(d.rare||[]).some(r=>r.id.startsWith('moon_'))),'found-only set drops from quests and dungeons');
  ok(D.gear.sets.filter(x=>!x.found).every(x=>x.pieces.every(pc=>D.crafting.recipes.some(r=>r.base===pc))),'craftable sets have a recipe for every piece');
 }

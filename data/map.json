@@ -447,6 +447,18 @@
   "n_starfall": {
    "x": 495,
    "y": 45
+  },
+  "n_tinpit": {
+   "x": 130,
+   "y": 600
+  },
+  "n_coalseam": {
+   "x": 390,
+   "y": 160
+  },
+  "n_goldwash": {
+   "x": 330,
+   "y": 780
   }
  },
  "areas": [
@@ -653,7 +665,7 @@
       "coin": 300
      },
      "drop": {
-      "id": "moonsilver_bow",
+      "id": "mithril_bow",
       "chance": 0.15
      }
     },

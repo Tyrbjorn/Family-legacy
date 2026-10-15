@@ -29,7 +29,8 @@
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 16,
-  "value": 100
+  "value": 100,
+  "metal": "iron"
  },
  {
   "id": "yew_longbow",
@@ -48,8 +49,8 @@
   "value": 150
  },
  {
-  "id": "steel_blade",
-  "name": "Steel Blade",
+  "id": "steel_sword",
+  "name": "Steel Sword",
   "slot": "weapon",
   "rarity": "Rare",
   "cp": 28,
@@ -168,12 +169,13 @@
   "value": 75
  },
  {
-  "id": "chain_shirt",
-  "name": "Chain Shirt",
+  "id": "iron_chainmail",
+  "name": "Iron Chainmail",
   "slot": "armor",
   "rarity": "Fine",
   "cp": 12,
-  "value": 100
+  "value": 100,
+  "metal": "iron"
  },
  {
   "id": "ranger_cloak",
@@ -192,12 +194,13 @@
   "value": 150
  },
  {
-  "id": "scale_mail",
-  "name": "Scale Mail",
+  "id": "iron_scalemail",
+  "name": "Iron Scalemail",
   "slot": "armor",
-  "rarity": "Rare",
+  "rarity": "Fine",
   "cp": 21,
-  "value": 175
+  "value": 175,
+  "metal": "iron"
  },
  {
   "id": "shadow_leathers",
@@ -622,8 +625,8 @@
   "value": 1600
  },
  {
-  "id": "moonsilver_bow",
-  "name": "Moonsilver Bow",
+  "id": "mithril_bow",
+  "name": "Mithril Bow",
   "slot": "weapon",
   "rarity": "Legendary",
   "cp": 45,
@@ -903,13 +906,14 @@
   "toolFor": "craft"
  },
  {
-  "id": "bastard_sword",
-  "name": "Bastard Sword",
+  "id": "iron_longsword",
+  "name": "Iron Longsword",
   "slot": "weapon",
   "rarity": "Fine",
-  "cp": 14,
-  "value": 110,
-  "pathItem": true
+  "cp": 20,
+  "value": 140,
+  "pathItem": true,
+  "metal": "iron"
  },
  {
   "id": "barbed_arrowheads",
@@ -930,13 +934,14 @@
   "pathItem": true
  },
  {
-  "id": "sunsteel_mace",
-  "name": "Sunsteel Mace",
+  "id": "iron_mace",
+  "name": "Iron Mace",
   "slot": "weapon",
   "rarity": "Fine",
-  "cp": 14,
-  "value": 110,
-  "pathItem": true
+  "cp": 18,
+  "value": 120,
+  "pathItem": true,
+  "metal": "iron"
  },
  {
   "id": "twin_stilettos",

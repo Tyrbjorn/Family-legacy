@@ -91,6 +91,12 @@ export function deserialize(str) {
 // the rest are repairs that run on every load (data may have changed: new skills, removed items...).
 const STEPS = [
   {
+    n: 18,
+    once: true,
+    name: "(runs first, before unknown items are dropped) metals: item ids carry their metal (Steel Sword, Iron Longsword, Iron Mace, Mithril Bow, Iron Chainmail/Scalemail) in vault, gear, crafted ids, found list and unlocks",
+    run: s => renameIds(s, ITEM_RENAMES),
+  },
+  {
     n: 1,
     once: true,
     name: "core fields (legacy, food quality, bloodline, chronicle, achievements)",
@@ -422,6 +428,28 @@ const STEPS = [
     run: () => {},
   },
 ];
+const ITEM_RENAMES = {
+  steel_blade: "steel_sword",
+  bastard_sword: "iron_longsword",
+  sunsteel_mace: "iron_mace",
+  moonsilver_bow: "mithril_bow",
+  chain_shirt: "iron_chainmail",
+  scale_mail: "iron_scalemail",
+  r_bastard_sword: "r_iron_longsword",
+  r_sunsteel_mace: "r_iron_mace",
+};
+// rename id tokens anywhere in the save, including inside "c|base|q", "base#ench" and "recipe:id" strings and object keys
+const renTok = (v, map) => (typeof v === "string" ? v.split(/([|#:])/).map(t => map[t] || t).join("") : v);
+export function renameIds(o, map) {
+  if (Array.isArray(o)) return o.forEach((v, i) => (typeof v === "object" && v ? renameIds(v, map) : (o[i] = renTok(v, map))));
+  for (const k of Object.keys(o || {})) {
+    const v = o[k],
+      nk = renTok(k, map);
+    if (typeof v === "object" && v) renameIds(v, map);
+    else o[k] = renTok(v, map);
+    if (nk !== k) (o[nk] = o[k]), delete o[k];
+  }
+}
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
 export const migrationSteps = () => STEPS.map(({ n, once, name }) => ({ n, once: !!once, name }));
 

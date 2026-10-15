@@ -213,7 +213,7 @@
     "cap": 1
    }
   ],
-  "desc": "Passive iron & copper ore",
+  "desc": "One mine per vein: digs the ore of the vein it is built on (silver, gold, mithril, gems need the Deep Mine, adamantium the Ore Gallery)",
   "land": 1,
   "slots": 1,
   "special": true,
@@ -331,7 +331,8 @@
      }
     ]
    }
-  ]
+  ],
+  "mine": true
  },
  {
   "id": "herbgarden",
@@ -518,7 +519,7 @@
   "allowed": [
    "workbench",
    "steelanvil",
-   "toolrack",
+   "charcoalkiln",
    "storage"
   ],
   "cost": {
@@ -641,8 +642,8 @@
   "picks": {
    "workbench": "Smithy combo with the Forge: +20% craft quality, 2 craft spots — best for quality",
    "steelanvil": "+12% quality, 2 craft spots, +3% craft XP — trains smiths faster (Crafters rank 2)",
-   "toolrack": "2 gathering + 1 herb follower spots — more labour, no crafting boost",
-   "storage": "+400 material storage — stockpile ingots, no crafting boost"
+   "storage": "+400 material storage — stockpile ingots, no crafting boost",
+   "charcoalkiln": "3 wood → 1 coal (2/day) for steel and the crucible — no coal seam needed"
   },
   "unlockUp": {
    "steelanvil": 2
@@ -659,7 +660,7 @@
     "allowed": [
      "workbench",
      "steelanvil",
-     "toolrack",
+     "charcoalkiln",
      "storage"
     ],
     "upgrades": [
@@ -671,7 +672,8 @@
        "blocks": 20
       },
       "mult": 0.25,
-      "cap": 0
+      "cap": 0,
+      "metalQ": 0.02
      },
      {
       "name": "Second Bay",
@@ -682,7 +684,8 @@
       },
       "mult": 0.25,
       "cap": 0,
-      "slots": 1
+      "slots": 1,
+      "metalQ": 0.02
      },
      {
       "name": "Skilled Foreman",
@@ -692,8 +695,12 @@
        "blocks": 80
       },
       "mult": 0.5,
-      "cap": 0
+      "cap": 0,
+      "metalQ": 0.02
      }
+    ],
+    "fixed": [
+     "steelfurnace"
     ]
    },
    {
@@ -709,7 +716,7 @@
     "allowed": [
      "workbench",
      "steelanvil",
-     "toolrack",
+     "charcoalkiln",
      "storage"
     ],
     "upgrades": [
@@ -722,7 +729,8 @@
        "copper": 15
       },
       "mult": 0.25,
-      "cap": 0
+      "cap": 0,
+      "metalQ": 0.03
      },
      {
       "name": "Great Bay",
@@ -734,7 +742,8 @@
       },
       "mult": 0.25,
       "cap": 0,
-      "slots": 1
+      "slots": 1,
+      "metalQ": 0.03
      },
      {
       "name": "Guild Charter",
@@ -745,8 +754,12 @@
        "copper": 60
       },
       "mult": 0.5,
-      "cap": 0
+      "cap": 0,
+      "metalQ": 0.03
      }
+    ],
+    "fixed": [
+     "crucible"
     ]
    }
   ]
@@ -761,7 +774,7 @@
   "allowed": [
    "storage",
    "workbench",
-   "toolrack"
+   "charcoalkiln"
   ],
   "cost": {
    "coin": 150,
@@ -812,7 +825,7 @@
   "picks": {
    "storage": "Lumberyard combo with the Saw Table: planks ×1.5 — best for planks",
    "workbench": "2 craft spots next to the timber — crafting instead of extra planks",
-   "toolrack": "2 gathering + 1 herb follower spots — more wood coming in"
+   "charcoalkiln": "Burns offcuts: 3 wood → 1 coal (2/day) to feed the forges"
   },
   "unlockUp": {
    "workbench": 1
@@ -828,7 +841,7 @@
     "allowed": [
      "storage",
      "workbench",
-     "toolrack",
+     "charcoalkiln",
      "splitbench"
     ],
     "upgrades": [
@@ -873,7 +886,7 @@
     "slots": 1,
     "allowed": [
      "workbench",
-     "toolrack",
+     "charcoalkiln",
      "splitbench",
      "loadingdock"
     ],
@@ -2508,7 +2521,7 @@
      "jars",
      "larder",
      "storage",
-     "smoker"
+     "caskrack"
     ],
     "upgrades": [
      {
@@ -2661,7 +2674,7 @@
   },
   "tiers": [
    {
-    "name": "Alehouse",
+    "name": "Vintners",
     "cost": {
      "coin": 2000,
      "blocks": 40
@@ -2702,10 +2715,13 @@
       "mult": 0.5,
       "cap": 0
      }
+    ],
+    "fixed": [
+     "winepress"
     ]
    },
    {
-    "name": "Great Brewhouse",
+    "name": "Distillery",
     "cost": {
      "coin": 5000,
      "blocks": 100,
@@ -2751,7 +2767,15 @@
       "mult": 0.5,
       "cap": 0
      }
-    ]
+    ],
+    "fixed": [
+     "stillpot"
+    ],
+    "bonus": {
+     "alchemySpeed": 0.1,
+     "alchemyPotency": 0.1
+    },
+    "desc": "Spirits; alchemists work 10% faster and brew 10% more potent batches"
    }
   ]
  },

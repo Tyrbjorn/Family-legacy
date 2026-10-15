@@ -1,3 +1,4 @@
+import { freeVeins } from "./metals.js";
 
 import { hasLegacy } from "./legacy.js";
 import { guildDef, memberGuild } from "./guilds.js";
@@ -165,7 +166,11 @@ export const structName = st => {
 };
 
 export const placed = s =>
-  (s.structures || []).flatMap(st => [...st.pieces.map(id => scaledPiece(st, id)).filter(Boolean), ...fittingFx(st)]);
+  (s.structures || []).flatMap(st => [
+    ...st.pieces.map(id => scaledPiece(st, id)).filter(Boolean),
+    ...fittingFx(st),
+    ...(prodTier(st) && prodTier(st).bonus ? [{ id: "tier", bonus: prodTier(st).bonus }] : []),
+  ]);
 
 export function activeSynergies(st) {
   const ids = [...st.pieces, ...(st.fittings || [])].map(x => (pieceDef(x) || { id: baseId(x) }).id);
@@ -255,15 +260,17 @@ export function structIssue(s, type) {
   if (d.legacy && !hasLegacy(s, d.legacy)) return "needs Legacy upgrade";
   const fi = D.world ? structFeatureIssue(s, type) : null;
   if (fi) return fi;
+  if (d.mine && D.world && !freeVeins(s).length) return "every vein on your land already has a mine";
   if (!afford(s, d.cost)) return "cannot afford";
   return null;
 }
 
-export function buildStructure(s, type) {
+export function buildStructure(s, type, vein) {
   if (structIssue(s, type)) return null;
   const d = structDef(type);
   pay(s, d.cost);
   const st = { uid: "st" + s.nextId++, type, pieces: [...(d.fixed || [])], up: 0 };
+  if (d.mine) st.vein = vein && freeVeins(s).includes(vein) ? vein : freeVeins(s)[0];
   s.structures.push(st);
   log(s, `🛖 Built a ${d.name} (${d.slots} slots).`);
   return st;
@@ -275,15 +282,17 @@ export const rankSlots = st =>
   structDef(st.type).special ? baseRank(st) + ((prodTier(st) || {}).slots || 0) + boughtUps(st).reduce((a, u) => a + (u.slots || 0), 0) : 0;
 export const itemUnlockUp = (st, pid) => ((prodTier(st) || structDef(st.type)).unlockUp || {})[baseId(pid)] || 0;
 export const freeSlots = (s, st) =>
-  structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) + rankSlots(st) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
+  structDef(st.type).slots + fixedOf(st).length + (st.bonusSlots || 0) + rankSlots(st) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
 
-export const isFixed = (st, pid) => (structDef(st.type).fixed || []).includes(baseId(pid));
+export const isFixed = (st, pid) => fixedOf(st).includes(baseId(pid));
 
 // Production tiers (structure.tiers): st.tier 0 = base. Each tier has its own upgrade line; tiering up restarts
 // st.up at 0 but keeps every upgrade already bought (st.keptUps), so their output and slot bonuses stay.
 export const prodTier = st => (st.tier ? (structDef(st.type).tiers || [])[st.tier - 1] : null);
 export const curUpgrades = st => (prodTier(st) || structDef(st.type)).upgrades || [];
 export const boughtUps = st => [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0)];
+// built-ins: the type's own plus each reached tier's (e.g. Vintners' Wine Press)
+export const fixedOf = st => [...(structDef(st.type).fixed || []), ...(structDef(st.type).tiers || []).slice(0, st.tier || 0).flatMap(t => t.fixed || [])];
 export const allowedOf = st => (prodTier(st) || {}).allowed || structDef(st.type).allowed;
 export const upgMult = st => boughtUps(st).reduce((a, u) => a + (u.mult || 0), 0) + (st.upPerk || 0);
 

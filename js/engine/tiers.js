@@ -148,6 +148,7 @@ export function tierUp(s, uid) {
   const base = st.tier ? 0 : rankSlots(st);
   st.keptUps = [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0), ...(base ? [{ name: "base line slots", slots: base }] : [])];
   st.tier = (st.tier || 0) + 1;
+  st.pieces = [...(nx.fixed || []), ...st.pieces];
   st.up = 0;
   log(s, `🏗️ ${structDef(st.type).name} raised to ${nx.name}.`);
   return true;

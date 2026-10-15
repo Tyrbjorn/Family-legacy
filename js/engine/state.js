@@ -1,3 +1,4 @@
+import { expandMetals } from "./metaldata.js";
 import { noteFromLog } from "./notify.js";
 import { chronFromLog } from "./chronicle.js";
 import { effects } from "./estate.js";
@@ -10,6 +11,7 @@ export let D, T;
 // data, tuning
 export function setData(d) {
   D = d;
+  expandMetals(d);
   // building definitions live in data/structures/*.json (listed by estate.structureFiles); loaders put them at d["structures/<name>"]
   if (d.estate && d.estate.structureFiles && !d.estate.structures.length)
     d.estate.structures = d.estate.structureFiles.flatMap(f => d["structures/" + f] || []);

@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world'])D[n]=L(n);
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let seed=11; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
@@ -33,5 +33,18 @@ const gf=E.buildStructure(s,'fields'); for(let i=0;i<3;i++)E.upgradeSpecial(s,gf
 const hc=E.buildStructure(s,'hunterscabin'); for(let i=0;i<3;i++)E.upgradeSpecial(s,hc.uid); const cap=E.classHomeCap(hc); E.tierUp(s,hc.uid); ok(E.classHomeCap(hc)===cap,'class-housing cap from kept upgrades survives tier-up');
 // save round-trip
 const r=JSON.parse(E.serialize(s,1_700_000_000_000)); E.normalize(r); const rs=r.structures.find(x=>x.uid===st.uid); ok(rs.tier===2&&rs.keptUps.length>=6,'tier state saves');
+
+// Brewery > Vintners > Distillery: beer → wine → spirits; Distillery boosts alchemists
+{ const bw=E.buildStructure(s,'brewery'); ok(E.structDef('brewery').tiers.map(t=>t.name).join()==='Vintners,Distillery','brewery tier names');
+  for(let i=0;i<3;i++)E.upgradeSpecial(s,bw.uid); E.tierUp(s,bw.uid); ok(bw.pieces.includes('winepress')&&E.isFixed(bw,'winepress'),'Vintners adds a Wine Press (built-in, no slot)');
+  s.res.berries=100; const w0=s.res.wine||0; E.processDay(s); ok((s.res.wine||0)>w0,'Vintners makes wine from berries');
+
+  const sp0=E.skillSpeed(s,E.pieceDef('alchbench')), y0=E.skillYield(s,E.pieceDef('alchbench')), h0=E.skillSpeed(s,E.pieceDef('herbrack'));
+  for(let i=0;i<3;i++)E.upgradeSpecial(s,bw.uid); E.tierUp(s,bw.uid); ok(bw.pieces.includes('stillpot')&&bw.pieces.includes('winepress'),'Distillery adds a Copper Still, keeps the press');
+  s.res.ale=100; const sp=s.res.spirits||0; E.processDay(s); ok((s.res.spirits||0)>sp,'Distillery makes spirits from ale');
+  ok(Math.abs(E.skillSpeed(s,E.pieceDef('alchbench'))/sp0-1.1)<1e-9&&Math.abs(E.skillYield(s,E.pieceDef('alchbench'))/y0-1.1)<1e-9,'Distillery: alchemists +10% speed, +10% potency'); ok(E.skillSpeed(s,E.pieceDef('herbrack'))===h0,'non-alchemy pieces unaffected');
+
+  ok(D.towns.every(t=>!t.prices.ale||(t.prices.wine>t.prices.ale&&t.prices.spirits>t.prices.wine)),'wine and spirits sell above ale');
+  ok(D.estate.meals.drinks.wine&&D.estate.meals.drinks.spirits,'wine and spirits are drinks'); }
 ok(['prodTier','nextTier','tierUp','tierUpIssue','curUpgrades','boughtUps','allowedOf','rankSlots'].every(f=>typeof E[f]==='function'),'tier API exported (no name clashes)');
 console.log(pass+' tier tests passed');

@@ -1,0 +1,195 @@
+{
+ "_note": "Metal ladder + item templates. Every template × metal becomes an item '<metal>_<template>' and a recipe 'r_<metal>_<template>' (existing hand-made ones are kept). Recipe metal = the metal resource it uses most; its quality step adds to craft quality.",
+ "metals": {
+  "copper": {
+   "name": "Copper",
+   "res": "copper",
+   "q": 0,
+   "cp": 0.7,
+   "value": 0.6,
+   "rarity": "Common",
+   "tier": 0
+  },
+  "bronze": {
+   "name": "Bronze",
+   "res": "bronze",
+   "q": 0.03,
+   "cp": 0.85,
+   "value": 0.75,
+   "rarity": "Common",
+   "tier": 0
+  },
+  "iron": {
+   "name": "Iron",
+   "res": "ingots",
+   "q": 0.05,
+   "cp": 1,
+   "value": 1,
+   "rarity": "Fine",
+   "tier": 0
+  },
+  "steel": {
+   "name": "Steel",
+   "res": "steel",
+   "q": 0.1,
+   "cp": 1.4,
+   "value": 1.75,
+   "rarity": "Rare",
+   "tier": 1
+  },
+  "mithril": {
+   "name": "Mithril",
+   "res": "mithril",
+   "q": 0.2,
+   "cp": 2,
+   "value": 4,
+   "rarity": "Epic",
+   "tier": 2
+  },
+  "adamantium": {
+   "name": "Adamantium",
+   "res": "adamantium",
+   "q": 0.3,
+   "cp": 2.6,
+   "value": 7,
+   "rarity": "Legendary",
+   "tier": 2
+  },
+  "silver": {
+   "name": "Silver",
+   "res": "silver",
+   "q": 0.05,
+   "cp": 1,
+   "value": 1,
+   "rarity": "Fine",
+   "tier": 0,
+   "precious": true
+  },
+  "gold": {
+   "name": "Gold",
+   "res": "gold",
+   "q": 0.08,
+   "cp": 1.3,
+   "value": 2,
+   "rarity": "Rare",
+   "tier": 0,
+   "precious": true
+  }
+ },
+ "templates": [
+  {
+   "id": "sword",
+   "name": "Sword",
+   "slot": "weapon",
+   "cp": 16,
+   "value": 100,
+   "metal": 3,
+   "mats": {
+    "planks": 1
+   },
+   "days": 4,
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ]
+  },
+  {
+   "id": "longsword",
+   "name": "Longsword",
+   "slot": "weapon",
+   "cp": 20,
+   "value": 140,
+   "metal": 5,
+   "mats": {
+    "leather": 1
+   },
+   "days": 5,
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ]
+  },
+  {
+   "id": "mace",
+   "name": "Mace",
+   "slot": "weapon",
+   "cp": 18,
+   "value": 120,
+   "metal": 5,
+   "mats": {
+    "leather": 1
+   },
+   "days": 4,
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ]
+  },
+  {
+   "id": "chainmail",
+   "name": "Chainmail",
+   "slot": "armor",
+   "cp": 12,
+   "value": 100,
+   "metal": 5,
+   "mats": {},
+   "days": 6,
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ]
+  },
+  {
+   "id": "scalemail",
+   "name": "Scalemail",
+   "slot": "armor",
+   "cp": 21,
+   "value": 175,
+   "metal": 8,
+   "mats": {
+    "hides": 2
+   },
+   "days": 8,
+   "minSkill": 20,
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ]
+  }
+ ]
+}

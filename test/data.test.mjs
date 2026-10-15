@@ -60,6 +60,7 @@ for (const st of D.estate.structures) for (const p of st.fixed || []) src.add(p)
   src.add(k),
 ); // minion jobs
 for (const t of D.towns) (t.market || []).forEach(k => src.add(k));
+for (const f of Object.values(D.world.features)) if (f.mine) src.add(f.mine.res); // mine veins
 for (const P of [...D.paths.paths, ...D.paths.comboPaths]) for (const f of [...P.fx, ...P.specs.flatMap(x => x.fx)]) if (f.kind === "find") src.add(f.res); // craft-path finds (mushrooms)
 const need = new Set();
 for (const rc of D.crafting.recipes) Object.keys(rc.mats).forEach(k => need.add(k));

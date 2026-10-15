@@ -79,3 +79,12 @@ Everything from Eras 1–2 keeps working alongside these.
 - Five thin buildings filled (Moonpetal Planter, Infirmary Beds/Hospice, Yew Grove, Feast Table/Remembrance Feast); Hall of Ancestors upgrade line; Shopfront = auto-sell own output; minimal day/night (js/engine/daynight.js, tuning.dayNight) with night-only Lanterns; save step 16.
 - Counting House: Shopfront replaced by Ledger Hall combo (Study Desk + Stall: +10% trade sell); synergy only/except fields.
 - Production tiers: 17 buildings × 3 tiers (structure.tiers; st.tier/st.keptUps), tier upgrade lines with slot bonuses; data split into data/structures/{home,production,trade,civic}.json; save step 17.
+- Brewery > Vintners (Wine Press: berries→wine) > Distillery (Copper Still: ale→spirits; alchemists +10% speed/potency). New resources wine/spirits (prices, drinks). Tier fixed pieces (tier.fixed), tier bonus (tier.bonus).
+
+## Metals & loot (unreleased, on top of Brewery)
+- data/metals.json: copper, bronze, iron, steel, mithril, adamantium (+ silver, gold as precious resources). Template × metal generates items + recipes (metaldata.js, run in setData); hand-made iron items kept.
+- One mine per vein type (st.vein; old saves = iron vein); silver/gold/mithril/gems need Deep Mine, adamantium Ore Gallery. Each ore has its own map node (new: Tin Diggings, Coal Seam, Gold Wash). Coal also from the Charcoal Kiln (Workshop, Saw Mill). Iron items sit between bronze and steel.
+- Forge smelts tin/bronze/silver/gold; Forge Hall adds Steel Furnace, Foundry adds Crucible. Upgrades carry metalQ (+.02 / +.03) on top of each metal's quality step.
+- loot.js: drop chance and rarity curve from difficulty and quest risk/type (tuning.loot); quest loot lists are favorites; rare ore finds; nodes can drop "res:" rare ore.
+- Save step 18 renames old item ids. Smokehouse Curing House offers a Cask Rack instead of the Smoker.
+- On hold: Jeweler building (pending the craft-ladder revision).

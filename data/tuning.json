@@ -109,5 +109,59 @@
   "_note": "fraction of each game day; night wraps midnight",
   "nightStart": 0.75,
   "nightEnd": 0.2
+ },
+ "loot": {
+  "_note": "Quest loot. drop = clamp(base + perDiff·d + class drop + class lootBonus, min, max), d = clamp(cp/cpRef, 0, 3). Rarity weight = weights[r]·exp(shift·rank), shift = clamp(shiftPerDiff·(d−1) + class shift). Favorites = the quest's loot list.",
+  "cpRef": 40,
+  "base": 0.25,
+  "perDiff": 0.1,
+  "min": 0.1,
+  "max": 0.6,
+  "favorite": 0.5,
+  "weights": {
+   "Common": 40,
+   "Fine": 30,
+   "Rare": 15,
+   "Epic": 5,
+   "Legendary": 1
+  },
+  "shiftPerDiff": 0.6,
+  "shiftMin": -1,
+  "shiftMax": 1,
+  "risk": {
+   "safe": {
+    "drop": -0.1,
+    "shift": -0.3
+   },
+   "risky": {
+    "ore": 0.01
+   },
+   "deadly": {
+    "drop": 0.05,
+    "shift": 0.3,
+    "ore": 0.03
+   }
+  },
+  "type": {
+   "errand": {
+    "drop": -0.1
+   },
+   "dungeon": {
+    "shift": 0.2
+   },
+   "bounty": {
+    "shift": 0.2
+   },
+   "hunt": {
+    "drop": 0.05
+   }
+  },
+  "ores": [
+   "silverore",
+   "goldore",
+   "mithrilore",
+   "mithrilore",
+   "adamantore"
+  ]
  }
 }

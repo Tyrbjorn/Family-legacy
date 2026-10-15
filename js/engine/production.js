@@ -1,3 +1,4 @@
+import { veinProcesses } from "./metals.js";
 // Estate production: daily furniture processes, operator skill, reserves/pausing and food/crop quality.
 // Split from estate.js (re-exported there, so imports elsewhere are unchanged).
 import { seasonYield } from "./seasons.js";
@@ -6,7 +7,7 @@ import { mtype } from "./minions.js";
 import { famFx } from "./paths.js";
 import { structFeatureMult } from "./world.js";
 import { D, ageY, isAdult, living } from "./state.js";
-import { ES, activeSynergies, baseId, classSynMult, pieceDef, pieceTier, scaledPiece } from "./estate.js";
+import { ES, eff, activeSynergies, baseId, classSynMult, pieceDef, pieceTier, scaledPiece } from "./estate.js";
 
 // cooked food quality: station tier and the best cook's skill
 export function foodQualityOf(s, p) {
@@ -32,9 +33,11 @@ export function operatorLvl(s, skill) {
   return b;
 }
 
-export const skillSpeed = (s, p) => 1 + ES().skillProcess.speedPerLvl * operatorLvl(s, p && p.skill);
+// alchemy pieces also get the Distillery's alchemySpeed / alchemyPotency (more output per batch)
+const alch = (s, p, k) => (p && p.skill === "alchemy" ? 1 + eff(s, k) : 1);
+export const skillSpeed = (s, p) => (1 + ES().skillProcess.speedPerLvl * operatorLvl(s, p && p.skill)) * alch(s, p, "alchemySpeed");
 
-export const skillYield = (s, p) => 1 + ES().skillProcess.yieldPerLvl * operatorLvl(s, p && p.skill);
+export const skillYield = (s, p) => (1 + ES().skillProcess.yieldPerLvl * operatorLvl(s, p && p.skill)) * alch(s, p, "alchemyPotency");
 
 export const resTier = k => +(Object.entries(ES().resourceTiers).find(([, t]) => t.res.includes(k)) || [0])[0];
 
@@ -96,7 +99,7 @@ export function processDay(s, mul = 1) {
     const syn = activeSynergies(st),
       out = {};
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))
-      for (const pr0 of (p && p.bonus.processes) || []) {
+      for (const pr0 of (p && (p.bonus.veins ? veinProcesses(s, st, p) : p.bonus.processes)) || []) {
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
         const yl = skillYield(s, p);
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);

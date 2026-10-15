@@ -72,6 +72,11 @@
    {
     "id": "recipe:r_heirblade",
     "chance": 0.003
+   },
+   {
+    "id": "res:mithrilore",
+    "chance": 0.008,
+    "n": 2
    }
   ],
   "terrain": "hills"
@@ -150,7 +155,8 @@
   "res": {
    "ore": 3,
    "copperore": 2,
-   "stone": 2
+   "stone": 2,
+   "silverore": 0.6
   },
   "skill": "mining",
   "icon": "🪨",
@@ -159,6 +165,16 @@
    {
     "id": "stormglass_orb",
     "chance": 0.004
+   },
+   {
+    "id": "res:goldore",
+    "chance": 0.02,
+    "n": 2
+   },
+   {
+    "id": "res:mithrilore",
+    "chance": 0.008,
+    "n": 1
    }
   ],
   "terrain": "mountains"
@@ -180,6 +196,11 @@
    {
     "id": "ancient_coin",
     "chance": 0.005
+   },
+   {
+    "id": "res:silverore",
+    "chance": 0.02,
+    "n": 2
    }
   ]
  },
@@ -309,7 +330,62 @@
    {
     "id": "stormglass_orb",
     "chance": 0.004
+   },
+   {
+    "id": "res:adamantore",
+    "chance": 0.005,
+    "n": 1
+   },
+   {
+    "id": "res:mithrilore",
+    "chance": 0.01,
+    "n": 1
    }
   ]
+ },
+ {
+  "id": "n_tinpit",
+  "name": "Tin Diggings",
+  "region": "outskirts",
+  "res": {
+   "tinore": 2,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "⚪",
+  "terrain": "mountains",
+  "terrainNode": true,
+  "fog": true,
+  "rare": []
+ },
+ {
+  "id": "n_coalseam",
+  "name": "Coal Seam",
+  "region": "outskirts",
+  "res": {
+   "coal": 2.5,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "⬛",
+  "terrain": "mountains",
+  "terrainNode": true,
+  "fog": true,
+  "rare": []
+ },
+ {
+  "id": "n_goldwash",
+  "name": "Gold Wash",
+  "region": "outskirts",
+  "res": {
+   "goldore": 0.5,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "🥇",
+  "terrain": "mountains",
+  "terrainNode": true,
+  "fog": true,
+  "rare": []
  }
 ]

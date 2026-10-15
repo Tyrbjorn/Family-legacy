@@ -1,3 +1,4 @@
+import { metalQuality } from "./metals.js";
 import { upPacks } from "./minionups.js";
 import { famFx, memberFx, recipePathIssue } from "./paths.js";
 import { introNote } from "./intros.js";
@@ -213,7 +214,7 @@ export function profBonus(m, rc) {
 
 export function qualityScore(s, m, rc, mi, apt = 1) {
   const sk = m ? m.skills[rc.skill].lvl : 10 * apt;
-  return sk / 50 + craftQuality(s) + profBonus(m, rc) + stationCraftQ(s, rc.station);
+  return sk / 50 + craftQuality(s) + profBonus(m, rc) + stationCraftQ(s, rc.station) + metalQuality(s, rc);
 }
 
 export function rollQuality(score) {

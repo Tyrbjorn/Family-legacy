@@ -857,8 +857,7 @@
    "name": "Ore vein",
    "icon": "⛏️",
    "res": {
-    "ore": 1.5,
-    "copperore": 0.5
+    "ore": 1.5
    },
    "skill": "mining",
    "jobs": {
@@ -867,7 +866,11 @@
    "structures": [
     "mineshaft"
    ],
-   "structMult": 0.3
+   "structMult": 0.3,
+   "mine": {
+    "res": "ore",
+    "rate": 1.5
+   }
   },
   "clay_bank": {
    "name": "Clay bank",
@@ -902,7 +905,149 @@
    "structures": [
     "mineshaft"
    ],
-   "structMult": 0.2
+   "structMult": 0.2,
+   "mine": {
+    "res": "gems",
+    "rate": 0.2,
+    "tier": 1
+   }
+  },
+  "copper_vein": {
+   "name": "Copper vein",
+   "icon": "🟤",
+   "res": {
+    "copperore": 1
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.3,
+   "mine": {
+    "res": "copperore",
+    "rate": 1.5
+   }
+  },
+  "tin_vein": {
+   "name": "Tin vein",
+   "icon": "⚪",
+   "res": {
+    "tinore": 0.8
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.3,
+   "mine": {
+    "res": "tinore",
+    "rate": 1
+   }
+  },
+  "coal_seam": {
+   "name": "Coal seam",
+   "icon": "⬛",
+   "res": {
+    "coal": 1
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.3,
+   "mine": {
+    "res": "coal",
+    "rate": 1.5
+   }
+  },
+  "silver_vein": {
+   "name": "Silver vein",
+   "icon": "🥈",
+   "res": {
+    "silverore": 0.2
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.2,
+   "mine": {
+    "res": "silverore",
+    "rate": 0.4,
+    "tier": 1
+   }
+  },
+  "gold_vein": {
+   "name": "Gold vein",
+   "icon": "🥇",
+   "res": {
+    "goldore": 0.1
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.2,
+   "mine": {
+    "res": "goldore",
+    "rate": 0.25,
+    "tier": 1
+   }
+  },
+  "mithril_vein": {
+   "name": "Mithril vein",
+   "icon": "💠",
+   "res": {
+    "mithrilore": 0.03
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.1,
+   "mine": {
+    "res": "mithrilore",
+    "rate": 0.1,
+    "tier": 1
+   }
+  },
+  "adamant_vein": {
+   "name": "Adamant vein",
+   "icon": "🔷",
+   "res": {
+    "adamantore": 0.02
+   },
+   "skill": "mining",
+   "jobs": {
+    "mine": 0.1
+   },
+   "structures": [
+    "mineshaft"
+   ],
+   "structMult": 0.1,
+   "mine": {
+    "res": "adamantore",
+    "rate": 0.05,
+    "tier": 2
+   }
   }
  },
  "landFeatures": {
@@ -919,7 +1064,8 @@
   ],
   "hillside": [
    "stone_outcrop",
-   "ore_vein"
+   "ore_vein",
+   "copper_vein"
   ],
   "riverbank": [
    "stream",
@@ -931,7 +1077,9 @@
   ],
   "ridge": [
    "stone_outcrop",
-   "pasture"
+   "pasture",
+   "tin_vein",
+   "coal_seam"
   ],
   "valley": [
    "stream",
@@ -940,7 +1088,11 @@
   ],
   "highclaim": [
    "ore_vein",
-   "gem_vein"
+   "gem_vein",
+   "silver_vein",
+   "gold_vein",
+   "mithril_vein",
+   "adamant_vein"
   ]
  },
  "parcelBonus": 0.25,
@@ -948,7 +1100,14 @@
   "quarry": "stone_outcrop",
   "mineshaft": [
    "ore_vein",
-   "gem_vein"
+   "gem_vein",
+   "copper_vein",
+   "tin_vein",
+   "coal_seam",
+   "silver_vein",
+   "gold_vein",
+   "mithril_vein",
+   "adamant_vein"
   ]
  },
  "discoverPerOffroadDay": 0.08,

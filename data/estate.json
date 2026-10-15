@@ -78,7 +78,8 @@
    "requires": "meadow",
    "features": [
     "stone_outcrop",
-    "ore_vein"
+    "ore_vein",
+    "copper_vein"
    ]
   },
   {
@@ -142,7 +143,9 @@
    ],
    "features": [
     "stone_outcrop",
-    "pasture"
+    "pasture",
+    "tin_vein",
+    "coal_seam"
    ]
   },
   {
@@ -189,7 +192,11 @@
    ],
    "features": [
     "ore_vein",
-    "gem_vein"
+    "gem_vein",
+    "silver_vein",
+    "gold_vein",
+    "mithril_vein",
+    "adamant_vein"
    ]
   }
  ],
@@ -383,10 +390,39 @@
       },
       "out": "copper",
       "rate": 3
+     },
+     {
+      "in": {
+       "tinore": 2
+      },
+      "out": "tin",
+      "rate": 3
+     },
+     {
+      "in": {
+       "copper": 2,
+       "tin": 1
+      },
+      "out": "bronze",
+      "rate": 2
+     },
+     {
+      "in": {
+       "silverore": 3
+      },
+      "out": "silver",
+      "rate": 1
+     },
+     {
+      "in": {
+       "goldore": 3
+      },
+      "out": "gold",
+      "rate": 1
      }
     ]
    },
-   "desc": "Smelts 3 iron ore → 1 iron ingot (2/day) and 2 copper ore → 1 copper ingot (3/day); +1 crafting spot",
+   "desc": "Smelts iron (3 ore → 1 ingot, 2/day), copper and tin (2 ore → 1, 3/day), bronze (2 copper + 1 tin, 2/day), silver and gold (3 ore → 1, 1/day); +1 crafting spot",
    "skill": "smithing",
    "tiers": [
     {
@@ -922,17 +958,8 @@
    "cost": {},
    "fixedOnly": true,
    "bonus": {
+    "veins": true,
     "processes": [
-     {
-      "in": {},
-      "out": "ore",
-      "rate": 1.5
-     },
-     {
-      "in": {},
-      "out": "copperore",
-      "rate": 1.5
-     },
      {
       "in": {},
       "out": "salt",
@@ -943,7 +970,7 @@
      "mine": 2
     }
    },
-   "desc": "Raises 1.5 iron + 1.5 copper ore + 0.5 salt/day; 2 mining spots"
+   "desc": "Raises the ore of this mine's vein (iron 1.5, copper 1.5, tin 1, coal 1.5/day; rarer veins less) + 0.5 salt; 2 mining spots"
   },
   {
    "id": "herbbeds",
@@ -2136,6 +2163,124 @@
     "morale": 0.2
    },
    "desc": "+300 food storage, +5% meal XP, +0.2 follower morale"
+  },
+  {
+   "id": "winepress",
+   "name": "Wine Press",
+   "icon": "🍷",
+   "kind": "station",
+   "fixedOnly": true,
+   "skill": "cooking",
+   "cost": {},
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "berries": 3
+      },
+      "out": "wine",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "3 berries → 1 wine, 1.5/day (Vintners)"
+  },
+  {
+   "id": "stillpot",
+   "name": "Copper Still",
+   "icon": "⚗️",
+   "kind": "station",
+   "fixedOnly": true,
+   "skill": "cooking",
+   "cost": {},
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "ale": 2
+      },
+      "out": "spirits",
+      "rate": 1,
+      "food": true
+     }
+    ]
+   },
+   "desc": "2 ale → 1 spirits, 1/day (Distillery)"
+  },
+  {
+   "id": "steelfurnace",
+   "name": "Steel Furnace",
+   "icon": "🔥",
+   "kind": "station",
+   "fixedOnly": true,
+   "skill": "smithing",
+   "cost": {},
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "ingots": 2,
+       "coal": 1
+      },
+      "out": "steel",
+      "rate": 1.5
+     }
+    ]
+   },
+   "desc": "2 iron + 1 coal → 1 steel, 1.5/day (Forge Hall)"
+  },
+  {
+   "id": "crucible",
+   "name": "Crucible",
+   "icon": "🫕",
+   "kind": "station",
+   "fixedOnly": true,
+   "skill": "smithing",
+   "cost": {},
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "mithrilore": 2,
+       "coal": 1
+      },
+      "out": "mithril",
+      "rate": 0.5
+     },
+     {
+      "in": {
+       "adamantore": 2,
+       "coal": 2
+      },
+      "out": "adamantium",
+      "rate": 0.3
+     }
+    ]
+   },
+   "desc": "Mithril ore + coal → mithril (0.5/day); adamant ore + 2 coal → adamantium (0.3/day) (Foundry)"
+  },
+  {
+   "id": "charcoalkiln",
+   "name": "Charcoal Kiln",
+   "icon": "⬛",
+   "kind": "station",
+   "cost": {
+    "coin": 60,
+    "stone": 25
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "wood": 3
+      },
+      "out": "coal",
+      "rate": 2
+     }
+    ]
+   },
+   "desc": "3 wood → 1 coal, 2/day"
   }
  ],
  "synergies": [
@@ -2386,7 +2531,22 @@
    "pie",
    "porridge",
    "draught",
-   "manatonic"
+   "manatonic",
+   "wine",
+   "spirits",
+   "tinore",
+   "tin",
+   "bronze",
+   "coal",
+   "steel",
+   "silverore",
+   "silver",
+   "goldore",
+   "gold",
+   "mithrilore",
+   "mithril",
+   "adamantore",
+   "adamantium"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2447,7 +2607,13 @@
     "berries",
     "milk",
     "salt",
-    "flax"
+    "flax",
+    "tinore",
+    "coal",
+    "silverore",
+    "goldore",
+    "mithrilore",
+    "adamantore"
    ]
   },
   "2": {
@@ -2474,16 +2640,25 @@
     "pie",
     "porridge",
     "draught",
-    "manatonic"
+    "manatonic",
+    "wine",
+    "tin",
+    "bronze",
+    "silver",
+    "gold"
    ]
   },
   "3": {
-   "name": "Refined (planned)",
-   "res": [],
+   "name": "Refined",
+   "res": [
+    "spirits",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
    "planned": [
     "fine lumber",
-    "dressed stone",
-    "steel"
+    "dressed stone"
    ]
   }
  },
@@ -2508,7 +2683,9 @@
   "honey": 1,
   "vegetables": 1,
   "berries": 1,
-  "mushrooms": 1
+  "mushrooms": 1,
+  "wine": 0.5,
+  "spirits": 0.3
  },
  "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output.",
  "foodQuality": {
@@ -2534,7 +2711,9 @@
    "honey": 1,
    "vegetables": 1,
    "berries": 1,
-   "mushrooms": 1
+   "mushrooms": 1,
+   "wine": 0.5,
+   "spirits": 0.3
   },
   "defaultOff": [
    "meat",
@@ -2587,7 +2766,9 @@
   "varietySatiation": 0.04,
   "satiationCap": 0.15,
   "drinks": {
-   "ale": 2
+   "ale": 2,
+   "wine": 3,
+   "spirits": 4
   },
   "shortageMorale": -15,
   "smoothing": 0.3,

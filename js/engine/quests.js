@@ -1,5 +1,6 @@
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
+import { rollLoot, rollOre } from "./loot.js";
 import { addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
 import { ES } from "./estate.js";
@@ -32,11 +33,10 @@ export function resolveQuest(s, m, q, eff) {
     gain.push(`+${n} ${k}`);
   }
   gainXp(s, m, q.skill, T.xpPerDay * 2);
-  if (q.loot.length && rng() < 0.35 + ((cls(m) || {}).lootBonus || 0)) {
-    const id = r(q.loot);
-    if (addToVault(s, id)) gain.push(itemDef(id).name);
-    else gain.push("(vault full – loot lost)");
-  }
+  const id = rollLoot(q, (cls(m) || {}).lootBonus || 0);
+  if (id) gain.push(addToVault(s, id) ? itemDef(id).name : "(vault full – loot lost)");
+  const ore = rollOre(q);
+  if (ore) (s.res[ore.res] = (s.res[ore.res] || 0) + ore.n), gain.push(`+${ore.n} ${ore.res}`);
   addRenown(s, m, Math.ceil(q.cp / 20));
   m.questsDone = (m.questsDone || 0) + 1;
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
@@ -90,7 +90,9 @@ export const storyQuests = () => D.quests.filter(q => q.story).sort((a, b) => a.
 export const storyProgress = s => storyQuests().filter(q => s.doneQuests.includes(q.id)).length;
 
 export const dropName = id =>
-  id.startsWith("recipe:")
+  id.startsWith("res:")
+    ? id.slice(4)
+    : id.startsWith("recipe:")
     ? "Recipe: " + (recipeDef(id.slice(7)) || { name: id }).name
     : (itemDef(id) || { name: id }).name;
 
@@ -99,7 +101,10 @@ export const dropFound = (s, id) => (s.found || []).includes(id);
 export function rollRare(s, src, m) {
   for (const d of src.rare || [])
     if (rng() < d.chance * (1 + (((m && cls(m)) || {}).lootBonus || 0))) {
-      if (d.id.startsWith("recipe:")) {
+      if (d.id.startsWith("res:")) {
+        const k = d.id.slice(4);
+        s.res[k] = (s.res[k] || 0) + (d.n || 1);
+      } else if (d.id.startsWith("recipe:")) {
         if (s.unlocks.includes(d.id)) continue;
         s.unlocks.push(d.id);
       } else if (!addToVault(s, d.id)) continue;

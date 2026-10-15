@@ -39,6 +39,7 @@ const names = [
   "gear",
   "paths",
   "world",
+  "metals",
 ];
 
 export const D = {};

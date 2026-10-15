@@ -55,8 +55,8 @@
   },
   {
    "id": "r_chain",
-   "name": "Chain Shirt",
-   "base": "chain_shirt",
+   "name": "Iron Chainmail",
+   "base": "iron_chainmail",
    "skill": "smithing",
    "station": "forge",
    "mats": {
@@ -68,8 +68,8 @@
   },
   {
    "id": "r_scale",
-   "name": "Scale Mail",
-   "base": "scale_mail",
+   "name": "Iron Scalemail",
+   "base": "iron_scalemail",
    "skill": "smithing",
    "station": "forge",
    "mats": {
@@ -659,9 +659,9 @@
    "minSkill": 5
   },
   {
-   "id": "r_bastard_sword",
-   "name": "Bastard Sword",
-   "base": "bastard_sword",
+   "id": "r_iron_longsword",
+   "name": "Iron Longsword",
+   "base": "iron_longsword",
    "skill": "smithing",
    "station": "forge",
    "mats": {
@@ -707,9 +707,9 @@
    "minSkill": 5
   },
   {
-   "id": "r_sunsteel_mace",
-   "name": "Sunsteel Mace",
-   "base": "sunsteel_mace",
+   "id": "r_iron_mace",
+   "name": "Iron Mace",
+   "base": "iron_mace",
    "skill": "smithing",
    "station": "forge",
    "mats": {
