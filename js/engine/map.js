@@ -1,3 +1,4 @@
+import { injure } from "./injuries.js";
 import { seasonGather, seasonTravel } from "./seasons.js";
 import { chron } from "./chronicle.js";
 import { buffSum, maybeEncounter } from "./encounters.js";
@@ -21,8 +22,8 @@ function roadDay(s, m, a, eff) {
     locationsDay(s, m.name);
   }
   if (risk && !m.minion && rng() < risk * eff) {
-    m.injured = Math.max(m.injured || 0, 3);
-    log(s, `🗡️ ${m.name} was waylaid on the road and is hurt.`);
+    log(s, `🗡️ ${m.name} was waylaid on the road.`);
+    injure(s, m, 2, "on the road", { guards: true });
   }
   if (a.type !== "auto")
     maybeEncounter(s, m, eff * (rt ? rt.risk : 1), rt ? { terrain: rt.terrain, road: rt.roadFrac >= 0.5 ? "on" : "off" } : null);

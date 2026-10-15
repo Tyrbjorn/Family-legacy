@@ -1,3 +1,4 @@
+import { questInjury } from "./injuries.js";
 import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
@@ -18,13 +19,7 @@ export function resolveQuest(s, m, q, eff) {
   const ok = (q.apprentice && !isAdult(m)) || rng() < successChance(s, m, q); // the mentor watches the apprentice
   if (!ok) {
     log(s, `❌ ${m.name} failed ${q.name}.`);
-    if (q.risk !== "safe") {
-      m.injured = minionPower(s, "guard") > 0 ? 3 : 5;
-      log(s, `🤕 ${m.name} was injured and rests.`);
-    }
-    if (q.risk === "deadly" && rng() < T.deadlyDeathChance * 4) {
-      kill(s, m, `fell during ${q.name}`);
-    }
+    questInjury(s, m, q, false, minionPower(s, "guard") > 0);
     return;
   }
   const scale = eff >= 1 ? 1 : Math.max(eff, 0.2) * (1 / Math.max(eff, 0.2)) * eff; // eff already applied via time; loot scaled
@@ -64,7 +59,7 @@ export function resolveQuest(s, m, q, eff) {
   const rc = D.minions.rescueQuests[q.id];
   if (rc && rng() < rc) addMinion(s, "refugee", `rescued on ${q.name}`);
   log(s, `✅ ${m.name} finished ${q.name}: ${gain.join(", ")}`);
-  if (q.risk === "deadly" && rng() < T.deadlyDeathChance) kill(s, m, `was slain on ${q.name}`);
+  questInjury(s, m, q, true);
 }
 
 export const dungeonDef = id => (D.dungeons || []).find(d => d.id === id);

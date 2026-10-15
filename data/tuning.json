@@ -357,5 +357,110 @@
    "packCp": 0.7
   },
   "betweenHp": 0.3
+ },
+ "injuries": {
+  "_note": "Tiered injuries (js/engine/injuries.js). Tier 1 keeps working at a speed penalty; tiers 2–4 rest (m.injured days). Treated = treated within treatDays. Untreated tier ≥2 adds its load points when the window closes; at load ≥ loadLimit a new untreated tier ≥3 risks infection death. Load −1 every loadDecayDays.",
+  "tiers": [
+   {
+    "name": "Bruised",
+    "icon": "🩹",
+    "days": 2,
+    "speed": -0.1
+   },
+   {
+    "name": "Wounded",
+    "icon": "🤕",
+    "days": 5,
+    "guardDays": 3
+   },
+   {
+    "name": "Maimed",
+    "icon": "🦴",
+    "days": 15,
+    "perm": 0.25
+   },
+   {
+    "name": "Crippling",
+    "icon": "☠️",
+    "days": 40,
+    "perm": 1
+   }
+  ],
+  "upgradeMaimed": [
+   0,
+   0,
+   0,
+   0.25,
+   0.4
+  ],
+  "crippleDeath": [
+   0.02,
+   0.02,
+   0.02,
+   0.04,
+   0.06
+  ],
+  "doomMult": 2,
+  "deadlyCripple": 0.2,
+  "deadlySuccessCripple": 0.05,
+  "treatDays": 3,
+  "bandageDays": 0.25,
+  "healerPermMult": 0.5,
+  "loadLimit": 6,
+  "infection": 0.25,
+  "loadDecayDays": 30,
+  "permMax": 2,
+  "permanent": [
+   {
+    "id": "losteye",
+    "name": "Lost Eye",
+    "icon": "👁️",
+    "desc": "−5% combat power; War Shout +10",
+    "fx": {
+     "pow": -0.05,
+     "shout": 10
+    }
+   },
+   {
+    "id": "limp",
+    "name": "Limp",
+    "icon": "🦯",
+    "desc": "−10% travel speed; +5% craft speed",
+    "fx": {
+     "travel": -0.1,
+     "craft": 0.05
+    }
+   },
+   {
+    "id": "scars",
+    "name": "Battle Scars",
+    "icon": "⚔️",
+    "desc": "−1 CHA; +10% renown",
+    "fx": {
+     "cha": -1,
+     "renown": 0.1
+    }
+   },
+   {
+    "id": "maimedhand",
+    "name": "Maimed Hand",
+    "icon": "✋",
+    "desc": "−10% craft quality; +5 starting morale in fights",
+    "fx": {
+     "craftQ": -0.1,
+     "mor": 5
+    }
+   },
+   {
+    "id": "weaklungs",
+    "name": "Weak Lungs",
+    "icon": "🫁",
+    "desc": "−5% max HP; +5% reading and history XP",
+    "fx": {
+     "hp": -0.05,
+     "loreXp": 0.05
+    }
+   }
+  ]
  }
 }

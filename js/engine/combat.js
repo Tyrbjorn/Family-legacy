@@ -1,3 +1,4 @@
+import { injure, permFx } from "./injuries.js";
 // Turn-based combat: each fighter has HP and Morale. Every round each standing fighter trades a blow with a random
 // foe; who lands it is rolled from the power ratio. Losing HP drains morale; below fleeAt a fighter rolls to flee
 // (game difficulty adjusts that roll); a group (2+) whose average morale is below fleeAt flees as one. Numbers: tuning.combat.
@@ -35,7 +36,8 @@ function fall(f, mine) {
 // win | fled (our side ran) | defeat (our side all down) | withdraw (no one broke in maxRounds)
 export function fight(s, A, B, o = {}) {
   const fleeP = C().fleeBase + gameFx(s, "flee", o.lvl);
-  if (best(A, SK().shout.skill)) shake(B, SK().shout.v + best(A, SK().shout.skill) / 5);
+  const eye = Math.max(0, ...A.map(f => permFx(f.m, "shout"))); // Lost Eye: a fearsome glare
+  if (best(A, SK().shout.skill) || eye) shake(B, (best(A, SK().shout.skill) ? SK().shout.v + best(A, SK().shout.skill) / 5 : 0) + eye);
   if (o.monsters && best(A, SK().foe.skill)) shake(B, SK().foe.v);
   let rallied = false,
     dressed = false;
@@ -83,10 +85,10 @@ const checkOk = (m, c) => !c || rng() < clamp(0.5 + ((c.stat ? m.stats[c.stat] |
 // the family member as a fighter; run = { hp, mor } carried through a dungeon run
 const MSK = () => Object.values(SK()).map(x => x.skill);
 export function memberFighter(s, m, run) {
-  const max = 50 + 2 * (m.stats.VIT || 0) + 2 * level(m),
-    mor0 = 100 + clamp(morale(s), -10, 10) + Math.min(C().guardMoraleMax, minionPower(s, "guard") * C().guardMorale);
+  const max = Math.round((50 + 2 * (m.stats.VIT || 0) + 2 * level(m)) * (1 + permFx(m, "hp"))),
+    mor0 = 100 + clamp(morale(s), -10, 10) + Math.min(C().guardMoraleMax, minionPower(s, "guard") * C().guardMorale) + permFx(m, "mor");
   const skills = Object.fromEntries(MSK().map(k => [k, (m.skills[k] || { lvl: 0 }).lvl]));
-  return fighter(m.name, cp(s, m), { m, skills, leader: true, hp: max, hpNow: run ? run.hp : max, mor: run ? run.mor : mor0 });
+  return fighter(m.name, cp(s, m) * (1 + permFx(m, "pow")), { m, skills, leader: true, hp: max, hpNow: run ? run.hp : max, mor: run ? run.mor : mor0 });
 }
 // one dungeon floor's events; false = the run ends here (logged with the round it ended)
 export function dungeonFloorRun(s, m, dg, i, t) {
@@ -118,6 +120,7 @@ export function dungeonFloorRun(s, m, dg, i, t) {
 // injuries come from HP: beaten = full injury; ending a fight or run badly hurt = a light one. Fleeing itself costs nothing.
 export function hurt(s, m, run, beaten) {
   const max = 50 + 2 * (m.stats.VIT || 0) + 2 * level(m);
-  if (beaten) m.injured = Math.max(m.injured || 0, minionPower(s, "guard") > 0 ? 3 : 5);
-  else if (run && run.hp / max < C().injuryBelow) m.injured = Math.max(m.injured || 0, 2);
+  const dressing = (m.skills.healing || { lvl: 0 }).lvl > 0; // Field Dressing
+  if (beaten) injure(s, m, 2, "in a fight", { guards: minionPower(s, "guard") > 0, dressing });
+  else if (run && run.hp / max < C().injuryBelow) injure(s, m, 1, "after a hard fight", { treated: dressing });
 }

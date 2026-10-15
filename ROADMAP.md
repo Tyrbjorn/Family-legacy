@@ -101,3 +101,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - Bandits fight turn-based (guard + escorts vs bandits). Dungeons: tier 1–4 by first-floor power, 2·tier+2 events (fights + stat checks), +15 morale/+30% HP between events, pack fights at 0.7×; loot rolls = tier; optional dg.story / dg.onClear. Normal quests stay a single roll.
 - Fleeing causes no injury; beaten = 5-day injury (3 with guards); ending badly hurt (<30% HP) = 2 days.
 - UI: household morale is shown as "Contentment". Difficulty flee adjust removed from encounter checks.
+
+## Injuries (unreleased)
+- js/engine/injuries.js + tuning.injuries: Bruised (2d, works −10%), Wounded (5d/3 with guards), Maimed (15d, 25% lasting), Crippling (40d, always lasting). Deadly fail → Maimed or 20% Crippling; deadly success 5% Crippling. Hard Times/Grim Age upgrade Wounded → Maimed 25%/40%.
+- Treated = care within 3 days (remedies, potions, Infirmary/Shrine, healer, Field Dressing, bandages); Field Dressing and bandages lower the tier.
+- Death: Crippling roll 2/2/2/4/6% by difficulty (×2 Doomsworn); untreated load (tier points, −1 per 30 days) ≥6 → 25% infection on a new untreated Maimed/Crippling. Old age unchanged.
+- 5 lasting injuries (max 2, not inherited). Hooks: permanent entries take minTier/weight; removePerm() for restoration/prosthetics. Save step 20.

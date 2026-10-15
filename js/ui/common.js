@@ -233,3 +233,15 @@ export const curList = () =>
     const x = it(id);
     return x && (invF.type === "all" || x.slot === invF.type) && (invF.q === "all" || x.rarity === invF.q);
   });
+
+// injury tags for member cards: current tier, lasting injuries, untreated-wounds warning
+export function injuryTags(m) {
+  const i = m.inj && E.injTier(m.inj.tier),
+    perm = (m.perm || []).map(id => E.permDef(id)).filter(Boolean);
+  const bits = [
+    ...(i ? [`<span class="tb" title="${m.inj.treated ? "treated" : "untreated"}">${i.icon} ${i.name}${m.inj.treated ? "" : " (untreated)"}</span>`] : []),
+    ...perm.map(p => `<span class="tb" title="${p.desc}">${p.icon} ${p.name}</span>`),
+    ...(m.load > 0 ? [`<span class="tb" style="border-color:#e77">⚠️ ${E.loadWarn(m)}</span>`] : []),
+  ];
+  return bits.length ? `<div>${bits.join("")}</div>` : "";
+}

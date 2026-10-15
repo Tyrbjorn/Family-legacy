@@ -437,6 +437,14 @@ const STEPS = [
           if (p.id === "farmer" && p.spec === "brewer") Object.assign(p, { spec: null, srank: 0, sxp: 0 });
     },
   },
+  {
+    n: 20,
+    once: true,
+    name: "tiered injuries: an injury in progress becomes Wounded (treated, same days left); permanent injuries and untreated load start empty",
+    run: s => {
+      for (const m of s.members || []) if (m.injured > 0 && !m.inj) m.inj = { tier: 2, day: s.day || 0, treated: true, counted: true };
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

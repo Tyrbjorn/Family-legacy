@@ -1,7 +1,7 @@
 // Family tree: generations as rows in a pannable canvas; tap a member to open their card.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
-import { badges, cl, memberLine } from "./common.js";
+import { badges, cl, injuryTags, memberLine } from "./common.js";
 import { U } from "./state.js";
 
 const rcol = id => {
@@ -50,7 +50,7 @@ export function familyv() {
     card = `<div class="card"><div class="row">${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
 <div class="muted">${m.alive ? "Living" : n.marriedOut ? `Married into ${n.marriedOut}` : `Died Y${n.died}`}${m.persona && E.personaDef(m.persona) ? ` · ${E.personaDef(m.persona).icon} ${E.personaDef(m.persona).name}` : ""}${m.house && E.houseDef(m.house) ? ` · of ${E.houseDef(m.house).name}` : ""} · lifespan ~${m.lifespan}y</div>
 <div>${badges(m)}</div>
-${challengeRow(m)}
+${challengeRow(m)}${injuryTags(m)}
 ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: <a data-a="treesel" data-v="${sp.id}">${sp.name}</a></div>` : ""}
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}
 ${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${m.id}">Play as ${m.name}</button>` : ""}</div>`;

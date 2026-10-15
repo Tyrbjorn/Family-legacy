@@ -1,3 +1,4 @@
+import { injuryDay, injurySpeed, treat } from "./injuries.js";
 import { enchantDay } from "./gear.js";
 import { notify } from "./notify.js";
 import { evolveOptions, minionEvolveIssue } from "./minions.js";
@@ -89,6 +90,7 @@ function estateDay(s) {
     if (m.injured > 1 && (s.res.potions || 0) >= 1) {
       s.res.potions -= 1;
       m.injured = 0;
+      treat(s, m);
     }
 }
 
@@ -130,7 +132,9 @@ function healDay(s, m) {
   if ((s.res.remedies || 0) >= 1) {
     s.res.remedies -= 1;
     h += 2;
+    treat(s, m);
   }
+  if (estEff(s, "healBoost") > 0 || hasService(s, "healer")) treat(s, m); // Infirmary/Shrine at home or a healer
   const dr = (ES().meals.tonics || {}).draught;
   if (dr && m.injured > h && (s.res.draught || 0) >= 1) {
     s.res.draught -= 1;
@@ -189,7 +193,9 @@ function memberDay(s, m, effActive, effIdle) {
     return;
   }
   const isAct = m.id === s.activeId;
-  const eff = (isAct ? effActive : effIdle) * memberTick(m) * (1 + moraleSpeed(s));
+  const eff = (isAct ? effActive : effIdle) * memberTick(m) * (1 + moraleSpeed(s)) * injurySpeed(s, m);
+  injuryDay(s, m);
+  if (!m.alive) return;
   if (m.injured > 0) return healDay(s, m);
   if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
   else if (!isAct && m.standing) m.standing = null;

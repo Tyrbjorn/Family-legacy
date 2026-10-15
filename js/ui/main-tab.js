@@ -3,7 +3,7 @@ import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
 import { suitorCard } from "./houses-tab.js";
-import { badges, cl, costStr, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
+import { badges, cl, costStr, injuryTags, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
@@ -12,7 +12,7 @@ export function hero() {
   const m = E.active(s);
   if (!m) return "";
   const a = m.action;
-  let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div><div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
+  let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}<div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b ${sheetOpen ? "sel" : ""}" data-a="sheet">📋 Character Sheet ${sheetOpen ? "▴" : "▾"}</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;

@@ -1,3 +1,4 @@
+import { permFx } from "./injuries.js";
 // Difficulty: A) game level (global, s.difficulty, 1..5) and B) personal challenge (family member, m.challenge).
 // Level 3 = the base game. The game level is snapshotted on an action when it starts (a.diff) and that copy is
 // used for the action's roll, loot, renown and XP, so switching mid-quest changes nothing. Numbers: tuning.difficulty.
@@ -15,7 +16,7 @@ export const chalName = lvl => at(DF().challenge.names, lvl);
 export const stampDiff = (s, a) => a && a.diff == null && (a.diff = gameLvl(s));
 // hooks
 export const enemyCp = (s, m, cp) => cp * gameFx(s, "enemy", actLvl(s, m));
-export const diffRenown = (s, m) => Math.min(DF().renownCap, gameFx(s, "renown", actLvl(s, m)) * chalFx(m, "renown"));
+export const diffRenown = (s, m) => Math.min(DF().renownCap, gameFx(s, "renown", actLvl(s, m)) * chalFx(m, "renown")) * (1 + permFx(m, "renown")); // Battle Scars
 export const diffXp = (s, m) => gameFx(s, "xp", actLvl(s, m)) * chalFx(m, "xp");
 // actions
 export function setDifficulty(s, lvl) {

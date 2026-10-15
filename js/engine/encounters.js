@@ -1,3 +1,4 @@
+import { injure } from "./injuries.js";
 import { gameFx } from "./difficulty.js";
 import { notify } from "./notify.js";
 // Choice encounters while travelling: queued decision for the active member (live play),
@@ -120,7 +121,7 @@ function applyOutcome(s, m, out) {
     bits.push("🪬 " + out.curse.name);
   }
   if (out.injure) {
-    m.injured = Math.max(m.injured || 0, out.injure);
+    injure(s, m, out.injure <= 2 ? 1 : 2, "in an encounter");
     bits.push("🤕 injured");
   }
   if (out.renown) {

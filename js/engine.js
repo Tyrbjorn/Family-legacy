@@ -40,3 +40,4 @@ export * from "./engine/metals.js";
 export * from "./engine/loot.js";
 export * from "./engine/difficulty.js";
 export * from "./engine/combat.js";
+export * from "./engine/injuries.js";

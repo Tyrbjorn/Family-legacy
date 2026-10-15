@@ -1,3 +1,4 @@
+import { injure } from "./injuries.js";
 // Feud escalation and war between houses (Dynasty phase): battles, power, truce/tribute, weariness.
 // Numbers in data/marriage.json houses.war / houses.feud.
 import { addRenown } from "./legacy.js";
@@ -62,7 +63,7 @@ export function battle(s, id) {
     s.res.coin -= lost;
     const f = living(s).filter(m => isAdult(m) && m.cls && !m.injured);
     const hurt = f.length ? f[Math.floor(rng() * f.length)] : null;
-    if (hurt) hurt.injured = Math.max(hurt.injured, W.injureDays);
+    if (hurt) injure(s, hurt, 2, "in battle");
     const g = (s.minions || []).filter(x => x.job === "guard" && !x.special);
     let gone = null;
     if (g.length && rng() < W.minionLossChance * minionSurvival(g[0], s)) {
