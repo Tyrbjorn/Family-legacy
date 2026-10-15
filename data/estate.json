@@ -266,7 +266,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   },
   {
@@ -320,7 +322,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   },
   {
@@ -375,7 +379,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   },
   {
@@ -435,9 +441,9 @@
     "quarrypit"
    ],
    "allowed": [
-    "storage",
+    "masontable",
     "toolrack",
-    "masontable"
+    "storage"
    ],
    "cost": {
     "coin": 120,
@@ -485,6 +491,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "masontable": "Cuts stone → blocks on site, 3/day — turns stone into building blocks",
+    "toolrack": "2 gathering + 1 herb follower spots — more raw stone",
+    "storage": "+400 material storage — hold more stone"
    }
   },
   {
@@ -495,9 +506,9 @@
     "shaftlift"
    ],
    "allowed": [
-    "storage",
     "orecart",
-    "toolrack"
+    "toolrack",
+    "storage"
    ],
    "cost": {
     "coin": 250,
@@ -546,6 +557,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "orecart": "2 mining spots — more iron & copper ore",
+    "toolrack": "2 gathering + 1 herb follower spots — general labour instead of ore",
+    "storage": "+400 material storage — hold more ore"
    }
   },
   {
@@ -557,9 +573,9 @@
    ],
    "allowed": [
     "herbrack",
-    "storage",
     "alchbench",
-    "jars"
+    "jars",
+    "storage"
    ],
    "cost": {
     "coin": 90,
@@ -608,6 +624,12 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "herbrack": "3 thyme → 1 potion, 2/day + 2 herb spots — potions and pickers",
+    "alchbench": "Fast potions plus draughts, dust & tonics — more recipes, fewer pickers",
+    "jars": "Berries/vegetables → preserves — food instead of potions",
+    "storage": "+400 storage — hoard herbs for later"
    }
   },
   {
@@ -619,9 +641,9 @@
    ],
    "allowed": [
     "workbench",
-    "storage",
     "steelanvil",
-    "toolrack"
+    "toolrack",
+    "storage"
    ],
    "cost": {
     "coin": 300,
@@ -739,7 +761,13 @@
    ],
    "fittings": [
     "runedanvil"
-   ]
+   ],
+   "picks": {
+    "workbench": "Smithy combo with the Forge: +20% craft quality, 2 craft spots — best for quality",
+    "steelanvil": "+12% quality, 2 craft spots, +3% craft XP — trains smiths faster (Crafters rank 2)",
+    "toolrack": "2 gathering + 1 herb follower spots — more labour, no crafting boost",
+    "storage": "+400 material storage — stockpile ingots, no crafting boost"
+   }
   },
   {
    "id": "sawmill",
@@ -750,8 +778,8 @@
    ],
    "allowed": [
     "storage",
-    "toolrack",
-    "workbench"
+    "workbench",
+    "toolrack"
    ],
    "cost": {
     "coin": 150,
@@ -798,6 +826,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "storage": "Lumberyard combo with the Saw Table: planks ×1.5 — best for planks",
+    "workbench": "2 craft spots next to the timber — crafting instead of extra planks",
+    "toolrack": "2 gathering + 1 herb follower spots — more wood coming in"
    }
   },
   {
@@ -808,8 +841,8 @@
     "masontable"
    ],
    "allowed": [
-    "storage",
-    "toolrack"
+    "toolrack",
+    "storage"
    ],
    "cost": {
     "coin": 150,
@@ -857,6 +890,10 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "toolrack": "2 gathering + 1 herb follower spots — more stone to cut",
+    "storage": "+400 material storage — hold more stone and blocks"
    }
   },
   {
@@ -867,10 +904,10 @@
     "gamerack"
    ],
    "allowed": [
-    "storage",
     "tanrack",
+    "smoker",
     "kennel",
-    "smoker"
+    "storage"
    ],
    "cost": {
     "coin": 140,
@@ -934,6 +971,12 @@
    "guildBoost": {
     "guild": "lodge",
     "xp": 0.1
+   },
+   "picks": {
+    "tanrack": "Hides → leather, 2/day — feeds tailors and armour",
+    "smoker": "Meat/fish + salt → smoked provisions — food that keeps",
+    "kennel": "Houses an animal companion — a pet instead of production",
+    "storage": "+400 material storage — hold more hides"
    }
   },
   {
@@ -945,9 +988,8 @@
    ],
    "allowed": [
     "herbrack",
-    "storage",
     "alchbench",
-    "larder"
+    "shrine"
    ],
    "cost": {
     "coin": 120,
@@ -1002,6 +1044,11 @@
      "foraging"
     ],
     "xp": 0.1
+   },
+   "picks": {
+    "herbrack": "3 thyme → 1 potion, 2/day + 2 herb spots — steady potions",
+    "alchbench": "Fast potions plus draughts, dust & tonics — wider recipes",
+    "shrine": "Faster injury recovery — healing, no production"
    }
   },
   {
@@ -1012,8 +1059,9 @@
     "fishrack"
    ],
    "allowed": [
-    "storage",
-    "larder"
+    "smoker",
+    "larder",
+    "storage"
    ],
    "cost": {
     "coin": 100,
@@ -1060,6 +1108,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "smoker": "Fish + salt → smoked provisions — turns the catch into food that keeps",
+    "larder": "+300 food storage, +5% meal XP — store the catch",
+    "storage": "+400 material storage"
    }
   },
   {
@@ -1070,9 +1123,9 @@
     "hives"
    ],
    "allowed": [
-    "storage",
+    "jars",
     "larder",
-    "herbrack"
+    "storage"
    ],
    "cost": {
     "coin": 110,
@@ -1120,6 +1173,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "jars": "Berries + honey → preserves — uses your honey",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage — stockpile honey"
    }
   },
   {
@@ -1130,8 +1188,9 @@
     "nestboxes"
    ],
    "allowed": [
-    "storage",
-    "larder"
+    "oven",
+    "larder",
+    "storage"
    ],
    "cost": {
     "coin": 80,
@@ -1178,6 +1237,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "oven": "Bakes bread (flour + eggs) and pies — uses your eggs",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage"
    }
   },
   {
@@ -1188,9 +1252,9 @@
     "tanvats"
    ],
    "allowed": [
-    "storage",
     "loom",
-    "workbench"
+    "workbench",
+    "storage"
    ],
    "cost": {
     "coin": 160,
@@ -1238,6 +1302,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "loom": "2 flax → 1 cloth + 1 craft spot, +3% craft XP — cloth beside leather",
+    "workbench": "2 craft spots — make gear from the leather",
+    "storage": "+400 material storage — stockpile hides and leather"
    }
   },
   {
@@ -1370,7 +1439,13 @@
    ],
    "fittings": [
     "crystal"
-   ]
+   ],
+   "picks": {
+    "studydesk": "+3% Lore XP, 2 tutor spots — teach the family",
+    "perch": "Houses a familiar — a companion instead of study",
+    "brazier": "Houses a fire spirit — a combat companion instead of study",
+    "storage": "+400 material storage"
+   }
   },
   {
    "id": "shrinehouse",
@@ -1382,7 +1457,6 @@
    "allowed": [
     "shrine",
     "studydesk",
-    "storage",
     "herbrack"
    ],
    "cost": {
@@ -1508,7 +1582,12 @@
      },
      "desc": "morale +0.3, rest +0.5"
     }
-   ]
+   ],
+   "picks": {
+    "shrine": "Faster injury recovery (stacks with the Altar) — max healing",
+    "studydesk": "+3% Lore XP, 2 tutor spots — study at the shrine",
+    "herbrack": "3 thyme → 1 potion, 2/day + 2 herb spots — healing potions"
+   }
   },
   {
    "id": "barracks",
@@ -1519,9 +1598,9 @@
    ],
    "allowed": [
     "bunk",
-    "storage",
+    "pells",
     "shrine",
-    "pells"
+    "storage"
    ],
    "cost": {
     "coin": 300,
@@ -1644,7 +1723,13 @@
    "fittings": [
     "dummy"
    ],
-   "bedRole": "followers"
+   "bedRole": "followers",
+   "picks": {
+    "bunk": "Beds for 2 more followers — a bigger garrison",
+    "pells": "Unlocks Spar at the Pells & Loose at the Butts — training activities",
+    "shrine": "Faster injury recovery — fighters heal sooner",
+    "storage": "+400 material storage"
+   }
   },
   {
    "id": "thievesden",
@@ -1654,9 +1739,9 @@
     "fencetable"
    ],
    "allowed": [
-    "storage",
     "stall",
-    "studydesk"
+    "studydesk",
+    "storage"
    ],
    "cost": {
     "coin": 250,
@@ -1708,6 +1793,11 @@
    "guildBoost": {
     "guild": "rogues",
     "xp": 0.1
+   },
+   "picks": {
+    "stall": "1 merchant spot: sells your stock at full price — coin",
+    "studydesk": "+3% Lore XP, 2 tutor spots — learning",
+    "storage": "+400 material storage — stash the goods"
    }
   },
   {
@@ -1718,10 +1808,10 @@
     "questboard"
    ],
    "allowed": [
-    "storage",
     "bunk",
     "larder",
-    "shrine"
+    "shrine",
+    "storage"
    ],
    "cost": {
     "coin": 300,
@@ -1776,7 +1866,13 @@
     "guild": "adventurers",
     "xp": 0.1
    },
-   "bedRole": "followers"
+   "bedRole": "followers",
+   "picks": {
+    "bunk": "Beds for 2 more followers",
+    "larder": "+300 food storage, +5% meal XP — feed the party",
+    "shrine": "Faster injury recovery — adventurers heal sooner",
+    "storage": "+400 material storage — keep loot"
+   }
   },
   {
    "id": "graveyard",
@@ -1838,7 +1934,11 @@
    "land": 1,
    "slots": 1,
    "special": true,
-   "level": 1
+   "level": 1,
+   "picks": {
+    "shrine": "Faster injury recovery — cheap healing",
+    "altar": "Healing, +0.3 follower loyalty/day, +5% family XP — costly but broad"
+   }
   },
   {
    "id": "ancestorhall",
@@ -1863,7 +1963,10 @@
    "fittings": [
     "hourglass",
     "clock"
-   ]
+   ],
+   "picks": {
+    "studydesk": "+3% Lore XP, 2 tutor spots — elders teach the young"
+   }
   },
   {
    "id": "fields",
@@ -1873,10 +1976,10 @@
     "furrows"
    ],
    "allowed": [
-    "storage",
-    "larder",
     "quern",
-    "toolrack"
+    "larder",
+    "toolrack",
+    "storage"
    ],
    "cost": {
     "coin": 90,
@@ -1924,6 +2027,12 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "quern": "2 wheat → 1 flour, 1.5/day — flour for bread",
+    "larder": "+300 food storage, +5% meal XP — store the harvest",
+    "toolrack": "2 gathering + 1 herb follower spots — more hands in the fields",
+    "storage": "+400 material storage"
    }
   },
   {
@@ -1934,9 +2043,9 @@
     "fruittrees"
    ],
    "allowed": [
-    "storage",
+    "jars",
     "larder",
-    "jars"
+    "storage"
    ],
    "cost": {
     "coin": 160,
@@ -1983,6 +2092,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "jars": "Berries → preserves — food that keeps",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage"
    }
   },
   {
@@ -1993,9 +2107,9 @@
     "milkstalls"
    ],
    "allowed": [
-    "storage",
+    "churn",
     "larder",
-    "churn"
+    "storage"
    ],
    "cost": {
     "coin": 180,
@@ -2043,6 +2157,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "churn": "Milk → cheese or butter — dairy food",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage"
    }
   },
   {
@@ -2053,8 +2172,9 @@
     "millwheel"
    ],
    "allowed": [
-    "storage",
-    "quern"
+    "oven",
+    "larder",
+    "storage"
    ],
    "cost": {
     "coin": 220,
@@ -2103,6 +2223,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "oven": "Bakes bread and pies from the flour — food on site",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 storage — stockpile flour"
    }
   },
   {
@@ -2175,9 +2300,9 @@
     "smokepit"
    ],
    "allowed": [
-    "storage",
+    "jars",
     "larder",
-    "smoker"
+    "storage"
    ],
    "cost": {
     "coin": 150,
@@ -2225,6 +2350,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "jars": "Berries/vegetables → preserves — a second food line",
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage — stock salt"
    }
   },
   {
@@ -2235,8 +2365,8 @@
     "brewvats"
    ],
    "allowed": [
-    "storage",
-    "larder"
+    "larder",
+    "storage"
    ],
    "cost": {
     "coin": 250,
@@ -2284,6 +2414,10 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "larder": "+300 food storage, +5% meal XP",
+    "storage": "+400 material storage — stockpile grain"
    }
   },
   {
@@ -2294,9 +2428,9 @@
     "brinecrocks"
    ],
    "allowed": [
-    "storage",
+    "jars",
     "larder",
-    "jars"
+    "storage"
    ],
    "cost": {
     "coin": 140,
@@ -2344,6 +2478,11 @@
     ],
     "cap": 2,
     "bonus": 0.15
+   },
+   "picks": {
+    "jars": "Berries/vegetables → preserves — more preserving",
+    "larder": "+300 food storage, +5% meal XP — store the jars",
+    "storage": "+400 material storage — stock salt and honey"
    }
   },
   {
@@ -2465,7 +2604,10 @@
      "cap": 0
     }
    ],
-   "special": true
+   "special": true,
+   "picks": {
+    "storage": "+400 material storage — more trade goods on hand"
+   }
   },
   {
    "id": "tradingpost",
@@ -2665,7 +2807,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   },
   {
@@ -2739,7 +2883,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ],
    "bedRole": "followers"
   },
@@ -2819,7 +2965,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   },
   {
@@ -2897,7 +3045,9 @@
     "pantry",
     "carvedcase",
     "stonehearth",
-    "distillery"
+    "distillery",
+    "rootcellar",
+    "nursery"
    ]
   }
  ],
@@ -4628,6 +4778,41 @@
     "xp": 0.05
    },
    "desc": "+5% XP to Lore skills (Reading, History, Monster Lore...)."
+  },
+  {
+   "id": "rootcellar",
+   "name": "Root Cellar",
+   "icon": "🥔",
+   "kind": "station",
+   "fitting": true,
+   "cost": {
+    "coin": 180,
+    "stone": 40,
+    "planks": 6
+   },
+   "bonus": {
+    "foodCap": 800,
+    "foodQuality": 0.1
+   },
+   "unlock": {
+    "quest": "mushrooms"
+   },
+   "desc": "Keeps food from spoiling: +800 food storage (less waste at the cap), +10% meal XP (quest: Glowcap Mushrooms)"
+  },
+  {
+   "id": "nursery",
+   "name": "Nursery",
+   "icon": "🧸",
+   "kind": "station",
+   "fitting": true,
+   "cost": {
+    "coin": 90,
+    "wood": 15
+   },
+   "bonus": {
+    "childxp": 0.25
+   },
+   "desc": "+25% childhood XP for children growing up at home"
   }
  ],
  "synergies": [
@@ -4714,6 +4899,19 @@
     }
    },
    "desc": "Potion output ×1.5 in this building"
+  },
+  {
+   "id": "nursery",
+   "name": "Nursery Corner",
+   "icon": "🍼",
+   "pieces": [
+    "bunk",
+    "nursery"
+   ],
+   "bonus": {
+    "childxp": 0.15
+   },
+   "desc": "+15% more childhood XP"
   }
  ],
  "caps": {

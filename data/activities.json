@@ -959,7 +959,7 @@
     "piece": "larder"
    },
    {
-    "piece": "coldcellar"
+    "piece": "rootcellar"
    }
   ]
  },
@@ -981,7 +981,7 @@
     "piece": "larder"
    },
    {
-    "piece": "coldcellar"
+    "piece": "rootcellar"
    }
   ]
  },

@@ -71,3 +71,4 @@ Everything from Eras 1–2 keeps working alongside these.
 - Stat-bump items → slot-free Fittings (bought once per building).
 - Save migration step 14 remaps merged items (tier kept), moves stat items to fittings, sends disallowed items to storage.
 - Tests: test/furniture.test.mjs; screenshot test/shot-furniture.mjs.
+- Follow-up: specialty buildings keep 1 slot with ≤4 distinct picks, each with a tradeoff line (structure.picks). Root Cellar (mushroom quest) and Nursery are home fittings; Bed + Nursery combo; item one-liners list combos; bed-block reason names the shortfall.

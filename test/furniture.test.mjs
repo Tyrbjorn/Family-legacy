@@ -43,4 +43,22 @@ ok(ha.fittings.includes('trophy')&&ha.fittings.includes('mirror'),'stat items be
 ok(sb.fittings.includes('runedanvil'),'Rune Anvil becomes a Smithy fitting');
 ok(raw.pieceStore.includes('forge')&&!ha.pieces.includes('forge'),'disallowed items go to storage');
 ok(raw.pieceStore.includes('bunk'),'stored merged items remapped');
+
+// specialty picks: every option has its own tradeoff line, no duplicates
+const spec=ES.structures.filter(d=>d.special&&d.allowed&&!home.includes(d.id)&&d.slots===1);
+ok(spec.every(d=>d.picks&&d.allowed.every(a=>d.picks[a]&&d.picks[a].length>10)&&new Set(Object.values(d.picks)).size===d.allowed.length&&new Set(d.allowed).size===d.allowed.length&&d.allowed.length<=4),'specialty picks: distinct options, each with a tradeoff line');
+ok(spec.every(d=>!(d.fixed||[]).some(f=>d.allowed.includes(f))),'no pick duplicates the building\'s built-in');
+// Root Cellar & Nursery fittings
+const q=E.newGame(1_700_000_000_000); E.normalize(q); Object.assign(q.res,{coin:1e5,wood:1e4,stone:1e4,planks:1e3}); for(const l of ES.lands) E.buyLand(q,l.id);
+const qh=E.buildStructure(q,'shack'); ok(/quest|Glowcap|mushroom/i.test(E.fittingIssue(q,qh.uid,'rootcellar')||''),'Root Cellar locked until the mushroom quest ('+E.fittingIssue(q,qh.uid,'rootcellar')+')');
+q.doneQuests.push('mushrooms'); const fc=E.foodCap(q); ok(E.buyFitting(q,qh.uid,'rootcellar')&&E.foodCap(q)===fc+800,'Root Cellar: +800 food storage, slot-free');
+const cx=E.eff(q,'childxp'); ok(E.buyFitting(q,qh.uid,'nursery')&&E.eff(q,'childxp')>cx,'Nursery fitting restores childhood XP');
+const cx2=E.eff(q,'childxp'); E.placePiece(q,qh.uid,'bunk'); ok(E.activeSynergies(qh).some(y=>y.id==='nursery')&&E.eff(q,'childxp')>cx2,'Bed + Nursery combo');
+ok(/Combo/.test(E.pieceLine('bunk'))&&/Nursery/.test(E.pieceLine('bunk'))&&/Combo/.test(E.pieceLine('workbench','smithy')),'one-liners list combos');
+// clear bed reason
+{ const r=E.typeBedIssue(s,h,'fort')||''; ok(/Fort beds house followers; family would be short \d+ beds?/.test(r),'bed block reason is clear: '+r); }
+// migration grants
+{ const o=E.newGame(1_700_000_000_000); E.normalize(o); o.structures=[{uid:'a',type:'shack',pieces:['cradle'],up:0}]; o.pieceStore=['coldcellar'];
+  const raw=JSON.parse(E.serialize(o,1_700_000_000_000)); raw.schema=13; raw._norm=false; E.normalize(raw);
+  ok(raw.structures[0].fittings.includes('nursery')&&raw.structures[0].fittings.includes('rootcellar'),'old Cradle → Nursery fitting, old Cold Cellar → Root Cellar fitting'); }
 console.log(pass+' furniture tests passed');

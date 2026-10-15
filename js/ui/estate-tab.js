@@ -81,7 +81,7 @@ export function estate() {
         nt = E.pieceTiers(pid)[t + 1],
         ui = E.pieceUpIssue(s, st.uid, pid);
       const pz = E.isPaused(s, st.uid, pid);
-      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}${E.pieceSlots(pid) > 1 ? " · " + E.pieceSlots(pid) + " slots" : ""}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${p.desc} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
+      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}${E.pieceSlots(pid) > 1 ? " · " + E.pieceSlots(pid) + " slots" : ""}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${E.pieceLine(pid, st.type)} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
     })
     .join("")}${
     d.houses
@@ -119,7 +119,7 @@ export function estate() {
           .filter(p => !p.fixedOnly && !p.mergedInto && !p.fitting && (!d.allowed || d.allowed.includes(p.id)))
           .map(
             p =>
-              `<option value="${p.id}" ${E.placeIssue(s, st.uid, p.id) ? "disabled" : ""}>${p.icon} ${p.name} – ${costStr(p.cost)}${E.placeIssue(s, st.uid, p.id) === "already here" ? " (here)" : E.pieceLock(s, p) ? " 🔒 " + E.pieceLock(s, p) : ""} — ${p.desc}</option>`,
+              `<option value="${p.id}" ${E.placeIssue(s, st.uid, p.id) ? "disabled" : ""}>${p.icon} ${p.name} – ${costStr(p.cost)}${E.placeIssue(s, st.uid, p.id) === "already here" ? " (here)" : E.pieceLock(s, p) ? " 🔒 " + E.pieceLock(s, p) : ""} — ${E.pieceLine(p.id, st.type)}</option>`,
           )
           .join("")}</select></div>`
       : ""
@@ -127,7 +127,7 @@ export function estate() {
   ${E.fittingOptions(st).length ? `<div class="muted" style="margin-top:4px">🔩 Fittings (no slot, buy once): ${E.fittingOptions(st)
     .map(f => {
       const fi = E.fittingIssue(s, st.uid, f.id);
-      return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${f.desc}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${f.desc} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(f.cost)}</button>`;
+      return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${E.pieceLine(f.id)}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${E.pieceLine(f.id)} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(f.cost)}</button>`;
     })
     .join(" ")}</div>` : ""}
   ${nxs

@@ -161,7 +161,8 @@ export const placed = s =>
   (s.structures || []).flatMap(st => [...st.pieces.map(id => scaledPiece(st, id)).filter(Boolean), ...fittingFx(st)]);
 
 export function activeSynergies(st) {
-  return ES().synergies.filter(y => y.pieces.every(p => st.pieces.map(x => (pieceDef(x) || { id: baseId(x) }).id).includes(p)));
+  const ids = [...st.pieces, ...(st.fittings || [])].map(x => (pieceDef(x) || { id: baseId(x) }).id);
+  return ES().synergies.filter(y => y.pieces.every(p => ids.includes(p)));
 }
 
 export const allSynergies = s =>
@@ -391,3 +392,17 @@ export const buildingReqMet = (s, groups) => groups.every(g => g.some(id => hasS
 
 export const buildingReqStatus = (s, groups) =>
   groups.map(g => ({ names: g.map(id => structDef(id).name), ok: g.some(id => hasStruct(s, id)) }));
+
+// one-line effect for the UI: the building's tradeoff line (specialty picks) or the item desc, plus its combos
+export function pieceLine(id, type) {
+  const p = pieceDef(id);
+  if (!p) return "";
+  const d = type ? structDef(type) : null;
+  const base = (d && d.picks && d.picks[p.id]) || p.desc || "";
+  const combos = ES()
+    .synergies.filter(y => y.pieces.includes(p.id))
+    // in a building, only combos it can actually hold (1-slot buildings pair with built-ins/fittings)
+    .filter(y => !d || y.pieces.filter(x => x !== p.id).every(x => [...(d.fixed || []), ...(d.fittings || []), ...((d.slots || 0) > 1 ? d.allowed || [] : [])].includes(x)))
+    .map(y => `${y.icon} +${y.pieces.filter(x => x !== p.id).map(x => pieceDef(x).name).join(" + ")}: ${y.desc}`);
+  return combos.length ? `${base} · Combo ${combos.join("; ")}` : base;
+}

@@ -29,7 +29,7 @@ export function typeBedIssue(s, st, to) {
   const after = bedrooms(s);
   st.type = was;
   const need = living(s).length;
-  return after < need && after < before ? `family needs ${need} beds (a ${structDef(to).name}'s beds house followers)` : null;
+  return after < need && after < before ? `${structDef(to).name} beds house followers; family would be short ${need - after} bed${need - after > 1 ? "s" : ""}` : null;
 }
 export function upgradeIssue(s, uid, to) {
   const st = s.structures.find(x => x.uid === uid);

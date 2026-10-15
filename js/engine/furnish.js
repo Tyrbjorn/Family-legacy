@@ -32,10 +32,19 @@ const remap = id => {
 
 // Save migration: merged items are replaced by their new item; stat-bump items become slot-free fittings
 // (on this building if it takes them, else on the home); items a building no longer allows go to storage.
+// old items whose bonus now lives on a home fitting (owners keep the effect)
+const GRANT = { cradle: "nursery", coldcellar: "rootcellar" };
 export function migrateFurniture(s) {
-  s.pieceStore = (s.pieceStore || []).map(remap);
   const sts = s.structures || [];
   const home = sts.find(st => (structDef(st.type).fittings || []).includes("hourglass") && structDef(st.type).allowed?.includes("bunk"));
+  const had = [...(s.pieceStore || []), ...sts.flatMap(st => st.pieces)].map(baseId);
+  if (home)
+    for (const [o, f] of Object.entries(GRANT))
+      if (had.includes(o) && (structDef(home.type).fittings || []).includes(f)) {
+        home.fittings = home.fittings || [];
+        if (!home.fittings.includes(f)) home.fittings.push(f);
+      }
+  s.pieceStore = (s.pieceStore || []).map(remap);
   const toStore = [];
   for (const st of sts) {
     const d = structDef(st.type);
