@@ -37,10 +37,18 @@ m2.cls='priest'; rich(); const sh=E.buildStructure(s,'shrinehouse'); for(let i=0
 ok(E.respecStructure(s,h.uid,'abbey')&&!E.hasPiece(s,'enchtable')&&E.eff(s,'familyMorale')===2&&E.eff(s,'rest')>=1,'abbey morale/rest, keep table gone');
 ok(E.respecIssue(s,h.uid,'abbey')==='already this','no respec to same');
 // demolish
-const st2=E.buildStructure(s,'shack'); E.placePiece&&s.pieceStore.push('bunk'); E.placePiece(s,st2.uid,'bunk',true);
+const st2=E.buildStructure(s,'shack'); s.pieceStore.push('larder'); E.placePiece(s,st2.uid,'larder',true);
 const coin1=s.res.coin, wood1=s.res.wood, n=s.structures.length, store=s.pieceStore.length;
 ok(E.demolishStructure(s,st2.uid)&&s.structures.length===n-1&&s.res.coin===coin1+20&&s.res.wood===wood1+7,'demolish refunds half');
 ok(s.pieceStore.length===store+1,'furniture to storage');
+{ const home=E.buildStructure(s,'shack'); s.pieceStore.push('bunk'); E.placePiece(s,home.uid,'bunk',true);
+  const others=s.structures.filter(x=>x!==home); const keep=s.structures; s.structures=[home];
+  while(E.living(s).length<E.bedrooms(s)) s.members.push({...JSON.parse(JSON.stringify(f)),id:5000+s.members.length});
+  ok(/beds/.test(E.demolishIssue(s,home.uid)||'')&&!E.demolishStructure(s,home.uid),'demolish blocked: family beds');
+  const bh=E.buildStructure(s,'bunkhouse'); s.minions=[{uid:'mz',type:'laborer',equip:{},name:'Z',job:'idle',loyalty:100,cls:'n_peasant'}];
+  ok(E.isHoused(s,s.minions[0])&&/follower/.test(E.demolishIssue(s,bh.uid)||''),'demolish blocked: follower beds');
+  s.minions=[]; ok(!E.demolishIssue(s,bh.uid),'ok when nobody needs it');
+  s.structures=keep; s.members=s.members.filter(m=>m.id<5000); }
 const pc=E.paidChain('abbey'); ok(pc.coin===40+200+600+3000,'chain cost');
 ok(E.demolishStructure(s,h.uid)&&!s.structures.includes(h),'demolish manor');
 const ser=E.deserialize(E.serialize(s,1_700_000_000_000)); ok(ser.structures.length===s.structures.length,'save ok');

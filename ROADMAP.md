@@ -62,3 +62,12 @@ Everything from Eras 1–2 keeps working alongside these.
 - [x] Trade pass 2: town-to-town haul routes, town specialties (produces/wants), bandit fights (win = cart continues; lose = goods lost, guards flee or die), road patrols
 - [x] Building tiers round 1: House branches into Mansion / Fort / Tower Keep / Abbey (tier 4, 3 land, 8 slots, one-member unlocks), branch respec (half refund of old, full new cost), estate demolish (half refund of the whole tier chain). Production-building tiers: proposed, not built
 - [ ] Mason road building/repair (data hook `world.roadWorks` only); boats and sea trade (Gullport stub); the Runecarver and the Dwarfhold (locked stub)
+
+## Furniture redo (2026-10-14)
+- estate.js split: tiers/branches/respec/demolish → js/engine/tiers.js; fittings + save migration → js/engine/furnish.js.
+- Home line (Shack→Cabin→House→branches) keeps the broad furniture set; every other building offers ≤4 slot items. Every item = 1 slot at any tier and shows a one-line effect.
+- Merged: Cradle/Featherbed/Follower Bunk → Bed; Cold Cellar → Larder; Bookshelf/Desk → Study Corner.
+- Bed by placement: home = family beds; Bunkhouse/Guardhouse/Adventurers' Lodge/Fort = follower beds.
+- Stat-bump items → slot-free Fittings (bought once per building).
+- Save migration step 14 remaps merged items (tier kept), moves stat items to fittings, sends disallowed items to storage.
+- Tests: test/furniture.test.mjs; screenshot test/shot-furniture.mjs.

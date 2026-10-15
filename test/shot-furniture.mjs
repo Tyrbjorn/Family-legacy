@@ -1,0 +1,13 @@
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
+const p=await b.newPage({viewport:{width:420,height:1600}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:'+(process.env.PORT||8080)+'/?dev=1');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForFunction(()=>window.__game);await p.waitForTimeout(1200);
+await p.evaluate(()=>{const {s,E,D}=window.__game;E.active(s).ageDays=20*360;for(const d of D.estate.structures){for(const k in d.cost||{})s.res[k]=(s.res[k]||0)+2e4;}s.res.coin=1e5;for(const l of D.estate.lands)E.buyLand(s,l.id);
+ const h=E.buildStructure(s,'shack');E.upgradeStructure(s,h.uid);E.placePiece(s,h.uid,'bunk');E.placePiece(s,h.uid,'studycorner');const bh=E.buildStructure(s,'bunkhouse');E.placePiece(s,bh.uid,'bunk');s.structures=[h,bh];});
+await go(p,'estate');await p.waitForTimeout(800);
+await p.click('[data-a="buyfit"][data-w="hourglass"]');await p.waitForTimeout(500);
+console.log('fittings',await p.evaluate(()=>JSON.stringify(window.__game.s.structures[0].fittings)));
+const el=await p.$('[data-a="buyfit"]');if(el)await el.scrollIntoViewIfNeeded();await p.screenshot({path:'/workspace/fl-screenshots/furniture.png'});
+console.log('opts',await p.$$eval('[data-a="pickpiece"] option',a=>a.slice(1,4).map(x=>x.textContent).join(' | ')));
+console.log('errors',JSON.stringify(errs));await b.close();

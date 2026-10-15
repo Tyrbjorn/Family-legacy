@@ -13,6 +13,7 @@ export const estateActions = ({ v, b, m }) => ({
   unpiece: () => E.removePiece(s, v, b.dataset.w),
   upspecial: () => E.upgradeSpecial(s, v),
   spec: () => E.specialize(s, v, b.dataset.w),
+  buyfit: () => E.buyFitting(s, v, b.dataset.w),
   uppiece: () => E.upgradePiece(s, v, b.dataset.w),
   toggle: () => E.togglePiece(s, v, b.dataset.w),
   land: () => E.buyLand(s, v),

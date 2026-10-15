@@ -9,7 +9,7 @@ import { LG } from "./legacy.js";
 const LG_CAP = () => Math.max(...(LG().speedTiers || [1]));
 import { noteBloodline } from "./traits.js";
 import { legacyState } from "./legacy.js";
-import { DEFAULT_RESERVE, ES, freeSlots, landSlots, landUsed } from "./estate.js";
+import { DEFAULT_RESERVE, ES, freeSlots, landSlots, landUsed, migrateFurniture } from "./estate.js";
 import { fixTraits, newMember, traitDef } from "./family.js";
 import { classGuild, cls, guildDef } from "./guilds.js";
 import { itemDef } from "./inventory.js";
@@ -396,6 +396,12 @@ const STEPS = [
       s.trade.patrols = s.trade.patrols || [];
       s.trade.nextId = s.trade.nextId || 1;
     },
+  },
+  {
+    n: 14,
+    once: true,
+    name: "furniture redo: merged items replaced (Cradle/Feather Bed/Bunk → Bed, Cold Cellar → Larder, Bookshelf/Desk → Study Corner), stat bumps → slot-free fittings, trimmed building lists",
+    run: s => migrateFurniture(s),
   },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));

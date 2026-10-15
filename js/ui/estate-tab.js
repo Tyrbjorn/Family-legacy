@@ -116,14 +116,20 @@ export function estate() {
               `<option value="store:${pid}">📦 ${E.pieceDef(pid).name} [${E.tierName(pid)}] (from storage)</option>`,
           )
           .join("")}${[...D.estate.pieces, ...D.furniture]
-          .filter(p => !p.fixedOnly && (!d.allowed || d.allowed.includes(p.id)))
+          .filter(p => !p.fixedOnly && !p.mergedInto && !p.fitting && (!d.allowed || d.allowed.includes(p.id)))
           .map(
             p =>
-              `<option value="${p.id}" ${E.placeIssue(s, st.uid, p.id) ? "disabled" : ""}>${p.icon} ${p.name} – ${costStr(p.cost)}${E.placeIssue(s, st.uid, p.id) === "already here" ? " (here)" : E.pieceLock(s, p) ? " 🔒 " + E.pieceLock(s, p) : ""}</option>`,
+              `<option value="${p.id}" ${E.placeIssue(s, st.uid, p.id) ? "disabled" : ""}>${p.icon} ${p.name} – ${costStr(p.cost)}${E.placeIssue(s, st.uid, p.id) === "already here" ? " (here)" : E.pieceLock(s, p) ? " 🔒 " + E.pieceLock(s, p) : ""} — ${p.desc}</option>`,
           )
           .join("")}</select></div>`
       : ""
   }
+  ${E.fittingOptions(st).length ? `<div class="muted" style="margin-top:4px">🔩 Fittings (no slot, buy once): ${E.fittingOptions(st)
+    .map(f => {
+      const fi = E.fittingIssue(s, st.uid, f.id);
+      return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${f.desc}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${f.desc} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(f.cost)}</button>`;
+    })
+    .join(" ")}</div>` : ""}
   ${nxs
     .map(nx => {
       const ui = E.upgradeIssue(s, st.uid, nx.id);
@@ -139,7 +145,7 @@ export function estate() {
           })
           .join("")
       : ""
-  }<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span><button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button></div></div>`;
+  }<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span>${E.demolishIssue(s, st.uid) ? `<span class="muted">🔒 ${E.demolishIssue(s, st.uid)}</span>` : `<button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button>`}</div></div>`;
   });
   h +=
     `<div class="muted">Build new:</div>` +

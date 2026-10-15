@@ -5,7 +5,7 @@ const D={};for(const n of ['skills','classes','traits','buildings','furniture','
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720,adultAge:16,teenAge:14});D.guilds.minJoinAge=16;
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 const asProf=(m,c)=>{m.paths=null;m.prof=c||undefined;if(c)m.craft=m.craft||{id:'hearth',rank:0,rep:0};if(c)E.migratePaths({members:[m]});else m.paths=[];};
-let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;st.pieces=[...pieces];return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
+let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;const fb=pieces.filter(x=>x==='minionbunk');st.pieces=pieces.filter(x=>x!=='minionbunk');if(fb.length)g.structures.push({uid:'stb'+g.nextId++,type:'bunkhouse',pieces:fb.map(()=>'bunk'),up:0});return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
 const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
@@ -36,18 +36,18 @@ for(const m of E.living(s)) E.kill(s,m,'test'); ok(s.gameOver,'game over when al
 const g=E.newGame(t0); ok(E.estateStage(g)==='Landless'&&!E.established(g)&&!E.buildStructure(g,'shack'),'estate locked until land is bought');
 g.res.coin=500;g.res.wood=50; ok(E.buyLand(g,'plot')&&E.landSlots(g)===2&&E.estateStage(g)==='Scrub Plot','buy starting plot: 2 land slots');
 g.res.stone=(g.res.stone||0)+50; g.res.blocks=200; const sh=E.buildStructure(g,'shack'); ok(sh&&E.established(g)&&E.landUsed(g)===1&&E.freeSlots(g,sh)===2&&E.estateStage(g)==='Homestead','Shack: 1 land slot, 2 slots');
-g.res.coin+=200;g.res.wood+=100; E.placePiece(g,sh.uid,'bunk'); E.placePiece(g,sh.uid,'minionbunk');
+g.res.coin+=200;g.res.wood+=100; E.placePiece(g,sh.uid,'bunk'); g.res.coin+=200;g.res.wood+=50;g.res.stone+=20; E.buildStructure(g,'bunkhouse');
 const gm=E.active(g); E.setAction(g,{type:'gather',target:'creek'}); E.advanceReal(g,100); ok(g.res.stone>0,'gather from resource node');
 ok(E.buyItem(g,'millbrook','buckler')&&g.vault.includes('buckler'),'buy from town');
 ok(E.moveItem(g,gm,'buckler',true)&&E.equip(g,gm,'buckler','bag')&&gm.equip.offhand==='buckler','personal bag + equip');
 g.res.coin=1000; let rv=0; for(let i=0;i<20;i++) if(E.rumor(g,'outskirts')?.id) rv++; ok(rv>0&&g.revealed.length===rv,'rumors reveal hidden content'); ok(g.minions.length>0,'rumors can bring recruits');
 const h=E.newGame(t0); h.res.coin=1000; h.res.wood=100; h.res.stone=50;
 ok(!E.hire(h,'millbrook','laborer'),'cannot hire without housing');
-E.buyLand(h,'plot'); const hs=E.buildStructure(h,'shack'); E.placePiece(h,hs.uid,'minionbunk'); const hc=h.res.coin;
+E.buyLand(h,'plot'); const hs=E.buildStructure(h,'shack'); h.structures.push({uid:'stb'+h.nextId++,type:'bunkhouse',pieces:[],up:0}); const hc=h.res.coin;
 ok(E.hire(h,'millbrook','laborer')&&h.minions.length===1&&h.res.coin===hc-40,'hire minion once a Bunk exists');
-ok(!E.assignMinion(h,h.minions[0].uid,'farm'),'jobs need spots (no farm yet)'); h.res.coin+=500; h.res.wood+=100; E.build(h,'farm'); ok(E.assignMinion(h,h.minions[0].uid,'farm'),'assign minion to farm');
+ok(!E.assignMinion(h,h.minions[0].uid,'farm'),'jobs need spots (no farm yet)'); h.res.coin+=500; h.res.wood+=100; h.land.push('acre'); E.build(h,'farm'); ok(E.assignMinion(h,h.minions[0].uid,'farm'),'assign minion to farm');
 const f0=h.res.food; E.advanceReal(h,10*10); ok(h.res.food>f0,'farming minion adds food');
-while(E.minionRoom(h)) E.addMinion(h,'refugee','test'); ok(E.hire(h,'millbrook','laborer')===null&&h.minions.length===2,'housing (1 Bunk = 2) limits followers');
+while(E.minionRoom(h)) E.addMinion(h,'refugee','test'); ok(E.hire(h,'millbrook','laborer')===null&&h.minions.length===4,'housing (Bunkhouse = 4) limits followers');
 h.res.food=500; const c1=h.res.coin; const wg=E.monthlyWages(h); h.day=29; h.acc=0; E.advanceReal(h,10); ok(wg>0&&h.res.coin<=c1-wg,'monthly wages paid');
 h.res.coin=0; for(let i=0;i<3;i++){h.res.coin=0;h.res.food=500;h.day=Math.ceil((h.day+1)/30)*30-1;E.advanceReal(h,10);} ok(h.minions.length===0,'unpaid minions leave');
 // guilds
@@ -116,29 +116,29 @@ ok(!E.buyLand(LS,'meadow')&&E.buyLand(LS,'acre')&&E.landSlots(LS)===4,'land purc
 ok(E.placePiece(LS,s1x.uid,'bunk')&&E.placePiece(LS,s1x.uid,'larder')&&!E.placePiece(LS,s1x.uid,'storage')&&E.placeIssue(LS,s1x.uid,'storage')==='building full','Shack holds 2 pieces (Bed + Larder home)');
 ok(E.bedrooms(LS)===3&&E.foodCap(LS)===D.estate.caps.foodBase+300,'Bed adds beds, Larder adds food capacity');
 ok(E.activeSynergies(s1x).some(y=>y.id==='cozy')&&E.eff(LS,'rest')>=0.3,'Bed+Larder synergy: Cozy Home');
-const s2x=E.buildStructure(LS,'shack'); E.placePiece(LS,s2x.uid,'sawtable'); LS.res.wood=300; LS.res.planks=0; E.advanceReal(LS,10);
+LS.res.coin+=500;LS.res.wood=300; const s2x=E.buildStructure(LS,'sawmill'); LS.res.wood=300; LS.res.planks=0; E.advanceReal(LS,10);
 ok(Math.abs(LS.res.planks-4)<1e-6,'Saw Table turns wood into planks (4/day)'); E.placePiece(LS,s2x.uid,'storage');
 ok(E.processRate(LS,s2x,'sawtable')===6&&E.activeSynergies(s2x).some(y=>y.id==='lumberyard'),'Saw Table+Storage synergy speeds planks ×1.5');
 ok(E.matCap(LS)===D.estate.caps.matBase+400,'Storage Chest raises material capacity');
-LS.res.planks=100; LS.res.blocks=100; ok(E.upgradeStructure(LS,s2x.uid)&&E.freeSlots(LS,s2x)===2&&E.structDef(s2x.type).slots===4,'Shack upgrades to Cabin (4 slots)');
-ok(E.placePiece(LS,s2x.uid,'workbench')&&E.hasPiece(LS,'workbench')&&E.craftQuality(LS)>=0.15,'Workbench enables crafting; +Storage synergy raises quality');
-E.placePiece(LS,s2x.uid,'forge'); ok(E.activeSynergies(s2x).some(y=>y.id==='smithy')&&E.craftQuality(LS)>=0.4,'Workbench+Forge synergy: Smithy');
-const s3x=E.buildStructure(LS,'shack'); E.placePiece(LS,s3x.uid,'studydesk'); const lore0=E.eff(LS,'xp'); E.placePiece(LS,s3x.uid,'bookshelf'); ok(E.activeSynergies(s3x).some(y=>y.id==='nook'),'Study Desk+Bookshelf synergy: Scholar\'s Nook');
-ok(E.removePiece(LS,s3x.uid,'bookshelf')&&LS.pieceStore.includes('bookshelf')&&!E.activeSynergies(s3x).length&&E.placePiece(LS,s3x.uid,'bookshelf',true),'remove to storage and re-place');
+LS.res.planks=100; LS.res.blocks=100; ok(E.upgradeStructure(LS,s1x.uid)&&E.freeSlots(LS,s1x)===2&&E.structDef(s1x.type).slots===4,'Shack upgrades to Cabin (4 slots)');
+LS.res.coin+=1000; LS.res.stone+=100; const s3sm=E.buildStructure(LS,'smithy'); LS.land.push('meadow'); const s3w=s3sm||E.buildStructure(LS,'smithy'); ok(E.placePiece(LS,s3w.uid,'workbench')&&E.hasPiece(LS,'workbench')&&E.craftQuality(LS)>=0.15,'Workbench enables crafting; +Storage synergy raises quality');
+ok(E.activeSynergies(s3w).some(y=>y.id==='smithy')&&E.craftQuality(LS)>=0.3,'Workbench+Forge synergy: Smithy');
+const s3x=E.buildStructure(LS,'shack'); E.placePiece(LS,s3x.uid,'studydesk'); const lore0=E.eff(LS,'xp'); E.placePiece(LS,s3x.uid,'studycorner'); ok(E.activeSynergies(s3x).some(y=>y.id==='nook'),'Study Desk+Study Corner synergy: Scholar\'s Nook');
+ok(E.removePiece(LS,s3x.uid,'studycorner')&&LS.pieceStore.includes('studycorner')&&!E.activeSynergies(s3x).length&&E.placePiece(LS,s3x.uid,'studycorner',true),'remove to storage and re-place');
 // minion housing & food
 ok(!E.addMinion(LS,'laborer','t'),'no bunk → follower cannot join'); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.planks=100; E.buyLand(LS,'meadow'); const bh=E.buildStructure(LS,'bunkhouse');
 ok(bh&&E.housingCap(LS,'bunk')===4,'Bunkhouse houses 4');
-E.addMinion(LS,'laborer','t'); E.addMinion(LS,'woodsman','t'); E.addMinion(LS,'woodsman','t'); E.placePiece(LS,bh.uid,'toolrack');
+E.addMinion(LS,'laborer','t'); E.addMinion(LS,'woodsman','t'); E.addMinion(LS,'woodsman','t'); LS.land.push('meadow'); const trh=E.buildStructure(LS,'shack'); E.placePiece(LS,trh.uid,'toolrack');
 ok(E.assignMinion(LS,LS.minions[1].uid,'gather')&&E.assignMinion(LS,LS.minions[2].uid,'gather')&&!E.assignMinion(LS,LS.minions[0].uid,'gather'),'minion job spots come from stations (Tool Rack: 2)');
 LS.members[0].cls='beastmaster'; E.advanceReal(LS,10); const wolf2=LS.minions.find(x=>x.type==='wolf'); ok(wolf2&&!E.isHoused(LS,wolf2)&&!E.assignMinion(LS,wolf2.uid,'guard'),'Wolf needs a Kennel before it can work');
-E.placePiece(LS,bh.uid,'kennel'); ok(E.isHoused(LS,wolf2)&&E.assignMinion(LS,wolf2.uid,'guard'),'Kennel houses the Wolf');
+E.placePiece(LS,trh.uid,'kennel'); ok(E.isHoused(LS,wolf2)&&E.assignMinion(LS,wolf2.uid,'guard'),'Kennel houses the Wolf');
 const mf=E.minionFood(LS); ok(mf===LS.minions.length*0.5,'followers eat from the food pool');
 LS.res.food=0; const l0=LS.minions[0].loyalty; E.advanceReal(LS,10); ok(LS.minions[0].loyalty<l0&&LS.minions[0].hunger>0,'hungry followers lose morale');
 for(let i=0;i<20;i++){LS.res.food=0;E.advanceReal(LS,10);} ok(LS.minions.length===0,'starving followers eventually leave');
 // migration
 const OLD=JSON.parse(E.serialize(G,t0)); delete OLD.schema; delete OLD.land; delete OLD.structures; OLD.rooms=['living','workshop','study']; OLD.furniture=['bookshelf','trophy']; OLD.buildings={house:2,farm:1,lumber:1,yard:0,library:0,hourglass:0}; E.normalize(OLD);
 ok(OLD.structures.length===1&&OLD.structures[0].type==='cabin'&&OLD.structures[0].pieces.includes('bunk')&&OLD.structures[0].pieces.includes('workbench')&&E.landSlots(OLD)>=E.landUsed(OLD)&&OLD.rooms===undefined&&OLD.buildings.house===undefined,'old House/rooms save → Cabin with stations');
-ok([...OLD.structures[0].pieces,...OLD.pieceStore].includes('trophy'),'old furniture kept (placed or in storage)');
+ok([...OLD.structures[0].pieces,...(OLD.structures[0].fittings||[]),...OLD.pieceStore].includes('trophy'),'old furniture kept (placed or in storage)');
 // classes via guilds
 const CG=E.newGame(t0); const cm=CG.members[0]; CG.res.coin=1e4; ok(!cm.cls,'characters start classless');
 cm.ageDays=15*360; cm.skills.swordsmanship.lvl=10; cm.stats.STR=10; ok(E.joinIssues(CG,cm,'vanguard').includes('age 16+'),'guilds require age 16');
@@ -152,7 +152,7 @@ ok(D.classes.filter(c=>c.tier>0&&!c.retired).every(c=>{const g=E.classGuild(c.id
 const MG=JSON.parse(E.serialize(G,t0)); delete MG.schema; MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
 // crafting, inventory, professions, minion gear
 const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e5; K.res.wood=300; K.res.planks=100; K.res.ingots=100; K.res.hides=50; K.res.cloth=50; K.res.potions=20; K.res.ore=30; K.res.stone=300;
-['plot','acre','meadow'].forEach(l=>E.buyLand(K,l)); K.res.blocks=100; const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','forge','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p));
+['plot','acre','meadow'].forEach(l=>E.buyLand(K,l)); K.res.blocks=100; const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p)); K.land.push('meadow'); E.buildStructure(K,'smithy');
 ok(E.itemDef('c|iron_sword|masterwork').cp>E.itemDef('c|iron_sword|crude').cp&&E.itemDef('c|iron_sword|fine').value>E.itemDef('iron_sword').value,'crafted quality tiers scale stats and value');
 ok(E.rollQuality(-1)==='crude'&&E.rollQuality(2)==='masterwork','quality roll spans Crude→Masterwork');
 const low=E.qualityScore(K,km2,E.recipeDef('r_sword')); km2.skills.smithing.lvl=50; const hi=E.qualityScore(K,km2,E.recipeDef('r_sword')); ok(hi>low,'skill raises craft quality');
@@ -179,7 +179,7 @@ av.skills.monsterlore.lvl=30; av.skills.swordsmanship.lvl=30; ok(!E.evolve(AV,av
 const AV2=E.newGame(t0); const a2=AV2.members[0]; a2.ageDays=20*360; AV2.res.coin=1e5; a2.stats.STR=10; a2.skills.swordsmanship.lvl=6; E.joinAdventurers(AV2,a2); ok(E.joinGuild(AV2,a2,'vanguard')&&a2.cls==='fighter'&&a2.adv,'class guild replaces Adventurer as primary; rank track kept');
 // crafter playstyle without questing: idle crafter on standing order + merchant
 const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smithing.lvl=30; asProf(cz,'blacksmith'); CP.res.coin=2000; CP.res.wood=200; CP.res.planks=200; CP.res.ingots=200; CP.res.stone=200; CP.res.food=400;
-['plot','acre'].forEach(l=>E.buyLand(CP,l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','forge','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p));
+['plot','acre'].forEach(l=>E.buyLand(CP,l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p)); {const c0=CP.res.coin; CP.res.coin+=5000; CP.land.push('meadow'); E.buildStructure(CP,'smithy'); CP.res.coin=c0;}
 CP.members.push({...JSON.parse(JSON.stringify(cz)),id:99,name:'Kip'}); CP.activeId=99; E.setOrder(CP,cz.id,{type:'craft'});
 E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'idle family member crafts on standing order');
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
@@ -205,8 +205,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(E.placePiece(A,sa.uid,'larder@3',true)&&Math.abs(E.foodCap(A)-(f1+150))<1e-6,'tier kept when re-placed');
  const L=E.newGame(t0); const sl=estate(L,[],'house'); L.res.ingots=50; L.res.cloth=20; L.res.copper=20;
  ok(E.placeIssue(L,sl.uid,'steelanvil')&&E.placeIssue(L,sl.uid,'coldcellar')&&E.placeIssue(L,sl.uid,'alchbench'),'better furniture locked by guild/quest/tier');
- L.doneQuests.push('mushrooms'); ok(E.placePiece(L,sl.uid,'coldcellar'),'quest unlocks Cold Cellar');
- const lm=L.members[0]; lm.ageDays=20*360; lm.craft={id:'hearth',rank:1,rep:0}; ok(E.placePiece(L,sl.uid,'steelanvil')&&E.craftQuality(L)>=0.12,'Crafters rank unlocks Steel Anvil');
+ L.doneQuests.push('mushrooms'); ok(E.pieceDef('coldcellar').id==='larder'&&E.placePiece(L,sl.uid,'larder'),'Cold Cellar merged into Larder');
+ const lm=L.members[0]; lm.ageDays=20*360; lm.craft={id:'hearth',rank:1,rep:0}; L.res.coin+=5000; L.res.stone+=200; L.land.push('meadow'); const lsm=E.buildStructure(L,'smithy'); ok(E.placePiece(L,lsm.uid,'steelanvil')&&E.craftQuality(L)>=0.12,'Crafters rank unlocks Steel Anvil');
  const MM=E.newGame(t0); estate(MM,['orecart','minionbunk'],'shack'); MM.res.copper=5; ok(E.jobCap(MM,'mine')===2,'Ore Cart gives mining spots');
  const old=E.newGame(t0); estate(old,['forge','bunk']); const o2=JSON.parse(JSON.stringify(old)); E.normalize(o2); ok(o2.structures[0].pieces.every(p=>E.pieceTier(p)===0)&&E.bedrooms(o2)>=3,'old saves load as Crude tier'); }
 // resource tiers
@@ -326,7 +326,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const R2=E.newGame(t0); const rm=R2.members[0]; rm.injured=6; R2.res.remedies=5; E.advanceReal(R2,10); ok(rm.injured<=3&&R2.res.remedies<5,'remedies speed injury recovery');
  const C=E.newGame(t0); estate(C,['minionbunk'],'shack'); C.res.coin=1e5; C.res.wood=1e3; C.res.stone=1e3; C.res.food=1e4; C.res.planks=500; C.res.hides=100; C.res.blocks=100; C.res.leather=50;
  const cab=E.buildStructure(C,'hunterscabin'); ok(E.classHomeCap(cab)===2,'class building houses 2 of its class');
- const a=E.addMinion(C,'woodsman','t'), b=E.addMinion(C,'woodsman','t'); ok(a&&b&&!E.addMinion(C,'woodsman','t'),'general bunks full');
+ for(let i=E.housingCap(C,'bunk');i>2;i--)E.addMinion(C,'laborer','t'); const a=E.addMinion(C,'woodsman','t'), b=E.addMinion(C,'woodsman','t'); ok(a&&b&&!E.addMinion(C,'woodsman','t'),'general bunks full');
  a.cls='n_huntsman'; b.cls='n_huntsman'; ok(E.homeMap(C)[a.uid]===cab.uid&&E.homeMap(C)[b.uid]===cab.uid&&E.freeHousing(C,'bunk')===2,'class members move into their class building, freeing bunks');
  ok(E.addMinion(C,'laborer','t'),'freed bunks take new hires'); a.job='hunt'; const m0=E.minionLvlMult(a); E.advanceReal(C,10); ok(a.home===cab.uid&&E.minionLvlMult(a)>m0*1.1,'residents get the class-home bonus');
  E.upgradeSpecial(C,cab.uid); ok(E.classHomeCap(cab)===3,'upgrades raise class housing');
@@ -754,17 +754,17 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  const HS=mk(); HS.structures=[{uid:'h',type:'house',pieces:['enchdesk@3','reagentshelf','studydesk','glyphlectern'],up:0}]; ok(Q(HS)>Q(W0),'home + synergies outclass a low-tier workshop');
  const WM=mk(); WM.structures=[{uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus','reagentshelf','glyphlectern'],up:3}]; ok(Q(WM)>Q(HS)&&E.stationFx(WM).maxSlots>E.stationFx(HS).maxSlots-1&&E.stationFx(WM).jobs>=2,'full workshop with synergies is the ceiling');
  ok(E.stationCraftQ(WM,'enchtable')>E.stationCraftQ(W0,'enchtable')&&E.stationCraftQ(W0,'forge')===0,'workshop upgrades add crafting quality at its station');
- ok(E.pieceSlots('enchdesk@3')===3&&E.pieceSlots('enchdesk')===1&&E.pieceSlots('forge@3')===2,'higher furniture tiers take more slots');
+ ok(E.pieceSlots('enchdesk@3')===1&&E.pieceSlots('enchdesk')===1&&E.pieceSlots('forge@3')===1,'every furniture item costs 1 slot at any tier');
  ok(Object.keys(E.pieceTiers('enchdesk')[3].cost).some(k=>['moonpetal','mandrake','dust'].includes(k)),'top tiers need higher-tier resources');
- const G=mk(); const st=estate(G,['enchdesk@1']); G.res.coin=1e4; G.res.blocks=50; G.res.dust=50; G.res.moonpetal=20; const free=E.freeSlots(G,st); st.pieces.push(...Array(free).fill(0).map((_,i)=>'bunk')); ok(/more free slot/.test(E.pieceUpIssue(G,st.uid,'enchdesk@1')||''),'upgrading to a bigger tier needs room');
+ const G=mk(); const st=estate(G,['enchdesk@1']); G.res.coin=1e4; G.res.blocks=50; G.res.dust=50; G.res.moonpetal=20; const free=E.freeSlots(G,st); st.pieces.push(...Array(free).fill(0).map((_,i)=>'bunk')); ok(!/more free slot/.test(E.pieceUpIssue(G,st.uid,'enchdesk@1')||''),'upgrading a tier needs no extra room (1 slot always)');
  const O=mk(); const s2=estate(O,['forge@3']); const cap=E.freeSlots(O,s2); s2.pieces.push(...Array(Math.max(0,cap+1)).fill('bunk')); const ol=JSON.parse(E.serialize(O,t0)); ol.schema=8; ol._norm=false; E.normalize(ol); ok(E.freeSlots(ol,ol.structures.find(x=>x.uid===s2.uid))>=0,'old saves: over-full buildings are grandfathered');
  ok(/needs a Mage/.test(E.structIssue(mk(),'arcaneworkshop')||'')||/buy land|needs a/.test(E.structIssue(mk(),'arcaneworkshop')||''),'workshop requires the Mage\'s Tower');
 }
 // Class crafting perks: exclusive recipes/furniture/upgrades + quality bonus on what they build
-{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; estate(G,['bunk','forge','loom','workbench']); Object.assign(G.res,{ingots:50,leather:10,planks:20,copper:20,cloth:20,dust:20});
+{ const G=E.newGame(t0); E.skipTutorial(G); const m=G.members[0]; m.ageDays=25*360; estate(G,['bunk','forge','toolrack','loom','workbench']); Object.assign(G.res,{ingots:50,leather:10,planks:20,copper:20,cloth:20,dust:20});
  const rc=E.recipeDef('r_warden_mail'); ok(/Journeyman Smith only/.test(E.recipeIssue(G,m,rc)||''),'class recipe locked, names the class'); asProf(m,'blacksmith'); m.skills.smithing.lvl=20; ok(!E.recipeIssue(G,m,rc),'Blacksmith can craft it'); asProf(m,'armorer'); ok(!E.recipeIssue(G,m,rc)||!/only/.test(E.recipeIssue(G,m,rc)),'advanced classes in the line inherit');
  asProf(m,null); ok(/needs a Journeyman Smith/.test(E.pieceLock(G,E.pieceDef('runedanvil'))||''),'class furniture is locked with the class named');
- const st=G.structures[0]; const pm0=E.pieceMult(st,'forge'); asProf(m,'blacksmith'); ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'forge'); E.placePiece(G,st.uid,'forge',G.pieceStore.includes('forge')); ok(E.pieceMult(st,'forge')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
+ const st=G.structures[0]; const pm0=E.pieceMult(st,'toolrack'); asProf(m,'blacksmith'); ok(!E.pieceLock(G,E.pieceDef('runedanvil')),'a Blacksmith unlocks it'); G.res.coin+=1e4; E.removePiece(G,st.uid,'toolrack'); E.placePiece(G,st.uid,'toolrack',G.pieceStore.includes('toolrack')); ok(E.pieceMult(st,'toolrack')>pm0,'furniture built with a Blacksmith in the family gets a quality bonus');
  const ws={uid:'w',type:'arcaneworkshop',pieces:['enchtable','arcanefocus'],up:2}; G.structures.push(ws); G.res.coin=1e5; G.res.blocks=100; G.res.moonpetal=50; ok(/needs an Apprentice/.test(E.specialUpIssue(G,'w')||''),'class-gated building upgrade');
  for(const [c,k] of Object.entries(D.crafting.classPerks)) if(c[0]!=='_') ok((D.classes.some(x=>x.id===c)||!!D.paths.classMap[c])&&k.structures.every(t=>D.estate.structures.some(x=>x.id===t))&&k.pieces.every(p=>E.pieceDef(p)),'perk '+c+' references real classes/pieces');
 }

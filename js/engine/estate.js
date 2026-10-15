@@ -7,6 +7,8 @@ import { inLine } from "./skills.js";
 import { famFx, pathReqName } from "./paths.js";
 import { stalls, structFeatureIssue } from "./world.js";
 export * from "./production.js";
+export * from "./tiers.js";
+export * from "./furnish.js";
 
 // ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
 const CPK = () => Object.entries(D.crafting.classPerks || {}).filter(([k]) => k[0] !== "_");
@@ -28,16 +30,18 @@ export const baseId = id => String(id).split("@")[0];
 
 export const pieceTier = id => +(String(id).split("@")[1] || 0);
 
+const rawPiece = b => ES().pieces.find(p => p.id === b) || D.furniture.find(p => p.id === b);
+// merged items (furniture redo) resolve to the item they were folded into
 export const pieceDef = id => {
-  const b = baseId(id);
-  return ES().pieces.find(p => p.id === b) || D.furniture.find(p => p.id === b);
+  const p = rawPiece(baseId(id));
+  return p && p.mergedInto ? rawPiece(p.mergedInto) : p;
 };
 
 // Per-piece tier tables (piece.tiers) override the generic pieceTiers: higher tiers can need rarer resources
 // and take more furniture slots (tier.slots).
 export const pieceTiers = id => (pieceDef(id) || {}).tiers || ES().pieceTiers;
 export const pieceTierDef = id => pieceTiers(id)[Math.min(pieceTier(id), pieceTiers(id).length - 1)];
-export const pieceSlots = id => pieceTierDef(id).slots || 1;
+export const pieceSlots = () => 1; // furniture redo: every item takes exactly one slot
 export const tierName = id => pieceTierDef(id).name;
 
 export const structLevel = st => structDef(st.type).level || 1;
@@ -60,10 +64,15 @@ export function scaleBonus(b, m) {
   return o;
 }
 
+// A Bed's effect depends on where it stands: family beds at home, follower beds in a bunkhouse/barracks/Fort.
+export const bedRole = st => structDef(st.type).bedRole || "family";
+export const pieceBonus = (st, p) => (p.followerBonus && bedRole(st) === "followers" ? p.followerBonus : p.bonus);
 export const scaledPiece = (st, id) => {
   const p = pieceDef(id);
-  return p && { ...p, bonus: scaleBonus(p.bonus, pieceMult(st, id)) };
+  return p && { ...p, bonus: scaleBonus(pieceBonus(st, p), pieceMult(st, id)) };
 };
+// slot-free fittings (former stat-bump furniture): bought once per building, flat bonus
+export const fittingFx = st => (st.fittings || []).map(pieceDef).filter(Boolean);
 
 export const STAGE_ORDER = () => ES().stages.map(x => x[1]);
 
@@ -148,10 +157,11 @@ export const structName = st => {
   return u ? u[1] : d.name;
 };
 
-export const placed = s => (s.structures || []).flatMap(st => st.pieces.map(id => scaledPiece(st, id)).filter(Boolean));
+export const placed = s =>
+  (s.structures || []).flatMap(st => [...st.pieces.map(id => scaledPiece(st, id)).filter(Boolean), ...fittingFx(st)]);
 
 export function activeSynergies(st) {
-  return ES().synergies.filter(y => y.pieces.every(p => st.pieces.map(baseId).includes(p)));
+  return ES().synergies.filter(y => y.pieces.every(p => st.pieces.map(x => (pieceDef(x) || { id: baseId(x) }).id).includes(p)));
 }
 
 export const allSynergies = s =>
@@ -163,7 +173,7 @@ const _fx = new WeakMap();
 export function effects(s) {
   let key = "";
   for (const st of s.structures || [])
-    key += `${st.uid}:${st.type}:${st.up || 0}:${st.spec || ""}:${st.pieces.join(",")}|`;
+    key += `${st.uid}:${st.type}:${st.up || 0}:${st.spec || ""}:${st.pieces.join(",")}:${(st.fittings || []).join(",")}|`;
   const c = _fx.get(s);
   if (c && c.key === key) return c.list;
   const list = [
@@ -180,7 +190,8 @@ export const estEff = (s, k) => eff(s, k);
 
 export const eff = (s, k) => effects(s).reduce((a, f) => a + (typeof f.bonus[k] === "number" ? f.bonus[k] : 0), 0);
 
-export const hasPiece = (s, id) => (s.structures || []).some(st => st.pieces.map(baseId).includes(baseId(id)));
+export const hasPiece = (s, id) =>
+  (s.structures || []).some(st => [...st.pieces, ...(st.fittings || [])].map(x => baseId(pieceDef(x) ? pieceDef(x).id : x)).includes(baseId(pieceDef(id) ? pieceDef(id).id : id)));
 
 export const bedrooms = s => 1 + eff(s, "beds");
 
@@ -247,104 +258,6 @@ export function buildStructure(s, type) {
   return st;
 }
 
-// Next tiers: a building can have several (House → Mansion / Fort / Tower Keep / Abbey).
-export const upgradeOptions = type => ES().structures.filter(x => x.upgradeFrom === type);
-export const isBranch = d => !!(d && d.branch);
-// Branch unlock: every member requirement on ONE member; building requirement on the estate.
-export function branchReqIssue(s, d) {
-  const q = d.req || {};
-  if (q.building && !(s.structures || []).some(st => q.building.types.includes(st.type) && (st.up || 0) >= q.building.up))
-    return `needs ${q.building.types.map(id => structDef(id).name).join(" or ")}${q.building.up ? ` (upgrade ${q.building.up})` : ""}`;
-  const okM = m =>
-    isAdult(m) &&
-    Object.entries(q.skill || {}).every(([k, v]) => ((m.skills || {})[k] || { lvl: 0 }).lvl >= v) &&
-    (!q.line || inLine(m, q.line));
-  if ((q.skill || q.line) && !living(s).some(okM))
-    return "needs one member with " + [...Object.entries(q.skill || {}).map(([k, v]) => `${k} ${v}`), ...(q.line ? [`a ${className(q.line)}-line class`] : [])].join(" + ");
-  return null;
-}
-const pickNext = (st, to) => (to ? upgradeOptions(st.type).find(x => x.id === to) : upgradeOptions(st.type)[0]);
-export function upgradeIssue(s, uid, to) {
-  const st = s.structures.find(x => x.uid === uid);
-  if (!st) return "missing";
-  const nx = pickNext(st, to);
-  if (!nx) return "max";
-  if (landUsed(s) - structDef(st.type).land + nx.land > landSlots(s)) return "no free land slot";
-  if (isBranch(nx)) {
-    const bi = branchReqIssue(s, nx);
-    if (bi) return bi;
-  }
-  if (!afford(s, nx.cost)) return "cannot afford";
-  return null;
-}
-
-function setType(st, id) {
-  const fx = structDef(st.type).fixed || [];
-  st.pieces = st.pieces.filter(p => !fx.includes(baseId(p)));
-  st.type = id;
-  st.pieces = [...(structDef(id).fixed || []), ...st.pieces];
-}
-
-export function upgradeStructure(s, uid, to) {
-  if (upgradeIssue(s, uid, to)) return false;
-  const st = s.structures.find(x => x.uid === uid);
-  const nx = pickNext(st, to);
-  pay(s, nx.cost);
-  log(s, `🏗️ ${structDef(st.type).name} upgraded to ${nx.name}.`);
-  setType(st, nx.id);
-  return true;
-}
-
-const refundOf = c => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, Math.floor(v * (D.tuning.demolishRefund ?? 0.5))]));
-const give = (s, c) => {
-  for (const [k, v] of Object.entries(c)) s.res[k] = (s.res[k] || 0) + v;
-};
-const costText = c => Object.entries(c).map(([k, v]) => `${v} ${k}`).join(", ");
-
-// Respec a manor branch: rebuild as another branch, refund half the old branch's cost, pay the new one in full.
-export function respecIssue(s, uid, to) {
-  const st = s.structures.find(x => x.uid === uid);
-  const cur = st && structDef(st.type),
-    nx = structDef(to);
-  if (!st || !isBranch(cur) || !isBranch(nx) || nx.upgradeFrom !== cur.upgradeFrom) return "not possible";
-  if (nx.id === cur.id) return "already this";
-  const bi = branchReqIssue(s, nx);
-  if (bi) return bi;
-  const r = refundOf(cur.cost);
-  if (!Object.entries(nx.cost).every(([k, v]) => (s.res[k] || 0) + (r[k] || 0) >= v)) return "cannot afford";
-  return null;
-}
-export function respecStructure(s, uid, to) {
-  if (respecIssue(s, uid, to)) return false;
-  const st = s.structures.find(x => x.uid === uid),
-    cur = structDef(st.type),
-    nx = structDef(to);
-  give(s, refundOf(cur.cost));
-  pay(s, nx.cost);
-  setType(st, nx.id);
-  log(s, `🔁 ${cur.name} rebuilt as a ${nx.name} (half the old cost refunded).`);
-  return true;
-}
-
-// Demolish: refund half of everything paid for this building (its whole tier chain), furniture goes to storage.
-export function paidChain(type) {
-  const out = {};
-  for (let d = structDef(type); d; d = d.upgradeFrom ? structDef(d.upgradeFrom) : null)
-    for (const [k, v] of Object.entries(d.cost || {})) out[k] = (out[k] || 0) + v;
-  return out;
-}
-export const demolishRefund = st => refundOf(paidChain(st.type));
-export function demolishStructure(s, uid) {
-  const st = s.structures.find(x => x.uid === uid);
-  if (!st) return false;
-  const r = demolishRefund(st);
-  for (const p of st.pieces) if (!isFixed(st, p)) s.pieceStore.push(p);
-  s.structures = s.structures.filter(x => x !== st);
-  give(s, r);
-  log(s, `🧨 Demolished the ${structDef(st.type).name}: refunded ${costText(r)}.`);
-  return true;
-}
-
 export const freeSlots = (s, st) =>
   structDef(st.type).slots + (structDef(st.type).fixed || []).length + (st.bonusSlots || 0) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
 
@@ -381,9 +294,10 @@ export function placeIssue(s, uid, pid, fromStore) {
   if (!st || !p) return "missing";
   if (freeSlots(s, st) <= 0) return "building full";
   const sd = structDef(st.type);
-  if (p.fixedOnly) return "built-in only";
+  if (p.fixedOnly || p.mergedInto) return "built-in only";
+  if (p.fitting) return "slot-free fitting (buy it under Fittings)";
   if (sd.allowed && !sd.allowed.includes(baseId(pid))) return "not allowed here";
-  if (st.pieces.map(baseId).includes(baseId(pid))) return "already here";
+  if (!p.stack && st.pieces.map(baseId).includes(baseId(pid))) return "already here";
   if (!fromStore && pieceLock(s, p)) return "🔒 " + pieceLock(s, p);
   if (!fromStore && !afford(s, p.cost)) return "cannot afford";
   if (fromStore && !s.pieceStore.includes(pid)) return "not in storage";

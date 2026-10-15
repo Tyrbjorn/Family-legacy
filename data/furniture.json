@@ -11,7 +11,8 @@
    "skill": "reading",
    "xp": 0.05
   },
-  "kind": "decor"
+  "kind": "decor",
+  "mergedInto": "studycorner"
  },
  {
   "id": "bed",
@@ -24,7 +25,8 @@
   "bonus": {
    "rest": 0.2
   },
-  "kind": "decor"
+  "kind": "decor",
+  "mergedInto": "bunk"
  },
  {
   "id": "trophy",
@@ -37,7 +39,9 @@
   "bonus": {
    "renown": 1
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+1 renown per member (bragging rights)."
  },
  {
   "id": "dummy",
@@ -51,7 +55,9 @@
    "family": "combat",
    "xp": 0.03
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+3% XP to Combat skills."
  },
  {
   "id": "desk",
@@ -65,7 +71,8 @@
    "family": "lore",
    "xp": 0.03
   },
-  "kind": "decor"
+  "kind": "decor",
+  "mergedInto": "studycorner"
  },
  {
   "id": "crystal",
@@ -79,7 +86,9 @@
    "family": "magic",
    "xp": 0.03
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+3% XP to Magic skills."
  },
  {
   "id": "mirror",
@@ -92,7 +101,9 @@
   "bonus": {
    "court": 0.2
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+20% courtship progress."
  },
  {
   "id": "pantry",
@@ -105,7 +116,9 @@
   "bonus": {
    "food": 2
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+2 food per day."
  },
  {
   "id": "cradle",
@@ -118,7 +131,8 @@
   "bonus": {
    "childxp": 0.25
   },
-  "kind": "decor"
+  "kind": "decor",
+  "mergedInto": "bunk"
  },
  {
   "id": "strongbox",
@@ -131,6 +145,8 @@
   "bonus": {
    "coin": 0.05
   },
-  "kind": "decor"
+  "kind": "decor",
+  "fitting": true,
+  "desc": "+5% coin income."
  }
 ]
