@@ -45,9 +45,53 @@
   "speedPerPoint": 0.01,
   "speedMax": 0.1,
   "speedMin": -0.15,
-  "note": "morale −15…+10 → skill XP and character speed (work, activities, travel) −15%…+10%"
+  "note": "morale \u221215\u2026+10 \u2192 skill XP and character speed (work, activities, travel) \u221215%\u2026+10%"
  },
  "resBuyMarkupBy": {
   "food": 6
+ },
+ "teenAge": 14,
+ "teenRiskyMaxCp": 15,
+ "trade": {
+  "_note": "Trade round. Numbers are placeholders for Jeremy's tweak pass.",
+  "elasticity": 0.6,
+  "sellMin": 0.6,
+  "sellMax": 1.6,
+  "buyMin": 0.8,
+  "buyMax": 1.6,
+  "depth": 200,
+  "recovery": 0.05,
+  "slotsByTier": [
+   1,
+   2,
+   3
+  ],
+  "haggleLvlPerSlot": 10,
+  "haggleSlotMax": 2,
+  "stewardSpecs": [
+   "steward",
+   "seneschal"
+  ],
+  "stewardSlotMax": 1,
+  "slotClasses": [
+   "n_tradefactor"
+  ],
+  "merchantSlotMax": 2,
+  "driverEdge": {
+   "n_peddler": 0.05,
+   "n_trademerchant": 0.1,
+   "n_tradefactor": 0.15
+  },
+  "escortClasses": [
+   "n_horseman",
+   "n_knighterrant",
+   "n_paladinnpc"
+  ],
+  "maxEscorts": 2,
+  "banditBase": 0.12,
+  "guardDeter": 0.6,
+  "defaultQty": 50,
+  "defaultKeep": 100,
+  "defaultBelow": 50
  }
 }

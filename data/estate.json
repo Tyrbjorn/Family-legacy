@@ -2270,6 +2270,193 @@
     }
    ],
    "desc": "Workshop wing of the Mage's Tower (one more land slot): Enchanter's Table and a crafting bench. Upgrades add enchant quality, speed, jobs and slots."
+  },
+  {
+   "id": "warehouse",
+   "name": "Warehouse",
+   "icon": "📦",
+   "land": 1,
+   "slots": 1,
+   "allowed": [
+    "storage"
+   ],
+   "cost": {
+    "coin": 300,
+    "planks": 20,
+    "stone": 20
+   },
+   "level": 1,
+   "desc": "Opens trade routes (1 route slot). Upgrades to Trading Post.",
+   "houses": {
+    "classes": [
+     "n_peddler",
+     "n_trademerchant",
+     "n_tradefactor"
+    ],
+    "cap": 1,
+    "bonus": 0.15
+   },
+   "upgrades": [
+    {
+     "name": "Loading Dock",
+     "cost": {
+      "coin": 300,
+      "planks": 15
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Ledger Office",
+     "cost": {
+      "coin": 800,
+      "planks": 20,
+      "cloth": 10
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Cart Yard",
+     "cost": {
+      "coin": 1800,
+      "blocks": 30,
+      "ingots": 8
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    }
+   ],
+   "special": true
+  },
+  {
+   "id": "tradingpost",
+   "name": "Trading Post",
+   "icon": "🏪",
+   "land": 1,
+   "slots": 2,
+   "allowed": [
+    "storage"
+   ],
+   "upgradeFrom": "warehouse",
+   "cost": {
+    "coin": 900,
+    "planks": 40,
+    "blocks": 20
+   },
+   "level": 2,
+   "desc": "2 route slots. Upgrades to Counting House.",
+   "houses": {
+    "classes": [
+     "n_peddler",
+     "n_trademerchant",
+     "n_tradefactor"
+    ],
+    "cap": 2,
+    "bonus": 0.15
+   },
+   "upgrades": [
+    {
+     "name": "Loading Dock",
+     "cost": {
+      "coin": 300,
+      "planks": 15
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Ledger Office",
+     "cost": {
+      "coin": 800,
+      "planks": 20,
+      "cloth": 10
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Cart Yard",
+     "cost": {
+      "coin": 1800,
+      "blocks": 30,
+      "ingots": 8
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    }
+   ],
+   "special": true
+  },
+  {
+   "id": "countinghouse",
+   "name": "Counting House",
+   "icon": "🏦",
+   "land": 1,
+   "slots": 3,
+   "allowed": [
+    "storage",
+    "studydesk"
+   ],
+   "upgradeFrom": "tradingpost",
+   "cost": {
+    "coin": 2500,
+    "planks": 40,
+    "blocks": 40,
+    "ingots": 10
+   },
+   "level": 3,
+   "desc": "3 route slots.",
+   "houses": {
+    "classes": [
+     "n_peddler",
+     "n_trademerchant",
+     "n_tradefactor"
+    ],
+    "cap": 3,
+    "bonus": 0.15
+   },
+   "upgrades": [
+    {
+     "name": "Loading Dock",
+     "cost": {
+      "coin": 300,
+      "planks": 15
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Ledger Office",
+     "cost": {
+      "coin": 800,
+      "planks": 20,
+      "cloth": 10
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    },
+    {
+     "name": "Cart Yard",
+     "cost": {
+      "coin": 1800,
+      "blocks": 30,
+      "ingots": 8
+     },
+     "mult": 0,
+     "routes": 1,
+     "cap": 0
+    }
+   ],
+   "special": true
   }
  ],
  "pieces": [

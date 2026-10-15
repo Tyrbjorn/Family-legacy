@@ -1,5 +1,5 @@
 # Family Legacy – web prototype
-Run: `python3 -m http.server 8080` → http://localhost:8080 (it needs a server because the JSON is loaded with fetch).
+Run: `cd family-legacy-idle && python3 -m http.server 8080` → http://localhost:8080 (it needs a server because the JSON is loaded with fetch).
 Tabs: Main (stats, actions, training, courtship, shop, log/save) · Inventory (personal pack + shared vault, equip) · Estate (scrub land → estate, buildings, furniture, standing orders) · Map (regions, quests, resource nodes, towns/trade, rumors) · Minions (followers: hire, rescue, rumor, reputation; assign to estate jobs; monthly wages). Guilds: 6 halls in towns (Warriors, Rangers, Magic, Healers/Church, Rogues, Crafters) (Map), one per member for life, ranks Initiate→Master, guild skills/quests/items, Tier 2 classes need Adept rank; membership card on Main. Guilds tab: Adventurers' Guild (open to all, ranks F→S, services questBoard/appraisal/storage/healer, bounties, store) + the 6 class/craft guild halls.
 Tests: `node test/engine.test.mjs` · UI smoke: `test/ui-smoke.mjs` (Playwright with system Chrome, server on :8137).
 Content: data/*.json (seeded by gen-data.mjs; hand edits to the JSON are now authoritative).

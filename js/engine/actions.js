@@ -248,7 +248,7 @@ export function actionAllowed(s, m, a) {
   }
   if (t === "quest") {
     const q = D.quests.find(x => x.id === a.target);
-    return !!q && (isAdult(m) || (q.apprentice && ageY(m) >= 14)) && !questIssue(s, m, q);
+    return !!q && canQuest(m, q) && !questIssue(s, m, q);
   }
   if (t === "explore") return !exploreIssue(s, m, a.target);
   if (t === "dungeon") return !dungeonIssue(s, m, dungeonDef(a.target));
@@ -260,3 +260,15 @@ export function actionAllowed(s, m, a) {
   if (t === "court") return isAdult(m) && !m.spouse && s.suitors.some(x => x.id === a.target);
   return false;
 }
+
+// Teens (teenAge..adult) may take safe errands, hunting, and low-injury combat (Oct 13 rule).
+const TEEN_COMBAT = ["brawling", "swordsmanship", "archery", "shield", "tactics"];
+export function teenQuestOk(q) {
+  if (!q || q.risk === "deadly" || q.type === "dungeon") return false;
+  if (q.risk === "safe") return true;
+  const maxCp = T.teenRiskyMaxCp ?? 15;
+  return q.cp <= maxCp && (q.type === "hunt" || q.skill === "hunting" || TEEN_COMBAT.includes(q.skill));
+}
+export const isTeen = m => !isAdult(m) && ageY(m) >= (T.teenAge ?? 14);
+export const canQuest = (m, q) => isAdult(m) || (q && q.apprentice && ageY(m) >= (T.teenAge ?? 14)) || (isTeen(m) && teenQuestOk(q));
+export const questAgeIssue = (m, q) => (canQuest(m, q) ? null : isTeen(m) ? "too dangerous for a teen" : "too young");

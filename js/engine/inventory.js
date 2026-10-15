@@ -59,11 +59,25 @@ export const SELL_CAP = 0.95;
 export const buyPrice = (it, s, townId) =>
   Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1));
 
+// Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
+// buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).
+const TR = () => T.trade || {};
+export const townSupply = (s, townId, res) => ((s.trade && s.trade.supply[townId]) || {})[res] ?? 1;
+export const demandMult = (s, townId, res, lo, hi) => Math.min(hi, Math.max(lo, Math.pow(townSupply(s, townId, res), -(TR().elasticity || 0.6))));
+export const sellDemand = (s, townId, res) => demandMult(s, townId, res, TR().sellMin || 0.6, TR().sellMax || 1.6);
+export const buyDemand = (s, townId, res) => demandMult(s, townId, res, TR().buyMin || 0.8, TR().buyMax || 1.6);
+export function shiftSupply(s, townId, res, n) {
+  if (!s.trade) return;
+  const sp = (s.trade.supply[townId] = s.trade.supply[townId] || {});
+  sp[res] = Math.max(0.2, Math.min(3, (sp[res] ?? 1) + n / (TR().depth || 200)));
+}
+
 export const townSellPrice = (s, townId, res) => {
   const t = D.towns.find(x => x.id === townId);
   return (
     Math.round(
-      t.prices[res] * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
+      t.prices[res] *
+        sellDemand(s, townId, res) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );
 };
@@ -90,6 +104,7 @@ export const townBuyPrice = (s, townId, res) => {
         Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) *
         Math.max(1, priceMult(s, townId, res)) *
         seasonPrice(s, res) *
+        buyDemand(s, townId, res) *
         100,
     ) / 100
   );
@@ -100,6 +115,7 @@ export function buyRes(s, townId, res, n) {
   if (n <= 0 || s.res.coin < c) return false;
   s.res.coin -= c;
   s.res[res] = (s.res[res] || 0) + n;
+  shiftSupply(s, townId, res, -n);
   return true;
 }
 
@@ -109,6 +125,7 @@ export function sellRes(s, townId, res, n) {
   if (n <= 0) return false;
   s.res[res] -= n;
   s.res.coin += n * townSellPrice(s, townId, res);
+  shiftSupply(s, townId, res, n);
   return true;
 }
 

@@ -386,6 +386,16 @@ const STEPS = [
       s.animals = s.animals || {};
     },
   },
+  {
+    n: 13,
+    name: "trade round: town supply, trade routes",
+    run: s => {
+      s.trade = s.trade || {};
+      s.trade.supply = s.trade.supply || {};
+      s.trade.routes = s.trade.routes || [];
+      s.trade.nextId = s.trade.nextId || 1;
+    },
+  },
 ];
 export const SCHEMA = Math.max(...STEPS.map(x => x.n));
 export const migrationSteps = () => STEPS.map(({ n, once, name }) => ({ n, once: !!once, name }));

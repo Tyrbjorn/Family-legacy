@@ -288,7 +288,7 @@ export function upgradeSpecial(s, uid) {
   st.up = (st.up || 0) + 1;
   const pk = upgradePerk(s, st.type);
   if (pk) st.upPerk = (st.upPerk || 0) + nx.mult * pk;
-  log(s, `🔧 ${structDef(st.type).name}: ${nx.name} installed (+${nx.mult * 100}% output).`);
+  log(s, `🔧 ${structDef(st.type).name}: ${nx.name} installed (${nx.routes ? "+" + nx.routes + " trade route slot" : "+" + nx.mult * 100 + "% output"}).`);
   return true;
 }
 

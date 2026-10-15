@@ -83,6 +83,12 @@
    "name": "Node runs",
    "icon": "🛤️",
    "desc": "Travels to a chosen resource node, gathers, and hauls the load home (carry and haul speed from your hauling tier)"
+  },
+  {
+   "id": "trade",
+   "name": "Trade route",
+   "icon": "🛒",
+   "desc": "Crewing a trade cart (set in Trade)"
   }
  ],
  "types": [
@@ -1237,6 +1243,69 @@
     ]
    },
    "specialist": true
+  },
+  {
+   "id": "n_peddler",
+   "name": "Peddler",
+   "icon": "🧺",
+   "branch": "economic",
+   "from": "n_peasant",
+   "lvl": 5,
+   "bonus": {
+    "merchant": 0.2
+   },
+   "needs": {
+    "buildings": [
+     "warehouse",
+     "tradingpost",
+     "countinghouse"
+    ],
+    "up": 0,
+    "tier": 1
+   },
+   "desc": "Drives trade carts: +5% on deals"
+  },
+  {
+   "id": "n_trademerchant",
+   "name": "Travelling Merchant",
+   "icon": "💼",
+   "branch": "economic",
+   "from": "n_peddler",
+   "lvl": 10,
+   "bonus": {
+    "merchant": 0.4
+   },
+   "needs": {
+    "buildings": [
+     "warehouse",
+     "tradingpost",
+     "countinghouse"
+    ],
+    "up": 2,
+    "tier": 2
+   },
+   "desc": "Drives trade carts: +10% on deals"
+  },
+  {
+   "id": "n_tradefactor",
+   "name": "Trade Factor",
+   "icon": "📈",
+   "branch": "economic",
+   "from": "n_trademerchant",
+   "lvl": 15,
+   "bonus": {
+    "merchant": 0.6
+   },
+   "needs": {
+    "buildings": [
+     "warehouse",
+     "tradingpost",
+     "countinghouse"
+    ],
+    "up": 3,
+    "tier": 3
+   },
+   "desc": "Drives trade carts: +15% on deals; +1 route slot"
   }
  ],
  "npcClassNote": "Military: Guard → Horseman → Knight (Knight's Hall) → Paladin (Shrine/Chapel + Guardhouse/Barracks both upg 3); Guard → Soldier → Sergeant / Bowman. Magic: Hedge Mage → Mage → pick a school (War College, Lore Library, Enchanter's Atelier). Herbalists are Economic producers (Herbalist's Shack); healers are Divine (Shrine/Chapel).",

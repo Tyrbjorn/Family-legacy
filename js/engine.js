@@ -34,3 +34,4 @@ export * from "./engine/minionups.js";
 export * from "./engine/paths.js";
 export * from "./engine/world.js";
 export * from "./engine/courtship.js";
+export * from "./engine/trade.js";

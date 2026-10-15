@@ -136,7 +136,7 @@ export function jobsv() {
 export function quests() {
   const m = E.active(s);
   let h = "";
-  if (!E.isAdult(m)) h += `<div class="card muted">Children can't quest. Switch to an adult in Family.</div>`;
+  if (!E.isAdult(m)) h += E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights.</div>` : `<div class="card muted">Children can't quest. Switch to a teen or adult in Family.</div>`;
   for (const rg of D.regions) {
     const open = E.regionOpen(s, rg.id);
     h += `<h3>${rg.icon} ${rg.name} ${open ? "" : `🔒 (needs CP ${rg.cp})`}</h3>`;
@@ -151,7 +151,7 @@ export function quests() {
         .join(
           ", ",
         )} · ${Math.round(E.successChance(s, m, q) * 100)}% success${q.risk === "deadly" ? ` · ☠️ ${D.tuning.deadlyDeathChance * 100}%+ death risk` : ""}</span></span>
-   <button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.isAdult(m) && qok ? "" : "disabled"}>Go</button></div>`;
+   <button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q) && qok ? "" : "disabled"}>Go</button></div>`;
     }
   }
   return h;
