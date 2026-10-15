@@ -1,130 +1,18 @@
+import { fittingFx } from "./estate-pieces.js";
+import { ES, baseId, pieceDef, scaledPiece } from "./estate-pieces.js";
+import { prodTier } from "./estate-place.js";
 import { freeVeins } from "./metals.js";
 
 import { hasLegacy } from "./legacy.js";
-import { guildDef, memberGuild } from "./guilds.js";
 import { regionKnown } from "./map.js";
-import { D, afford, ageY, bl, cost, isAdult, living, log, pay } from "./state.js";
-import { inLine } from "./skills.js";
-import { famFx, pathReqName } from "./paths.js";
+import { D, afford, bl, cost, living, log, pay } from "./state.js";
+import { famFx } from "./paths.js";
 import { stalls, structFeatureIssue } from "./world.js";
 export * from "./production.js";
-import { nightShare } from "./daynight.js";
 export * from "./tiers.js";
 export * from "./furnish.js";
-
-// ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
-const CPK = () => Object.entries(D.crafting.classPerks || {}).filter(([k]) => k[0] !== "_");
-export const famHasClass = (s, c) => living(s).some(m => inLine(m, c));
-export const className = c => pathReqName(c) || (D.classes.find(x => x.id === c) || { name: c }).name;
-export const classLock = (s, c) => (c && !famHasClass(s, c) ? `needs ${/^[AEIOU]/.test(className(c)) ? "an" : "a"} ${className(c)} in the family` : null);
-export const piecePerk = (s, pid) =>
-  CPK().reduce((a, [c, k]) => a + (k.pieces.includes(baseId(pid)) && famHasClass(s, c) ? k.furniture : 0), 0);
-export const upgradePerk = (s, type) =>
-  CPK().reduce((a, [c, k]) => a + (k.structures.includes(type) && famHasClass(s, c) ? k.upgrade : 0), 0);
-const markPerk = (s, st, pid) => {
-  const v = piecePerk(s, pid);
-  if (v) (st.perk = st.perk || {})[baseId(pid)] = Math.max(v, (st.perk || {})[baseId(pid)] || 0);
-};
-
-export const ES = () => D.estate;
-
-export const baseId = id => String(id).split("@")[0];
-
-export const pieceTier = id => +(String(id).split("@")[1] || 0);
-
-const rawPiece = b => ES().pieces.find(p => p.id === b) || D.furniture.find(p => p.id === b);
-// merged items (furniture redo) resolve to the item they were folded into
-export const pieceDef = id => {
-  const p = rawPiece(baseId(id));
-  return p && p.mergedInto ? rawPiece(p.mergedInto) : p;
-};
-
-// Per-piece tier tables (piece.tiers) override the generic pieceTiers: higher tiers can need rarer resources
-// and take more furniture slots (tier.slots).
-export const pieceTiers = id => (pieceDef(id) || {}).tiers || ES().pieceTiers;
-export const pieceTierDef = id => pieceTiers(id)[Math.min(pieceTier(id), pieceTiers(id).length - 1)];
-export const pieceSlots = () => 1; // furniture redo: every item takes exactly one slot
-export const tierName = id => pieceTierDef(id).name;
-
-export const structLevel = st => structDef(st.type).level || 1;
-
-export const pieceMult = (st, id) =>
-  pieceTierDef(id).mult * (1 + ES().levelBonus * (structLevel(st) - 1)) * ((prodTier(st) || {}).outputMult || 1) * (1 + upgMult(st)) * (1 + ((st.perk || {})[baseId(id)] || 0));
-
-export const INTK = new Set(["beds"]);
-
-export function scaleBonus(b, m) {
-  const o = {};
-  for (const [k, v] of Object.entries(b)) {
-    if (typeof v === "number") o[k] = INTK.has(k) ? Math.floor(v * m + 1e-9) : v * m;
-    else if (k === "jobs" || k === "housing")
-      o[k] = Object.fromEntries(Object.entries(v).map(([j, n]) => [j, Math.floor(n * m + 1e-9)]));
-    else if (k === "process" || k === "processes")
-      o.processes = [...(o.processes || []), ...[].concat(v).map(p => ({ ...p, rate: p.rate * m }))];
-    else o[k] = v;
-  }
-  return o;
-}
-
-// A Bed's effect depends on where it stands: family beds at home, follower beds in a bunkhouse/barracks/Fort.
-export const bedRole = st => structDef(st.type).bedRole || "family";
-// a building may also retune an item it hosts (e.g. the Counting House desk teaches Haggling)
-export const pieceBonus = (st, p) =>
-  (structDef(st.type).pieceBonus || {})[p.id] || (p.followerBonus && bedRole(st) === "followers" ? p.followerBonus : p.bonus);
-// wagon speed from Loading Docks / Lanterns: trips take 1/(1+x) as long (capped)
-// Lanterns add nightWagonSpeed for the night share of each day (wagons keep rolling after dark)
-export const wagonSpeed = s => 1 + Math.min(1, eff(s, "wagonSpeed") + nightShare() * eff(s, "nightWagonSpeed"));
-export const scaledPiece = (st, id) => {
-  const p = pieceDef(id);
-  return p && { ...p, bonus: scaleBonus(pieceBonus(st, p), pieceMult(st, id)) };
-};
-// slot-free fittings (former stat-bump furniture): bought once per building, flat bonus
-export const fittingFx = st => (st.fittings || []).map(pieceDef).filter(Boolean);
-
-export const STAGE_ORDER = () => ES().stages.map(x => x[1]);
-
-export function pieceLock(s, p) {
-  if (p.requiresClass && !famHasClass(s, p.requiresClass)) return classLock(s, p.requiresClass);
-  const u = p.unlock;
-  if (!u) return null;
-  if (u.stage && STAGE_ORDER().indexOf(estateStage(s)) < STAGE_ORDER().indexOf(u.stage))
-    return "estate tier " + u.stage;
-  if (u.quest && !s.doneQuests.includes(u.quest))
-    return "quest: " + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest);
-  if (
-    u.guild &&
-    !living(s).some(m => {
-      const g = memberGuild(m, u.guild);
-      return g && (g.rank || 0) >= (u.rank || 0);
-    })
-  )
-    return ((guildDef(u.guild) || {}).name || u.guild) + " rank " + ((u.rank || 0) + 1);
-  return null;
-}
-
-export function pieceUpIssue(s, uid, pid) {
-  const st = s.structures.find(x => x.uid === uid);
-  if (!st || !st.pieces.includes(pid)) return "missing";
-  const t = pieceTier(pid);
-  const nx = pieceTiers(pid)[t + 1];
-  if (!nx) return "max";
-  const more = (nx.slots || 1) - pieceSlots(pid);
-  if (more > 0 && freeSlots(s, st) < more) return `needs ${more} more free slot${more > 1 ? "s" : ""}`;
-  if (!afford(s, nx.cost)) return "cannot afford";
-  return null;
-}
-
-export function upgradePiece(s, uid, pid) {
-  if (pieceUpIssue(s, uid, pid)) return false;
-  const st = s.structures.find(x => x.uid === uid);
-  const t = pieceTier(pid) + 1,
-    nx = pieceTiers(pid)[t];
-  pay(s, nx.cost);
-  st.pieces[st.pieces.indexOf(pid)] = baseId(pid) + "@" + t;
-  markPerk(s, st, pid);
-  log(s, `🔧 ${pieceDef(pid).name} upgraded to ${nx.name}.`);
-  return true;
-}
+export * from "./estate-pieces.js"; // items: perks, tiers, scaling, locks, upgrades
+export * from "./estate-place.js"; // slots, upgrade lines, placement gating
 
 export const structDef = id => ES().structures.find(x => x.id === id);
 
@@ -274,88 +162,6 @@ export function buildStructure(s, type, vein) {
   s.structures.push(st);
   log(s, `🛖 Built a ${d.name} (${d.slots} slots).`);
   return st;
-}
-
-// non-manor (special) buildings gain slots with their upgrade level and unlock better items per level
-const baseRank = st => (st.tier ? 0 : (ES().rankSlots || [])[Math.min(st.up || 0, (ES().rankSlots || [0]).length - 1)] || 0);
-export const rankSlots = st =>
-  structDef(st.type).special ? baseRank(st) + ((prodTier(st) || {}).slots || 0) + boughtUps(st).reduce((a, u) => a + (u.slots || 0), 0) : 0;
-export const itemUnlockUp = (st, pid) => ((prodTier(st) || structDef(st.type)).unlockUp || {})[baseId(pid)] || 0;
-export const freeSlots = (s, st) =>
-  structDef(st.type).slots + fixedOf(st).length + (st.bonusSlots || 0) + rankSlots(st) - st.pieces.reduce((a, p) => a + pieceSlots(p), 0);
-
-export const isFixed = (st, pid) => fixedOf(st).includes(baseId(pid));
-
-// Production tiers (structure.tiers): st.tier 0 = base. Each tier has its own upgrade line; tiering up restarts
-// st.up at 0 but keeps every upgrade already bought (st.keptUps), so their output and slot bonuses stay.
-export const prodTier = st => (st.tier ? (structDef(st.type).tiers || [])[st.tier - 1] : null);
-export const curUpgrades = st => (prodTier(st) || structDef(st.type)).upgrades || [];
-export const boughtUps = st => [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0)];
-// built-ins: the type's own plus each reached tier's (e.g. Vintners' Wine Press)
-export const fixedOf = st => [...(structDef(st.type).fixed || []), ...(structDef(st.type).tiers || []).slice(0, st.tier || 0).flatMap(t => t.fixed || [])];
-export const allowedOf = st => (prodTier(st) || {}).allowed || structDef(st.type).allowed;
-export const upgMult = st => boughtUps(st).reduce((a, u) => a + (u.mult || 0), 0) + (st.upPerk || 0);
-
-export function specialUpIssue(s, uid) {
-  const st = s.structures.find(x => x.uid === uid);
-  const ups = st && curUpgrades(st);
-  if (!ups) return "missing";
-  const nx = ups[st.up || 0];
-  if (!nx) return "max";
-  if (nx.requiresClass && !famHasClass(s, nx.requiresClass)) return classLock(s, nx.requiresClass);
-  if (!afford(s, nx.cost)) return "cannot afford";
-  return null;
-}
-
-export function upgradeSpecial(s, uid) {
-  if (specialUpIssue(s, uid)) return false;
-  const st = s.structures.find(x => x.uid === uid);
-  const nx = curUpgrades(st)[st.up || 0];
-  pay(s, nx.cost);
-  st.up = (st.up || 0) + 1;
-  const pk = upgradePerk(s, st.type);
-  if (pk) st.upPerk = (st.upPerk || 0) + nx.mult * pk;
-  log(s, `🔧 ${structDef(st.type).name}: ${nx.name} installed (${nx.routes ? "+" + nx.routes + " trade route slot" : "+" + nx.mult * 100 + "% output"}).`);
-  return true;
-}
-
-export function placeIssue(s, uid, pid, fromStore) {
-  const st = s.structures.find(x => x.uid === uid),
-    p = pieceDef(pid);
-  if (!st || !p) return "missing";
-  if (freeSlots(s, st) <= 0) return "building full";
-  const sd = structDef(st.type);
-  if (p.fixedOnly || p.mergedInto) return "built-in only";
-  if (p.fitting) return "slot-free fitting (buy it under Fittings)";
-  if (allowedOf(st) && !allowedOf(st).includes(baseId(pid))) return "not allowed here";
-  if (!p.stack && st.pieces.map(baseId).includes(baseId(pid))) return "already here";
-  if ((st.up || 0) < itemUnlockUp(st, pid)) return `needs upgrade ${itemUnlockUp(st, pid)} (${curUpgrades(st)[itemUnlockUp(st, pid) - 1]?.name || "upgrade"})`;
-  if (!fromStore && pieceLock(s, p)) return "🔒 " + pieceLock(s, p);
-  if (!fromStore && !afford(s, p.cost)) return "cannot afford";
-  if (fromStore && !s.pieceStore.includes(pid)) return "not in storage";
-  return null;
-}
-
-export function placePiece(s, uid, pid, fromStore = false) {
-  if (placeIssue(s, uid, pid, fromStore)) return false;
-  const st = s.structures.find(x => x.uid === uid),
-    p = pieceDef(pid);
-  if (fromStore) s.pieceStore.splice(s.pieceStore.indexOf(pid), 1);
-  else pay(s, p.cost);
-  st.pieces.push(pid);
-  markPerk(s, st, pid);
-  const before = new Set();
-  log(s, `🪑 Placed ${p.name} in the ${structDef(st.type).name}.`);
-  for (const y of activeSynergies(st)) if (y.pieces.includes(pid)) log(s, `✨ Synergy: ${y.name} (${y.desc}).`);
-  return true;
-}
-
-export function removePiece(s, uid, pid) {
-  const st = s.structures.find(x => x.uid === uid);
-  if (!st || !st.pieces.includes(pid) || isFixed(st, pid)) return false;
-  st.pieces.splice(st.pieces.indexOf(pid), 1);
-  s.pieceStore.push(pid);
-  return true;
 }
 
 export const ADVENTURE_BASE_CAP = 2;
