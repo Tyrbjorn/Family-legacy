@@ -1,3 +1,4 @@
+import { gameFx, diffRenown } from "./difficulty.js";
 import { foodOutputMult } from "./food.js";
 import { DEV_SPEEDS, devOn } from "./dev.js";
 // Prestige: per-member renown, Legacy Renown banked at the Graveyard, permanent Legacy upgrades,
@@ -50,6 +51,7 @@ export function buyLegacy(s, id) {
 
 // ---- renown
 export function addRenown(s, m, n) {
+  n = Math.round(n * diffRenown(s, m));
   s.renown += n;
   if (m && !m.minion) m.renown = (m.renown || 0) + n;
 }
@@ -107,7 +109,7 @@ export function memberTick(m) {
   return Math.min(LG().memberTickCap, 1 + focus * 0.005 + wil * 0.005);
 }
 
-export const resGain = s => (1 + legacyValue(s, "resgain")) * foodOutputMult(s);
+export const resGain = s => (1 + legacyValue(s, "resgain")) * foodOutputMult(s) * gameFx(s, "prod");
 
 export const lifeBonus = s => legacyValue(s, "life");
 

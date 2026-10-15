@@ -1,3 +1,4 @@
+import { gameFx } from "./difficulty.js";
 import { notify } from "./notify.js";
 // Choice encounters while travelling: queued decision for the active member (live play),
 // default policy for automated orders. Outcomes: coin, items, recipes, buffs/curses, injuries, Hedge Witch.
@@ -38,7 +39,7 @@ function checkChance(m, c) {
   return Math.max(one(c), c.alt ? one(c.alt) : 0);
 }
 
-export const optionChance = (s, m, o) => checkChance(m, o.check);
+export const optionChance = (s, m, o) => (o.check ? Math.max(0.05, Math.min(0.95, checkChance(m, o.check) + gameFx(s, "flee"))) : 1);
 
 export const optionOk = (s, o) => !o.cost || afford(s, o.cost);
 
@@ -58,7 +59,7 @@ export function encounterPool(s, ctx) {
 }
 export function maybeEncounter(s, m, eff, ctx) {
   if (m.minion || s.pendingEnc || !CFG().list.length) return null;
-  if (rng() >= CFG().chancePerTravelDay * eff) return null;
+  if (rng() >= CFG().chancePerTravelDay * eff * gameFx(s, "events")) return null;
   const pool = encounterPool(s, ctx);
   const tot = pool.reduce((a, e) => a + (e.weight || 1), 0);
   let x = rng() * tot,
@@ -148,7 +149,7 @@ function applyOutcome(s, m, out) {
 
 export function applyOption(s, m, e, o, auto) {
   if (o.cost) pay(s, o.cost);
-  const win = rng() < checkChance(m, o.check);
+  const win = rng() < optionChance(s, m, o);
   const out = (win ? o.success : o.fail) || o.success;
   const bits = applyOutcome(s, m, out);
   inc(s, "encounters");

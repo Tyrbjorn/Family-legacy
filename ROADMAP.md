@@ -88,3 +88,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - loot.js: drop chance and rarity curve from difficulty and quest risk/type (tuning.loot); quest loot lists are favorites; rare ore finds; nodes can drop "res:" rare ore.
 - Save step 18 renames old item ids. Smokehouse Curing House offers a Cask Rack instead of the Smoker.
 - On hold: Jeweler building (pending the craft-ladder revision).
+
+## Difficulty + path cleanup (unreleased)
+- js/engine/difficulty.js, tuning.difficulty. Game difficulty (global, Settings): Hearthside / Settled / Steady / Hard Times / Grim Age. Personal challenge (family only, picked in the first year of life, shown on the member card): Sheltered / Ordinary / Driven / Ironwilled / Doomsworn. Level 3 = base game; game level snapshotted on each action at start; loot reads base quest power; combined renown ≤ ×1.8.
+- Hooks: successChance, encounter option checks + travel encounter chance, resGain, craft days, bandit segRisk, bad world-event weighting (events.types[].bad), loot drop/tilt, addRenown, gainXp.
+- Apothecary combo shown as Remedist (id kept); Woodsman Herbalist → Forest Sense; Farmer Brewer specialty cut (save step 19 clears it).
+- Dynasty: Manor stage (estate level 12) + 3 living adults; no Renown requirement.

@@ -1,3 +1,4 @@
+import { diffXp } from "./difficulty.js";
 import { gearFx } from "./gear.js";
 import { famFx, pathReqOk, pathXp, setPathInLine } from "./paths.js";
 import { household } from "./courtship.js";
@@ -53,6 +54,7 @@ export function gainXp(s, m, skillId, amt) {
   const k = m.skills[skillId];
   if (!k) return;
   if (!skillOpen(m, skillId)) return;
+  amt *= diffXp(s, m);
   if (k.lvl >= softCap(m)) amt *= 0.1;
   const gained = amt * xpMult(s, m, skillId);
   k.xp += gained;

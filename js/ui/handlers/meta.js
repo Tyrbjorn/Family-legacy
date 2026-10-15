@@ -7,6 +7,7 @@ import { toggleDock } from "../progress.js";
 // Click actions for the meta area. ctx = { v, w, b, m } from the clicked element.
 export const metaActions = ({ v, b, m }) => ({
   turbo: () => E.toggleTurbo(s),
+  setdiff: () => E.setDifficulty(s, +v),
   dock: () => toggleDock(),
   gotab: () => {
     U.tab = v;

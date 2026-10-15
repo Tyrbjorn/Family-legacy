@@ -1,3 +1,4 @@
+import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
@@ -33,7 +34,7 @@ export function resolveQuest(s, m, q, eff) {
     gain.push(`+${n} ${k}`);
   }
   gainXp(s, m, q.skill, T.xpPerDay * 2);
-  const id = rollLoot(q, (cls(m) || {}).lootBonus || 0);
+  const id = rollLoot(q, (cls(m) || {}).lootBonus || 0, actLvl(s, m));
   if (id) gain.push(addToVault(s, id) ? itemDef(id).name : "(vault full – loot lost)");
   const ore = rollOre(q);
   if (ore) (s.res[ore.res] = (s.res[ore.res] || 0) + ore.n), gain.push(`+${ore.n} ${ore.res}`);

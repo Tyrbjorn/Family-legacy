@@ -186,7 +186,7 @@
     "cook",
     "scribe"
    ],
-   "desc": "Open to all. Pick a main craft path; your guild rank follows it. Combo paths (Architect, Engineer, Artificer, Apothecary, Shipwright) open when one member ranks the right paths.",
+   "desc": "Open to all. Pick a main craft path; your guild rank follows it. Combo paths (Architect, Engineer, Artificer, Remedist, Shipwright) open when one member ranks the right paths.",
    "req": {
     "skills": {
      "carpentry": 5,

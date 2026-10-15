@@ -17,7 +17,8 @@
      "food": 1.8
     },
     "buyMult": 1.15
-   }
+   },
+   "bad": true
   },
   {
    "id": "bounty",
@@ -53,7 +54,8 @@
    "regions": [
     "outskirts",
     "forest"
-   ]
+   ],
+   "bad": true
   },
   {
    "id": "plague",
@@ -72,7 +74,8 @@
      "remedies": 1.8
     },
     "travelRisk": 0.02
-   }
+   },
+   "bad": true
   },
   {
    "id": "festival",
@@ -142,7 +145,8 @@
    "season": [
     "autumn",
     "winter"
-   ]
+   ],
+   "bad": true
   },
   {
    "id": "merchant",
@@ -171,7 +175,8 @@
    "text": "Lost travelers wander {place}: they share what they've seen",
    "effects": {
     "discover": 1.5
-   }
+   },
+   "bad": true
   },
   {
    "id": "monsters",
@@ -192,7 +197,8 @@
     "forest",
     "highlands",
     "outskirts"
-   ]
+   ],
+   "bad": true
   },
   {
    "id": "harvestfair",

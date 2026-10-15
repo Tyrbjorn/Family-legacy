@@ -1,3 +1,4 @@
+import { chalFx, enemyCp, gameFx, stampDiff } from "./difficulty.js";
 import { hasFeature, parcelDay } from "./world.js";
 import { proposeIssue } from "./family.js";
 import { courtMult, noteStage } from "./courtship.js";
@@ -24,7 +25,8 @@ import { D, T, active, ageY, furn, isAdult, known, log } from "./state.js";
 
 export function successChance(s, m, q) {
   const c = cp(s, m);
-  return Math.max(0.1, Math.min(0.98, 0.5 + (c - q.cp) / (q.cp + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03)));
+  const qc = enemyCp(s, m, q.cp);
+  return Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll")));
 }
 
 // One handler per action type: (s, m, a, eff). Travel types (quest/gather/explore/dungeon) share travelTick.
@@ -52,7 +54,7 @@ export const ACTIONS = {
     a.rc = rc.id;
     a.progress = (a.progress || 0) + eff;
     gainXp(s, m, rc.skill, T.xpPerDay * 0.8 * eff);
-    if (a.progress >= rc.days) {
+    if (a.progress >= rc.days * gameFx(s, "craft", a.diff)) {
       a.progress = 0;
       craftItem(s, m, rc, null);
       if (a.queued) {
@@ -119,6 +121,7 @@ export function doAction(s, m, a, eff) {
     m.action = t ? { type: "activity", target: t, progress: 0 } : defaultAction(s, m);
     return;
   }
+  stampDiff(s, a);
   if (TRAVEL_TYPES.includes(a.type)) return travelTick(s, m, a, eff);
   if (a.type === "parcel") return parcelDay(s, m, a, eff, gainXp);
   const h = ACTIONS[a.type];

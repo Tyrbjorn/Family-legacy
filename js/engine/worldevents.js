@@ -1,3 +1,4 @@
+import { gameFx } from "./difficulty.js";
 import { season, seasonEvents } from "./seasons.js";
 const seasonId = s => season(s).id;
 // Random world events: timed town/regional effects on prices, travel risk and gathering.
@@ -45,7 +46,9 @@ export function eventsDay(s) {
   if (s.wevents.length >= CFG().maxActive || rng() >= CFG().chancePerDay * seasonEvents(s)) return;
   const sid = (D.seasons ? seasonId(s) : null);
   const types = CFG().types.filter(t => !t.season || !sid || t.season.includes(sid));
-  const t = types[Math.floor(rng() * types.length)];
+  const w = types.map(t => (t.bad ? gameFx(s, "events") : 1)); // bad events weighted by difficulty
+  let x = rng() * w.reduce((a, b) => a + b, 0);
+  const t = types.find((_, i) => (x -= w[i]) < 0) || types[types.length - 1];
   if (!t) return;
   const pool = (t.scope === "town" ? D.towns : D.regions.filter(r => !r.future)).filter(
     x => !t.regions || t.regions.includes(t.scope === "town" ? x.region : x.id),

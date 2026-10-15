@@ -108,7 +108,7 @@ for (const t of D.towns)
 // phases + unlock intros
 ok(D.phases.list.map(p => p.n).join() === "1,2,3,4" && D.phases.list[3].planned, "four phases, Titles planned");
 const STG = D.estate.stages.map(x => x[1]);
-for (const p of D.phases.list.filter(p => p.need && !p.need.homeAndFamily)) ok(STG.includes(p.need.stage) && p.need.renown > 0, `phase ${p.id} stage exists`);
+for (const p of D.phases.list.filter(p => p.need && !p.need.homeAndFamily)) ok(STG.includes(p.need.stage) && p.need.adults > 0, `phase ${p.id} stage exists`);
 for (const [k, v] of Object.entries(D.marriage.houses.gates)) if (k[0] !== "_") ok(v >= 1 && v <= 3, `gate ${k} is a built phase`);
 ok(D.marriage.houses.gates.feud === 3 && D.marriage.houses.gates.war === 3, "feud & war are Dynasty-phase");
 const TABSET = new Set(["main","family","jobs","inv","estate","map","minions","guilds","craft","chron","houses"]), IDS = new Set();

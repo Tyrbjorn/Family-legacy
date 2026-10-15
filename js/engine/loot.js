@@ -1,3 +1,4 @@
+import { gameFx } from "./difficulty.js";
 // Quest loot: drop chance and rarity curve from battle difficulty (cp) and enemy class (quest risk/type).
 // The quest's own loot list are favorites (half of drops); otherwise any droppable item by rarity.
 // Tunables live in data/tuning.json "loot".
@@ -9,13 +10,13 @@ export const RANKS = ["Common", "Fine", "Rare", "Epic", "Legendary"];
 const classOf = q => ({ ...(LT().risk[q.risk] || {}), ...(LT().type[q.type] || {}) });
 // d: 0 (trivial) .. 3 (far above the reference fight)
 export const lootDiff = q => clamp((q.cp || 0) / LT().cpRef, 0, 3);
-export function dropChance(q, lootBonus = 0) {
+export function dropChance(q, lootBonus = 0, lvl = 3) {
   const c = classOf(q);
-  return clamp(LT().base + LT().perDiff * lootDiff(q) + (c.drop || 0) + lootBonus, LT().min, LT().max);
+  return clamp(LT().base + LT().perDiff * lootDiff(q) + (c.drop || 0) + lootBonus + gameFx(null, "lootDrop", lvl), LT().min, LT().max);
 }
 // rarity probabilities: base weights tilted by exp(shift × rank); shift clamped so Legendary stays rare
-export function rarityOdds(q) {
-  const shift = clamp(LT().shiftPerDiff * (lootDiff(q) - 1) + (classOf(q).shift || 0), LT().shiftMin, LT().shiftMax);
+export function rarityOdds(q, lvl = 3) {
+  const shift = clamp(LT().shiftPerDiff * (lootDiff(q) - 1) + (classOf(q).shift || 0) + gameFx(null, "lootShift", lvl), LT().shiftMin, LT().shiftMax);
   const w = RANKS.map((r, i) => LT().weights[r] * Math.exp(shift * i)),
     t = w.reduce((a, b) => a + b, 0);
   return Object.fromEntries(RANKS.map((r, i) => [r, w[i] / t]));
@@ -27,11 +28,11 @@ function pickRarity(odds) {
   return "Common";
 }
 // returns an item id or null
-export function rollLoot(q, lootBonus = 0) {
-  if (rng() >= dropChance(q, lootBonus)) return null;
+export function rollLoot(q, lootBonus = 0, lvl = 3) {
+  if (rng() >= dropChance(q, lootBonus, lvl)) return null;
   const fav = (q.loot || []).filter(id => D.items.some(i => i.id === id));
   if (fav.length && rng() < LT().favorite) return fav[Math.floor(rng() * fav.length)];
-  const want = pickRarity(rarityOdds(q));
+  const want = pickRarity(rarityOdds(q, lvl));
   // nearest rarity that has items
   for (let k = 0; k < RANKS.length; k++)
     for (const r of [RANKS[RANKS.indexOf(want) - k], RANKS[RANKS.indexOf(want) + k]]) {

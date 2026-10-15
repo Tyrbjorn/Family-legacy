@@ -1,3 +1,4 @@
+import { gameFx } from "./difficulty.js";
 // Trade round: trade buildings (Warehouse > Trading Post > Counting House), route slots, carts with crew
 // (driver + guard + Horseman escorts), estate-town and town-town routes, auto-trade rules, bandit fights,
 // road patrols, and per-town supply drift (prices: inventory.js).
@@ -78,7 +79,7 @@ export const patrolPower = (s, key) =>
   (s.trade.patrols || []).filter(p => p.seg === key).reduce((a, p) => a + p.members.reduce((b, u) => b + guardPow(minion(s, u)), 0), 0);
 // risk of a bandit attack on one road segment: guards and escorts deter, patrols on that road deter
 export const segRisk = (s, r, a, b) =>
-  (TC().banditBase * Math.max(0, 1 - eff(s, "banditCut"))) / (1 + crewPower(s, r) * TC().guardDeter + patrolPower(s, segKey(a, b)) * TC().patrolDeter);
+  (TC().banditBase * gameFx(s, "bandit") * Math.max(0, 1 - eff(s, "banditCut"))) / (1 + crewPower(s, r) * TC().guardDeter + patrolPower(s, segKey(a, b)) * TC().patrolDeter);
 // roads a loaded cart travels (where bandits can strike)
 export const cargoLegs = r => (r.from && r.from !== HOME ? [[r.from, r.town], [r.town, HOME]] : [[HOME, r.town]]);
 export const banditChance = (s, r) => 1 - cargoLegs(r).reduce((a, [x, y]) => a * (1 - segRisk(s, r, x, y)), 1);

@@ -50,6 +50,7 @@ export function familyv() {
     card = `<div class="card"><div class="row">${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
 <div class="muted">${m.alive ? "Living" : n.marriedOut ? `Married into ${n.marriedOut}` : `Died Y${n.died}`}${m.persona && E.personaDef(m.persona) ? ` · ${E.personaDef(m.persona).icon} ${E.personaDef(m.persona).name}` : ""}${m.house && E.houseDef(m.house) ? ` · of ${E.houseDef(m.house).name}` : ""} · lifespan ~${m.lifespan}y</div>
 <div>${badges(m)}</div>
+${challengeRow(m)}
 ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: <a data-a="treesel" data-v="${sp.id}">${sp.name}</a></div>` : ""}
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}
 ${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${m.id}">Play as ${m.name}</button>` : ""}</div>`;
@@ -57,4 +58,14 @@ ${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${
   return `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
 <div class="muted">Drag to pan · tap someone to open their card${s.bloodline ? ` · Bloodline trait: <b style="color:${rcol(s.bloodline)}">${E.traitDef(s.bloodline)?.name}</b>` : ""}</div>
 <div class="treewrap" id="treewrap"><div class="tree">${rows}</div></div></div>${card}`;
+}
+
+// personal challenge: shown for every family member; pickable during the first year of life only
+function challengeRow(m) {
+  if (m.minion) return "";
+  const cur = E.chalLvl(m);
+  if (!E.chalOpen(m)) return `<div class="muted">Challenge: ${E.chalName(cur)}</div>`;
+  return `<div class="row" style="flex-wrap:wrap;gap:4px"><span class="muted">Challenge (choose in the first year):</span>${[1, 2, 3, 4, 5]
+    .map(l => `<button class="b${l === cur ? " on" : ""}" data-a="setchal" data-v="${m.id}" data-w="${l}">${E.chalName(l)}</button>`)
+    .join("")}</div>`;
 }

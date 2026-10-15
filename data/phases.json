@@ -28,10 +28,9 @@
    "desc": "Larger holdings, rival families, feuds and wars.",
    "need": {
     "stage": "Manor",
-    "renown": 1000,
-    "living": 3
+    "adults": 3
    },
-   "hint": "a Manor-level estate, 1,000 Renown and 3+ living family"
+   "hint": "a Manor-level estate (estate level 12) and 3+ living adults"
   },
   {
    "n": 4,

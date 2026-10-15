@@ -39,7 +39,9 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
     adv: null,
     persona: null,
     house: null,
+    challenge: 3,
   };
+  m.chUntil = m.ageDays + Y(); // challenge can be picked during the first year
   m.traits = rollTraits(s, 2);
   m.lifespan = T.baseLifespan + traitSum(m, "life") + Math.round((rng() - 0.5) * 8);
   for (const sk of D.skills) m.skills[sk.id] = { lvl: 0, xp: 0 };
@@ -239,6 +241,7 @@ export function phaseReached(s, p) {
   if (!q || p.planned) return p.n === 1;
   if (q.homeAndFamily) return (established(s) && (living(s).length > 1 || s.members.some(m => m.spouse))) || s.renown >= q.orRenown;
   if (living(s).length < (q.living || 0)) return false;
+  if (living(s).filter(isAdult).length < (q.adults || 0)) return false;
   return stageAt(s, q.stage) && s.renown >= (q.renown || 0);
 }
 export function era(s) {

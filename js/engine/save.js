@@ -427,6 +427,16 @@ const STEPS = [
     name: "production tiers (st.tier, st.keptUps; absent = tier 1) and building data split into data/structures/*.json (no data change)",
     run: () => {},
   },
+  {
+    n: 19,
+    once: true,
+    name: "difficulty (absent = level 3), Remedist/Forest Sense renames (names only); Farmer's Brewer specialty cut: it is cleared so the member can pick again",
+    run: s => {
+      for (const m of s.members || [])
+        for (const p of m.paths || [])
+          if (p.id === "farmer" && p.spec === "brewer") Object.assign(p, { spec: null, srank: 0, sxp: 0 });
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

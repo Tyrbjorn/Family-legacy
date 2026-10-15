@@ -83,6 +83,9 @@ export function settingsCard() {
         `<label class="chip"><input type="checkbox" data-a="notecat" data-v="${k}" ${off[k] ? "" : "checked"}> ${c.icon} ${c.name}</label>`,
     )
     .join("")}</div>
+<div class="muted">Game difficulty (any time; quests and crafts already under way keep the level they started with):</div><div class="row" style="flex-wrap:wrap;gap:4px">${[1, 2, 3, 4, 5]
+  .map(l => `<button class="b${l === E.gameLvl(s) ? " on" : ""}" data-a="setdiff" data-v="${l}">${E.diffName(l)}</button>`)
+  .join("")}</div>
 <div class="row"><button class="b" data-a="tourstart">🧭 Tab tour</button>${E.tutActive(s) ? `<button class="b" data-a="tutskip">Skip apprenticeship</button>` : ""}</div>
 ${
   U.devRevealed || dev
