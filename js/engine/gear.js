@@ -23,8 +23,8 @@ export const joinId = (base, ench) => (ench.length ? `${base}#${ench.join(".")}`
 export function enchSlots(it) {
   if (!it || !["weapon", "offhand", "armor", "accessory", "charm"].includes(it.slot)) return 0;
   const S = GR().slots;
-  const n = it.quality ? S.quality[it.quality] : S.rarity[it.rarity];
-  return Math.min(S.maxSlots, n || 0);
+  const n = (it.quality ? S.quality[it.quality] : S.rarity[it.rarity]) || 0;
+  return Math.min(S.maxSlots + (it.inlaySlot || 0), n + (it.inlaySlot || 0)); // a gem inlay adds a slot
 }
 const pieceScale = it => (it.quality ? GR().qualityScale[it.quality] : GR().rarityScale[it.rarity]) || 1;
 const tokFx = tok => {

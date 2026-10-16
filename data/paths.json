@@ -1,5 +1,5 @@
 {
- "_note": "Crafting paths for FAMILY MEMBERS (followers keep their NPC classes). Each path ranks Apprentice→Journeyman→Master→Grandmaster by path XP (earned 1:1 from XP in the path's skills) plus a skill gate. A member starts one main path; every rank gained anywhere opens one more slot (up to maxPaths). Secondary paths are capped at secondaryGap below the main path. At specAt (Master) a path offers ONE specialty, which ranks the same way (capped at the path's rank). fx values scale by (rank+1). Add a path by appending here (e.g. Jeweler, Scribe): engine and UI read this list. comboPaths: `requires` is a list of {path,rank} | {path,spec} | {skill,lvl} | {classLine} (adventuring class line, e.g. apprentice = mage line) on ONE member; Scribe (business, drafting, writing) is an input of every combo; combos have their own ranks and specialties, never use a path slot, are uncapped, and never block their input paths. openCredit: share of the XP already in the path's best skill credited when the path is opened.",
+ "_note": "Crafting paths for FAMILY MEMBERS (followers keep their NPC classes). Each path ranks Apprentice→Journeyman→Master→Grandmaster by path XP (earned 1:1 from XP in the path's skills) plus a skill gate. A member starts one main path; every rank gained anywhere opens one more slot (up to maxPaths). Secondary paths are capped at secondaryGap below the main path. At specAt (Master) a path offers ONE specialty, which ranks the same way (capped at the path's rank). fx values scale by (rank+1). Add a path by appending here (e.g. Jeweler, Scribe): engine and UI read this list. comboPaths: `requires` is a list of {path,rank} | {path,spec} | {skill,lvl} | {classLine} (adventuring class line, e.g. apprentice = mage line) on ONE member; Scribe (business, drafting, writing) is an input of every combo; combos have their own ranks and specialties, never use a path slot, are uncapped, and never block their input paths. openCredit: share of the XP already in the path's best skill credited when the path is opened. Ladder: base ranks → specialty (at specAt) → artisan title (spec rank artisanAt, specs with an `artisan` block: new name, fx ×artisanMult). Merges (path.merges): a Grandmaster specialty listed in a merge may take the other one as spec2; Grandmaster in both gives the merged title.",
  "maxPaths": 3,
  "secondaryGap": 1,
  "specAt": 2,
@@ -95,10 +95,10 @@
      ]
     },
     {
-     "id": "jeweler",
-     "name": "Jeweler",
-     "icon": "💍",
-     "desc": "Rings, charms and gem setting; pieces take enchantments well.",
+     "id": "goldsmith",
+     "name": "Goldsmith",
+     "icon": "🪙",
+     "desc": "Goldsmithing: works gold and silver; gold and silver inlays at the forge.",
      "fx": [
       {
        "kind": "craft",
@@ -112,11 +112,44 @@
        "kind": "enchant",
        "v": 2
       }
-     ]
+     ],
+     "artisan": {
+      "name": "Master Goldsmith",
+      "icon": "🏅"
+     }
+    },
+    {
+     "id": "gemcutter",
+     "name": "Gemcutter",
+     "icon": "💎",
+     "desc": "Cuts raw gems (about 0.1 a day per rank).",
+     "fx": [
+      {
+       "kind": "make",
+       "from": "gems",
+       "res": "cutgems",
+       "v": 0.1
+      }
+     ],
+     "artisan": {
+      "name": "Lapidary",
+      "icon": "💠"
+     }
     }
    ],
    "station": "forge",
-   "craftSkill": "smithing"
+   "craftSkill": "smithing",
+   "merges": [
+    {
+     "specs": [
+      "goldsmith",
+      "gemcutter"
+     ],
+     "name": "Jeweler",
+     "icon": "💍",
+     "desc": "Above both artisan titles: a Master Goldsmith or Lapidary may take the other specialty as a second one; Grandmaster in both = Jeweler (gem inlays)."
+    }
+   ]
   },
   {
    "id": "armorer",
@@ -379,26 +412,28 @@
      ]
     },
     {
-     "id": "healerbrewer",
-     "name": "Healer-brewer",
-     "icon": "💚",
-     "desc": "Remedies and restoratives.",
+     "id": "herbalist",
+     "name": "Herbalist",
+     "icon": "🌿",
+     "desc": "First aid: bandages (about 0.05 a day per rank) and remedies.",
      "fx": [
+      {
+       "kind": "make",
+       "res": "bandages",
+       "v": 0.05
+      },
       {
        "kind": "yield",
        "res": [
         "remedies"
        ],
        "v": 0.08
-      },
-      {
-       "kind": "craft",
-       "v": 0.05,
-       "slots": [
-        "accessory"
-       ]
       }
-     ]
+     ],
+     "artisan": {
+      "name": "Apothecary",
+      "icon": "🩹"
+     }
     }
    ],
    "station": "herbrack",
@@ -470,7 +505,7 @@
      ]
     },
     {
-     "id": "herbalist",
+     "id": "forestsense",
      "name": "Forest Sense",
      "icon": "🌿",
      "desc": "More herbs and mushrooms.",
@@ -661,8 +696,8 @@
    "specs": [
     {
      "id": "baker",
-     "name": "Baker",
-     "icon": "🥖",
+     "name": "Pastry Chef",
+     "icon": "🧁",
      "desc": "Bread, pies and cakes.",
      "fx": [
       {
@@ -681,7 +716,11 @@
        ],
        "v": 0.05
       }
-     ]
+     ],
+     "artisan": {
+      "name": "Confectioner",
+      "icon": "🍰"
+     }
     },
     {
      "id": "chef",
@@ -702,11 +741,15 @@
        "kind": "variety",
        "v": 0.5
       }
-     ]
+     ],
+     "artisan": {
+      "name": "Head Chef",
+      "icon": "🍽️"
+     }
     },
     {
      "id": "butcher",
-     "name": "Butcher/Smoker",
+     "name": "Smoker",
      "icon": "🥓",
      "desc": "Smoked meat and preserves.",
      "fx": [
@@ -756,6 +799,56 @@
    ],
    "specs": [
     {
+     "id": "loremaster",
+     "name": "Loremaster",
+     "icon": "📚",
+     "desc": "Research: books and lore; the whole family trains faster.",
+     "fx": [
+      {
+       "kind": "trainXp",
+       "v": 0.03
+      }
+     ],
+     "artisan": {
+      "name": "Sage",
+      "icon": "🦉"
+     }
+    },
+    {
+     "id": "draftsman",
+     "name": "Draftsman",
+     "icon": "📐",
+     "desc": "Production: plans and drawings; estate goods come out a little faster.",
+     "fx": [
+      {
+       "kind": "yield",
+       "res": [
+        "planks",
+        "blocks",
+        "ingots",
+        "cloth",
+        "leather"
+       ],
+       "v": 0.03
+      }
+     ],
+     "artisan": {
+      "name": "Master Draftsman",
+      "icon": "🏛️"
+     }
+    },
+    {
+     "id": "steward",
+     "name": "Steward",
+     "icon": "🗝️",
+     "desc": "Money: keeps the books; +1 trade route slot (Seneschal: +2).",
+     "fx": [],
+     "artisan": {
+      "name": "Seneschal",
+      "icon": "📜"
+     }
+    },
+    {
      "id": "cartographer",
      "name": "Cartographer",
      "icon": "🗺️",
@@ -768,19 +861,11 @@
        ],
        "v": 0.03
       }
-     ]
-    },
-    {
-     "id": "bookbinder",
-     "name": "Bookbinder",
-     "icon": "📚",
-     "desc": "Bound books: the whole family trains faster.",
-     "fx": [
-      {
-       "kind": "trainXp",
-       "v": 0.03
-      }
-     ]
+     ],
+     "artisan": {
+      "name": "Royal Cartographer",
+      "icon": "🧭"
+     }
     }
    ],
    "station": "arcanefocus",
@@ -1119,7 +1204,7 @@
    "requires": [
     {
      "path": "smithing",
-     "spec": "jeweler"
+     "spec": "goldsmith"
     },
     {
      "skill": "enchanting",
@@ -1407,5 +1492,21 @@
    "craftSkill": "smithing"
   }
  ],
- "openCredit": 0.5
+ "openCredit": 0.5,
+ "artisanAt": 3,
+ "artisanMult": 1.25,
+ "specRenames": {
+  "scribe": {
+   "bookbinder": "loremaster"
+  },
+  "alchemy": {
+   "healerbrewer": "herbalist"
+  },
+  "woodsman": {
+   "herbalist": "forestsense"
+  },
+  "smithing": {
+   "jeweler": "goldsmith"
+  }
+ }
 }

@@ -1,4 +1,5 @@
 import { isHeld } from "./holds.js";
+import { inlaidDef } from "./inlay.js";
 import { permFx } from "./injuries.js";
 import { metalQuality } from "./metals.js";
 import { upPacks } from "./minionups.js";
@@ -159,6 +160,7 @@ export function itemDef(id) {
     const ec = enchCp(ench);
     return { ...b, id, baseId: base, enchants: ench, name: b.name + " ✨", cp: (b.cp || 0) + ec, value: Math.round(b.value * (1 + 0.2 * ench.length)) };
   }
+  if (id.includes("~")) return inlaidDef(id);
   if (id.startsWith("c|")) {
     const [, b, q] = id.split("|");
     const base = D.items.find(i => i.id === b),

@@ -1470,5 +1470,27 @@
     "slot_offhand"
    ]
   }
+ },
+ "autoAscend": {
+  "_note": "Auto Ascend: titles of tier 2+ have limited slots; the follower closest to qualifying trains in the title's key job (its biggest bonus) and evolves automatically. Every title also needs key-job skill by tier (minion skill level = sqrt(job points/4)). Auto Recruit hires the cheapest follower monthly when a bunk is free and coin covers hire + 3 months of wages + the reserve.",
+  "slots": {
+   "2": 3,
+   "3": 2,
+   "4": 1
+  },
+  "skillByTier": {
+   "1": 2,
+   "2": 4,
+   "3": 6,
+   "4": 8
+  },
+  "priority": [
+   "economic",
+   "military",
+   "divine",
+   "magic"
+  ],
+  "recruitMonths": 3,
+  "recruitReserve": 500
  }
 }

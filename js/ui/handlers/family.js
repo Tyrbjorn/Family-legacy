@@ -26,5 +26,6 @@ export const familyActions = ({ v, b, m }) => ({
   evolve: () => E.evolve(s, m, v),
   openpath: () => E.openPath(s, m, v),
   pickspec: () => E.chooseSpec(s, m, v, b.dataset.w),
+  pickspec2: () => E.chooseSpec2(s, m, v, b.dataset.w),
   setchal: () => E.setChallenge(s, +v, +b.dataset.w),
 });

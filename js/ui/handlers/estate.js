@@ -23,6 +23,9 @@ export const estateActions = ({ v, b, m }) => ({
     if (r) E.setRefine(s, v, b.dataset.w === "on" ? { on: !r.on } : { stopFull: !r.stopFull });
   },
   autotog: () => E.toggleAuto(s, v),
+  autorecruit: () => E.toggleRecruit(s),
+  ascup: () => E.raiseBranch(s, v),
+  keepjob: () => E.toggleKeepJob(s.minions.find(x => x.uid === v)),
   land: () => E.buyLand(s, v),
   ration: () => E.setRation(s, v),
   diet: () => E.toggleDiet(s, v),

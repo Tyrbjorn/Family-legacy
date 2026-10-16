@@ -18,6 +18,14 @@ export function vault() {
 const holdBtns = id =>
   `<button class="b ${E.heldItem(s, id) ? "sel" : ""}" data-a="hold" data-v="${id}" data-w="item" title="Hold this exact item">📌${E.heldItem(s, id) ? " Held" : " Hold"}</button><button class="b ${E.heldType(s, id) ? "sel" : ""}" data-a="hold" data-v="${id}" data-w="type" title="Hold every item of this type">📌 Type${E.heldType(s, id) ? " held" : ""}</button>`;
 
+// inlays (shown once a Goldsmith exists, for accessories/charms; gems need a Jeweler)
+const inlayBtns = id =>
+  E.goldsmith(s) && D.crafting.inlays.slots.includes(it(id).slot) && !/[~#]/.test(id)
+    ? Object.entries(D.crafting.inlays.mats)
+        .map(([k, x]) => { const why = E.inlayIssue(s, id, k); return `<button class="b" data-a="inlay" data-v="${id}" data-w="${k}" ${why ? `disabled title="${why}"` : ""}>💍 ${x.name}</button>`; })
+        .join("")
+    : "";
+
 export function invv() {
   const m = E.active(s);
   const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
@@ -61,7 +69,7 @@ export function invv() {
         .map(({ id, x }) =>
           itemRow(
             x,
-            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>${holdBtns(id)}`,
+            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>${holdBtns(id)}${inlayBtns(id)}`,
           ),
         )
         .join("")

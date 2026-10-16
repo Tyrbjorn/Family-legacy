@@ -294,7 +294,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 { const N=E.newGame(t0); estate(N,['minionbunk','minionbunk'],'shack'); N.res.food=1e4; const a=E.addMinion(N,'laborer','t'), b=E.addMinion(N,'guard','t');
  ok(a.cls==='n_peasant'&&b.cls==='n_peasant','all followers start as Peasant');
  ok([...new Set(E.evolveOptions(a).map(c=>c.branch))].sort().join()==='divine,economic,magic,military','Peasant branches into Military/Economic/Magic/Divine');
- ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.minionEvolveIssue(N,a,'n_militia').startsWith('needs Guardhouse'),'tier 1 needs the class building'); N.res.coin+=1e4; N.res.wood+=500; N.res.stone+=500; E.buyLand(N,'hillside'); N.structures.push({uid:'stB',type:'barracks',pieces:['weaponrack'],up:0}); ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
+ ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.minionEvolveIssue(N,a,'n_militia').startsWith('needs Guardhouse'),'tier 1 needs the class building'); N.res.coin+=1e4; N.res.wood+=500; N.res.stone+=500; E.buyLand(N,'hillside'); N.structures.push({uid:'stB',type:'barracks',pieces:['weaponrack'],up:0}); ok(/guard skill 2/.test(E.minionEvolveIssue(N,a,'n_militia')||''),'title needs key-job skill'); a.skills={guard:16}; ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
  ok(!E.evolveMinion(N,a.uid,'n_adept'),'cannot jump branches'); a.lvl=10; ok(E.evolveOptions(a).length>=2,'branches split again (choice)');
  a.job='guard'; const m0=E.minionLvlMult(a); a.cls='n_soldier'; ok(E.minionLvlMult(a)>m0,'NPC class boosts its jobs'); ok(D.minions.npcClasses.every(c=>Object.values(c.bonus).every(v=>v<=0.7)),'NPC classes stay weaker than PC classes');
  a.job='farm'; E.advanceReal(N,10*20); ok(E.minionSkillLvl(a,'farm')>=1,'minions build job skills');
@@ -359,7 +359,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(E.buildingReqStatus(W,sm.source.buildings).filter(g=>g.ok).length===0,'Shaman status shows missing groups'); E.buildStructure(W,'shrinehouse'); E.buildStructure(W,'herbgarden'); E.advanceReal(W,10); ok(W.minions.some(x=>x.type==='shaman'),'Shaman arrives with Shrine + Garden');
  ok(D.minions.npcClasses.filter(c=>c.needs).every(c=>c.needs.up===({1:0,2:2,3:3,4:3})[c.needs.tier]&&c.needs.buildings.length),'each NPC tier is gated by its class building level');
  W.structures.push({uid:'bhx',type:'bunkhouse',pieces:[],up:0}); const mi=E.addMinion(W,'laborer','t')||W.minions.find(x=>!x.special); mi.cls='n_hedgemage'; mi.lvl=15; const tw=W.structures.find(x=>x.type==='magestower');
- ok(!E.minionEvolveIssue(W,mi,'n_adept')||E.minionEvolveIssue(W,mi,'n_adept').includes('upgrade 2'),'Adept needs Tower upgrade 2'); tw.up=2; ok(!E.minionEvolveIssue(W,mi,'n_adept'),'Tower upgraded: Adept ok');
+ ok(!(mi.skills=Object.fromEntries(['guard','adventure','tutor','scout','craft','farm','herbs','merchant','hunt','fish','gather','mine'].map(j=>[j,1e4])),E.minionEvolveIssue(W,mi,'n_adept'))||E.minionEvolveIssue(W,mi,'n_adept').includes('upgrade 2'),'Adept needs Tower upgrade 2'); tw.up=2; ok(!E.minionEvolveIssue(W,mi,'n_adept'),'Tower upgraded: Adept ok');
  E.evolveMinion(W,mi.uid,'n_adept'); tw.up=3; ok(E.minionEvolveIssue(W,mi,'n_loremaster').includes('Lore Library'),'Mage picks a school specialty'); tw.spec='lorelibrary'; mi.lvl=Math.max(mi.lvl||0,15); ok(E.evolveMinion(W,mi.uid,'n_loremaster'),'Magus at max Tower');
  const mi2=W.minions.find(x=>!x.special&&x!==mi)||E.addMinion(W,'laborer','t'); if(mi2){ mi2.cls='n_militia'; mi2.lvl=10; ok(E.minionEvolveIssue(W,mi2,'n_huntsman').includes("Hunter's Cabin"),'specialties need their specific building'); }
  const O=JSON.parse(JSON.stringify(W)); O.minions.push({...O.minions[0],uid:'old',cls:'n_herbwife',special:false}); E.normalize(O); ok(O.minions.find(x=>x.uid==='old').cls==='n_herbalist','old healer-path followers migrate to Herbalist'); }
@@ -371,7 +371,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(E.specIssue(K,g.uid,'stable')==='finish the upgrade line','specialty needs the full upgrade line'); E.upgradeSpecial(K,g.uid);
  const cap0=E.classHomeCap(g); ok(E.specialize(K,g.uid,'stable')&&E.structName(g)==='Stable'&&E.structStage(g)===3&&E.classHomeCap(g)===cap0+2,'pick one specialty (Stable): stage 3, more beds');
  ok(!E.specialize(K,g.uid,'knightshall'),'only one specialty per building');
- K.structures.push({uid:'bhy',type:'bunkhouse',pieces:[],up:0}); const mi=E.addMinion(K,'laborer','t'); mi.cls='n_militia'; mi.lvl=20;
+ K.structures.push({uid:'bhy',type:'bunkhouse',pieces:[],up:0}); const mi=E.addMinion(K,'laborer','t'); mi.cls='n_militia'; mi.lvl=20; mi.skills=Object.fromEntries(['guard','adventure','tutor','scout','craft','farm','herbs','merchant','hunt','fish','gather','mine'].map(j=>[j,1e4]));
  ok(!E.minionEvolveIssue(K,mi,'n_horseman'),'Guard → Horseman at Barracks');
  E.evolveMinion(K,mi.uid,'n_horseman'); ok(String(E.minionEvolveIssue(K,mi,'n_knighterrant')).includes("Knight's Hall"),'Knight needs the Knight\'s Hall specialty'); ok(E.homeMap(K)[mi.uid]===g.uid,'Horseman lives in the Stable');
  g.spec='knightshall'; ok(E.evolveMinion(K,mi.uid,'n_knighterrant')&&mi.cls==='n_knighterrant','Guard → Horseman → Knight');
@@ -783,7 +783,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
  ok(!E.choosePending(G,'m',0,'not_offered'),'cannot pick outside the offer'); const pick=m.pending[0].offer[1]; ok(E.choosePending(G,'m',0,pick)===pick&&!m.pending.length&&m.ups[0].id===pick,'pick one of the offered upgrades');
  lvTo(m,MS.every*(MS.maxPending+2)); ok(m.pending.length===MS.maxPending&&m.ups.length>1,'pending queue capped; overflow auto-picks');
  E.setUpMode(G,'m','auto'); ok(!m.pending.length,'switching to Auto resolves waiting choices');
- const ev=mk('n_peasant','ev'); ev.lvl=5; G.structures=[{uid:'b',type:'barracks',pieces:[],up:3}]; const n0=(ev.ups||[]).length; E.evolveMinion(G,'ev','n_militia'); ok(ev.cls==='n_militia'&&ev.ups.length===n0+1&&ev.ups[ev.ups.length-1].mult===MS.bigMult,'evolution grants a double upgrade');
+ const ev=mk('n_peasant','ev'); ev.lvl=5; ev.skills=Object.fromEntries(['guard','adventure','tutor','scout','craft','farm','herbs','merchant','hunt','fish','gather','mine'].map(j=>[j,1e4])); G.structures=[{uid:'b',type:'barracks',pieces:[],up:3}]; const n0=(ev.ups||[]).length; E.evolveMinion(G,'ev','n_militia'); ok(ev.cls==='n_militia'&&ev.ups.length===n0+1&&ev.ups[ev.ups.length-1].mult===MS.bigMult,'evolution grants a double upgrade');
  // full 4-piece set on an evolved follower
  const f=mk('n_militia','f'); f.ups=[{id:'slot_offhand',mult:1},{id:'slot_accessory',mult:1}]; ok(E.minionSlots(f).length===6,'extra gear slots unlocked');
  G.vault.push('warden_blade','warden_shield','warden_mail','warden_sigil'); for(const id of ['warden_blade','warden_shield','warden_mail','warden_sigil']) E.equipMinion(G,'f',id); ok(E.setProgress(f.equip)[0].n===4,'follower wears a full 4-piece set');
@@ -830,7 +830,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
   const sx=E.pathOf(m,'scribe').xp; E.gainXp(G,m,'reading',500); ok(E.pathOf(m,'scribe').xp>sx,'combo inputs are never blocked');
   ok(E.pathCap(m,E.pathOf(m,'architect'))===R.length-1,'combos uncapped by the main path');
   ok(E.famHasClass(G,'architect')&&E.upgradePerk(G,'house')>0,'old Architect perks now come from the Architect path');
-  const ar=E.advancedReqs(m,'artificer'); ok(ar.some(x=>!x.ok&&/Jeweler/.test(x.text))&&ar.some(x=>!x.ok&&/line class/.test(x.text)),'locked combo lists its requirements (specialty + class line)');
+  const ar=E.advancedReqs(m,'artificer'); ok(ar.some(x=>!x.ok&&/Goldsmith/.test(x.text))&&ar.some(x=>!x.ok&&/line class/.test(x.text)),'locked combo lists its requirements (specialty + class line)');
   ok(/Warrior|Fighter/.test(E.advancedReqs(m,'battlesmith').map(x=>x.text).join())||E.advancedReqs(m,'battlesmith').some(x=>/line class/.test(x.text)),'Battle Smith needs a Warriors\' class line');
   // class recipes
   const bow=D.crafting.recipes.find(r=>r.path==='carpenter'&&r.forClass==='hunter');
@@ -844,8 +844,8 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(
   const v0=E.famFx(G,'variety'); m.paths=[{id:'cook',xp:0,rank:2,spec:'chef',sxp:0,srank:1,}];
   ok(E.famFx(G,'variety')>v0&&E.famFx(G,'foodQ','stew')>E.famFx(G,'foodQ','bread'),'Cook: variety bonus; Chef lifts stews more than bread');
   m.paths=[{id:'farmer',xp:0,rank:1,spec:null,sxp:0,srank:0}]; ok(E.famFx(G,'cropQ','wheat')>0&&E.famFx(G,'cropQ','ale')===0,'Farmer: crop quality on crops only');
-  m.paths=[{id:'woodsman',xp:0,rank:1,spec:'herbalist',sxp:0,srank:0}]; ok((E.pathFinds(m,'foraging').mushrooms||0)>0&&E.memberFx(m,'gather','thyme')>E.memberFx(m,'gather','wood'),'Woodsman finds mushrooms; Herbalist favours herbs');
-  m.paths=[{id:'scribe',xp:0,rank:1,spec:'bookbinder',sxp:0,srank:0}]; ok(E.famFx(G,'trainXp')>0.05,'Scribe/Bookbinder boost family training');
+  m.paths=[{id:'woodsman',xp:0,rank:1,spec:'forestsense',sxp:0,srank:0}]; ok((E.pathFinds(m,'foraging').mushrooms||0)>0&&E.memberFx(m,'gather','thyme')>E.memberFx(m,'gather','wood'),'Woodsman finds mushrooms; Herbalist favours herbs');
+  m.paths=[{id:'scribe',xp:0,rank:1,spec:'loremaster',sxp:0,srank:0}]; ok(E.famFx(G,'trainXp')>0.05,'Scribe/Loremaster boost family training');
   m.paths=[{id:'smithing',xp:0,rank:2,spec:'locksmith',sxp:0,srank:1}]; const vc=E.vaultCap(G); m.paths[0].spec=null; ok(vc>E.vaultCap(G),'Locksmith adds vault space');
 }
 // migration: crafter classes → paths; FL1 code still loads

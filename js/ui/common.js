@@ -98,6 +98,9 @@ export const RI = {
   steel: "🔩",
   silverore: "🩶",
   silver: "🥈",
+  gems: "💎",
+  cutgems: "💠",
+  bandages: "🩹",
   goldore: "🟨",
   gold: "🥇",
   mithrilore: "🔹",
@@ -205,6 +208,9 @@ export const MATS = [
   "cloth",
   "hides",
   "potions",
+  "gems",
+  "cutgems",
+  "bandages",
 ];
 
 export function itemRow(x, btns) {

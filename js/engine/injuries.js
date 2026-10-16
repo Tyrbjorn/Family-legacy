@@ -9,7 +9,7 @@ const IJ = () => T.injuries;
 export const injTier = n => IJ().tiers[n - 1];
 export const permDef = id => IJ().permanent.find(p => p.id === id);
 export const permFx = (m, k) => ((m && m.perm) || []).reduce((a, id) => a + ((permDef(id) || { fx: {} }).fx[k] || 0), 0);
-const healerKin = s => s.members.some(x => x.alive && (x.paths || []).some(p => p.id === "apothecary" || p.spec === "healerbrewer"));
+const healerKin = s => s.members.some(x => x.alive && (x.paths || []).some(p => p.id === "apothecary" || (p.id === "alchemy" && p.spec === "herbalist")));
 
 // opts: { guards, treated, dressing (Field Dressing: tier 2 → 1) }
 export function injure(s, m, tier, why, o = {}) {

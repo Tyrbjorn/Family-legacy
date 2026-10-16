@@ -87,7 +87,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - Forge smelts tin/bronze/silver/gold; Forge Hall adds Steel Furnace, Foundry adds Crucible. Upgrades carry metalQ (+.02 / +.03) on top of each metal's quality step.
 - loot.js: drop chance and rarity curve from difficulty and quest risk/type (tuning.loot); quest loot lists are favorites; rare ore finds; nodes can drop "res:" rare ore.
 - Save step 18 renames old item ids. Smokehouse Curing House offers a Cask Rack instead of the Smoker.
-- On hold: Jeweler building (pending the craft-ladder revision).
+- On hold: Jeweler building (inlays work at the forge for now).
+- [x] Auto Ascend (title slots 3/2/1 for tiers 2–4, closest-to-qualifying trainee, key-job skill gates 2/4/6/8, cascade, auto-evolve, keep-job switch) and Auto Recruit (monthly, cheapest follower, hire + 3 months wages + reserve). Town work for followers: open question.
+- [x] Craft ladder: specialist → artisan titles, Scribe branches (Loremaster/Draftsman/Steward/Cartographer), Gemcutter + Jeweler inlays, Herbalist → Apothecary bandages, Pastry Chef / Smoker renames, Steward route slot fix; save step 23.
 
 ## Difficulty + path cleanup (unreleased)
 - js/engine/difficulty.js, tuning.difficulty. Game difficulty (global, Settings): Hearthside / Settled / Steady / Hard Times / Grim Age. Personal challenge (family only, picked in the first year of life, shown on the member card): Sheltered / Ordinary / Driven / Ironwilled / Doomsworn. Level 3 = base game; game level snapshotted on each action at start; loot reads base quest power; combined renown ≤ ×1.8.

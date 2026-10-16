@@ -44,7 +44,7 @@ export function minionsv() {
             )
             .join("")}</div>`
         : ""
-    }<div class="muted" style="font-size:11px">XP ${Math.floor(mi.xp || 0)}/${E.minionXpNeed(E.minionLvl(mi))} · output ×${E.minionLvlMult(mi).toFixed(2)}${
+    }${mi.special ? "" : `<div class="row" style="gap:4px;justify-content:flex-start"><span class="muted">${mi.trainFor ? "🎓 training for " + E.npcClass(mi.trainFor).name + " (" + Math.round(Math.min(1, E.score(mi, E.npcClass(mi.trainFor))) * 100) + "%)" : "Auto Ascend"}</span><button class="b ${mi.keepJob ? "sel" : ""}" data-a="keepjob" data-v="${mi.uid}" title="Keep this follower's job; Auto Ascend leaves it alone">${mi.keepJob ? "📌 Keep job" : "Keep job"}</button></div>`}<div class="muted" style="font-size:11px">XP ${Math.floor(mi.xp || 0)}/${E.minionXpNeed(E.minionLvl(mi))} · output ×${E.minionLvlMult(mi).toFixed(2)}${
       E.minionPerks(mi).length
         ? " · ✨ " +
           E.minionPerks(mi)

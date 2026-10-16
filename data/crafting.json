@@ -1725,5 +1725,31 @@
    "furniture": 0.05,
    "upgrade": 0.15
   }
+ },
+ "inlays": {
+  "_note": "Inlays at the forge: one per accessory or charm without enchants. Gold/silver need a Goldsmith; a cut gem needs a Jeweler (Grandmaster Goldsmith + Gemcutter) and adds an enchant slot.",
+  "slots": [
+   "accessory",
+   "charm"
+  ],
+  "station": "forge",
+  "mats": {
+   "gold": {
+    "name": "gold",
+    "value": 0.4,
+    "needs": "goldsmith"
+   },
+   "silver": {
+    "name": "silver",
+    "value": 0.25,
+    "needs": "goldsmith"
+   },
+   "cutgems": {
+    "name": "gem",
+    "value": 0.15,
+    "enchSlot": 1,
+    "needs": "jeweler"
+   }
+  }
  }
 }

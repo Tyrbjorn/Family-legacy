@@ -15,6 +15,7 @@ export const inventoryActions = ({ v, b, m }) => ({
   sellallres: () => E.sellAllRes(s, v, b.dataset.w),
   bulksell: () => E.sellMany(s, curList()),
   bulklist: () => curList().filter(id => !E.isHeld(s, id)).forEach(id => E.listForSale(s, id)),
+  inlay: () => E.inlay(s, v, b.dataset.w),
   hold: () => E.toggleHold(s, b.dataset.w, v),
   noautoeq: () => E.toggleNoAutoEq(m),
   list: () => E.listForSale(s, v),

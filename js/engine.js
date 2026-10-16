@@ -44,3 +44,5 @@ export * from "./engine/injuries.js";
 export * from "./engine/autotend.js";
 export * from "./engine/autoequip.js";
 export * from "./engine/holds.js";
+export * from "./engine/inlay.js";
+export * from "./engine/minion-auto.js";

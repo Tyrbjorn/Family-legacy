@@ -13,6 +13,37 @@ export const pathDef = id => cached().find(p => p.id === id);
 export const pathRanks = () => PD().ranks;
 export const pathRankName = r => (PD().ranks[r] || PD().ranks[0]).name;
 export const pathSpecDef = (pid, sid) => ((pathDef(pid) || {}).specs || []).find(x => x.id === sid);
+// ladder stage 3: a specialty at spec rank artisanAt with an `artisan` block takes the artisan title and fx ×artisanMult
+export const isArtisan = e => {
+  const sp = e && e.spec && pathSpecDef(e.id, e.spec);
+  return !!(sp && sp.artisan && e.srank >= (PD().artisanAt ?? 3));
+};
+export const specName = e => {
+  const sp = e && e.spec && pathSpecDef(e.id, e.spec);
+  const g = mergedTitle(e);
+  return g ? g.name : sp ? (isArtisan(e) ? sp.artisan.name : sp.name) + (e.spec2 ? " + " + pathSpecDef(e.id, e.spec2).name : "") : "";
+};
+// merged title (path.merges, e.g. Goldsmith + Gemcutter = Jeweler): Grandmaster in a merge specialty opens the other as spec2
+const top = () => PD().artisanAt ?? 3;
+const mergeOf = e => e && e.spec && ((pathDef(e.id) || {}).merges || []).find(x => x.specs.includes(e.spec));
+export const mergedTitle = e => {
+  const g = mergeOf(e);
+  return g && e.spec2 && e.srank >= top() && e.s2rank >= top() ? g : null;
+};
+export const spec2Choices = (m, pid) => {
+  const e = pathOf(m, pid),
+    g = mergeOf(e);
+  return g && !e.spec2 && e.srank >= top() ? g.specs.filter(x => x !== e.spec).map(x => pathSpecDef(pid, x)) : [];
+};
+export function chooseSpec2(s, m, pid, sid) {
+  if (!spec2Choices(m, pid).some(x => x.id === sid)) return false;
+  Object.assign(pathOf(m, pid), { spec2: sid, s2xp: 0, s2rank: 0 });
+  log(s, `🔨 ${m.name} took up ${pathSpecDef(pid, sid).name} as a second specialty.`);
+  return true;
+}
+const specMult = e => (isArtisan(e) || mergedTitle(e) ? PD().artisanMult || 1 : 1);
+// [spec def, spec rank] pairs of a path entry (spec and spec2)
+const specsOf = e => [[e.spec && pathSpecDef(e.id, e.spec), e.srank], [e.spec2 && pathSpecDef(e.id, e.spec2), e.s2rank]].filter(x => x[0]);
 export const memberPaths = m => (m && m.paths) || [];
 export const pathOf = (m, id) => memberPaths(m).find(e => e.id === id);
 export const mainPath = m => memberPaths(m)[0] || null;
@@ -89,7 +120,17 @@ export function refreshPaths(s, m) {
       const sr = Math.min(e.rank, rankFor(e.sxp, lvl));
       if (sr > e.srank) {
         e.srank = sr;
-        log(s, `🔨 ${m.name} is now a ${pathRankName(sr)} ${pathSpecDef(e.id, e.spec).name}.`);
+        log(s, isArtisan(e) ? `🔨 ${m.name} became a ${specName(e)} (artisan).` : `🔨 ${m.name} is now a ${pathRankName(sr)} ${specName(e)}.`);
+        if (isArtisan(e) && s.deeds) s.deeds.push(`${m.name} became a ${specName(e)}.`);
+      }
+      if (e.spec2) {
+        const r2 = Math.min(e.rank, rankFor(e.s2xp, lvl));
+        if (r2 > e.s2rank) {
+          e.s2rank = r2;
+          const g = mergedTitle(e);
+          log(s, g ? `🔨 ${m.name} became a ${g.name}!` : `🔨 ${m.name} is now a ${pathRankName(r2)} ${pathSpecDef(e.id, e.spec2).name}.`);
+          if (g && s.deeds) s.deeds.push(`${m.name} became a ${g.name}.`);
+        }
       }
     }
   }
@@ -105,6 +146,7 @@ export function pathXp(s, m, skill, amt) {
     if (!p || !p.skills.includes(skill)) continue;
     e.xp += amt * PD().xpRate;
     if (e.spec) e.sxp += amt * PD().xpRate;
+    if (e.spec2) e.s2xp += amt * PD().xpRate;
     hit = true;
   }
   if (hit) refreshPaths(s, m);
@@ -144,7 +186,7 @@ export const specChoices = (m, pid) => {
 };
 export const pendingPathChoices = m =>
   (isAdult(m) && m.craft && !memberPaths(m).length ? 1 : 0) +
-  memberPaths(m).filter(e => specChoices(m, e.id).length).length +
+  memberPaths(m).filter(e => specChoices(m, e.id).length || spec2Choices(m, e.id).length).length +
   (basic(m).length && basic(m).length < pathSlots(m) && pathDefs().some(x => !x.advanced && !pathOf(m, x.id)) ? 1 : 0) +
   pathDefs().filter(x => x.advanced && !pathOf(m, x.id) && memberPaths(m).length && !advancedReqs(m, x.id).some(r => !r.ok)).length;
 
@@ -174,8 +216,7 @@ export function memberFx(m, kind, key, rc, itemDef) {
     const p = pathDef(e.id);
     if (!p || (kind === "craft" && rc && rc.path !== p.id)) continue;
     for (const f of p.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.v * (e.rank + 1);
-    const sp = e.spec && pathSpecDef(e.id, e.spec);
-    if (sp) for (const f of sp.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.v * (e.srank + 1);
+    for (const [sp, r] of specsOf(e)) for (const f of sp.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.v * (r + 1) * specMult(e);
   }
   return v;
 }
@@ -187,10 +228,9 @@ export const famFx = (s, kind, key) =>
 export function pathFinds(m, skill) {
   const out = {};
   for (const e of memberPaths(m)) {
-    const p = pathDef(e.id),
-      sp = e.spec && pathSpecDef(e.id, e.spec);
-    for (const [f, r] of [...(p ? p.fx : []).map(f => [f, e.rank]), ...(sp ? sp.fx : []).map(f => [f, e.srank])])
-      if (f.kind === "find" && f.skills.includes(skill)) out[f.res] = (out[f.res] || 0) + f.v * (r + 1);
+    const p = pathDef(e.id);
+    for (const [f, r, mul] of [...(p ? p.fx : []).map(f => [f, e.rank]), ...specsOf(e).flatMap(([sp, sr]) => sp.fx.map(f => [f, sr, specMult(e)]))])
+      if (f.kind === "find" && f.skills.includes(skill)) out[f.res] = (out[f.res] || 0) + f.v * (r + 1) * (mul || 1);
   }
   return out;
 }
@@ -240,3 +280,32 @@ export function migratePaths(s) {
   }
 }
 export const pathCapMax = () => PD().maxPaths;
+
+// daily "make" fx (specialties): Herbalist bandages, Gemcutter cuts gems (`from` is consumed 1:1)
+export function pathsDay(s) {
+  for (const m of living(s).filter(isAdult))
+    for (const e of memberPaths(m)) {
+      for (const [sp, r] of specsOf(e))
+      for (const f of sp.fx) {
+        if (f.kind !== "make") continue;
+        let n = f.v * (r + 1) * specMult(e);
+        if (f.from) n = Math.min(n, s.res[f.from] || 0), (s.res[f.from] -= n);
+        if (n > 0) s.res[f.res] = (s.res[f.res] || 0) + n;
+      }
+    }
+}
+
+// save step: renamed specialty ids (paths.json specRenames)
+export function renameSpecs(s) {
+  const R = (PD() || {}).specRenames || {};
+  for (const m of s.members || []) for (const e of m.paths || []) if (e.id === "smithing" && e.spec === "jeweler") e.wasJeweler = true;
+  for (const m of s.members || []) for (const e of m.paths || []) if (e.spec && (R[e.id] || {})[e.spec]) e.spec = R[e.id][e.spec];
+}
+// save step: an old Grandmaster Jeweler (one specialty did both) becomes Goldsmith + Grandmaster Gemcutter = Jeweler
+export function migrateJewelers(s) {
+  for (const m of s.members || [])
+    for (const e of m.paths || [])
+      if (e.id === "smithing" && e.spec === "goldsmith" && e.wasJeweler && e.srank >= top() && !e.spec2)
+        Object.assign(e, { spec2: "gemcutter", s2xp: e.sxp, s2rank: e.srank });
+  for (const m of s.members || []) for (const e of m.paths || []) delete e.wasJeweler;
+}

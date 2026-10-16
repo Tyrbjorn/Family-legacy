@@ -8,7 +8,7 @@ import { fight, fighter } from "./combat.js";
 import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "./inventory.js";
 import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
-import { famFx } from "./paths.js";
+import { famFx, isArtisan } from "./paths.js";
 import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
@@ -32,8 +32,9 @@ export function tradeInit(s) {
 export const tradeTier = s => Math.max(0, ...(s.structures || []).map(st => TRADE_BUILDINGS.indexOf(st.type) + 1));
 
 const bestHaggle = s => Math.max(0, ...living(s).map(m => (m.skills && m.skills.haggling ? m.skills.haggling.lvl : 0)));
+// Scribe Stewards add a route slot each; at the artisan stage (Seneschal) two
 const stewards = s =>
-  living(s).filter(m => (m.paths || []).some(p => p.id === "scribe" && (TC().stewardSpecs || []).includes(p.spec))).length;
+  living(s).reduce((a, m) => a + (m.paths || []).filter(p => p.id === "scribe" && (TC().stewardSpecs || []).includes(p.spec)).reduce((x, p) => x + (isArtisan(p) ? 2 : 1), 0), 0);
 const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).includes(mi.cls)).length;
 
 export function routeSlotParts(s) {

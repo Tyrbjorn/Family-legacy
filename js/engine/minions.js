@@ -33,6 +33,11 @@ export const minionLvlMult = (mi, job = mi.job) =>
   (1 + 0.02 * minionSkillLvl(mi, job)) *
   (mi.home ? 1.15 : 1);
 
+// a title's key job (its biggest job bonus) and the key-job skill it needs (minions.autoAscend.skillByTier)
+export const keyJobs = c => Object.entries(c.bonus || {}).sort((a, b) => b[1] - a[1]).map(x => x[0]);
+export const keyJob = c => keyJobs(c)[0];
+export const titleSkill = c => (c.needs && (D.minions.autoAscend || {}).skillByTier?.[c.needs.tier]) || 0;
+
 export const evolveOptions = mi =>
   mi.special ? [] : (D.minions.npcClasses || []).filter(c => c.from === (mi.cls || "n_peasant"));
 
@@ -56,6 +61,8 @@ export function minionEvolveIssue(s, mi, cid) {
         ? structDef(nd.buildings[0]).specs.find(x => x.id === nd.spec).name + " specialty"
         : nd.buildings.map(id => structDef(id).name).join(" or ") + (nd.up ? " (upgrade " + nd.up + ")" : ""))
     );
+  const kj = keyJob(c), sk = titleSkill(c);
+  if (sk && minionSkillLvl(mi, kj) < sk) return `${kj} skill ${sk}`;
   return null;
 }
 

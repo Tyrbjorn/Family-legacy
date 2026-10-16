@@ -35,7 +35,7 @@ E.setDifficulty(s,3); const b3=E.segRisk(s,r,'a','b'); E.setDifficulty(s,5); ok(
 ok(D.events.types.filter(t=>t.bad).length>=5,'bad world events marked');
 // renames + migration 19
 ok(D.paths.comboPaths.find(c=>c.id==='apothecary').name==='Remedist','Apothecary combo shown as Remedist (id kept)');
-ok(D.paths.paths.find(p=>p.id==='woodsman').specs.find(x=>x.id==='herbalist').name==='Forest Sense','Woodsman Herbalist → Forest Sense');
+ok(D.paths.paths.find(p=>p.id==='woodsman').specs.find(x=>x.id==='forestsense').name==='Forest Sense','Woodsman Herbalist → Forest Sense');
 ok(!D.paths.paths.find(p=>p.id==='farmer').specs.some(x=>x.id==='brewer'),'Brewer specialty cut');
 const o=E.newGame(t0); E.normalize(o); E.active(o).paths=[{id:'farmer',xp:50,rank:2,spec:'brewer',sxp:30,srank:1}];
 const raw=JSON.parse(E.serialize(o,t0)); raw.schema=18; raw._norm=false; E.normalize(raw);

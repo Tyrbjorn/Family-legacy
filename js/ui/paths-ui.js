@@ -33,12 +33,18 @@ function pathRow(m, e) {
   if (e.spec) {
     const sp = E.pathSpecDef(e.id, e.spec),
       sq = E.pathProgress(m, e, true);
-    h += `<div class="muted">${sp.icon} <b>${sp.name}</b> ${rk(e.srank).name} · ${sp.desc}</div>${pbar(sq.pct, sq.next ? (sq.capped ? "held at the path's rank" : `→ ${sq.next.name}`) : "Grandmaster", null, "thin")}`;
+    const art = E.isArtisan(e),
+      nxt = sp.artisan && !art ? ` · artisan at ${rk(E.pathRanks().length - 1).name}: ${sp.artisan.icon} ${sp.artisan.name}` : "";
+    const c2 = E.spec2Choices(m, e.id),
+      g = E.mergedTitle(e);
+    if (c2.length) h += `<div class="muted">🎯 Grandmaster: take a second specialty toward ${E.pathDef(e.id).merges[0].name}:</div><div class="row" style="flex-wrap:wrap;gap:4px">${c2.map(x => `<button class="b" data-a="pickspec2" data-v="${e.id}" data-w="${x.id}" title="${x.desc}">${x.icon} ${x.name}</button>`).join("")}</div>`;
+    if (e.spec2 && !g) h += `<div class="muted">${E.pathSpecDef(e.id, e.spec2).icon} second specialty ${E.pathSpecDef(e.id, e.spec2).name}: ${rk(e.s2rank).name} (Grandmaster in both = ${E.pathDef(e.id).merges[0].name})</div>`;
+    h += `<div class="muted">${g ? g.icon : art ? sp.artisan.icon : sp.icon} <b>${E.specName(e)}</b> ${art ? "(artisan)" : rk(e.srank).name} · ${sp.desc}${nxt}</div>${pbar(sq.pct, sq.next ? (sq.capped ? "held at the path's rank" : `→ ${sq.next.name}`) : "Grandmaster", null, "thin")}`;
   } else {
     const ch = E.specChoices(m, e.id);
     if (ch.length)
       h += `<div class="muted">🎯 Choose ONE specialty:</div><div class="row" style="flex-wrap:wrap;gap:4px">${ch
-        .map(x => `<button class="b" data-a="pickspec" data-v="${e.id}" data-w="${x.id}" title="${x.desc}">${x.icon} ${x.name}</button>`)
+        .map(x => `<button class="b" data-a="pickspec" data-v="${e.id}" data-w="${x.id}" title="${x.desc}${x.artisan ? " Artisan: " + x.artisan.name + "." : ""}">${x.icon} ${x.name}${x.artisan ? " → " + x.artisan.name : ""}</button>`)
         .join("")}</div>`;
     else if (e.rank < E.pathRanks().length && !p.advanced)
       h += `<div class="muted" style="font-size:12px">Specialty at ${rk(2).name}: ${p.specs.map(x => x.icon + " " + x.name).join(", ")}</div>`;

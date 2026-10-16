@@ -1,6 +1,6 @@
 import { DEFAULT_RESERVE } from "./production.js";
 import { backfillMilestones } from "./minionups.js";
-import { migratePaths } from "./paths.js";
+import { migratePaths, migrateJewelers, renameSpecs } from "./paths.js";
 import { fogBase, fogInit, reveal } from "./world.js";
 import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
@@ -407,6 +407,18 @@ export const STEPS = [
       for (const m of s.members || []) if (m.craft && m.craft.rc === "r_heirloom") m.craft = null;
       if (s.autoCraft) for (const k of Object.keys(s.autoCraft)) if (s.autoCraft[k] === "r_heirloom") delete s.autoCraft[k];
     },
+  },
+  {
+    n: 23,
+    once: true,
+    name: "craft ladder: Bookbinder → Loremaster, Healer-brewer → Herbalist (specialty ids)",
+    run: s => renameSpecs(s),
+  },
+  {
+    n: 24,
+    once: true,
+    name: "Smithing Goldsmith + Gemcutter = Jeweler: old Jeweler specialists become Goldsmiths; old Grandmaster Jewelers also get Grandmaster Gemcutter (still Jewelers)",
+    run: s => (renameSpecs(s), migrateJewelers(s)),
   },
 ];
 const ITEM_RENAMES = {

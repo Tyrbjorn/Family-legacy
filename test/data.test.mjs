@@ -184,7 +184,7 @@ if (fail) process.exit(1);
   ok(new Set(ids).size === ids.length, "path ids unique (paths + combos)");
   ok(PP.ranks.length === 4 && PP.ranks.every((r, i) => !i || (r.xp > PP.ranks[i - 1].xp && r.skill >= PP.ranks[i - 1].skill)), "4 ranks with rising thresholds");
   ok(PP.maxPaths >= 2 && PP.secondaryGap >= 1 && PP.specAt > 0 && PP.specAt < PP.ranks.length, "path cap / gap / specAt sane");
-  const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing", "haul"];
+  const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing", "haul", "make"];
   const specIds = [];
   for (const P of all) {
     ok(P.skills.length && P.skills.every(k => skillIds.has(k)), `path ${P.id} skills real`);
@@ -214,7 +214,7 @@ if (fail) process.exit(1);
   ok(rcs.filter(r => r.path === "carpenter" && r.forClass === "hunter").length && rcs.some(r => r.path === "carpenter" && r.forClass === "apprentice" && /staff/i.test(r.name)), "Carpenter: Rangers get bows, Mages staves");
   ok(PP.paths.some(x => x.id === "woodsman") && D.estate.meals.menu.mushrooms, "Woodsman + mushrooms resource");
   ok(!PP.paths.find(x => x.id === "carpenter").specs.some(z => z.id === "shipwright") && PP.comboPaths.some(c => c.id === "shipwright"), "Shipwright moved to a combo");
-  ok(PP.paths.find(x => x.id === "smithing").specs.some(z => z.id === "jeweler"), "Jeweler is a Smithing specialty");
+  ok(PP.paths.find(x => x.id === "smithing").specs.some(z => z.id === "goldsmith") && PP.paths.find(x => x.id === "smithing").merges[0].name === "Jeweler", "Goldsmith + Gemcutter merge into Jeweler");
   ok(!PP.paths.find(x => x.id === "mason").specs.some(z => z.id === "architect"), "Architect is not a Mason specialty");
 }
 
