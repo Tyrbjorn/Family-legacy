@@ -2,7 +2,7 @@
 // of a hand-worked day. It repeats the last activity / recipe / gathering spot the family used in that skill.
 import { LG, legacyTier, legacyValue, resGain } from "./legacy.js";
 import { craftItem, recipeDef, recipeIssue } from "./inventory.js";
-import { gatherInto } from "./map.js";
+import { gatherInto, newTrip } from "./map.js";
 import { seasonGather } from "./seasons.js";
 import { gatherMult } from "./worldevents.js";
 import { D, isAdult, living } from "./state.js";
@@ -38,6 +38,12 @@ export function atTarget(s, k) {
   return rc ? { kind: "craft", id, name: rc.name } : null;
 }
 
+// Extraction pays only the gathering share of a hand trip: gathering days / (gathering + round-trip days)
+export function gatherShare(s, n) {
+  const t = newTrip({ type: "gather", target: n.id }, s);
+  return t.task / Math.max(t.task, t.out + t.task + t.back);
+}
+
 // someone already doing it by hand?
 function manned(s, k) {
   const c = AT()[k];
@@ -67,7 +73,7 @@ export function autoTendDay(s) {
     } else if (t.kind === "gather") {
       const n = D.nodes.find(x => x.id === t.id),
         trip = { load: {}, cap: Infinity };
-      gatherInto(s, trip, n, r * resGain(s) * gatherMult(s, n.region) * seasonGather(s), () => 0);
+      gatherInto(s, trip, n, r * gatherShare(s, n) * resGain(s) * gatherMult(s, n.region) * seasonGather(s), () => 0);
       for (const [res, v] of Object.entries(trip.load)) s.res[res] = (s.res[res] || 0) + v;
     } else {
       const rc = recipeDef(t.id),

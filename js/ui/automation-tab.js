@@ -4,6 +4,14 @@ import * as E from "../engine.js";
 import { s } from "../main.js";
 import { cardRefine } from "./estate-card.js";
 
+function holdsCard() {
+  const h = s.holds || { types: [], items: [] },
+    ex = E.living(s).filter(m => m.noAutoEq).map(m => m.name);
+  const nm = id => (E.itemDef(id) || {}).name || id;
+  return `<h4>📌 Holds</h4><div class="card" style="padding:6px 8px"><div class="muted">Held items skip bulk Sell / Stock and Auto Equip. Set them on the Bag tab (📌 buttons) and each member's gear card.</div>
+<div>Types: ${h.types.length ? h.types.map(nm).join(", ") : "none"}</div><div>Items: ${h.items.length ? h.items.map(nm).join(", ") : "none"}</div><div>Excluded from Auto Equip: ${ex.length ? ex.join(", ") : "nobody"}</div></div>`;
+}
+
 export function automationv() {
   const rs = (s.structures || []).filter(st => E.isRefiner(s, st));
   const list = rs.length
@@ -19,5 +27,5 @@ export function automationv() {
   }).join("");
   const eq = [["gear", "Weapons, armor, offhands", "build the Armory (Guardhouse upgrade)"], ["tools", "Follower tools", "build a Workshop"]]
     .map(([k, nm, need]) => `<div class="row" style="gap:6px;justify-content:flex-start"><b>${nm}</b>${E.autoEqUnlocked(s, k) ? btn("eq_" + k, E.autoEqOn(s, k)) : `<span class="muted">locked: ${need}</span>`}</div>`).join("");
-  return `<h3>⚙️ Automation</h3><h4>🌱 Auto Tend</h4><div class="muted">Keeps a skill working with nobody assigned (tier 1: 50%, tier 2: 75% of a hand-worked day). Repeats the last thing done by hand; pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div><h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
+  return `<h3>⚙️ Automation</h3><h4>🌱 Auto Tend</h4><div class="muted">Keeps a skill working with nobody assigned (tier 1: 50%, tier 2: 75% of a hand-worked day). Repeats the last thing done by hand; pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
 }

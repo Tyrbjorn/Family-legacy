@@ -43,3 +43,4 @@ export * from "./engine/combat.js";
 export * from "./engine/injuries.js";
 export * from "./engine/autotend.js";
 export * from "./engine/autoequip.js";
+export * from "./engine/holds.js";

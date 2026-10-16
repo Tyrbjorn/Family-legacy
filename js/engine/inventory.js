@@ -1,3 +1,4 @@
+import { isHeld } from "./holds.js";
 import { permFx } from "./injuries.js";
 import { metalQuality } from "./metals.js";
 import { upPacks } from "./minionups.js";
@@ -282,7 +283,7 @@ export function sellTick(s, power = 1) {
 export function sellMany(s, ids) {
   let n = 0;
   for (const id of ids) {
-    if (s.vault.includes(id)) {
+    if (s.vault.includes(id) && !isHeld(s, id)) {
       sell(s, id);
       n++;
     }

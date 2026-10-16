@@ -42,4 +42,25 @@ ok(U.length===10&&U.find(u=>u.id==='at_farming').tiers.map(t=>t.cost).join()==='
   a=r(); E.dungeonClear(s,m,dr); ok(r()-a>first*1.5&&s.deeds.some(d=>/wyrm/.test(d)),'dragon pays 300-tier renown + a deed');
   const sec=D.map.areas.find(x=>x.id==='a_peaks').secrets.find(x=>x.id==='d_dragonlair'); ok(sec&&sec.chance<0.2&&sec.needs==='d_stormhold','dragon is a rare peaks secret after Stormhold');
   const ar=D.map.areas[0]; s.explored=s.explored.filter(x=>x!==ar.id); a=r(); E.exploreArea(s,m,ar); const e1=r()-a; a=r(); E.exploreArea(s,m,ar); ok(e1>0&&r()===a,'explore renown only the first time'); }
+// ---- holds
+{ const s=fresh(); const m=s.members[0]; m.equip={}; s.vault=['rusty_sword','hunting_bow','c|oak_staff|fine'];
+  s.structures.push({uid:'bx',type:'barracks',pieces:[],up:2});
+  ok(E.itemType('c|oak_staff|fine#x')==='oak_staff'&&E.itemType('rusty_sword')==='rusty_sword','item type from id');
+  E.toggleHold(s,'type','c|oak_staff|fine'); E.toggleHold(s,'item','hunting_bow'); E.autoEquipDay(s); ok(m.equip.weapon==='rusty_sword','Auto Equip skips held type and held item');
+  const c0=s.res.coin; ok(E.sellMany(s,[...s.vault])===0&&s.res.coin===c0,'bulk sell skips held items');
+  E.toggleHold(s,'item','hunting_bow'); ok(!E.isHeld(s,'hunting_bow'),'hold toggles off');
+  E.unequip(s,m,'weapon'); s.vault.push(m.bag.pop()); m.autoEq={}; E.toggleNoAutoEq(m); E.autoEquipDay(s); ok(!m.equip.weapon,'member excluded from Auto Equip'); }
+// ---- Ancestors' Tithe
+{ const s=fresh(); s.legacy.renown=0; s.legacy.earned=0; const m=s.members[0];
+  E.addRenown(s,m,100); ok(s.legacy.renown===0&&E.titheRate(s)===0,'no Graveyard: no tithe');
+  s.structures.push({uid:'gy',type:'graveyard',pieces:[],up:0}); ok(E.titheRate(s)===0.1,'Graveyard: flat 10%');
+  const d=E.diffRenown?1:1; const before=m.renown; E.addRenown(s,m,200); const got=m.renown-before; ok(s.legacy.renown===Math.floor(got*0.1),'10% of the gain goes to Legacy now');
+  const L0=s.legacy.renown; const b=E.newMember(s,{age:30}); s.members.push(b); b.renown=0; E.addRenown(s,b,400); const tb=s.legacy.renown-L0; E.kill(s,b,'died');
+  ok(b.banked===Math.floor((b.renown-b.tithed)*E.captureRate(s))&&b.banked===0,'death capture excludes tithed renown (no double count)');
+  b.renown; const c=E.newMember(s,{age:30}); s.members.push(c); c.renown=300; c.tithed=0; E.kill(s,c,'died'); ok(c.banked===75,'untithed renown still banks at 25%');
+  s.legacy.renown=1e4; ok(E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.15)<1e-9&&E.buyLegacy(s,'tithe')&&E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.25)<1e-9,'Tithe upgrades: 15/20/25%');
+  ok(D.legacy.upgrades.find(u=>u.id==='tithe').tiers.map(t=>t.cost).join()==='150,400,900','Tithe prices 150/400/900'); }
+// ---- extraction share
+{ const s=fresh(); const n=D.nodes.find(x=>x.id==='berries'); const sh=E.gatherShare(s,n); const t=E.newTrip({type:'gather',target:'berries'},s);
+  ok(sh>0&&sh<=1&&Math.abs(sh-t.task/(t.out+t.task+t.back))<1e-9,'extraction scaled by gathering / trip days ('+sh.toFixed(2)+')'); }
 console.log(pass+' automation/deed checks passed');

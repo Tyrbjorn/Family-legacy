@@ -21,7 +21,8 @@
   "dungeonRepeat": 0.1,
   "questFirstOnce": 5,
   "warBattle": 10,
-  "convoyWin": 2
+  "convoyWin": 2,
+  "tithe": 0.1
  },
  "upgrades": [
   {
@@ -350,6 +351,26 @@
     }
    ],
    "autoTend": "arcane"
+  },
+  {
+   "id": "tithe",
+   "name": "Ancestors' Tithe",
+   "icon": "🕯️",
+   "desc": "While a Graveyard stands, more of each renown gain goes straight to Legacy: base 10%, +5% per tier (15/20/25%).",
+   "tiers": [
+    {
+     "cost": 150,
+     "value": 0.05
+    },
+    {
+     "cost": 400,
+     "value": 0.1
+    },
+    {
+     "cost": 900,
+     "value": 0.15
+    }
+   ]
   }
  ],
  "traits": {

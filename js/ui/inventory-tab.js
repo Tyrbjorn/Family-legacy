@@ -14,10 +14,14 @@ export function vault() {
   return h;
 }
 
+// hold buttons: this exact item / every item of this type (held items skip bulk sell/stock and Auto Equip)
+const holdBtns = id =>
+  `<button class="b ${E.heldItem(s, id) ? "sel" : ""}" data-a="hold" data-v="${id}" data-w="item" title="Hold this exact item">📌${E.heldItem(s, id) ? " Held" : " Hold"}</button><button class="b ${E.heldType(s, id) ? "sel" : ""}" data-a="hold" data-v="${id}" data-w="type" title="Hold every item of this type">📌 Type${E.heldType(s, id) ? " held" : ""}</button>`;
+
 export function invv() {
   const m = E.active(s);
   const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
-  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> (+${it(m.equip[sl]).cp} CP)${gearTags(it(m.equip[sl]))}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}</div>` + setsCard(m.equip) + enchantCard();
+  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> (+${it(m.equip[sl]).cp} CP)${gearTags(it(m.equip[sl]))}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}<div class="row" style="margin-top:4px"><span class="muted">🛡️ Auto Equip for ${m.name}</span><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="noautoeq">${m.noAutoEq ? "Excluded" : "Included"}</button></div></div>` + setsCard(m.equip) + enchantCard();
   h +=
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
@@ -51,13 +55,13 @@ export function invv() {
   );
   h += `<h3>🏛️ Family vault (${s.vault.length}/${E.vaultCap(s)}) <span class="muted">+10 per Storage Chest</span></h3>
  <div class="row" style="flex-wrap:wrap;gap:4px"><select data-a="invf" data-v="type">${types.map(t => `<option ${invF.type === t ? "selected" : ""}>${t}</option>`).join("")}</select><select data-a="invf" data-v="q">${qs.map(t => `<option ${invF.q === t ? "selected" : ""}>${t}</option>`).join("")}</select><select data-a="invf" data-v="sort">${["value", "cp", "name"].map(t => `<option ${invF.sort === t ? "selected" : ""}>${t}</option>`).join("")}</select>
- <button class="b" data-a="bulksell" ${list.length ? "" : "disabled"}>Sell ${list.length} shown (${list.reduce((a, o) => a + E.sellValue(s, o.x), 0)}🪙)</button><button class="b" data-a="bulklist" ${list.length ? "" : "disabled"}>Stock all shown</button></div>`;
+ <button class="b" data-a="bulksell" ${list.length ? "" : "disabled"}>Sell ${list.filter(o => !E.isHeld(s, o.id)).length} shown (${list.filter(o => !E.isHeld(s, o.id)).reduce((a, o) => a + E.sellValue(s, o.x), 0)}🪙; held kept)</button><button class="b" data-a="bulklist" ${list.length ? "" : "disabled"}>Stock all shown</button></div>`;
   h += list.length
     ? list
         .map(({ id, x }) =>
           itemRow(
             x,
-            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>`,
+            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>${holdBtns(id)}`,
           ),
         )
         .join("")

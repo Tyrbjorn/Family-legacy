@@ -147,7 +147,7 @@ export function legacyPanel() {
   const L = E.legacyState(s);
   const rate = E.captureRate(s);
   let h = `<div class="card"><div class="row"><b>🏺 Legacy</b><span>⭐ <b>${fmt(L.renown)}</b> Legacy Renown <span class="muted">(earned ${fmt(L.earned)})</span></span></div>
- <div class="muted">${rate ? `🪦 Graveyard captures ${Math.round(rate * 100)}% of a fallen member's renown.` : "🪦 Build a Graveyard (1 land slot) to bank fallen members' renown; upgrade to Crypt/Mausoleum for more."} Upgrades are permanent across generations and new lineages.</div>`;
+ <div class="muted">${rate ? `🪦 Graveyard: ${Math.round(E.titheRate(s) * 100)}% of each renown gain goes to Legacy now (Ancestors' Tithe, ${fmt(s.tithed || 0)} so far); at death it captures ${Math.round(rate * 100)}% of the renown not already tithed.` : "🪦 Build a Graveyard (1 land slot) to bank fallen members' renown; upgrade to Crypt/Mausoleum for more."} Upgrades are permanent across generations and new lineages.</div>`;
   for (const u of D.legacy.upgrades) {
     const t = E.legacyTier(s, u.id);
     const nx = u.tiers[t];

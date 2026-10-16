@@ -53,7 +53,25 @@ export function buyLegacy(s, id) {
 export function addRenown(s, m, n) {
   n = Math.round(n * diffRenown(s, m));
   s.renown += n;
-  if (m && !m.minion) m.renown = (m.renown || 0) + n;
+  const mem = m && !m.minion;
+  if (mem) m.renown = (m.renown || 0) + n;
+  tithe(s, mem ? m : null, n);
+}
+
+// Ancestors' Tithe: while a Graveyard stands, a share of each renown gain goes straight to Legacy.
+// The member's tithed renown is remembered so the death capture only banks the untithed part.
+export const titheRate = s => (captureRate(s) > 0 ? (LG().renown.tithe || 0) + legacyValue(s, "tithe") : 0);
+function tithe(s, m, n) {
+  const r = n > 0 ? titheRate(s) : 0;
+  if (!r) return;
+  s.titheFrac = (s.titheFrac || 0) + n * r;
+  const w = Math.floor(s.titheFrac);
+  s.titheFrac -= w;
+  const L = legacyState(s);
+  L.renown += w;
+  L.earned += w;
+  s.tithed = (s.tithed || 0) + w;
+  if (m) m.tithed = (m.tithed || 0) + n;
 }
 
 export function addMemberRenown(m, n) {
@@ -71,7 +89,7 @@ export function captureRate(s) {
 
 export function bankRenown(s, m) {
   const rate = captureRate(s);
-  const n = Math.floor((m.renown || 0) * rate);
+  const n = Math.floor(Math.max(0, (m.renown || 0) - (m.tithed || 0)) * rate); // tithed renown was already banked
   if (!rate) {
     if (m.renown) log(s, `🪦 No graveyard: ${m.name}'s ${Math.floor(m.renown)} renown is lost to legend.`);
     return 0;

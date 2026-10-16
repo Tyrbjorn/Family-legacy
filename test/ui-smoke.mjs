@@ -49,4 +49,7 @@ if(await p.evaluate(()=>__game.s.activeId)!==fid)throw new Error('could not swit
 await p.evaluate(()=>{const g=__game;g.s.legacy.renown+=500;g.E.buyLegacy(g.s,'at_farming');});await go(p,'auto');await p.waitForTimeout(300);
 const at=await p.evaluate(()=>{const b=document.querySelector('[data-a="autotog"][data-v="at_farming"]');const was=b&&b.textContent;b&&b.click();return [was,document.body.innerText.includes('Auto Equip')];});await p.waitForTimeout(300);
 const at2=await p.evaluate(()=>[document.querySelector('[data-a="autotog"][data-v="at_farming"]')?.textContent,!!__game.s.autoOff?.at_farming]);console.log('automation tab',JSON.stringify(at),JSON.stringify(at2));if(at[0]!=='On'||!at[1]||at2[0]!=='Off'||!at2[1])errs.push('automation toggles broken');await p.screenshot({path:'/workspace/fl-screenshots/screenshot-automation.png'});
+await go(p,'inv');await p.waitForTimeout(300);const hb=await p.evaluate(()=>{const b=document.querySelector('[data-a="hold"][data-w="type"]');if(!b)return 'none';const v=b.dataset.v;b.click();return v;});await p.waitForTimeout(300);
+const hs=await p.evaluate(()=>[JSON.stringify(__game.s.holds),!!document.querySelector('[data-a="noautoeq"]')]);console.log('holds',hb,JSON.stringify(hs));if(hb==='none'||!/types":\["/.test(hs[0])||!hs[1])errs.push('hold controls broken');
+await go(p,'auto');await p.waitForTimeout(300);if(!(await p.evaluate(()=>document.body.innerText.includes('Holds'))))errs.push('holds summary missing');
 console.log('errors',errs);await b.close();

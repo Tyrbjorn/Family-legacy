@@ -4,6 +4,7 @@ import { boughtUps } from "./estate-place.js";
 import { hasStruct } from "./estate.js";
 import { equip, itemDef } from "./inventory.js";
 import { equipMinion } from "./minion-special.js";
+import { isHeld } from "./holds.js";
 import { isAdult, living } from "./state.js";
 
 export const AUTO_EQ = ["gear", "tools"];
@@ -17,7 +18,7 @@ function best(s, slot, cur, ok = () => true) {
   let b = null;
   for (const id of s.vault) {
     const it = itemDef(id);
-    if (it && it.slot === slot && ok(it) && cpOf(id) > cpOf(b || cur)) b = id;
+    if (it && it.slot === slot && !isHeld(s, id) && ok(it) && cpOf(id) > cpOf(b || cur)) b = id;
   }
   return b;
 }
@@ -36,7 +37,7 @@ export function autoEquipDay(s) {
     tools = autoEqOn(s, "tools");
   if (!gear && !tools) return;
   if (gear)
-    for (const m of living(s).filter(isAdult))
+    for (const m of living(s).filter(m => isAdult(m) && !m.noAutoEq))
       for (const slot of ["weapon", "offhand", "armor"])
         fill(s, m, slot, undefined, id => {
           const had = !!m.equip[slot];

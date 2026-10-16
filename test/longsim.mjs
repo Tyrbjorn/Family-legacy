@@ -206,6 +206,11 @@ function bot(s, m) {
   for (const l of D.estate.lands)
     if (s.res.coin > (l.cost.coin || 0) * 3 && !s.land.includes(l.id) && E.landUsed(s) >= E.landSlots(s) - 1)
       E.buyLand(s, l.id);
+  // Graveyard first (Ancestors' Tithe + death capture), then Stone Walls when affordable
+  const gy = s.structures.find(x => x.type === "graveyard");
+  if (!gy) {
+    if (!E.structIssue(s, "graveyard") && E.buildStructure(s, "graveyard")) seen.structs.add("graveyard");
+  } else if (!gy.up && (s.res.coin || 0) > 600 && (s.res.blocks || 0) >= 20) E.upgradeSpecial(s, gy.uid);
   for (const t of STRUCTS)
     if (
       !s.structures.some(x => x.type === t) &&
@@ -408,6 +413,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     idleDays = 0;
   const noSuitor = { cur: 0, max: 0 };
   const phaseDay = {};
+  const timing = {}; // years (loop time, across lineages) to the Graveyard, Stone Walls, first Auto Tend (80 Legacy) and the full tier-1 set (1240)
   const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
   const snap = [];
@@ -441,6 +447,13 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     if (m && !m.action && !m.injured && E.isAdult(m)) idleDays++;
     if (day % 10 === 0) check(s, seed);
     { const pn = E.era(s).n; if (phaseDay[pn] == null) phaseDay[pn] = s.day; for (const r of [1000, 2000, 5000]) if (s.renown >= r && phaseDay['renown' + r] == null) phaseDay['renown' + r] = s.day; if (['Manor', 'Prosperous Estate'].includes(E.estateStage(s)) && phaseDay.manor == null) phaseDay.manor = s.day; if (E.estateStage(s) === 'Prosperous Estate' && phaseDay.prosp == null) phaseDay.prosp = s.day; if (pn < 3 && Object.values(s.houses || {}).some(h => h.state !== 'peace')) bad(seed, s.day, 'feud/war before the Dynasty phase'); }
+    {
+      const gy = s.structures.find(x => x.type === "graveyard"), le = s.legacy.earned, at = k => timing[k] == null && (timing[k] = +(day / YD).toFixed(1));
+      if (gy) at("graveyard");
+      if (gy && gy.up) at("walls");
+      if (le >= 80) at("autoTend1"), (timing.lines1 ??= lineages);
+      if (le >= 1240) at("autoTendAll"), (timing.linesAll ??= lineages);
+    }
     if (s.suitors.length) noSuitor.cur = 0;
     else noSuitor.max = Math.max(noSuitor.max, ++noSuitor.cur);
     if (s.meal && day > YD * 2) {
@@ -550,6 +563,9 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriages: s.members.filter(x => x.persona).length,
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
+    timing,
+    legacyEarned: s.legacy.earned,
+    tithed: s.tithed || 0,
     phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),
     paths: (() => {
       const o = {};
