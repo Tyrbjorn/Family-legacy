@@ -1,6 +1,8 @@
 import { injuryDay, injurySpeed, treat } from "./injuries.js";
 import { enchantDay } from "./gear.js";
 import { notify } from "./notify.js";
+import { autoTendDay } from "./autotend.js";
+import { autoEquipDay } from "./autoequip.js";
 import { evolveOptions, minionEvolveIssue } from "./minions.js";
 import { taintDev } from "./dev.js";
 import { tutCheck } from "./tutorial.js";
@@ -214,6 +216,7 @@ for (const [n, f] of [
   ["milestones", milestonesDay],
   ["tutorial", tutorialDay],
   ["estate", s => (estateDay(s), enchantDay(s))],
+  ["automation", s => (autoTendDay(s), autoEquipDay(s))],
   ["suitors", suitorsDay],
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],

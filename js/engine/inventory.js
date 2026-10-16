@@ -21,6 +21,7 @@ export function equip(s, m, itemId, from = "vault") {
   const it = itemDef(itemId);
   if (i < 0 || !["weapon", "offhand", "armor", "accessory"].includes(it.slot)) return false;
   src.splice(i, 1);
+  if (m.autoEq) delete m.autoEq[it.slot]; // a hand-equipped slot is never swapped by Auto Equip
   if (m.equip[it.slot]) m.bag.push(m.equip[it.slot]);
   m.equip[it.slot] = itemId;
   noteSets(s, m);
@@ -39,6 +40,7 @@ export function sell(s, itemId) {
 }
 
 export function unequip(s, m, slot) {
+  if (m.autoEq) delete m.autoEq[slot];
   if (m.equip[slot]) {
     m.bag.push(m.equip[slot]);
     delete m.equip[slot];

@@ -897,7 +897,7 @@
   ],
   "picks": {
    "studydesk": "+3% Lore XP, 2 tutor spots — elders teach the young",
-   "storage": "+400 storage and vault room for heirlooms",
+   "storage": "+400 storage and vault room for family treasures",
    "feasttable": "+300 food storage, meal XP, morale; Remembrance Feast combo with the Ancestor Shrine"
   },
   "unlockUp": {
@@ -924,7 +924,7 @@
     "cap": 0
    },
    {
-    "name": "Heirloom Vault",
+    "name": "Treasure Vault",
     "cost": {
      "coin": 2500,
      "blocks": 60,

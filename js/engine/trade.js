@@ -12,6 +12,7 @@ import { famFx } from "./paths.js";
 import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
+import { LG, addRenown } from "./legacy.js";
 import { haulTier } from "./world.js";
 import { nightShare } from "./daynight.js";
 
@@ -251,6 +252,7 @@ function banditCheck(s, r, a, b) {
   const res = A.length ? fight(s, A, B, { lvl: gameLvl(s) }) : { result: "defeat", rounds: 1 };
   if (res.result === "win") {
     r.won = (r.won || 0) + 1;
+    addRenown(s, null, LG().renown.convoyWin || 0);
     log(s, `⚔️ Bandits hit the ${routeLabel(r)} cart on the ${road} road; the guards drove them off after round ${res.rounds}.`);
     return;
   }

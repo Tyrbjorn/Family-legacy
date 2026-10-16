@@ -13,7 +13,7 @@
   "Rare": 1.2,
   "Epic": 1.4,
   "Legendary": 1.7,
-  "Heirloom": 1.4,
+  "Relic": 1.4,
   "Unique": 1.4
  },
  "slots": {
@@ -30,7 +30,7 @@
    "Rare": 1,
    "Epic": 2,
    "Legendary": 3,
-   "Heirloom": 2,
+   "Relic": 2,
    "Unique": 2
   },
   "maxSlots": 3

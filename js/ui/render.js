@@ -8,6 +8,7 @@ import { invv } from "./inventory-tab.js";
 import { D, report, s } from "../main.js";
 import { jobsv, mainv } from "./main-tab.js";
 import { mapv } from "./map-tab.js";
+import { automationv } from "./automation-tab.js";
 import { minionsv } from "./minions-tab.js";
 import { craftingv } from "./crafting-tab.js";
 import { chroniclev } from "./chronicle-tab.js";
@@ -26,6 +27,7 @@ export const TABS = {
   minions: ["🧑‍🤝‍🧑", "Minions", minionsv],
   guilds: ["🏛️", "Guilds", guildsv],
   craft: ["🔨", "Crafting", craftingv],
+  auto: ["⚙️", "Automation", automationv],
   chron: ["📜", "Chronicle", chroniclev],
   houses: ["🏰", "Houses", housesv],
 };
@@ -37,7 +39,7 @@ export const GROUPS = [
   ["work", "💼", "Work", ["jobs", "guilds"]],
   ["map", "🗺️", "Map", ["map"]],
   ["inv", "🎒", "Bag", ["inv"]],
-  ["home", "🏰", "Estate", ["estate", "minions", "craft"]],
+  ["home", "🏰", "Estate", ["estate", "minions", "craft", "auto"]],
   ["kin", "🌳", "Family", ["family", "houses", "chron"]],
 ];
 export const groupOf = t => (GROUPS.find(g => g[3].includes(t)) || GROUPS[0])[0];

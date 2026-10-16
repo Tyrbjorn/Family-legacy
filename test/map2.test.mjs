@@ -62,7 +62,7 @@ for(const id of ['silverseam','n_gemvein','n_lake']){const n=D.nodes.find(x=>x.i
 // tutorial + migration
 {ok(D.tutorial.steps.map(x=>x.id).join()==='gear,rats,scout,craft,trade,activity,estate,path','intro steps: scout after rats, first trade after craft');
  const s=E.newGame(1); s.tut.step=4; s.tut.done=['gear','rats','craft','activity']; s.schema=20; s.animalsFed=false; s.animals={mule:1}; E.normalize(s);
- ok(s.tut.done.includes('scout')&&s.tut.done.includes('trade')&&D.tutorial.steps[s.tut.step].id==='estate'&&s.unfed.mule===1&&s.schema===21,'v21: old saves skip passed intro steps, keep their place, carry unfed state');}
+ ok(s.tut.done.includes('scout')&&s.tut.done.includes('trade')&&D.tutorial.steps[s.tut.step].id==='estate'&&s.unfed.mule===1&&s.schema>=21,'v21: old saves skip passed intro steps, keep their place, carry unfed state');}
 console.log(pass+' map round 2 checks passed');
 {const H=D.world.terrain.highlands; ok(H.speed===0.6&&!H.impassable&&H.gather.ore===1.25&&H.gather.gems===1.3&&D.world.terrain.hills.speed===0.8&&D.world.terrain.mountains.impassable,'elevation: hills 0.8 → highlands 0.6 (ore/gem bonus) → tall mountains impassable');
  ok(E.terrainAt(820,790)==='highlands'&&E.terrainAt(600,820)==='highlands','highlands region is mostly highlands terrain');

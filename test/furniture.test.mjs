@@ -96,7 +96,7 @@ ok(/Combo/.test(E.pieceLine('bunk'))&&/Nursery/.test(E.pieceLine('bunk'))&&/Comb
 // five thin buildings + Shopfront auto-sell
 { const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures){for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5;for(const u of d.upgrades||[])for(const k in u.cost)g.res[k]=(g.res[k]||0)+1e5;} Object.assign(g.res,{coin:1e7,dust:100,cloth:100}); for(const l of ES.lands) E.buyLand(g,l.id);
   ok(['herbalistshack','magestower','shrinehouse','graveyard','ancestorhall'].every(id=>{const a=E.structDef(id).allowed.length;return a>=3&&a<=4;}),'five thin buildings now have 3-4 slot choices');
-  ok(E.structDef('ancestorhall').upgrades.map(u=>u.name).join()==='Portrait Gallery,Family Archive,Heirloom Vault','Hall of Ancestors upgrade line');
+  ok(E.structDef('ancestorhall').upgrades.map(u=>u.name).join()==='Portrait Gallery,Family Archive,Treasure Vault','Hall of Ancestors upgrade line');
   g.structures.push({uid:'ahx',type:'ancestorhall',pieces:['ancestorshrine'],up:0}); const ah=g.structures.find(x=>x.uid==='ahx'); ok(ah&&/needs upgrade 1/.test(E.placeIssue(g,ah.uid,'feasttable')||''),'Feast Table locked at L0');
   ok(E.upgradeSpecial(g,ah.uid)&&E.placePiece(g,ah.uid,'feasttable')&&E.activeSynergies(ah).some(y=>y.id==='remembrance'),'Feast Table at L1 + Remembrance Feast');
   E.upgradeSpecial(g,ah.uid); ok(E.freeSlots(g,ah)===1,'L2 slot bonus');

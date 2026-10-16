@@ -411,7 +411,7 @@
    "injureDays": 5,
    "minionLossChance": 0.2,
    "victoryRapport": -20,
-   "victoryRenown": 30,
+   "victoryRenown": 60,
    "defeatTributePct": 0.1,
    "defeatTributeMax": 600,
    "defeatRapport": -45,

@@ -49,7 +49,8 @@
     "chance": 0.06
    }
   ],
-  "skill": "brawling"
+  "skill": "brawling",
+  "deedTier": 1
  },
  {
   "id": "d_barrow",
@@ -106,7 +107,8 @@
     "chance": 0.06
    }
   ],
-  "skill": "monsterlore"
+  "skill": "monsterlore",
+  "deedTier": 2
  },
  {
   "id": "d_spidercave",
@@ -159,7 +161,8 @@
     "chance": 0.06
    }
   ],
-  "skill": "monsterlore"
+  "skill": "monsterlore",
+  "deedTier": 3
  },
  {
   "id": "d_ruinvault",
@@ -216,7 +219,8 @@
     "chance": 0.06
    }
   ],
-  "skill": "history"
+  "skill": "history",
+  "deedTier": 3
  },
  {
   "id": "d_stormhold",
@@ -268,6 +272,60 @@
     "chance": 0.06
    }
   ],
-  "skill": "tactics"
+  "skill": "tactics",
+  "deedTier": 4
+ },
+ {
+  "id": "d_dragonlair",
+  "name": "Wyrmfire Caldera",
+  "region": "highlands",
+  "icon": "🐉",
+  "hidden": true,
+  "deedTier": 5,
+  "floors": [
+   {
+    "name": "Ash Fields",
+    "days": 3,
+    "cp": 170,
+    "reward": {
+     "coin": 500
+    }
+   },
+   {
+    "name": "Bone Hoard",
+    "days": 3,
+    "cp": 195,
+    "reward": {
+     "coin": 800,
+     "gems": 3
+    }
+   },
+   {
+    "name": "The Old Wyrm",
+    "days": 4,
+    "cp": 230,
+    "reward": {
+     "coin": 2500,
+     "gems": 8
+    }
+   }
+  ],
+  "loot": [
+   "runed_orb",
+   "frost_rod"
+  ],
+  "rare": [
+   {
+    "id": "moon_edge",
+    "chance": 0.08
+   },
+   {
+    "id": "mithril_bow",
+    "chance": 0.08
+   }
+  ],
+  "skill": "tactics",
+  "dragon": true,
+  "desc": "Beyond the Stormhold, an old wyrm sleeps on a hoard. Slaying it is the deed of a lifetime."
  }
 ]

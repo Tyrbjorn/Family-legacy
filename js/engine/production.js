@@ -7,7 +7,7 @@ import { mtype } from "./minions.js";
 import { famFx } from "./paths.js";
 import { structFeatureMult, herdMult } from "./world.js";
 import { D, ageY, isAdult, living } from "./state.js";
-import { ES, eff, activeSynergies, baseId, classSynMult, pieceDef, pieceTier, scaledPiece } from "./estate.js";
+import { ES, eff, activeSynergies, baseId, classSynMult, matCap, pieceDef, pieceTier, scaledPiece } from "./estate.js";
 
 // cooked food quality: station tier and the best cook's skill
 export function foodQualityOf(s, p) {
@@ -94,12 +94,38 @@ function cropQ(s, p, pr) {
   return 1 + operatorLvl(s, c.skill) * c.perLvl + famFx(s, "cropQ", pr.out);
 }
 
+// ---- refining settings (per building, st.refine): processes that turn inputs into an output.
+// on: refine at all · stopFull: idle while the output is at its storage cap · min: only refine while
+// each input is above this share of storage (0 = always, 0.5, 0.75). Missing = on / always.
+export const REFINE_MINS = [0, 0.5, 0.75];
+export const refineOf = st => ({ on: true, stopFull: false, min: 0, ...(st.refine || {}) });
+export const isRefiner = (s, st) => st.pieces.some(id => ((scaledPiece(st, id) || {}).bonus?.processes || []).some(p => Object.keys(p.in || {}).length));
+export function setRefine(s, uid, patch) {
+  const st = (s.structures || []).find(x => x.uid === uid);
+  if (!st) return false;
+  const r = { ...refineOf(st), ...patch };
+  if (!REFINE_MINS.includes(r.min)) r.min = 0;
+  st.refine = r.on && !r.stopFull && !r.min ? undefined : r;
+  return true;
+}
+const isCapped = k => (ES().caps.capped || []).includes(k);
+// why a refining process is idle by its building's settings (null = may run)
+export function refineHold(s, st, pr) {
+  if (!Object.keys(pr.in || {}).length) return null;
+  const r = refineOf(st);
+  if (!r.on) return "off";
+  if (r.stopFull && isCapped(pr.out) && (s.res[pr.out] || 0) >= matCap(s)) return "output full";
+  if (r.min && Object.keys(pr.in).some(k => (s.res[k] || 0) < r.min * matCap(s))) return `input under ${r.min * 100}%`;
+  return null;
+}
+
 export function processDay(s, mul = 1) {
   for (const st of s.structures || []) {
     const syn = activeSynergies(st),
       out = {};
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))
       for (const pr0 of (p && (p.bonus.veins ? veinProcesses(s, st, p) : p.bonus.processes)) || []) {
+        if (refineHold(s, st, pr0)) continue;
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
         const yl = skillYield(s, p);
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);

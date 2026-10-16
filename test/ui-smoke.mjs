@@ -46,4 +46,7 @@ await go(p,'estate');await p.waitForTimeout(400);await p.screenshot({path:'/work
 await p.waitForTimeout(1500);if(await p.$eval('#tabs .on',e=>e.dataset.tab)!=='estate')throw new Error('estate tab vanished while on it');
 await go(p,'main');await p.waitForTimeout(300);await p.evaluate(()=>scrollTo(0,0));const fid=await p.evaluate(()=>__game.s.members[0].id);await p.click(`[data-a=switch][data-v="${fid}"]`);await p.waitForTimeout(300);
 if(await p.evaluate(()=>__game.s.activeId)!==fid)throw new Error('could not switch back');console.log('switched back ok');
+await p.evaluate(()=>{const g=__game;g.s.legacy.renown+=500;g.E.buyLegacy(g.s,'at_farming');});await go(p,'auto');await p.waitForTimeout(300);
+const at=await p.evaluate(()=>{const b=document.querySelector('[data-a="autotog"][data-v="at_farming"]');const was=b&&b.textContent;b&&b.click();return [was,document.body.innerText.includes('Auto Equip')];});await p.waitForTimeout(300);
+const at2=await p.evaluate(()=>[document.querySelector('[data-a="autotog"][data-v="at_farming"]')?.textContent,!!__game.s.autoOff?.at_farming]);console.log('automation tab',JSON.stringify(at),JSON.stringify(at2));if(at[0]!=='On'||!at[1]||at2[0]!=='Off'||!at2[1])errs.push('automation toggles broken');await p.screenshot({path:'/workspace/fl-screenshots/screenshot-automation.png'});
 console.log('errors',errs);await b.close();

@@ -429,7 +429,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const b=E.newMember(G,{age:30}); G.members.push(b); b.renown=100; E.kill(G,b,'died'); ok(G.legacy.renown===25,'banked 25 Legacy Renown');
  E.upgradeSpecial(G,gy.uid); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Crypt'&&E.captureRate(G)===0.5,'Crypt captures 50%'); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Mausoleum'&&E.captureRate(G)===0.75,'Mausoleum 75%');
  G.legacy.renown=1000; const ls=m.lifespan; ok(E.buyLegacy(G,'life')&&E.lifeBonus(G)===2,'Long-Lived Blood +2 years');
- ok(E.recipeIssue(G,m,D.crafting.recipes.find(r=>r.id==='r_heirloom'))==='needs Legacy upgrade'&&E.buyLegacy(G,'heirloom')&&E.recipeIssue(G,m,D.crafting.recipes.find(r=>r.id==='r_heirloom'))!=='needs Legacy upgrade','legacy unlocks special recipe');
+ ok(!D.legacy.upgrades.some(u=>u.id==='heirloom')&&!D.crafting.recipes.some(r=>r.id==='r_heirloom')&&!D.items.some(i=>i.heirloom),'heirlooms are out of the base game (DLC data file)');
  ok(E.structIssue(G,'ancestorhall')==='needs Legacy upgrade'&&E.buyLegacy(G,'hall')&&E.structIssue(G,'ancestorhall')!=='needs Legacy upgrade','legacy unlocks special building');
  const r0=G.res.wood; E.buyLegacy(G,'resgain'); ok(E.resGain(G)===1.05,'Family Fortune +5% resources');
  const N=E.newLineage(G,t0); ok(N.legacy.ups.life===1&&N.legacy.renown===G.legacy.renown&&N.members.length>=1,'legacy persists into a new lineage');
@@ -551,7 +551,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,suitors,houses,members,trade','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,trade','day hooks registered in order');
 }
 
 // Polish-pass bug fixes

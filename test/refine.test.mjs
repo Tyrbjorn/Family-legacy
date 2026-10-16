@@ -1,0 +1,23 @@
+// Refining settings: on/off, stop when output storage is full, input threshold (always / 50% / 75%)
+import fs from 'fs'; import * as E from '../js/engine.js';
+const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
+const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
+for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
+E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
+const s=E.newGame(1); s.reserve.stone=0; const cap=E.matCap(s);
+s.structures.push({uid:'m1',type:'masonyard',pieces:['masontable'],up:0});
+const st=s.structures[0], quarry={uid:'q1',type:'quarry',pieces:['quarrypit'],up:0};
+ok(E.isRefiner(s,st)&&!E.isRefiner(s,quarry),'mason yard is a refiner, quarry is not');
+ok(JSON.stringify(E.refineOf(st))===JSON.stringify({on:true,stopFull:false,min:0})&&st.refine===undefined,'default: on, always, no setting stored');
+const day=()=>{const b=s.res.blocks||0;E.processDay(s,1);return (s.res.blocks||0)-b;};
+s.res.stone=100; ok(day()>0,'refines by default');
+E.setRefine(s,'m1',{on:false}); s.res.stone=100; ok(day()===0&&E.refineHold(s,st,E.pieceDef('masontable').bonus.processes[0])==='off','off: no refining');
+E.setRefine(s,'m1',{on:true,stopFull:true}); s.res.blocks=cap; s.res.stone=100; ok(day()===0,'stop when full: idle at the output cap');
+s.res.blocks=0; ok(day()>0,'stop when full: runs below the cap');
+E.setRefine(s,'m1',{stopFull:false,min:0.75}); s.res.stone=cap*0.7; ok(day()===0,'75% threshold: idle at 70% input');
+s.res.stone=cap*0.8; ok(day()>0,'75% threshold: runs at 80% input');
+E.setRefine(s,'m1',{min:0.5}); s.res.stone=cap*0.6; ok(day()>0,'50% threshold: runs at 60%');
+E.setRefine(s,'m1',{min:0.3}); ok(E.refineOf(st).min===0,'only always/50%/75% accepted');
+E.setRefine(s,'m1',{on:true,stopFull:false,min:0}); ok(st.refine===undefined,'back to defaults clears the setting');
+E.setRefine(s,'m1',{min:0.5}); const R=E.deserialize(E.serialize(s,1)); ok(R.structures[0].refine.min===0.5,'settings saved');
+console.log(pass+' refine checks passed');

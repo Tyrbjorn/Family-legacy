@@ -562,8 +562,7 @@
   "slot": "weapon",
   "rarity": "Legendary",
   "cp": 60,
-  "value": 2500,
-  "heirloom": true
+  "value": 2500
  },
  {
   "id": "vael_banner",
@@ -571,26 +570,23 @@
   "slot": "accessory",
   "rarity": "Legendary",
   "cp": 22,
-  "value": 1200,
-  "heirloom": true
+  "value": 1200
  },
  {
   "id": "family_signet",
   "name": "Family Signet",
   "slot": "accessory",
-  "rarity": "Heirloom",
+  "rarity": "Relic",
   "cp": 8,
-  "value": 300,
-  "heirloom": true
+  "value": 300
  },
  {
   "id": "grandmothers_locket",
   "name": "Grandmother's Locket",
   "slot": "accessory",
-  "rarity": "Heirloom",
+  "rarity": "Relic",
   "cp": 12,
-  "value": 400,
-  "heirloom": true
+  "value": 400
  },
  {
   "id": "wolfking_pelt",
@@ -650,7 +646,7 @@
  },
  {
   "id": "heir_blade",
-  "name": "Heirloom Blade",
+  "name": "Family Blade",
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 30,
@@ -668,10 +664,9 @@
   "id": "oathstone",
   "name": "Oathstone",
   "slot": "accessory",
-  "rarity": "Heirloom",
+  "rarity": "Relic",
   "cp": 14,
-  "value": 600,
-  "heirloom": true
+  "value": 600
  },
  {
   "id": "ward_scroll",

@@ -78,6 +78,7 @@ export function equipMinion(s, uid, id) {
   )
     return false;
   mi.equip = mi.equip || {};
+  if (mi.autoEq) delete mi.autoEq[it.slot];
   s.vault.splice(i, 1);
   if (mi.equip[it.slot]) s.vault.push(mi.equip[it.slot]);
   mi.equip[it.slot] = id;
@@ -89,5 +90,6 @@ export function unequipMinion(s, uid, slot) {
   if (!mi || !mi.equip || !mi.equip[slot] || !vaultRoom(s)) return false;
   s.vault.push(mi.equip[slot]);
   delete mi.equip[slot];
+  if (mi.autoEq) delete mi.autoEq[slot];
   return true;
 }

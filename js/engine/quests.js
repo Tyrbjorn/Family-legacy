@@ -4,7 +4,7 @@ import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
 import { dungeonFloorRun, dungeonTier } from "./combat.js";
-import { addRenown } from "./legacy.js";
+import { LG, addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
 import { ES } from "./estate.js";
 import { era, kill, level } from "./family.js";
@@ -34,7 +34,8 @@ export function resolveQuest(s, m, q, eff) {
   if (id) gain.push(addToVault(s, id) ? itemDef(id).name : "(vault full – loot lost)");
   const ore = rollOre(q);
   if (ore) (s.res[ore.res] = (s.res[ore.res] || 0) + ore.n), gain.push(`+${ore.n} ${ore.res}`);
-  addRenown(s, m, Math.ceil(q.cp / 20));
+  const firstOnce = (q.once || q.story) && !s.doneQuests.includes(q.id);
+  addRenown(s, m, Math.ceil(q.cp / 20) + (firstOnce ? LG().renown.questFirstOnce || 0 : 0));
   m.questsDone = (m.questsDone || 0) + 1;
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   gain.push(...grantRewards(s, m, q));
@@ -121,7 +122,12 @@ export function dungeonFloor(s, m, dg, i, t = {}) {
 export function dungeonClear(s, m, dg) {
   const first = !(s.cleared || []).includes(dg.id);
   if (first) s.cleared.push(dg.id);
-  addRenown(s, m, first ? 15 : 4);
+  const R = LG().renown, full = R.dungeonTier[dg.deedTier || 1] || 20;
+  addRenown(s, m, first ? full : Math.max(1, Math.round(full * R.dungeonRepeat)));
+  if (first && dg.dragon) {
+    s.deeds.push(`Slew the wyrm of ${dg.name}.`);
+    log(s, `🐉 ${m.name} slew the dragon of ${dg.name}! The whole realm will remember this house.`);
+  }
   // one loot roll per tier at the last floor's power; the dungeon's list are the favorites
   const lq = { cp: dg.floors[dg.floors.length - 1].cp, risk: "deadly", type: "dungeon", loot: dg.loot };
   for (let k = 0; k < dungeonTier(dg); k++) {

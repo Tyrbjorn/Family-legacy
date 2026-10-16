@@ -28,6 +28,8 @@ const seen = {
   noderuns: 0,
   parcels: 0,
   haulCrafts: 0,
+  convoyTrips: 0,
+  herdDays: 0,
   maxCarry: 0,
   quests: new Set(),
   structs: new Set(),
@@ -47,6 +49,7 @@ const bad = (seed, day, msg) => {
 };
 const PIECES = [
   "bunk",
+  "stablestall",
   "larder",
   "cradle",
   "storage",
@@ -70,17 +73,23 @@ const PIECES = [
   "churn",
   "jars",
 ];
+// keep the last free land slot(s) for a bunkhouse until one stands, so followers always get beds
+const holdForBunks = (s, t) =>
+  !["shack", "bunkhouse"].includes(t) && !s.structures.some(x => x.type === "bunkhouse") && E.landSlots(s) - E.landUsed(s) <= (D.estate.structures.find(x => x.id === "bunkhouse").land || 1);
+// bunkhouse right after the first home, so followers have beds before production fills the land
 const STRUCTS = [
   "shack",
+  "bunkhouse",
   "cabin",
   "house",
   "hall",
-  "bunkhouse",
   "sawmill",
   "masonyard",
   "quarry",
   "herbgarden",
   "fields",
+  "chickencoop",
+  "warehouse",
   "kitchen",
   "cowpen",
   "gristmill",
@@ -189,6 +198,11 @@ function bot(s, m) {
   if (m.cls) seen.classes.add(m.cls);
   // estate
   if (!s.land.length) E.buyLand(s, "plot");
+  // stone-using refiners only refine above 75% of storage while the next land deed still needs stone, so the deed stays affordable
+  const nextLand = D.estate.lands.find(l => !s.land.includes(l.id) && (!l.requires || s.land.includes(l.requires)));
+  const needStone = !!(nextLand && nextLand.cost.stone && (s.res.stone || 0) < nextLand.cost.stone);
+  for (const st of s.structures)
+    if (E.isRefiner(s, st) && st.pieces.some(id => (E.pieceDef(id).bonus.processes || []).some(p => (p.in || {}).stone))) E.setRefine(s, st.uid, { min: needStone ? 0.75 : 0 });
   for (const l of D.estate.lands)
     if (s.res.coin > (l.cost.coin || 0) * 3 && !s.land.includes(l.id) && E.landUsed(s) >= E.landSlots(s) - 1)
       E.buyLand(s, l.id);
@@ -196,6 +210,7 @@ function bot(s, m) {
     if (
       !s.structures.some(x => x.type === t) &&
       !E.structIssue(s, t) &&
+      !holdForBunks(s, t) &&
       s.res.coin > (D.estate.structures.find(x => x.id === t).cost.coin || 0) * 2
     ) {
       if (E.buildStructure(s, t)) seen.structs.add(t);
@@ -223,6 +238,31 @@ function bot(s, m) {
       seen.wars++;
       if (s.res.coin > E.tributeCost(s, h.id) * 3) E.offerTruce(s, h.id);
     } else if (["rival", "feud"].includes(E.tierOf(s, h.id)) && s.res.coin > 2000) E.sendGift(s, h.id);
+  }
+  // livestock feed: keep ~20 days of hay (grazers) and wheat (hens) in store
+  if (s.day % 5 === 0 && E.feedGroups) {
+    const gs = E.feedGroups(s);
+    if (gs.some(g => g.herd && g.n > 0)) seen.herdDays += 5;
+    const need = r => gs.filter(g => D.world.feed.diets[D.world.feed.kinds[g.kind].diet][0] === r).reduce((a, g) => a + E.feedNeed(s, g), 0) * 20;
+    for (const r of ["hay", "wheat"]) {
+      const want = Math.ceil(need(r) - (s.res[r] || 0));
+      if (want > 0 && s.res.coin > E.townBuyPrice(s, "millbrook", r) * want * 3) E.buyRes(s, "millbrook", r, want);
+    }
+  }
+  // trade: one follower-led sell route once a Warehouse stands
+  if (s.day % 30 < 3 && E.tradeTier(s)) {
+    E.tradeInit(s);
+    if (!s.trade.routes.length) {
+      const t = D.towns[0];
+      for (const res of Object.keys(t.prices).filter(k => !["food", "stone", "wheat", "hay"].includes(k) && (s.res[k] || 0) > 120).sort((a, b) => s.res[b] - s.res[a]))
+        if (E.addRoute(s, t.id, "sell", res)) break;
+    }
+    for (const r of s.trade.routes)
+      if (!r.driver) {
+        const mi = s.minions.find(x => !x.special && ["gather", "idle", "herbs"].includes(x.job) && !E.driverIssue(x));
+        if (mi) E.setCrew(s, r.id, "driver", mi.uid);
+      }
+    seen.convoyTrips = Math.max(seen.convoyTrips, s.trade.routes.reduce((a, r) => a + (r.trips || 0), 0));
   }
   // food: never let the larder run dry — buy provisions, else do chores (the starter path)
   if (E.daysOfStock(s) < 4) {
@@ -254,11 +294,18 @@ function bot(s, m) {
   // map round: hauling animals, a follower on node runs, a cart now and then (gated so travel never starves the family)
   if (s.day - (mapTick.get(s) ?? -99) >= 30 && E.daysOfStock(s) > 15 && s.res.coin > 1500) {
     mapTick.set(s, s.day);
+    if (!E.stalls(s)) for (const st of s.structures) if (!E.placeIssue(s, st.uid, "stablestall") && E.placePiece(s, st.uid, "stablestall")) break;
+    // still no stall: swap a storage piece for one where stalls are allowed
+    if (!E.stalls(s))
+      for (const st of s.structures)
+        if (st.pieces.includes("storage") && (E.allowedOf(st) || []).includes("stablestall")) {
+          E.removePiece(s, st.uid, "storage");
+          if (E.placePiece(s, st.uid, "stablestall")) break;
+        }
     for (const id of ["mule", "ox"]) {
       const town = D.world.haul.animals[id].towns.find(x => E.townKnown(s, D.towns.find(t => t.id === x)));
       if (town && !E.animalCount(s) && E.buyAnimal(s, id, town)) seen.animals++;
     }
-    if (!E.stalls(s)) for (const st of s.structures) if (!E.placeIssue(s, st.uid, "stablestall") && E.placePiece(s, st.uid, "stablestall")) break;
     if (s.minions.length >= 1 && !s.minions.some(x => x.job === "noderun")) {
       const mi = s.minions.find(x => ["gather", "herbs", "idle"].includes(x.job));
       const n = D.nodes.filter(x => E.known(s, x) && E.regionOpen(s, x.region) && E.nodeStock(s, x) > 0).sort((a, b) => E.travelDays(a.id) - E.travelDays(b.id))[0];
@@ -363,6 +410,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   const phaseDay = {};
   const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
+  const snap = [];
   for (let day = 0; day < YEARS * YD; day++) {
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
@@ -416,6 +464,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin = Math.max(peakCoin, s.res.coin);
     if (process.env.DBGS && day % (YD * 5) === 0) console.log("DBG", day / YD, Math.round(s.res.coin), E.daysOfStock(s), s.minions.map(x => x.job).join(","), E.stalls(s), s.structures.map(x => E.placeIssue(s, x.uid, "stablestall")).join("|"));
     if (day % (YD * 10) === 0) coinAt.push(Math.round(s.res.coin));
+    if (day % (YD * 10) === 0) snap.push([Math.round(s.renown), (s.minions || []).length, (s.structures || []).length]);
     for (const x of E.living(s)) if (x.action && x.action.load && Object.values(x.action.load).reduce((a, b) => a + b, 0) > E.haulTier(s).carry * 1.01 + 1) bad(seed, day, "trip load over haul cap");
     for (const mi of s.minions) if (mi.trip && mi.trip.load && Object.values(mi.trip.load).reduce((a, b) => a + b, 0) > E.haulTier(s).carry * 1.01 + 1) bad(seed, day, "follower load over haul cap");
     for (const [k, v] of Object.entries(s.nodeStock || {})) if (!(v >= 0)) bad(seed, day, "node stock negative " + k);
@@ -490,6 +539,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     structs: s.structures.length,
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
+    snap, // [renown, followers, buildings] at years 0,10,20,30
     idleAdultDays: idleDays,
     renown: Math.round(s.renown),
     legacyRenown: Math.round(s.legacy?.renown || 0),
@@ -572,7 +622,7 @@ console.log(
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
 console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
-console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
+console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "convoy trips (max/seed)", seen.convoyTrips, "herd days", seen.herdDays, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

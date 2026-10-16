@@ -29,7 +29,7 @@ The header shows your era (Solo Adventurer → Established Family → Ruling Pow
 - **Explore** fogged areas to reveal hidden towns (Ashford Crossing, Eagle's Eyrie), a hidden region (Stormcrest Highlands), secret quests and nodes, caches, rare encounters and **dungeons**.
 - **Dungeons** (`data/dungeons.json`) run floor by floor (each floor has its own CP check and reward). Failing a floor sends the member home injured; the final floor gives treasure plus a rare roll.
 - **Standing orders:** Auto-Explore and Auto-Adventure, for the active member (Map tab), idle members (estate orders `explore`/`adventure`) and minions (jobs Scouting/Adventuring).
-- **Story:** "The Lost House", 10 chained chapters across regions, gated by level, era and rumors, with unique rewards (heirlooms, a land deed, followers, a recipe, a training).
+- **Story:** "The Lost House", 10 chained chapters across regions, gated by level, era and rumors, with unique rewards (family relics, a land deed, followers, a recipe, a training).
 - **One-time side quests** are marked ⭐. Quests, nodes, dungeons and encounters have **rare drops** (≤5%), shown as "Rare drops: ???" until found.
 - **Minion levels:** every working minion gains XP from its job. Levels add +5% output each, and perks at Lv 5 and Lv 10 add more. The Minions tab shows level, an XP bar and perks.
 

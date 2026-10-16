@@ -29,6 +29,14 @@ function cardPieces(st, k) {
     .join("")}`;
 }
 
+// refining settings row: on/off, stop when output storage is full, input threshold
+export function cardRefine(st) {
+  if (!E.isRefiner(s, st)) return "";
+  const r = E.refineOf(st),
+    hold = st.pieces.flatMap(id => (E.pieceDef(id).bonus.processes || []).map(p => E.refineHold(s, st, p))).find(Boolean);
+  return `<div class="row" style="margin:3px 0;gap:4px;justify-content:flex-start;flex-wrap:wrap"><span class="muted">⚙️ Refining${hold ? " · ⏸ " + hold : ""}</span><button class="b ${r.on ? "sel" : ""}" data-a="refine" data-v="${st.uid}" data-w="on">${r.on ? "On" : "Off"}</button><button class="b ${r.stopFull ? "sel" : ""}" data-a="refine" data-v="${st.uid}" data-w="full" title="Idle while the output is at its storage cap">Stop when full</button><select data-a="refinemin" data-v="${st.uid}" title="Only refine while each input is above this share of storage">${E.REFINE_MINS.map(m => `<option value="${m}" ${r.min === m ? "selected" : ""}>${m ? "Input > " + m * 100 + "%" : "Always"}</option>`).join("")}</select></div>`;
+}
+
 function cardFeatures(st, k) {
   const d = E.structDef(st.type),
     nxs = E.upgradeOptions(st.type),
@@ -129,4 +137,4 @@ function cardNav(st, k) {
 }
 
 export const buildingCard = (st, k) =>
-  cardHead(st, k) + cardPieces(st, k) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);
+  cardHead(st, k) + cardPieces(st, k) + cardRefine(st) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);

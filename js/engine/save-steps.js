@@ -391,6 +391,23 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 22,
+    once: true,
+    name: "heirlooms moved to DLC: refund Heirloom Smithing, drop the Ancestral Blade recipe and heirloom flags",
+    run: s => {
+      const L = s.legacy;
+      if (L && L.ups && L.ups.heirloom) {
+        L.renown = (L.renown || 0) + 120 * L.ups.heirloom;
+        delete L.ups.heirloom;
+        log(s, "🔁 Heirloom Smithing left the base game; its 120 Legacy Renown was refunded.");
+      }
+      const drop = v => v !== "recipe:r_heirloom" && v !== "r_heirloom";
+      if (Array.isArray(s.unlocks)) s.unlocks = s.unlocks.filter(drop);
+      for (const m of s.members || []) if (m.craft && m.craft.rc === "r_heirloom") m.craft = null;
+      if (s.autoCraft) for (const k of Object.keys(s.autoCraft)) if (s.autoCraft[k] === "r_heirloom") delete s.autoCraft[k];
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

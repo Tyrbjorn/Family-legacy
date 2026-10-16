@@ -117,6 +117,7 @@ export function travelTick(s, m, a, eff) {
         Math.max(0.2, 1 + buffSum(s, "gather")) *
         seasonGather(s);
       const gb = lineBonus(m);
+      (s.atLast = s.atLast || {}).gather = n.id;
       gatherInto(s, t, n, mul, k => (gb[k] || 0) + memberFx(m, "gather", k), pathFinds(m, n.skill));
       gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
       rollRare(s, n, m);
@@ -280,6 +281,7 @@ export function exploreArea(s, m, ar) {
     const key = sc.type + ":" + sc.id;
     const once = sc.type !== "encounter";
     if (once && s.discovered.includes(key)) continue;
+    if (sc.needs && !(s.cleared || []).includes(sc.needs)) continue;
     if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01)) continue;
     if (sc.type === "town" || sc.type === "region") {
       if (!s.discovered.includes(sc.id)) s.discovered.push(sc.id);
@@ -324,7 +326,7 @@ export function exploreArea(s, m, ar) {
     if (once) s.discovered.push(key);
   }
   if (D.world) locationsDay(s, m.name);
-  addRenown(s, m, first ? 3 : 1);
+  if (first) addRenown(s, m, 3); // first exploration only (scouts included)
   if (!m.minion) gainXp(s, m, "tracking", T.xpPerDay * 2);
   log(
     s,

@@ -52,6 +52,7 @@ export const ACTIONS = {
     }
     a.target = a.target || null;
     a.rc = rc.id;
+    (s.atLast = s.atLast || {})["rc:" + rc.skill] = rc.id; // Auto Tend repeats the last recipe of each skill
     a.progress = (a.progress || 0) + eff;
     gainXp(s, m, rc.skill, T.xpPerDay * 0.8 * eff);
     if (a.progress >= rc.days * gameFx(s, "craft", a.diff)) {
@@ -83,6 +84,7 @@ export const ACTIONS = {
     for (const [k, v] of Object.entries(ac.stats)) m.stats[k] += v * eff;
     for (const k of ac.skills) if (canTrain(m, k, s, true)) gainXp(s, m, k, T.xpPerDay * 0.6 * eff);
     for (const [k, v] of Object.entries(ac.yields || {})) s.res[k] = (s.res[k] || 0) + v * eff;
+    if (ac.yields) for (const k of ac.skills) (s.atLast = s.atLast || {})["ac:" + k] = ac.id;
   },
   rest(s, m) {
     m.injured = Math.max(0, m.injured - 1 - furn(s).reduce((x, f) => x + (f.bonus.rest || 0), 0));

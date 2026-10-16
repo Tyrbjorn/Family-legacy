@@ -1,7 +1,7 @@
 import { injure } from "./injuries.js";
 // Feud escalation and war between houses (Dynasty phase): battles, power, truce/tribute, weariness.
 // Numbers in data/marriage.json houses.war / houses.feud.
-import { addRenown } from "./legacy.js";
+import { LG, addRenown } from "./legacy.js";
 import { cp } from "./family.js";
 import { FEUD, HC, atWar, houseDef, houseList, houseState, phaseOk, tierOf } from "./houses.js";
 import { minionPower, minionSurvival } from "./minions.js";
@@ -54,6 +54,8 @@ export function battle(s, id) {
   h.warDay = s.day;
   if (win) {
     h.score++;
+    const lead = active(s);
+    if (lead) addRenown(s, lead, LG().renown.warBattle || 0);
     const sp = hd.wealth * W.spoilsPerWealth;
     s.res.coin += sp;
     log(s, `🛡️ Battle won against ${hd.name}: +${sp} coin spoils (${h.score}/${W.decisive}).`);

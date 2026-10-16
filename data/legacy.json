@@ -10,7 +10,18 @@
  ],
  "renown": {
   "perSkillLevel": 0.2,
-  "masterwork": 5
+  "masterwork": 5,
+  "dungeonTier": {
+   "1": 20,
+   "2": 40,
+   "3": 80,
+   "4": 150,
+   "5": 300
+  },
+  "dungeonRepeat": 0.1,
+  "questFirstOnce": 5,
+  "warBattle": 10,
+  "convoyWin": 2
  },
  "upgrades": [
   {
@@ -107,18 +118,6 @@
    ]
   },
   {
-   "id": "heirloom",
-   "name": "Heirloom Smithing",
-   "icon": "🗡️",
-   "desc": "Unlocks the Ancestral Blade recipe",
-   "tiers": [
-    {
-     "cost": 120,
-     "value": 1
-    }
-   ]
-  },
-  {
    "id": "hall",
    "name": "Hall of Ancestors",
    "icon": "🏛️",
@@ -181,6 +180,176 @@
      "value": 1
     }
    ]
+  },
+  {
+   "id": "at_farming",
+   "name": "Auto Tend: Farming",
+   "icon": "🌾",
+   "desc": "Farming keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 80,
+     "value": 0.5
+    },
+    {
+     "cost": 250,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "farming"
+  },
+  {
+   "id": "at_cooking",
+   "name": "Auto Tend: Cooking",
+   "icon": "🍲",
+   "desc": "Cooking keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 100,
+     "value": 0.5
+    },
+    {
+     "cost": 300,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "cooking"
+  },
+  {
+   "id": "at_masonry",
+   "name": "Auto Tend: Masonry",
+   "icon": "🧱",
+   "desc": "Masonry keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 100,
+     "value": 0.5
+    },
+    {
+     "cost": 300,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "masonry"
+  },
+  {
+   "id": "at_hunting",
+   "name": "Auto Tend: Hunting",
+   "icon": "🏹",
+   "desc": "Hunting keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 100,
+     "value": 0.5
+    },
+    {
+     "cost": 300,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "hunting"
+  },
+  {
+   "id": "at_smithing",
+   "name": "Auto Tend: Smithing",
+   "icon": "⚒️",
+   "desc": "Smithing keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 120,
+     "value": 0.5
+    },
+    {
+     "cost": 400,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "smithing"
+  },
+  {
+   "id": "at_carpentry",
+   "name": "Auto Tend: Carpentry",
+   "icon": "🪚",
+   "desc": "Carpentry keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 120,
+     "value": 0.5
+    },
+    {
+     "cost": 400,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "carpentry"
+  },
+  {
+   "id": "at_tailoring",
+   "name": "Auto Tend: Tailoring",
+   "icon": "🧵",
+   "desc": "Tailoring keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 120,
+     "value": 0.5
+    },
+    {
+     "cost": 400,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "tailoring"
+  },
+  {
+   "id": "at_alchemy",
+   "name": "Auto Tend: Alchemy",
+   "icon": "⚗️",
+   "desc": "Alchemy keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 150,
+     "value": 0.5
+    },
+    {
+     "cost": 450,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "alchemy"
+  },
+  {
+   "id": "at_extraction",
+   "name": "Auto Tend: Extraction",
+   "icon": "⛏️",
+   "desc": "Extraction keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 150,
+     "value": 0.5
+    },
+    {
+     "cost": 450,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "extraction"
+  },
+  {
+   "id": "at_arcane",
+   "name": "Auto Tend: Arcane",
+   "icon": "✨",
+   "desc": "Arcane keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
+   "tiers": [
+    {
+     "cost": 200,
+     "value": 0.5
+    },
+    {
+     "cost": 600,
+     "value": 0.75
+    }
+   ],
+   "autoTend": "arcane"
   }
  ],
  "traits": {
@@ -206,5 +375,68 @@
    "epic": 2
   },
   "fromParent": 0.5
+ },
+ "autoTend": {
+  "_note": "What each Auto Tend upgrade repeats: activity = the last activity using one of these skills (default if none); craft = the last recipe of these skills; gather = the last gathering spot.",
+  "farming": {
+   "kind": "activity",
+   "skills": [
+    "farming"
+   ],
+   "default": "tendfields"
+  },
+  "cooking": {
+   "kind": "craft",
+   "skills": [
+    "cooking"
+   ]
+  },
+  "masonry": {
+   "kind": "craft",
+   "skills": [
+    "masonry"
+   ]
+  },
+  "hunting": {
+   "kind": "craft",
+   "skills": [
+    "hunting"
+   ]
+  },
+  "smithing": {
+   "kind": "craft",
+   "skills": [
+    "smithing"
+   ]
+  },
+  "carpentry": {
+   "kind": "craft",
+   "skills": [
+    "carpentry"
+   ]
+  },
+  "tailoring": {
+   "kind": "craft",
+   "skills": [
+    "tailoring"
+   ]
+  },
+  "alchemy": {
+   "kind": "craft",
+   "skills": [
+    "alchemy"
+   ]
+  },
+  "extraction": {
+   "kind": "gather"
+  },
+  "arcane": {
+   "kind": "craft",
+   "skills": [
+    "enchanting",
+    "arcana",
+    "runecraft"
+   ]
+  }
  }
 }

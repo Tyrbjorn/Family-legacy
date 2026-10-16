@@ -17,6 +17,12 @@ export const estateActions = ({ v, b, m }) => ({
   buyfit: () => E.buyFitting(s, v, b.dataset.w),
   uppiece: () => E.upgradePiece(s, v, b.dataset.w),
   toggle: () => E.togglePiece(s, v, b.dataset.w),
+  refine: () => {
+    const st = s.structures.find(x => x.uid === v),
+      r = st && E.refineOf(st);
+    if (r) E.setRefine(s, v, b.dataset.w === "on" ? { on: !r.on } : { stopFull: !r.stopFull });
+  },
+  autotog: () => E.toggleAuto(s, v),
   land: () => E.buyLand(s, v),
   ration: () => E.setRation(s, v),
   diet: () => E.toggleDiet(s, v),

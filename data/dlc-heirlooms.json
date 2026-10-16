@@ -1,0 +1,38 @@
+{
+ "_note": "Heirloom DLC (not loaded by the base game). Restore: add legacyUpgrade to legacy.json upgrades, recipe to crafting.json recipes, set heirloom:true on heirloomItems in items.json. Save step 22 refunded the upgrade in base-game saves.",
+ "legacyUpgrade": {
+  "id": "heirloom",
+  "name": "Heirloom Smithing",
+  "icon": "🗡️",
+  "desc": "Unlocks the Ancestral Blade recipe",
+  "tiers": [
+   {
+    "cost": 120,
+    "value": 1
+   }
+  ]
+ },
+ "recipe": {
+  "id": "r_heirloom",
+  "name": "Ancestral Blade",
+  "base": "ancestral_blade",
+  "skill": "smithing",
+  "station": "forge",
+  "mats": {
+   "ingots": 8,
+   "planks": 2,
+   "dust": 2
+  },
+  "days": 8,
+  "line": "blacksmith",
+  "legacy": "heirloom",
+  "path": "armorer"
+ },
+ "heirloomItems": [
+  "ancestral_blade",
+  "vael_banner",
+  "family_signet",
+  "grandmothers_locket",
+  "oathstone"
+ ]
+}

@@ -459,6 +459,10 @@
   "n_goldwash": {
    "x": 330,
    "y": 780
+  },
+  "d_dragonlair": {
+   "x": 905,
+   "y": 800
   }
  },
  "areas": [
@@ -678,6 +682,12 @@
      "type": "location",
      "id": "l_dwarfhold",
      "chance": 0.3
+    },
+    {
+     "type": "dungeon",
+     "id": "d_dragonlair",
+     "chance": 0.08,
+     "needs": "d_stormhold"
     }
    ]
   }
