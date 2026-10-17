@@ -1649,7 +1649,8 @@
   "slot": "haul",
   "rarity": "Common",
   "cp": 0,
-  "value": 80
+  "value": 80,
+  "noDrop": true
  },
  {
   "id": "wagon",
@@ -1657,7 +1658,8 @@
   "slot": "haul",
   "rarity": "Fine",
   "cp": 0,
-  "value": 300
+  "value": 300,
+  "noDrop": true
  },
  {
   "id": "smallboat",
@@ -1665,7 +1667,8 @@
   "slot": "haul",
   "rarity": "Common",
   "cp": 0,
-  "value": 150
+  "value": 150,
+  "noDrop": true
  },
  {
   "id": "throwing_knives",

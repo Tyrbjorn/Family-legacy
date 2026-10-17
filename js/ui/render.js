@@ -1,4 +1,5 @@
 import { introCards } from "./guide.js";
+import { glideMarkers } from "./map-glide.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { $, fmt, hm, memberLine, sk, top, yr } from "./common.js";
@@ -155,6 +156,7 @@ export function render() {
     U.lastHTML = h;
     scrollTo(0, y);
   }
+  if (U.tab === "map") glideMarkers(!!(s.turbo && s.turbo.on));
   setIf("#tabs", navv());
   setIf("#subtabs", subtabsv());
   setIf("#dock", dockv());

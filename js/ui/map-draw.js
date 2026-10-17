@@ -57,9 +57,24 @@ function fogLayer(MP, WD) {
   return g + "</g>";
 }
 
+// R31.1: pins/labels keep a constant on-screen size as you zoom (counter-scaled by the view width; see setMapK)
+const pzO = (x, y) => `<g class="pz" style="transform-origin:${x}px ${y}px">`;
+export const mapK = mv => Math.max(0.45, Math.min(1.7, mv.w / 800));
+
+// R31.2: greedy clustering of quest pins within `rad` map units (rad follows zoom so groups split as you zoom in)
+export function questGroups(qs, rad) {
+  const P = q => D.map.points[q.id], left = [...qs], out = [];
+  while (left.length) {
+    const a = left.shift(), grp = [a];
+    for (let i = left.length - 1; i >= 0; i--) if (Math.hypot(P(left[i]).x - P(a).x, P(left[i]).y - P(a).y) <= rad) grp.push(left.splice(i, 1)[0]);
+    out.push(grp);
+  }
+  return out;
+}
+
 // R30: undiscovered major place (town, dungeon, landmark): greyed silhouette; tapping says how to find it
 const greyPin = (key, x, y, ic) =>
-  `<g data-a="mapsel" data-v="u:${key}" style="cursor:pointer" opacity=".45"><circle cx="${x}" cy="${y}" r="17" fill="#6d6455" stroke="#4a4236" stroke-width="2" stroke-dasharray="4 3"/><text x="${x}" y="${y + 7}" font-size="18" text-anchor="middle" style="filter:grayscale(1)">${ic}</text></g>`;
+  `<g data-a="mapsel" data-v="u:${key}" style="cursor:pointer" opacity=".45">${pzO(x, y)}<circle cx="${x}" cy="${y}" r="14" fill="#6d6455" stroke="#4a4236" stroke-width="2" stroke-dasharray="4 3"/><text x="${x}" y="${y + 7}" font-size="18" text-anchor="middle" style="filter:grayscale(1)">${ic}</text></g></g>`;
 // the tutorial's rats quest gets a gold ring until it's done
 export const ratsGoal = q => q.id === "rats" && !s.doneQuests.includes("rats");
 export function mapSvg(m) {
@@ -84,7 +99,7 @@ export function mapSvg(m) {
   for (const l of WD.locations)
     if (E.locKnown(s, l) && E.regionKnown(s, l.region) && !l.town) {
       const ty = WD.locTypes[l.type];
-      g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer"><rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${l.locked ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${l.locked ? "🔒" : ty.icon}</text><text x="${l.x}" y="${l.y + 32}" font-size="12" text-anchor="middle" fill="#3a2410" font-family="serif">${l.name}</text></g>`;
+      g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer">${pzO(l.x, l.y)}<rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${l.locked ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${l.locked ? "🔒" : ty.icon}</text><text class="ml" x="${l.x}" y="${l.y + 32}" font-size="14" font-weight="600" text-anchor="middle" fill="#2a1808" stroke="#f6ead0" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" font-family="serif">${l.name}</text></g></g>`;
     }
   for (const a of MP.areas.filter(a => E.regionKnown(s, a.region))) {
     const ex = E.explored(s, a.id),
@@ -92,7 +107,7 @@ export function mapSvg(m) {
     g += `<g data-a="mapsel" data-v="a:${a.id}" style="cursor:pointer"><circle cx="${a.x}" cy="${a.y}" r="${a.r}" fill="${ex ? "none" : "#cfd6d6"}" fill-opacity="${ex ? 0 : 0.75}" stroke="${sel ? "#ffd34d" : "#fff"}" stroke-width="${sel ? 5 : 2}" stroke-dasharray="${ex ? "8 6" : "0"}"/><text x="${a.x}" y="${a.y + 8}" font-size="${ex ? 20 : 34}" text-anchor="middle">${ex ? "🧭" : "❓"}</text><text x="${a.x}" y="${a.y + a.r - 10}" font-size="15" text-anchor="middle" fill="#fff">${ex ? a.name : "Unexplored"}</text></g>`;
   }
   const pin = (id, x, y, ic, col, lab, kind) =>
-    `<g data-a="mapsel" data-v="${kind}:${id}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="${U.mapSel === kind + ":" + id ? 24 : 19}" fill="#141824" stroke="${col}" stroke-width="3"/><text x="${x}" y="${y + 7}" font-size="20" text-anchor="middle">${ic}</text>${lab ? `<text x="${x}" y="${y + 38}" font-size="13" text-anchor="middle" fill="#fff">${lab}</text>` : ""}</g>`;
+    `<g data-a="mapsel" data-v="${kind}:${id}" style="cursor:pointer">${pzO(x, y)}<circle cx="${x}" cy="${y}" r="${U.mapSel === kind + ":" + id ? 20 : 15}" fill="#141824" stroke="${col}" stroke-width="2.5"/><text x="${x}" y="${y + 6}" font-size="16" text-anchor="middle">${ic}</text>${lab ? `<text class="ml" x="${x}" y="${y + 33}" font-size="15" font-weight="600" text-anchor="middle" fill="#fff" stroke="#1a1208" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">${lab}</text>` : ""}</g></g>`;
   for (const t of D.towns) if (!(E.townKnown(s, t) && E.regionKnown(s, t.region))) g += greyPin("t:" + t.id, MP.towns[t.id].x, MP.towns[t.id].y, t.icon);
   for (const t of D.towns)
     if (E.townKnown(s, t) && E.regionKnown(s, t.region)) {
@@ -109,16 +124,24 @@ export function mapSvg(m) {
       g += pin(n.id, p.x, p.y, n.icon, E.nodeStock(s, n) > 0 ? "#3f7a2f" : "#a33", "", "n");
       if (fr < 1) g += `<rect x="${p.x - 16}" y="${p.y + 22}" width="32" height="5" fill="#3a2a10" opacity=".6"/><rect x="${p.x - 16}" y="${p.y + 22}" width="${32 * fr}" height="5" fill="${fr > 0 ? "#6fbf4a" : "#a33"}"/>`;
     }
-  for (const q of D.quests)
-    if (
-      E.questVisible(s, q) &&
-      !(q.story && E.questIssue(s, m, q) && E.questIssue(s, m, q).startsWith("finish"))
-    ) {
-      const p = MP.points[q.id],
-        k = qKind(q);
-      if (ratsGoal(q)) g += `<circle cx="${p.x}" cy="${p.y}" r="30" fill="none" stroke="#ffd34d" stroke-width="5" class="pulse"/><text x="${p.x}" y="${p.y - 34}" font-size="18" font-weight="bold" text-anchor="middle" fill="#7a4a00" stroke="#fff4d0" stroke-width="4" paint-order="stroke">Rats</text>`;
+  // R31.2: quest pins that sit close together (on screen) fold into one badge beside the spot; Rats keeps its own ringed pin
+  const vq = D.quests.filter(q => E.questVisible(s, q) && MP.points[q.id] && !(q.story && E.questIssue(s, m, q) && E.questIssue(s, m, q).startsWith("finish")));
+  for (const q of vq.filter(ratsGoal)) {
+    const p = MP.points[q.id], k = qKind(q);
+    g += `<circle cx="${p.x}" cy="${p.y}" r="30" fill="none" stroke="#ffd34d" stroke-width="5" class="pulse"/><text x="${p.x}" y="${p.y - 34}" font-size="18" font-weight="bold" text-anchor="middle" fill="#7a4a00" stroke="#fff4d0" stroke-width="4" paint-order="stroke">Rats</text>`;
+    g += pin(q.id, p.x, p.y, k[0], k[1], "", "q");
+  }
+  for (const grp of questGroups(vq.filter(q => !ratsGoal(q)), 42 * mapK(U.mv))) {
+    if (grp.length === 1) {
+      const q = grp[0], p = MP.points[q.id], k = qKind(q);
       g += pin(q.id, p.x, p.y, k[0], k[1], "", "q");
+      continue;
     }
+    const cx = grp.reduce((a, q) => a + MP.points[q.id].x, 0) / grp.length, cy = grp.reduce((a, q) => a + MP.points[q.id].y, 0) / grp.length;
+    const star = grp.some(q => q.once || q.story), key = "g:" + grp.map(q => q.id).join(","), sel = U.mapSel === key;
+    const bx = cx + 30, by = cy - 30; // beside the spot (above-right), clear of the place name drawn below
+    g += `<g data-a="mapsel" data-v="${key}" style="cursor:pointer">${pzO(bx, by)}<rect x="${bx - 24}" y="${by - 15}" width="48" height="30" rx="15" fill="#141824" stroke="${sel ? "#ffd34d" : star ? "#e8b84a" : "#59b7ff"}" stroke-width="${sel ? 4 : 2.5}"/><text x="${bx}" y="${by + 6}" font-size="15" font-weight="700" text-anchor="middle" fill="#fff">${star ? "⭐" : "🔁"} ${grp.length}</text></g></g>`;
+  }
   for (const d of D.dungeons) if (!(E.known(s, d) && E.regionKnown(s, d.region)) && MP.points[d.id]) g += greyPin("d:" + d.id, MP.points[d.id].x, MP.points[d.id].y, d.icon);
   for (const d of D.dungeons)
     if (E.known(s, d) && E.regionKnown(s, d.region)) {
@@ -127,7 +150,7 @@ export function mapSvg(m) {
     }
   g += hintLayer();
   const hm = MP.home;
-  g += `<g><circle cx="${hm.x}" cy="${hm.y}" r="26" fill="#3a2a10" stroke="#ffd34d" stroke-width="3"/><text x="${hm.x}" y="${hm.y + 9}" font-size="26" text-anchor="middle">🏡</text></g>`;
+  g += `<g>${pzO(hm.x, hm.y)}<circle cx="${hm.x}" cy="${hm.y}" r="22" fill="#3a2a10" stroke="#ffd34d" stroke-width="3"/><text x="${hm.x}" y="${hm.y + 9}" font-size="26" text-anchor="middle">🏡</text></g></g>`;
   const mins = s.minions.filter(x => ["gather", "herbs", "mine", "farm"].includes(x.job));
   mins.forEach((x, i) => {
     const an = (i / Math.max(1, mins.length)) * 6.283;
@@ -138,10 +161,10 @@ export function mapSvg(m) {
       const pts = E.routeOf(x.action.target, E.ptOf).pts,
         d = E.tripPos(x.action),
         act = x.id === m.id;
-      g += `<polyline points="${pts.map(q => q.x + "," + q.y).join(" ")}" fill="none" stroke="${act ? "#b8860b" : "#5a6a7a"}" stroke-width="${act ? 4 : 2.5}" stroke-dasharray="3 9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${d.x}" cy="${d.y}" r="${act ? 11 : 8}" fill="${act ? "#ffd34d" : "#bcd"}" stroke="#000"><title>${x.name}</title></circle>`;
+      g += `<polyline points="${pts.map(q => q.x + "," + q.y).join(" ")}" fill="none" stroke="${act ? "#b8860b" : "#5a6a7a"}" stroke-width="${act ? 4 : 2.5}" stroke-dasharray="3 9" stroke-linecap="round" stroke-linejoin="round"/><circle class="tv" data-tv="${x.id}|${x.action.target}" cx="${d.x}" cy="${d.y}" r="${act ? 10 : 7}" fill="${act ? "#ffd34d" : "#bcd"}" stroke="#000"><title>${x.name}</title></circle>`;
     }
   return `<div class="card" style="padding:4px"><div class="row" style="justify-content:flex-end;gap:4px"><span class="muted" style="margin-right:auto">🌫️ ${Math.round(E.fogPct(s) * 100)}% charted</span><button class="b" data-a="zoom" data-v="0.7">＋</button><button class="b" data-a="zoom" data-v="1.4">－</button><button class="b" data-a="zoom" data-v="0">⟲</button></div>
- <svg id="worldmap" viewBox="${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}" style="width:100%;height:58vh;touch-action:none;background:#e9d8ae;border-radius:10px;user-select:none">${g}</svg>
+ <svg id="worldmap" viewBox="${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}" style="--k:${mapK(U.mv)};width:100%;height:58vh;touch-action:none;background:#e9d8ae;border-radius:10px;user-select:none">${g}</svg>
  <div class="muted" style="font-size:11px">Drag to pan, pinch/scroll or ＋/－ to zoom, tap a marker. 📖 story · ⭐ one-time · ? rumored place (tavern rumors pin it down) · 🔁 repeatable · 🌫️ unexplored · ━ highway, ─ road, ┄ track · off-road is slower but finds more.</div></div>`;
 }
 
@@ -164,6 +187,6 @@ export function hintSpots() {
 }
 function hintLayer() {
   return hintSpots()
-    .map(h => `<g data-a="mapsel" data-v="h:${h.id}" style="cursor:pointer" opacity="${U.mapSel === "h:" + h.id ? 0.9 : 0.45}"><circle cx="${h.x}" cy="${h.y}" r="13" fill="#efe0b8" stroke="#6b4a26" stroke-dasharray="3 3"/><text x="${h.x}" y="${h.y + 6}" font-size="17" text-anchor="middle" fill="#6b4a26" font-family="serif">?</text></g>`)
+    .map(h => `<g data-a="mapsel" data-v="h:${h.id}" style="cursor:pointer" opacity="${U.mapSel === "h:" + h.id ? 0.9 : 0.45}">${pzO(h.x, h.y)}<circle cx="${h.x}" cy="${h.y}" r="13" fill="#efe0b8" stroke="#6b4a26" stroke-dasharray="3 3"/><text x="${h.x}" y="${h.y + 6}" font-size="17" text-anchor="middle" fill="#6b4a26" font-family="serif">?</text></g></g>`)
     .join("");
 }

@@ -1,0 +1,20 @@
+// R31.2 screenshots: map default + near Millbrook with the grouped badge open, Quests tab with the new quests
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const p=await (await b.newContext({viewport:{width:470,height:900},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
+await p.evaluate(()=>{const g=__game;g.s.tut.skipped=true;g.s.res.wood=12;g.E.revealAt(g.s,'thornwick',200);g.E.revealAt(g.s,'merchant_run',80);});
+const O='/workspace/fl-screenshots/r31-2-';
+await p.evaluate(()=>[...document.querySelectorAll('#tabs button')].find(x=>/Map/.test(x.textContent)).click());await p.waitForTimeout(900);
+await (await p.$('#worldmap')).screenshot({path:O+'map-default.png'});
+const hb=await p.evaluate(()=>{const t=[...document.querySelectorAll('#worldmap text')].find(x=>/^[⭐🔁] \d/.test(x.textContent));const r=t.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};});
+await p.mouse.move(hb.x,hb.y);for(let i=0;i<3;i++){await p.mouse.wheel(0,-120);await p.waitForTimeout(100);}await p.waitForTimeout(900);
+await p.evaluate(()=>{const t=[...document.querySelectorAll('#worldmap g[data-v^="g:"]')];t.sort((a,b)=>b.dataset.v.length-a.dataset.v.length);t[0]&&t[0].dispatchEvent(new MouseEvent('click',{bubbles:true}));});await p.waitForTimeout(900);
+await (await p.$('#worldmap')).screenshot({path:O+'map-near-badge.png'});
+await (await p.$('#mapdetail')).screenshot({path:O+'map-badge-list.png'});
+await p.evaluate(()=>[...document.querySelectorAll('#tabs button')].find(x=>/Work/.test(x.textContent)).click());await p.waitForTimeout(300);
+await p.evaluate(()=>{const b=document.querySelector('#subtabs [data-tab="quests"]');b&&b.click();});await p.waitForTimeout(800);
+await p.evaluate(()=>{const e=[...document.querySelectorAll('b')].find(x=>/Haul for Bram/.test(x.textContent));e&&e.scrollIntoView({block:'center'});});await p.waitForTimeout(300);
+await p.screenshot({path:O+'quests-tab.png'});
+console.log('errors',errs);await b.close();

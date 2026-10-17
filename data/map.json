@@ -491,6 +491,14 @@
   "rq_manor_gala": {
    "x": 450,
    "y": 405
+  },
+  "haul_bram": {
+   "x": 530,
+   "y": 420
+  },
+  "merchant_run": {
+   "x": 1080,
+   "y": 540
   }
  },
  "areas": [

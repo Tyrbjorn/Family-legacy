@@ -300,6 +300,7 @@ render();
       pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     }
     drag.svg.setAttribute("viewBox", `${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}`);
+    drag.svg.style.setProperty("--k", Math.max(0.45, Math.min(1.7, U.mv.w / 800))); // R31.1 counter-scale pins
   });
   const up = e => {
     pts.delete(e.pointerId);
@@ -327,6 +328,7 @@ render();
       U.mv.w = nw;
       U.mv.h = (nw * D.map.size.h) / D.map.size.w;
       svg.setAttribute("viewBox", `${U.mv.x} ${U.mv.y} ${U.mv.w} ${U.mv.h}`);
+      svg.style.setProperty("--k", Math.max(0.45, Math.min(1.7, U.mv.w / 800)));
       U.lastHTML = "";
     },
     { passive: false },

@@ -120,7 +120,11 @@
     "id": "wolfking_pelt",
     "chance": 0.02
    }
-  ]
+  ],
+  "firstGrants": {
+   "item": "tower_shield"
+  },
+  "_note": "R31.2: first clear gives a Tower Shield"
  },
  {
   "id": "quarry",
@@ -408,7 +412,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -490,7 +493,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -545,7 +547,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -602,7 +603,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -647,7 +647,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -721,7 +720,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -782,7 +780,6 @@
    "kite_shield",
    "lucky_charm",
    "grimoire",
-   "tower_shield",
    "runed_orb",
    "iron_chainmail",
    "ranger_cloak",
@@ -1866,5 +1863,50 @@
   "once": true,
   "line": "elswyth",
   "after": "rq_manor_letter"
+ },
+ {
+  "id": "haul_bram",
+  "name": "Haul for Bram",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 20
+  },
+  "skill": "carpentry",
+  "loot": [],
+  "once": true,
+  "deliver": {
+   "wood": 10
+  },
+  "desc": "Bram needs 10 wood carted to his yard. He lends you his old handcart for the job and tells you to keep it: with a cart, every gathering trip brings home far more than you can carry on your back.",
+  "grants": {
+   "item": "handcart"
+  }
+ },
+ {
+  "id": "merchant_run",
+  "name": "A Merchant's First Run",
+  "region": "forest",
+  "type": "errand",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "haggling",
+  "loot": [],
+  "once": true,
+  "deliver": {
+   "wheat": 20
+  },
+  "desc": "A Thornwick trader wants 20 wheat. Wheat is cheap in Millbrook (it grows there) and dear in Thornwick: buy it at Millbrook's market, haul it here, and sell. That's trade: buy where it's made, sell where it's wanted. Pull it off and the trader sells you her old wagon and shows you how one is built.",
+  "grants": {
+   "item": "wagon"
+  },
+  "unlocks": "recipe:r_wagon"
  }
 ]

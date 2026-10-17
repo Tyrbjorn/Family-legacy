@@ -103,6 +103,16 @@ export function mapDetail(m) {
   const busy = E.isBusy(m);
   let h = "";
   const trav = `${E.travelDays(id)} days each way (~${dur(E.travelDays(id))})`;
+  if (k === "g") {
+    // R31.2: grouped quest badge → small list with Go buttons
+    const qs = id.split(",").map(x => D.quests.find(q => q.id === x)).filter(Boolean);
+    return `<div class="card"><b>📜 ${qs.length} quests here</b>${qs
+      .map(q => {
+        const kd = qKind(q), iss = E.questIssue(s, m, q) || E.questAgeIssue(m, q, s), on = m.action && m.action.type === "quest" && m.action.target === q.id;
+        return `<div class="row" style="margin:4px 0"><span style="flex:1">${kd[0]} <b>${q.name}</b><br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(q.reward).map(([a, v]) => v + " " + a).join(", ")}${iss ? " · 🔒 " + iss : ""}</span></span><button class="b" data-a="mapsel" data-v="q:${q.id}">ℹ️</button><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss || on || busy ? "disabled" : ""}>${on ? "On it" : "Go"}</button></div>`;
+      })
+      .join("")}</div>`;
+  }
   if (k === "q") {
     const q = D.quests.find(x => x.id === id),
       kd = qKind(q),
