@@ -160,6 +160,9 @@ Everything from Eras 1–2 keeps working alongside these.
 - Rules: the active member is never automated; hand-set orders/tracks are pinned (📌, unpin per member); one per-member switch (the existing Auto Equip exclude now covers family automation too); every automatic choice logged with 🤖. Marrying out, succession, politics stay manual.
 - **Removed the Auto Tend "Whole Estate" buy-all bundle** (900 / 2,500 Legacy): Auto Tend is bought per skill only. Save step 29 gives bundle owners that tier of every single Auto Tend (nothing lost) and pins existing non-work orders.
 
+## R29.1 playtest feedback (local, not deployed)
+- 💬 Feedback button in the header opens a panel: fun 1-5, confused / bored / too much (cut or simplify), keep playing tomorrow (yes/maybe/no), notes, plus read-only context (build, save version, year, generation, play time, user agent). `js/config.js` FEEDBACK_FORM: if formUrl is set, opens a prefilled Google Form in a new tab; empty → Copy feedback (clipboard). Copy save in the panel and the Save settings row. No tracking; play time = visible-tab seconds stored as s.playSec.
+
 ## DLC and monetization (planned)
 - Expanded Economy: rent/buy town buildings (shack, stall, workshop, cookery, warehouse), open markets, town growth (food > pop > zones, trade > wealth), control vs non-control towns, Town tab, Landholder deed (first non-royal title, quest line), resettled followers bring skills.
 - Heirlooms (cheap): one super item per family, any non-consumable item; choose it at the start of a lineage or title an existing item once; Artifact > per-stat upgrades > new function by type.

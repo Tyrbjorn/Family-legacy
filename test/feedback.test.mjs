@@ -1,0 +1,21 @@
+// R29.1 playtest feedback: config shape, context, text block, Google Form prefill URL
+import { BUILD, FEEDBACK_FORM } from '../js/config.js';
+import * as F from '../js/feedback-core.js';
+let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
+ok(BUILD==='R29.1','build R29.1');
+ok(/^https:\/\/docs\.google\.com\/forms\/d\/e\/.+\/viewform$/.test(FEEDBACK_FORM.formUrl)&&['fun','confused','bored','tooMuch','tomorrow','notes','context'].every(k=>/^\d+$/.test(FEEDBACK_FORM.entries[k])),'config has form url and every field id');
+ok(F.formReady(FEEDBACK_FORM),'live config is form-ready');
+ok(!F.formReady({formUrl:'',entries:{}})&&F.prefillUrl({formUrl:'',entries:{}},{},{})===null,'empty config: no URL (copy fallback)');
+const s={day:360*3+5,playSec:3725,members:[{id:1},{id:2},{id:3,parents:[1,2]},{id:4,parents:[3]},{id:9,minion:true}]};
+const c=F.feedbackContext(s,{build:'R29.1',schema:29,yearDays:360,ua:'TestUA/1'});
+ok(c.year===4&&c.generation===3&&c.playTime==='1h 02m'&&c.save==='v29'&&c.device==='TestUA/1','context: year, generation, play time, save, device');
+const a={fun:'4',confused:'the map',bored:'',tooMuch:'too many tabs & menus',tomorrow:'maybe',notes:''};
+const t=F.feedbackText(a,c);
+ok(/Fun: 4\/5/.test(t)&&/too many tabs & menus/.test(t)&&/tomorrow\? maybe/.test(t)&&/generation 3/.test(t)&&/What bored you\?\n-/.test(t),'text block has answers and context');
+const cfg={formUrl:'https://docs.google.com/forms/d/e/ABC/viewform?usp=sf_link',entries:{fun:'111',confused:'222',bored:'333',tooMuch:'entry.444',tomorrow:'555',notes:'',context:'777'}};
+const u=F.prefillUrl(cfg,a,c);
+ok(u.startsWith('https://docs.google.com/forms/d/e/ABC/viewform?usp=pp_url&'),'prefill base + usp=pp_url');
+ok(u.includes('entry.111=4')&&u.includes('entry.222=the%20map')&&u.includes('entry.444=too%20many%20tabs%20%26%20menus')&&u.includes('entry.555=maybe'),'answers encoded per entry id (entry. prefix tolerated)');
+ok(!u.includes('entry.333')&&u.includes('entry.777=Build%20R29.1'),'blank answers skipped, context attached');
+ok(F.prefillUrl({formUrl:'https://docs.google.com/forms/d/e/ABC/',entries:{}},a,c)==='https://docs.google.com/forms/d/e/ABC/viewform?usp=pp_url','base URL without viewform works');
+console.log('feedback: '+pass+' passed');

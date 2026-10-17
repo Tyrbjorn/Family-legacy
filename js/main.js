@@ -1,4 +1,5 @@
 import { runAction } from "./ui/handlers/index.js";
+import "./ui/feedback.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
 import { groupOf, render } from "./ui/render.js";
