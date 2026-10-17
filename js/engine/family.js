@@ -5,6 +5,7 @@ import { actionAllowed, defaultAction } from "./actions.js";
 import { bedrooms, established, estateStage } from "./estate.js";
 import { cls } from "./guilds.js";
 import { itemDef } from "./inventory.js";
+import { itemCpFor } from "./geartypes.js";
 import { applyMarriage, giftMult, makeSuitor, personaDef } from "./courtship.js";
 import { houseDef } from "./houses.js";
 const baseGift = id => String(id).replace(/^c\|/, "").split("|")[0];
@@ -104,13 +105,11 @@ export function cp(s, m) {
   let v = 0;
   if (c) {
     v += c.stats.reduce((a, k) => a + statVal(m, k), 0);
-    v += c.cpSkills.reduce((a, k) => a + m.skills[k].lvl * 2, 0);
+    // magicCap: a limited spell list (Battle Mage) — magic skills only count up to that level; the big spells above it are Archmage-only
+    v += c.cpSkills.reduce((a, k) => a + (c.magicCap && D.gear.kinds.spellFail.magicSkills.includes(k) ? Math.min(c.magicCap, m.skills[k].lvl) : m.skills[k].lvl) * 2, 0);
     v *= c.cpMult || 1;
   } else v = (statVal(m, "STR") + statVal(m, "AGI")) / 2;
-  for (const id of Object.values(m.equip)) {
-    const it = itemDef(id);
-    if (it) v += it.cp || 0;
-  }
+  for (const id of Object.values(m.equip)) v += itemCpFor(m, id); // class fit, proficiency, dodge (geartypes.js)
   const gf = gearFx(m.equip);
   v = (v + (gf.cp || 0)) * (1 + (gf.cpPct || 0));
   v *= 1 + traitSum(m, "cp");

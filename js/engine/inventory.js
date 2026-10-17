@@ -18,6 +18,7 @@ import { gainXp, inLine } from "./skills.js";
 import { D, T, afford, log, pay, rng } from "./state.js";
 import { tutNote } from "./tutorial.js";
 
+import { clash } from "./geartypes.js";
 export function equip(s, m, itemId, from = "vault") {
   const src = from === "bag" ? m.bag : s.vault;
   const i = src.indexOf(itemId);
@@ -27,6 +28,13 @@ export function equip(s, m, itemId, from = "vault") {
   if (m.autoEq) delete m.autoEq[it.slot]; // a hand-equipped slot is never swapped by Auto Equip
   if (m.equip[it.slot]) m.bag.push(m.equip[it.slot]);
   m.equip[it.slot] = itemId;
+  // two-handed: a greatsword/pike/maul frees the offhand, bows and staves free a shield (the other piece goes to the bag)
+  const other = it.slot === "weapon" ? "offhand" : it.slot === "offhand" ? "weapon" : null;
+  if (other && m.equip[other] && clash(m.equip.weapon, m.equip.offhand)) {
+    m.bag.push(m.equip[other]);
+    delete m.equip[other];
+    if (m.autoEq) delete m.autoEq[other];
+  }
   noteSets(s, m);
   return true;
 }

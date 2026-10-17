@@ -1359,5 +1359,24 @@
     "rank": 1
    }
   ]
+ },
+ {
+  "id": "footwork",
+  "name": "Footwork & Tumbling",
+  "icon": "💨",
+  "minAge": 12,
+  "stats": {
+   "AGI": 0.02,
+   "VIT": 0.01
+  },
+  "skills": [
+   "evasion",
+   "brawling"
+  ],
+  "desc": "Rolls, feints and dodges in the yard (trains Evasion)",
+  "unlock": {
+   "building": "yard"
+  },
+  "tier": "advanced"
  }
 ]

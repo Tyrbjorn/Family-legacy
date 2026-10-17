@@ -240,7 +240,7 @@ export function mainv() {
           t.shop
             .map(id => {
               const x = it(id);
-              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot} · ${x.value}🪙</span>${itemStatsHtml(x, m && m.equip)}</span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x, s, t.id) ? "" : "disabled"}>${E.buyPrice(x, s, t.id)}🪙</button></div>`;
+              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot} · ${x.value}🪙</span>${itemStatsHtml(x, m)}</span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x, s, t.id) ? "" : "disabled"}>${E.buyPrice(x, s, t.id)}🪙</button></div>`;
             })
             .join(""),
       )

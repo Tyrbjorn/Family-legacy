@@ -221,13 +221,15 @@ export const MATS = [
 
 // compact stat line for an item (power role, quality, enchants, set, follower effects...) + optional comparison
 // with what member/minion equip holds in that slot now
-export function itemStatsHtml(x, equip) {
-  const L = E.itemStats(x).map(l => l.t);
-  const c = equip && x.slot && x.slot !== "gift" ? E.itemCompare(equip, x.id) : null;
+// who: the member (or a bare equip map); with a member the card shows class fit, proficiency, dodge and spell failure for them
+export function itemStatsHtml(x, who, cmpOn = true) {
+  const m = who && who.equip ? who : null;
+  const L = E.itemStats(x, m).map(l => l.t);
+  const c = cmpOn && who && x.slot && x.slot !== "gift" ? E.itemCompare(who, x.id) : null;
   const cmp = c && c.dcp !== undefined && (c.cur || c.dcp) ? ` <span class="${c.dcp > 0 ? "up" : c.dcp < 0 ? "down" : "muted"}">${c.dcp > 0 ? "▲+" : c.dcp < 0 ? "▼" : "="}${c.dcp ? c.dcp : ""} CP vs ${c.cur || "empty"}</span>` : "";
   return L.length || cmp ? `<div class="istats">${L.join(" · ")}${cmp}</div>` : "";
 }
-export function itemRow(x, btns, equip) {
+export function itemRow(x, btns, equip) { // equip: member or equip map
   return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot} · ${x.value}🪙</span>${gearTags(x)}${itemStatsHtml(x, equip)}</span><span style="text-align:right">${btns}</span></div>`;
 }
 

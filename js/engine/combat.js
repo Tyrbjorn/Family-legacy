@@ -2,17 +2,19 @@ import { injure, permFx } from "./injuries.js";
 // Turn-based combat: each fighter has HP and Morale. Every round each standing fighter trades a blow with a random
 // foe; who lands it is rolled from the power ratio. Losing HP drains morale; below fleeAt a fighter rolls to flee
 // (game difficulty adjusts that roll); a group (2+) whose average morale is below fleeAt flees as one. Numbers: tuning.combat.
-import { T, log, rng } from "./state.js";
+import { D, T, log, rng } from "./state.js";
 import { actLvl, chalFx, enemyCp, gameFx } from "./difficulty.js";
 import { cp, level } from "./family.js";
 import { morale } from "./food.js";
 import { minionPower } from "./minions.js";
+import { armorLoss, gainProf, gstats, memberFail } from "./geartypes.js";
+import { gainXp } from "./skills.js";
 
 const C = () => T.combat;
 const SK = () => C().skills;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 // a fighter: o.m = family member (challenge, log name), o.skills = { skillId: lvl }, o.leader
-export const fighter = (name, pow, o = {}) => ({ name, pow, max: o.hp || 100, hp: o.hpNow ?? o.hp ?? 100, mor: o.mor ?? 100, skills: o.skills || {}, m: o.m || null, leader: !!o.leader, out: null });
+export const fighter = (name, pow, o = {}) => ({ name, pow, fizzle: o.fizzle || 0, max: o.hp || 100, hp: o.hpNow ?? o.hp ?? 100, mor: o.mor ?? 100, skills: o.skills || {}, m: o.m || null, leader: !!o.leader, out: null });
 const up = side => side.filter(f => !f.out);
 const avg = side => (up(side).length ? up(side).reduce((a, f) => a + f.mor, 0) / up(side).length : 0);
 const best = (side, sk) => Math.max(0, ...side.map(f => f.skills[sk] || 0));
@@ -23,6 +25,7 @@ export const landChance = (a, b) => clamp(0.5 + C().slope * ((a + 20) / (b + 20)
 function blow(att, tgt, side) {
   const [a, b] = side.includes(att) ? [att, tgt] : [tgt, att];
   const [w, l] = rng() < landChance(a.pow, b.pow) ? [a, b] : [b, a];
+  if (w.fizzle && rng() < w.fizzle) return; // arcane spell failure: the caster's blow fizzles (armor class, geartypes.spellFail)
   const d = C().dmg * (0.75 + 0.5 * rng()) * (1 + chalFx(w.m, "roll")) * l.max;
   l.hp -= d;
   const hold = side.includes(l) && best(side, SK().hold.skill) ? 1 - SK().hold.v : 1;
@@ -80,19 +83,23 @@ export function dungeonEvents(dg) {
   for (const st of dg.story || []) ev.splice(Math.min(st.at, ev.length), 0, { kind: "story", floor: ev[Math.min(st.at, ev.length - 1)].floor, ...st });
   return ev;
 }
-const checkOk = (m, c) => !c || rng() < clamp(0.5 + ((c.stat ? m.stats[c.stat] || 0 : (m.skills[c.skill] || { lvl: 0 }).lvl) - (c.dc || 0)) * 0.08, 0.1, 0.95);
+const MAGIC = () => D.gear.kinds.spellFail.magicSkills;
+// a check that rolls magic can fizzle in armor (spell failure)
+const checkOk = (m, c) => !c || (!(c.skill && MAGIC().includes(c.skill) && rng() < memberFail(m)) && rng() < clamp(0.5 + ((c.stat ? m.stats[c.stat] || 0 : (m.skills[c.skill] || { lvl: 0 }).lvl) - (c.dc || 0)) * 0.08, 0.1, 0.95));
 
 // the family member as a fighter; run = { hp, mor } carried through a dungeon run
 const MSK = () => Object.values(SK()).map(x => x.skill);
-export function memberFighter(s, m, run) {
+// foeArmor: the enemy's armor soaks part of each weapon hit (dungeons: tuning.combat.dungeon.armor by tier)
+export function memberFighter(s, m, run, foeArmor = 0) {
   const max = Math.round((50 + 2 * (m.stats.VIT || 0) + 2 * level(m)) * (1 + permFx(m, "hp"))),
     mor0 = 100 + clamp(morale(s), -10, 10) + Math.min(C().guardMoraleMax, minionPower(s, "guard") * C().guardMorale) + permFx(m, "mor");
   const skills = Object.fromEntries(MSK().map(k => [k, (m.skills[k] || { lvl: 0 }).lvl]));
-  return fighter(m.name, cp(s, m) * (1 + permFx(m, "pow")), { m, skills, leader: true, hp: max, hpNow: run ? run.hp : max, mor: run ? run.mor : mor0 });
+  const pow = Math.max(1, cp(s, m) - armorLoss(m, foeArmor));
+  return fighter(m.name, pow * (1 + permFx(m, "pow")), { m, skills, leader: true, fizzle: memberFail(m), hp: max, hpNow: run ? run.hp : max, mor: run ? run.mor : mor0 });
 }
 // one dungeon floor's events; false = the run ends here (logged with the round it ended)
 export function dungeonFloorRun(s, m, dg, i, t) {
-  const me = memberFighter(s, m, t.run);
+  const me = memberFighter(s, m, t.run, (C().dungeon.armor || [])[dungeonTier(dg)] || 0);
   t.run = t.run || { hp: me.hp, mor: me.mor, start: me.mor };
   const end = msg => {
     log(s, `❌ ${m.name} ${msg} in ${dg.name} (floor ${i + 1}/${dg.floors.length}).`);
@@ -109,6 +116,9 @@ export function dungeonFloorRun(s, m, dg, i, t) {
     } else {
       const r = fight(s, [me], [fighter(dg.name, enemyCp(s, m, ev.cp * ((t.th && t.th.mult) || 1)))], { lvl: actLvl(s, m), monsters: true });
       if (r.result !== "win") return end(fightWord(r));
+      gainProf(m); // weapon / shield / armor-class proficiency grows with use
+      const ac = gstats((m.equip || {}).armor);
+      if (ac && D.gear.kinds.armorClasses[ac.cls].evade) gainXp(s, m, "evasion", T.xpPerDay * 0.5 * D.gear.kinds.armorClasses[ac.cls].evade);
       me.mor = Math.min(t.run.start, me.mor + C().between);
       me.hp = Math.min(me.max, me.hp + C().betweenHp * me.max);
     }

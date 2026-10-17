@@ -354,5 +354,12 @@
     "apprentice"
    ]
   }
+ },
+ {
+  "id": "evasion",
+  "name": "Evasion",
+  "family": "combat",
+  "stat": "AGI",
+  "icon": "💨"
  }
 ]

@@ -392,6 +392,41 @@
   "icon": "🧙"
  },
  {
+  "id": "battlemage",
+  "name": "Battle Mage",
+  "tier": 2,
+  "from": "scholar",
+  "req": {
+   "arcana": 40,
+   "swordsmanship": 25,
+   "shield": 15
+  },
+  "cost": 2000,
+  "guild": "collegium",
+  "guildRank": 2,
+  "stats": [
+   "INT",
+   "STR"
+  ],
+  "cpSkills": [
+   "arcana",
+   "swordsmanship",
+   "shield"
+  ],
+  "cpMult": 2.4,
+  "noSpellFail": true,
+  "noCasterGear": true,
+  "icon": "⚔️",
+  "desc": "Archmage alternative: swords, maces, spears, shields and ALL armor with no spell failure. Combat spells at any range (Arcana wards, Fire incl. fireball, Frost, Runecraft weapon runes); magic skills count for power only up to level 75 — the very top tier (biggest area, utility, summoning) stays Archmage-only.",
+  "magicCap": 75,
+  "spells": [
+   "arcana",
+   "fire",
+   "frost",
+   "runecraft"
+  ]
+ },
+ {
   "id": "warlord",
   "name": "Warlord",
   "tier": 2,

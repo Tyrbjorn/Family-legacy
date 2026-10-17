@@ -13,6 +13,7 @@ import { ES, freeSlots, landSlots, landUsed, migrateFurniture } from "./estate.j
 import { fixTraits, traitDef } from "./family.js";
 import { classGuild, cls, guildDef } from "./guilds.js";
 import { itemDef } from "./inventory.js";
+import { clash, famFit, gstats, profFromSkills } from "./geartypes.js";
 import { themedFor } from "./skills.js";
 import { D, SAVE_VERSION, bl, log } from "./state.js";
 
@@ -443,6 +444,29 @@ export const STEPS = [
     run: s => {
       s.eg = { quarries: {}, defs: {}, funded: [], mount: 0, ...(s.eg || {}) };
       for (const mi of s.minions || []) if (!mi.special && mi.age == null) mi.age = 18 + ((mi.since || 0) % 23);
+    },
+  },
+  {
+    n: 28,
+    once: true,
+    name: "item types: proficiency starts from matching skills (capped by class); a two-handed weapon frees a blocked offhand (to the vault); off-class gear stays equipped at −50% with a one-time note. Item ids are unchanged (types/stats come from data).",
+    run: s => {
+      const off = [];
+      for (const m of s.members || []) {
+        if (!m.alive) continue;
+        m.skills = m.skills || {};
+        profFromSkills(m);
+        m.equip = m.equip || {};
+        if (m.equip.weapon && m.equip.offhand && clash(m.equip.weapon, m.equip.offhand)) {
+          s.vault.push(m.equip.offhand);
+          delete m.equip.offhand;
+        }
+        for (const id of Object.values(m.equip)) {
+          const st = gstats(id);
+          if (st && famFit(m, st.fam) === "off") off.push(`${m.name}: ${itemDef(id).name}`);
+        }
+      }
+      if (s.day > 0 && !s.gearTypesNoted) (s.gearTypesNoted = true), log(s, "⚔️ Gear now has types: damage, speed, defense, dodge and weight. Class fit and proficiency matter" + (off.length ? ` (off-class at −50%: ${off.slice(0, 4).join(", ")}${off.length > 4 ? "…" : ""})` : "") + ".");
     },
   },
 ];

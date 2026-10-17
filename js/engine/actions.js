@@ -23,10 +23,14 @@ import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
 import { activityOk, canTrain, gainXp, jobOk, themedFor } from "./skills.js";
 import { D, T, active, ageY, furn, isAdult, known, log } from "./state.js";
 
+import { memberFail } from "./geartypes.js";
 export function successChance(s, m, q) {
   const c = cp(s, m);
   const qc = enemyCp(s, m, q.cp);
-  return Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll")));
+  const p = Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll")));
+  // a caster's spells can fail in armor: fights and magic-skill quests lose that share of the odds
+  const f = q.cp > 0 || D.gear.kinds.spellFail.magicSkills.includes(q.skill) ? memberFail(m) : 0;
+  return f ? Math.max(0.05, p * (1 - f)) : p;
 }
 
 // One handler per action type: (s, m, a, eff). Travel types (quest/gather/explore/dungeon) share travelTick.

@@ -359,7 +359,16 @@
      "text": "a warded door"
     }
    ],
-   "packCp": 0.7
+   "packCp": 0.7,
+   "armor": [
+    0,
+    0,
+    1,
+    2,
+    4,
+    6,
+    8
+   ]
   },
   "betweenHp": 0.3
  },

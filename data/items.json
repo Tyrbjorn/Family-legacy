@@ -5,7 +5,10 @@
   "slot": "weapon",
   "rarity": "Common",
   "cp": 4,
-  "value": 25
+  "value": 25,
+  "type": "sword",
+  "mat": "iron",
+  "g": 0.257
  },
  {
   "id": "hunting_bow",
@@ -13,7 +16,10 @@
   "slot": "weapon",
   "rarity": "Common",
   "cp": 8,
-  "value": 50
+  "value": 50,
+  "type": "bow",
+  "mat": "pine",
+  "g": 0.625
  },
  {
   "id": "oak_staff",
@@ -21,7 +27,10 @@
   "slot": "weapon",
   "rarity": "Common",
   "cp": 12,
-  "value": 75
+  "value": 75,
+  "type": "staff",
+  "mat": "oak",
+  "g": 0.762
  },
  {
   "id": "iron_sword",
@@ -30,7 +39,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 100,
-  "metal": "iron"
+  "metal": "iron",
+  "type": "sword",
+  "mat": "iron",
+  "g": 1
  },
  {
   "id": "yew_longbow",
@@ -38,7 +50,10 @@
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 20,
-  "value": 125
+  "value": 125,
+  "type": "longbow",
+  "mat": "yew",
+  "g": 0.951
  },
  {
   "id": "ember_wand",
@@ -46,7 +61,10 @@
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 24,
-  "value": 150
+  "value": 150,
+  "type": "wand",
+  "mat": "elderwood",
+  "g": 1.259
  },
  {
   "id": "steel_sword",
@@ -54,7 +72,10 @@
   "slot": "weapon",
   "rarity": "Rare",
   "cp": 28,
-  "value": 175
+  "value": 175,
+  "type": "sword",
+  "mat": "steel",
+  "g": 1.356
  },
  {
   "id": "elven_bow",
@@ -62,7 +83,10 @@
   "slot": "weapon",
   "rarity": "Rare",
   "cp": 32,
-  "value": 200
+  "value": 200,
+  "type": "bow",
+  "mat": "elderwood",
+  "g": 1.378
  },
  {
   "id": "frost_rod",
@@ -70,7 +94,10 @@
   "slot": "weapon",
   "rarity": "Rare",
   "cp": 36,
-  "value": 225
+  "value": 225,
+  "type": "rod",
+  "mat": "silver",
+  "g": 2.68
  },
  {
   "id": "knight_sabre",
@@ -78,7 +105,10 @@
   "slot": "weapon",
   "rarity": "Epic",
   "cp": 40,
-  "value": 250
+  "value": 250,
+  "type": "sword",
+  "mat": "steel",
+  "g": 1.937
  },
  {
   "id": "buckler",
@@ -86,7 +116,10 @@
   "slot": "offhand",
   "rarity": "Common",
   "cp": 3,
-  "value": 25
+  "value": 25,
+  "type": "buckler",
+  "mat": "oak",
+  "g": 0.75
  },
  {
   "id": "quiver",
@@ -94,7 +127,10 @@
   "slot": "offhand",
   "rarity": "Common",
   "cp": 6,
-  "value": 50
+  "value": 50,
+  "type": "quiver",
+  "mat": "leather",
+  "g": 6
  },
  {
   "id": "spell_tome",
@@ -102,7 +138,9 @@
   "slot": "offhand",
   "rarity": "Common",
   "cp": 9,
-  "value": 75
+  "value": 75,
+  "type": "focus",
+  "g": 9
  },
  {
   "id": "kite_shield",
@@ -110,7 +148,10 @@
   "slot": "offhand",
   "rarity": "Fine",
   "cp": 12,
-  "value": 100
+  "value": 100,
+  "type": "kite",
+  "mat": "iron",
+  "g": 1.714
  },
  {
   "id": "lucky_charm",
@@ -118,7 +159,9 @@
   "slot": "offhand",
   "rarity": "Fine",
   "cp": 15,
-  "value": 125
+  "value": 125,
+  "type": "kit",
+  "g": 15
  },
  {
   "id": "grimoire",
@@ -126,7 +169,9 @@
   "slot": "offhand",
   "rarity": "Fine",
   "cp": 18,
-  "value": 150
+  "value": 150,
+  "type": "focus",
+  "g": 18
  },
  {
   "id": "tower_shield",
@@ -134,7 +179,10 @@
   "slot": "offhand",
   "rarity": "Rare",
   "cp": 21,
-  "value": 175
+  "value": 175,
+  "type": "tower",
+  "mat": "iron",
+  "g": 1.909
  },
  {
   "id": "runed_orb",
@@ -142,7 +190,9 @@
   "slot": "offhand",
   "rarity": "Rare",
   "cp": 24,
-  "value": 200
+  "value": 200,
+  "type": "focus",
+  "g": 24
  },
  {
   "id": "padded_vest",
@@ -150,7 +200,10 @@
   "slot": "armor",
   "rarity": "Common",
   "cp": 3,
-  "value": 25
+  "value": 25,
+  "type": "padded",
+  "mat": "linen",
+  "g": 0.3
  },
  {
   "id": "leather_jerkin",
@@ -158,7 +211,10 @@
   "slot": "armor",
   "rarity": "Common",
   "cp": 6,
-  "value": 50
+  "value": 50,
+  "type": "leather",
+  "mat": "rawhide",
+  "g": 0.3
  },
  {
   "id": "apprentice_robe",
@@ -166,7 +222,10 @@
   "slot": "armor",
   "rarity": "Common",
   "cp": 9,
-  "value": 75
+  "value": 75,
+  "type": "robe",
+  "mat": "wool",
+  "g": 0.5
  },
  {
   "id": "iron_chainmail",
@@ -175,7 +234,10 @@
   "rarity": "Fine",
   "cp": 12,
   "value": 100,
-  "metal": "iron"
+  "metal": "iron",
+  "type": "chain",
+  "mat": "iron",
+  "g": 1.0
  },
  {
   "id": "ranger_cloak",
@@ -183,7 +245,10 @@
   "slot": "armor",
   "rarity": "Fine",
   "cp": 15,
-  "value": 125
+  "value": 125,
+  "type": "leather",
+  "mat": "leather",
+  "g": 1.429
  },
  {
   "id": "mage_robe",
@@ -191,7 +256,10 @@
   "slot": "armor",
   "rarity": "Fine",
   "cp": 18,
-  "value": 150
+  "value": 150,
+  "type": "robe",
+  "mat": "wool",
+  "g": 2.0
  },
  {
   "id": "iron_scalemail",
@@ -200,7 +268,10 @@
   "rarity": "Fine",
   "cp": 21,
   "value": 175,
-  "metal": "iron"
+  "metal": "iron",
+  "type": "scale",
+  "mat": "iron",
+  "g": 1.0
  },
  {
   "id": "shadow_leathers",
@@ -208,7 +279,10 @@
   "slot": "armor",
   "rarity": "Rare",
   "cp": 24,
-  "value": 200
+  "value": 200,
+  "type": "leather",
+  "mat": "boiled",
+  "g": 2.36
  },
  {
   "id": "archmage_mantle",
@@ -216,7 +290,10 @@
   "slot": "armor",
   "rarity": "Rare",
   "cp": 27,
-  "value": 225
+  "value": 225,
+  "type": "robe",
+  "mat": "starweave",
+  "g": 3.68
  },
  {
   "id": "plate_cuirass",
@@ -224,7 +301,10 @@
   "slot": "armor",
   "rarity": "Epic",
   "cp": 30,
-  "value": 250
+  "value": 250,
+  "type": "plate",
+  "mat": "iron",
+  "g": 1.154
  },
  {
   "id": "copper_ring",
@@ -303,7 +383,7 @@
   "name": "Dragon Scale",
   "slot": "accessory",
   "rarity": "Epic",
-  "cp": 20,
+  "cp": 18,
   "value": 250
  },
  {
@@ -311,7 +391,7 @@
   "name": "Phoenix Plume",
   "slot": "accessory",
   "rarity": "Epic",
-  "cp": 22,
+  "cp": 18,
   "value": 275
  },
  {
@@ -319,7 +399,7 @@
   "name": "Heart Locket",
   "slot": "accessory",
   "rarity": "Epic",
-  "cp": 24,
+  "cp": 18,
   "value": 300
  },
  {
@@ -346,7 +426,10 @@
   "cp": 25,
   "value": 300,
   "guild": "vanguard",
-  "rank": 1
+  "rank": 1,
+  "type": "chain",
+  "mat": "steel",
+  "g": 1.202
  },
  {
   "id": "vanguard_greatsword",
@@ -356,7 +439,10 @@
   "cp": 50,
   "value": 900,
   "guild": "vanguard",
-  "rank": 3
+  "rank": 3,
+  "type": "greatsword",
+  "mat": "steel",
+  "g": 2.133
  },
  {
   "id": "lodge_cloak",
@@ -366,7 +452,10 @@
   "cp": 22,
   "value": 280,
   "guild": "lodge",
-  "rank": 1
+  "rank": 1,
+  "type": "leather",
+  "mat": "wolf",
+  "g": 1.943
  },
  {
   "id": "lodge_bow",
@@ -376,7 +465,10 @@
   "cp": 48,
   "value": 850,
   "guild": "lodge",
-  "rank": 3
+  "rank": 3,
+  "type": "longbow",
+  "mat": "heartwood",
+  "g": 2.083
  },
  {
   "id": "collegium_focus",
@@ -386,7 +478,9 @@
   "cp": 20,
   "value": 320,
   "guild": "collegium",
-  "rank": 1
+  "rank": 1,
+  "type": "focus",
+  "g": 20
  },
  {
   "id": "collegium_staff",
@@ -396,7 +490,10 @@
   "cp": 52,
   "value": 950,
   "guild": "collegium",
-  "rank": 3
+  "rank": 3,
+  "type": "staff",
+  "mat": "elderwood",
+  "g": 2.086
  },
  {
   "id": "rogue_lockpicks",
@@ -416,7 +513,10 @@
   "cp": 30,
   "value": 350,
   "guild": "hearth",
-  "rank": 1
+  "rank": 1,
+  "type": "maul",
+  "mat": "iron",
+  "g": 1.758
  },
  {
   "id": "adv_badge",
@@ -434,7 +534,10 @@
   "rarity": "Rare",
   "cp": 28,
   "value": 400,
-  "adv": 3
+  "adv": 3,
+  "type": "brigandine",
+  "mat": "steel",
+  "g": 1.197
  },
  {
   "id": "adv_blade",
@@ -443,7 +546,10 @@
   "rarity": "Epic",
   "cp": 55,
   "value": 1000,
-  "adv": 5
+  "adv": 5,
+  "type": "sword",
+  "mat": "steel",
+  "g": 2.664
  },
  {
   "id": "rogue_dagger",
@@ -453,7 +559,10 @@
   "cp": 46,
   "value": 850,
   "guild": "rogues",
-  "rank": 3
+  "rank": 3,
+  "type": "dagger",
+  "mat": "mithril",
+  "g": 1.797
  },
  {
   "id": "church_symbol",
@@ -473,7 +582,10 @@
   "cp": 48,
   "value": 900,
   "guild": "church",
-  "rank": 3
+  "rank": 3,
+  "type": "mace",
+  "mat": "steel",
+  "g": 2.387
  },
  {
   "id": "hearth_apron",
@@ -483,7 +595,10 @@
   "cp": 30,
   "value": 700,
   "guild": "hearth",
-  "rank": 3
+  "rank": 3,
+  "type": "clothes",
+  "mat": "leather",
+  "g": 1
  },
  {
   "id": "sickle",
@@ -562,14 +677,17 @@
   "slot": "weapon",
   "rarity": "Legendary",
   "cp": 60,
-  "value": 2500
+  "value": 2500,
+  "type": "longsword",
+  "mat": "steel",
+  "g": 2.679
  },
  {
   "id": "vael_banner",
   "name": "Banner of House Vael",
   "slot": "accessory",
   "rarity": "Legendary",
-  "cp": 22,
+  "cp": 18,
   "value": 1200
  },
  {
@@ -594,14 +712,17 @@
   "slot": "armor",
   "rarity": "Legendary",
   "cp": 34,
-  "value": 1400
+  "value": 1400,
+  "type": "leather",
+  "mat": "wolf",
+  "g": 3.314
  },
  {
   "id": "dryad_tear",
   "name": "Dryad's Tear",
   "slot": "accessory",
   "rarity": "Legendary",
-  "cp": 22,
+  "cp": 18,
   "value": 1100
  },
  {
@@ -618,7 +739,9 @@
   "slot": "offhand",
   "rarity": "Legendary",
   "cp": 38,
-  "value": 1600
+  "value": 1600,
+  "type": "focus",
+  "g": 26
  },
  {
   "id": "mithril_bow",
@@ -626,7 +749,10 @@
   "slot": "weapon",
   "rarity": "Legendary",
   "cp": 45,
-  "value": 1800
+  "value": 1800,
+  "type": "longbow",
+  "mat": "mithril",
+  "g": 1.416
  },
  {
   "id": "giant_pearl",
@@ -650,7 +776,10 @@
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 30,
-  "value": 260
+  "value": 260,
+  "type": "sword",
+  "mat": "steel",
+  "g": 1.453
  },
  {
   "id": "wyrm_mail",
@@ -658,7 +787,10 @@
   "slot": "armor",
   "rarity": "Fine",
   "cp": 32,
-  "value": 300
+  "value": 300,
+  "type": "scale",
+  "mat": "wyrm",
+  "g": 0.8
  },
  {
   "id": "oathstone",
@@ -674,7 +806,9 @@
   "slot": "offhand",
   "rarity": "Fine",
   "cp": 14,
-  "value": 120
+  "value": 120,
+  "type": "focus",
+  "g": 14
  },
  {
   "id": "sigil_charm",
@@ -690,7 +824,9 @@
   "slot": "offhand",
   "rarity": "Common",
   "cp": 3,
-  "value": 15
+  "value": 15,
+  "type": "kit",
+  "g": 3
  },
  {
   "id": "mentor_knife",
@@ -698,7 +834,10 @@
   "slot": "weapon",
   "rarity": "Fine",
   "cp": 14,
-  "value": 90
+  "value": 90,
+  "type": "dagger",
+  "mat": "iron",
+  "g": 0.781
  },
  {
   "id": "warden_blade",
@@ -707,7 +846,10 @@
   "rarity": "Fine",
   "cp": 17,
   "value": 120,
-  "set": "warden"
+  "set": "warden",
+  "type": "sword",
+  "mat": "iron",
+  "g": 1.094
  },
  {
   "id": "warden_shield",
@@ -716,7 +858,10 @@
   "rarity": "Fine",
   "cp": 13,
   "value": 110,
-  "set": "warden"
+  "set": "warden",
+  "type": "kite",
+  "mat": "iron",
+  "g": 1.857
  },
  {
   "id": "warden_mail",
@@ -725,7 +870,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 120,
-  "set": "warden"
+  "set": "warden",
+  "type": "chain",
+  "mat": "iron",
+  "g": 0.875
  },
  {
   "id": "warden_sigil",
@@ -743,7 +891,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "set": "storm"
+  "set": "storm",
+  "type": "staff",
+  "mat": "ash",
+  "g": 0.777
  },
  {
   "id": "storm_tome",
@@ -752,7 +903,9 @@
   "rarity": "Fine",
   "cp": 12,
   "value": 120,
-  "set": "storm"
+  "set": "storm",
+  "type": "focus",
+  "g": 12
  },
  {
   "id": "storm_robe",
@@ -761,7 +914,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 140,
-  "set": "storm"
+  "set": "storm",
+  "type": "robe",
+  "mat": "silk",
+  "g": 1.56
  },
  {
   "id": "storm_circlet",
@@ -779,7 +935,10 @@
   "rarity": "Fine",
   "cp": 19,
   "value": 130,
-  "set": "greenwood"
+  "set": "greenwood",
+  "type": "bow",
+  "mat": "greenwood",
+  "g": 1.099
  },
  {
   "id": "green_quiver",
@@ -788,7 +947,10 @@
   "rarity": "Fine",
   "cp": 10,
   "value": 90,
-  "set": "greenwood"
+  "set": "greenwood",
+  "type": "quiver",
+  "mat": "leather",
+  "g": 10
  },
  {
   "id": "green_leathers",
@@ -797,7 +959,10 @@
   "rarity": "Fine",
   "cp": 12,
   "value": 110,
-  "set": "greenwood"
+  "set": "greenwood",
+  "type": "leather",
+  "mat": "leather",
+  "g": 1.0
  },
  {
   "id": "green_pin",
@@ -815,7 +980,10 @@
   "rarity": "Epic",
   "cp": 34,
   "value": 700,
-  "set": "moonlit"
+  "set": "moonlit",
+  "type": "sword",
+  "mat": "silver",
+  "g": 2.483
  },
  {
   "id": "moon_aegis",
@@ -824,7 +992,10 @@
   "rarity": "Epic",
   "cp": 24,
   "value": 600,
-  "set": "moonlit"
+  "set": "moonlit",
+  "type": "kite",
+  "mat": "silver",
+  "g": 3.81
  },
  {
   "id": "moon_plate",
@@ -833,7 +1004,10 @@
   "rarity": "Epic",
   "cp": 30,
   "value": 700,
-  "set": "moonlit"
+  "set": "moonlit",
+  "type": "plate",
+  "mat": "silver",
+  "g": 1.282
  },
  {
   "id": "moon_locket",
@@ -860,7 +1034,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "dagger",
+  "mat": "iron",
+  "g": 0.852
  },
  {
   "id": "copper_focus_ring",
@@ -908,7 +1085,10 @@
   "cp": 20,
   "value": 140,
   "pathItem": true,
-  "metal": "iron"
+  "metal": "iron",
+  "type": "longsword",
+  "mat": "iron",
+  "g": 1
  },
  {
   "id": "barbed_arrowheads",
@@ -917,16 +1097,22 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "quiver",
+  "mat": "iron",
+  "g": 16
  },
  {
   "id": "runed_gauntlets",
-  "name": "Runed Gauntlets",
+  "name": "Runed Hauberk",
   "slot": "armor",
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "chain",
+  "mat": "iron",
+  "g": 1.125
  },
  {
   "id": "iron_mace",
@@ -936,7 +1122,10 @@
   "cp": 18,
   "value": 120,
   "pathItem": true,
-  "metal": "iron"
+  "metal": "iron",
+  "type": "mace",
+  "mat": "iron",
+  "g": 1
  },
  {
   "id": "twin_stilettos",
@@ -945,7 +1134,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "throwing",
+  "mat": "steel",
+  "g": 0.721
  },
  {
   "id": "explorers_brigandine",
@@ -954,7 +1146,10 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "brigandine",
+  "mat": "iron",
+  "g": 1.0
  },
  {
   "id": "oak_tower_shield",
@@ -963,7 +1158,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "tower",
+  "mat": "oak",
+  "g": 1.273
  },
  {
   "id": "hunters_recurve",
@@ -972,7 +1170,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "bow",
+  "mat": "ash",
+  "g": 0.942
  },
  {
   "id": "rowan_staff",
@@ -981,7 +1182,10 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "staff",
+  "mat": "rowan",
+  "g": 0.955
  },
  {
   "id": "pilgrims_staff",
@@ -990,7 +1194,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "staff",
+  "mat": "ash",
+  "g": 0.777
  },
  {
   "id": "hidden_blade_cane",
@@ -999,7 +1206,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "dagger",
+  "mat": "steel",
+  "g": 0.865
  },
  {
   "id": "rangers_flatbow",
@@ -1008,7 +1218,10 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "bow",
+  "mat": "ash",
+  "g": 1.059
  },
  {
   "id": "padded_gambeson",
@@ -1017,7 +1230,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "padded",
+  "mat": "wool",
+  "g": 1.5
  },
  {
   "id": "camouflage_cloak",
@@ -1026,7 +1242,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "leather",
+  "mat": "leather",
+  "g": 1.571
  },
  {
   "id": "starweave_robe",
@@ -1035,7 +1254,10 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "robe",
+  "mat": "starweave",
+  "g": 1.88
  },
  {
   "id": "vestment_of_dawn",
@@ -1044,7 +1266,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "robe",
+  "mat": "linen",
+  "g": 1.24
  },
  {
   "id": "shadow_hood",
@@ -1053,7 +1278,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "leather",
+  "mat": "leather",
+  "g": 1.571
  },
  {
   "id": "travelers_pack_coat",
@@ -1062,7 +1290,10 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "clothes",
+  "mat": "wool",
+  "g": 1
  },
  {
   "id": "battle_tonic_flask",
@@ -1181,7 +1412,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "buckler",
+  "mat": "granite",
+  "g": 3.182
  },
  {
   "id": "slingstones_pouch",
@@ -1190,7 +1424,9 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "kit",
+  "g": 16
  },
  {
   "id": "runestone_tablet",
@@ -1199,7 +1435,9 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "focus",
+  "g": 18
  },
  {
   "id": "shrine_icon",
@@ -1235,7 +1473,10 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "mace",
+  "mat": "iron",
+  "g": 0.93
  },
  {
   "id": "falconers_glove",
@@ -1244,7 +1485,10 @@
   "rarity": "Fine",
   "cp": 16,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "kit",
+  "mat": "leather",
+  "g": 16
  },
  {
   "id": "mandrake_charm",
@@ -1362,7 +1606,9 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "focus",
+  "g": 18
  },
  {
   "id": "book_of_hours",
@@ -1371,7 +1617,9 @@
   "rarity": "Fine",
   "cp": 14,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "focus",
+  "g": 14
  },
  {
   "id": "forged_papers",
@@ -1389,7 +1637,9 @@
   "rarity": "Fine",
   "cp": 18,
   "value": 110,
-  "pathItem": true
+  "pathItem": true,
+  "type": "kit",
+  "g": 18
  },
  {
   "id": "handcart",
@@ -1414,5 +1664,27 @@
   "rarity": "Common",
   "cp": 0,
   "value": 150
+ },
+ {
+  "id": "throwing_knives",
+  "name": "Throwing Knives",
+  "slot": "weapon",
+  "rarity": "Common",
+  "value": 60,
+  "cp": 10,
+  "type": "throwing",
+  "mat": "iron",
+  "g": 0.677
+ },
+ {
+  "id": "hunting_spear",
+  "name": "Hunting Spear",
+  "slot": "weapon",
+  "rarity": "Common",
+  "value": 50,
+  "cp": 11,
+  "type": "shortspear",
+  "mat": "iron",
+  "g": 0.745
  }
 ]

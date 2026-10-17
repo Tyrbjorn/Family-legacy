@@ -122,6 +122,27 @@ const STRUCTS = [
   "barracks",
 ];
 
+// manual equipping, same for both builds: per adult, per slot, the vault piece worth the most to that member
+// (E.itemCpFor when the build has class fit/proficiency, else raw cp); skips members Auto Equip already handles
+function botEquip(s) {
+  if (E.autoEqOn && E.autoEqOn(s, "gear")) return;
+  const val = (m, id) => (id ? (E.itemCpFor ? E.itemCpFor(m, id) : (E.itemDef(id) || {}).cp || 0) : 0);
+  for (const m of s.members.filter(m => m.alive && E.isAdult(m)))
+    for (const slot of ["weapon", "armor", "offhand"]) {
+      let b = null, bv = val(m, m.equip[slot]) + 0.5;
+      for (const id of s.vault) {
+        const it = E.itemDef(id);
+        if (!it || it.slot !== slot) continue;
+        let v = val(m, id);
+        if (E.clash && slot === "weapon" && m.equip.offhand && E.clash(id, m.equip.offhand)) v -= val(m, m.equip.offhand);
+        if (E.clash && slot === "offhand" && m.equip.weapon && E.clash(m.equip.weapon, id)) continue;
+        if (v > bv) (b = id), (bv = v);
+      }
+      if (!b) continue;
+      const n = m.bag.length;
+      if (E.equip(s, m, b)) while (m.bag.length > n) s.vault.push(m.bag.pop());
+    }
+}
 function check(s, seed) {
   for (const [k, v] of Object.entries(s.res)) {
     if (typeof v !== "number" || !isFinite(v)) bad(seed, s.day, `res.${k} is ${v}`);
@@ -164,6 +185,7 @@ function smartAdventure(s, m) {
   if (dg) {
     lastDg.set(s, s.day);
     E.setAction(s, { type: "dungeon", target: dg.id });
+    (s._drag = s._drag || []).push(dg.id.slice(2, 6) + ":" + Math.round(c) + "/" + (m.cls || "-") + "@" + Math.round(s.day / 36) / 10);
     return true;
   }
   const q = D.quests
@@ -446,7 +468,8 @@ function bot(s, m) {
   // active: quest the best available, sometimes explore
   if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s) && !process.env.OLDBOT && smartAdventure(s, m)) return;
   if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s)) {
-    if (s.day % 97 < 10) E.setAction(s, { type: "auto", target: "explore" });
+    // explore more while dungeons are still undiscovered (otherwise first clears hinge on discovery luck)
+    if (s.day % 97 < 10 || ((D.dungeons || []).some(d => E.dungeonIssue(s, m, d) === "undiscovered") && s.day % 40 < 8)) E.setAction(s, { type: "auto", target: "explore" });
     else {
       const q = D.quests
         .filter(q => E.actionAllowed(s, m, { type: "quest", target: q.id }) && (process.env.OLDBOT ? q.cp <= E.cp(s, m) * 1.2 : q.cp * (q.risk === "deadly" ? 1.25 : 1) <= E.cp(s, m)))
@@ -550,6 +573,12 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     const m = E.active(s);
     if (m && !m.action && !m.injured && E.isAdult(m)) idleDays++;
     if (day % 10 === 0) check(s, seed);
+    if (day % 30 === 0) botEquip(s); // a player equips by hand (no Armory needed)
+    if (day % 10 === 0) { // gear probe: when Auto Equip unlocks, how geared the best member is
+      if (s._armoryDay == null && E.autoEqUnlocked(s, "gear")) s._armoryDay = day;
+      const best = E.living(s).filter(E.isAdult).sort((a, b) => E.cp(s, b) - E.cp(s, a))[0];
+      if (best) { s._bestCp = Math.max(s._bestCp || 0, E.cp(s, best)); if (day % 3600 === 0) (s._cpYears = s._cpYears || []).push(E.cp(s, best) + "/" + Object.keys(best.equip || {}).length); }
+    }
     { const pn = E.era(s).n; if (phaseDay[pn] == null) phaseDay[pn] = s.day; for (const r of [1000, 2000, 5000]) if (s.renown >= r && phaseDay['renown' + r] == null) phaseDay['renown' + r] = s.day; if (['Manor', 'Prosperous Estate'].includes(E.estateStage(s)) && phaseDay.manor == null) phaseDay.manor = s.day; if (E.estateStage(s) === 'Prosperous Estate' && phaseDay.prosp == null) phaseDay.prosp = s.day; if (pn < 3 && Object.values(s.houses || {}).some(h => h.state !== 'peace')) bad(seed, s.day, 'feud/war before the Dynasty phase'); }
     {
       const gy = s.structures.find(x => x.type === "graveyard"), le = s.legacy.earned, at = k => timing[k] == null && (timing[k] = +(day / YD).toFixed(1));
@@ -662,6 +691,10 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     coinEvery10y: coinAt.join(","),
     snap, // [renown, followers, buildings] at years 0,10,20,30
     idleAdultDays: idleDays,
+    armoryDay: s._armoryDay ?? -1,
+    dragonTries: (s._drag || []).join(" "),
+    bestCp: s._bestCp || 0,
+    cpEvery10y: (s._cpYears || []).join(" "),
     renown: Math.round(s.renown),
     legacyRenown: Math.round(s.legacy?.renown || 0),
     ach: Object.keys(s.ach || {}).length,

@@ -8,7 +8,8 @@
    "cp": 0.7,
    "value": 0.6,
    "rarity": "Common",
-   "tier": 0
+   "tier": 0,
+   "wt": 1.1
   },
   "bronze": {
    "name": "Bronze",
@@ -17,7 +18,8 @@
    "cp": 0.85,
    "value": 0.75,
    "rarity": "Common",
-   "tier": 0
+   "tier": 0,
+   "wt": 1.1
   },
   "iron": {
    "name": "Iron",
@@ -26,54 +28,60 @@
    "cp": 1,
    "value": 1,
    "rarity": "Fine",
-   "tier": 0
+   "tier": 0,
+   "wt": 1
   },
   "steel": {
    "name": "Steel",
    "res": "steel",
    "q": 0.1,
-   "cp": 1.4,
+   "cp": 1.3,
    "value": 1.75,
    "rarity": "Rare",
-   "tier": 1
+   "tier": 1,
+   "wt": 0.95
   },
   "mithril": {
    "name": "Mithril",
    "res": "mithril",
    "q": 0.2,
-   "cp": 2,
+   "cp": 1.6,
    "value": 4,
    "rarity": "Epic",
-   "tier": 2
+   "tier": 2,
+   "wt": 0.6
   },
   "adamantium": {
    "name": "Adamantium",
    "res": "adamantium",
    "q": 0.3,
-   "cp": 2.6,
+   "cp": 2.2,
    "value": 7,
    "rarity": "Legendary",
-   "tier": 2
+   "tier": 2,
+   "wt": 1.1
   },
   "silver": {
    "name": "Silver",
    "res": "silver",
    "q": 0.05,
-   "cp": 1,
+   "cp": 0.9,
    "value": 1,
    "rarity": "Fine",
    "tier": 0,
-   "precious": true
+   "precious": true,
+   "wt": 1.05
   },
   "gold": {
    "name": "Gold",
    "res": "gold",
    "q": 0.08,
-   "cp": 1.3,
+   "cp": 0.8,
    "value": 2,
    "rarity": "Rare",
    "tier": 0,
-   "precious": true
+   "precious": true,
+   "wt": 1.3
   }
  },
  "templates": [
@@ -81,7 +89,6 @@
    "id": "sword",
    "name": "Sword",
    "slot": "weapon",
-   "cp": 16,
    "value": 100,
    "metal": 3,
    "mats": {
@@ -98,13 +105,13 @@
     "steel",
     "mithril",
     "adamantium"
-   ]
+   ],
+   "type": "sword"
   },
   {
    "id": "longsword",
    "name": "Longsword",
    "slot": "weapon",
-   "cp": 20,
    "value": 140,
    "metal": 5,
    "mats": {
@@ -121,13 +128,13 @@
     "steel",
     "mithril",
     "adamantium"
-   ]
+   ],
+   "type": "longsword"
   },
   {
    "id": "mace",
    "name": "Mace",
    "slot": "weapon",
-   "cp": 18,
    "value": 120,
    "metal": 5,
    "mats": {
@@ -144,13 +151,13 @@
     "steel",
     "mithril",
     "adamantium"
-   ]
+   ],
+   "type": "mace"
   },
   {
    "id": "chainmail",
    "name": "Chainmail",
    "slot": "armor",
-   "cp": 12,
    "value": 100,
    "metal": 5,
    "mats": {},
@@ -165,13 +172,13 @@
     "steel",
     "mithril",
     "adamantium"
-   ]
+   ],
+   "type": "chain"
   },
   {
    "id": "scalemail",
    "name": "Scalemail",
    "slot": "armor",
-   "cp": 21,
    "value": 175,
    "metal": 8,
    "mats": {
@@ -189,7 +196,146 @@
     "steel",
     "mithril",
     "adamantium"
-   ]
+   ],
+   "type": "scale"
+  },
+  {
+   "slot": "weapon",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "dagger",
+   "name": "Dagger",
+   "type": "dagger",
+   "value": 70,
+   "metal": 2,
+   "mats": {
+    "hides": 1
+   },
+   "days": 3
+  },
+  {
+   "slot": "weapon",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "javelins",
+   "name": "Javelins",
+   "type": "throwing",
+   "value": 80,
+   "metal": 2,
+   "mats": {
+    "planks": 2
+   },
+   "days": 3
+  },
+  {
+   "slot": "weapon",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "spear",
+   "name": "Spear",
+   "type": "shortspear",
+   "value": 90,
+   "metal": 2,
+   "mats": {
+    "planks": 2
+   },
+   "days": 3
+  },
+  {
+   "slot": "weapon",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "pike",
+   "name": "Pike",
+   "type": "longspear",
+   "value": 130,
+   "metal": 3,
+   "mats": {
+    "planks": 3
+   },
+   "days": 4
+  },
+  {
+   "slot": "weapon",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "greatsword",
+   "name": "Greatsword",
+   "type": "greatsword",
+   "value": 160,
+   "metal": 5,
+   "mats": {
+    "planks": 1
+   },
+   "days": 5
+  },
+  {
+   "slot": "armor",
+   "station": "forge",
+   "skill": "smithing",
+   "line": "blacksmith",
+   "path": "armorer",
+   "metals": [
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "id": "plate",
+   "name": "Plate",
+   "type": "plate",
+   "value": 220,
+   "metal": 7,
+   "mats": {
+    "hides": 2
+   },
+   "days": 8
   }
  ]
 }

@@ -13,7 +13,8 @@ const it=id=>D.items.find(i=>i.id===id), rc=id=>D.crafting.recipes.find(r=>r.id=
 const M=D.metals.metals, ladder=['bronze','iron','steel','mithril','adamantium'];
 ok(ladder.every(m=>it(m+'_longsword')&&it(m+'_longsword').name.startsWith(M[m].name)),'Longsword exists per metal, metal in the name');
 ok(ladder.every(m=>D.crafting.recipes.some(r=>r.base===m+'_sword'&&E.recipeMetal(r)===m)),'every metal sword has a recipe using that metal');
-const cps=['bronze','steel','mithril','adamantium'].map(m=>it(m+'_mace').cp); ok(cps.every((c,i)=>!i||c>cps[i-1]),'each metal step raises stats');
+const hits=['bronze','iron','steel','mithril','adamantium'].map(m=>E.gstats(m+'_mace').hit); ok(hits.every((c,i)=>!i||c>hits[i-1]),'each metal step hits harder');
+ok(E.gstats('mithril_mace').wt<E.gstats('steel_mace').wt&&E.gstats('adamantium_mace').wt>E.gstats('iron_mace').wt&&E.gstats('adamantium_mace').spd<E.gstats('mithril_mace').spd,'mithril light, adamantium heavy (slower)');
 ok(ladder.every((m,i)=>!i||M[m].q>M[ladder[i-1]].q),'each metal step raises the quality bonus');
 ok(it('iron_sword').cp===16&&rc('r_sword').base==='iron_sword'&&!D.crafting.recipes.some(r=>r.id==='r_iron_sword'),'hand-made iron items/recipes kept, not duplicated');
 ok(!D.items.some(i=>/sunsteel|moonsilver/i.test(i.id+i.name)),'no sunsteel/moonsilver');

@@ -201,6 +201,7 @@ export function disenchant(s, itemId, idx) {
 }
 export const enchTimer = (s, j) => ({ p: Math.min(1, j.prog / j.need), left: (() => { const w = whoOf(s, j.who); return w ? Math.max(0, (j.need - j.prog) / Math.max(0.1, enchSpeed(s, w))) : null; })() });
 
+import { famFit, famName, gstats, isCaster, itemCpFor, memberDodge, prof, profCap, spellFail } from "./geartypes.js";
 // ---- item stat lines (UI): what an item actually does, beyond its CP. Items have no durability.
 const pct = v => `${Math.round(v * 100)}%`;
 export const fxText = fx =>
@@ -213,11 +214,42 @@ export const fxText = fx =>
     .join(", ");
 const ROLE = { weapon: "⚔️ attack", offhand: "🛡️ guard", armor: "🛡️ defense", accessory: "💍 trinket", charm: "🔮 charm", tool: "🔧 tool" };
 // [{ k, t }] short lines: power, quality, enchants, inlay, set, tool/armor follower effects, gift, requirements
-export function itemStats(id) {
+const n1 = v => (Math.round(v * 10) / 10).toString();
+// type line: damage, speed, DPS, defense, dodge, spell failure, weight (+ member fit/proficiency when m is given)
+export function typeStats(it, m) {
+  const st = gstats(it);
+  if (!st) return [];
+  const L = [], add = (k, t) => L.push({ k, t }), K = D.gear.kinds;
+  const mat = st.mat && K.mats[st.mat] ? ` · ${K.mats[st.mat].wood ? "🌳 " : ""}${st.mat} (str ×${K.mats[st.mat].str}, wt ×${K.mats[st.mat].wt})` : "";
+  if (st.hit) add("type", `🗡️ ${st.tname}${st.hands > 1 ? " · 2H" : ""} · ${n1(st.hit)} dmg · ${st.spd.toFixed(2)}/s · ${n1(st.dps)} DPS · ⚖️${n1(st.wt)}${mat}`);
+  else if (st.cls) add("type", `🧥 ${K.armorClasses[st.cls].name} (${st.tname}) · def ${n1(st.def)} · dodge ${Math.round(st.dodge * 100)}% · ⚖️${n1(st.wt)}${mat}`);
+  else if (st.def) add("type", `🛡️ ${st.tname} · def ${n1(st.def)} · ⚖️${n1(st.wt)}${mat}`);
+  else add("type", `🎒 ${st.tname} (any class)`);
+  const ex = [];
+  if (st.pierce) ex.push(`ignores ${Math.round(st.pierce * 100)}% armor`);
+  if (st.crit) ex.push(`+${Math.round(st.crit * 100)}% crit`);
+  if (st.ranged) ex.push("ranged");
+  if (st.bane) ex.push(`+${Math.round(st.bane * 100)}% vs undead`);
+  if (st.blocks.length) ex.push(st.blocks.length > 2 ? "no offhand" : "no " + st.blocks.join("/"));
+  if (st.spell) ex.push(`✨ caster +${n1(st.spell)}`);
+  if (st.caster) ex.push(`✨ caster +${Math.round(st.caster * 100)}%`);
+  if (st.cls) ex.push(`🔮 spell failure ${Math.round(st.spellFail * 100)}%`);
+  if (ex.length) add("type2", ex.join(" · "));
+  if (m && m.skills) {
+    const fit = famFit(m, st.fam), w = [];
+    if (fit === "off") w.push(`⛔ off-class −50%`);
+    if (st.fam !== "kit") w.push(`🎯 ${famName(st.fam)} ${Math.round(prof(m, st.fam))}/${profCap(m, st.fam)}`);
+    if (st.cls) w.push(`dodge ${Math.round(memberDodge(m, it.id) * 100)}%` + (isCaster(m) ? ` · fail ${Math.round(spellFail(m, it.id) * 100)}%` : ""));
+    add("fit", `${m.name}: ${w.join(" · ")} → ${Math.round(itemCpFor(m, it.id))} CP`);
+  }
+  return L;
+}
+export function itemStats(id, m) {
   const it = typeof id === "string" ? itemDef(id) : id;
   if (!it) return [];
   const L = [], add = (k, t) => L.push({ k, t });
   if (it.cp) add("cp", `${ROLE[it.slot] || "power"} +${it.cp} CP`);
+  L.push(...typeStats(it, m));
   if (it.quality) {
     const Q = D.crafting.qualities.find(q => q.id === it.quality);
     if (Q) add("q", `${Q.name} quality ×${Q.mult}`);
@@ -244,9 +276,12 @@ export function itemStats(id) {
   return L;
 }
 // equipping it instead of what sits in its slot now: CP change and any stat/effect lines that differ
-export function itemCompare(equip, id) {
+// who: a member (scored for them: class fit, proficiency, dodge) or a bare equip map
+export function itemCompare(who, id) {
   const it = itemDef(id);
   if (!it || !it.slot) return null;
-  const cur = (equip || {})[it.slot] ? itemDef(equip[it.slot]) : null;
-  return { slot: it.slot, cur: cur ? cur.name : null, dcp: (it.cp || 0) - ((cur && cur.cp) || 0) };
+  const m = who && who.equip ? who : null, equip = m ? m.equip : who || {};
+  const cur = equip[it.slot] ? itemDef(equip[it.slot]) : null;
+  const v = x => (m ? itemCpFor(m, x.id) : x.cp || 0);
+  return { slot: it.slot, cur: cur ? cur.name : null, dcp: Math.round(v(it) - (cur ? v(cur) : 0)) };
 }

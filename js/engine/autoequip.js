@@ -6,6 +6,8 @@ import { equip, itemDef } from "./inventory.js";
 import { equipMinion } from "./minion-special.js";
 import { isHeld } from "./holds.js";
 import { isAdult, living } from "./state.js";
+import { clash, itemScore } from "./geartypes.js";
+import { cp } from "./family.js";
 
 export const AUTO_EQ = ["gear", "tools"];
 export const autoEqUnlocked = (s, k) =>
@@ -32,19 +34,41 @@ function fill(s, who, slot, ok, put) {
   (who.autoEq = who.autoEq || {})[slot] = true;
 }
 
+// family members: score = this member's item CP (class fit −50% off-class, proficiency, dodge from AGI/Evasion,
+// caster robes) minus a caster's arcane spell failure; a two-handed weapon must beat weapon + the offhand it frees
+export const autoEquipMember = (s, m) => ["weapon", "armor", "offhand"].forEach(sl => memberFill(s, m, sl));
+function memberFill(s, m, slot) {
+  m.equip = m.equip || {};
+  const cur = m.equip[slot];
+  if (cur && !(m.autoEq || {})[slot]) return; // hand-equipped
+  const mcp = cp(s, m), sc = id => (id ? itemScore(m, id, mcp) : 0);
+  const other = slot === "weapon" ? "offhand" : slot === "offhand" ? "weapon" : null;
+  let b = null, bv = sc(cur) + 0.01;
+  for (const id of s.vault) {
+    const it = itemDef(id);
+    if (!it || it.slot !== slot || isHeld(s, id)) continue;
+    let v = sc(id);
+    if (other && m.equip[other]) {
+      const w = slot === "weapon" ? id : m.equip.weapon, o = slot === "offhand" ? id : m.equip.offhand;
+      if (clash(w, o)) {
+        if (slot === "offhand" || !(m.autoEq || {}).offhand) continue; // never drop a weapon or a hand-picked offhand for an offhand
+        v -= sc(m.equip.offhand);
+      }
+    }
+    if (v > bv) (b = id), (bv = v);
+  }
+  if (!b) return;
+  const before = m.bag.length;
+  if (!equip(s, m, b)) return;
+  while (m.bag.length > before) s.vault.push(m.bag.pop()); // replaced / freed pieces go back to the vault
+  (m.autoEq = m.autoEq || {})[slot] = true;
+}
+
 export function autoEquipDay(s) {
   const gear = autoEqOn(s, "gear"),
     tools = autoEqOn(s, "tools");
   if (!gear && !tools) return;
-  if (gear)
-    for (const m of living(s).filter(m => isAdult(m) && !m.noAutoEq))
-      for (const slot of ["weapon", "offhand", "armor"])
-        fill(s, m, slot, undefined, id => {
-          const had = !!m.equip[slot];
-          if (!equip(s, m, id)) return false;
-          if (had) s.vault.push(m.bag.pop()); // the replaced piece goes back to the vault
-          return true;
-        });
+  if (gear) for (const m of living(s).filter(m => isAdult(m) && !m.noAutoEq)) for (const slot of ["weapon", "armor", "offhand"]) memberFill(s, m, slot);
   for (const mi of s.minions || []) {
     if (gear && mi.job === "guard") for (const slot of ["weapon", "armor"]) fill(s, mi, slot, undefined, id => equipMinion(s, mi.uid, id));
     if (tools && mi.job) fill(s, mi, "tool", it => it.toolFor === mi.job, id => equipMinion(s, mi.uid, id));

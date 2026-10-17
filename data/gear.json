@@ -402,5 +402,715 @@
    "speed": 0.15,
    "desc": "Enchanter wears 2+ Stormcaller pieces"
   }
+ },
+ "kinds": {
+  "_note": "Item types (base stats), materials (strength × / weight ×), armor classes, class gear groups, proficiency, spell failure. Item cp is DERIVED at load (js/engine/geardata.js): weapons cp = DPS, armor = defense + dodge×50 (+ caster spell for robes), shields = defense, focus/quiver/kit = pow. Items carry type, mat and g (grade, hand-made/unique power).",
+  "speed": {
+   "base": 1.6,
+   "perWt": 0.25
+  },
+  "types": {
+   "dagger": {
+    "name": "Dagger",
+    "slot": "weapon",
+    "fam": "dagger",
+    "hands": 1,
+    "atk": 11,
+    "wt": 1,
+    "crit": 0.15
+   },
+   "throwing": {
+    "name": "Throwing",
+    "slot": "weapon",
+    "fam": "throwing",
+    "hands": 1,
+    "atk": 12,
+    "wt": 1.2,
+    "ranged": true
+   },
+   "shortspear": {
+    "name": "Short spear",
+    "slot": "weapon",
+    "fam": "spear",
+    "hands": 1,
+    "atk": 15,
+    "wt": 2.5
+   },
+   "sword": {
+    "name": "Sword",
+    "slot": "weapon",
+    "fam": "blade",
+    "hands": 1,
+    "atk": 17,
+    "wt": 3
+   },
+   "mace": {
+    "name": "Mace",
+    "slot": "weapon",
+    "fam": "blunt",
+    "hands": 1,
+    "atk": 20,
+    "wt": 4.5,
+    "pierce": 0.25
+   },
+   "longsword": {
+    "name": "Longsword",
+    "slot": "weapon",
+    "fam": "blade",
+    "hands": 1,
+    "atk": 21,
+    "wt": 4
+   },
+   "longspear": {
+    "name": "Long spear",
+    "slot": "weapon",
+    "fam": "polearm",
+    "hands": 2,
+    "atk": 24,
+    "wt": 5,
+    "blocks": [
+     "shield",
+     "focus",
+     "quiver",
+     "kit"
+    ]
+   },
+   "greatsword": {
+    "name": "Greatsword",
+    "slot": "weapon",
+    "fam": "blade",
+    "hands": 2,
+    "atk": 30,
+    "wt": 7,
+    "blocks": [
+     "shield",
+     "focus",
+     "quiver",
+     "kit"
+    ]
+   },
+   "maul": {
+    "name": "Maul",
+    "slot": "weapon",
+    "fam": "blunt",
+    "hands": 2,
+    "atk": 28,
+    "wt": 6.5,
+    "pierce": 0.25,
+    "blocks": [
+     "shield",
+     "focus",
+     "quiver",
+     "kit"
+    ]
+   },
+   "bow": {
+    "name": "Bow",
+    "slot": "weapon",
+    "fam": "bow",
+    "hands": 2,
+    "atk": 14,
+    "wt": 2,
+    "ranged": true,
+    "blocks": [
+     "shield",
+     "focus"
+    ]
+   },
+   "longbow": {
+    "name": "Longbow",
+    "slot": "weapon",
+    "fam": "bow",
+    "hands": 2,
+    "atk": 18,
+    "wt": 3,
+    "ranged": true,
+    "blocks": [
+     "shield",
+     "focus"
+    ]
+   },
+   "staff": {
+    "name": "Staff",
+    "slot": "weapon",
+    "fam": "arcane",
+    "hands": 2,
+    "atk": 16,
+    "wt": 2.5,
+    "blocks": [
+     "shield"
+    ]
+   },
+   "wand": {
+    "name": "Wand",
+    "slot": "weapon",
+    "fam": "arcane",
+    "hands": 1,
+    "atk": 10,
+    "wt": 1
+   },
+   "rod": {
+    "name": "Rod",
+    "slot": "weapon",
+    "fam": "arcane",
+    "hands": 1,
+    "atk": 13,
+    "wt": 1.5
+   },
+   "buckler": {
+    "name": "Buckler",
+    "slot": "offhand",
+    "fam": "shield",
+    "def": 4,
+    "wt": 1
+   },
+   "kite": {
+    "name": "Kite shield",
+    "slot": "offhand",
+    "fam": "shield",
+    "def": 7,
+    "wt": 3
+   },
+   "tower": {
+    "name": "Tower shield",
+    "slot": "offhand",
+    "fam": "shield",
+    "def": 11,
+    "wt": 5
+   },
+   "focus": {
+    "name": "Focus",
+    "slot": "offhand",
+    "fam": "focus",
+    "pow": 1,
+    "wt": 1
+   },
+   "quiver": {
+    "name": "Quiver",
+    "slot": "offhand",
+    "fam": "quiver",
+    "pow": 1,
+    "wt": 1
+   },
+   "kit": {
+    "name": "Kit",
+    "slot": "offhand",
+    "fam": "kit",
+    "pow": 1,
+    "wt": 1
+   },
+   "clothes": {
+    "name": "Clothes",
+    "slot": "armor",
+    "fam": "unarmored",
+    "def": 2,
+    "wt": 1
+   },
+   "robe": {
+    "name": "Robe",
+    "slot": "armor",
+    "fam": "unarmored",
+    "def": 1,
+    "wt": 1,
+    "spell": 5
+   },
+   "padded": {
+    "name": "Padded",
+    "slot": "armor",
+    "fam": "light",
+    "def": 6,
+    "wt": 2
+   },
+   "leather": {
+    "name": "Leather",
+    "slot": "armor",
+    "fam": "light",
+    "def": 7,
+    "wt": 2
+   },
+   "chain": {
+    "name": "Chainmail",
+    "slot": "armor",
+    "fam": "medium",
+    "def": 16,
+    "wt": 4
+   },
+   "brigandine": {
+    "name": "Brigandine",
+    "slot": "armor",
+    "fam": "medium",
+    "def": 18,
+    "wt": 4.5
+   },
+   "scale": {
+    "name": "Scale",
+    "slot": "armor",
+    "fam": "medium",
+    "def": 20,
+    "wt": 5
+   },
+   "plate": {
+    "name": "Plate",
+    "slot": "armor",
+    "fam": "heavy",
+    "def": 26,
+    "wt": 7
+   }
+  },
+  "armorClasses": {
+   "unarmored": {
+    "name": "Unarmored",
+    "dodge": 0.14,
+    "evade": 1,
+    "spellFail": 0
+   },
+   "light": {
+    "name": "Light",
+    "dodge": 0.1,
+    "evade": 1,
+    "spellFail": 0.1
+   },
+   "medium": {
+    "name": "Medium",
+    "dodge": 0,
+    "evade": 0.5,
+    "spellFail": 0.25
+   },
+   "heavy": {
+    "name": "Heavy",
+    "dodge": 0,
+    "evade": 0,
+    "spellFail": 0.4
+   }
+  },
+  "dodge": {
+   "agiDiv": 40,
+   "perEvasion": 0.005,
+   "cap": 0.35,
+   "cpPer": 50
+  },
+  "spellFail": {
+   "profCut": 0.5,
+   "mithril": 0.5,
+   "magicSkills": [
+    "fire",
+    "frost",
+    "arcana",
+    "healing",
+    "faith",
+    "runecraft",
+    "enchanting"
+   ]
+  },
+  "mats": {
+   "copper": {
+    "str": 0.7,
+    "wt": 1.1
+   },
+   "bronze": {
+    "str": 0.85,
+    "wt": 1.1
+   },
+   "iron": {
+    "str": 1,
+    "wt": 1
+   },
+   "steel": {
+    "str": 1.3,
+    "wt": 0.95
+   },
+   "mithril": {
+    "str": 1.6,
+    "wt": 0.6
+   },
+   "adamantium": {
+    "str": 2.2,
+    "wt": 1.1,
+    "pierce": 0.3
+   },
+   "silver": {
+    "str": 0.9,
+    "wt": 1.05,
+    "bane": 0.25
+   },
+   "gold": {
+    "str": 0.8,
+    "wt": 1.3
+   },
+   "pine": {
+    "str": 0.8,
+    "wt": 0.8,
+    "wood": true
+   },
+   "oak": {
+    "str": 1.0,
+    "wt": 1.0,
+    "wood": true
+   },
+   "ash": {
+    "str": 1.1,
+    "wt": 0.9,
+    "wood": true
+   },
+   "yew": {
+    "str": 1.25,
+    "wt": 0.95,
+    "wood": true
+   },
+   "ironwood": {
+    "str": 1.5,
+    "wt": 1.4,
+    "wood": true
+   },
+   "elderwood": {
+    "str": 1.4,
+    "wt": 0.7,
+    "caster": 0.15,
+    "wood": true
+   },
+   "rawhide": {
+    "str": 0.8,
+    "wt": 1
+   },
+   "leather": {
+    "str": 1,
+    "wt": 1
+   },
+   "boiled": {
+    "str": 1.15,
+    "wt": 1
+   },
+   "wolf": {
+    "str": 1.25,
+    "wt": 1
+   },
+   "drake": {
+    "str": 1.6,
+    "wt": 1.2
+   },
+   "wyrm": {
+    "str": 2,
+    "wt": 1
+   },
+   "linen": {
+    "str": 0.8,
+    "wt": 1
+   },
+   "wool": {
+    "str": 1,
+    "wt": 1
+   },
+   "silk": {
+    "str": 1.2,
+    "wt": 1
+   },
+   "starweave": {
+    "str": 1.6,
+    "wt": 1
+   },
+   "granite": {
+    "str": 1.1,
+    "wt": 1.3
+   },
+   "bone": {
+    "str": 0.9,
+    "wt": 1
+   },
+   "greenwood": {
+    "str": 1.1,
+    "wt": 0.85,
+    "wood": true
+   },
+   "rowan": {
+    "str": 1.15,
+    "wt": 0.9,
+    "caster": 0.05,
+    "wood": true
+   },
+   "heartwood": {
+    "str": 1.4,
+    "wt": 1.0,
+    "wood": true
+   }
+  },
+  "prof": {
+   "perPt": 0.003,
+   "caps": {
+    "primary": 100,
+    "secondary": 60,
+    "off": 25
+   },
+   "offMult": 0.5,
+   "perWin": 1,
+   "fromSkills": {
+    "blade": {
+     "swordsmanship": 2
+    },
+    "blunt": {
+     "swordsmanship": 1,
+     "brawling": 1
+    },
+    "dagger": {
+     "brawling": 2
+    },
+    "throwing": {
+     "brawling": 1,
+     "archery": 1
+    },
+    "spear": {
+     "swordsmanship": 1,
+     "hunting": 1
+    },
+    "polearm": {
+     "swordsmanship": 1
+    },
+    "bow": {
+     "archery": 2
+    },
+    "arcane": {
+     "arcana": 2
+    },
+    "focus": {
+     "arcana": 2
+    },
+    "shield": {
+     "shield": 2
+    },
+    "heavy": {
+     "shield": 2
+    },
+    "medium": {
+     "shield": 1,
+     "swordsmanship": 1
+    },
+    "light": {
+     "tracking": 1,
+     "thievery": 1
+    },
+    "unarmored": {}
+   }
+  },
+  "armorFams": [
+   "unarmored",
+   "light",
+   "medium",
+   "heavy"
+  ],
+  "famNames": {
+   "dagger": "Dagger",
+   "throwing": "Throwing",
+   "spear": "Short spear",
+   "polearm": "Long spear",
+   "blade": "Blade",
+   "blunt": "Blunt",
+   "bow": "Bow",
+   "arcane": "Arcane",
+   "shield": "Shield",
+   "focus": "Focus",
+   "quiver": "Quiver",
+   "kit": "Kit",
+   "unarmored": "Unarmored",
+   "light": "Light armor",
+   "medium": "Medium armor",
+   "heavy": "Heavy armor"
+  },
+  "always": [
+   "kit",
+   "unarmored"
+  ],
+  "groups": {
+   "martial": {
+    "classes": [
+     "fighter",
+     "knight",
+     "paladin",
+     "templar",
+     "warlord",
+     "monsterhunter",
+     "hero"
+    ],
+    "primary": [
+     "blade",
+     "blunt",
+     "polearm",
+     "spear",
+     "shield",
+     "heavy",
+     "medium"
+    ],
+    "secondary": [
+     "throwing",
+     "dagger",
+     "light"
+    ]
+   },
+   "duel": {
+    "classes": [
+     "duelist",
+     "blademaster"
+    ],
+    "primary": [
+     "blade",
+     "dagger",
+     "spear",
+     "throwing"
+    ],
+    "secondary": [
+     "shield",
+     "medium",
+     "light",
+     "polearm"
+    ]
+   },
+   "ranger": {
+    "classes": [
+     "hunter",
+     "scout",
+     "ranger",
+     "trapper",
+     "beastmaster",
+     "warden",
+     "wanderer",
+     "explorer"
+    ],
+    "primary": [
+     "bow",
+     "dagger",
+     "spear",
+     "throwing",
+     "light",
+     "quiver"
+    ],
+    "secondary": [
+     "blade",
+     "shield",
+     "medium",
+     "polearm"
+    ]
+   },
+   "rogue": {
+    "classes": [
+     "cutpurse",
+     "rogue",
+     "spy",
+     "thief",
+     "assassin",
+     "treasurehunter",
+     "relicseeker"
+    ],
+    "primary": [
+     "dagger",
+     "throwing",
+     "light"
+    ],
+    "secondary": [
+     "blade",
+     "bow",
+     "quiver",
+     "shield"
+    ]
+   },
+   "mage": {
+    "classes": [
+     "apprentice",
+     "elementalist",
+     "scholar",
+     "pyromancer",
+     "archmage"
+    ],
+    "primary": [
+     "arcane",
+     "focus",
+     "unarmored"
+    ],
+    "secondary": [
+     "dagger",
+     "light"
+    ]
+   },
+   "holy": {
+    "classes": [
+     "acolyte",
+     "cleric",
+     "priest"
+    ],
+    "primary": [
+     "blunt",
+     "arcane",
+     "focus",
+     "medium",
+     "unarmored"
+    ],
+    "secondary": [
+     "spear",
+     "shield",
+     "light",
+     "heavy"
+    ]
+   },
+   "adventurer": {
+    "classes": [
+     "adventurer"
+    ],
+    "primary": [
+     "blade",
+     "bow",
+     "spear",
+     "throwing",
+     "medium",
+     "light"
+    ],
+    "secondary": [
+     "dagger",
+     "shield",
+     "polearm",
+     "quiver"
+    ]
+   },
+   "artisan": {
+    "classes": [
+     "artisan",
+     "blacksmith",
+     "carpenter",
+     "alchemist",
+     "tailor",
+     "armorer",
+     "architect",
+     "masteralchemist"
+    ],
+    "primary": [
+     "blunt",
+     "dagger"
+    ],
+    "secondary": [
+     "spear",
+     "light",
+     "shield",
+     "arcane",
+     "focus"
+    ]
+   },
+   "battlemage": {
+    "classes": [
+     "battlemage"
+    ],
+    "primary": [
+     "blade",
+     "blunt",
+     "spear",
+     "shield",
+     "light",
+     "medium",
+     "heavy",
+     "unarmored",
+     "focus"
+    ],
+    "secondary": [
+     "arcane",
+     "dagger",
+     "throwing"
+    ]
+   }
+  }
  }
 }

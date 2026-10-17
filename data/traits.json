@@ -257,5 +257,13 @@
    "VIT": 3
   },
   "desc": "+25% Combat Power, +5 years, +3 STR/VIT"
+ },
+ {
+  "id": "bulwark",
+  "name": "Bulwark",
+  "icon": "🧱",
+  "bulwark": 0.1,
+  "desc": "+10% defense in heavy armor",
+  "rarity": "good"
  }
 ]
