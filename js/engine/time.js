@@ -4,6 +4,7 @@ import { notify } from "./notify.js";
 import { pathsDay } from "./paths.js";
 import { autoTendDay } from "./autotend.js";
 import { autoEquipDay } from "./autoequip.js";
+import { familyAutoDay, kidSkill } from "./family-auto.js";
 import { autoAscendDay, autoRecruitDay, minionAgeDay } from "./minion-auto.js";
 import { evolveOptions, minionEvolveIssue } from "./minions.js";
 import { taintDev } from "./dev.js";
@@ -193,7 +194,7 @@ function memberDay(s, m, effActive, effIdle) {
   if (!ageMember(s, m)) return;
   if (ageY(m) < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
     const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
-    gainXp(s, m, r(D.skills).id, T.xpPerDay * 0.15 * f);
+    gainXp(s, m, kidSkill(s, m) || r(D.skills).id, T.xpPerDay * 0.15 * f); // Auto Upbringing: the child's track
     return;
   }
   const isAct = m.id === s.activeId;
@@ -218,7 +219,7 @@ for (const [n, f] of [
   ["milestones", milestonesDay],
   ["tutorial", tutorialDay],
   ["estate", s => (estateDay(s), enchantDay(s), pathsDay(s))],
-  ["automation", s => (autoTendDay(s), autoEquipDay(s), autoAscendDay(s), minionAgeDay(s), autoRecruitDay(s))],
+  ["automation", s => (autoTendDay(s), autoEquipDay(s), autoAscendDay(s), minionAgeDay(s), autoRecruitDay(s), familyAutoDay(s))],
   ["suitors", suitorsDay],
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],

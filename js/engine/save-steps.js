@@ -469,6 +469,20 @@ export const STEPS = [
       if (s.day > 0 && !s.gearTypesNoted) (s.gearTypesNoted = true), log(s, "⚔️ Gear now has types: damage, speed, defense, dodge and weight. Class fit and proficiency matter" + (off.length ? ` (off-class at −50%: ${off.slice(0, 4).join(", ")}${off.length > 4 ? "…" : ""})` : "") + ".");
     },
   },
+  {
+    n: 29,
+    once: true,
+    name: "family automation: orders the player already set are pinned (Auto Orders / Courtship never override them); nothing else changes until a fa_* Legacy upgrade is bought",
+    run: s => {
+      for (const m of s.members || []) if (m.alive && m.order && m.order.type !== "work") (m.pins = m.pins || {}).order = true;
+      // the Auto Tend "Whole Estate" buy-all bundle was removed: its tier becomes that tier of every single Auto Tend
+      const U = s.legacy && s.legacy.ups, b = U && U.at_all;
+      if (b) {
+        for (const u of D.legacy.upgrades) if (u.autoTend) U[u.id] = Math.max(U[u.id] || 0, Math.min(b, u.tiers.length));
+        delete U.at_all;
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

@@ -9,14 +9,10 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 let R=0.5; E.setRng(()=>R);
 const G=D.endgame;
 const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTutorial(s); return s;};
-// 1) Auto Tend bundles
+// 1) the Auto Tend "buy all" bundle (at_all) was removed (R29): singles only; old saves get its tiers as singles (save step 29)
 { const s=fresh(); s.legacy={renown:5000,earned:0,ups:{}};
-  ok(E.legacyCost(s,'at_all')===900,'bundle tier 1 = 900');
-  s.legacy.ups.at_farming=1; s.legacy.ups.at_cooking=1; ok(E.legacyCost(s,'at_all')===900-80-100,'singles already bought count toward the bundle');
-  ok(E.buyLegacy(s,'at_all')&&s.legacy.renown===5000-720,'bundle bought at the discounted price');
-  ok(E.atRate(s,'arcane')===0.5&&E.atRate(s,'smithing')===0.5,'bundle tier 1 = every Auto Tend at 50%');
-  ok(E.legacyCost(s,'at_all')===2500&&E.legacyCost(s,'at_arcane')===600,'next: bundle tier 2 2500 or single tier 2');
-  ok(E.buyLegacy(s,'at_arcane')&&E.atRate(s,'arcane')===0.75&&E.legacyCost(s,'at_all')===2500-600,'single tier 2 still works and counts toward bundle 2');
+  ok(!E.legacyDef('at_all'),'no buy-all bundle');
+  ok(E.legacyCost(s,'at_arcane')===200&&E.buyLegacy(s,'at_arcane')&&E.atRate(s,'arcane')===0.5&&E.legacyCost(s,'at_arcane')===600,'single purchases still work');
   ok(D.legacy.renown.tithe===0.2&&D.legacy.renown.headBank===0.35,'tithe 20%, head bank 35%'); }
 // 2) wages / gifts
 { const s=fresh(); const mi={uid:'a',type:'laborer',cls:'n_peasant',skills:{},job:'farm'}; const base=E.mtype('laborer').wage;

@@ -172,8 +172,7 @@ export function spawnSuitor(s) {
 }
 
 export const PROPOSE_COST = 200;
-export function proposeIssue(s, suitorId) {
-  const m = active(s);
+export function proposeIssue(s, suitorId, m = active(s)) {
   const su = s.suitors.find(x => x.id === suitorId);
   if (!su) return "suitor gone";
   if (m.spouse) return "already married";
@@ -184,11 +183,10 @@ export function proposeIssue(s, suitorId) {
   return null;
 }
 
-export function propose(s, suitorId) {
-  const m = active(s);
+export function propose(s, suitorId, m = active(s)) {
   const su = s.suitors.find(x => x.id === suitorId);
   const cost = PROPOSE_COST;
-  if (proposeIssue(s, suitorId)) return false;
+  if (proposeIssue(s, suitorId, m)) return false;
   s.res.coin -= cost;
   const sp = newMember(s, { gender: su.gender, age: su.age, cls: su.cls });
   sp.name = su.name;
@@ -229,6 +227,8 @@ export function switchTo(s, id) {
 export function setOrder(s, id, order) {
   const m = s.members.find(x => x.id === id);
   m.order = order;
+  (m.pins = m.pins || {}).order = true; // a hand-set order is pinned: Auto Orders / Courtship leave it alone (unpin on the member card)
+  m.faCourt = false;
   m.action = null;
 }
 

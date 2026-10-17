@@ -437,7 +437,7 @@ function bot(s, m) {
     for (const p of E.patronOptions(s)) if (rich(p.cost)) E.fundTown(s, p.id);
   }
   // legacy
-  for (const u of D.legacy.upgrades) if (E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
+  for (const u of D.legacy.upgrades) if (!(process.env.FA_OFF && u.id.startsWith("fa_")) && E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
   // family
   if (E.isAdult(m) && !m.spouse && E.ageY(m) >= T.courtAge && s.suitors.length) {
     const su = s.suitors.reduce((a, b) => (b.affinity > a.affinity ? b : a));

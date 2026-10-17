@@ -23,6 +23,12 @@ export const estateActions = ({ v, b, m }) => ({
     if (r) E.setRefine(s, v, b.dataset.w === "on" ? { on: !r.on } : { stopFull: !r.stopFull });
   },
   autotog: () => E.toggleAuto(s, v),
+  faex: () => {
+    const x = s.members.find(y => y.id === +v);
+    if (x) x.noAutoEq = !x.noAutoEq;
+  },
+  faunpin: () => E.unpin(s, +v, b.dataset.w),
+  fahead: () => (s.faCourtHead = !s.faCourtHead),
   autorecruit: () => E.toggleRecruit(s),
   recruitmode: () => E.setRecruitMode(s, v),
   egmount: () => E.buyMount(s),

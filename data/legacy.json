@@ -184,23 +184,6 @@
    ]
   },
   {
-   "id": "at_all",
-   "name": "Auto Tend: Whole Estate",
-   "icon": "🏺",
-   "desc": "Every Auto Tend at once: tier 1 (all 10 skills keep working at 50%), tier 2 (75%). Single Auto Tend tiers already bought count toward the price.",
-   "tiers": [
-    {
-     "cost": 900,
-     "value": 0.5
-    },
-    {
-     "cost": 2500,
-     "value": 0.75
-    }
-   ],
-   "bundle": "at_"
-  },
-  {
    "id": "at_farming",
    "name": "Auto Tend: Farming",
    "icon": "🌾",
@@ -389,6 +372,54 @@
      "value": 0.15
     }
    ]
+  },
+  {
+   "id": "fa_orders",
+   "name": "Steward",
+   "icon": "🧭",
+   "desc": "Family Auto Orders: idle family adults (never the active member) get the standing order that fits them, re-checked monthly. Hand-set orders are pinned.",
+   "tiers": [
+    {
+     "cost": 40,
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "fa_advance",
+   "name": "Mentor's Ledger",
+   "icon": "📜",
+   "desc": "Family Auto Advance: members join their guild, rank up and evolve classes when they qualify, keeping a 25% coin reserve; branches follow their best skills (or a preference).",
+   "tiers": [
+    {
+     "cost": 60,
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "fa_kids",
+   "name": "Family Tutor",
+   "icon": "🧸",
+   "desc": "Family Auto Upbringing: children train toward a track from their parents' guild (martial, wilds, arcane, faith, rogue, craft) instead of random lessons.",
+   "tiers": [
+    {
+     "cost": 40,
+     "value": 1
+    }
+   ]
+  },
+  {
+   "id": "fa_court",
+   "name": "Matchmaker",
+   "icon": "💞",
+   "desc": "Family Auto Courtship: unmarried adults 18-35 court the best suitor and marry in (never out, never a feuding house). The Head only if you opt in.",
+   "tiers": [
+    {
+     "cost": 50,
+     "value": 1
+    }
+   ]
   }
  ],
  "traits": {
@@ -475,6 +506,48 @@
     "enchanting",
     "arcana",
     "runecraft"
+   ]
+  }
+ },
+ "familyAuto": {
+  "_note": "Family automation (js/engine/family-auto.js). Monthly checks; courtship weekly.",
+  "reserve": 0.25,
+  "every": 30,
+  "courtEvery": 7,
+  "courtAge": [
+   18,
+   35
+  ],
+  "tracks": {
+   "vanguard": [
+    "swordsmanship",
+    "shield",
+    "brawling"
+   ],
+   "lodge": [
+    "hunting",
+    "archery",
+    "tracking"
+   ],
+   "collegium": [
+    "arcana",
+    "reading",
+    "fire"
+   ],
+   "church": [
+    "faith",
+    "healing",
+    "etiquette"
+   ],
+   "rogues": [
+    "brawling",
+    "haggling",
+    "thievery"
+   ],
+   "hearth": [
+    "carpentry",
+    "smithing",
+    "tailoring"
    ]
   }
  }

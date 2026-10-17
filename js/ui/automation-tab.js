@@ -30,7 +30,29 @@ function holdsCard() {
     ex = E.living(s).filter(m => m.noAutoEq).map(m => m.name);
   const nm = id => (E.itemDef(id) || {}).name || id;
   return `<h4>📌 Holds</h4><div class="card" style="padding:6px 8px"><div class="muted">Held items skip bulk Sell / Stock and Auto Equip. Set them on the Bag tab (📌 buttons) and each member's gear card.</div>
-<div>Types: ${h.types.length ? h.types.map(nm).join(", ") : "none"}</div><div>Items: ${h.items.length ? h.items.map(nm).join(", ") : "none"}</div><div>Excluded from Auto Equip: ${ex.length ? ex.join(", ") : "nobody"}</div></div>`;
+<div>Types: ${h.types.length ? h.types.map(nm).join(", ") : "none"}</div><div>Items: ${h.items.length ? h.items.map(nm).join(", ") : "none"}</div><div>Excluded from Auto Equip and family automation: ${ex.length ? ex.join(", ") : "nobody"}</div></div>`;
+}
+
+function familyCard(btn) {
+  const F = E.FA(), nm = { orders: "Auto Orders", advance: "Auto Advance", kids: "Auto Upbringing", court: "Auto Courtship" };
+  const rows = E.FA_KEYS.map(k => {
+    const u = E.LG().upgrades.find(x => x.id === "fa_" + k);
+    return E.faOwned(s, k)
+      ? `<div class="row" style="gap:6px;justify-content:flex-start">${u.icon} <b>${nm[k]}</b>${btn("fam_" + k, E.faOn(s, k))}${k === "court" ? ` <span class="muted">Head:</span><button class="b ${s.faCourtHead ? "sel" : ""}" data-a="fahead">${s.faCourtHead ? "Included" : "Off"}</button>` : ""}</div>`
+      : `<div class="row muted" style="gap:6px;justify-content:flex-start">${u.icon} ${nm[k]} · not owned (Legacy shop: ${u.name}, ${u.tiers[0].cost} renown)</div>`;
+  }).join("");
+  const any = E.FA_KEYS.some(k => E.faOwned(s, k));
+  const evoNames = m => D.classes.filter(c => c.from && c.from === m.cls);
+  const mem = any
+    ? E.living(s).map(m => {
+        const act = m.id === s.activeId, ad = E.isAdult(m);
+        const pins = Object.keys(m.pins || {}).filter(k => m.pins[k]).map(k => `<button class="b" data-a="faunpin" data-v="${m.id}" data-w="${k}" title="Unpin: automation may change it again">📌 ${k} ✕</button>`).join("");
+        const tr = !ad ? `<select data-a="fatrack" data-v="${m.id}"><option value="">track: auto${m.track ? " (" + m.track + ")" : ""}</option>${Object.keys(F.tracks).map(g => `<option value="${g}" ${m.pins && m.pins.track && m.track === g ? "selected" : ""}>${E.guildDef(g).name}</option>`).join("")}</select>` : "";
+        const ev = ad && evoNames(m).length ? `<select data-a="fapref" data-v="${m.id}"><option value="">next class: best fit</option>${evoNames(m).map(c => `<option value="${c.id}" ${m.prefCls === c.id ? "selected" : ""}>${c.name}</option>`).join("")}</select>` : "";
+        return `<div class="row" style="gap:6px;justify-content:flex-start;flex-wrap:wrap"><b>${m.name}</b>${act ? '<span class="muted">active: never automated</span>' : `<button class="b ${m.noAutoEq ? "" : "sel"}" data-a="faex" data-v="${m.id}">${m.noAutoEq ? "Excluded" : "Included"}</button>`}${pins}${tr}${ev}</div>`;
+      }).join("")
+    : "";
+  return `<h4>👪 Family automation</h4><div class="muted">Never touches the member you are playing. Orders you set by hand are pinned (📌) until you unpin them. Auto Advance keeps ${Math.round(F.reserve * 100)}% of coin in reserve. Courtship only marries in (never out, never a feuding house). Marrying out, succession and politics stay manual. The member switch also covers Auto Equip. Every automatic choice is logged with 🤖.</div><div class="card" style="padding:6px 8px">${rows}${mem}</div>`;
 }
 
 export function automationv() {
@@ -48,5 +70,5 @@ export function automationv() {
   }).join("");
   const eq = [["gear", "Weapons, armor, offhands", "build the Armory (Guardhouse upgrade)"], ["tools", "Follower tools", "build a Workshop"]]
     .map(([k, nm, need]) => `<div class="row" style="gap:6px;justify-content:flex-start"><b>${nm}</b>${E.autoEqUnlocked(s, k) ? btn("eq_" + k, E.autoEqOn(s, k)) : `<span class="muted">locked: ${need}</span>`}</div>`).join("");
-  return `<h3>⚙️ Automation</h3><h4>🌱 Auto Tend</h4><div class="muted">Keeps a skill working with nobody assigned (tier 1: 50%, tier 2: 75% of a hand-worked day). Repeats the last thing done by hand; pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${ascendCard(btn)}${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
+  return `<h3>⚙️ Automation</h3><h4>🌱 Auto Tend</h4><div class="muted">Keeps a skill working with nobody assigned (tier 1: 50%, tier 2: 75% of a hand-worked day). Repeats the last thing done by hand; pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${familyCard(btn)}${ascendCard(btn)}${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
 }

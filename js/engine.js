@@ -32,6 +32,7 @@ export * from "./engine/intros.js";
 export * from "./engine/gear.js";
 export * from "./engine/geartypes.js";
 export * from "./engine/geardata.js";
+export * from "./engine/family-auto.js";
 export * from "./engine/minionups.js";
 export * from "./engine/paths.js";
 export * from "./engine/world.js";

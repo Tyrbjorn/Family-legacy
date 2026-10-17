@@ -19,20 +19,10 @@ export function legacyState(s) {
 
 export const legacyDef = id => LG().upgrades.find(x => x.id === id);
 
-const ownTier = (s, id) => (s.legacy && s.legacy.ups[id]) || 0;
-// bundles (upgrade.bundle = id prefix): the bundle's tier counts as that tier of every covered upgrade
-const bundleOf = id => LG().upgrades.find(u => u.bundle && id !== u.id && id.startsWith(u.bundle));
-export const legacyTier = (s, id) => {
-  const b = bundleOf(id);
-  return Math.max(ownTier(s, id), b ? ownTier(s, b.id) : 0);
-};
-// a bundle tier's price minus what the covered single tiers already cost (never below 0)
+export const legacyTier = (s, id) => (s.legacy && s.legacy.ups[id]) || 0;
 export function legacyCost(s, id) {
-  const u = legacyDef(id), k = legacyTier(s, id), nx = u && u.tiers[k];
-  if (!nx) return null;
-  if (!u.bundle) return nx.cost;
-  const paid = LG().upgrades.filter(x => !x.bundle && x.id.startsWith(u.bundle) && ownTier(s, x.id) > k).reduce((a, x) => a + x.tiers[k].cost, 0);
-  return Math.max(0, nx.cost - paid);
+  const u = legacyDef(id), nx = u && u.tiers[legacyTier(s, id)];
+  return nx ? nx.cost : null;
 }
 
 export function legacyValue(s, id) {
