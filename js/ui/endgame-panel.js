@@ -11,7 +11,7 @@ export function endgamePanel() {
   const G = D.endgame;
   if (!G) return "";
   const mt = E.mountTier(s), nm = G.mounts[mt];
-  let h = `<div class="card"><div class="row"><b>🏰 Holdings & defense</b><span class="muted">upkeep ${fmt(E.endgameUpkeep(s))}🪙/month</span></div>`;
+  let h = `<div class="card"><div class="row"><b>🏰 Holdings & defense</b><span class="muted">one-time purchases</span></div>`;
   h += row(`🐴 Stable`, mt ? `${G.mounts[mt - 1].name}: travel ×${E.mountSpeed(s)}` : "no mounts yet", nm ? btn("egmount", 0, E.mountIssue(s), nm.cost) : "");
   for (const q of G.quarries) {
     const t = E.quarryTier(s, q.id), nx = q.tiers[t];
@@ -21,7 +21,7 @@ export function endgamePanel() {
     const d = G.defenses[k], t = E.defTier(s, k), nx = d.tiers[t];
     h += row(`${d.icon} ${t ? d.tiers[t - 1].name : d.name}`, t ? `+${d.tiers[t - 1].power} defense` : "", nx ? btn("egdef", k, E.defIssue(s, k), nx.cost) : "");
   }
-  if (E.era(s).n >= G.raids.phase) h += `<div class="muted">⚔️ Raid strength ~${E.raidPower(s)} vs your defense ${E.raidDefense(s)}${s.eg && s.eg.defOff ? " (defenses unpaid: off)" : ""}${E.hasWarning(s) && s.eg.raidAt ? ` · next raid in ~${s.eg.raidAt - s.day} days` : ""}.</div>`;
+  if (E.era(s).n >= G.raids.phase) h += `<div class="muted">⚔️ Raid strength ~${E.raidPower(s)} vs your defense ${E.raidDefense(s)}${E.hasWarning(s) && s.eg.raidAt ? ` · next raid in ~${s.eg.raidAt - s.day} days` : ""}.</div>`;
   h += `<div style="margin-top:4px"><b>🏛️ Town patronage</b></div>`;
   for (const p of E.patronOptions(s)) {
     const iss = E.patronIssue(s, p.id);

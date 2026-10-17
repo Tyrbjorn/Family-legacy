@@ -73,10 +73,10 @@ const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTut
   ok(/limeblocks/.test(E.defIssue(s,'wall')),'next wall rank needs limestone blocks');
   ok(/village/.test(E.defIssue(s,'palisade')),'palisade needs the village');
   ok(E.buildDefense(s,'tower')&&E.hasWarning(s),'watchtower warns');
-  ok(E.endgameUpkeep(s)===450,'defense upkeep 1%/month');
+  ok(E.endgameUpkeep===undefined,'no upkeep on coin-sink purchases');
   const d0=E.raidDefense(s); ok(d0>=E.defensePower(s),'walls add to raid defense');
   const c0=s.res.coin; R=0.99; ok(!E.raid(s)&&s.res.coin<c0,'lost raid steals coin'); R=0.001; const c1=s.res.coin; ok(E.raid(s)&&s.res.coin>=c1,'won raid'); R=0.5;
-  s.res.coin=0; s.day=30*500; E.endgameDay(s); ok(s.eg.defOff&&E.defensePower(s)===0,'unpaid upkeep switches defenses off');
+  s.res.coin=0; s.day=30*500; E.endgameDay(s); ok(E.defensePower(s)>0&&s.res.coin===0,'no monthly fee: defenses stay up with an empty purse');
   const h=D.marriage.houses.list[0], hs=E.houseState(s,h.id); hs.state='feud'; hs.r=-100;
   s.renown=1e4; s.buildings.farm=80; for(let i=0;i<3;i++) s.members.push(E.newMember(s,{age:25}));
   s.land=['plot']; s.structures.push({uid:'h2',type:'house',pieces:['bunk','larder','storage','workbench'],up:0});

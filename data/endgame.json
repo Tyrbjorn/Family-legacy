@@ -4,12 +4,12 @@
   "_note": "monthly wage = base x title-tier multiplier x (1 + perSkill x key-job skill level)",
   "tierMult": [
    1,
-   1.5,
-   3,
-   6,
-   10
+   1.4,
+   2.5,
+   4.5,
+   7.5
   ],
-  "perSkill": 0.03
+  "perSkill": 0.02
  },
  "giftEra": {
   "_note": "diplomacy gift coin x this per phase n (1 Beginning ... 4 Titles); the house's wealth adds giftPerWealth each",
@@ -28,7 +28,6 @@
    "cost": {
     "coin": 5000
    },
-   "upkeep": 50,
    "speed": 1.15
   },
   {
@@ -38,7 +37,6 @@
     "coin": 25000,
     "hay": 200
    },
-   "upkeep": 250,
    "speed": 1.3
   },
   {
@@ -49,7 +47,6 @@
     "hay": 500,
     "ingots": 40
    },
-   "upkeep": 800,
    "speed": 1.5
   }
  ],
@@ -159,8 +156,7 @@
      },
      "rate": 5
     }
-   ],
-   "upkeep": 0.01
+   ]
   },
   {
    "id": "q_granite",
@@ -193,8 +189,7 @@
      },
      "rate": 3.5
     }
-   ],
-   "upkeep": 0.01
+   ]
   }
  ],
  "creatures": {
@@ -231,7 +226,7 @@
   "winCoin": 0.01
  },
  "defenses": {
-  "_note": "Coin sinks with monthly upkeep (1% of coin paid). Unpaid upkeep switches the defense off until paid.",
+  "_note": "Coin sinks: one-time purchases, no upkeep (removed Oct 16).",
   "wall": {
    "name": "Estate Walls",
    "icon": "🧱",
@@ -301,7 +296,6 @@
      "guardVillage": true
     }
    ]
-  },
-  "upkeep": 0.01
+  }
  }
 }

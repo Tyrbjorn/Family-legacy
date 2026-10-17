@@ -1,5 +1,5 @@
 // Late game (data/endgame.json): coin sinks (mounts, town patronage, stone quarries), era-scaled creatures and
-// elites, raids from the Dynasty phase and defenses (walls, Watchtower, Village Palisade) with monthly upkeep.
+// elites, raids from the Dynasty phase and defenses (walls, Watchtower, Village Palisade) (one-time purchases, no upkeep).
 import { era } from "./family.js";
 import { estateScore } from "./estate.js";
 import { familyPower, wars } from "./war.js";
@@ -9,7 +9,7 @@ import { notify } from "./notify.js";
 import { D, active, afford, known, log, pay, rng } from "./state.js";
 
 const NONE = { tiers: [] };
-const FALLBACK = { mounts: [], patronage: { list: [] }, quarries: [], creatures: { byPhase: [1], eliteChance: 0 }, raids: { phase: 99 }, defenses: { wall: NONE, tower: NONE, palisade: NONE, upkeep: 0 } };
+const FALLBACK = { mounts: [], patronage: { list: [] }, quarries: [], creatures: { byPhase: [1], eliteChance: 0 }, raids: { phase: 99 }, defenses: { wall: NONE, tower: NONE, palisade: NONE } };
 const EG = () => D.endgame || FALLBACK;
 const at = (arr, i) => arr[Math.max(0, Math.min(arr.length - 1, i))];
 const costText = c => Object.entries(c).map(([k, v]) => v + " " + k).join(", ");
@@ -69,7 +69,6 @@ export function buildQuarry(s, id) {
   log(s, `${q.icon} ${q.name} ${t ? "upgraded to tier " + (t + 1) : "opened"}: ${q.tiers[t].rate} ${q.res}/day.`);
   return true;
 }
-const quarryCoin = (q, t) => q.tiers.slice(0, t).reduce((a, x) => a + (x.cost.coin || 0), 0);
 
 // ---- defenses
 export const defTier = (s, k) => (s.eg && s.eg.defs[k]) || 0;
@@ -84,22 +83,13 @@ export function buildDefense(s, k) {
   const d = EG().defenses[k], t = d.tiers[defTier(s, k)];
   pay(s, t.cost);
   owned(s).defs[k] = defTier(s, k) + 1;
-  delete s.eg.defOff;
   log(s, `${d.icon} Built the ${t.name}.`);
   return true;
 }
 const DEF_KEYS = ["wall", "tower", "palisade"];
 const defTiers = s => DEF_KEYS.filter(k => defTier(s, k)).map(k => EG().defenses[k].tiers[defTier(s, k) - 1]);
-const defCoin = s => DEF_KEYS.reduce((a, k) => a + EG().defenses[k].tiers.slice(0, defTier(s, k)).reduce((b, t) => b + (t.cost.coin || 0), 0), 0);
-export const hasWarning = s => !(s.eg && s.eg.defOff) && defTiers(s).some(t => t.warn);
-export const defensePower = s => (s.eg && s.eg.defOff ? 0 : defTiers(s).reduce((a, t) => a + t.power, 0));
-
-// monthly upkeep of mounts, quarries and defenses (unpaid defenses switch off until a paid month)
-export function endgameUpkeep(s) {
-  const m = mountTier(s) ? EG().mounts[mountTier(s) - 1].upkeep : 0;
-  const q = EG().quarries.reduce((a, x) => a + quarryCoin(x, quarryTier(s, x.id)) * x.upkeep, 0);
-  return Math.round(m + q + defCoin(s) * EG().defenses.upkeep);
-}
+export const hasWarning = s => defTiers(s).some(t => t.warn);
+export const defensePower = s => defTiers(s).reduce((a, t) => a + t.power, 0);
 
 // ---- creatures: repeat fights scale with the phase; elites roll on ~10% of them
 export const creatureScale = s => at(EG().creatures.byPhase, era(s).n - 1);
@@ -128,7 +118,7 @@ export function raid(s) {
     const lost = Math.floor((s.res.coin || 0) * pct);
     s.res.coin -= lost;
     const vb = (s.structures || []).filter(st => st.site === "village");
-    const pal = defTier(s, "palisade") && !(s.eg && s.eg.defOff);
+    const pal = defTier(s, "palisade");
     let hit = "";
     if (vb.length && !pal) {
       const st = vb[Math.floor(rng() * vb.length)];
@@ -157,11 +147,6 @@ export function endgameDay(s) {
     if (hasWarning(s) && e.raidAt - s.day === R().warnDays) notify(s, "houses", `🗼 The Watchtower spots raiders gathering: an attack in ~${R().warnDays} days.`);
     if (s.day >= e.raidAt) (raid(s), (e.raidAt = s.day + nextRaidDays()));
   }
-  if (s.day % 30) return;
-  const fee = endgameUpkeep(s);
-  if (!fee) return;
-  if ((s.res.coin || 0) >= fee) (s.res.coin -= fee), delete e.defOff;
-  else e.defOff = true;
 }
 export const endgameInit = s => owned(s);
 registerDayHook("endgame", s => (owned(s), endgameDay(s)));

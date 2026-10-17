@@ -407,7 +407,7 @@ function bot(s, m) {
     }
   }
   // late-game coin sinks (only with plenty of coin): stable, stone quarries, defenses once raids loom, patronage
-  if (E.buyMount && s.day % 30 < 3 && s.res.coin > 30000) {
+  if (E.buyMount && !process.env.NOSINK && s.day % 30 < 3 && s.res.coin > 30000) {
     const G = D.endgame, rich = c => s.res.coin > 3 * (c.coin || 0);
     const nm = G.mounts[E.mountTier(s)]; if (nm && rich(nm.cost)) E.buyMount(s);
     for (const q of G.quarries) { const t = q.tiers[E.quarryTier(s, q.id)]; if (t && rich(t.cost)) E.buildQuarry(s, q.id); }
