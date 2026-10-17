@@ -72,7 +72,7 @@ export function minionsv() {
       );
     });
     return opts.length
-      ? `<select data-a="mequipsel" data-v="${mi.uid}"><option value="">+ Equip from vault…</option>${opts.map(id => `<option value="${id}">${it(id).slot}: ${it(id).name} (+${it(id).cp})</option>`).join("")}</select>`
+      ? `<select data-a="mequipsel" data-v="${mi.uid}"><option value="">+ Equip from vault…</option>${opts.map(id => `<option value="${id}">${it(id).slot}: ${it(id).name} (${[...E.itemStats(id).map(l => l.t), (c => (c && c.cur ? (c.dcp >= 0 ? "▲+" : "▼") + c.dcp + " vs " + c.cur : ""))(E.itemCompare(mi.equip, id))].filter(Boolean).slice(0, 3).join(" · ")})</option>`).join("")}</select>`
       : "";
   })()}</div>
   ${upgradesBlock(mi)}${setsCard(mi.equip, "minion")}

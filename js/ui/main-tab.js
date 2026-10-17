@@ -3,7 +3,7 @@ import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
 import { suitorCard } from "./houses-tab.js";
-import { badges, cl, costStr, injuryTags, doing, dur, it, memberLine, sk, stage, yr } from "./common.js";
+import { badges, cl, costStr, injuryTags, doing, dur, it, itemStatsHtml, memberLine, sk, stage, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
@@ -240,7 +240,7 @@ export function mainv() {
           t.shop
             .map(id => {
               const x = it(id);
-              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.affinity ? " +" + x.affinity + "❤️ gift" : ""}</span></span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x, s, t.id) ? "" : "disabled"}>${E.buyPrice(x, s, t.id)}🪙</button></div>`;
+              return `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.name} <span class="muted">${x.rarity} ${x.slot} · ${x.value}🪙</span>${itemStatsHtml(x, m && m.equip)}</span><button class="b" data-a="buy" data-v="${t.id}" data-w="${id}" ${s.res.coin >= E.buyPrice(x, s, t.id) ? "" : "disabled"}>${E.buyPrice(x, s, t.id)}🪙</button></div>`;
             })
             .join(""),
       )

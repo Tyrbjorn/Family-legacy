@@ -2,7 +2,7 @@ import { timerBar } from "./progress.js";
 // Crafting tab: recipes (filters, quality odds, materials), crafter queues, minion orders, stations and reserves.
 import * as E from "../engine.js";
 import { U } from "./state.js";
-import { RI, costStr, fmt, sk } from "./common.js";
+import { RI, costStr, fmt, itemStatsHtml, sk } from "./common.js";
 import { D, s } from "../main.js";
 
 const pct = p => Math.round(p * 100) + "%";
@@ -60,7 +60,7 @@ function recipeCard(rc, who) {
   if (mi)
     btns += `<button class="b ${mi.craftOrder === rc.id ? "sel" : ""}" data-a="mcraft" data-v="${mi.uid}" data-w="${rc.id}">${mi.craftOrder === rc.id ? "Assigned" : "Assign"}</button>`;
   return `<div class="card" style="padding:6px 8px;margin:4px 0"><div class="row"><b>${rc.name}${rc.requiresClass ? ` <span class="tb">🎓 ${E.className(rc.requiresClass)}</span>` : ""}${rc.set ? ` <span class="tb">${E.setDef(rc.set).icon} ${E.setDef(rc.set).name}</span>` : ""}</b><span class="muted">${(E.pieceDef(rc.station) || { name: "Mentor's bench" }).name} · ${sk(rc.skill).name} · ${rc.days}d</span></div>
- <div class="muted">${mats}</div><div class="muted">🎲 ${odds}${iss ? " · 🔒 " + iss : ""}</div><div class="row" style="justify-content:flex-end;gap:4px">${btns}</div></div>`;
+ ${rc.base && E.itemDef(rc.base) ? itemStatsHtml(E.itemDef(rc.base), m && m.equip) : ""}<div class="muted">${mats}</div><div class="muted">🎲 ${odds}${iss ? " · 🔒 " + iss : ""}</div><div class="row" style="justify-content:flex-end;gap:4px">${btns}</div></div>`;
 }
 
 function queues() {

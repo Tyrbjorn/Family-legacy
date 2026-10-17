@@ -1,5 +1,5 @@
 import * as E from "../engine.js";
-import { cl } from "./common.js";
+import { cl, itemStatsHtml } from "./common.js";
 import { D, s } from "../main.js";
 
 export function guildHall(m, g) {
@@ -18,7 +18,7 @@ export function guildHall(m, g) {
     h += E.guildShop(g.id)
       .map(
         x =>
-          `<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} +${x.cp} CP · ${E.rankName(x.rank)}</span></span><button class="b" data-a="gbuy" data-v="${x.id}" ${mg.rank >= x.rank && s.res.coin >= E.buyPrice(x) ? "" : "disabled"}>${E.buyPrice(x)}🪙</button></div>`,
+          `<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} · ${E.rankName(x.rank)}</span>${itemStatsHtml(x, m && m.equip)}</span><button class="b" data-a="gbuy" data-v="${x.id}" ${mg.rank >= x.rank && s.res.coin >= E.buyPrice(x) ? "" : "disabled"}>${E.buyPrice(x)}🪙</button></div>`,
       )
       .join("");
   return h + `</div>`;
@@ -62,7 +62,7 @@ export function guildsv() {
     E.advShop()
       .map(
         x =>
-          `<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} +${x.cp} CP · Rank ${E.advRankName(x.adv)}</span></span><button class="b" data-a="advbuy" data-v="${x.id}" ${m.adv && m.adv.rank >= x.adv && s.res.coin >= E.buyPrice(x) ? "" : "disabled"}>${E.buyPrice(x)}🪙</button></div>`,
+          `<div class="row" style="margin-top:4px"><span>${x.name} <span class="muted">${x.rarity} · Rank ${E.advRankName(x.adv)}</span>${itemStatsHtml(x, m && m.equip)}</span><button class="b" data-a="advbuy" data-v="${x.id}" ${m.adv && m.adv.rank >= x.adv && s.res.coin >= E.buyPrice(x) ? "" : "disabled"}>${E.buyPrice(x)}🪙</button></div>`,
       )
       .join("") +
     `</div>`;

@@ -200,3 +200,53 @@ export function disenchant(s, itemId, idx) {
   return s.vault[i];
 }
 export const enchTimer = (s, j) => ({ p: Math.min(1, j.prog / j.need), left: (() => { const w = whoOf(s, j.who); return w ? Math.max(0, (j.need - j.prog) / Math.max(0.1, enchSpeed(s, w))) : null; })() });
+
+// ---- item stat lines (UI): what an item actually does, beyond its CP. Items have no durability.
+const pct = v => `${Math.round(v * 100)}%`;
+export const fxText = fx =>
+  Object.entries(fx || {})
+    .map(([k, v]) =>
+      typeof v === "number"
+        ? k === "cp" ? `+${Math.round(v)} CP` : k === "cpPct" ? `+${pct(v)} CP` : k === "xpPct" ? `+${pct(v)} XP` : `+${pct(v)} ${k}`
+        : Object.entries(v).map(([a, b]) => (k === "stats" ? `${a} +${+b.toFixed(1)}` : `${a} +${pct(b)}`)).join(", "),
+    )
+    .join(", ");
+const ROLE = { weapon: "⚔️ attack", offhand: "🛡️ guard", armor: "🛡️ defense", accessory: "💍 trinket", charm: "🔮 charm", tool: "🔧 tool" };
+// [{ k, t }] short lines: power, quality, enchants, inlay, set, tool/armor follower effects, gift, requirements
+export function itemStats(id) {
+  const it = typeof id === "string" ? itemDef(id) : id;
+  if (!it) return [];
+  const L = [], add = (k, t) => L.push({ k, t });
+  if (it.cp) add("cp", `${ROLE[it.slot] || "power"} +${it.cp} CP`);
+  if (it.quality) {
+    const Q = D.crafting.qualities.find(q => q.id === it.quality);
+    if (Q) add("q", `${Q.name} quality ×${Q.mult}`);
+  }
+  for (const tok of splitId(it.id).ench) {
+    const e = enchDef(tok);
+    if (e) add("ench", `${e.icon} ${isGreater(tok) ? "Greater " : ""}${e.name}: ${fxText(tokFx(tok))}`);
+  }
+  const free = enchSlots(it) - splitId(it.id).ench.length;
+  if (free > 0) add("slots", `◇ ${free} enchant slot${free > 1 ? "s" : ""} free`);
+  if (it.inlay) add("inlay", `💎 ${D.crafting.inlays.mats[it.inlay].name} inlay${it.inlaySlot ? " (+1 enchant slot)" : ""}`);
+  const sd = it.set && setDef(it.set);
+  if (sd) add("set", `${sd.icon} ${sd.name}: ${Object.entries(sd.bonus).map(([n, fx]) => `${n}pc ${fxText(fx)}`).join(" · ")}`);
+  if (it.toolFor && it.cp) add("tool", `follower ${it.toolFor} work +${pct(it.cp / 40)}`);
+  if (it.slot === "armor" && it.cp) add("armor", `follower fall risk −${pct(1 - 1 / (1 + it.cp / 20))}`);
+  if (it.affinity) add("gift", `❤️ +${it.affinity} courtship gift`);
+  if (it.metal) add("metal", `metal: ${it.metal}`);
+  if (it.companion) add("pet", "🐾 companion");
+  if (it.slot === "haul") {
+    const H = (D.world && D.world.haul) || { tiers: [] }, ts = H.tiers.filter(t => t.item === it.id);
+    if (ts.length) add("haul", ts.map(t => `${t.icon} carry ${t.carry}${t.haulSpeed > 1 ? `, haul ×${t.haulSpeed}` : ""}${t.animal ? ` (with ${t.animal})` : ""}`).join(" · "));
+    else add("haul", "🚤 lets the family travel by water");
+  }
+  return L;
+}
+// equipping it instead of what sits in its slot now: CP change and any stat/effect lines that differ
+export function itemCompare(equip, id) {
+  const it = itemDef(id);
+  if (!it || !it.slot) return null;
+  const cur = (equip || {})[it.slot] ? itemDef(equip[it.slot]) : null;
+  return { slot: it.slot, cur: cur ? cur.name : null, dcp: (it.cp || 0) - ((cur && cur.cp) || 0) };
+}

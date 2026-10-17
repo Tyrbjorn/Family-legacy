@@ -219,8 +219,16 @@ export const MATS = [
   "bandages",
 ];
 
-export function itemRow(x, btns) {
-  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}${x.toolFor ? " · tool: " + x.toolFor : ""}${x.affinity ? " +" + x.affinity + "❤️" : ""} · ${x.value}🪙</span>${gearTags(x)}</span><span style="text-align:right">${btns}</span></div>`;
+// compact stat line for an item (power role, quality, enchants, set, follower effects...) + optional comparison
+// with what member/minion equip holds in that slot now
+export function itemStatsHtml(x, equip) {
+  const L = E.itemStats(x).map(l => l.t);
+  const c = equip && x.slot && x.slot !== "gift" ? E.itemCompare(equip, x.id) : null;
+  const cmp = c && c.dcp !== undefined && (c.cur || c.dcp) ? ` <span class="${c.dcp > 0 ? "up" : c.dcp < 0 ? "down" : "muted"}">${c.dcp > 0 ? "▲+" : c.dcp < 0 ? "▼" : "="}${c.dcp ? c.dcp : ""} CP vs ${c.cur || "empty"}</span>` : "";
+  return L.length || cmp ? `<div class="istats">${L.join(" · ")}${cmp}</div>` : "";
+}
+export function itemRow(x, btns, equip) {
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot} · ${x.value}🪙</span>${gearTags(x)}${itemStatsHtml(x, equip)}</span><span style="text-align:right">${btns}</span></div>`;
 }
 
 export const secDay = () => D.tuning.secPerDayActive / (s.turbo.on ? D.tuning.turboMult : 1);

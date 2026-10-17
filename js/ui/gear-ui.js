@@ -4,14 +4,7 @@ import { D, s } from "../main.js";
 import { pbar } from "./progress.js";
 import { U } from "./state.js";
 
-const fxText = fx =>
-  Object.entries(fx || {})
-    .map(([k, v]) =>
-      typeof v === "number"
-        ? k === "cp" ? `+${Math.round(v)} CP` : k === "cpPct" ? `+${Math.round(v * 100)}% CP` : k === "xpPct" ? `+${Math.round(v * 100)}% XP` : `+${Math.round(v * 100)}% ${k}`
-        : Object.entries(v).map(([a, b]) => (k === "stats" ? `${a}+${+b.toFixed(1)}` : `${a} +${Math.round(b * 100)}%`)).join(" "),
-    )
-    .join(", ");
+const fxText = E.fxText;
 // small tags for an item row: set + enchant slots (◆ filled, ◇ free)
 export function gearTags(x) {
   if (!x) return "";
