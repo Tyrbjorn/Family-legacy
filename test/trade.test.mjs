@@ -4,7 +4,7 @@ const D={};for(const n of ['skills','classes','traits','buildings','furniture','
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let seed=7; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
-const s=E.newGame(1_700_000_000_000); const f=E.active(s);
+const s=E.newGame(1_700_000_000_000); const f=E.active(s); E.revealAt(s,'thornwick',135); // R30: Thornwick is found by walking there
 // teens
 const rats=D.quests.find(q=>q.id==='rats'), wolves=D.quests.find(q=>q.id==='wolves'), goblins=D.quests.find(q=>q.id==='goblins');
 f.ageDays=15*D.tuning.daysPerYear; ok(E.isTeen(f)&&E.canQuest(f,rats),'teen can do rats');
@@ -62,9 +62,9 @@ ok(E.removePatrol(s,P.id)&&pg.job==='idle','patrol removed');
 // fights: lose with no guards -> crew none, goods lost; with strong guards -> mostly win
 { const g2=mk('guard'), e2=mk('guard'); e2.cls='n_horseman'; E.setCrew(s,h.id,'guard',g2.uid); E.setCrew(s,h.id,'escort',e2.uid);
   ok(E.winChance(s,h)>0&&E.winChance(s,h)<1,'win chance');
-  D.tuning.trade.banditBase=1; D.tuning.trade.banditStrength=1e9; const n0=s.minions.length; h.trip=null; h.margin=-1;
-  for(let i=0;i<40&&!h.robbed;i++) E.tradeDay(s);
-  ok(h.robbed>0&&!h.guard&&!h.escorts.length,'loss: guards fled or died '+JSON.stringify({rb:h.robbed,g:h.guard,e:h.escorts,t:h.trips,w:h.won}));
+  D.tuning.trade.banditBase=1; D.tuning.trade.banditStrength=1e9; const n0=s.minions.length; h.trip=null; h.margin=-1; const rb0=h.robbed||0;
+  for(let i=0;i<300&&(h.robbed||0)===rb0;i++) E.tradeDay(s);
+  ok(h.robbed>rb0&&!h.guard&&!h.escorts.length,'loss: guards fled or died '+JSON.stringify({rb:h.robbed,g:h.guard,e:h.escorts,t:h.trips,w:h.won}));
   ok(s.minions.length<=n0,'some may die');
   D.tuning.trade.banditStrength=1e-9; const g3=mk('guard'); E.setCrew(s,h.id,'guard',g3.uid); const w0=h.won||0; for(let i=0;i<40&&(h.won||0)===w0;i++) E.tradeDay(s);
   ok((h.won||0)>w0&&h.guard===g3.uid,'win: cart continues, guard stays');

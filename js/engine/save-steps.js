@@ -483,6 +483,36 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 30,
+    once: true,
+    name: "R30: map x1.5 (fog re-projected so every revealed cell stays revealed; travel days unchanged), Gear Up tutorial step removed (blade given and equipped)",
+    run: s => {
+      if (s.fog) {
+        fogInit(s); // re-projects an old 20x18 fog string onto the new grid
+        fogBase(s);
+      }
+      if (s.tut && D.tutorial) {
+        const t = s.tut, newIds = D.tutorial.steps.map(x => x.id);
+        t.done = t.done || [];
+        // mid-tutorial on Gear Up = started, not skipped, gear not done and nothing later done
+        if (t.started && !t.skipped && !t.done.includes("gear") && !newIds.some(id => t.done.includes(id))) {
+          const m = s.members.find(x => x.id === s.activeId) || s.members[0];
+          if (m && m.equip && !m.equip.weapon && (s.vault || []).includes("rusty_sword")) {
+            s.vault.splice(s.vault.indexOf("rusty_sword"), 1);
+            m.equip.weapon = "rusty_sword";
+          }
+          s.res.coin = (s.res.coin || 0) + 20; // Gear Up's old reward
+          s.res.wood = (s.res.wood || 0) + 4;
+          t.done.push("gear"); // kept in done so a re-run never pays twice
+        }
+        if (t.started) {
+          const i = newIds.findIndex(id => !t.done.includes(id));
+          t.step = i < 0 ? newIds.length : i;
+        }
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

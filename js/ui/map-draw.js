@@ -57,11 +57,17 @@ function fogLayer(MP, WD) {
   return g + "</g>";
 }
 
+// R30: undiscovered major place (town, dungeon, landmark): greyed silhouette; tapping says how to find it
+const greyPin = (key, x, y, ic) =>
+  `<g data-a="mapsel" data-v="u:${key}" style="cursor:pointer" opacity=".45"><circle cx="${x}" cy="${y}" r="17" fill="#6d6455" stroke="#4a4236" stroke-width="2" stroke-dasharray="4 3"/><text x="${x}" y="${y + 7}" font-size="18" text-anchor="middle" style="filter:grayscale(1)">${ic}</text></g>`;
+// the tutorial's rats quest gets a gold ring until it's done
+export const ratsGoal = q => q.id === "rats" && !s.doneQuests.includes("rats");
 export function mapSvg(m) {
   const MP = D.map,
     W = MP.size.w,
     H = MP.size.h;
-  if (!U.mv) U.mv = { x: 0, y: 0, w: W, h: H };
+  // R30: open zoomed on home + the village (the bigger map is mostly fog at the start); ⟲ shows the whole map
+  if (!U.mv) { const hm = MP.home, w = W / 2, h = H / 2; U.mv = { x: Math.max(0, Math.min(W - w, hm.x - w / 2)), y: Math.max(0, Math.min(H - h, hm.y - h / 2)), w, h }; }
   const WD = D.world;
   let g = parchment(MP, WD) + fogLayer(MP, WD);
   for (const r of MP.regions) {
@@ -72,6 +78,9 @@ export function mapSvg(m) {
     g += `<text x="${r.x + 12}" y="${r.y + 26}" font-size="20" fill="#4a3018" font-family="serif" font-style="italic">${kn ? rg.icon + " " + rg.name : "❔ Uncharted"}${kn && !op ? " 🔒 CP " + rg.cp : ""}</text>`;
     if (!op) g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="#8a7a5a" opacity="${kn ? 0.3 : 0.55}"/>`;
   }
+  // R30: landmark locations that aren't hidden spots are always drawn, greyed until discovered
+  for (const l of WD.locations)
+    if (!l.hidden && !l.town && !E.locKnown(s, l)) g += greyPin("l:" + l.id, l.x, l.y, WD.locTypes[l.type].icon);
   for (const l of WD.locations)
     if (E.locKnown(s, l) && E.regionKnown(s, l.region) && !l.town) {
       const ty = WD.locTypes[l.type];
@@ -84,6 +93,7 @@ export function mapSvg(m) {
   }
   const pin = (id, x, y, ic, col, lab, kind) =>
     `<g data-a="mapsel" data-v="${kind}:${id}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="${U.mapSel === kind + ":" + id ? 24 : 19}" fill="#141824" stroke="${col}" stroke-width="3"/><text x="${x}" y="${y + 7}" font-size="20" text-anchor="middle">${ic}</text>${lab ? `<text x="${x}" y="${y + 38}" font-size="13" text-anchor="middle" fill="#fff">${lab}</text>` : ""}</g>`;
+  for (const t of D.towns) if (!(E.townKnown(s, t) && E.regionKnown(s, t.region))) g += greyPin("t:" + t.id, MP.towns[t.id].x, MP.towns[t.id].y, t.icon);
   for (const t of D.towns)
     if (E.townKnown(s, t) && E.regionKnown(s, t.region)) {
       const p = MP.towns[t.id];
@@ -93,7 +103,7 @@ export function mapSvg(m) {
         g += `<text x="${p.x + 20}" y="${p.y - 14}" font-size="18">${ev.map(e => E.eventType(e.type).icon).join("")}</text>`;
     }
   for (const n of D.nodes)
-    if (E.known(s, n) && E.regionKnown(s, n.region)) {
+    if (E.nodeVisible(s, n)) {
       const p = MP.points[n.id];
       const fr = E.nodeStock(s, n) / E.nodeMax(n);
       g += pin(n.id, p.x, p.y, n.icon, E.nodeStock(s, n) > 0 ? "#3f7a2f" : "#a33", "", "n");
@@ -101,14 +111,15 @@ export function mapSvg(m) {
     }
   for (const q of D.quests)
     if (
-      E.known(s, q) &&
-      E.regionKnown(s, q.region) &&
+      E.questVisible(s, q) &&
       !(q.story && E.questIssue(s, m, q) && E.questIssue(s, m, q).startsWith("finish"))
     ) {
       const p = MP.points[q.id],
         k = qKind(q);
+      if (ratsGoal(q)) g += `<circle cx="${p.x}" cy="${p.y}" r="30" fill="none" stroke="#ffd34d" stroke-width="5" class="pulse"/><text x="${p.x}" y="${p.y - 34}" font-size="18" font-weight="bold" text-anchor="middle" fill="#7a4a00" stroke="#fff4d0" stroke-width="4" paint-order="stroke">Rats</text>`;
       g += pin(q.id, p.x, p.y, k[0], k[1], "", "q");
     }
+  for (const d of D.dungeons) if (!(E.known(s, d) && E.regionKnown(s, d.region)) && MP.points[d.id]) g += greyPin("d:" + d.id, MP.points[d.id].x, MP.points[d.id].y, d.icon);
   for (const d of D.dungeons)
     if (E.known(s, d) && E.regionKnown(s, d.region)) {
       const p = MP.points[d.id];

@@ -21,14 +21,18 @@ export function tutorialCard() {
     mt = E.tutMentor(),
     steps = E.tutSteps(),
     n = s.tut.step;
+  const rq = st.check === "quest:rats" && D.quests.find(q => q.id === "rats"),
+    rIss = rq && (E.questIssue(s, E.active(s), rq) || E.questAgeIssue(E.active(s), rq, s)),
+    ron = rq && E.active(s).action && E.active(s).action.target === "rats";
+  const ratsBtn = rq ? `<button class="b sel big" data-a="quest" data-v="rats" ${rIss || ron ? "disabled" : ""}>🐀 ${ron ? "On it: Rats in the Cellar" : "Go: Rats in the Cellar"}</button>${rIss ? `<span class="muted">${rIss}</span>` : ""}` : "";
   const craftBtn =
     st.check === "crafted"
       ? `<button class="b" data-a="mentorcraft" ${E.recipeIssue(s, E.active(s), E.recipeDef("r_whittle")) ? "disabled" : ""}>🔨 Whittle at ${mt.name.split(" ").pop()}'s bench (2 wood)</button>`
       : "";
   return `<div class="card tut"><div class="row"><b>${mt.icon} ${mt.name}</b><span class="muted">${mt.title || ""}</span><span style="flex:1"></span><button class="b" data-a="tutskip" title="Skip the apprenticeship">Skip</button></div>
-${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>` : ""}
+${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>${D.tutorial.howToPlay ? `<p class="muted"><b>${D.tutorial.howToPlay.replace(/^How to play:\s*/, "How to play:</b> ")}</p>` : ""}` : ""}
 <div class="pb"><i style="width:${(n / steps.length) * 100}%"></i><span>Prologue: The Apprentice · ${n}/${steps.length}</span></div>
-<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div><div class="row">${craftBtn}</div></div>`;
+<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div><div class="row">${ratsBtn}${craftBtn}</div></div>`;
 }
 
 // Unlock intro lines (data/intros.json): same card look as the prologue; never blocking, one Skip each.

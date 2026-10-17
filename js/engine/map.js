@@ -5,7 +5,7 @@ import { chron } from "./chronicle.js";
 import { buffSum, maybeEncounter } from "./encounters.js";
 import { resGain } from "./legacy.js";
 import { eventMult, gatherMult, travelRisk } from "./worldevents.js";
-import { WD, drawNode, haulTier, locationsDay, nodeYieldMult, reveal, routeOf, terrainAt, terrainDef } from "./world.js";
+import { WD, drawNode, fogSeen, haulTier, locationsDay, nodeYieldMult, reveal, routeOf, terrainAt, terrainDef } from "./world.js";
 
 const targetRegion = a =>
   ([...D.quests, ...D.nodes, ...(D.dungeons || []), ...(D.map.areas || [])].find(x => x.id === a.target) || {}).region;
@@ -33,14 +33,15 @@ function roadDay(s, m, a, eff) {
 // off-road discovery: clears a patch of fog nearby, sometimes reveals a remote node in that region
 function offroadFind(s, m, p) {
   const an = rng() * 6.283,
-    x = p.x + Math.cos(an) * 90,
-    y = p.y + Math.sin(an) * 90;
-  reveal(s, x, y, 80);
+    x = p.x + Math.cos(an) * 135,
+    y = p.y + Math.sin(an) * 135;
+  reveal(s, x, y, 120); // R30: map x1.5
   const rm = D.nodes.filter(n => n.remote && n.hidden && !s.revealed.includes(n.id));
   let msg = `🧭 ${m.name} strayed off the road and charted new ground`;
   if (rm.length && rng() < 0.25) {
     const n = rm[Math.floor(rng() * rm.length)];
     s.revealed.push(n.id);
+    revealAt(s, n.id);
     msg += `, and found ${n.icon} ${n.name}`;
     chron(s, "discovery", `🔍 ${m.name} found ${n.name} off the beaten track.`, m.name);
   }
@@ -57,7 +58,7 @@ import { mountSpeed } from "./endgame.js";
 import { addMinion, minionRoom } from "./minions.js";
 import { dungeonClear, dungeonDef, dungeonFloor, questIssue, resolveQuest, rollRare } from "./quests.js";
 import { gainXp } from "./skills.js";
-import { D, T, active, isAdult, living, log, r, rng } from "./state.js";
+import { D, T, active, isAdult, known, living, log, r, rng } from "./state.js";
 
 export function travelTick(s, m, a, eff) {
   if (a.type === "quest" && !D.quests.find(x => x.id === a.target)) {
@@ -167,7 +168,22 @@ export const regionKnown = (s, id) => {
   return !!rg && (!rg.hidden || (s.discovered || []).includes(id));
 };
 
-export const townKnown = (s, t) => !t.hidden || (s.discovered || []).includes(t.id);
+// R30: a town is known once found (hidden towns) and its spot has been seen through the fog (start town: always)
+export const townKnown = (s, t) =>
+  (!t.hidden || (s.discovered || []).includes(t.id)) && (!D.world || !s.fog || !!(MP().startReveal || { towns: {} }).towns[t.id] || (s.discovered || []).includes(t.id) || seenAt(s, t.id));
+// R30: fog gate for pins and lists: the map spot of a quest/node/dungeon/town has been seen
+export const seenAt = (s, id) => {
+  const p = MP().points[id] || MP().towns[id];
+  return !p || !D.world || fogSeen(s, p.x, p.y);
+};
+// R30: what the player can see/list: known (not hidden, or revealed) AND its spot actually seen (not just charted from a map)
+export const questVisible = (s, q) => known(s, q) && regionKnown(s, q.region) && seenAt(s, q.id);
+export const nodeVisible = (s, n) => known(s, n) && regionKnown(s, n.region) && seenAt(s, n.id);
+// something found by a rumor/secret/stray: clear a little fog around it so its pin shows
+export function revealAt(s, id, rad = 60) {
+  const p = MP().points[id] || MP().towns[id];
+  if (p && D.world) reveal(s, p.x, p.y, rad);
+}
 
 // ---- map, travel, exploration
 export const MP = () => D.map;
@@ -286,18 +302,21 @@ export function exploreArea(s, m, ar) {
     if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01)) continue;
     if (sc.type === "town" || sc.type === "region") {
       if (!s.discovered.includes(sc.id)) s.discovered.push(sc.id);
+      if (sc.type === "town") revealAt(s, sc.id, WD().fog.town);
       const nm = (sc.type === "town" ? D.towns : D.regions).find(x => x.id === sc.id).name;
       found.push((sc.type === "town" ? "🏘️ town " : "🗺️ new region ") + nm);
     } else if (sc.type === "reveal") {
       const x = [...D.quests, ...D.nodes].find(y => y.id === sc.id);
       if (x && !s.revealed.includes(x.id)) {
         s.revealed.push(x.id);
+        revealAt(s, x.id);
         found.push("🔍 " + x.name);
       } else continue;
     } else if (sc.type === "dungeon") {
       const x = dungeonDef(sc.id);
       if (x && !s.revealed.includes(x.id)) {
         s.revealed.push(x.id);
+        revealAt(s, x.id);
         found.push("🕳️ dungeon: " + x.name);
       } else continue;
     } else if (sc.type === "location") {
@@ -358,6 +377,7 @@ export function rumor(s, regionId) {
   }
   const x = r(pool);
   s.revealed.push(x.id);
+  revealAt(s, x.id);
   log(s, `🗣️ Rumor: ${x.name} discovered!`);
   return x;
 }

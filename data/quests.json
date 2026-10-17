@@ -990,7 +990,11 @@
    "rogue_lockpicks"
   ],
   "guild": "rogues",
-  "rank": 0
+  "rank": 0,
+  "mapDrop": {
+   "item": "thieves_chart",
+   "chance": 1
+  }
  },
  {
   "id": "g_church_plague",
@@ -1787,5 +1791,22 @@
   "grants": {
    "village": true
   }
+ },
+ {
+  "id": "q_buried_cache",
+  "name": "Dig Up the Buried Cache",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 5,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 300,
+   "gems": 2
+  },
+  "skill": "foraging",
+  "loot": [],
+  "hidden": true,
+  "once": true
  }
 ]

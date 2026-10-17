@@ -1,6 +1,6 @@
 // Apprentice prologue (rewarded, skippable tutorial) + tab-tour state. Progress lives in s.tut.
 import { chron } from "./chronicle.js";
-import { addToVault, craftItem, recipeDef } from "./inventory.js";
+import { addToVault, craftItem, equip, recipeDef } from "./inventory.js";
 import { D, active, living, log } from "./state.js";
 
 const TD = () => D.tutorial || { steps: [], tour: [] };
@@ -35,8 +35,18 @@ export function startTutorial(s) {
   const t = tutState(s);
   if (t.started) return;
   t.started = true;
+  giveStartGear(s);
   chron(s, "story", `🎓 ${active(s)?.name || "The founder"} began an apprenticeship under ${tutMentor().name}.`);
   beginStep(s);
+}
+// R30: Orrin's blade, granted and equipped on the founder at the start (no tutorial step needed)
+export function giveStartGear(s) {
+  const m = active(s);
+  for (const id of (TD().start || {}).equip || []) {
+    const it = D.items.find(x => x.id === id);
+    if (!m || !it || (m.equip && m.equip[it.slot])) continue;
+    if (addToVault(s, id)) equip(s, m, id);
+  }
 }
 function beginStep(s) {
   const st = tutCurrent(s);

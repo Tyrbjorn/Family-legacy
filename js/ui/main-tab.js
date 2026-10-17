@@ -15,8 +15,7 @@ export function hero() {
   let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}<div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
- <div class="row" style="margin-top:6px"><button class="b ${sheetOpen ? "sel" : ""}" data-a="sheet">📋 Character Sheet ${sheetOpen ? "▴" : "▾"}</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
-  if (sheetOpen) h += sheet(m);
+ <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
   h += trainingv(m) + activities(m) + pathsCard(s, m);
   const evo = D.classes.filter(
     c => c.from === m.cls && !c.profession && !c.retired,

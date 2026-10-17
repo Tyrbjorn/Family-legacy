@@ -1686,5 +1686,51 @@
   "type": "shortspear",
   "mat": "iron",
   "g": 0.745
+ },
+ {
+  "id": "apprentice_clothes",
+  "name": "Apprentice's Clothes",
+  "slot": "armor",
+  "rarity": "Common",
+  "cp": 2,
+  "value": 10,
+  "type": "clothes",
+  "mat": "linen",
+  "g": 0.2
+ },
+ {
+  "id": "travel_cloak",
+  "name": "Travel Cloak",
+  "slot": "accessory",
+  "rarity": "Common",
+  "cp": 1,
+  "value": 10
+ },
+ {
+  "id": "treasure_map",
+  "name": "Treasure Map",
+  "slot": "map",
+  "rarity": "Rare",
+  "cp": 0,
+  "value": 60,
+  "desc": "Read it (Bag) to mark a buried cache on the map."
+ },
+ {
+  "id": "miners_chart",
+  "name": "Old Miner's Chart",
+  "slot": "map",
+  "rarity": "Uncommon",
+  "cp": 0,
+  "value": 40,
+  "desc": "Read it (Bag) to reveal hidden ore and stone nodes in the Outskirts."
+ },
+ {
+  "id": "thieves_chart",
+  "name": "Rogues' Guild Chart",
+  "slot": "map",
+  "rarity": "Rare",
+  "cp": 0,
+  "value": 80,
+  "desc": "Read it (Bag) to reveal a hidden dungeon."
  }
 ]

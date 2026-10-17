@@ -31,7 +31,7 @@ export function _newGame(now) {
     revealed: [],
     buildings: {},
     furniture: [],
-    vault: ["rusty_sword", "padded_vest"],
+    vault: [], // R30: no armor; clothes + cloak + Orrin's blade are equipped at the tutorial start (data/tutorial.json start.equip)
     log: [],
     turbo: { charge: 0, on: false },
     lastSave: now,

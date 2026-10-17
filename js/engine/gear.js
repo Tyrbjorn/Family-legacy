@@ -249,6 +249,7 @@ export function itemStats(id, m) {
   if (!it) return [];
   const L = [], add = (k, t) => L.push({ k, t });
   if (it.cp) add("cp", `${ROLE[it.slot] || "power"} +${it.cp} CP`);
+  if (it.slot === "map") add("map", `🗺️ ${it.desc || "Special map: read it from the Bag"}`);
   L.push(...typeStats(it, m));
   if (it.quality) {
     const Q = D.crafting.qualities.find(q => q.id === it.quality);

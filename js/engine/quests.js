@@ -3,6 +3,7 @@ import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
+import { mapDrop } from "./specialmaps.js";
 import { dungeonFloorRun, dungeonTier } from "./combat.js";
 import { LG, addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
@@ -46,8 +47,11 @@ export function resolveQuest(s, m, q, eff) {
   const firstOnce = (q.once || q.story) && !s.doneQuests.includes(q.id);
   addRenown(s, m, Math.ceil(q.cp / 20) + (firstOnce ? LG().renown.questFirstOnce || 0 : 0));
   m.questsDone = (m.questsDone || 0) + 1;
+  const firstDone = !s.doneQuests.includes(q.id);
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   gain.push(...grantRewards(s, m, q));
+  const mp = mapDrop(s, q, firstDone);
+  if (mp) gain.push(itemDef(mp).name);
   rollRare(s, q, m);
   if (q.house || q.against) houseQuestDone(s, q);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
@@ -153,6 +157,7 @@ export function dungeonClear(s, m, dg) {
     if (dg.onClear.text) log(s, `📜 ${dg.onClear.text}`);
   }
   rollRare(s, dg, m);
+  mapDrop(s, dg, first);
   if (m.adv) m.adv.rep += 8;
   log(s, `🏆 ${m.name} conquered ${dg.name}${first ? " for the first time" : ""}!`);
 }

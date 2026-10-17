@@ -11,7 +11,7 @@ const s=E.newGame(1_700_000_000_000); E.normalize(s); const m=E.active(s);
 ok(E.known(s,q)&&E.regionKnown(s,q.region)&&E.regionOpen(s,q.region),'new game: quest known in an open, known region');
 ok(E.fogSeen(s,D.map.points.rats.x,D.map.points.rats.y),'new game: map pin is outside the fog');
 ok(!E.questIssue(s,m,q)&&E.canQuest(m,q,s)&&E.actionAllowed(s,m,{type:'quest',target:'rats'}),'new game: founder can take it');
-ok(/Map tab/.test(st.text),'tutorial text says where to find it');
+ok(/Quests/.test(st.text)&&/Map/.test(st.text)&&!/list below the map/.test(st.text),'tutorial text says where to find it (no stale quest-list text)');
 // step reached, quest done -> step completes
 s.tut.step=D.tutorial.steps.indexOf(st); ok(!E.stepDone(s,st),'step open before the quest');
 s.doneQuests.push('rats'); ok(E.stepDone(s,st),'done after the quest');

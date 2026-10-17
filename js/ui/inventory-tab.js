@@ -9,7 +9,7 @@ export function vault() {
   if (!s.vault.length) h += `<div class="muted">Empty. Quests drop loot.</div>`;
   s.vault.forEach(id => {
     const x = it(id);
-    h += `<div class="card row"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}</span>${itemStatsHtml(x, m)}</span><span>${x.slot !== "gift" ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="sell" data-v="${id}">Sell ${Math.round(x.value / 2)}</button></span></div>`;
+    h += `<div class="card row"><span>${x.name} <span class="muted">${x.rarity} ${x.slot}${x.cp ? " +" + x.cp + " CP" : ""}</span>${itemStatsHtml(x, m)}</span><span>${x.slot !== "gift" && x.slot !== "map" ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="sell" data-v="${id}">Sell ${Math.round(x.value / 2)}</button></span></div>`;
   });
   return h;
 }
@@ -70,7 +70,7 @@ export function invv() {
         .map(({ id, x }) =>
           itemRow(
             x,
-            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>${holdBtns(id)}${inlayBtns(id)}`,
+            `${["weapon", "offhand", "armor", "accessory"].includes(x.slot) ? `<button class="b" data-a="equip" data-v="${id}">Equip</button>` : ""}${E.isSpecialMap(id) ? `<button class="b sel" data-a="readmap" data-v="${id}" title="${x.desc || ""}">🗺️ Read</button>` : ""}<button class="b" data-a="tobag" data-v="${id}">Take</button><button class="b" data-a="list" data-v="${id}">Stock ${E.stallValue(s, x)}</button><button class="b" data-a="sell" data-v="${id}">Sell ${E.sellValue(s, x)}</button>${holdBtns(id)}${inlayBtns(id)}`,
             m,
           ),
         )

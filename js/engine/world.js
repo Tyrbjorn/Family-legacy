@@ -54,8 +54,21 @@ export function nearestRoad(x, y) {
 // ---- fog of war: one char per cell ('1' seen)
 const FG = () => WD().fog;
 const dims = () => [Math.ceil(MPD().size.w / FG().cell), Math.ceil(MPD().size.h / FG().cell)];
+// R30 map x1.5: a fog string from the old 1000x900 map (20x18 cells of 50) is re-projected, never wiped:
+// a new cell is seen when its centre, scaled back by 1/1.5, falls in a seen old cell.
+export const OLD_FOG = { c: 20, r: 18, scale: 1.5 };
+export function reprojectFog(old, c, r, k) {
+  const a = new Array(c * r).fill("0");
+  for (let j = 0; j < r; j++)
+    for (let i = 0; i < c; i++) {
+      const oi = Math.floor(((i + 0.5) * k) / OLD_FOG.scale / k), oj = Math.floor(((j + 0.5) * k) / OLD_FOG.scale / k);
+      if (oi < OLD_FOG.c && oj < OLD_FOG.r && old[oj * OLD_FOG.c + oi] === "1") a[j * c + i] = "1";
+    }
+  return a.join("");
+}
 export function fogInit(s) {
   const [c, r] = dims();
+  if (s.fog && s.fog.length === OLD_FOG.c * OLD_FOG.r && c * r !== s.fog.length) s.fog = reprojectFog(s.fog, c, r, FG().cell);
   if (!s.fog || s.fog.length !== c * r) s.fog = "0".repeat(c * r);
 }
 export function reveal(s, x, y, rad) {
@@ -66,7 +79,7 @@ export function reveal(s, x, y, rad) {
   let n = 0;
   for (let j = Math.max(0, Math.floor((y - rad) / k)); j <= Math.min(r - 1, Math.floor((y + rad) / k)); j++)
     for (let i = Math.max(0, Math.floor((x - rad) / k)); i <= Math.min(c - 1, Math.floor((x + rad) / k)); i++)
-      if (a[j * c + i] === "0" && Math.hypot((i + 0.5) * k - x, (j + 0.5) * k - y) <= rad + k * 0.71) (a[j * c + i] = "1"), n++;
+      if (a[j * c + i] !== "1" && Math.hypot((i + 0.5) * k - x, (j + 0.5) * k - y) <= rad + k * 0.71) (a[j * c + i] = "1"), n++;
   if (n) s.fog = a.join("");
   return n;
 }
@@ -76,17 +89,20 @@ export function fogSeen(s, x, y) {
     k = FG().cell;
   return s.fog[Math.floor(y / k) * c + Math.floor(x / k)] === "1";
 }
-export const fogPct = s => (s.fog ? s.fog.split("").filter(x => x === "1").length / s.fog.length : 1);
+// '1' = seen, '2' = charted from a bought map (terrain drawn, but quests/nodes there still need a visit), '0' = fog
+export const fogPct = s => (s.fog ? s.fog.split("").filter(x => x !== "0").length / s.fog.length : 1);
 export function fogBase(s, ptOf) {
-  const h = MPD().home;
-  reveal(s, h.x, h.y, FG().home);
-  for (const t of D.towns) if (!t.hidden || (s.discovered || []).includes(t.id)) { const p = MPD().towns[t.id]; if (p) reveal(s, p.x, p.y, FG().town); }
+  // R30: start = home + the village (map.json startReveal); other towns only once discovered (hidden) or walked to
+  const h = MPD().home, sr = MPD().startReveal || { home: FG().home, towns: {} };
+  reveal(s, h.x, h.y, sr.home);
+  for (const [id, r] of Object.entries(sr.towns || {})) { const p = MPD().towns[id]; if (p) reveal(s, p.x, p.y, r); }
+  for (const t of D.towns) if (t.hidden && (s.discovered || []).includes(t.id)) { const p = MPD().towns[t.id]; if (p) reveal(s, p.x, p.y, FG().town); }
   for (const id of s.explored || []) { const a = (MPD().areas || []).find(x => x.id === id); if (a) reveal(s, a.x, a.y, a.r * FG().explore); }
 }
 
 // ---- locations
 export const locDef = id => WD().locations.find(l => l.id === id);
-export const locKnown = (s, l) => (l.hidden ? (s.discovered || []).includes("loc:" + l.id) : fogSeen(s, l.x, l.y));
+export const locKnown = (s, l) => (s.discovered || []).includes("loc:" + l.id) || (!l.hidden && fogSeen(s, l.x, l.y));
 export function discoverLoc(s, l, who) {
   if (!(s.locSeen || (s.locSeen = [])).includes(l.id)) {
     s.locSeen.push(l.id);
@@ -102,7 +118,8 @@ export function discoverLoc(s, l, who) {
   }
 }
 export function locationsDay(s, who) {
-  for (const l of WD().locations) if (!(s.locSeen || []).includes(l.id) && locKnown(s, l)) discoverLoc(s, l, who);
+  // a visit (spot seen) pays the find; a spot only charted from a bought map waits for that visit
+  for (const l of WD().locations) if (!(s.locSeen || []).includes(l.id) && locKnown(s, l) && (l.hidden || fogSeen(s, l.x, l.y))) discoverLoc(s, l, who);
 }
 
 // fog-gated nodes (terrain nodes): visible once their cell is seen (and revealed if hidden)
@@ -278,4 +295,35 @@ export function worldDay(s, seasonStart, seasonId) {
 export function hasBoat(s) {
   const b = (WD().routing || {}).boat;
   return !!b && (s.structures || []).some(st => st.type === b.structure) && ownsVehicle(s, b.item).length > 0;
+}
+
+// ---- R30 quadrant maps (data/map.json quadrantMaps): sold by each town for its own quarter of the world
+const QM = () => MPD().quadrantMaps;
+export const quadOf = (x, y) => (y < QM().split.y ? "n" : "s") + (x < QM().split.x ? "w" : "e");
+export const townQuad = id => { const p = MPD().towns[id]; return p ? quadOf(p.x, p.y) : null; };
+export const quadOwned = (s, q) => (s.quadMaps || []).includes(q);
+export const quadPrice = q => QM().quads[q].price;
+export function quadMapIssue(s, townId) {
+  const q = townQuad(townId);
+  if (!QM() || !q) return "no map sold here";
+  if (quadOwned(s, q)) return "already owned";
+  if (s.res.coin < quadPrice(q)) return quadPrice(q) + " coin";
+  return null;
+}
+export function buyQuadMap(s, townId) {
+  if (quadMapIssue(s, townId)) return false;
+  const q = townQuad(townId), [c, r] = dims(), k = FG().cell;
+  s.res.coin -= quadPrice(q);
+  (s.quadMaps = s.quadMaps || []).push(q);
+  fogInit(s);
+  const a = s.fog.split("");
+  for (let j = 0; j < r; j++) for (let i = 0; i < c; i++) if (a[j * c + i] === "0" && quadOf((i + 0.5) * k, (j + 0.5) * k) === q) a[j * c + i] = "2";
+  s.fog = a.join("");
+  const disc = s.discovered || (s.discovered = []), rev = s.revealed || (s.revealed = []), got = [];
+  const inQ = p => p && quadOf(p.x, p.y) === q;
+  for (const t of D.towns) if (inQ(MPD().towns[t.id]) && !disc.includes(t.id)) disc.push(t.id), got.push(t.name);
+  for (const d of D.dungeons || []) if (inQ(MPD().points[d.id]) && !rev.includes(d.id)) rev.push(d.id), got.push(d.name);
+  for (const l of WD().locations) if (!l.hidden && !l.town && inQ(l) && !disc.includes("loc:" + l.id)) disc.push("loc:" + l.id), got.push(l.name);
+  log(s, `🗺️ Bought the ${QM().quads[q].name} map: terrain charted${got.length ? "; marked " + got.join(", ") : ""}. Quests and resources there still need exploring.`);
+  return got;
 }

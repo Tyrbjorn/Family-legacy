@@ -1,6 +1,6 @@
 {
  "_note": "Map round. Terrain zones paint the parchment map and set travel speed, risk, discovery and gathering per terrain. Roads (track/road/highway) are faster and safer; off-road is slower but discovers more. Locations, nodes and markers are revealed through fog cells. Nodes deplete and regrow by season. Gathering runs out → gather → haul back; carry per trip and haul speed come from the hauling tier. Land parcels carry features you can work with no travel. Regions unlock by requirements; ports are stubs for future sea access.",
- "baseSpeed": 150,
+ "baseSpeed": 225.0,
  "terrain": {
   "plains": {
    "name": "Plains",
@@ -137,165 +137,165 @@
   {
    "t": "coast",
    "shape": "rect",
-   "x": 20,
-   "y": 20,
-   "w": 38,
-   "h": 680
+   "x": 30,
+   "y": 30,
+   "w": 57,
+   "h": 1020
   },
   {
    "t": "hills",
    "shape": "ellipse",
-   "x": 115,
-   "y": 165,
-   "rx": 95,
-   "ry": 75
+   "x": 172.5,
+   "y": 247.5,
+   "rx": 142.5,
+   "ry": 112.5
   },
   {
    "t": "mountains",
    "shape": "ellipse",
-   "x": 430,
-   "y": 85,
-   "rx": 85,
-   "ry": 60
+   "x": 645,
+   "y": 127.5,
+   "rx": 127.5,
+   "ry": 90
   },
   {
    "t": "forest",
    "shape": "ellipse",
-   "x": 290,
-   "y": 195,
-   "rx": 70,
-   "ry": 48
+   "x": 435,
+   "y": 292.5,
+   "rx": 105,
+   "ry": 72
   },
   {
    "t": "forest",
    "shape": "ellipse",
-   "x": 470,
-   "y": 420,
-   "rx": 45,
-   "ry": 120
+   "x": 705,
+   "y": 630,
+   "rx": 67.5,
+   "ry": 180
   },
   {
    "t": "swamp",
    "shape": "ellipse",
-   "x": 145,
-   "y": 625,
-   "rx": 90,
-   "ry": 62
+   "x": 217.5,
+   "y": 937.5,
+   "rx": 135,
+   "ry": 93
   },
   {
    "t": "lake",
    "shape": "ellipse",
-   "x": 410,
-   "y": 585,
-   "rx": 48,
-   "ry": 32
+   "x": 615,
+   "y": 877.5,
+   "rx": 72,
+   "ry": 48
   },
   {
    "t": "river",
    "shape": "line",
-   "w": 16,
+   "w": 24,
    "pts": [
     [
-     160,
-     40
+     240.0,
+     60.0
     ],
     [
-     230,
-     140
+     345.0,
+     210.0
     ],
     [
-     285,
-     246
+     427.5,
+     369.0
     ],
     [
-     318,
-     330
+     477.0,
+     495.0
     ],
     [
-     290,
-     430
+     435.0,
+     645.0
     ],
     [
-     230,
-     520
+     345.0,
+     780.0
     ],
     [
-     175,
-     600
+     262.5,
+     900.0
     ]
    ]
   },
   {
    "t": "hills",
    "shape": "ellipse",
-   "x": 840,
-   "y": 660,
-   "rx": 120,
-   "ry": 45
+   "x": 1260,
+   "y": 990,
+   "rx": 180,
+   "ry": 67.5
   },
   {
    "t": "lake",
    "shape": "ellipse",
-   "x": 640,
-   "y": 600,
-   "rx": 38,
-   "ry": 26
+   "x": 960,
+   "y": 900,
+   "rx": 57,
+   "ry": 39
   },
   {
    "t": "swamp",
    "shape": "ellipse",
-   "x": 760,
-   "y": 560,
-   "rx": 60,
-   "ry": 30
+   "x": 1140,
+   "y": 840,
+   "rx": 90,
+   "ry": 45
   },
   {
    "t": "highlands",
    "shape": "rect",
-   "x": 20,
-   "y": 715,
-   "w": 960,
-   "h": 170
+   "x": 30,
+   "y": 1072.5,
+   "w": 1440,
+   "h": 255
   },
   {
    "t": "hills",
    "shape": "ellipse",
-   "x": 250,
-   "y": 760,
-   "rx": 160,
-   "ry": 40
-  },
-  {
-   "t": "mountains",
-   "shape": "ellipse",
-   "x": 900,
-   "y": 858,
-   "rx": 70,
-   "ry": 26
-  },
-  {
-   "t": "mountains",
-   "shape": "ellipse",
-   "x": 670,
-   "y": 745,
-   "rx": 45,
-   "ry": 28
-  },
-  {
-   "t": "mountains",
-   "shape": "ellipse",
-   "x": 370,
-   "y": 755,
-   "rx": 35,
-   "ry": 35
-  },
-  {
-   "t": "mountains",
-   "shape": "ellipse",
-   "x": 130,
-   "y": 815,
-   "rx": 100,
+   "x": 375,
+   "y": 1140,
+   "rx": 240,
    "ry": 60
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 1350,
+   "y": 1287,
+   "rx": 105,
+   "ry": 39
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 1005,
+   "y": 1117.5,
+   "rx": 67.5,
+   "ry": 42
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 555,
+   "y": 1132.5,
+   "rx": 52.5,
+   "ry": 52.5
+  },
+  {
+   "t": "mountains",
+   "shape": "ellipse",
+   "x": 195,
+   "y": 1222.5,
+   "rx": 150,
+   "ry": 90
   }
  ],
  "roadTypes": {
@@ -334,7 +334,7 @@
   "risk": 1.0,
   "discover": 1.35
  },
- "roadSnap": 40,
+ "roadSnap": 60.0,
  "roadWorks": {
   "_note": "Data hook only (not built yet): road building/repair by the Mason path.",
   "builder": {
@@ -365,24 +365,24 @@
    "name": "Old King's Way",
    "pts": [
     [
-     90,
-     150
+     135.0,
+     225.0
     ],
     [
-     200,
-     230
+     300.0,
+     345.0
     ],
     [
-     330,
-     300
+     495.0,
+     450.0
     ],
     [
-     520,
-     340
+     780.0,
+     510.0
     ],
     [
-     700,
-     380
+     1050.0,
+     570.0
     ]
    ]
   },
@@ -392,16 +392,16 @@
    "name": "Mill Road",
    "pts": [
     [
-     200,
-     400
+     300.0,
+     600.0
     ],
     [
-     260,
-     350
+     390.0,
+     525.0
     ],
     [
-     330,
-     300
+     495.0,
+     450.0
     ]
    ]
   },
@@ -411,16 +411,16 @@
    "name": "Creek Track",
    "pts": [
     [
-     200,
-     400
+     300.0,
+     600.0
     ],
     [
-     150,
-     500
+     225.0,
+     750.0
     ],
     [
-     97,
-     628
+     145.5,
+     942.0
     ]
    ]
   },
@@ -430,16 +430,16 @@
    "name": "Herb Path",
    "pts": [
     [
-     200,
-     400
+     300.0,
+     600.0
     ],
     [
-     128,
-     376
+     192.0,
+     564.0
     ],
     [
-     108,
-     454
+     162.0,
+     681.0
     ]
    ]
   },
@@ -449,20 +449,20 @@
    "name": "Miners' Track",
    "pts": [
     [
-     330,
-     300
+     495.0,
+     450.0
     ],
     [
-     350,
-     210
+     525.0,
+     315.0
     ],
     [
-     358,
-     139
+     537.0,
+     208.5
     ],
     [
-     430,
-     90
+     645.0,
+     135.0
     ]
    ]
   },
@@ -472,16 +472,16 @@
    "name": "Lakeside Track",
    "pts": [
     [
-     200,
-     400
+     300.0,
+     600.0
     ],
     [
-     300,
-     500
+     450.0,
+     750.0
     ],
     [
-     410,
-     560
+     615.0,
+     840.0
     ]
    ]
   },
@@ -491,16 +491,16 @@
    "name": "Salt Track",
    "pts": [
     [
-     200,
-     400
+     300.0,
+     600.0
     ],
     [
-     110,
-     430
+     165.0,
+     645.0
     ],
     [
-     45,
-     470
+     67.5,
+     705.0
     ]
    ]
   },
@@ -510,27 +510,28 @@
    "name": "High Pass",
    "pts": [
     [
-     700,
-     380
+     1050.0,
+     570.0
     ],
     [
-     780,
-     600
+     1170.0,
+     900.0
     ],
     [
-     820,
-     790
+     1230.0,
+     1185.0
     ]
    ]
   }
  ],
  "fog": {
   "cell": 50,
-  "home": 170,
-  "town": 90,
-  "travel": 70,
-  "offroadBonus": 30,
-  "explore": 1.1
+  "home": 150,
+  "town": 135,
+  "travel": 100,
+  "offroadBonus": 45,
+  "explore": 1.1,
+  "_note": "R30 (map x1.5): radii in new map units; home/town start reveal in map.json startReveal; town = radius when a town is found"
  },
  "locTypes": {
   "town": {
@@ -579,8 +580,8 @@
    "id": "l_millbrook",
    "type": "town",
    "name": "Millbrook",
-   "x": 330,
-   "y": 300,
+   "x": 495,
+   "y": 450,
    "region": "outskirts",
    "town": "millbrook"
   },
@@ -588,8 +589,8 @@
    "id": "l_ashford",
    "type": "town",
    "name": "Ashford",
-   "x": 90,
-   "y": 150,
+   "x": 135,
+   "y": 225,
    "region": "outskirts",
    "town": "ashford",
    "hidden": true
@@ -598,8 +599,8 @@
    "id": "l_thornwick",
    "type": "town",
    "name": "Thornwick",
-   "x": 700,
-   "y": 380,
+   "x": 1050,
+   "y": 570,
    "region": "forest",
    "town": "thornwick"
   },
@@ -607,8 +608,8 @@
    "id": "l_hollyford",
    "type": "village",
    "name": "Hollyford",
-   "x": 250,
-   "y": 585,
+   "x": 375,
+   "y": 877.5,
    "region": "outskirts",
    "desc": "A ford village. Travellers rest here, and the roads south are watched.",
    "reward": {
@@ -620,8 +621,8 @@
    "id": "l_pennick",
    "type": "village",
    "name": "Pennick Cross",
-   "x": 440,
-   "y": 250,
+   "x": 660,
+   "y": 375,
    "region": "outskirts",
    "desc": "Crossroads hamlet on the King's Way.",
    "reward": {
@@ -633,8 +634,8 @@
    "id": "l_watchruin",
    "type": "ruins",
    "name": "Old Watchtower",
-   "x": 405,
-   "y": 470,
+   "x": 607.5,
+   "y": 705,
    "region": "outskirts",
    "desc": "A broken tower from the old kingdom.",
    "reward": {
@@ -646,8 +647,8 @@
    "id": "l_ratcave",
    "type": "cave",
    "name": "Warren Cave",
-   "x": 260,
-   "y": 520,
+   "x": 390,
+   "y": 780,
    "region": "outskirts",
    "link": "d_ratwarren",
    "desc": "Entrance to the Rat Warren."
@@ -656,8 +657,8 @@
    "id": "l_wayshrine",
    "type": "shrine",
    "name": "Wayside Shrine",
-   "x": 160,
-   "y": 300,
+   "x": 240,
+   "y": 450,
    "region": "outskirts",
    "desc": "Travellers leave tokens here. A blessing for the road.",
    "buff": {
@@ -671,8 +672,8 @@
    "id": "l_banditcamp",
    "type": "camp",
    "name": "Bandit Camp",
-   "x": 278,
-   "y": 401,
+   "x": 417,
+   "y": 601.5,
    "region": "outskirts",
    "link": "bandit_scout",
    "desc": "Smoke from a hidden camp."
@@ -681,8 +682,8 @@
    "id": "l_oldmine",
    "type": "mine",
    "name": "Abandoned Mine",
-   "x": 358,
-   "y": 139,
+   "x": 537,
+   "y": 208.5,
    "region": "outskirts",
    "link": "oldmine",
    "hidden": true
@@ -691,8 +692,8 @@
    "id": "l_elmgrove",
    "type": "grove",
    "name": "Elder Grove",
-   "x": 300,
-   "y": 175,
+   "x": 450,
+   "y": 262.5,
    "region": "outskirts",
    "desc": "Ancient elms; mushrooms ring the roots.",
    "reward": {
@@ -703,8 +704,8 @@
    "id": "l_crone",
    "type": "hidden",
    "name": "Crone's Hut",
-   "x": 698,
-   "y": 565,
+   "x": 1047,
+   "y": 847.5,
    "region": "forest",
    "link": "witch",
    "hidden": true,
@@ -714,8 +715,8 @@
    "id": "l_dwarfhold",
    "type": "hidden",
    "name": "Sealed Dwarven Gate",
-   "x": 560,
-   "y": 845,
+   "x": 840,
+   "y": 1267.5,
    "region": "highlands",
    "hidden": true,
    "locked": true,
@@ -726,8 +727,8 @@
    "id": "l_gullport",
    "type": "port",
    "name": "Gull's Landing",
-   "x": 42,
-   "y": 470,
+   "x": 63,
+   "y": 705,
    "region": "outskirts",
    "port": true,
    "sea": "future",
@@ -1181,8 +1182,8 @@
  "routing": {
   "_note": "Mountains and lakes are impassable. A route checks points along its line (at least `samples`, one per `step` px); each blocked stretch adds a detour point just past that zone's edge, on the shorter side, up to maxDetours. A small boat kept at a Dock lets routes cross lakes. Larger ships (Port + Shipyard, coast/sea) are a later hook: add a terrain flag `ship` and a ship item the same way.",
   "samples": 8,
-  "step": 25,
-  "margin": 18,
+  "step": 37.5,
+  "margin": 27.0,
   "maxDetours": 2,
   "boat": {
    "item": "smallboat",

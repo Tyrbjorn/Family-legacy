@@ -88,9 +88,18 @@ export function parcelCard(m) {
    .join("")}</div>`;
 }
 
+// R30: each town sells the map of its quarter of the world
+function quadBtn(tid) {
+  const q = E.townQuad(tid);
+  if (!q || !D.map.quadrantMaps) return "";
+  const nm = D.map.quadrantMaps.quads[q].name;
+  if (E.quadOwned(s, q)) return `<div class="muted">🗺️ ${nm} map owned</div>`;
+  const iss = E.quadMapIssue(s, tid);
+  return `<div class="row" style="justify-content:flex-start;gap:6px;margin:4px 0"><button class="b" data-a="buyquad" data-v="${tid}" ${iss ? "disabled" : ""}>🗺️ Buy ${nm} map · ${E.quadPrice(q)}🪙</button><span class="muted">charts terrain, towns, dungeons and landmarks; quests and resources still need exploring</span></div>`;
+}
 export function mapDetail(m) {
   if (!U.mapSel) return '<div class="muted">Tap a marker on the map for details.</div>';
-  const [k, id] = U.mapSel.split(":");
+  const [k, ...idp] = U.mapSel.split(":"), id = idp.join(":");
   const busy = E.isBusy(m);
   let h = "";
   const trav = `${E.travelDays(id)} days each way (~${dur(E.travelDays(id))})`;
@@ -170,10 +179,16 @@ export function mapDetail(m) {
     h = `<div class="card"><b>❔ Rumored place</b><div class="muted">${te ? `Something ${te.edge ? te.edge.replace(/^at the |^on the /, "near the ") : "in the " + te.name.toLowerCase()}, somewhere about here.` : "Something lies about here."} Explore nearby or pay for tavern rumors to find it.</div></div>`;
     return h;
   }
+  if (k === "u") {
+    // undiscovered major place (greyed pin): no details, just how to find it
+    const [kk, uid] = [id.split(":")[0], id.split(":").slice(1).join(":")];
+    const nm = kk === "t" ? "a town" : kk === "d" ? "a dungeon" : "a landmark";
+    return `<div class="card"><b>❔ Undiscovered</b><div class="muted">There is ${nm} here. Travel or explore nearby to find it, or buy this quarter's map in a town.</div></div>`;
+  }
   if (k === "t") {
     const t = D.towns.find(x => x.id === id);
     const ev = E.eventsAtTown(s, t.id);
-    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
+    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${quadBtn(t.id)}${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
   }
   return h;
 }
@@ -203,7 +218,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m) + storyv(m);
+  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);

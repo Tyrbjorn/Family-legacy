@@ -13,6 +13,8 @@ import { minionsv } from "./minions-tab.js";
 import { craftingv } from "./crafting-tab.js";
 import { chroniclev } from "./chronicle-tab.js";
 import { familyv } from "./family-tab.js";
+import { questBadge, questsv } from "./quests-tab.js";
+import { characterv } from "./character-tab.js";
 import { housesv, suitorCard } from "./houses-tab.js";
 import { bellPanel, dockv, toastsv } from "./progress.js";
 import { tourOverlay } from "./guide.js";
@@ -20,6 +22,8 @@ import { tourOverlay } from "./guide.js";
 export const TABS = {
   main: ["🧝", "Main", mainv],
   family: ["🌳", "Family", familyv],
+  quests: ["📜", "Quests", questsv],
+  char: ["🧑", "Character", characterv],
   jobs: ["💼", "Jobs", jobsv],
   inv: ["🎒", "Inventory", invv],
   estate: ["🏰", "Estate", estatev],
@@ -36,11 +40,11 @@ export const TABS = {
 // A group button opens its last-used visible tab. Unlock rules still come from tabVisible().
 export const GROUPS = [
   ["main", "🧝", "Main", ["main"]],
-  ["work", "💼", "Work", ["jobs", "guilds"]],
+  ["work", "💼", "Work", ["quests", "jobs", "guilds"]],
   ["map", "🗺️", "Map", ["map"]],
   ["inv", "🎒", "Bag", ["inv"]],
   ["home", "🏰", "Estate", ["estate", "minions", "craft", "auto"]],
-  ["kin", "🌳", "Family", ["family", "houses", "chron"]],
+  ["kin", "🌳", "Family", ["char", "family", "houses", "chron"]],
 ];
 export const groupOf = t => (GROUPS.find(g => g[3].includes(t)) || GROUPS[0])[0];
 window.__tabGroup = groupOf;
@@ -56,7 +60,7 @@ function navv() {
   return GROUPS.filter(([g]) => groupTabs(g).length)
     .map(
       ([g, i, n]) =>
-        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}${g === "home" && E.pendingCount(s) ? '<sup class="nbadge">🎯</sup>' : ""}<br>${n}</button>`,
+        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}${g === "home" && E.pendingCount(s) ? '<sup class="nbadge">🎯</sup>' : ""}${g === "work" && questBadge() ? `<sup class="nbadge qbadge">${questBadge()}</sup>` : ""}<br>${n}</button>`,
     )
     .join("");
 }

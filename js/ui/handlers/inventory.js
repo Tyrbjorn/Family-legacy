@@ -5,6 +5,7 @@ import { curList } from "../common.js";
 // Click actions for the inventory area. ctx = { v, w, b, m } from the clicked element.
 export const inventoryActions = ({ v, b, m }) => ({
   equip: () => E.equip(s, m, v),
+  readmap: () => E.readMap(s, v),
   equipbag: () => E.equip(s, m, v, "bag"),
   unequip: () => E.unequip(s, m, v),
   tobag: () => E.moveItem(s, m, v, true),

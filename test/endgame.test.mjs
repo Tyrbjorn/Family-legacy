@@ -28,7 +28,7 @@ const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTut
   const p0=E.townSellPrice(s,'millbrook','wood'); ok(/phase/.test(E.patronIssue(s,'p_millmarket')),'patronage needs the phase');
   s.renown=1000; ok(E.fundTown(s,'p_millmarket')&&E.townSellPrice(s,'millbrook','wood')>p0,'covered market raises Millbrook sell prices');
   ok(D.nodes.some(n=>n.id==='n_limestone'&&n.res.limestone)&&D.nodes.some(n=>n.id==='n_granite'&&n.res.granite)&&D.map.points.n_limestone&&D.map.points.n_granite,'limestone + granite nodes on the map');
-  const fog0=s.fog; s.fog='0'.repeat(100000); ok(/find/.test(E.quarryIssue(s,'q_lime')||''),'quarry needs the node found'); s.fog=fog0; s.res.planks=1e4;
+  const fog0=s.fog; s.fog='0'.repeat(100000); ok(/find/.test(E.quarryIssue(s,'q_lime')||''),'quarry needs the node found'); s.fog=fog0; E.revealAt(s,'n_limestone'); s.res.planks=1e4;
   ok(E.buildQuarry(s,'q_lime')&&E.quarryTier(s,'q_lime')===1,'limestone quarry opened');
   const l0=s.res.limestone||0; E.endgameDay(s); ok((s.res.limestone||0)-l0===G.quarries[0].tiers[0].rate,'limestone quarry digs daily');
   ok(!D.nodes.some(n=>n.res.marble),'marble stays buy-only'); }

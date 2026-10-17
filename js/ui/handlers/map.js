@@ -12,6 +12,14 @@ export const mapActions = ({ v, w, b, m }) => ({
   auto: () => E.setAction(s, { type: "auto", target: v }),
   stopauto: () => E.setAction(s, { type: "stopauto" }),
   explore: () => E.setAction(s, { type: "explore", target: v }),
+  qmap: () => {
+    U.mapSel = "q:" + v;
+    U.tab = "map";
+  },
+  qfilter: () => (U.qFilter = v),
+  opentab: () => (U.tab = v),
+  charpick: () => (U.charId = +v),
+  chargear: () => (U.tab = "inv"),
   mapsel: () => {
     U.mapSel = v;
   },

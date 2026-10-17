@@ -50,7 +50,12 @@
    }
   ],
   "skill": "brawling",
-  "deedTier": 1
+  "deedTier": 1,
+  "mapDrop": {
+   "item": "miners_chart",
+   "chance": 0.5,
+   "firstClear": 1
+  }
  },
  {
   "id": "d_barrow",
@@ -108,7 +113,12 @@
    }
   ],
   "skill": "monsterlore",
-  "deedTier": 2
+  "deedTier": 2,
+  "mapDrop": {
+   "item": "treasure_map",
+   "chance": 0.5,
+   "firstClear": 1
+  }
  },
  {
   "id": "d_spidercave",

@@ -23,6 +23,7 @@ export const estateActions = ({ v, b, m }) => ({
     if (r) E.setRefine(s, v, b.dataset.w === "on" ? { on: !r.on } : { stopFull: !r.stopFull });
   },
   autotog: () => E.toggleAuto(s, v),
+  buyquad: () => E.buyQuadMap(s, v),
   faex: () => {
     const x = s.members.find(y => y.id === +v);
     if (x) x.noAutoEq = !x.noAutoEq;

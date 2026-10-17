@@ -1,480 +1,484 @@
 {
  "size": {
-  "w": 1000,
-  "h": 900
+  "w": 1600,
+  "h": 1400
  },
- "speed": 150,
+ "speed": 225.0,
  "minTravel": 0.5,
  "gatherTripDays": 5,
  "home": {
-  "x": 200,
-  "y": 400,
+  "x": 300,
+  "y": 600,
   "name": "Home"
  },
  "regions": [
   {
    "id": "outskirts",
-   "x": 20,
-   "y": 20,
-   "w": 500,
-   "h": 680,
+   "x": 30,
+   "y": 30,
+   "w": 750,
+   "h": 1020,
    "color": "#3b5d33"
   },
   {
    "id": "forest",
-   "x": 520,
-   "y": 20,
-   "w": 460,
-   "h": 680,
+   "x": 780,
+   "y": 30,
+   "w": 690,
+   "h": 1020,
    "color": "#1f4a2c"
   },
   {
    "id": "highlands",
-   "x": 20,
-   "y": 715,
-   "w": 960,
-   "h": 170,
+   "x": 30,
+   "y": 1072.5,
+   "w": 1440,
+   "h": 255,
    "color": "#55606b"
   }
  ],
  "towns": {
   "millbrook": {
-   "x": 330,
-   "y": 300
+   "x": 495,
+   "y": 450
   },
   "thornwick": {
-   "x": 700,
-   "y": 380
+   "x": 1050,
+   "y": 570
   },
   "ashford": {
-   "x": 90,
-   "y": 150
+   "x": 135,
+   "y": 225
   },
   "eyrie": {
-   "x": 820,
-   "y": 790
+   "x": 1230,
+   "y": 1185
   }
  },
  "points": {
   "scrub": {
-   "x": 225,
-   "y": 234
+   "x": 337.5,
+   "y": 351
   },
   "berries": {
-   "x": 262,
-   "y": 129
+   "x": 393,
+   "y": 193.5
   },
   "creek": {
-   "x": 97,
-   "y": 628
+   "x": 145.5,
+   "y": 942
   },
   "herbpatch": {
-   "x": 108,
-   "y": 454
+   "x": 162,
+   "y": 681
   },
   "oldmine": {
-   "x": 358,
-   "y": 139
+   "x": 537,
+   "y": 208.5
   },
   "deadfall": {
-   "x": 819,
-   "y": 299
+   "x": 1228.5,
+   "y": 448.5
   },
   "gameTrail": {
-   "x": 579,
-   "y": 168
-  },
-  "moonherbs": {
-   "x": 782,
-   "y": 508
-  },
-  "coppervein": {
-   "x": 95,
-   "y": 326
-  },
-  "rats": {
-   "x": 345,
-   "y": 325
-  },
-  "letters": {
-   "x": 355,
-   "y": 486
-  },
-  "herbs": {
-   "x": 128,
-   "y": 376
-  },
-  "firewood": {
-   "x": 336,
-   "y": 200
-  },
-  "lostgoat": {
-   "x": 352,
-   "y": 395
-  },
-  "wolves": {
-   "x": 112,
-   "y": 272
-  },
-  "quarry": {
-   "x": 314,
-   "y": 624
-  },
-  "bandit_scout": {
-   "x": 278,
-   "y": 401
-  },
-  "fair": {
-   "x": 298,
-   "y": 544
-  },
-  "tutor": {
-   "x": 417,
-   "y": 329
-  },
-  "goblins": {
-   "x": 235,
-   "y": 539
-  },
-  "haunt": {
-   "x": 207,
-   "y": 154
-  },
-  "caravan": {
-   "x": 447,
-   "y": 430
-  },
-  "mushrooms": {
-   "x": 637,
-   "y": 566
-  },
-  "oaks": {
-   "x": 775,
-   "y": 120
-  },
-  "spiders": {
-   "x": 902,
-   "y": 159
-  },
-  "dryad": {
-   "x": 845,
-   "y": 401
-  },
-  "stag": {
-   "x": 734,
-   "y": 438
-  },
-  "ruins": {
-   "x": 864,
-   "y": 588
-  },
-  "witch": {
-   "x": 698,
-   "y": 565
-  },
-  "owlbear": {
-   "x": 591,
-   "y": 397
-  },
-  "shrine": {
-   "x": 891,
-   "y": 536
-  },
-  "poachers": {
-   "x": 902,
-   "y": 435
-  },
-  "beasttome": {
-   "x": 571,
-   "y": 552
-  },
-  "treant": {
-   "x": 741,
+   "x": 868.5,
    "y": 252
   },
-  "g_vanguard_patrol": {
-   "x": 263,
-   "y": 480
+  "moonherbs": {
+   "x": 1173,
+   "y": 762
   },
-  "g_lodge_hunt": {
-   "x": 814,
-   "y": 162
+  "coppervein": {
+   "x": 142.5,
+   "y": 489
   },
-  "g_collegium_rift": {
-   "x": 765,
-   "y": 642
+  "rats": {
+   "x": 517.5,
+   "y": 487.5
   },
-  "g_hearth_bridge": {
-   "x": 479,
-   "y": 520
+  "letters": {
+   "x": 532.5,
+   "y": 729
   },
-  "g_vanguard_siege": {
-   "x": 678,
-   "y": 234
+  "herbs": {
+   "x": 192,
+   "y": 564
   },
-  "b_boars": {
-   "x": 66,
-   "y": 576
+  "firewood": {
+   "x": 504,
+   "y": 300
   },
-  "b_smugglers": {
-   "x": 485,
-   "y": 266
+  "lostgoat": {
+   "x": 528,
+   "y": 592.5
   },
-  "b_wyvern": {
-   "x": 562,
-   "y": 229
+  "wolves": {
+   "x": 168,
+   "y": 408
   },
-  "g_rogues_heist": {
-   "x": 249,
-   "y": 659
+  "quarry": {
+   "x": 471,
+   "y": 936
   },
-  "g_church_plague": {
-   "x": 413,
-   "y": 628
+  "bandit_scout": {
+   "x": 417,
+   "y": 601.5
   },
-  "g_church_crypt": {
-   "x": 594,
-   "y": 293
+  "fair": {
+   "x": 447,
+   "y": 816
   },
-  "q_river": {
-   "x": 285,
-   "y": 246
+  "tutor": {
+   "x": 625.5,
+   "y": 493.5
   },
-  "q_hermit": {
-   "x": 112,
-   "y": 80
+  "goblins": {
+   "x": 352.5,
+   "y": 808.5
   },
-  "st1": {
-   "x": 165,
-   "y": 620
+  "haunt": {
+   "x": 310.5,
+   "y": 231
   },
-  "st2": {
-   "x": 228,
-   "y": 308
+  "caravan": {
+   "x": 670.5,
+   "y": 645
   },
-  "st3": {
-   "x": 472,
-   "y": 325
+  "mushrooms": {
+   "x": 955.5,
+   "y": 849
   },
-  "st4": {
-   "x": 515,
-   "y": 120
-  },
-  "st5": {
-   "x": 659,
-   "y": 432
-  },
-  "st6": {
-   "x": 879,
-   "y": 81
-  },
-  "st7": {
-   "x": 604,
-   "y": 485
-  },
-  "st8": {
-   "x": 931,
-   "y": 242
-  },
-  "st9": {
-   "x": 147,
-   "y": 210
-  },
-  "st10": {
-   "x": 639,
-   "y": 641
-  },
-  "s_oldwell": {
-   "x": 469,
-   "y": 185
-  },
-  "s_lostheir": {
-   "x": 338,
-   "y": 60
-  },
-  "s_hermitcache": {
-   "x": 831,
-   "y": 648
-  },
-  "s_moonduel": {
-   "x": 701,
-   "y": 123
-  },
-  "s_sunkenchapel": {
-   "x": 786,
-   "y": 413
-  },
-  "silverseam": {
-   "x": 300,
-   "y": 800
-  },
-  "h_giants": {
-   "x": 520,
-   "y": 770
-  },
-  "h_eyrie": {
-   "x": 740,
-   "y": 840
-  },
-  "h_stormcave": {
-   "x": 930,
-   "y": 760
-  },
-  "d_ratwarren": {
-   "x": 260,
-   "y": 520
-  },
-  "d_barrow": {
-   "x": 90,
-   "y": 560
-  },
-  "d_spidercave": {
-   "x": 660,
+  "oaks": {
+   "x": 1162.5,
    "y": 180
   },
-  "d_ruinvault": {
-   "x": 950,
-   "y": 450
+  "spiders": {
+   "x": 1353,
+   "y": 238.5
   },
-  "d_stormhold": {
-   "x": 420,
-   "y": 860
+  "dryad": {
+   "x": 1267.5,
+   "y": 601.5
   },
-  "hq_ashbrook_harvest": {
-   "x": 332,
-   "y": 323
+  "stag": {
+   "x": 1101,
+   "y": 657
   },
-  "hq_tallow_ledger": {
-   "x": 299,
-   "y": 316
+  "ruins": {
+   "x": 1296,
+   "y": 882
   },
-  "hq_tallow_outbid": {
-   "x": 336,
-   "y": 309
+  "witch": {
+   "x": 1047,
+   "y": 847.5
   },
-  "hq_vey_poachers": {
-   "x": 673,
-   "y": 382
+  "owlbear": {
+   "x": 886.5,
+   "y": 595.5
   },
-  "hq_vey_sabotage": {
-   "x": 710,
-   "y": 375
+  "shrine": {
+   "x": 1336.5,
+   "y": 804
   },
-  "hq_corran_ore": {
-   "x": 67,
-   "y": 138
+  "poachers": {
+   "x": 1353,
+   "y": 652.5
   },
-  "hq_corran_poach": {
-   "x": 104,
-   "y": 131
+  "beasttome": {
+   "x": 856.5,
+   "y": 828
   },
-  "hq_marlowe_cargo": {
-   "x": 71,
-   "y": 124
+  "treant": {
+   "x": 1111.5,
+   "y": 378
   },
-  "hq_marlowe_undercut": {
-   "x": 108,
-   "y": 177
+  "g_vanguard_patrol": {
+   "x": 394.5,
+   "y": 720
   },
-  "hq_skye_letters": {
-   "x": 490,
-   "y": 670
+  "g_lodge_hunt": {
+   "x": 1221,
+   "y": 243
   },
-  "hq_skye_rumours": {
-   "x": 490,
-   "y": 670
+  "g_collegium_rift": {
+   "x": 1147.5,
+   "y": 963
   },
-  "hq_raid_ashbrook": {
-   "x": 319,
-   "y": 306
-  },
-  "hq_raid_tallow": {
-   "x": 356,
-   "y": 299
-  },
-  "hq_raid_vey": {
-   "x": 490,
-   "y": 372
-  },
-  "hq_raid_marlowe": {
-   "x": 120,
-   "y": 135
-  },
-  "hq_raid_corran": {
-   "x": 87,
-   "y": 128
-  },
-  "hq_raid_skye": {
-   "x": 490,
-   "y": 670
-  },
-  "n_gemvein": {
-   "x": 455,
-   "y": 152
-  },
-  "n_timber": {
-   "x": 275,
-   "y": 215
-  },
-  "n_mushrooms": {
-   "x": 310,
-   "y": 170
-  },
-  "n_meadow": {
-   "x": 240,
-   "y": 470
-  },
-  "n_riverpool": {
-   "x": 296,
-   "y": 282
-  },
-  "n_lake": {
-   "x": 365,
-   "y": 615
-  },
-  "n_clay": {
-   "x": 110,
-   "y": 660
-  },
-  "n_peat": {
-   "x": 180,
-   "y": 665
-  },
-  "n_salt": {
-   "x": 40,
-   "y": 540
-  },
-  "n_starfall": {
-   "x": 495,
-   "y": 45
-  },
-  "n_tinpit": {
-   "x": 130,
-   "y": 600
-  },
-  "n_coalseam": {
-   "x": 390,
-   "y": 160
-  },
-  "n_goldwash": {
-   "x": 330,
+  "g_hearth_bridge": {
+   "x": 718.5,
    "y": 780
   },
+  "g_vanguard_siege": {
+   "x": 1017,
+   "y": 351
+  },
+  "b_boars": {
+   "x": 99,
+   "y": 864
+  },
+  "b_smugglers": {
+   "x": 727.5,
+   "y": 399
+  },
+  "b_wyvern": {
+   "x": 843,
+   "y": 343.5
+  },
+  "g_rogues_heist": {
+   "x": 373.5,
+   "y": 988.5
+  },
+  "g_church_plague": {
+   "x": 619.5,
+   "y": 942
+  },
+  "g_church_crypt": {
+   "x": 891,
+   "y": 439.5
+  },
+  "q_river": {
+   "x": 427.5,
+   "y": 369
+  },
+  "q_hermit": {
+   "x": 168,
+   "y": 120
+  },
+  "st1": {
+   "x": 247.5,
+   "y": 930
+  },
+  "st2": {
+   "x": 342,
+   "y": 462
+  },
+  "st3": {
+   "x": 708,
+   "y": 487.5
+  },
+  "st4": {
+   "x": 772.5,
+   "y": 180
+  },
+  "st5": {
+   "x": 988.5,
+   "y": 648
+  },
+  "st6": {
+   "x": 1318.5,
+   "y": 121.5
+  },
+  "st7": {
+   "x": 906,
+   "y": 727.5
+  },
+  "st8": {
+   "x": 1396.5,
+   "y": 363
+  },
+  "st9": {
+   "x": 220.5,
+   "y": 315
+  },
+  "st10": {
+   "x": 958.5,
+   "y": 961.5
+  },
+  "s_oldwell": {
+   "x": 703.5,
+   "y": 277.5
+  },
+  "s_lostheir": {
+   "x": 507,
+   "y": 90
+  },
+  "s_hermitcache": {
+   "x": 1246.5,
+   "y": 972
+  },
+  "s_moonduel": {
+   "x": 1051.5,
+   "y": 184.5
+  },
+  "s_sunkenchapel": {
+   "x": 1179,
+   "y": 619.5
+  },
+  "silverseam": {
+   "x": 450,
+   "y": 1200
+  },
+  "h_giants": {
+   "x": 780,
+   "y": 1155
+  },
+  "h_eyrie": {
+   "x": 1110,
+   "y": 1260
+  },
+  "h_stormcave": {
+   "x": 1395,
+   "y": 1140
+  },
+  "d_ratwarren": {
+   "x": 390,
+   "y": 780
+  },
+  "d_barrow": {
+   "x": 135,
+   "y": 840
+  },
+  "d_spidercave": {
+   "x": 990,
+   "y": 270
+  },
+  "d_ruinvault": {
+   "x": 1425,
+   "y": 675
+  },
+  "d_stormhold": {
+   "x": 630,
+   "y": 1290
+  },
+  "hq_ashbrook_harvest": {
+   "x": 498,
+   "y": 484.5
+  },
+  "hq_tallow_ledger": {
+   "x": 448.5,
+   "y": 474
+  },
+  "hq_tallow_outbid": {
+   "x": 504,
+   "y": 463.5
+  },
+  "hq_vey_poachers": {
+   "x": 1009.5,
+   "y": 573
+  },
+  "hq_vey_sabotage": {
+   "x": 1065,
+   "y": 562.5
+  },
+  "hq_corran_ore": {
+   "x": 100.5,
+   "y": 207
+  },
+  "hq_corran_poach": {
+   "x": 156,
+   "y": 196.5
+  },
+  "hq_marlowe_cargo": {
+   "x": 106.5,
+   "y": 186
+  },
+  "hq_marlowe_undercut": {
+   "x": 162,
+   "y": 265.5
+  },
+  "hq_skye_letters": {
+   "x": 735,
+   "y": 1005
+  },
+  "hq_skye_rumours": {
+   "x": 735,
+   "y": 1005
+  },
+  "hq_raid_ashbrook": {
+   "x": 478.5,
+   "y": 459
+  },
+  "hq_raid_tallow": {
+   "x": 534,
+   "y": 448.5
+  },
+  "hq_raid_vey": {
+   "x": 735,
+   "y": 558
+  },
+  "hq_raid_marlowe": {
+   "x": 180,
+   "y": 202.5
+  },
+  "hq_raid_corran": {
+   "x": 130.5,
+   "y": 192
+  },
+  "hq_raid_skye": {
+   "x": 735,
+   "y": 1005
+  },
+  "n_gemvein": {
+   "x": 682.5,
+   "y": 228
+  },
+  "n_timber": {
+   "x": 412.5,
+   "y": 322.5
+  },
+  "n_mushrooms": {
+   "x": 465,
+   "y": 255
+  },
+  "n_meadow": {
+   "x": 360,
+   "y": 705
+  },
+  "n_riverpool": {
+   "x": 444,
+   "y": 423
+  },
+  "n_lake": {
+   "x": 547.5,
+   "y": 922.5
+  },
+  "n_clay": {
+   "x": 165,
+   "y": 990
+  },
+  "n_peat": {
+   "x": 270,
+   "y": 997.5
+  },
+  "n_salt": {
+   "x": 60,
+   "y": 810
+  },
+  "n_starfall": {
+   "x": 742.5,
+   "y": 67.5
+  },
+  "n_tinpit": {
+   "x": 195,
+   "y": 900
+  },
+  "n_coalseam": {
+   "x": 585,
+   "y": 240
+  },
+  "n_goldwash": {
+   "x": 495,
+   "y": 1170
+  },
   "d_dragonlair": {
-   "x": 905,
-   "y": 800
+   "x": 1357.5,
+   "y": 1200
   },
   "q_charter": {
-   "x": 495,
-   "y": 650
+   "x": 742.5,
+   "y": 975
   },
   "n_limestone": {
-   "x": 745,
-   "y": 330
+   "x": 1117.5,
+   "y": 495
   },
   "n_granite": {
-   "x": 760,
-   "y": 745
+   "x": 1140,
+   "y": 1117.5
+  },
+  "q_buried_cache": {
+   "x": 330,
+   "y": 780
   }
  },
  "areas": [
@@ -482,9 +486,9 @@
    "id": "a_hills",
    "name": "Windswept Hills",
    "region": "outskirts",
-   "x": 110,
-   "y": 160,
-   "r": 90,
+   "x": 165,
+   "y": 240,
+   "r": 135,
    "days": 3,
    "secrets": [
     {
@@ -522,9 +526,9 @@
    "id": "a_marsh",
    "name": "Fenwater Marsh",
    "region": "outskirts",
-   "x": 140,
-   "y": 620,
-   "r": 85,
+   "x": 210,
+   "y": 930,
+   "r": 127.5,
    "days": 3,
    "secrets": [
     {
@@ -565,9 +569,9 @@
    "id": "a_deepwood",
    "name": "The Deepwood",
    "region": "forest",
-   "x": 760,
-   "y": 130,
-   "r": 100,
+   "x": 1140,
+   "y": 195,
+   "r": 150,
    "days": 4,
    "secrets": [
     {
@@ -613,9 +617,9 @@
    "id": "a_ridge",
    "name": "Thunder Ridge",
    "region": "forest",
-   "x": 900,
-   "y": 620,
-   "r": 90,
+   "x": 1350,
+   "y": 930,
+   "r": 135,
    "days": 4,
    "secrets": [
     {
@@ -653,9 +657,9 @@
    "id": "a_peaks",
    "name": "Stormcrest Peaks",
    "region": "highlands",
-   "x": 600,
-   "y": 820,
-   "r": 110,
+   "x": 900,
+   "y": 1230,
+   "r": 165,
    "days": 5,
    "secrets": [
     {
@@ -708,5 +712,80 @@
   "e_bogwisp": "a Bog Wisp",
   "e_whitestag": "the White Stag",
   "e_roc": "a Thunder Roc"
+ },
+ "startReveal": {
+  "_note": "R30: a new game knows only home and its village; everything else is found by travel/explore",
+  "home": 150,
+  "towns": {
+   "millbrook": 120
+  }
+ },
+ "quadrantMaps": {
+  "_note": "R30: each town sells the map of the quarter of the world it stands in. Buying charts the terrain (fog '2': drawn clear but not 'seen') and marks towns, dungeons and landmark locations discovered. Quests, resource nodes and hidden spots still need exploring. Placeholder prices.",
+  "split": {
+   "x": 800,
+   "y": 700
+  },
+  "quads": {
+   "nw": {
+    "name": "Northwest",
+    "price": 40
+   },
+   "ne": {
+    "name": "Northeast",
+    "price": 250
+   },
+   "sw": {
+    "name": "Southwest",
+    "price": 250
+   },
+   "se": {
+    "name": "Southeast",
+    "price": 400
+   }
+  },
+  "homeQuad": "nw"
+ },
+ "specialMaps": {
+  "_note": "R30 special maps: items with slot 'map'. Found via a source's mapDrop (dungeon clear or quest), read from the Bag. Effects: reveal (quest/node/dungeon ids, or loc:<id>), nodes (hidden nodes in a region with any of the listed resources). Quadrant maps never show these.",
+  "maps": {
+   "treasure_map": {
+    "effects": [
+     {
+      "type": "reveal",
+      "ids": [
+       "q_buried_cache"
+      ]
+     }
+    ],
+    "text": "An X on the old barrow road: something is buried there."
+   },
+   "miners_chart": {
+    "effects": [
+     {
+      "type": "nodes",
+      "region": "outskirts",
+      "res": [
+       "ore",
+       "copperore",
+       "stone",
+       "gems"
+      ]
+     }
+    ],
+    "text": "Pick marks and seams across the Outskirts."
+   },
+   "thieves_chart": {
+    "effects": [
+     {
+      "type": "reveal",
+      "ids": [
+       "d_ruinvault"
+      ]
+     }
+    ],
+    "text": "A Rogues' Guild chart with a vault door marked deep in the forest."
+   }
+  }
  }
 }

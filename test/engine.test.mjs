@@ -495,18 +495,17 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 
 // Tutorial (apprentice prologue) + dev mode
 { const G=E.newGame(t0); const F=E.active(G);
- ok(G.tut.started&&G.tut.step===0&&G.vault.includes('rusty_sword'),'new game starts apprenticeship with starter blade');
+ ok(G.tut.started&&G.tut.step===0&&(E.active(G).equip.weapon==='rusty_sword')&&!G.vault.includes('rusty_sword'),'new game starts apprenticeship with Orrin\'s blade already equipped');
  ok(G.chronicle.some(c=>/apprenticeship/.test(c.t)),'apprenticeship chronicled');
- const c0=G.res.coin; E.equip(G,F,'rusty_sword'); E.tutCheck(G); ok(G.tut.step===1&&G.res.coin===c0+20&&G.res.wood>=4,'step 1 equip → reward');
- E.setAction(G,{type:'quest',target:'rats'}); for(let i=0;i<40&&G.tut.step===1;i++) E.advanceReal(G,10); ok(G.tut.step>=2,'rats quest completes step 2');
- E.tutNote(G,'scouted'); ok(G.tut.step===3,'scouting a nearby spot completes step 3');
- ok(G.unlocks.includes('recipe:r_whittle')&&E.mentorCraft(G)&&G.tut.step>=4,'mentor bench craft completes step 4');
- E.tutNote(G,'traded'); ok(G.tut.step===5,'a first trade completes step 5');
- for(let i=0;i<30&&!(E.setAction(G,{type:'activity',target:'hiking'})&&E.active(G).action?.type==='activity');i++) E.advanceReal(G,5); E.advanceReal(G,30); ok(G.tut.step>=6,'activity completes step 6');
- E.tutNote(G,'estate'); ok(G.tut.step===7,'estate visit completes step 7');
+ const c0=G.res.coin; E.setAction(G,{type:'quest',target:'rats'}); for(let i=0;i<40&&G.tut.step===0;i++) E.advanceReal(G,10); ok(G.tut.step>=1&&G.res.coin>=c0+50,'rats is step 1: completes it, reward includes the old Gear Up coin');
+ E.tutNote(G,'scouted'); ok(G.tut.step===2,'scouting a nearby spot completes step 2');
+ ok(G.unlocks.includes('recipe:r_whittle')&&E.mentorCraft(G)&&G.tut.step>=3,'mentor bench craft completes step 3');
+ E.tutNote(G,'traded'); ok(G.tut.step===4,'a first trade completes step 4');
+ for(let i=0;i<30&&!(E.setAction(G,{type:'activity',target:'hiking'})&&E.active(G).action?.type==='activity');i++) E.advanceReal(G,5); E.advanceReal(G,30); ok(G.tut.step>=5,'activity completes step 5');
+ E.tutNote(G,'estate'); ok(G.tut.step===6,'estate visit completes step 6');
  F.ageDays=16*D.tuning.daysPerYear; E.chooseClass(G,F.id,'fighter'); E.tutCheck(G); ok(E.tutComplete(G)&&G.unlocks.includes('recipe:r_mentorknife')&&G.vault.includes('herbknife'),'choosing a path finishes: recipe + gear');
  ok(G.chronicle.some(c=>/Lost House/.test(c.t)),'finale leads into Lost House story');
- const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===8,'tutorial progress saved');
+ const R=E.deserialize(E.serialize(G,t0)); ok(R.tut.step===G.tut.step&&R.tut.done.length===7,'tutorial progress saved');
  const H=E.newGame(t0); ok(E.skipTutorial(H)&&!E.tutActive(H)&&!E.skipTutorial(H),'tutorial skippable once');
  const old=JSON.parse(E.serialize(E.newGame(t0),t0)); delete old.schema; delete old.tut; old.day=500; const O=E.importSave(JSON.stringify(old)); ok(O.tut.skipped&&!E.tutActive(O),'pre-tutorial saves are not dragged into it');
  ok(E.tourSteps().length>=8,'tab tour defined');
@@ -862,14 +861,14 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
 
 // Map round: terrain, roads, fog, nodes (stock), gathering hauls, hauling tiers, parcels, locations, encounters
 {
-  ok(E.terrainAt(115,165)==='hills'&&E.terrainAt(145,625)==='swamp'&&E.terrainAt(410,585)==='lake'&&E.terrainAt(285,246)==='river'&&E.terrainAt(30,300)==='coast'&&E.terrainAt(430,85)==='mountains'&&E.terrainAt(200,455)==='plains'&&E.terrainAt(700,200)==='forest','terrain zones and region defaults');
-  const h=D.map.home, rA=E.routeTo({x:330,y:300}), d=Math.hypot(330-h.x,300-h.y); const rB=E.routeTo({x:h.x-d*0.7,y:h.y+d*0.7});
+  ok(E.terrainAt(172.5,247.5)==='hills'&&E.terrainAt(217.5,937.5)==='swamp'&&E.terrainAt(615,877.5)==='lake'&&E.terrainAt(427.5,369)==='river'&&E.terrainAt(45,450)==='coast'&&E.terrainAt(645,127.5)==='mountains'&&E.terrainAt(300,682.5)==='plains'&&E.terrainAt(1050,300)==='forest','terrain zones and region defaults');
+  const h=D.map.home, rA=E.routeTo({x:495,y:450}), d=Math.hypot(495-h.x,450-h.y); const rB=E.routeTo({x:h.x-d*0.7,y:h.y+d*0.7});
   ok(rA.road&&rA.days<rB.days&&rA.risk<rB.risk&&rA.discover<rB.discover,'roads are faster and safer; off-road discovers more');
-  ok(E.routeTo({x:90,y:150}).road.type==='highway'&&E.routeTo({x:97,y:628}).road.type==='track','highway / track routes');
+  ok(E.routeTo({x:135,y:225}).road.type==='highway'&&E.routeTo({x:145.5,y:942}).road.type==='track','highway / track routes');
   const G=E.newGame(t0); const m=G.members[0]; m.ageDays=20*360; G.res.coin=1e5;
-  ok(E.fogSeen(G,h.x,h.y)&&!E.fogSeen(G,960,60),'fog: home charted, far corners fogged');
+  ok(E.fogSeen(G,h.x,h.y)&&!E.fogSeen(G,1440,90),'fog: home charted, far corners fogged');
   const n=D.nodes.find(x=>x.id==='n_lake'); ok(!E.known(G,n)&&!E.actionAllowed(G,m,{type:'gather',target:'n_lake'}),'terrain node hidden by fog');
-  E.reveal(G,410,600,30); ok(E.known(G,n)&&E.actionAllowed(G,m,{type:'gather',target:'n_lake'}),'discovered once its cell is seen');
+  E.reveal(G,D.map.points.n_lake.x,D.map.points.n_lake.y,45); ok(E.known(G,n)&&E.actionAllowed(G,m,{type:'gather',target:'n_lake'}),'discovered once its cell is seen');
   const _r=E.rng; E.setRng(()=>0.99);
   const f0=G.res.fish||0; E.setAction(G,{type:'gather',target:'n_lake'}); const a=m.action; let sawLoad=false;
   for(let i=0;i<200&&!(a.trip&&E.tripPhase(a)==='back');i++){E.advanceReal(G,1); if(a.trip&&a.trip.load&&a.trip.load.fish>0)sawLoad=true;}
@@ -901,13 +900,13 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
   ok(E.parcelJobMult(P,'gather')>1,'parcel features boost follower jobs');
   // follower node runs
   P.res.coin+=500; P.res.planks=100; const pst=E.buildStructure(P,'shack'); E.placePiece(P,pst.uid,'bunk'); const mi={uid:'mx1',type:'laborer',equip:{},name:'Bo',job:'idle',loyalty:100,since:0,cls:'n_peasant'}; P.minions.push(mi); E.reveal(P,410,600,30);
-  ok(E.setMinionNode(P,mi.uid,'n_lake')&&!E.setMinionNode(P,mi.uid,'n_starfall'),'node runs only to known nodes');
+  E.revealAt(P,'n_lake'); ok(E.setMinionNode(P,mi.uid,'n_lake')&&!E.setMinionNode(P,mi.uid,'n_starfall'),'node runs only to known nodes');
   mi.job='noderun'; const fz=P.res.fish||0; let saw=false; for(let i=0;i<40;i++){E.MINION_JOBS.noderun(P,mi,1,1); if(mi.trip&&mi.trip.load)saw=true;}
   ok(saw&&(P.res.fish||0)>fz,'follower travels, gathers and hauls fish home');
   // locations through fog + secrets
-  const Q=E.newGame(t0); const nl=Q.log.length; E.reveal(Q,250,585,30); E.locationsDay(Q,'Tess'); ok(Q.locSeen.includes('l_hollyford')&&Q.log.some(l=>/🗺️ Discovered .*Hollyford/.test(l.msg)),'locations revealed through fog, logged');
+  const Q=E.newGame(t0); const nl=Q.log.length; E.reveal(Q,375,877.5,45); E.locationsDay(Q,'Tess'); ok(Q.locSeen.includes('l_hollyford')&&Q.log.some(l=>/🗺️ Discovered .*Hollyford/.test(l.msg)),'locations revealed through fog, logged');
   ok(!E.locKnown(Q,E.locDef('l_crone')),'hidden crone hut not shown by fog');
-  E.reveal(Q,698,565,40); ok(!E.locKnown(Q,E.locDef('l_crone')),'still hidden after the fog clears');
+  E.reveal(Q,1047,847.5,60); ok(!E.locKnown(Q,E.locDef('l_crone')),'still hidden after the fog clears');
   const qm=Q.members[0]; qm.ageDays=20*360; E.setRng(()=>0.01); E.exploreArea(Q,qm,E.areaDef('a_deepwood')); E.setRng(_r);
   ok(E.locKnown(Q,E.locDef('l_crone')),'explore secret reveals the hidden place');
   ok(E.locDef('l_dwarfhold').locked&&E.locDef('l_dwarfhold').stub==='runecarver','dwarven hold is a locked stub');
@@ -919,7 +918,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
 // migration: old save gets fog charted around what it already knew
 {
   const G=E.newGame(t0); G.explored.push('a_marsh'); G.revealed.push('oldmine'); const raw=JSON.parse(E.serialize(G,t0)); raw.schema=11; delete raw.fog; raw._norm=false; E.normalize(raw);
-  ok(raw.fog&&E.fogSeen(raw,140,620)&&E.fogSeen(raw,358,139)&&!E.fogSeen(raw,960,60),'step 12: fog keeps explored areas and found places charted');
+  ok(raw.fog&&E.fogSeen(raw,210,930)&&E.fogSeen(raw,537,208.5)&&!E.fogSeen(raw,1440,90),'step 12: fog keeps explored areas and found places charted');
   ok(raw.nodeStock&&raw.animals,'step 12: node stock + hauling state');
 }
 console.log(pass,'tests passed');
