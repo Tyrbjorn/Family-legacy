@@ -27,7 +27,7 @@
    "id": "rats",
    "icon": "🐀",
    "title": "Rats in the Cellar",
-   "text": "The guildhall cellar is crawling. Take the 'Rats in the Cellar' quest for your first fight.",
+   "text": "The guildhall cellar in Millbrook is crawling. Open the Map tab and take 'Rats in the Cellar' (the quest pin next to Millbrook, or the Outskirts quest list below the map) for your first fight.",
    "check": "quest:rats",
    "reward": {
     "coin": 30,

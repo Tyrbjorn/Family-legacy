@@ -60,7 +60,12 @@ const CHECKS = {
   path: s => living(s).some(m => m.cls || m.guild || m.craft || m.prof),
 };
 export function stepDone(s, st) {
-  if (st.check.startsWith("quest:")) return s.doneQuests.includes(st.check.slice(6));
+  // a quest step also counts once the family has outgrown it (3+ other quests done or an estate founded),
+  // or if the quest no longer exists, so older saves never get stuck on it
+  if (st.check.startsWith("quest:")) {
+    const id = st.check.slice(6);
+    return s.doneQuests.includes(id) || !D.quests.some(q => q.id === id) || s.doneQuests.length >= 3 || (s.land || []).length > 0;
+  }
   return !!(CHECKS[st.check] && CHECKS[st.check](s));
 }
 
