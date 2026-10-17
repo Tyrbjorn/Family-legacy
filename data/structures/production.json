@@ -113,6 +113,9 @@
       "mult": 0.5,
       "cap": 0
      }
+    ],
+    "fixed": [
+     "limecut"
     ]
    },
    {
@@ -162,6 +165,9 @@
       "mult": 0.5,
       "cap": 0
      }
+    ],
+    "fixed": [
+     "granitecut"
     ]
    }
   ]

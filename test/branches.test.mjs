@@ -12,10 +12,11 @@ ok(B.every(id=>{const d=E.structDef(id);return d.upgradeFrom==='house'&&d.land==
 ok(E.upgradeOptions('house').length===4&&E.upgradeOptions('cabin').length===1,'House has 4 options, Cabin 1');
 const h=E.buildStructure(s,'shack'); ok(E.upgradeStructure(s,h.uid)&&E.upgradeStructure(s,h.uid)&&h.type==='house','shack→cabin→house');
 for(const id of B) ok(E.upgradeIssue(s,h.uid,id),'locked without reqs: '+id+' ('+E.upgradeIssue(s,h.uid,id)+')');
-// Mansion: haggling 30 on one member + Trading Post
+// Manor branches (Oct 16): Manor-stage estate + Established phase (+ Trading Post for the Mansion)
 const w=E.buildStructure(s,'warehouse'); E.upgradeStructure(s,w.uid);
-f.skills.haggling.lvl=29; ok(/haggling/.test(E.upgradeIssue(s,h.uid,'mansion')),'mansion needs haggling 30');
-f.skills.haggling.lvl=30; ok(!E.upgradeIssue(s,h.uid,'mansion'),'mansion unlocked');
+ok(/Manor estate/.test(E.upgradeIssue(s,h.uid,'mansion')),'mansion needs a Manor estate ('+E.upgradeIssue(s,h.uid,'mansion')+')');
+s.buildings.farm=(s.buildings.farm||0)+80; s.renown=Math.max(s.renown,400);
+ok(E.estateStage(s)!=='Homestead'&&!E.upgradeIssue(s,h.uid,'mansion'),'mansion unlocked ('+E.upgradeIssue(s,h.uid,'mansion')+')');
 const slots0=E.routeSlots(s), p0=E.townSellPrice(s,'millbrook','wood'), land0=E.landUsed?E.landUsed(s):0;
 ok(E.upgradeStructure(s,h.uid,'mansion')&&h.type==='mansion','built mansion');
 ok(E.routeSlots(s)===slots0+1,'mansion +1 route slot'); ok(E.townSellPrice(s,'millbrook','wood')>p0,'mansion +sell price');

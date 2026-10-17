@@ -18,11 +18,11 @@
   75,
   100
  ],
- "baseLifespan": 70,
+ "baseLifespan": 55,
  "courtAge": 18,
  "adultAge": 18,
- "childEvery": 540,
- "maxKidsPerCouple": 3,
+ "childEvery": 270,
+ "maxKidsPerCouple": 5,
  "inheritShare": 0.1,
  "buildCostMult": 2.5,
  "upkeepPerBuildingMonth": 5,
@@ -467,5 +467,19 @@
     }
    }
   ]
+ },
+ "inheritBoost": 0.1,
+ "generations": {
+  "_note": "Heads hand over at retireAge to the oldest adult child (15+ years younger). Yearly illness: base by age (child/under 30/30-40, then x(1+(age-40)/8)), cut by VIT x3% and the family's best healing/herbalism x1% (floor 25%).",
+  "retireAge": 35,
+  "gap": 15,
+  "risk": {
+   "child": 0.002,
+   "young": 0.004,
+   "mid": 0.008,
+   "vit": 0.03,
+   "care": 0.01,
+   "floor": 0.25
+  }
  }
 }

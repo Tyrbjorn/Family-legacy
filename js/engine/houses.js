@@ -83,17 +83,24 @@ export function houseQuestDone(s, q) {
   }
 }
 
-// ---- gifts (the way back from rival/feud; never a permanent lock)
+// ---- gifts (the way back from rival/feud; never a permanent lock). Cost grows with the phase and the house's
+// wealth (endgame.giftEra), so diplomacy stays a coin sink late on.
+export function giftCost(s, id) {
+  const G = (D.endgame || {}).giftEra;
+  if (!G) return HC().giftCoin;
+  const n = Math.max(1, Math.min(G.byPhase.length, era(s).n));
+  return Math.round(HC().giftCoin * G.byPhase[n - 1] * (1 + (houseDef(id).wealth || 0) * G.perWealth));
+}
 export function giftIssue(s, id) {
   const h = houseState(s, id);
   if (h.state === "war") return "at war: offer a truce first";
   if (s.day - (h.gift ?? -1e9) < HC().giftCooldown) return `cooldown ${HC().giftCooldown - (s.day - h.gift)}d`;
-  if (s.res.coin < HC().giftCoin) return `${HC().giftCoin} coin`;
+  if (s.res.coin < giftCost(s, id)) return `${giftCost(s, id)} coin`;
   return null;
 }
 export function sendGift(s, id) {
   if (giftIssue(s, id)) return false;
-  s.res.coin -= HC().giftCoin;
+  s.res.coin -= giftCost(s, id);
   houseState(s, id).gift = s.day;
   addRapport(s, id, HC().giftStanding, "gift");
   return true;

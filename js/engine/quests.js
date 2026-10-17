@@ -6,6 +6,7 @@ import { rollLoot, rollOre } from "./loot.js";
 import { dungeonFloorRun, dungeonTier } from "./combat.js";
 import { LG, addRenown } from "./legacy.js";
 import { successChance } from "./actions.js";
+import { threat } from "./endgame.js";
 import { ES } from "./estate.js";
 import { era, kill, level } from "./family.js";
 import { cls, guildDef, guildsOf, questOk } from "./guilds.js";
@@ -13,19 +14,27 @@ import { addToVault, itemDef, recipeDef } from "./inventory.js";
 import { regionOpen } from "./map.js";
 import { addMinion, minionPower, mtype } from "./minions.js";
 import { gainXp } from "./skills.js";
-import { D, T, isAdult, known, log, r, rng } from "./state.js";
+import { D, T, afford, isAdult, known, log, pay, r, rng } from "./state.js";
 
 export function resolveQuest(s, m, q, eff) {
+  // repeat fights scale with the phase; ~10% are elites (endgame.creatures)
+  const th = threat(s, q.cp > 0 && !q.once && !q.story && !q.deliver && s.doneQuests.includes(q.id));
+  if (th.mult !== 1) q = { ...q, cp: q.cp * th.mult };
   const ok = (q.apprentice && !isAdult(m)) || rng() < successChance(s, m, q); // the mentor watches the apprentice
   if (!ok) {
     log(s, `❌ ${m.name} failed ${q.name}.`);
     questInjury(s, m, q, false, minionPower(s, "guard") > 0);
     return;
   }
+  // resource request quests: the goods are handed over at the end (kept if they ran short meanwhile)
+  if (q.deliver) {
+    if (!afford(s, q.deliver)) return void log(s, `📦 ${m.name} reached ${q.name} without the goods to deliver; try again when stocked.`);
+    pay(s, q.deliver);
+  }
   const scale = eff >= 1 ? 1 : Math.max(eff, 0.2) * (1 / Math.max(eff, 0.2)) * eff; // eff already applied via time; loot scaled
   const gain = [];
   for (const [k, v] of Object.entries(q.reward)) {
-    const n = Math.round(v * (eff >= 1 ? 1 : Math.max(eff * 2, 0.4)));
+    const n = Math.round(v * (eff >= 1 ? 1 : Math.max(eff * 2, 0.4)) * (k === "coin" ? th.coin : 1));
     s.res[k] = (s.res[k] || 0) + n;
     gain.push(`+${n} ${k}`);
   }
@@ -59,7 +68,7 @@ export function resolveQuest(s, m, q, eff) {
   }
   const rc = D.minions.rescueQuests[q.id];
   if (rc && rng() < rc) addMinion(s, "refugee", `rescued on ${q.name}`);
-  log(s, `✅ ${m.name} finished ${q.name}: ${gain.join(", ")}`);
+  log(s, `✅ ${m.name} finished ${q.name}${th.elite ? " against an elite foe" : ""}: ${gain.join(", ")}`);
   questInjury(s, m, q, true);
 }
 
@@ -74,6 +83,9 @@ export function questIssue(s, m, q) {
   if (!questOk(m, q)) return "guild rank";
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
+  if (q.req?.land && !s.land.includes(q.req.land)) return "needs the " + (ES().lands.find(l => l.id === q.req.land) || {}).name + " deed";
+  if (!q.story && q.req?.era && era(s).n < q.req.era) return "Era " + q.req.era;
+  if (q.deliver && !afford(s, q.deliver)) return "deliver " + Object.entries(q.deliver).map(([k, v]) => v + " " + k).join(", ");
   if (q.story) {
     const prev = D.quests.find(x => x.story === q.story - 1);
     if (prev && !s.doneQuests.includes(prev.id)) return "finish chapter " + (q.story - 1);
@@ -113,8 +125,10 @@ export function rollRare(s, src, m) {
 
 export function dungeonFloor(s, m, dg, i, t = {}) {
   const f = dg.floors[i];
+  if (!i || !t.th) t.th = threat(s, (s.cleared || []).includes(dg.id)); // repeat runs only: scaled, maybe elite
+  if (!i && t.th.elite) log(s, `💀 An elite brood stirs in ${dg.name}.`);
   if (!dungeonFloorRun(s, m, dg, i, t)) return false;
-  for (const [k, v] of Object.entries(f.reward)) s.res[k] = (s.res[k] || 0) + v;
+  for (const [k, v] of Object.entries(f.reward)) s.res[k] = (s.res[k] || 0) + Math.round(v * (k === "coin" ? t.th.coin : 1));
   log(s, `🗝️ ${m.name} cleared ${dg.name}: ${f.name} (${i + 1}/${dg.floors.length}).`);
   return true;
 }
@@ -175,6 +189,11 @@ export function grantRewards(s, m, q) {
       s.res.coin += c;
       out.push(c + " coin (deed already held)");
     }
+  }
+  if (g.village && !s.village) {
+    s.village = { tier: 0 };
+    s.deeds.push("Founded a village by the Baron's charter.");
+    out.push("village founded");
   }
   if (g.renown) {
     addRenown(s, m, g.renown);

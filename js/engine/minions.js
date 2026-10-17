@@ -166,7 +166,14 @@ export function dismiss(s, uid) {
   return true;
 }
 
-export const monthlyWages = s => s.minions.reduce((a, x) => a + mtype(x.type).wage, 0);
+// wages scale with the title tier and the key-job skill (endgame.wages): skilled titled staff are a coin sink
+export const titleTier = mi => (mi.cls && mi.cls !== "n_peasant" ? ((npcClass(mi.cls) || {}).needs || {}).tier || 1 : 0);
+export function wageOf(mi) {
+  const W = (D.endgame || {}).wages, base = mtype(mi.type).wage;
+  if (!W || mi.special) return base;
+  return Math.round(base * W.tierMult[Math.min(titleTier(mi), W.tierMult.length - 1)] * (1 + W.perSkill * minionSkillLvl(mi)));
+}
+export const monthlyWages = s => s.minions.reduce((a, x) => a + wageOf(x), 0);
 
 // Per-job daily output: (s, mi, a = output multiplier, rg = resource gain bonus)
 export * from "./minion-housing.js";

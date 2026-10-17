@@ -27,7 +27,7 @@ export function minionsv() {
   if (E.pendingCount(s)) h += `<div class="card tut">🎯 ${E.pendingCount(s)} follower upgrade choice${E.pendingCount(s) > 1 ? "s" : ""} waiting (Manual mode). Followers keep working meanwhile.</div>`;
   for (const mi of s.minions) {
     const t = mt(mi.type);
-    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${(mi.pending || []).length ? ' <span class="tb" style="border-color:#d9b44a">🎯</span>' : ""}${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${t.wage}🪙/mo</span></div>${mi.job ? timerBar(E.minionTimer(s, mi)) : pbar((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi)), "XP · idle")}${
+    h += `<div class="card" ${mi.special ? 'style="border-color:#d9b44a"' : ""}><div class="row"><span>${t.icon} <b>${mi.name}</b>${(mi.pending || []).length ? ' <span class="tb" style="border-color:#d9b44a">🎯</span>' : ""}${mi.special ? ' <span class="tb" style="border-color:#d9b44a">⭐ Special</span>' : " · " + t.name}</span><span class="muted">${mi.cls ? E.npcClass(mi.cls).icon + " " + E.npcClass(mi.cls).name + " · " : ""}Lv ${E.minionLvl(mi)} · ❤️ ${Math.round(mi.loyalty)} · ${E.wageOf(mi)}🪙/mo</span></div>${mi.job ? timerBar(E.minionTimer(s, mi)) : pbar((mi.xp || 0) / E.minionXpNeed(E.minionLvl(mi)), "XP · idle")}${
       E.evolveOptions(mi).length
         ? `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Evolve:</span>${E.evolveOptions(
             mi,

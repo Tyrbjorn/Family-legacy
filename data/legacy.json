@@ -22,7 +22,8 @@
   "questFirstOnce": 5,
   "warBattle": 10,
   "convoyWin": 2,
-  "tithe": 0.1
+  "tithe": 0.2,
+  "headBank": 0.35
  },
  "upgrades": [
   {
@@ -181,6 +182,23 @@
      "value": 1
     }
    ]
+  },
+  {
+   "id": "at_all",
+   "name": "Auto Tend: Whole Estate",
+   "icon": "🏺",
+   "desc": "Every Auto Tend at once: tier 1 (all 10 skills keep working at 50%), tier 2 (75%). Single Auto Tend tiers already bought count toward the price.",
+   "tiers": [
+    {
+     "cost": 900,
+     "value": 0.5
+    },
+    {
+     "cost": 2500,
+     "value": 0.75
+    }
+   ],
+   "bundle": "at_"
   },
   {
    "id": "at_farming",
@@ -356,7 +374,7 @@
    "id": "tithe",
    "name": "Ancestors' Tithe",
    "icon": "🕯️",
-   "desc": "While a Graveyard stands, more of each renown gain goes straight to Legacy: base 10%, +5% per tier (15/20/25%).",
+   "desc": "While a Graveyard stands, more of each renown gain goes straight to Legacy: base 20%, +5% per tier (25/30/35%).",
    "tiers": [
     {
      "cost": 150,

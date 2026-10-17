@@ -19,7 +19,21 @@ export function legacyState(s) {
 
 export const legacyDef = id => LG().upgrades.find(x => x.id === id);
 
-export const legacyTier = (s, id) => (s.legacy && s.legacy.ups[id]) || 0;
+const ownTier = (s, id) => (s.legacy && s.legacy.ups[id]) || 0;
+// bundles (upgrade.bundle = id prefix): the bundle's tier counts as that tier of every covered upgrade
+const bundleOf = id => LG().upgrades.find(u => u.bundle && id !== u.id && id.startsWith(u.bundle));
+export const legacyTier = (s, id) => {
+  const b = bundleOf(id);
+  return Math.max(ownTier(s, id), b ? ownTier(s, b.id) : 0);
+};
+// a bundle tier's price minus what the covered single tiers already cost (never below 0)
+export function legacyCost(s, id) {
+  const u = legacyDef(id), k = legacyTier(s, id), nx = u && u.tiers[k];
+  if (!nx) return null;
+  if (!u.bundle) return nx.cost;
+  const paid = LG().upgrades.filter(x => !x.bundle && x.id.startsWith(u.bundle) && ownTier(s, x.id) > k).reduce((a, x) => a + x.tiers[k].cost, 0);
+  return Math.max(0, nx.cost - paid);
+}
 
 export function legacyValue(s, id) {
   const u = legacyDef(id);
@@ -34,7 +48,8 @@ export function legacyUpIssue(s, id) {
   if (!u) return "missing";
   const nx = u.tiers[legacyTier(s, id)];
   if (!nx) return "max";
-  if (legacyState(s).renown < nx.cost) return "needs " + nx.cost + " Legacy Renown";
+  const c = legacyCost(s, id);
+  if (legacyState(s).renown < c) return "needs " + c + " Legacy Renown";
   return null;
 }
 
@@ -42,8 +57,7 @@ export function buyLegacy(s, id) {
   if (legacyUpIssue(s, id)) return false;
   const L = legacyState(s);
   const u = legacyDef(id);
-  const nx = u.tiers[legacyTier(s, id)];
-  L.renown -= nx.cost;
+  L.renown -= legacyCost(s, id);
   L.ups[id] = legacyTier(s, id) + 1;
   log(s, `🏺 Legacy: ${u.name} tier ${L.ups[id]}.`);
   return true;
@@ -88,7 +102,7 @@ export function captureRate(s) {
 }
 
 export function bankRenown(s, m) {
-  const rate = captureRate(s);
+  const c = captureRate(s), rate = c && (m.wasHead || m.id === s.head) ? Math.max(c, LG().renown.headBank || 0) : c;
   const n = Math.floor(Math.max(0, (m.renown || 0) - (m.tithed || 0)) * rate); // tithed renown was already banked
   if (!rate) {
     if (m.renown) log(s, `🪦 No graveyard: ${m.name}'s ${Math.floor(m.renown)} renown is lost to legend.`);

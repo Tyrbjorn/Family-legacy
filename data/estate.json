@@ -206,19 +206,19 @@
    "Scrub Plot"
   ],
   [
-   1,
+   10,
    "Homestead"
   ],
   [
-   6,
+   30,
    "Farmstead"
   ],
   [
-   12,
+   60,
    "Manor"
   ],
   [
-   20,
+   80,
    "Prosperous Estate"
   ]
  ],
@@ -901,10 +901,31 @@
       },
       "out": "blocks",
       "rate": 3
+     },
+     {
+      "in": {
+       "limestone": 3
+      },
+      "out": "limeblocks",
+      "rate": 2
+     },
+     {
+      "in": {
+       "granite": 3
+      },
+      "out": "graniteblocks",
+      "rate": 1.5
+     },
+     {
+      "in": {
+       "marble": 3
+      },
+      "out": "marbleblocks",
+      "rate": 1
      }
     ]
    },
-   "desc": "Cuts 3 stone → 1 block, 3/day (Masonry speeds it up)"
+   "desc": "Cuts 3 stone → 1 block of the same rank: sandstone 3/day, limestone 2/day, granite 1.5/day, marble 1/day (Masonry speeds it up)"
   },
   {
    "id": "tanrack",
@@ -2293,6 +2314,42 @@
     "boats": 2
    },
    "desc": "Launches and keeps up to 2 small boats"
+  },
+  {
+   "id": "limecut",
+   "name": "Limestone Face",
+   "icon": "⛏️",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "limestone",
+      "rate": 2
+     }
+    ]
+   },
+   "desc": "Deep Quarry: 2 limestone/day"
+  },
+  {
+   "id": "granitecut",
+   "name": "Granite Face",
+   "icon": "⛏️",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "granite",
+      "rate": 1.5
+     }
+    ]
+   },
+   "desc": "Quarry Works: 1.5 granite/day"
   }
  ],
  "synergies": [
@@ -2558,7 +2615,13 @@
    "mithrilore",
    "mithril",
    "adamantore",
-   "adamantium"
+   "adamantium",
+   "limestone",
+   "granite",
+   "marble",
+   "limeblocks",
+   "graniteblocks",
+   "marbleblocks"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2626,7 +2689,10 @@
     "goldore",
     "mithrilore",
     "adamantore",
-    "hay"
+    "hay",
+    "limestone",
+    "granite",
+    "marble"
    ]
   },
   "2": {
@@ -2658,7 +2724,10 @@
     "tin",
     "bronze",
     "silver",
-    "gold"
+    "gold",
+    "limeblocks",
+    "graniteblocks",
+    "marbleblocks"
    ]
   },
   "3": {
@@ -2828,5 +2897,91 @@
   "production",
   "trade",
   "civic"
- ]
+ ],
+ "village": {
+  "_note": "Personal village (Era 3): founded by the Baron's charter (a resource request quest: Valley deed + Dynasty phase, deliver coin/blocks/planks). Village buildings use village slots (production buildings take 2), make outMult× output with jobMult× follower spots, cost coinMult× the estate coin + matMult× its materials, and pay upkeep of their coin price each month. Each village building is a construction project: deliver its price in parts, one project at a time; Auto Deliver feeds it from surplus (coin above autoCoin, materials above their keep-in-reserve setting).",
+  "charter": {
+   "quest": "q_charter"
+  },
+  "tiers": [
+   {
+    "name": "Hamlet",
+    "slots": 8
+   },
+   {
+    "name": "Village",
+    "slots": 12,
+    "cost": {
+     "coin": 60000,
+     "limeblocks": 100
+    }
+   },
+   {
+    "name": "Market Village",
+    "slots": 16,
+    "cost": {
+     "coin": 150000,
+     "graniteblocks": 150
+    }
+   }
+  ],
+  "types": [
+   "quarry",
+   "herbgarden",
+   "smithy",
+   "sawmill",
+   "hunterscabin",
+   "fishinghut",
+   "apiary",
+   "chickencoop",
+   "tannery",
+   "fields",
+   "orchard",
+   "cowpen",
+   "gristmill",
+   "smokehouse",
+   "brewery",
+   "preservery"
+  ],
+  "slotsPer": 2,
+  "outMult": 3,
+  "jobMult": 2,
+  "coinMult": 40,
+  "matMult": 10,
+  "upkeep": 0.01,
+  "autoCoin": 5000,
+  "tierStone": {
+   "1": {
+    "limeblocks": 40
+   },
+   "2": {
+    "graniteblocks": 40
+   }
+  }
+ },
+ "stoneRanks": {
+  "_note": "Stone ranks: stone/blocks are Sandstone (old saves keep them). Limestone from a Deep Quarry or Thornwick, granite from Quarry Works or the Eyrie, marble only from the Eyrie market. The Mason's Table cuts each into its own blocks. Village tier-1/2 buildings and village growth need limestone/granite blocks; fine buildings (Hall, manor line, Ancestor Hall) need marble blocks.",
+  "ranks": [
+   {
+    "id": "sandstone",
+    "raw": "stone",
+    "blocks": "blocks"
+   },
+   {
+    "id": "limestone",
+    "raw": "limestone",
+    "blocks": "limeblocks"
+   },
+   {
+    "id": "granite",
+    "raw": "granite",
+    "blocks": "graniteblocks"
+   },
+   {
+    "id": "marble",
+    "raw": "marble",
+    "blocks": "marbleblocks"
+   }
+  ]
+ }
 }

@@ -9,7 +9,8 @@
    "coin": 1200,
    "planks": 80,
    "blocks": 50,
-   "ingots": 15
+   "ingots": 15,
+   "marbleblocks": 40
   },
   "desc": "8 slots, needs 2 land",
   "level": 3,
@@ -882,7 +883,8 @@
   ],
   "cost": {
    "coin": 1500,
-   "blocks": 40
+   "blocks": 40,
+   "marbleblocks": 30
   },
   "legacy": "hall",
   "desc": "Legacy building: ancestors' blessing (+XP, contentment)",
@@ -1062,5 +1064,27 @@
    "reagentshelf",
    "glyphlectern"
   ]
+ },
+ {
+  "id": "cottage",
+  "name": "Village Cottage",
+  "icon": "🏡",
+  "land": 1,
+  "slots": 0,
+  "villageOnly": true,
+  "cost": {
+   "coin": 1500,
+   "planks": 60,
+   "blocks": 30
+  },
+  "builtin": {
+   "housing": {
+    "bunk": 4
+   }
+  },
+  "desc": "Village only: houses 4 followers",
+  "level": 1,
+  "allowed": [],
+  "bedRole": "followers"
  }
 ]

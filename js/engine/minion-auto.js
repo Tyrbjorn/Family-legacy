@@ -3,11 +3,11 @@
 // that is closest to qualifying (min of level and key-job skill progress) trains in the title's key job and evolves
 // automatically once it qualifies. Its own title slot then opens and the next one down follows (cascade).
 // Peasants aim for a tier-1 title in branch priority order. Auto Recruit hires the cheapest follower once a month.
-import { evolveMinion, hire, hireable, keyJobs, minionEvolveIssue, minionLvl, minionSkillLvl, mtype, npcClass, titleSkill } from "./minions.js";
+import { evolveMinion, hire, hireable, keyJobs, minionEvolveIssue, minionLvl, minionSkillLvl, monthlyWages, npcClass, titleSkill } from "./minions.js";
 import { established, jobCap } from "./estate.js";
 import { minionRoom } from "./minion-housing.js";
 import { townKnown } from "./map.js";
-import { D, log } from "./state.js";
+import { D, log, rng } from "./state.js";
 
 const AA = () => D.minions.autoAscend;
 const off = s => s.autoOff || (s.autoOff = {});
@@ -73,20 +73,71 @@ export function autoAscendDay(s) {
       used++;
     }
   }
-  // peasants → a tier-1 title by branch priority
+  // peasants spread over every open tier-1 title: the title with the fewest holders takes its closest-qualifying
+  // peasant next; the branch priority only breaks ties
   const t1 = ascPriority(s).flatMap(b => titles.filter(c => c.branch === b && titleSlots(c) === Infinity && c.from === "n_peasant" && buildingOk(s, c)));
-  if (t1.length) for (const mi of P.filter(x => (x.cls || "n_peasant") === "n_peasant" && !x.trainFor)) start(s, mi, t1[0]);
+  const held = c => P.filter(x => x.cls === c.id || x.trainFor === c.id).length;
+  let free = P.filter(x => (x.cls || "n_peasant") === "n_peasant" && !x.trainFor);
+  while (t1.length && free.length) {
+    const c = t1.reduce((a, b) => (held(b) < held(a) ? b : a));
+    const mi = free.sort((a, b) => score(b, c) - score(a, c) || a.since - b.since)[0];
+    start(s, mi, c);
+    free = free.filter(x => x !== mi);
+  }
 }
 
-// Auto Recruit: monthly, cheapest follower in a known town, when a bunk is free and coin covers hire + wages + reserve
+// Auto Recruit modes: cheapest; best fit (best aptitude for jobs with open spots); strongest (best aptitude
+// overall); balanced (aptitude per coin)
+export const RECRUIT_MODES = [
+  { id: "cheap", name: "Cheapest" },
+  { id: "fit", name: "Best fit" },
+  { id: "strong", name: "Strongest" },
+  { id: "balanced", name: "Balanced" },
+];
+export const recruitMode = s => s.recruitMode || "cheap";
+export function setRecruitMode(s, id) {
+  if (!RECRUIT_MODES.some(x => x.id === id)) return false;
+  s.recruitMode = id;
+  return true;
+}
+const aptMax = x => Math.max(1, ...Object.values(x.apt || {}));
+const fitOf = (s, x) => {
+  const open = Object.entries(x.apt || {}).filter(([j]) => jobCap(s, j) > (s.minions || []).filter(mi => mi.job === j).length);
+  return open.length ? Math.max(...open.map(([, v]) => v)) : 0;
+};
+export const recruitValue = (s, x, mode = recruitMode(s)) =>
+  mode === "fit" ? fitOf(s, x) : mode === "strong" ? aptMax(x) : mode === "balanced" ? aptMax(x) / (x.hire + x.wage * 3 + 1) : -(x.hire + x.wage);
+
+// monthly (or right after a follower dies of age), when a bunk is free and coin covers hire + wages + reserve
 export function autoRecruitDay(s) {
-  if (!recruitOn(s) || s.day % 30 !== 0 || !minionRoom(s)) return;
-  const wages = (s.minions || []).reduce((a, x) => a + mtype(x.type).wage, 0);
+  if (!recruitOn(s) || (s.day % 30 !== 0 && !s.recruitNow) || !minionRoom(s)) return;
+  delete s.recruitNow;
+  const wages = monthlyWages(s);
   const pick = D.towns
     .filter(t => townKnown(s, t))
     .flatMap(t => hireable(s, t.id).map(x => ({ t, x })))
-    .sort((a, b) => a.x.hire + a.x.wage - b.x.hire - b.x.wage)[0];
+    .sort((a, b) => recruitValue(s, b.x) - recruitValue(s, a.x) || a.x.hire + a.x.wage - b.x.hire - b.x.wage)[0];
   if (!pick || (s.res.coin || 0) < pick.x.hire + (wages + pick.x.wage) * AA().recruitMonths + (s.recruitReserve ?? AA().recruitReserve)) return;
   const mi = hire(s, pick.t.id, pick.x.id);
   if (mi) log(s, `📯 Auto Recruit hired ${mi.name} the ${pick.x.name} in ${pick.t.name}.`);
+}
+
+// Minion aging (minions.aging): followers age a month every 30 days; past their span they may die of old age.
+// Auto Recruit then looks for a replacement the next day.
+const AG = () => D.minions.aging;
+export const minionAge = mi => Math.floor(mi.age || 0);
+export function minionAgeDay(s) {
+  if (!AG() || s.day % 30 !== 0) return;
+  for (const mi of [...(s.minions || [])]) {
+    if (mi.special) continue;
+    if (mi.age == null) mi.age = AG().hireAge[0] + rng() * (AG().hireAge[1] - AG().hireAge[0]);
+    mi.age += 1 / 12;
+    const over = mi.age - AG().span;
+    if (over >= 0 && rng() < AG().deathPerMonth * (over + 1)) {
+      for (const id of Object.values(mi.equip || {})) s.vault.push(id);
+      s.minions = s.minions.filter(x => x !== mi);
+      log(s, `🕯️ ${mi.name} the follower died of old age (${minionAge(mi)}).`);
+      s.recruitNow = true;
+    }
+  }
 }

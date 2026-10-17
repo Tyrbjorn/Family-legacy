@@ -2,7 +2,8 @@
 import { D, afford, isAdult, living, log, pay } from "./state.js";
 import { inLine } from "./skills.js";
 import { isHoused } from "./minions.js";
-import { ES, baseId, bedrooms, className, curUpgrades, isFixed, landSlots, landUsed, rankSlots, structDef, prodTier } from "./estate.js";
+import { era } from "./family.js";
+import { ES, estateStage, baseId, bedrooms, className, curUpgrades, isFixed, landSlots, landUsed, rankSlots, structDef, prodTier } from "./estate.js";
 
 // Next tiers: a building can have several (House → Mansion / Fort / Tower Keep / Abbey).
 export const upgradeOptions = type => ES().structures.filter(x => x.upgradeFrom === type);
@@ -10,6 +11,9 @@ export const isBranch = d => !!(d && d.branch);
 // Branch unlock: every member requirement on ONE member; building requirement on the estate.
 export function branchReqIssue(s, d) {
   const q = d.req || {};
+  const stages = ES().stages.map(x => x[1]);
+  if (q.stage && stages.indexOf(estateStage(s)) < stages.indexOf(q.stage)) return `needs a ${q.stage} estate`;
+  if (q.phase && era(s).n < q.phase) return `needs the ${(D.phases.list.find(p => p.n === q.phase) || {}).name} phase`;
   if (q.building && !(s.structures || []).some(st => q.building.types.includes(st.type) && (st.up || 0) >= q.building.up))
     return `needs ${q.building.types.map(id => structDef(id).name).join(" or ")}${q.building.up ? ` (upgrade ${q.building.up})` : ""}`;
   const okM = m =>
@@ -135,7 +139,7 @@ export function tierUpIssue(s, uid) {
     nx = st && nextTier(st);
   if (!nx) return "max";
   if ((st.up || 0) < curUpgrades(st).length) return "finish the upgrade line";
-  if (landUsed(s) + (nx.land || 0) - ((prodTier(st) || {}).land || 0) > landSlots(s)) return "no free land slot";
+  if (st.site !== "village" && landUsed(s) + (nx.land || 0) - ((prodTier(st) || {}).land || 0) > landSlots(s)) return "no free land slot";
   if (!afford(s, nx.cost)) return "cannot afford";
   return null;
 }

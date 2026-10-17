@@ -22,7 +22,7 @@ function ascendCard(btn) {
 <div class="card" style="padding:6px 8px"><div class="row" style="gap:6px;justify-content:flex-start"><b>Auto Ascend</b>${btn("ascend", E.ascendOn(s))}</div>
 <div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap"><span class="muted">Tier-1 priority:</span>${pr.map((b, i) => `<button class="b" data-a="ascup" data-v="${b}" ${i ? "" : "disabled"} title="Move up">${i + 1}. ${b}${i ? " ↑" : ""}</button>`).join("")}</div>
 ${pr.map(br).join("")}
-<div class="row" style="gap:6px;justify-content:flex-start;margin-top:4px"><b>Auto Recruit</b><button class="b ${E.recruitOn(s) ? "sel" : ""}" data-a="autorecruit">${E.recruitOn(s) ? "On" : "Off"}</button><span class="muted">monthly, cheapest follower in a known town; keeps hire + ${A.recruitMonths} months of wages + reserve</span><label class="muted">reserve <input type="number" min="0" step="100" style="width:64px" data-a="recruitres" value="${s.recruitReserve ?? A.recruitReserve}"></label></div></div>`;
+<div class="row" style="gap:6px;justify-content:flex-start;margin-top:4px"><b>Auto Recruit</b><button class="b ${E.recruitOn(s) ? "sel" : ""}" data-a="autorecruit">${E.recruitOn(s) ? "On" : "Off"}</button>${E.RECRUIT_MODES.map(x => `<button class="b ${E.recruitMode(s) === x.id ? "sel" : ""}" data-a="recruitmode" data-v="${x.id}">${x.name}</button>`).join("")}<span class="muted">monthly (and after a follower dies of age), in a known town; keeps hire + ${A.recruitMonths} months of wages + reserve</span><label class="muted">reserve <input type="number" min="0" step="100" style="width:64px" data-a="recruitres" value="${s.recruitReserve ?? A.recruitReserve}"></label></div></div>`;
 }
 
 function holdsCard() {

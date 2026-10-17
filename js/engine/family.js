@@ -139,6 +139,7 @@ export function kill(s, m, why) {
     return;
   }
   if (s.head === m.id) {
+    m.wasHead = true;
     const h =
       alive.filter(isAdult).sort((a, b) => b.ageDays - a.ageDays)[0] || alive.sort((a, b) => b.ageDays - a.ageDays)[0];
     s.head = h.id;
@@ -153,7 +154,7 @@ export function kill(s, m, why) {
 
 export function inherit(s, child) {
   const ps = (child.parents || []).map(id => s.members.find(x => x.id === id)).filter(Boolean);
-  const share = T.inheritShare + bl(s, "library") * 0.01;
+  const share = (T.inheritShare + bl(s, "library") * 0.01) * (1 + (T.inheritBoost || 0));
   for (const sk of D.skills) {
     const best = Math.max(0, ...ps.map(p => p.skills[sk.id].lvl));
     child.skills[sk.id].lvl = Math.max(child.skills[sk.id].lvl, Math.floor(best * share));
@@ -253,4 +254,32 @@ export const phase = era;
 export function nextEraHint(s) {
   const nx = PH().find(p => p.n === era(s).n + 1);
   return !nx ? "" : nx.planned ? `${nx.hint} (Phase ${nx.n}).` : `Next: ${nx.hint}.`;
+}
+
+// ---- generations (tuning.generations): yearly heir handover and illness risk
+export function handoverHeir(s) {
+  const G = T.generations, hd = s.members.find(x => x.id === s.head && x.alive);
+  if (!G || !hd || ageY(hd) < G.retireAge) return null;
+  const h = living(s)
+    .filter(x => (x.parents || []).includes(hd.id) && isAdult(x) && ageY(hd) - ageY(x) >= G.gap)
+    .sort((a, b) => b.ageDays - a.ageDays)[0];
+  if (!h) return null;
+  hd.wasHead = true;
+  s.head = h.id;
+  if (s.activeId === hd.id) switchTo(s, h.id);
+  log(s, `📜 ${hd.name} hands the family over: ${h.name} is now Head of Family.`);
+  return h;
+}
+
+export function illnessRisk(s, m, care) {
+  const R = T.generations.risk, a = ageY(m);
+  const base = a < T.adultAge ? R.child : a < 30 ? R.young : R.mid * (1 + Math.max(0, a - 40) / 8);
+  return base * Math.max(R.floor, 1 - (m.stats.VIT || 5) * R.vit - care * R.care);
+}
+
+export function generationsDay(s) {
+  if (!T.generations || s.day % Y() !== 0) return;
+  handoverHeir(s);
+  const care = Math.max(0, ...living(s).map(x => Math.max(x.skills.healing?.lvl || 0, x.skills.herbalism?.lvl || 0)));
+  for (const x of living(s)) if (rng() < illnessRisk(s, x, care)) kill(s, x, "died of illness");
 }

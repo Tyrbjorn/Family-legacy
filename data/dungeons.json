@@ -232,7 +232,7 @@
    {
     "name": "Ice Stair",
     "days": 2,
-    "cp": 110,
+    "cp": 94,
     "reward": {
      "coin": 250
     }
@@ -240,7 +240,7 @@
    {
     "name": "Thunder Gallery",
     "days": 3,
-    "cp": 130,
+    "cp": 110,
     "reward": {
      "coin": 350
     }
@@ -248,7 +248,7 @@
    {
     "name": "Storm Drake",
     "days": 3,
-    "cp": 150,
+    "cp": 128,
     "reward": {
      "coin": 800
     }
@@ -273,7 +273,8 @@
    }
   ],
   "skill": "tactics",
-  "deedTier": 4
+  "deedTier": 4,
+  "tier": 4
  },
  {
   "id": "d_dragonlair",
@@ -286,7 +287,7 @@
    {
     "name": "Ash Fields",
     "days": 3,
-    "cp": 170,
+    "cp": 144,
     "reward": {
      "coin": 500
     }
@@ -294,7 +295,7 @@
    {
     "name": "Bone Hoard",
     "days": 3,
-    "cp": 195,
+    "cp": 166,
     "reward": {
      "coin": 800,
      "gems": 3
@@ -303,7 +304,7 @@
    {
     "name": "The Old Wyrm",
     "days": 4,
-    "cp": 230,
+    "cp": 196,
     "reward": {
      "coin": 2500,
      "gems": 8

@@ -7,6 +7,21 @@ const D = {};
 for (const f of fs.readdirSync(root + "data").filter(f => f.endsWith(".json")))
   D[f.replace(".json", "")] = JSON.parse(fs.readFileSync(root + "data/" + f));
 for (const f of D.estate.structureFiles) D["structures/" + f] = JSON.parse(fs.readFileSync(root + "data/structures/" + f + ".json"));
+// experiment knobs (sim only): LG_TITHE=0.2 base tithe; LG_TIERS="cost:value,..." tithe upgrade tiers; LG_DEED=1 banks each first dungeon clear's renown again as Legacy
+if (process.env.LG_TITHE) D.legacy.renown.tithe = +process.env.LG_TITHE;
+if (process.env.LG_TIERS) D.legacy.upgrades.find(u => u.id === "tithe").tiers = process.env.LG_TIERS.split(",").map(x => ({ cost: +x.split(":")[0], value: +x.split(":")[1] }));
+// LG_LAND=1 adds four late parcels (sim-only draft of the "more land" proposal)
+if (process.env.LG_LAND) D.estate.lands.push(
+  { id: "northfield", name: "Northfield", icon: "🌾", slots: 4, cost: { coin: 40000, blocks: 200 }, requires: "valley", towns: ["millbrook"], features: ["topsoil", "pasture", "stream"] },
+  { id: "lakeshore", name: "Lakeshore", icon: "🏞️", slots: 4, cost: { coin: 80000, blocks: 300, planks: 200 }, requires: "northfield", towns: ["millbrook"], features: ["stream", "clay_bank", "woods"] },
+  { id: "deepvein", name: "Deepvein Claim", icon: "⛏️", slots: 4, cost: { coin: 120000, blocks: 400 }, requires: "highclaim", region: "highlands", towns: ["millbrook"], features: ["ore_vein", "coal_seam", "gem_vein", "silver_vein"] },
+  { id: "demesne", name: "Old Demesne", icon: "🏰", slots: 6, cost: { coin: 200000, blocks: 600, ingots: 100 }, requires: "lakeshore", towns: ["millbrook"], features: ["topsoil", "woods", "stone_outcrop"] },
+);
+const LG_DEED = +(process.env.LG_DEED || 0), deedSeen = new WeakMap();
+// generation knobs (sim only): LIFE base lifespan, CHILD days between births, KIDS per couple (handover, illness and wages now live in the engine)
+if (process.env.LIFE) D.tuning.baseLifespan = +process.env.LIFE;
+if (process.env.CHILD) D.tuning.childEvery = +process.env.CHILD;
+if (process.env.KIDS) D.tuning.maxKidsPerCouple = +process.env.KIDS;
 E.setData(D);
 const SEEDS = +(process.argv[2] || 3),
   YEARS = +(process.argv[3] || 200);
@@ -103,6 +118,8 @@ const STRUCTS = [
   "smokehouse",
   "brewery",
   "preservery",
+  "shrinehouse",
+  "barracks",
 ];
 
 function check(s, seed) {
@@ -132,6 +149,31 @@ function check(s, seed) {
     if (!isFinite(t.p) || (t.left != null && !isFinite(t.left))) bad(seed, s.day, `timer ${t.key} NaN`);
   if ((s.chronicle || []).length > 300) bad(seed, s.day, "chronicle over cap");
   if ((s.notes || []).length > (D.notify.cap || 40)) bad(seed, s.day, "notes over cap");
+}
+
+// a sensible adventurer: first clears of known dungeons once power covers the last floor (×1.1 for the dragon),
+// a repeat clear of the best dungeon about once a year for loot, and one-time/story quests (renown) before grinding;
+// deadly quests only with a 25% power margin
+const lastDg = new WeakMap();
+function smartAdventure(s, m) {
+  if (E.daysOfStock(s) < 10 || m.injured) return false;
+  const c = E.cp(s, m), ok = d => !E.dungeonIssue(s, m, d);
+  const fresh = (D.dungeons || []).filter(d => ok(d) && !(s.cleared || []).includes(d.id) && d.floors.at(-1).cp * (d.dragon ? 1.1 : 1) <= c);
+  const best = (D.dungeons || []).filter(d => ok(d) && (s.cleared || []).includes(d.id) && d.floors.at(-1).cp <= c).sort((a, b) => b.floors.at(-1).cp - a.floors.at(-1).cp)[0];
+  const dg = fresh.sort((a, b) => a.floors.at(-1).cp - b.floors.at(-1).cp)[0] || (best && s.day - (lastDg.get(s) ?? -1e9) > YD ? best : null);
+  if (dg) {
+    lastDg.set(s, s.day);
+    E.setAction(s, { type: "dungeon", target: dg.id });
+    return true;
+  }
+  const q = D.quests
+    .filter(q => (q.once || q.story) && !q.house && !q.needsFeud && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp * (q.risk === "deadly" ? 1.25 : 1) <= c)
+    .sort((a, b) => (a.story || 99) - (b.story || 99) || a.cp - b.cp)[0];
+  if (q) {
+    E.setAction(s, { type: "quest", target: q.id });
+    return true;
+  }
+  return false;
 }
 
 function bot(s, m) {
@@ -211,9 +253,11 @@ function bot(s, m) {
   if (!gy) {
     if (!E.structIssue(s, "graveyard") && E.buildStructure(s, "graveyard")) seen.structs.add("graveyard");
   } else if (!gy.up && (s.res.coin || 0) > 600 && (s.res.blocks || 0) >= 20) E.upgradeSpecial(s, gy.uid);
+  // a type counts as built when any building's upgrade chain passed through it (Shack → Cabin → House; Warehouse → Trading Post …)
+  const chain = id => { const o = []; for (let d = E.structDef(id); d; d = d.upgradeFrom && E.structDef(d.upgradeFrom)) o.push(d.id); return o; };
   for (const t of STRUCTS)
     if (
-      !s.structures.some(x => x.type === t) &&
+      !s.structures.some(x => chain(x.type).includes(t)) &&
       !E.structIssue(s, t) &&
       !holdForBunks(s, t) &&
       s.res.coin > (D.estate.structures.find(x => x.id === t).cost.coin || 0) * 2
@@ -223,7 +267,10 @@ function bot(s, m) {
   for (const st of s.structures) {
     for (const p of PIECES)
       if (!E.placeIssue(s, st.uid, p) && s.res.coin > 300) E.placePiece(s, st.uid, p) && seen.pieces.add(p);
-    if (!E.upgradeIssue(s, st.uid) && s.res.coin > 2000) E.upgradeStructure(s, st.uid);
+    // any upgrade or manor branch the family qualifies for (House → Mansion / Fort / Tower Keep / Abbey)
+    const up = E.upgradeOptions(st.type).find(o => !E.upgradeIssue(s, st.uid, o.id));
+    if (up && s.res.coin > 2000) E.upgradeStructure(s, st.uid, up.id);
+    if (["shrinehouse", "barracks"].includes(st.type) && s.res.coin > 5000) E.upgradeSpecial(s, st.uid);
   }
   // enchanting: when a station + enchanter exist, enchant the best gear now and then
   if (s.day % 40 === 0 && E.stationFx(s).jobs > E.enchJobs(s).length) {
@@ -343,6 +390,30 @@ function bot(s, m) {
     }
   }
   seen.maxCarry = Math.max(seen.maxCarry, E.haulTier(s).carry);
+  // stone ranks: keep some limestone/granite/marble for the Mason's Table once the estate is rich (bought in town)
+  if (s.day % 30 < 3 && s.res.coin > 30000)
+    for (const [k, b] of [["limestone", "limeblocks"], ["granite", "graniteblocks"], ["marble", "marbleblocks"]]) if ((s.res[k] || 0) < 150 && (s.res[b] || 0) < 150) for (const tw of D.towns) if (E.townKnown(s, tw) && tw.market.includes(k) && E.buyRes(s, tw.id, k, 150)) break;
+  // village: Auto Deliver on; one project at a time: relocate production, then cottages, then grow and add copies
+  if (s.village && s.day % 30 < 3) {
+    if (!s.village.auto) E.toggleAutoDeliver(s);
+    // raw goods the refiners eat (wood, stone) get bought in town for the project when coin is plentiful
+    for (const [k, n] of Object.entries(E.projectLeft(s))) if (k !== "coin" && s.res.coin > 20000) for (const tw of D.towns) if (E.townKnown(s, tw) && (tw.prices || {})[k] && E.buyRes(s, tw.id, k, Math.min(n, 200))) { E.deliver(s, k); break; }
+    if (!E.project(s)) {
+      const V = D.estate.village, mv = s.structures.find(x => !E.isVillage(x) && !E.relocateIssue(s, x.uid));
+      if (mv) E.relocate(s, mv.uid);
+      else if (s.structures.filter(x => x.type === "cottage").length < 2 && !E.villageBuildIssue(s, "cottage")) E.buildVillage(s, "cottage");
+      else if (!E.villageUpIssue(s) && s.res.coin > 3 * V.tiers[s.village.tier + 1].cost.coin) E.upgradeVillage(s);
+      else for (const t of ["fields", "sawmill", "quarry", "gristmill", "orchard"]) if (!E.villageBuildIssue(s, t, E.maxTier(s, t)) && s.res.coin > 3 * E.villageCost(t, E.maxTier(s, t)).coin && E.buildVillage(s, t, E.maxTier(s, t))) break;
+    }
+  }
+  // late-game coin sinks (only with plenty of coin): stable, stone quarries, defenses once raids loom, patronage
+  if (E.buyMount && s.day % 30 < 3 && s.res.coin > 30000) {
+    const G = D.endgame, rich = c => s.res.coin > 3 * (c.coin || 0);
+    const nm = G.mounts[E.mountTier(s)]; if (nm && rich(nm.cost)) E.buyMount(s);
+    for (const q of G.quarries) { const t = q.tiers[E.quarryTier(s, q.id)]; if (t && rich(t.cost)) E.buildQuarry(s, q.id); }
+    if (E.era(s).n >= G.raids.phase) for (const k of ["tower", "wall", "palisade"]) { const t = G.defenses[k].tiers[E.defTier(s, k)]; if (t && rich(t.cost)) E.buildDefense(s, k); }
+    for (const p of E.patronOptions(s)) if (rich(p.cost)) E.fundTown(s, p.id);
+  }
   // legacy
   for (const u of D.legacy.upgrades) if (E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
   // family
@@ -373,11 +444,12 @@ function bot(s, m) {
     if (o.id !== m.id && E.isAdult(o) && (!o.order || o.order.type === "work"))
       E.setOrder(s, o.id, { type: "quest", target: "outskirts" });
   // active: quest the best available, sometimes explore
+  if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s) && !process.env.OLDBOT && smartAdventure(s, m)) return;
   if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s)) {
     if (s.day % 97 < 10) E.setAction(s, { type: "auto", target: "explore" });
     else {
       const q = D.quests
-        .filter(q => E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp <= E.cp(s, m) * 1.2)
+        .filter(q => E.actionAllowed(s, m, { type: "quest", target: q.id }) && (process.env.OLDBOT ? q.cp <= E.cp(s, m) * 1.2 : q.cp * (q.risk === "deadly" ? 1.25 : 1) <= E.cp(s, m)))
         .sort((a, b) => b.cp - a.cp)[0];
       if (q) E.setAction(s, { type: "quest", target: q.id });
     }
@@ -413,7 +485,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     idleDays = 0;
   const noSuitor = { cur: 0, max: 0 };
   const phaseDay = {};
-  const timing = {}; // years (loop time, across lineages) to the Graveyard, Stone Walls, first Auto Tend (80 Legacy) and the full tier-1 set (1240)
+  const timing = {}, gens = [], deaths = [];
+  let lastHeir = null, deadSeen = 0, maxScore = 0, wageX = 0, famDays = 0, famN = 0; const evt = {}, lastLog = new WeakMap(); const EVT = [['raidWon', /Raiders struck/], ['raidLost', /Raiders broke/], ['war', /^🏴 War with/], ['elite', /elite/], ['minionOld', /follower died of old age/], ['illness', /died of illness/], ['handover', /hands the family over/], ['oldAge', /died of old age\./]]; // years (loop time, across lineages) to the Graveyard, Stone Walls, first Auto Tend (80 Legacy) and the full tier-1 set (1240)
   const food = { spans: [], days: 0, short: 0, starving: 0, variety: 0, morale: 0, minMorale: 0, emergency: 0 };
   const coinAt = [];
   const snap = [];
@@ -426,7 +499,38 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
       lineages++;
       continue;
     }
+    if (process.env.MDBG && day === 35 * YD) console.error('MDBG', seed, JSON.stringify(s.structures.filter(x => ['barracks', 'shrinehouse', 'magestower', 'house', 'mansion', 'fort', 'abbey', 'towerkeep'].includes(x.type)).map(x => x.type + ':up' + (x.up || 0) + ':' + (E.specialUpIssue ? E.specialUpIssue(s, x.uid) : ''))), 'house opts', JSON.stringify(s.structures.filter(x => x.type === 'house').slice(0, 1).flatMap(x => E.upgradeOptions('house').map(o => o.id + '=' + E.upgradeIssue(s, x.uid, o.id)))), 'lines', E.living(s).map(m => m.cls).join(','), 'hag', Math.max(...E.living(s).map(m => m.skills.haggling?.lvl || 0)), 'land', E.landUsed(s) + '/' + E.landSlots(s));
+    if (process.env.NOASC) (s.autoOff ||= {}).ascend = true;
     if (day % 3 === 0) bot(s, E.active(s));
+    if (day % 30 === 0) (famDays += E.living(s).length), famN++;
+    // event counters from the log (raids, wars, elites, follower deaths, illness, handovers)
+    for (const e of s.log) { if (e === lastLog.get(s)) break; for (const [k, re] of EVT) if (re.test(e.msg)) evt[k] = (evt[k] || 0) + 1; }
+    lastLog.set(s, s.log[0]);
+    if (LG_DEED) {
+      const n0 = deedSeen.get(s) || 0, cl = s.cleared || [];
+      for (const id of cl.slice(n0)) { const g = Math.round(D.legacy.renown.dungeonTier[D.dungeons.find(d => d.id === id).deedTier || 1] * LG_DEED); s.legacy.renown += g; s.legacy.earned += g; }
+      deedSeen.set(s, cl.length);
+    }
+    {
+      const y = +(day / YD).toFixed(1), at = k => timing[k] == null && (timing[k] = y);
+      if (s.structures.length) at("firstBuilding");
+      { const st = E.estateStage(s), order = D.estate.stages.map(x => x[1]); for (const n of order.slice(1, order.indexOf(st) + 1)) at("stage_" + n); at("phase_" + E.era(s).name);
+        const sc = Object.values(s.buildings).reduce((x, b) => x + b, 0) + s.structures.reduce((x, q) => x + E.structDef(q.type).slots / 2 + q.pieces.length, 0); maxScore = Math.max(maxScore, sc); for (const n of [10, 20, 30, 45, 60, 80, 100, 130]) if (sc >= n) at("score" + n); }
+      for (const t of ["cabin", "house", "hall", "smithy", "warehouse"]) if (s.structures.some(x => x.type === t || E.structDef(x.type).upgradeFrom === t)) at(t);
+      if (s.structures.some(x => E.structDef(x.type).upgradeFrom)) at("firstUpgrade");
+      if (E.landUsed(s) >= E.landSlots(s) && !D.estate.lands.some(l => !s.land.includes(l.id))) at("landCap");
+      for (const id of s.cleared || []) at("clear_" + id);
+      if (s.village) at("charter"), at("village_" + E.villageTier(s).name);
+      const vb = s.structures.filter(E.isVillage).length;
+      if (vb) at("villageBuilding1"); if (vb >= 5) at("villageBuildings5"); if (vb >= 8) at("villageBuildings8");
+      if (s.structures.some(x => ["mansion", "fort", "towerkeep", "abbey"].includes(x.type))) at("manorLine");
+      for (const r of [100, 500, 1000, 3000]) if (s.renown >= r) at("renown" + r);
+      const a = E.active(s);
+      if (a && a.id !== lastHeir) { if (lastHeir != null) gens.push([y, Math.round(s.renown)]); lastHeir = a.id; }
+      const dead = s.members.filter(x => x.alive === false && !x.marriedOut).length;
+      if (dead < deadSeen) deadSeen = 0;
+      if (dead > deadSeen) { for (const x of s.members.filter(x => x.alive === false && !x.marriedOut).slice(deadSeen)) deaths.push([y, Math.round(E.ageY(x))]); deadSeen = dead; }
+    }
     if (process.env.FDBG && day % 720 === 0 && s.meal)
       console.log("FOOD", day, "alive", E.living(s).length, "min", s.minions.length, "need", s.meal.need.toFixed(1), "ratio", s.meal.ratio.toFixed(2), "food", Math.round(s.res.food), "cap", E.foodCap(s), "coin", Math.round(s.res.coin), "structs", s.structures.map(x => x.type).join("/"));
     if (process.env.DBG && day % 1800 === 0) {
@@ -453,6 +557,10 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
       if (gy && gy.up) at("walls");
       if (le >= 80) at("autoTend1"), (timing.lines1 ??= lineages);
       if (le >= 1240) at("autoTendAll"), (timing.linesAll ??= lineages);
+      if (le >= 900) at("atBundle1"); if (le >= 3400) at("atBundle2");
+      if (E.mountTier && E.mountTier(s)) at("mount"); if (s.eg && Object.keys(s.eg.quarries).length) at("quarry"); if (s.eg && s.eg.defs.wall) at("wall"); if (s.eg && s.eg.funded.length) at("patron");
+      if (le >= 1240 + D.legacy.upgrades.find(u => u.id === "tithe").tiers.reduce((x, y) => x + y.cost, 0)) at("autoTendAllTithe");
+      if (le >= 500) at("legacy500"); for (const n of [700, 800, 900, 1000]) if (le >= n) at("legacy" + n);
     }
     if (s.suitors.length) noSuitor.cur = 0;
     else noSuitor.max = Math.max(noSuitor.max, ++noSuitor.cur);
@@ -564,6 +672,14 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     marriedOut: s.members.filter(x => x.marriedOut).length,
     longestNoSuitorDays: noSuitor.max,
     timing,
+    maxScore: Math.round(maxScore),
+    wageX: Math.round(wageX),
+    riskDeaths: evt.illness || 0, evt, famSize: E.living(s).length, avgFam: Math.round(famDays / Math.max(1, famN) * 10) / 10,
+    wagesNow: E.monthlyWages(s),
+    villageBuildings: s.structures.filter(E.isVillage).length,
+    relocated: s.structures.filter(x => E.isVillage(x) && !E.structDef(x.type).villageOnly).length,
+    gens,
+    deaths,
     legacyEarned: s.legacy.earned,
     tithed: s.tithed || 0,
     phaseYear: Object.fromEntries(Object.entries(phaseDay).map(([k, d]) => [k, +(d / YD).toFixed(1)])),

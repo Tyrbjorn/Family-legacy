@@ -115,3 +115,48 @@ Everything from Eras 1–2 keeps working alongside these.
 - Boats: build a Dock (trade building, needs stream or clay-bank land); then a Carpenter can make a Small Boat. With both, routes may cross lakes (whichever way is quicker). Later: Port + Shipyard for larger ships on the coast (add a `ship` terrain flag and a ship item the same way).
 - Livestock feed (`world.feed`): grazers eat hay→wheat→vegetables, hens and pigs eat wheat→vegetables. Unfed animals stop working; after 10 unfed days one runs off; herds regrow one head per 20 fed days. Sheep, goats and pigs have diets but no building yet.
 - A wagon with no animal is pulled by hand (half cargo, ×0.6 speed). Nodes regrow daily. Follower convoy drivers: loyalty under 30 won't go, 30–59 skim 10%, +1% edge per level (max +10%), +1 loyalty per run. Faint '?' hints for unfound places in the fog. Intro gained Scout Nearby and First Trade steps.
+
+## Oct 15, 2026 rounds (live through 840e2c4, save v24)
+- [x] Difficulty (e8b0ecd), combat (3047da2), injuries (e4a87ce), refactor (250140f), map round 2 (dd63904)
+- [x] e33b21f: Auto Tend (original prices, 50/75%), Auto Equip, Automation tab, deeds (renown from worthy deeds), scout renown fix, Wyrmfire Caldera dragon (tier 5, 300 renown), heirlooms moved to data/dlc-heirlooms.json (refund 120)
+- [x] f115cb3: item holds + per-member Auto Equip exclusion, Ancestors' Tithe (10%; Legacy tiers 150/400/900 → 15/20/25%; no double count), Extraction travel scaling, baseline bot builds the Graveyard early ("big" = 3,000)
+- [x] 840e2c4: craft ladder (specialist → artisan; Scribe branches; Goldsmith + Gemcutter → Jeweler; inlays; Herbalist → Apothecary bandages; Steward route slot fix), Auto Ascend, Auto Recruit
+- Rule agreed (not built): followers who lose their job resettle in the nearest town.
+- Open: Remedist vs Legacy Physician/Mycologist (Remedist kept); hiring back resettled followers; follower town-work wage.
+- Next candidates: pacing check (year-10 building dip, bot runs dungeons), Mason roads and map buildings, Port sea trade, Runecarver.
+
+
+## Oct 16, 2026 round: village, Tithe 20%, stone ranks, estate stages (local, not deployed; save schema 26)
+- **Ancestors' Tithe:** base 20% (was 10%); upgrades unchanged at 150/400/900 for +5% each (25/30/35%). Auto Tend prices unchanged.
+- **Village charter:** "The Baron's Charter" is a resource request quest: needs the Greenvale (Valley) deed and the Dynasty phase; deliver 25,000 coin, 300 sandstone blocks and 200 planks to found a Hamlet.
+- **Village tiers:** Hamlet 8 slots → Village 12 (60,000 coin + 100 limestone blocks) → Market Village 16 (150,000 coin + 150 granite blocks).
+- **Village buildings, one at a time:** every village building is a construction project. Pick it, deliver its coin and materials in parts (or switch on Auto Deliver: surplus coin above 5,000 and materials above their keep-in-reserve), and it rises when everything is in; cancel refunds deliveries.
+- **Village production:** any production building (not mines) at 2 village slots, 3× output, 2× follower spots, 40× the estate coin + 10× its materials, 1% of that coin as monthly upkeep (unpaid = idle). Any tier the family has already raised can be built directly (tier 1 adds 40 limestone blocks, tier 2 adds 40 granite blocks).
+- **Relocate or keep both:** an estate production building can be moved (a project at the village price; half its estate cost refunded; pieces, tier and workers move; its land is freed) or kept alongside a new village copy.
+- **Village Cottage:** village only, 1 slot, houses 4 followers. Auto Recruit and Auto Ascend work unchanged. No population, markets or Town tab (Expanded Economy DLC).
+- **Stone ranks:** Sandstone (the old stone/blocks), Limestone (Deep Quarry face or Thornwick market), Granite (Quarry Works face or the Eyrie market), Marble (Eyrie market only, prestige). The Mason's Table cuts each into its own blocks. Fine buildings need marble blocks: Hall 40, Mansion/Fort/Tower Keep/Abbey 60, Ancestor Hall 30.
+- **Estate stages retuned:** Scrub Plot 0, Homestead 10, Farmstead 30, Manor 60, Prosperous Estate 80 (was 0/1/6/12/20); Manor lands about year 10, Prosperous about when the village grows (years 20–26).
+- **Test bot:** runs dungeons and one-time quests, founds the village, relocates production, builds cottages, grows the village, buys stone ranks; fixed its rebuild loop (it re-built Shacks/Warehouses after upgrading them) and tries every manor branch.
+- **Planned (not built): town resource requests** (towns post goods requests for coin and modest renown; Auto Fulfill from surplus). See the handoff for the proposal.
+
+## Oct 16, 2026 late-game round (local, not deployed; save schema 27, built on the village round)
+- **Auto Tend bundles:** "Auto Tend: Whole Estate" tier 1 = 900 Legacy (every Auto Tend at 50%), tier 2 = 2,500 (75%). Singles still sell; single tiers already bought are credited against the bundle price (never below 0), so old saves lose nothing.
+- **Coin sinks:** follower wages scale with title tier (×1/1.5/3/6/10) and +3% per job-skill level; diplomacy gifts cost 150 × phase (1/4/20/40) × (1 + 0.25 × house wealth); town patronage (six one-time town buildings, 30k–120k plus stone, +5–8% sell or −10% market buys in that town, phase-gated); stable mounts (Pony 5k / Courser 25k / Warhorse 80k; travel ×1.15/1.3/1.5; 50/250/800 coin a month).
+- **Stone nodes + quarries:** Limestone Cliffs near Thornwick and Granite Scarp near the Eyrie (gather nodes, fogged), each with its own 3-tier quarry (limestone 1.5/3/5 a day, granite 1/2/3.5 a day; 1% monthly upkeep). Marble stays buy-only.
+- **Manor branches:** gate is now a Manor-stage estate + Established phase (+ the branch's class line and its building at any level); the Haggling 30 / upgrade-3 gates are gone.
+- **Dragon:** Stormhold and Wyrmfire Caldera floor power −15% (Stormhold stays a tier-4 dungeon).
+- **Generations (option g3):** lifespan 55, a child every 270 days, up to 5 per couple; the Head hands over at 35 to the oldest adult child 15+ years younger; yearly illness risk (0.2% child, 0.4% under 30, 0.8% from 30 rising after 40) cut by VIT ×3% and the family's best Healing/Herbalism ×1% (floor 25%); a Head's death banks at least 35% of their untithed renown; kids inherit 10% more of their parents' skills. Living members of old saves keep their lifespans.
+- **Followers:** Auto Ascend spreads peasants over every tier-1 title (fewest holders first, closest-qualifying peasant; the branch priority only breaks ties); Auto Recruit modes Cheapest / Best fit / Strongest / Balanced, and it replaces a follower who died of age the next day; followers join at 18–32, and past 55 each month risks death of old age.
+- **Late game:** repeat quests and repeat dungeon runs (never first clears) scale ×1.25 in Dynasty and ×1.5 in Titles; ~10% are elites (×1.5 power, ×2 coin). A feud that hits rapport −100 becomes a house war at once (Dynasty only). From Dynasty, a raid every 2–3 years: strength grows with coin and estate score (×1.5 while at war); defense is family power + garrison (guards) + defenses; a loss steals 5–10% coin plus 5% of stores, or burns a village building for a month. Defenses: Estate Walls in four stone ranks (Sandstone 20k → Marble Bastion 200k), Watchtower (raid warning), Village Palisade (protects village buildings); 1% monthly upkeep, unpaid = off. UI: Holdings & defense card on the Estate tab; Auto Recruit mode buttons on Automation.
+
+## DLC and monetization (planned)
+- Expanded Economy: rent/buy town buildings (shack, stall, workshop, cookery, warehouse), open markets, town growth (food > pop > zones, trade > wealth), control vs non-control towns, Town tab, Landholder deed (first non-royal title, quest line), resettled followers bring skills.
+- Heirlooms (cheap): one super item per family, any non-consumable item; choose it at the start of a lineage or title an existing item once; Artifact > per-stat upgrades > new function by type.
+- Royalty and Conquest: princess marriage, kingdoms, conquest. Region packs.
+- Ideas: The Deep (Dwarfhold/Runecarver), Seafaring (Port/Shipyard), Restoration Magic (limbs, prosthetics, raising the dead except old age).
+- Cosmetics 99¢–$2: flags, banners, crests, sprites, estate skins, portrait frames, decorative doodads for the estate/village, and a flag/crest maker. No gameplay edge.
+- **Graphics upgrade (v1.5 bundle):** a full art refresh shipped as a v1.5 bundle, released well after the DLCs.
+
+## Future game ideas (separate games, not Family Legacy)
+- **BattleCry-style army battler (no name yet):** a separate game about raising and commanding armies in fast real-time battles, inspired by BattleCry.
+- **Majesty-style city simulator / deep life sim (no name yet):** the player has no character and oversees the whole settlement; residents act autonomously (live, learn and inherit on their own), but the overseer can command that things get done. Alternative mode: play a royal line from the start. Main inspiration: Majesty (classic): the player only orders buildings and places bounty flags to motivate action; everything else is fully automated (simple yet complex). Everyone grows and learns month by month; villages upgrade themselves from their residents' prosperity; life gets better or worse (harvests, illness, raids, wages, contentment); strong inheritance of traits and skills shaped by parents' wealth, skill and discipline; visible routines, likes and inherited traits. Family Legacy keeps only a light on-paper slice (a modest inheritance boost for kids of skilled or wealthy parents; no per-follower life sim). Retainer families (sworn retainers who marry, have kids and hold office) stay in Family Legacy's base game.

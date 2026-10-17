@@ -1759,5 +1759,33 @@
   "against": "skye",
   "needsFeud": true,
   "desc": "Only while feuding: hit House Skye where it hurts."
+ },
+ {
+  "id": "q_charter",
+  "name": "The Baron's Charter",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 20,
+  "days": 10,
+  "risk": "safe",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "reading",
+  "loot": [],
+  "once": true,
+  "req": {
+   "land": "valley",
+   "era": 3
+  },
+  "desc": "The Baron will charter a village on your Valley for 25,000 coin, 300 stone blocks and 200 planks, delivered in person.",
+  "deliver": {
+   "coin": 25000,
+   "blocks": 300,
+   "planks": 200
+  },
+  "grants": {
+   "village": true
+  }
  }
 ]

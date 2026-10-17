@@ -2,6 +2,7 @@
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { costStr } from "./common.js";
+import { villageRow } from "./village-panel.js";
 import { D, s } from "../main.js";
 
 function cardHead(st, k) {
@@ -133,7 +134,7 @@ function cardNav(st, k) {
           })
           .join("")
       : ""
-  }<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span>${E.demolishIssue(s, st.uid) ? `<span class="muted">🔒 ${E.demolishIssue(s, st.uid)}</span>` : `<button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button>`}</div></div>`;
+  }${villageRow(st)}<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span>${E.demolishIssue(s, st.uid) ? `<span class="muted">🔒 ${E.demolishIssue(s, st.uid)}</span>` : `<button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button>`}</div></div>`;
 }
 
 export const buildingCard = (st, k) =>

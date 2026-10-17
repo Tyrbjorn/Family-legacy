@@ -6,6 +6,7 @@ import { upPacks } from "./minionups.js";
 import { famFx, memberFx, recipePathIssue } from "./paths.js";
 import { introNote } from "./intros.js";
 import { houseSellMult } from "./houses.js";
+import { patronBuy, patronSell } from "./endgame.js";
 import { seasonPrice } from "./seasons.js";
 import { inc } from "./achievements.js";
 import { buyMult, priceMult, sellMult } from "./worldevents.js";
@@ -90,7 +91,7 @@ export const townSellPrice = (s, townId, res) => {
   return (
     Math.round(
       t.prices[res] *
-        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * seasonPrice(s, res) * 100,
+        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );
 };
@@ -121,6 +122,7 @@ export const townBuyPrice = (s, townId, res) => {
         Math.max(1, priceMult(s, townId, res)) *
         seasonPrice(s, res) *
         buyDemand(s, townId, res) *
+        patronBuy(s, townId) *
         100,
     ) / 100
   );

@@ -120,7 +120,7 @@ export function refineHold(s, st, pr) {
 }
 
 export function processDay(s, mul = 1) {
-  for (const st of s.structures || []) {
+  for (const st of (s.structures || []).filter(x => !x.unpaid && !(x.raided > s.day))) {
     const syn = activeSynergies(st),
       out = {};
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))

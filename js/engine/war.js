@@ -134,7 +134,9 @@ export function warDay(s, id) {
 
 export function warEscalate(s, hd, h) {
   // feud escalation by the rival: Dynasty only, warn first, never against a weak young family
-  if (!phaseOk(s, "war") || h.state !== "feud" || familyPower(s) < FEUD().minPowerForAggression) return;
+  if (!phaseOk(s, "war") || h.state !== "feud") return;
+  if (h.r <= HC().range[0]) return void startWar(s, hd.id, "rapport hit rock bottom"); // -100: house war
+  if (familyPower(s) < FEUD().minPowerForAggression) return;
   if (h.warned == null) {
     if (rng() < FEUD().escalateChance) {
       h.warned = s.day;

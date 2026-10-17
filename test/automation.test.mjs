@@ -53,12 +53,12 @@ ok(U.length===10&&U.find(u=>u.id==='at_farming').tiers.map(t=>t.cost).join()==='
 // ---- Ancestors' Tithe
 { const s=fresh(); s.legacy.renown=0; s.legacy.earned=0; const m=s.members[0];
   E.addRenown(s,m,100); ok(s.legacy.renown===0&&E.titheRate(s)===0,'no Graveyard: no tithe');
-  s.structures.push({uid:'gy',type:'graveyard',pieces:[],up:0}); ok(E.titheRate(s)===0.1,'Graveyard: flat 10%');
-  const d=E.diffRenown?1:1; const before=m.renown; E.addRenown(s,m,200); const got=m.renown-before; ok(s.legacy.renown===Math.floor(got*0.1),'10% of the gain goes to Legacy now');
+  s.structures.push({uid:'gy',type:'graveyard',pieces:[],up:0}); ok(E.titheRate(s)===0.2,'Graveyard: flat 20%');
+  const d=E.diffRenown?1:1; const before=m.renown; E.addRenown(s,m,200); const got=m.renown-before; ok(s.legacy.renown===Math.floor(got*0.2),'20% of the gain goes to Legacy now');
   const L0=s.legacy.renown; const b=E.newMember(s,{age:30}); s.members.push(b); b.renown=0; E.addRenown(s,b,400); const tb=s.legacy.renown-L0; E.kill(s,b,'died');
   ok(b.banked===Math.floor((b.renown-b.tithed)*E.captureRate(s))&&b.banked===0,'death capture excludes tithed renown (no double count)');
   b.renown; const c=E.newMember(s,{age:30}); s.members.push(c); c.renown=300; c.tithed=0; E.kill(s,c,'died'); ok(c.banked===75,'untithed renown still banks at 25%');
-  s.legacy.renown=1e4; ok(E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.15)<1e-9&&E.buyLegacy(s,'tithe')&&E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.25)<1e-9,'Tithe upgrades: 15/20/25%');
+  s.legacy.renown=1e4; ok(E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.25)<1e-9&&E.buyLegacy(s,'tithe')&&E.buyLegacy(s,'tithe')&&Math.abs(E.titheRate(s)-0.35)<1e-9,'Tithe upgrades: 25/30/35%');
   ok(D.legacy.upgrades.find(u=>u.id==='tithe').tiers.map(t=>t.cost).join()==='150,400,900','Tithe prices 150/400/900'); }
 // ---- extraction share
 { const s=fresh(); const n=D.nodes.find(x=>x.id==='berries'); const sh=E.gatherShare(s,n); const t=E.newTrip({type:'gather',target:'berries'},s);

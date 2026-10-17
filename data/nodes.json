@@ -388,5 +388,33 @@
   "terrainNode": true,
   "fog": true,
   "rare": []
+ },
+ {
+  "id": "n_limestone",
+  "name": "Limestone Cliffs",
+  "region": "forest",
+  "res": {
+   "limestone": 2,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "🪨",
+  "terrain": "forest",
+  "fog": true,
+  "rare": []
+ },
+ {
+  "id": "n_granite",
+  "name": "Granite Scarp",
+  "region": "highlands",
+  "res": {
+   "granite": 1.5,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "⛰️",
+  "terrain": "highlands",
+  "fog": true,
+  "rare": []
  }
 ]

@@ -67,7 +67,7 @@ export const fightWord = r => ({ win: "won", fled: "fled", defeat: "was beaten",
 // ---- dungeons as event sequences: tier by the first floor's power; 2·tier+2 events alternating fights and
 // stat checks (ending on a fight), spread over the floors. Optional dg.events replaces the sequence; dg.story
 // [{at, text, check?}] inserts story beats; dg.onClear {unlock, text} fires on a full clear.
-export const dungeonTier = dg => 1 + C().dungeon.tierAt.filter(x => dg.floors[0].cp >= x).length;
+export const dungeonTier = dg => dg.tier || 1 + C().dungeon.tierAt.filter(x => dg.floors[0].cp >= x).length; // dg.tier pins it (Stormhold after the -15%)
 export function dungeonEvents(dg) {
   if (dg.events) return dg.events;
   const t = dungeonTier(dg), n = 2 * t + 2, F = dg.floors.length, pool = C().dungeon.checks;
@@ -107,7 +107,7 @@ export function dungeonFloorRun(s, m, dg, i, t) {
       if (!checkOk(m, ev)) (me.hp -= C().dungeon.checkFail * me.max), (me.mor -= C().morPerHp * C().dungeon.checkFail);
       if (me.hp <= 0) return (me.out = "down"), end(`collapsed at ${ev.text || "a trap"}`);
     } else {
-      const r = fight(s, [me], [fighter(dg.name, enemyCp(s, m, ev.cp))], { lvl: actLvl(s, m), monsters: true });
+      const r = fight(s, [me], [fighter(dg.name, enemyCp(s, m, ev.cp * ((t.th && t.th.mult) || 1)))], { lvl: actLvl(s, m), monsters: true });
       if (r.result !== "win") return end(fightWord(r));
       me.mor = Math.min(t.run.start, me.mor + C().between);
       me.hp = Math.min(me.max, me.hp + C().betweenHp * me.max);

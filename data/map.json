@@ -463,6 +463,18 @@
   "d_dragonlair": {
    "x": 905,
    "y": 800
+  },
+  "q_charter": {
+   "x": 495,
+   "y": 650
+  },
+  "n_limestone": {
+   "x": 745,
+   "y": 330
+  },
+  "n_granite": {
+   "x": 760,
+   "y": 745
   }
  },
  "areas": [

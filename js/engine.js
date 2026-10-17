@@ -46,3 +46,5 @@ export * from "./engine/autoequip.js";
 export * from "./engine/holds.js";
 export * from "./engine/inlay.js";
 export * from "./engine/minion-auto.js";
+export * from "./engine/village.js";
+export * from "./engine/endgame.js";

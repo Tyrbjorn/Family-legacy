@@ -1,0 +1,307 @@
+{
+ "_note": "Late-game round (Oct 16): coin sinks, stone quarries, era-scaled creatures, raids and defenses. Placeholder numbers for Jeremy's tweak pass.",
+ "wages": {
+  "_note": "monthly wage = base x title-tier multiplier x (1 + perSkill x key-job skill level)",
+  "tierMult": [
+   1,
+   1.5,
+   3,
+   6,
+   10
+  ],
+  "perSkill": 0.03
+ },
+ "giftEra": {
+  "_note": "diplomacy gift coin x this per phase n (1 Beginning ... 4 Titles); the house's wealth adds giftPerWealth each",
+  "byPhase": [
+   1,
+   4,
+   20,
+   40
+  ],
+  "perWealth": 0.25
+ },
+ "mounts": [
+  {
+   "name": "Riding Pony",
+   "icon": "🐴",
+   "cost": {
+    "coin": 5000
+   },
+   "upkeep": 50,
+   "speed": 1.15
+  },
+  {
+   "name": "Courser",
+   "icon": "🐎",
+   "cost": {
+    "coin": 25000,
+    "hay": 200
+   },
+   "upkeep": 250,
+   "speed": 1.3
+  },
+  {
+   "name": "Warhorse Stable",
+   "icon": "🏇",
+   "cost": {
+    "coin": 80000,
+    "hay": 500,
+    "ingots": 40
+   },
+   "upkeep": 800,
+   "speed": 1.5
+  }
+ ],
+ "patronage": {
+  "_note": "Fund a town building once for a permanent perk there: sell = +x to sell prices, buy = x off market buys. Phase n needed.",
+  "list": [
+   {
+    "id": "p_millmarket",
+    "town": "millbrook",
+    "name": "Covered Market",
+    "icon": "🏛️",
+    "cost": {
+     "coin": 30000
+    },
+    "phase": 2,
+    "sell": 0.05
+   },
+   {
+    "id": "p_millguild",
+    "town": "millbrook",
+    "name": "Guild Exchange",
+    "icon": "⚖️",
+    "cost": {
+     "coin": 90000,
+     "marbleblocks": 40
+    },
+    "phase": 3,
+    "buy": 0.1
+   },
+   {
+    "id": "p_thornyard",
+    "town": "thornwick",
+    "name": "Timber Yard",
+    "icon": "🪵",
+    "cost": {
+     "coin": 40000,
+     "planks": 300
+    },
+    "phase": 2,
+    "sell": 0.05
+   },
+   {
+    "id": "p_thornbridge",
+    "town": "thornwick",
+    "name": "Stone Bridge",
+    "icon": "🌉",
+    "cost": {
+     "coin": 100000,
+     "limeblocks": 150
+    },
+    "phase": 3,
+    "buy": 0.1
+   },
+   {
+    "id": "p_ashtemple",
+    "town": "ashford",
+    "name": "Temple Bells",
+    "icon": "🔔",
+    "cost": {
+     "coin": 50000
+    },
+    "phase": 2,
+    "sell": 0.05
+   },
+   {
+    "id": "p_eyriehall",
+    "town": "eyrie",
+    "name": "Mountain Hall",
+    "icon": "🏔️",
+    "cost": {
+     "coin": 120000,
+     "graniteblocks": 150
+    },
+    "phase": 3,
+    "sell": 0.08
+   }
+  ]
+ },
+ "quarries": [
+  {
+   "id": "q_lime",
+   "node": "n_limestone",
+   "name": "Limestone Quarry",
+   "icon": "🪨",
+   "res": "limestone",
+   "tiers": [
+    {
+     "cost": {
+      "coin": 6000,
+      "planks": 80
+     },
+     "rate": 1.5
+    },
+    {
+     "cost": {
+      "coin": 18000,
+      "blocks": 120,
+      "ingots": 20
+     },
+     "rate": 3
+    },
+    {
+     "cost": {
+      "coin": 45000,
+      "limeblocks": 120,
+      "ingots": 40
+     },
+     "rate": 5
+    }
+   ],
+   "upkeep": 0.01
+  },
+  {
+   "id": "q_granite",
+   "node": "n_granite",
+   "name": "Granite Quarry",
+   "icon": "⛰️",
+   "res": "granite",
+   "tiers": [
+    {
+     "cost": {
+      "coin": 12000,
+      "planks": 120,
+      "blocks": 60
+     },
+     "rate": 1
+    },
+    {
+     "cost": {
+      "coin": 35000,
+      "limeblocks": 120,
+      "ingots": 30
+     },
+     "rate": 2
+    },
+    {
+     "cost": {
+      "coin": 90000,
+      "graniteblocks": 120,
+      "ingots": 60
+     },
+     "rate": 3.5
+    }
+   ],
+   "upkeep": 0.01
+  }
+ ],
+ "creatures": {
+  "_note": "Repeat quests and repeat dungeon runs (never a first clear) scale with the phase; ~10% roll an elite (x1.5 power, x2 coin rewards).",
+  "byPhase": [
+   1,
+   1,
+   1.25,
+   1.5
+  ],
+  "eliteChance": 0.1,
+  "elitePower": 1.5,
+  "eliteReward": 2
+ },
+ "raids": {
+  "_note": "From Dynasty: a raid every 2-3 years. Raid power = base + coin/perCoin + estate score x perScore, x1.5 if a house is at war with you. Defense = family power + garrison (guards) x guardPower + walls/palisade. Loss steals a share of coin and stock or idles one village building for a month.",
+  "phase": 3,
+  "everyDays": [
+   720,
+   1080
+  ],
+  "warnDays": 30,
+  "base": 60,
+  "perCoin": 4000,
+  "perScore": 1.5,
+  "warMult": 1.5,
+  "lossCoin": [
+   0.05,
+   0.1
+  ],
+  "lossStock": 0.05,
+  "idleDays": 30,
+  "winRenown": 15,
+  "winCoin": 0.01
+ },
+ "defenses": {
+  "_note": "Coin sinks with monthly upkeep (1% of coin paid). Unpaid upkeep switches the defense off until paid.",
+  "wall": {
+   "name": "Estate Walls",
+   "icon": "🧱",
+   "tiers": [
+    {
+     "name": "Sandstone Wall",
+     "cost": {
+      "coin": 20000,
+      "blocks": 200
+     },
+     "power": 40
+    },
+    {
+     "name": "Limestone Wall",
+     "cost": {
+      "coin": 50000,
+      "limeblocks": 200
+     },
+     "power": 90
+    },
+    {
+     "name": "Granite Wall",
+     "cost": {
+      "coin": 110000,
+      "graniteblocks": 200
+     },
+     "power": 160
+    },
+    {
+     "name": "Marble Bastion",
+     "cost": {
+      "coin": 200000,
+      "marbleblocks": 150
+     },
+     "power": 260
+    }
+   ]
+  },
+  "tower": {
+   "name": "Watchtower",
+   "icon": "🗼",
+   "tiers": [
+    {
+     "name": "Watchtower",
+     "cost": {
+      "coin": 25000,
+      "planks": 150,
+      "blocks": 80
+     },
+     "power": 20,
+     "warn": true
+    }
+   ]
+  },
+  "palisade": {
+   "name": "Village Palisade",
+   "icon": "🪵",
+   "village": true,
+   "tiers": [
+    {
+     "name": "Village Palisade",
+     "cost": {
+      "coin": 30000,
+      "planks": 300
+     },
+     "power": 30,
+     "guardVillage": true
+    }
+   ]
+  },
+  "upkeep": 0.01
+ }
+}

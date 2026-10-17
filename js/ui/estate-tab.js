@@ -3,6 +3,8 @@ import * as E from "../engine.js";
 import { RI, costStr, doing, fmt, memberLine } from "./common.js";
 import { D, s } from "../main.js";
 import { buildingCard } from "./estate-card.js";
+import { villagePanel } from "./village-panel.js";
+import { endgamePanel } from "./endgame-panel.js";
 
 export function landShop(where) {
   return D.estate.lands
@@ -45,7 +47,7 @@ export function foodPanelv() {
 }
 
 export function estate() {
-  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => D.estate.lands.find(l => l.id === id).name).join(", ")}</div></div>${landShop()}`;
+  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => D.estate.lands.find(l => l.id === id).name).join(", ")}</div></div>${landShop()}${villagePanel()}${endgamePanel()}`;
   h += `<div class="card"><b>📦 Capacity</b><div class="muted">🍞 ${fmt(s.res.food)}/${fmt(E.foodCap(s))} food · materials cap ${fmt(E.matCap(s))} each</div>
  <div class="muted">${Object.entries(D.estate.resourceTiers)
    .map(
@@ -69,12 +71,11 @@ export function estate() {
         D.estate.synergies.map(y => y.pieces.map(p => E.pieceDef(p).name).join(" + ")).join(" · ") +
         "</div>");
   h += `<h3>🛖 Buildings & stations</h3>`;
-  h += `<h3>🛖 Buildings & stations</h3>`;
   s.structures.forEach((st, k) => (h += buildingCard(st, k)));
   h +=
     `<div class="muted">Build new:</div>` +
     D.estate.structures
-      .filter(d => !d.upgradeFrom)
+      .filter(d => !d.upgradeFrom && !d.villageOnly)
       .map(d => {
         const iss = E.structIssue(s, d.id);
         return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${d.icon} ${d.name} <span class="muted">${d.land} land · ${d.desc}</span></span><button class="b" data-a="struct" data-v="${d.id}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(d.cost)}</button></div>`;
@@ -153,7 +154,7 @@ export function legacyPanel() {
     const nx = u.tiers[t];
     const iss = E.legacyUpIssue(s, u.id);
     const val = t ? (u.id === "speed" ? u.tiers[t - 1].value + "× max speed" : "tier " + t) : "—";
-    h += `<div class="row" style="margin:3px 0"><span>${u.icon} <b>${u.name}</b>${u.headline ? ' <span class="tb">headline</span>' : ""}<br><span class="muted">${u.desc} · now: ${val}</span></span><button class="b" data-a="legacy" data-v="${u.id}" ${iss ? "disabled" : ""}>${nx ? (u.id === "speed" ? nx.value + "× · " : "") + nx.cost + "⭐" : "Max"}</button></div>`;
+    h += `<div class="row" style="margin:3px 0"><span>${u.icon} <b>${u.name}</b>${u.headline ? ' <span class="tb">headline</span>' : ""}<br><span class="muted">${u.desc} · now: ${val}</span></span><button class="b" data-a="legacy" data-v="${u.id}" ${iss ? "disabled" : ""}>${nx ? (u.id === "speed" ? nx.value + "× · " : "") + E.legacyCost(s, u.id) + "⭐" : "Max"}</button></div>`;
   }
   return h + "</div>";
 }

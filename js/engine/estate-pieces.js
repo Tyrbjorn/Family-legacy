@@ -48,14 +48,15 @@ export const pieceMult = (st, id) =>
 
 export const INTK = new Set(["beds"]);
 
-export function scaleBonus(b, m) {
+// vm = village multipliers: processes ×v.out, follower job spots ×v.jobs (other bonuses unchanged)
+export function scaleBonus(b, m, vm = { out: 1, jobs: 1 }) {
   const o = {};
   for (const [k, v] of Object.entries(b)) {
     if (typeof v === "number") o[k] = INTK.has(k) ? Math.floor(v * m + 1e-9) : v * m;
     else if (k === "jobs" || k === "housing")
-      o[k] = Object.fromEntries(Object.entries(v).map(([j, n]) => [j, Math.floor(n * m + 1e-9)]));
+      o[k] = Object.fromEntries(Object.entries(v).map(([j, n]) => [j, Math.floor(n * m * (k === "jobs" ? vm.jobs : 1) + 1e-9)]));
     else if (k === "process" || k === "processes")
-      o.processes = [...(o.processes || []), ...[].concat(v).map(p => ({ ...p, rate: p.rate * m }))];
+      o.processes = [...(o.processes || []), ...[].concat(v).map(p => ({ ...p, rate: p.rate * m * vm.out }))];
     else o[k] = v;
   }
   return o;
@@ -71,7 +72,8 @@ export const pieceBonus = (st, p) =>
 export const wagonSpeed = s => 1 + Math.min(1, eff(s, "wagonSpeed") + nightShare() * eff(s, "nightWagonSpeed"));
 export const scaledPiece = (st, id) => {
   const p = pieceDef(id);
-  return p && { ...p, bonus: scaleBonus(pieceBonus(st, p), pieceMult(st, id)) };
+  const v = st.site === "village" && ES().village;
+  return p && { ...p, bonus: scaleBonus(pieceBonus(st, p), pieceMult(st, id), v ? { out: v.outMult, jobs: v.jobMult } : undefined) };
 };
 // slot-free fittings (former stat-bump furniture): bought once per building, flat bonus
 export const fittingFx = st => (st.fittings || []).map(pieceDef).filter(Boolean);

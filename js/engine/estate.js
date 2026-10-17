@@ -77,7 +77,7 @@ const _fx = new WeakMap();
 export function effects(s) {
   let key = "";
   for (const st of s.structures || [])
-    key += `${st.uid}:${st.type}:${st.up || 0}:${st.spec || ""}:${st.pieces.join(",")}:${(st.fittings || []).join(",")}|`;
+    key += `${st.uid}:${st.site || ""}:${st.type}:${st.up || 0}:${st.spec || ""}:${st.pieces.join(",")}:${(st.fittings || []).join(",")}|`;
   const c = _fx.get(s);
   if (c && c.key === key) return c.list;
   const list = [
@@ -108,7 +108,7 @@ export const landSlots = s =>
 
 export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +
-  (s.structures || []).reduce((a, st) => a + structDef(st.type).land + ((prodTier(st) || {}).land || 0), 0);
+  (s.structures || []).filter(st => st.site !== "village").reduce((a, st) => a + structDef(st.type).land + ((prodTier(st) || {}).land || 0), 0);
 
 export const foodCap = s => ES().caps.foodBase + eff(s, "foodCap") + bl(s, "farm") * 100;
 
@@ -142,6 +142,7 @@ export function buyLand(s, id) {
 export function structIssue(s, type) {
   const d = structDef(type);
   if (!hasLand(s)) return "buy land first";
+  if (d.villageOnly) return "village only";
   if (landUsed(s) + d.land > landSlots(s)) return "no free land slot";
   if (d.requires && !(s.structures || []).some(x => x.type === d.requires || structDef(x.type).upgradeFrom === d.requires))
     return `needs a ${structDef(d.requires).name}`;
@@ -186,11 +187,12 @@ export function jobCap(s, job) {
   return c;
 }
 
+export const estateScore = s =>
+  Object.values(s.buildings || {}).reduce((a, b) => a + b, 0) +
+  (s.structures || []).reduce((a, st) => a + structDef(st.type).slots / 2 + st.pieces.length, 0);
 export function estateStage(s) {
   if (!hasLand(s)) return "Landless";
-  const t =
-    Object.values(s.buildings).reduce((a, b) => a + b, 0) +
-    s.structures.reduce((a, st) => a + structDef(st.type).slots / 2 + st.pieces.length, 0);
+  const t = estateScore(s);
   const STAGES = ES().stages;
   let n = STAGES[0][1];
   for (const [k, v] of STAGES) if (t >= k) n = v;

@@ -4,7 +4,7 @@ import { notify } from "./notify.js";
 import { pathsDay } from "./paths.js";
 import { autoTendDay } from "./autotend.js";
 import { autoEquipDay } from "./autoequip.js";
-import { autoAscendDay, autoRecruitDay } from "./minion-auto.js";
+import { autoAscendDay, autoRecruitDay, minionAgeDay } from "./minion-auto.js";
 import { evolveOptions, minionEvolveIssue } from "./minions.js";
 import { taintDev } from "./dev.js";
 import { tutCheck } from "./tutorial.js";
@@ -18,7 +18,7 @@ import { season, seasonDay } from "./seasons.js";
 import { globalTick, lifeBonus, memberTick } from "./legacy.js";
 import { actionAllowed, autoQuest, doAction, standingTick } from "./actions.js";
 import { ES, bedrooms, estEff, established, foodCap, matCap, processDay } from "./estate.js";
-import { inherit, kill, newMember, spawnSuitor } from "./family.js";
+import { generationsDay, inherit, kill, newMember, spawnSuitor } from "./family.js";
 import { hasService } from "./guilds.js";
 import { isBusy } from "./map.js";
 import { minionDay } from "./minions.js";
@@ -218,10 +218,11 @@ for (const [n, f] of [
   ["milestones", milestonesDay],
   ["tutorial", tutorialDay],
   ["estate", s => (estateDay(s), enchantDay(s), pathsDay(s))],
-  ["automation", s => (autoTendDay(s), autoEquipDay(s), autoAscendDay(s), autoRecruitDay(s))],
+  ["automation", s => (autoTendDay(s), autoEquipDay(s), autoAscendDay(s), minionAgeDay(s), autoRecruitDay(s))],
   ["suitors", suitorsDay],
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],
+  ["generations", generationsDay],
 ])
   registerDayHook(n, f);
 

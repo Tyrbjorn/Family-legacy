@@ -180,12 +180,12 @@
    "planks": 80,
    "blocks": 60,
    "ingots": 20,
-   "cloth": 20
+   "cloth": 20,
+   "marbleblocks": 60
   },
   "req": {
-   "skill": {
-    "haggling": 30
-   },
+   "stage": "Manor",
+   "phase": 2,
    "building": {
     "types": [
      "tradingpost",
@@ -257,7 +257,8 @@
    "coin": 3000,
    "planks": 80,
    "blocks": 60,
-   "ingots": 40
+   "ingots": 40,
+   "marbleblocks": 60
   },
   "req": {
    "line": "fighter",
@@ -265,8 +266,10 @@
     "types": [
      "barracks"
     ],
-    "up": 3
-   }
+    "up": 0
+   },
+   "stage": "Manor",
+   "phase": 2
   },
   "builtin": {
    "housing": {
@@ -336,7 +339,8 @@
    "planks": 80,
    "blocks": 60,
    "ingots": 20,
-   "dust": 20
+   "dust": 20,
+   "marbleblocks": 60
   },
   "req": {
    "line": "apprentice",
@@ -344,8 +348,10 @@
     "types": [
      "magestower"
     ],
-    "up": 3
-   }
+    "up": 0
+   },
+   "stage": "Manor",
+   "phase": 2
   },
   "fixed": [
    "enchtable"
@@ -417,7 +423,8 @@
    "coin": 3000,
    "planks": 80,
    "blocks": 100,
-   "ingots": 20
+   "ingots": 20,
+   "marbleblocks": 60
   },
   "req": {
    "line": "cleric",
@@ -425,8 +432,10 @@
     "types": [
      "shrinehouse"
     ],
-    "up": 3
-   }
+    "up": 0
+   },
+   "stage": "Manor",
+   "phase": 2
   },
   "builtin": {
    "bonus": {

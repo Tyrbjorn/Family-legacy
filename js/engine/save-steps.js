@@ -420,6 +420,31 @@ export const STEPS = [
     name: "Smithing Goldsmith + Gemcutter = Jeweler: old Jeweler specialists become Goldsmiths; old Grandmaster Jewelers also get Grandmaster Gemcutter (still Jewelers)",
     run: s => (renameSpecs(s), migrateJewelers(s)),
   },
+  {
+    n: 25,
+    name: "village (Era 3): no charter = no village buildings (strays go back to the estate); village tier kept in range",
+    run: s => {
+      for (const st of s.structures || []) if (!s.village && st.site) delete st.site, delete st.vcost, delete st.unpaid;
+      if (s.village) s.village.tier = Math.max(0, Math.min(D.estate.village.tiers.length - 1, s.village.tier | 0));
+    },
+  },
+  {
+    n: 26,
+    once: true,
+    name: "stone ranks: stone/blocks stay as Sandstone; Deep Quarries get a Limestone Face, Quarry Works a Granite Face",
+    run: s => {
+      for (const st of s.structures || [])
+        if (st.type === "quarry") for (const [k, id] of [[1, "limecut"], [2, "granitecut"]]) if ((st.tier || 0) >= k && !st.pieces.includes(id)) st.pieces.unshift(id);
+    },
+  },
+  {
+    n: 27,
+    name: "late game: endgame state (mount, patronage, quarries, defenses, raid timer); followers get an age (old hands 18-40, none die at once); living members keep their lifespan",
+    run: s => {
+      s.eg = { quarries: {}, defs: {}, funded: [], mount: 0, ...(s.eg || {}) };
+      for (const mi of s.minions || []) if (!mi.special && mi.age == null) mi.age = 18 + ((mi.since || 0) % 23);
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

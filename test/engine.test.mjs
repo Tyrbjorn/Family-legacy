@@ -36,7 +36,7 @@ E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on ac
 for(const m of E.living(s)) E.kill(s,m,'test'); ok(s.gameOver,'game over when all die (no safety net)');
 const g=E.newGame(t0); ok(E.estateStage(g)==='Landless'&&!E.established(g)&&!E.buildStructure(g,'shack'),'estate locked until land is bought');
 g.res.coin=500;g.res.wood=50; ok(E.buyLand(g,'plot')&&E.landSlots(g)===2&&E.estateStage(g)==='Scrub Plot','buy starting plot: 2 land slots');
-g.res.stone=(g.res.stone||0)+50; g.res.blocks=200; const sh=E.buildStructure(g,'shack'); ok(sh&&E.established(g)&&E.landUsed(g)===1&&E.freeSlots(g,sh)===2&&E.estateStage(g)==='Homestead','Shack: 1 land slot, 2 slots');
+g.res.stone=(g.res.stone||0)+50; g.res.blocks=200; const sh=E.buildStructure(g,'shack'); ok(sh&&E.established(g)&&E.landUsed(g)===1&&E.freeSlots(g,sh)===2&&E.estateStage(g)==='Scrub Plot','Shack: 1 land slot, 2 slots');
 g.res.coin+=200;g.res.wood+=100; E.placePiece(g,sh.uid,'bunk'); g.res.coin+=200;g.res.wood+=50;g.res.stone+=20; E.buildStructure(g,'bunkhouse');
 const gm=E.active(g); E.setAction(g,{type:'gather',target:'creek'}); E.advanceReal(g,100); ok(g.res.stone>0,'gather from resource node');
 ok(E.buyItem(g,'millbrook','buckler')&&g.vault.includes('buckler'),'buy from town');
@@ -186,7 +186,7 @@ E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'id
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
 const kids=g=>{for(let i=0;i<2;i++){const k=E.newMember(g,{age:5});g.members.push(k);}return g;};
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
-ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=5;ER.buildings.lumber=5; ok(E.era(ER).n===2,'Manor alone (2 living) stays Established'); kids(ER); ok(E.era(ER).n===2,'Manor + young kids stays Established'); for(const k of ER.members)k.ageDays=20*D.tuning.daysPerYear; ER.renown=0; ok(E.era(ER).n===3,'Manor + 3 living adults → Phase 3 Dynasty (no Renown needed)'); ok(E.ERAS[3].planned&&E.era(ER).n<4,'Titles phase is planned, never reached');
+ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=30;ER.buildings.lumber=30; ok(E.era(ER).n===2,'Manor alone (2 living) stays Established'); kids(ER); ok(E.era(ER).n===2,'Manor + young kids stays Established'); for(const k of ER.members)k.ageDays=20*D.tuning.daysPerYear; ER.renown=0; ok(E.era(ER).n===3,'Manor + 3 living adults → Phase 3 Dynasty (no Renown needed)'); ok(E.ERAS[3].planned&&E.era(ER).n<4,'Titles phase is planned, never reached');
 ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'farming'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
 for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
 { const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
@@ -551,7 +551,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,trade','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,trade,village','day hooks registered in order');
 }
 
 // Polish-pass bug fixes
@@ -647,7 +647,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(E.familyTree(O).flat().find(n=>n.id===sib.id).marriedOut==='House Tallow','family tree shows who married out');
 }
 // est(): a Dynasty-phase family (Manor-level estate, 3+ living) so feud/war systems are open
-const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+12;kids(g);g.members.forEach(x=>x.ageDays=Math.max(x.ageDays,20*D.tuning.daysPerYear));g.renown=Math.max(g.renown||0,1000);return g;};
+const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(g);g.members.forEach(x=>x.ageDays=Math.max(x.ageDays,20*D.tuning.daysPerYear));g.renown=Math.max(g.renown||0,1000);return g;};
 // Diplomacy: rapport tiers, house quests that pick sides, perks, troubles
 { const G=est(E.newGame(t0)); E.skipTutorial(G); ok(E.tierOf(G,'tallow')==='neutral','houses start neutral');
  const tiers=[[-80,'feud'],[-55,'rival'],[-20,'cold'],[0,'neutral'],[40,'friendly'],[80,'allied']]; for(const [r,t] of tiers){const X=est(E.newGame(t0)); E.addRapport(X,'vey',r); ok(E.tierOf(X,'vey')===t,`rapport ${r} → ${t}`);}

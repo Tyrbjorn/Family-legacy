@@ -53,6 +53,7 @@ import { cp } from "./family.js";
 import { lineBonus } from "./guilds.js";
 import { memberFx, pathFinds } from "./paths.js";
 import { addToVault, itemDef } from "./inventory.js";
+import { mountSpeed } from "./endgame.js";
 import { addMinion, minionRoom } from "./minions.js";
 import { dungeonClear, dungeonDef, dungeonFloor, questIssue, resolveQuest, rollRare } from "./quests.js";
 import { gainXp } from "./skills.js";
@@ -223,7 +224,7 @@ export function taskDays(a) {
 }
 
 export function newTrip(a, s) {
-  const out = travelDays(a.target);
+  const out = Math.round((travelDays(a.target) / (s ? mountSpeed(s) : 1)) * 10) / 10;
   const hs = a.type === "gather" && s && D.world ? haulTier(s).haulSpeed : 1;
   return { out, task: taskDays(a), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
 }

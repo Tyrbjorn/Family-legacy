@@ -40,6 +40,7 @@ const names = [
   "paths",
   "world",
   "metals",
+  "endgame",
 ];
 
 export const D = {};
