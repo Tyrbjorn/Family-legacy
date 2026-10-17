@@ -1,4 +1,6 @@
 import { questInjury } from "./injuries.js";
+import { tutActive } from "./tutorial.js";
+import { questLineNext } from "./requests.js";
 import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { chron } from "./chronicle.js";
@@ -21,7 +23,7 @@ export function resolveQuest(s, m, q, eff) {
   // repeat fights scale with the phase; ~10% are elites (endgame.creatures)
   const th = threat(s, q.cp > 0 && !q.once && !q.story && !q.deliver && s.doneQuests.includes(q.id));
   if (th.mult !== 1) q = { ...q, cp: q.cp * th.mult };
-  const ok = (q.apprentice && !isAdult(m)) || rng() < successChance(s, m, q); // the mentor watches the apprentice
+  const ok = (q.apprentice && (!isAdult(m) || tutActive(s))) || rng() < successChance(s, m, q); // the mentor watches the apprentice
   if (!ok) {
     log(s, `❌ ${m.name} failed ${q.name}.`);
     questInjury(s, m, q, false, minionPower(s, "guard") > 0);
@@ -54,6 +56,7 @@ export function resolveQuest(s, m, q, eff) {
   if (mp) gain.push(itemDef(mp).name);
   rollRare(s, q, m);
   if (q.house || q.against) houseQuestDone(s, q);
+  questLineNext(s, q);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
   if (q.story) chron(s, "story", `📖 Chapter ${q.story}: ${m.name} completed ${q.name}.`, m.name);
   if (q.unlocks && !s.unlocks.includes(q.unlocks)) {

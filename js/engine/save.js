@@ -60,7 +60,7 @@ export function _newGame(now) {
   for (const b of D.buildings) s.buildings[b.id] = b.start;
   const f = newMember(s, { age: D.tuning.founderAge ?? 15 });
   s.members.push(f);
-  f.action = { type: "activity", target: "hiking", progress: 0 };
+  f.action = { type: "activity", target: "fishing", progress: 0 };
   log(s, `🏡 ${f.name} founds the family estate.`);
   return s;
 }

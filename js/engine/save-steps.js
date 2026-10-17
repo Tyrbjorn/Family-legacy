@@ -386,7 +386,7 @@ export const STEPS = [
       if (s.tut && D.tutorial && s.tut.done) {
         // a new intro step counts as done when a later step is already done (no backtracking)
         const ids = D.tutorial.steps.map(x => x.id);
-        for (const id of ["scout", "trade"]) if (!s.tut.done.includes(id) && ids.slice(ids.indexOf(id) + 1).some(x => s.tut.done.includes(x))) s.tut.done.push(id);
+        for (const id of ["scout", "trade"]) if (!s.tut.done.includes(id) && [...ids.slice(ids.indexOf(id) + 1), ...(id === "trade" ? ["activity"] : [])].some(x => s.tut.done.includes(x))) s.tut.done.push(id);
         const i = ids.findIndex(id => !s.tut.done.includes(id));
         s.tut.step = i < 0 ? ids.length : i;
       }
@@ -509,6 +509,26 @@ export const STEPS = [
         if (t.started) {
           const i = newIds.findIndex(id => !t.done.includes(id));
           t.step = i < 0 ? newIds.length : i;
+        }
+      }
+    },
+  },  {
+    n: 31,
+    once: true,
+    name: "R31 tasks + villager requests (request state; tutorial Feed step credits earlier activity days)",
+    run(s) {
+      s.req = s.req || {};
+      s.reqPerks = s.reqPerks || [];
+      // R31 tutorial: food/chop/hunt/cook steps now come before rats. A save already in the prologue skips them
+      // (no rewards), so a save on rats stays on rats and anyone past rats keeps their place; "Stretch Your Legs" is gone.
+      const t = s.tut;
+      const pristine = !(s.day > 0) && !(t && t.done && t.done.length) && !(s.doneQuests || []).length; // a brand-new game
+      if (t && t.started && !pristine) {
+        const ids = D.tutorial.steps.map(x => x.id);
+        for (const id of ["food", "chop", "hunt", "cook"]) if (ids.includes(id) && !t.done.includes(id)) t.done.push(id);
+        if (!t.skipped) {
+          const i = ids.findIndex(id => !t.done.includes(id));
+          t.step = i < 0 ? ids.length : i;
         }
       }
     },

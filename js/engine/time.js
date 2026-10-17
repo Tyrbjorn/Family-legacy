@@ -69,7 +69,10 @@ function milestonesDay(s) {
 
 function tutorialDay(s) {
   if (s.tut && s.tut.started && !s.tut.skipped && s.tut.step < (D.tutorial?.steps.length || 0)) {
-    if (active(s)?.action?.type === "activity") s.tut.flags.activity = true;
+    const aa = active(s)?.action;
+    if (aa?.type === "activity") {
+      s.tut.flags.activity = true;
+    }
     tutCheck(s);
   }
 }

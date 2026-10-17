@@ -218,7 +218,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + mapSvg(m) + mapDetail(m) + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
+  let h = busyBanner(m) + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);

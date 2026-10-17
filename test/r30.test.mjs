@@ -7,15 +7,15 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const fresh=()=>{const s=E.newGame(1_700_000_000_000);E.normalize(s);return s;};
 // --- tutorial: rats is step 1, nothing blocks it
-ok(D.tutorial.steps[0].id==='rats'&&!D.tutorial.steps.some(x=>x.id==='gear'),'rats is tutorial step 1; Gear Up removed');
-ok(D.tutorial.steps[0].reward.coin===50&&D.tutorial.steps[0].reward.wood===4,'Gear Up reward folded into rats');
+ok(D.tutorial.steps.map(x=>x.id).slice(0,5).join()==='food,chop,hunt,cook,rats'&&!D.tutorial.steps.some(x=>x.id==='gear'),'R31: basic tasks first, rats is step 5; Gear Up removed');
+ok(D.tutorial.steps.find(x=>x.id==='rats').reward.wood===4,'Gear Up wood still folded into rats (R31: coin spread over the task steps)');
 ok(!/list below the map/.test(JSON.stringify(D.tutorial)),'no stale quest-list text');
 { const s=fresh(), m=E.active(s), q=D.quests.find(x=>x.id==='rats');
   ok(m.equip.weapon==='rusty_sword'&&m.equip.armor==='apprentice_clothes'&&m.equip.accessory==='travel_cloak'&&!s.vault.length,'start kit: blade + clothes + cloak equipped, no armor in the vault');
   ok(E.gstats('apprentice_clothes').cls==='unarmored','clothes are unarmored');
   ok(E.questVisible(s,q)&&!E.questIssue(s,m,q)&&E.actionAllowed(s,m,{type:'quest',target:'rats'}),'day 1: rats visible on the map/Quests and takeable');
   E.setAction(s,{type:'quest',target:'rats'}); for(let i=0;i<60&&!s.doneQuests.includes('rats');i++) E.advanceReal(s,10);
-  ok(s.doneQuests.includes('rats')&&s.tut.step===1&&!s.log.some(l=>/failed Rats/.test(l.msg)),'rats is won on day 1 with the starting kit (step 1 done)'); }
+  ok(s.doneQuests.includes('rats')&&E.stepDone(s,D.tutorial.steps.find(x=>x.id==='rats'))&&!s.log.some(l=>/failed Rats/.test(l.msg)),'rats is won on day 1 with the starting kit (R31: rats step counts done whenever it is reached)'); }
 // --- map size, start reveal
 ok(D.map.size.w===1600&&D.map.size.h===1400,'map 1600x1400');
 { const s=fresh(); const pc=E.fogPct(s);
@@ -54,6 +54,6 @@ ok(D.map.size.w===1600&&D.map.size.h===1400,'map 1600x1400');
   const m=E.active(s); m.equip={}; s.vault=['rusty_sword']; const c0=s.res.coin; E.normalize(s);
   ok(s.fog.length===32*28,'fog on the new grid');
   ok(E.fogSeen(s,(6*50+25)*1.5,(8*50+25)*1.5)&&E.fogSeen(s,(19*50+25)*1.5,(2*50+25)*1.5),'every old revealed cell stays revealed (scaled)');
-  ok(m.equip.weapon==='rusty_sword'&&s.tut.step===0&&D.tutorial.steps[0].id==='rats'&&s.res.coin===c0+20,'mid-Gear-Up save: blade equipped, old reward paid, now on rats');
+  ok(m.equip.weapon==='rusty_sword'&&D.tutorial.steps[s.tut.step].id==='rats'&&s.res.coin===c0+20,'mid-Gear-Up save: blade equipped, old reward paid, now on rats');
   const s2=JSON.parse(JSON.stringify(s)); delete s2.schema; E.normalize(s2); ok(s2.res.coin===s.res.coin,'re-running the step pays nothing twice'); }
 console.log('r30: '+pass+' passed');

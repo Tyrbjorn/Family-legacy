@@ -47,6 +47,8 @@ export function giveStartGear(s) {
     if (!m || !it || (m.equip && m.equip[it.slot])) continue;
     if (addToVault(s, id)) equip(s, m, id);
   }
+  // R31: starter tools (Orrin's hatchet) go to the vault, not equipped
+  for (const id of (TD().start || {}).items || []) if (!(s.vault || []).includes(id)) addToVault(s, id);
 }
 function beginStep(s) {
   const st = tutCurrent(s);
@@ -64,8 +66,12 @@ const CHECKS = {
   equipped: s => living(s).some(m => Object.values(m.equip || {}).some(Boolean)),
   crafted: s => !!s.tut.flags.crafted,
   activity: s => !!s.tut.flags.activity,
+  fed: s => (s.tut.flags.t_fishing || 0) + (s.tut.flags.t_forage || 0) >= 2 || (s.tut.flags.fed || 0) >= 3,
+  chopped: s => (s.tut.flags.t_chop || 0) >= 2,
+  hunted: s => (s.tut.flags.t_hunt || 0) >= 1,
+  cooked: s => (s.tut.flags.t_cook || 0) >= 1,
   estate: s => !!s.tut.flags.estate || (s.land || []).length > 0,
-  scouted: s => !!s.tut.flags.scouted || (s.explored || []).length > 0,
+  scouted: s => !!s.tut.flags.scouted || (s.explored || []).length > 0 || (s.tut.flags.t_roam || 0) >= 1,
   traded: s => !!s.tut.flags.traded,
   path: s => living(s).some(m => m.cls || m.guild || m.craft || m.prof),
 };

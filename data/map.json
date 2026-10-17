@@ -479,6 +479,18 @@
   "q_buried_cache": {
    "x": 330,
    "y": 780
+  },
+  "rq_millbridge": {
+   "x": 540,
+   "y": 495
+  },
+  "rq_manor_letter": {
+   "x": 450,
+   "y": 405
+  },
+  "rq_manor_gala": {
+   "x": 450,
+   "y": 405
   }
  },
  "areas": [

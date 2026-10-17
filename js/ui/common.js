@@ -21,7 +21,7 @@ export function top() {
   const t = s.turbo,
     cap = E.turboCapSec(s);
   return `<div class="row"><b>🏰 Family Legacy</b>${E.devOn() ? '<span class="devbadge">DEV</span>' : ""}<button class="b fbbtn" data-fb="open" title="Playtest feedback">💬 Feedback</button>${bellv()}<span class="muted">${E.season(s).icon} ${E.season(s).name} · ${E.todLabel(s)} · ${E.estateStage(s)} · Y${yr(s.day) + 1}, day ${(s.day % D.tuning.daysPerYear) + 1} · Renown ${fmt(s.renown)}</span></div><div class="muted" title="${E.nextEraHint(s)} Phases only add systems; questing, crafting, jobs and training stay available forever.">${E.era(s).icon} Phase ${E.era(s).n}/4: ${E.era(s).name} <span class="hint" style="font-size:11px">· ${E.nextEraHint(s)}</span></div>
- <div class="res"><span>🪙 <b>${fmt(s.res.coin)}</b></span><span>🍞 <b>${fmt(s.res.food)}</b></span><span>🪵 <b>${fmt(s.res.wood)}</b></span><span>🪨 <b>${fmt(s.res.stone)}</b></span><span title="Thyme (common herb)">🌿 <b>${fmt(s.res.thyme || 0)}</b></span>${s.meal ? `<span title="Contentment (food variety, rations, shortages)">${s.morale >= 0 ? "🙂" : "😟"} <b>${s.morale >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}</b></span>` : ""}${s.res.planks ? `<span>🪚 <b>${fmt(s.res.planks)}</b></span>` : ""}${s.res.ingots ? `<span>⛓️ <b>${fmt(s.res.ingots)}</b></span>` : ""}${s.res.potions ? `<span>🧪 <b>${fmt(s.res.potions)}</b></span>` : ""}</div>
+ <div class="res"><span>🪙 <b>${fmt(s.res.coin)}</b></span>${foodSpan()}<span>🪵 <b>${fmt(s.res.wood)}</b></span><span>🪨 <b>${fmt(s.res.stone)}</b></span><span title="Thyme (common herb)">🌿 <b>${fmt(s.res.thyme || 0)}</b></span>${s.meal ? `<span title="Contentment (food variety, rations, shortages)">${s.morale >= 0 ? "🙂" : "😟"} <b>${s.morale >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}</b></span>` : ""}${s.res.planks ? `<span>🪚 <b>${fmt(s.res.planks)}</b></span>` : ""}${s.res.ingots ? `<span>⛓️ <b>${fmt(s.res.ingots)}</b></span>` : ""}${s.res.potions ? `<span>🧪 <b>${fmt(s.res.potions)}</b></span>` : ""}</div>
  <div class="row"><div style="flex:1"><div class="bar t"><i style="width:${(t.charge / cap) * 100}%"></i></div><span class="muted">⚡ Turbo ${mmss(t.charge)} / ${cap / 60}m<span class="hint"> · charges only while away (1h → 6m)</span></span></div>
  <label class="muted" title="Game speed (Legacy unlocks faster tiers); separate from Turbo">⏱ <select data-a="speed">${E.speedOptions(
    s,
@@ -267,4 +267,10 @@ export function injuryTags(m) {
     ...(m.load > 0 ? [`<span class="tb" style="border-color:#e77">⚠️ ${E.loadWarn(m)}</span>`] : []),
   ];
   return bits.length ? `<div>${bits.join("")}</div>` : "";
+}
+
+// R31: food in the header shows days left; amber under 14 days
+export function foodSpan() {
+  const d = E.daysOfStock(s), low = d < 14;
+  return `<span class="${low ? "foodlow" : ""}" title="Food: about ${isFinite(d) ? Math.floor(d) : "∞"} days left at today's eating">🍞 <b>${fmt(s.res.food)}</b> <small>${isFinite(d) ? Math.floor(d) + "d" : "∞"}</small></span>`;
 }

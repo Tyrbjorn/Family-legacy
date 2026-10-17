@@ -42,6 +42,7 @@ const names = [
   "world",
   "metals",
   "endgame",
+  "requests",
 ];
 
 export const D = {};

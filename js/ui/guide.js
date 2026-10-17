@@ -32,7 +32,7 @@ export function tutorialCard() {
   return `<div class="card tut"><div class="row"><b>${mt.icon} ${mt.name}</b><span class="muted">${mt.title || ""}</span><span style="flex:1"></span><button class="b" data-a="tutskip" title="Skip the apprenticeship">Skip</button></div>
 ${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>${D.tutorial.howToPlay ? `<p class="muted"><b>${D.tutorial.howToPlay.replace(/^How to play:\s*/, "How to play:</b> ")}</p>` : ""}` : ""}
 <div class="pb"><i style="width:${(n / steps.length) * 100}%"></i><span>Prologue: The Apprentice · ${n}/${steps.length}</span></div>
-<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div><div class="row">${ratsBtn}${craftBtn}</div></div>`;
+<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div>${st.tip ? `<div class="tip">💡 ${st.tip}</div>` : ""}<div class="row">${ratsBtn}${craftBtn}${goBtns(st)}</div></div>`;
 }
 
 // Unlock intro lines (data/intros.json): same card look as the prologue; never blocking, one Skip each.
@@ -103,3 +103,17 @@ ${
 <div class="muted" style="margin-top:6px"><a data-a="ver" class="ver">Family Legacy ${VERSION}</a></div>`;
 }
 export const VERSION = "v1.7";
+
+// R31: each task step gets big Go buttons (data: step.go), with the lock reason shown when it can't start yet
+function goBtns(st) {
+  const m = E.active(s);
+  return (st.go || [])
+    .map(g => {
+      const ac = D.activities.find(a => a.id === g.target);
+      if (!ac || !m) return "";
+      const on = m.action && m.action.type === "activity" && m.action.target === ac.id;
+      const why = E.taskLock(s, m, ac);
+      return `<button class="b ${on ? "" : "sel"} big" data-a="activity" data-v="${ac.id}" ${why || on ? "disabled" : ""}>${on ? "Doing: " + ac.name : "Go: " + g.label}</button>${why ? `<span class="muted">🔒 ${why}</span>` : ""}`;
+    })
+    .join("");
+}

@@ -60,7 +60,7 @@ for(const id of ['silverseam','n_gemvein','n_lake']){const n=D.nodes.find(x=>x.i
  ok(E.driverSkim({loyalty:45})===0.1&&E.driverSkim({loyalty:60})===0,'loyalty 30-59 skims 10%');
  ok(E.driverLvlEdge({lvl:6})===0.05&&E.driverLvlEdge({lvl:40})===C.driverLvlEdgeMax,'+1% per level, capped');}
 // tutorial + migration
-{ok(D.tutorial.steps.map(x=>x.id).join()==='rats,scout,craft,trade,activity,estate,path','intro steps: scout after rats, first trade after craft');
+{ok(D.tutorial.steps.map(x=>x.id).join()==='food,chop,hunt,cook,rats,scout,craft,trade,estate,path','intro steps: scout after rats, first trade after craft');
  const s=E.newGame(1); s.tut.step=4; s.tut.done=['gear','rats','craft','activity']; s.schema=20; s.animalsFed=false; s.animals={mule:1}; E.normalize(s);
  ok(s.tut.done.includes('scout')&&s.tut.done.includes('trade')&&D.tutorial.steps[s.tut.step].id==='estate'&&s.unfed.mule===1&&s.schema>=21,'v21: old saves skip passed intro steps, keep their place, carry unfed state');}
 console.log(pass+' map round 2 checks passed');

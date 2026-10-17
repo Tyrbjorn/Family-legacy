@@ -8,25 +8,128 @@
  "intro": "Millbrook is a muddy village on the edge of the Old Forest. You're an orphan, taken in as apprentice by Master Orrin, the village Hearthwright. Orrin knows something about where you came from, about your family's lost name, but he won't tell you until you can stand on your own.",
  "steps": [
   {
+   "id": "food",
+   "icon": "🎣",
+   "title": "Gather Food",
+   "text": "\"A full larder beats a full purse.\" Fish or Forage for a couple of days (button below or Main → Tasks).",
+   "tip": "Tasks produce resources every day. The 🍞 in the header shows how many days of food are left; it turns amber under 14.",
+   "check": "fed",
+   "go": [
+    {
+     "type": "activity",
+     "target": "fishing",
+     "label": "🎣 Fish"
+    },
+    {
+     "type": "activity",
+     "target": "forage",
+     "label": "🌿 Forage"
+    }
+   ],
+   "reward": {
+    "coin": 15,
+    "thyme": 3
+   }
+  },
+  {
+   "id": "chop",
+   "icon": "🪓",
+   "title": "Gather Wood",
+   "text": "Orrin hands you a hatchet. \"Wood keeps the fire going and the roof up.\" Chop wood for a couple of days.",
+   "tip": "Some tasks need a tool: no axe, no Chop. Millbrook sells cheap tools; better ones yield a little more.",
+   "check": "chopped",
+   "start": {
+    "items": [
+     "hatchet"
+    ]
+   },
+   "go": [
+    {
+     "type": "activity",
+     "target": "chop",
+     "label": "🪓 Chop Wood"
+    }
+   ],
+   "reward": {
+    "coin": 10
+   }
+  },
+  {
+   "id": "hunt",
+   "icon": "🏹",
+   "title": "Hunt",
+   "text": "\"Take my old short bow. Bring back something with fur on it.\" Hunt for a day.",
+   "tip": "Hunting brings meat and hides (traders and villagers want them). It needs a bow and age 14+.",
+   "check": "hunted",
+   "start": {
+    "items": [
+     "short_bow"
+    ]
+   },
+   "go": [
+    {
+     "type": "activity",
+     "target": "hunt",
+     "label": "🏹 Hunt"
+    }
+   ],
+   "reward": {
+    "coin": 15
+   }
+  },
+  {
+   "id": "cook",
+   "icon": "🍲",
+   "title": "Cook a Meal",
+   "text": "\"Raw meat's a waste. Use my hearth.\" Cook your meat or fish into stew.",
+   "tip": "Refining turns raw goods into better ones: one meat or fish makes stew worth far more at the table. Crafting works the same way with wood, ore and cloth.",
+   "check": "cooked",
+   "go": [
+    {
+     "type": "activity",
+     "target": "cook",
+     "label": "🍲 Cook at Orrin's hearth"
+    }
+   ],
+   "reward": {
+    "coin": 15,
+    "food": 10
+   }
+  },
+  {
    "id": "rats",
    "icon": "🐀",
    "title": "Rats in the Cellar",
-   "text": "Orrin hands you his old blade. \"The guildhall cellar's crawling again. Go earn your supper.\" Tap Go: Rats in the Cellar below (it's also first on the Quests tab and the gold-ringed pin next to Millbrook on the Map).",
+   "text": "\"The guildhall cellar's crawling again. Your blade's sharp enough. Go earn your supper.\" Tap Go: Rats in the Cellar below (also first on the Quests tab and the gold-ringed pin by Millbrook on the Map).",
    "check": "quest:rats",
    "reward": {
-    "coin": 50,
-    "food": 20,
+    "coin": 30,
+    "food": 10,
     "wood": 4
-   }
+   },
+   "tip": "Quests are trips: the member walks there, does the job, and walks back. The bar shows how long; they can't do tasks meanwhile."
   },
   {
    "id": "scout",
    "icon": "🧭",
    "title": "Scout Nearby",
-   "text": "\"Good. Now learn the land. A Hearthwright knows every path around home.\" Gather or explore near Millbrook (Map tab).",
+   "text": "\"Good. Now learn the land. A Hearthwright knows every path around home.\" Tap Go: Explore Nearby below and walk the land for a day. Orrin also hands you a pick: Dig Stone is now on your Tasks list.",
    "check": "scouted",
    "reward": {
     "coin": 15
+   },
+   "tip": "Explore Nearby clears fog around home and can turn up hidden spots. Gathering at a map pin counts too.",
+   "go": [
+    {
+     "type": "activity",
+     "target": "roam",
+     "label": "🧭 Explore Nearby"
+    }
+   ],
+   "start": {
+    "items": [
+     "pick"
+    ]
    }
   },
   {
@@ -46,21 +149,10 @@
    "id": "trade",
    "icon": "🪙",
    "title": "First Trade",
-   "text": "\"Coin keeps a roof over a family.\" Sell something in a town (tap a town on the Map).",
+   "text": "\"Coin keeps a roof over a family.\" Tap 🏪 Market (Main, under your name) and sell a little wood or fish.",
    "check": "traded",
    "reward": {
     "coin": 25
-   }
-  },
-  {
-   "id": "activity",
-   "icon": "🥾",
-   "title": "Stretch Your Legs",
-   "text": "\"Most days aren't adventures. Find honest work.\" Pick an activity (Main tab, Training & Activities) and stick with it a few days.",
-   "check": "activity",
-   "reward": {
-    "coin": 25,
-    "thyme": 3
    }
   },
   {
@@ -77,7 +169,7 @@
    "id": "path",
    "icon": "🧭",
    "title": "Choose a Path",
-   "text": "\"You're nearly grown. Blade, craft or guild, your choice.\" When you come of age, pick a class, a craft or a guild (Work tab, Guilds).",
+   "text": "\"You're grown now. Blade, craft or guild: your choice.\" Pick a class, a craft or a guild (Work tab, Guilds).",
    "check": "path",
    "reward": {
     "coin": 60,
@@ -128,12 +220,12 @@
   }
  ],
  "start": {
-  "_note": "R30: the founder starts in civilian clothes and a travel cloak (no armor); Orrin hands over his old blade, already equipped. (Gear Up step removed; its 20 coin + 4 wood moved to the rats reward.)",
+  "_note": "R30: the founder starts in civilian clothes and a travel cloak (no armor); Orrin hands over his old blade, already equipped. (Gear Up step removed; its 20 coin + 4 wood moved to the rats reward.) R31: hatchet comes with the Chop step, short bow with the Hunt step.",
   "equip": [
    "rusty_sword",
    "apprentice_clothes",
    "travel_cloak"
   ]
  },
- "howToPlay": "How to play: each day your character works, trains, crafts or quests. Grow up, marry, raise children, and pass your skills, gear and land down the generations. As your house grows, hire help and unlock automation so the family runs itself while you plan the next generation."
+ "howToPlay": "How to play: each day your character does a task (gathering food, wood and more), works a job for coin, trains, crafts or goes on a quest. Grow up, marry, raise children, and pass your skills, gear and land down the generations. As your house grows, hire help and unlock automation so the family runs itself while you plan the next generation."
 }

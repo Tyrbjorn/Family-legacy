@@ -242,6 +242,8 @@ function bot(s, m) {
     if (st.check === "quest:rats") E.setAction(s, { type: "quest", target: "rats" });
     if (st.check === "crafted") E.mentorCraft(s);
     if (st.check === "activity") E.setAction(s, { type: "activity", target: "hiking" });
+    const go = { fed: "fishing", chopped: "chop", hunted: "hunt", cooked: "cook" }[st.check]; // R31 task steps
+    if (go && !E.isBusy(m) && !(m.action && m.action.target === go)) E.setAction(s, { type: "activity", target: go });
     if (st.check === "estate") E.tutNote(s, "estate");
     if (st.check === "scouted" && !E.isBusy(m)) {
       const n = D.nodes.find(x => E.known(s, x) && E.actionAllowed(s, m, { type: "gather", target: x.id }));
@@ -338,13 +340,20 @@ function bot(s, m) {
       }
     seen.convoyTrips = Math.max(seen.convoyTrips, s.trade.routes.reduce((a, r) => a + (r.trips || 0), 0));
   }
+  // R31: hand in any villager request we can fill
+  if (E.deliverable) for (const n of D.requests?.npcs || []) {
+    const w = E.deliverIssue(s, n.id) ? null : E.wantsOf(s, n.id);
+    // keep building materials for the estate: only hand over wood/stone with 3x the ask in stock
+    if (w && Object.entries(w).every(([k, v]) => !["wood", "stone"].includes(k) || (s.res[k] || 0) >= v * 3)) E.deliverRequest(s, n.id);
+  }
+  const FOODTASK = D.activities.some(a => a.id === "fishing" && a.task) ? "fishing" : "chores"; // R31: Fish is the day-1 food task
   // food: never let the larder run dry — buy provisions, else do chores (the starter path)
   if (E.daysOfStock(s) < 4) {
     if (s.res.coin >= E.townBuyPrice(s, "millbrook", "food") * 30) E.buyRes(s, "millbrook", "food", 30);
-    else if (!E.tutActive(s) && (!E.isBusy(m) || E.daysOfStock(s) < 1) && !(m.action && m.action.target === "chores")) {
-      E.setAction(s, { type: "activity", target: "chores" });
+    else if (!E.tutActive(s) && (!E.isBusy(m) || E.daysOfStock(s) < 1) && !(m.action && m.action.target === FOODTASK)) {
+      E.setAction(s, { type: "activity", target: FOODTASK });
       return;
-    } else if (!(s.structures || []).length && m.action && m.action.target === "chores") return; // fresh lineage: stay on chores until stocked
+    } else if (!(s.structures || []).length && m.action && m.action.target === FOODTASK) return; // fresh lineage: stay on chores until stocked
   }
   if (E.isAdult(m) && !E.isBusy(m) && !E.tutActive(s) && s.day % 50 < 3 && E.daysOfStock(s) >= 10) {
     const q = D.quests.find(q => (q.house || q.needsFeud) && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp <= E.cp(s, m));
@@ -441,7 +450,7 @@ function bot(s, m) {
   // family
   if (E.isAdult(m) && !m.spouse && E.ageY(m) >= T.courtAge && s.suitors.length) {
     const su = s.suitors.reduce((a, b) => (b.affinity > a.affinity ? b : a));
-    if (su.affinity >= 100) E.propose(s, su.id);
+    if (su.affinity >= 100) { const ok = E.propose(s, su.id); if (process.env.PDBG && !ok) console.error("PROPOSE", s.day, E.proposeIssue(s, su.id)); }
     else if (!E.isBusy(m)) {
       E.setAction(s, { type: "court", target: su.id });
       return;
@@ -522,6 +531,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
       lineages++;
       continue;
     }
+    if (process.env.YDBG && day % 180 === 0) { const mm = E.active(s); console.error("Y", day, mm && E.ageY(mm).toFixed(1), mm && mm.spouse, s.suitors.map(x => Math.round(x.affinity)).join("/"), JSON.stringify(mm && mm.action).slice(0, 80), E.tutActive(s) && E.tutCurrent(s).id); }
     if (process.env.MDBG && day === 35 * YD) console.error('MDBG', seed, JSON.stringify(s.structures.filter(x => ['barracks', 'shrinehouse', 'magestower', 'house', 'mansion', 'fort', 'abbey', 'towerkeep'].includes(x.type)).map(x => x.type + ':up' + (x.up || 0) + ':' + (E.specialUpIssue ? E.specialUpIssue(s, x.uid) : ''))), 'house opts', JSON.stringify(s.structures.filter(x => x.type === 'house').slice(0, 1).flatMap(x => E.upgradeOptions('house').map(o => o.id + '=' + E.upgradeIssue(s, x.uid, o.id)))), 'lines', E.living(s).map(m => m.cls).join(','), 'hag', Math.max(...E.living(s).map(m => m.skills.haggling?.lvl || 0)), 'land', E.landUsed(s) + '/' + E.landSlots(s));
     if (process.env.NOASC) (s.autoOff ||= {}).ascend = true;
     if (day % 3 === 0) bot(s, E.active(s));

@@ -1,4 +1,5 @@
 import { injuryXp } from "./injuries.js";
+import { toolIssue } from "./requests.js";
 import { diffXp } from "./difficulty.js";
 import { gearFx } from "./gear.js";
 import { famFx, pathReqOk, pathXp, setPathInLine } from "./paths.js";
@@ -125,6 +126,7 @@ export function srcOk(s, m, u, ac) {
   }
   if (u.quest) return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
   if (u.building) return bl(s, u.building) > 0;
+  if (u.tut) return !!(s.tut && ((s.tut.done || []).includes(u.tut) || s.tut.skipped || !s.tut.started || (D.tutorial && s.tut.step > D.tutorial.steps.findIndex(x => x.id === u.tut))));
   return true;
 }
 
@@ -134,6 +136,7 @@ export function srcText(u) {
   if (u.item) return (itemDef(u.item) || {}).name || u.item;
   if (u.guild) return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
   if (u.quest) return "quest “" + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest) + "”";
+  if (u.tut) return "tutorial: " + ((D.tutorial?.steps.find(x => x.id === u.tut) || {}).title || u.tut);
   if (u.building) return "build " + ((D.buildings.find(b => b.id === u.building) || {}).name || u.building);
   return "";
 }
@@ -154,6 +157,7 @@ export function themedFor(s, m, skillId) {
 export function activityOk(s, m, ac) {
   const a = ageY(m);
   if (a < ac.minAge || (ac.maxAge && a > ac.maxAge)) return false;
+  if (ac.tool && toolIssue(s, ac)) return false;
   const u = ac.unlock;
   if (!u) return true;
   if (Array.isArray(u)) return u.some(x => srcOk(s, m, x, ac));

@@ -381,3 +381,33 @@ export function rumor(s, regionId) {
   log(s, `🗣️ Rumor: ${x.name} discovered!`);
   return x;
 }
+
+// R31 Explore Nearby task: each day clears a patch of fog at a random spot around home, pushing outward as the
+// near land gets known (radius grows with days explored, capped), and has a small chance to turn up a hidden find
+// (outskirts hidden quest/node that no special map or request line owns).
+export function exploreDay(s, m, eff) {
+  if (!D.world) return;
+  const h = MP().home, x = (s.roam = s.roam || { d: 0 });
+  x.d += eff;
+  const R = Math.min(520, 160 + x.d * 6), a = rng() * Math.PI * 2, d = R * (0.55 + 0.45 * rng());
+  const px = Math.max(0, Math.min(MP().size.w, h.x + Math.cos(a) * d)), py = Math.max(0, Math.min(MP().size.h, h.y + Math.sin(a) * d));
+  reveal(s, px, py, 70);
+  if (rng() < 0.03 * eff) {
+    const owned = new Set(Object.values((MP().specialMaps || { maps: {} }).maps).flatMap(mm => mm.effects.flatMap(e => e.ids || [])));
+    const pool = [...D.quests, ...D.nodes].filter(q => q.region === "outskirts" && q.hidden && !q.line && !owned.has(q.id) && !s.revealed.includes(q.id));
+    if (pool.length) {
+      const f = r(pool);
+      s.revealed.push(f.id);
+      revealAt(s, f.id);
+      log(s, `🧭 ${m.name} found something while exploring: ${f.name}.`);
+    }
+  }
+}
+
+// R31 Market shortcut: the known town nearest the member (where they are on a trip, else home)
+export function marketTown(s, m) {
+  const p = m && m.action && m.action.trip ? tripPos(m.action) || MP().home : MP().home;
+  const ts = D.towns.filter(t => townKnown(s, t) && MP().towns[t.id]);
+  ts.sort((a, b) => Math.hypot(MP().towns[a.id].x - p.x, MP().towns[a.id].y - p.y) - Math.hypot(MP().towns[b.id].x - p.x, MP().towns[b.id].y - p.y));
+  return (ts[0] || D.towns[0]).id;
+}

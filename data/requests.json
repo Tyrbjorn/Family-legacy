@@ -1,0 +1,243 @@
+{
+ "_note": "R31 villager requests. Data-driven: add npcs/requests (expansions can add whole towns). wants = resources; reward = coin/food/res/items/favour; extra (once, on that request) = discount|bonus|questline.",
+ "cooldown": [
+  3,
+  7
+ ],
+ "favourPerDelivery": 10,
+ "npcs": [
+  {
+   "id": "bram",
+   "town": "millbrook",
+   "name": "Bram the Carpenter",
+   "icon": "🪚",
+   "task": "chop",
+   "requests": [
+    {
+     "id": "bram1",
+     "wants": {
+      "wood": 10
+     },
+     "reward": {
+      "coin": 30,
+      "res": {
+       "planks": 5
+      }
+     }
+    },
+    {
+     "id": "bram2",
+     "wants": {
+      "wood": 16
+     },
+     "reward": {
+      "coin": 45,
+      "res": {
+       "planks": 6
+      }
+     }
+    },
+    {
+     "id": "bram3",
+     "wants": {
+      "wood": 20,
+      "stone": 5
+     },
+     "reward": {
+      "coin": 60
+     },
+     "extra": {
+      "type": "questline",
+      "quests": [
+       "rq_millbridge"
+      ],
+      "text": "Bram wants to rebuild the old mill bridge."
+     }
+    }
+   ]
+  },
+  {
+   "id": "mira",
+   "town": "millbrook",
+   "name": "Mira the Tanner",
+   "icon": "🦊",
+   "task": "hunt",
+   "requests": [
+    {
+     "id": "mira1",
+     "wants": {
+      "hides": 3
+     },
+     "reward": {
+      "coin": 45
+     }
+    },
+    {
+     "id": "mira2",
+     "wants": {
+      "hides": 4
+     },
+     "reward": {
+      "coin": 40,
+      "items": [
+       "quiver"
+      ]
+     },
+     "extra": {
+      "type": "discount",
+      "town": "millbrook",
+      "mat": "leather",
+      "pct": 0.1,
+      "text": "10% off leather goods in Millbrook, for good."
+     }
+    },
+    {
+     "id": "mira3",
+     "wants": {
+      "hides": 6
+     },
+     "reward": {
+      "coin": 80
+     }
+    }
+   ]
+  },
+  {
+   "id": "elswyth",
+   "town": "millbrook",
+   "name": "Lady Elswyth",
+   "icon": "🌸",
+   "task": "forage",
+   "requests": [
+    {
+     "id": "els1",
+     "wants": {
+      "thyme": 5
+     },
+     "reward": {
+      "coin": 20,
+      "renown": 2
+     }
+    },
+    {
+     "id": "els2",
+     "wants": {
+      "thyme": 8
+     },
+     "reward": {
+      "coin": 30,
+      "renown": 3
+     }
+    },
+    {
+     "id": "els3",
+     "wants": {
+      "thyme": 10,
+      "food": 10
+     },
+     "reward": {
+      "coin": 40,
+      "renown": 5
+     },
+     "extra": {
+      "type": "questline",
+      "quests": [
+       "rq_manor_letter",
+       "rq_manor_gala"
+      ],
+      "text": "Lady Elswyth has an errand for the manor."
+     }
+    }
+   ]
+  },
+  {
+   "id": "hob",
+   "town": "millbrook",
+   "name": "Old Hob the Butcher",
+   "icon": "🥩",
+   "task": "hunt",
+   "requests": [
+    {
+     "id": "hob1",
+     "wants": {
+      "meat": 4
+     },
+     "reward": {
+      "coin": 20,
+      "food": 15
+     }
+    },
+    {
+     "id": "hob2",
+     "wants": {
+      "meat": 6
+     },
+     "reward": {
+      "coin": 25,
+      "food": 20
+     },
+     "extra": {
+      "type": "bonus",
+      "task": "hunt",
+      "mult": 0.1,
+      "text": "Hob shows you his snares: Hunt yields +10%."
+     }
+    },
+    {
+     "id": "hob3",
+     "wants": {
+      "meat": 8
+     },
+     "reward": {
+      "coin": 35,
+      "food": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "anne",
+   "town": "millbrook",
+   "name": "Widow Anne",
+   "icon": "🐟",
+   "task": "fishing",
+   "requests": [
+    {
+     "id": "anne1",
+     "wants": {
+      "fish": 6
+     },
+     "reward": {
+      "coin": 25,
+      "food": 5
+     }
+    },
+    {
+     "id": "anne2",
+     "wants": {
+      "fish": 8
+     },
+     "reward": {
+      "coin": 30
+     },
+     "extra": {
+      "type": "bonus",
+      "task": "fishing",
+      "mult": 0.1,
+      "text": "Anne shares her late husband's fishing spots: Fish yields +10%."
+     }
+    },
+    {
+     "id": "anne3",
+     "wants": {
+      "fish": 10
+     },
+     "reward": {
+      "coin": 40,
+      "food": 10
+     }
+    }
+   ]
+  }
+ ]
+}

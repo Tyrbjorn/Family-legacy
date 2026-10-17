@@ -1,5 +1,207 @@
 [
  {
+  "id": "fishing",
+  "name": "Fish",
+  "icon": "🎣",
+  "minAge": 8,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "fishing"
+  ],
+  "desc": "Fish the Millbrook creek: fish for the table",
+  "tier": "basic",
+  "yields": {
+   "fish": 1
+  },
+  "boosts": [
+   {
+    "quest": "q_river",
+    "mult": 0.5,
+    "why": "River quest"
+   },
+   {
+    "piece": "fishrack",
+    "mult": 0.5,
+    "why": "Fish Rack"
+   }
+  ],
+  "task": true
+ },
+ {
+  "id": "forage",
+  "name": "Forage",
+  "icon": "🌿",
+  "minAge": 8,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "herbalism"
+  ],
+  "tier": "basic",
+  "desc": "Berries, roots and herbs near home",
+  "yields": {
+   "food": 0.8,
+   "thyme": 0.4
+  },
+  "task": true
+ },
+ {
+  "id": "chop",
+  "name": "Chop Wood",
+  "icon": "🪓",
+  "minAge": 10,
+  "tier": "basic",
+  "skills": [
+   "carpentry"
+  ],
+  "stats": {
+   "STR": 0.02
+  },
+  "yields": {
+   "wood": 2
+  },
+  "desc": "Fell and split wood near home",
+  "task": true,
+  "tool": {
+   "kind": "chop",
+   "text": "an axe or hatchet"
+  }
+ },
+ {
+  "id": "hunt",
+  "name": "Hunt",
+  "icon": "🏹",
+  "minAge": 14,
+  "tier": "basic",
+  "skills": [
+   "hunting"
+  ],
+  "stats": {
+   "AGI": 0.02
+  },
+  "yields": {
+   "food": 0.4,
+   "meat": 0.6,
+   "hides": 0.3
+  },
+  "desc": "Game for the pot, hides for the tanner",
+  "task": true,
+  "tool": {
+   "kind": "ranged",
+   "text": "a bow"
+  }
+ },
+ {
+  "id": "quarry",
+  "name": "Dig Stone",
+  "icon": "⛏️",
+  "minAge": 12,
+  "tier": "basic",
+  "skills": [
+   "mining"
+  ],
+  "stats": {
+   "STR": 0.02
+  },
+  "yields": {
+   "stone": 1
+  },
+  "desc": "Break stone from the hillside",
+  "task": true,
+  "tool": {
+   "kind": "dig",
+   "text": "a pick"
+  }
+ },
+ {
+  "id": "roam",
+  "name": "Explore Nearby",
+  "icon": "🧭",
+  "minAge": 10,
+  "tier": "basic",
+  "skills": [
+   "nature"
+  ],
+  "stats": {
+   "VIT": 0.02
+  },
+  "effect": "explore",
+  "desc": "Walk the land around home: clears fog, may turn up a find",
+  "task": true
+ },
+ {
+  "id": "cook",
+  "name": "Cook a Meal",
+  "icon": "🍲",
+  "minAge": 10,
+  "tier": "basic",
+  "skills": [
+   "cooking"
+  ],
+  "stats": {
+   "VIT": 0.02
+  },
+  "task": true,
+  "refine": {
+   "from": [
+    "meat",
+    "fish"
+   ],
+   "per": 1,
+   "to": {
+    "stew": 0.7
+   }
+  },
+  "desc": "Turn raw meat or fish into stew at the hearth"
+ },
+ {
+  "id": "chores",
+  "name": "Chores",
+  "icon": "🧹",
+  "minAge": 6,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Keep the house: a little food every day",
+  "yields": {
+   "food": 1.2
+  },
+  "task": true
+ },
+ {
+  "id": "tendfields",
+  "name": "Tend Fields",
+  "icon": "🌾",
+  "minAge": 8,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Hoe, weed and harvest the crop fields",
+  "unlock": [
+   {
+    "piece": "furrows"
+   },
+   {
+    "piece": "fruittrees"
+   }
+  ],
+  "yields": {
+   "food": 0.5
+  },
+  "task": true
+ },
+ {
   "id": "play",
   "name": "Play Outside",
   "icon": "🤸",
@@ -12,7 +214,8 @@
    "foraging"
   ],
   "desc": "Run, climb and tumble",
-  "tier": "basic"
+  "tier": "basic",
+  "task": true
  },
  {
   "id": "stories",
@@ -27,24 +230,8 @@
    "reading"
   ],
   "desc": "Listen to tales by the hearth",
-  "tier": "basic"
- },
- {
-  "id": "chores",
-  "name": "Do the Chores",
-  "icon": "🧹",
-  "minAge": 6,
-  "stats": {
-   "VIT": 0.02
-  },
-  "skills": [
-   "farming"
-  ],
   "tier": "basic",
-  "desc": "Help around the house and plot; brings home a little food (starter food path)",
-  "yields": {
-   "food": 1.2
-  }
+  "task": true
  },
  {
   "id": "hiking",
@@ -58,34 +245,8 @@
    "nature"
   ],
   "desc": "Endurance (VIT) and Nature Knowledge",
-  "tier": "basic"
- },
- {
-  "id": "fishing",
-  "name": "Fishing",
-  "icon": "🎣",
-  "minAge": 8,
-  "stats": {
-   "AGI": 0.02,
-   "VIT": 0.015
-  },
-  "skills": [
-   "fishing",
-   "nature"
-  ],
-  "desc": "Dexterity (AGI) and Fishing; brings home a little food",
-  "unlock": [
-   {
-    "quest": "q_river"
-   },
-   {
-    "piece": "fishrack"
-   }
-  ],
-  "tier": "advanced",
-  "yields": {
-   "food": 1
-  }
+  "tier": "basic",
+  "task": true
  },
  {
   "id": "meditation",
@@ -1231,24 +1392,6 @@
   ]
  },
  {
-  "id": "forage",
-  "name": "Forage for Herbs",
-  "icon": "🌿",
-  "minAge": 8,
-  "stats": {
-   "WIL": 0.02
-  },
-  "skills": [
-   "herbalism"
-  ],
-  "tier": "basic",
-  "desc": "Gather wild thyme and learn herb lore; brings home a little thyme",
-  "yields": {
-   "thyme": 0.6,
-   "food": 0.4
-  }
- },
- {
   "id": "bake",
   "name": "Bake at the Oven",
   "icon": "🥖",
@@ -1268,31 +1411,6 @@
     "piece": "oven"
    }
   ]
- },
- {
-  "id": "tendfields",
-  "name": "Tend the Fields",
-  "icon": "🌾",
-  "minAge": 8,
-  "stats": {
-   "VIT": 0.02
-  },
-  "skills": [
-   "farming"
-  ],
-  "tier": "basic",
-  "desc": "Hoe, weed and harvest the crop fields",
-  "unlock": [
-   {
-    "piece": "furrows"
-   },
-   {
-    "piece": "fruittrees"
-   }
-  ],
-  "yields": {
-   "food": 0.5
-  }
  },
  {
   "id": "salves",

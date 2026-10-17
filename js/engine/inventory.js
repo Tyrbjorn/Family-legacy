@@ -1,4 +1,5 @@
 import { isHeld } from "./holds.js";
+import { reqDiscount } from "./requests.js";
 import { inlaidDef } from "./inlay.js";
 import { permFx } from "./injuries.js";
 import { metalQuality } from "./metals.js";
@@ -74,7 +75,7 @@ export function moveItem(s, m, id, toBag) {
 export const BUY_MULT_FLOOR = 0.8;
 export const SELL_CAP = 0.95;
 export const buyPrice = (it, s, townId) =>
-  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1));
+  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)));
 
 // Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
 // buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).

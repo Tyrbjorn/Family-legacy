@@ -1,0 +1,18 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+await p.screenshot({path:O+'r31-main-tutorial.png'});
+await p.evaluate(()=>{const e=[...document.querySelectorAll('h3')].find(h=>/Tasks/.test(h.textContent));e&&e.scrollIntoView();});await p.waitForTimeout(300);
+await p.screenshot({path:O+'r31-main-tasks.png'});
+await p.evaluate(()=>{const g=__game;g.s.res.food=4;g.s.res.fish=0;window.scrollTo(0,0);});await p.waitForTimeout(1500);
+await p.screenshot({path:O+'r31-header-food-warning.png',clip:{x:0,y:0,width:390,height:160}});
+await p.evaluate(()=>{const g=__game;g.s.res.food=80;g.s.res.wood=12;g.s.res.fish=7;g.s.res.thyme=2;});
+await go(p,'quests');await p.waitForTimeout(1200);
+await p.screenshot({path:O+'r31-quests-requests.png',fullPage:false});
+await go(p,'main');await p.evaluate(()=>document.querySelector('[data-a=market]').click());await p.waitForTimeout(1200);
+await p.evaluate(()=>{});await p.waitForTimeout(300);await p.screenshot({path:O+'r31-market-shortcut.png'});
+console.log('errors',errs);await b.close();

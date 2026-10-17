@@ -15,7 +15,7 @@ export function hero() {
   let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}<div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
- <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button></div></div>`;
+ <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button><button class="b" data-a="market" title="Buy and sell at the nearest town">🏪 Market</button></div></div>`;
   h += trainingv(m) + activities(m) + pathsCard(s, m);
   const evo = D.classes.filter(
     c => c.from === m.cls && !c.profession && !c.retired,
@@ -69,35 +69,36 @@ export function trainingv(m) {
   return "";
 }
 
+const RICO = { food: "🍞", fish: "🐟", meat: "🥩", hides: "🦊", wood: "🪵", stone: "🪨", thyme: "🌿", stew: "🍲" };
+const yieldStr = ac => {
+  if (ac.refine) return `${ac.refine.from.join("/")} → ${Object.entries(ac.refine.to).map(([k, v]) => `${RICO[k] || ""}${+(v * E.taskMult(s, ac)).toFixed(2)} ${k}`).join(", ")}/d`;
+  if (ac.effect === "explore") return "clears fog near home · chance of a find";
+  const y = Object.entries(E.taskYields(s, ac));
+  return y.length ? y.map(([k, v]) => `${RICO[k] || ""}+${+v.toFixed(2)} ${k}/d`).join(", ") : "XP only";
+};
+function actRow(m, ac, task) {
+  const a = m.action, age = E.ageY(m);
+  if (ac.maxAge && age > ac.maxAge) return "";
+  const why = task ? E.taskLock(s, m, ac) : !E.activityOk(s, m, ac) ? (age < ac.minAge ? `age ${ac.minAge}+` : E.activityReq(ac)) : "";
+  const on = a && a.type === "activity" && a.target === ac.id;
+  const gains = `${Object.entries(ac.stats).map(([k, v]) => `+${k}`).join(", ")} · ${ac.skills.map(k => "+" + sk(k).name).join(", ")}`;
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${ac.icon} <b>${ac.name}</b>${ac.signature ? ' <span class="pill" title="Class/guild exclusive">⭐ signature</span>' : ""}<br><span class="muted">${task ? `<b>${yieldStr(ac)}</b> · ` : `<b>${{ basic: "Basic", advanced: "Advanced", master: "Master" }[ac.tier] || ""}</b> · `}${gains}${why ? " · 🔒 " + why : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="activity" data-v="${ac.id}" ${why ? "disabled" : ""}>Do</button></div>`;
+}
+// R31: Tasks (resources) first, then a collapsed Training list (XP). Jobs (coin) live in Work → Jobs.
 export function activities(m) {
-  const a = m.action;
-  const rows = [...D.activities]
-    .sort((x, y) => E.activityOk(s, m, y) - E.activityOk(s, m, x))
-    .map(ac => {
-      const ok = E.activityOk(s, m, ac);
-      const age = E.ageY(m);
-      if (ac.maxAge && age > ac.maxAge) return "";
-      const why = age < ac.minAge ? `age ${ac.minAge}+` : ac.unlock ? E.activityReq(ac) : "";
-      const _w = 0
-        ? `${(E.guildDef(ac.unlock.guild) || {}).name} rank ${(ac.unlock.rank || 0) + 1}`
-        : ac.unlock?.quest
-          ? `complete “${D.quests.find(q => q.id === ac.unlock.quest).name}”`
-          : ac.unlock?.building
-            ? `build ${D.buildings.find(b => b.id === ac.unlock.building).name}`
-            : "";
-      const on = a && a.type === "activity" && a.target === ac.id;
-      return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${ac.icon} ${ac.name}${ac.signature ? ' <span class="pill" title="Class/guild exclusive">⭐ signature</span>' : ""}<br><span class="muted"><b>${{ basic: "Basic", advanced: "Advanced", master: "Master" }[ac.tier] || ""}</b> · ${Object.entries(
-        ac.stats,
-      )
-        .map(([k, v]) => `+${k} ${v}/d`)
-        .join(
-          ", ",
-        )} · ${ac.skills.map(k => "+" + sk(k).name).join(", ")}${ok ? "" : " · 🔒 " + why}</span></span><button class="b ${on ? "sel" : ""}" data-a="activity" data-v="${ac.id}" ${ok ? "" : "disabled"}>Do</button></div>`;
-    })
-    .join("");
+  const hide = s.hideLocked !== false; // R31: default on, saved with the game
+  const tAll = D.activities.filter(ac => ac.task && !(ac.maxAge && E.ageY(m) > ac.maxAge)), tOk = tAll.filter(ac => !E.taskLock(s, m, ac));
+  const tasks = (hide ? tOk : tAll).map(ac => actRow(m, ac, true)).join("");
+  let tr = [...D.activities].filter(ac => !ac.task && !(ac.maxAge && E.ageY(m) > ac.maxAge)).sort((x, y) => E.activityOk(s, m, y) - E.activityOk(s, m, x));
+  const trHidden = hide ? tr.filter(ac => !E.activityOk(s, m, ac)).length : 0;
+  if (hide) tr = tr.filter(ac => E.activityOk(s, m, ac));
+  const tog = n => `<label class="chip" style="font-size:12px"><input type="checkbox" data-a="hidelocked" ${hide ? "checked" : ""}> Hide unavailable${hide && n ? ` (${n} hidden)` : ""}</label>`;
+  const nOk = tr.filter(ac => E.activityOk(s, m, ac)).length;
+  const onTr = m.action && m.action.type === "activity" && tr.some(ac => ac.id === m.action.target);
   return (
-    `<h3>🎯 Training & Activities</h3><div class="muted" style="font-size:12px">Skills grow only through themed activities. Unlocks: furniture, items, guild rank or class line. ⭐ = exclusive.</div>` +
-    rows
+    `<h3>🧺 Tasks <span class="muted" style="font-size:12px">· resources for the family</span> ${tog(tAll.length - tOk.length)}</h3><div class="muted" style="font-size:12px">Tasks = resources · Jobs = coin (Work → Jobs) · Training = XP.</div>` +
+    tasks +
+    `<details ${onTr ? "open" : ""}><summary><b>🎯 Training</b> <span class="muted">· XP only · ${nOk} open</span> ${tog(trHidden)}</summary><div class="muted" style="font-size:12px">Skills grow through themed drills. Unlocks: furniture, items, guild rank or class line. ⭐ = exclusive.</div>${tr.map(ac => actRow(m, ac, false)).join("")}</details>`
   );
 }
 

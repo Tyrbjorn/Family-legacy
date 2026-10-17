@@ -84,7 +84,10 @@
    "sickle",
    "woodaxe",
    "herbknife",
-   "collar"
+   "collar",
+   "hatchet",
+   "pick",
+   "short_bow"
   ],
   "market": [
    "food",

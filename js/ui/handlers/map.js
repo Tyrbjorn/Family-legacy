@@ -17,6 +17,13 @@ export const mapActions = ({ v, w, b, m }) => ({
     U.tab = "map";
   },
   qfilter: () => (U.qFilter = v),
+  deliver: () => E.deliverRequest(s, v),
+  hidelocked: () => (s.hideLocked = s.hideLocked === false),
+  market: () => {
+    U.mapSel = "t:" + E.marketTown(s, E.active(s));
+    U.tab = "map";
+    setTimeout(() => document.querySelector("#mapdetail")?.scrollIntoView({ block: "start" }), 250); // jump past the map to the town's market
+  },
   opentab: () => (U.tab = v),
   charpick: () => (U.charId = +v),
   chargear: () => (U.tab = "inv"),

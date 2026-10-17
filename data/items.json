@@ -616,7 +616,9 @@
   "rarity": "Common",
   "cp": 8,
   "value": 50,
-  "toolFor": "gather"
+  "toolFor": "gather",
+  "taskTool": "chop",
+  "taskYield": 0.15
  },
  {
   "id": "herbknife",
@@ -1732,5 +1734,38 @@
   "cp": 0,
   "value": 80,
   "desc": "Read it (Bag) to reveal a hidden dungeon."
+ },
+ {
+  "id": "hatchet",
+  "name": "Hatchet",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 4,
+  "value": 12,
+  "toolFor": "gather",
+  "taskTool": "chop",
+  "taskYield": 0
+ },
+ {
+  "id": "pick",
+  "name": "Miner's Pick",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 4,
+  "value": 15,
+  "toolFor": "gather",
+  "taskTool": "dig",
+  "taskYield": 0
+ },
+ {
+  "id": "short_bow",
+  "name": "Short Bow",
+  "slot": "weapon",
+  "rarity": "Common",
+  "cp": 5,
+  "value": 20,
+  "type": "bow",
+  "mat": "pine",
+  "g": 0.5
  }
 ]

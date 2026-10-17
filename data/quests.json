@@ -1808,5 +1808,63 @@
   "loot": [],
   "hidden": true,
   "once": true
+ },
+ {
+  "id": "rq_millbridge",
+  "name": "Rebuild the Mill Bridge",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 5,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 120,
+   "planks": 6
+  },
+  "skill": "carpentry",
+  "loot": [],
+  "hidden": true,
+  "once": true,
+  "deliver": {
+   "wood": 15
+  },
+  "line": "bram"
+ },
+ {
+  "id": "rq_manor_letter",
+  "name": "A Letter for the Manor",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 60,
+   "thyme": 4
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "hidden": true,
+  "once": true,
+  "line": "elswyth"
+ },
+ {
+  "id": "rq_manor_gala",
+  "name": "The Manor Garden Party",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 10,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 150,
+   "food": 20
+  },
+  "skill": "etiquette",
+  "loot": [],
+  "hidden": true,
+  "once": true,
+  "line": "elswyth",
+  "after": "rq_manor_letter"
  }
 ]
