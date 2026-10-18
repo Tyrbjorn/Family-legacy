@@ -7,7 +7,7 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);s.members[0].ageDays=20*360;s.legacy.renown=1e4;return s;};
 // ---- Auto Tend
 const U=D.legacy.upgrades.filter(u=>u.id==='at_tend');
-ok(U.length===1&&U[0].free===0.35&&U[0].tiers.map(t=>t.cost).join()==='300,900','R37: one Tireless Hands upgrade, free 35%, 300/900');
+ok(U.length===1&&U[0].free===0.35&&U[0].tiers.map(t=>t.cost).join()==='80,300,800','R43: one Gather & Refine Rate line, free 35%, 80/300/800');
 { const s=fresh(); s.members.forEach(m=>m.action=null); for(const m of s.members) m.skills.farming.lvl=0; const f0=s.res.food; E.autoTendDay(s); ok(s.res.food===f0&&/Farming 1/.test(E.atIssue(s,'farming')),'locked without the skill: shows why');
   s.members[0].skills.farming.lvl=1; ok(/locked/.test(E.atIssue(s,'farming')),'locked without the building (Furrows): shows why'); s.structures.push({uid:'fx',type:'fields',pieces:['furrows'],up:0}); ok(E.atTarget(s,'farming').id==='tendfields'&&E.atRate(s,'farming')===0.35,'free: farming defaults to Tend Fields at 35%');
   let f=s.res.food; E.autoTendDay(s); const y=D.activities.find(a=>a.id==='tendfields').yields.food; ok(Math.abs(s.res.food-f-y*0.35)<1e-9,'free = 35% of the hand yield');

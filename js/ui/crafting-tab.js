@@ -1,3 +1,4 @@
+import { ordersCard } from "./orders-ui.js";
 import { timerBar } from "./progress.js";
 // Crafting tab: recipes (filters, quality odds, materials), crafter queues, minion orders, stations and reserves.
 import * as E from "../engine.js";
@@ -112,7 +113,7 @@ export function craftingv() {
       (f.skill === "all" || r.skill === f.skill) &&
       (!r.hidden || s.unlocks.includes("recipe:" + r.id)),
   );
-  let h = `<div class="card"><b>🔨 Crafting</b><div class="muted">Quality (Crude→Masterwork) comes from skill, stations, synergies and profession. Masterworks earn renown.</div>${filters()}</div>`;
+  let h = ordersCard() + `<div class="card"><b>🔨 Crafting</b><div class="muted">Quality (Crude→Masterwork) comes from skill, stations, synergies and profession. Masterworks earn renown.</div>${filters()}</div>`;
   h += list.map(rc => recipeCard(rc, who)).join("") || `<div class="muted">No recipes match.</div>`;
   return h + queues() + stations();
 }

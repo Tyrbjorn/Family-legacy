@@ -14,7 +14,7 @@ import { patronBuy, patronSell } from "./endgame.js";
 import { seasonPrice } from "./seasons.js";
 import { inc } from "./achievements.js";
 import { buyMult, priceMult, sellMult } from "./worldevents.js";
-import { LG, addRenown, hasLegacy } from "./legacy.js";
+import { LG, addRenown, hasLegacy, legacyValue } from "./legacy.js";
 import { className, craftQuality, eff, hasPiece, pieceDef } from "./estate.js";
 import { enchCp, noteSets, splitId, stationCraftQ } from "./gear.js";
 import { hasService } from "./guilds.js";
@@ -241,6 +241,11 @@ export function qualityScore(s, m, rc, mi, apt = 1) {
   return sk / 50 + craftQuality(s) + profBonus(m, rc) + stationCraftQ(s, rc.station) + metalQuality(s, rc) + permFx(m, "craftQ");
 }
 
+// R43: a craft that lands one step below masterwork gets the Workshop's extra chance to become masterwork
+export function masterworkBump(s, qid) {
+  const Q = CR().qualities, i = Q.findIndex(x => x.id === qid), p = legacyValue(s, "mwork") || 0;
+  return p > 0 && i === Q.length - 2 && rng() < p ? Q[Q.length - 1].id : qid;
+}
 export function rollQuality(score) {
   const x = score + rng() * 0.5;
   let q = CR().qualities[0];
@@ -252,7 +257,7 @@ export function craftItem(s, m, rc, mi, apt = 1) {
   if (recipeIssue(s, m, rc)) return null;
   introNote(s, "crafted");
   pay(s, rc.mats);
-  const q = rollQuality(qualityScore(s, m, rc, mi, apt));
+  const q = masterworkBump(s, rollQuality(qualityScore(s, m, rc, mi, apt))); // R43 Workshop: Masterwork Chance
   const id = `c|${rc.base}|${q}`;
   s.vault.push(id);
   if (m) {

@@ -148,6 +148,22 @@ export function applyAutoDefaults(s, owned = {}) {
   s.autoOff = s.autoOff || {};
   for (const k of (LG().autoDefaults || {}).off || []) if (!owned[k]) s.autoOff[k] = true;
 }
+// R43 save step 40: Steward's Ledger / Tireless Hands fold into the Workshop lines; renown paid above the new price comes back
+export function refundV40(s) {
+  const R = LG().v40Refund || { lines: {} }, L = legacyState(s);
+  let amt = 0;
+  for (const [id, x] of Object.entries(R.lines)) {
+    const t = L.ups[id] || 0;
+    if (!t) continue;
+    const nt = x.map[String(t)] ?? t, paid = x.old.slice(0, t).reduce((a, b) => a + b, 0);
+    const nw = (legacyDef(id) || { tiers: [] }).tiers.slice(0, nt).reduce((a, b) => a + b.cost, 0);
+    L.ups[id] = nt;
+    amt += Math.max(0, paid - nw);
+  }
+  L.renown = (L.renown || 0) + amt;
+  if (amt > 0) { s.legacyRefund = { amt, day: s.day || 0, suggest: false, seen: false }; log(s, `🏛️ Workshop: ${amt} renown refunded.`); }
+  return amt;
+}
 export function refundV37(s) {
   const R = LG().v37Refund || { costs: {}, remove: [], reset: [] }, L = legacyState(s);
   let amt = 0, t1 = 0, t2 = 0;

@@ -42,7 +42,7 @@ export function toggleAuto(s, key) {
 export function atTarget(s, k) {
   const c = AT()[k],
     L = s.atLast || {};
-  const qt = atTier(s) >= 1 && quotaAtTarget(s, c); // R34: an open quota comes first (R37: Tireless Hands tier 1+)
+  const qt = atTier(s) >= 1 ? quotaAtTarget(s, c) : quotaAtTarget(s, c, true); // R34 (R43: work orders steer free auto too): an open quota comes first (R37: Tireless Hands tier 1+)
   if (qt) return qt;
   return atTargetRaw(s, k);
 }
@@ -51,7 +51,7 @@ function atTargetRaw(s, k) {
   const c = AT()[k],
     L = s.atLast || {};
   if (c.kind === "gather") {
-    const n = L.gather && D.nodes.find(x => x.id === L.gather);
+    const n = (L.gather && D.nodes.find(x => x.id === L.gather)) || D.nodes.find(x => x.res && !x.skill && (s.revealed || []).includes(x.id)); // R43: full auto from day 1 (first known spot)
     return n ? { kind: "gather", id: n.id, name: n.name } : null;
   }
   if (c.kind === "activity") {
@@ -111,7 +111,7 @@ export function autoTendDay(s) {
       const rc = recipeDef(t.id),
         m = bestHand(s, rc.skill);
       if (!m || recipeIssue(s, m, rc)) continue;
-      s.atProg[k] = (s.atProg[k] || 0) + r;
+      s.atProg[k] = (s.atProg[k] || 0) + r * (1 + legacyValue(s, "craftspd")); // R43
       if (s.atProg[k] >= rc.days) {
         s.atProg[k] = 0;
         craftItem(s, m, rc, null);

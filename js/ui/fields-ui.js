@@ -44,6 +44,7 @@ export function fieldsCard() {
   h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(", ")}</div>` : ""}</div>`;
   const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(u.cost)}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
   h += animalsRow(); // R41
+  h += rotationRow(); // R43
   h += `<div style="margin-top:6px"><b>Upgrades</b> <span class="muted">· farm spots ${E.jobCap(s, "farm")}</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${up("worker")}${up("teamster")}</div></div>`;
   h += `<div style="margin-top:6px"><b>Auto</b> <span class="muted">(free, on from the start)</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${chip("tend", "Tend")}${chip("family", "Family helps")}${chip("process", "Process when full")}${chip("haul", "Haul")}${chip("teamsters", "Assign teamsters")}</div></div>`;
   return h + `</div>`;
@@ -58,4 +59,18 @@ export function fieldsLine() {
   const short = Math.max(0, E.tendNeeded(s) - E.tendAvail(s));
   const hungry = E.animalTypes().filter(t => E.herdHead(s, t) > 0 && (s.unfed || {})[t] > 0).map(t => `${E.animalDef(t).icon} no feed`).join(" · ");
   return `<div class="muted" id="fieldsline">🌾 Fields: ${tended}/${st.list.length} tended${short > 0 ? ` · ${r1(short)} h short` : ""}${hungry ? ` · <span style="color:#e0533d">${hungry}</span>` : ""}</div>`;
+}
+
+// R43: Auto rotation, in data order: what the workers did after the fields (and why a stop was skipped)
+const ROT = { fields: "🌾 Fields", chores: "🧹 Chores" };
+export function rotationRow() {
+  const L = E.fieldsState(s).last;
+  if (!L || !L.rotation) return "";
+  const why = st => {
+    if (st.step === "chores") { const c = L.chores || {}, w = Object.values(c).filter(x => x === "worked").length; return w ? `${w} worked` : Object.keys(c).length ? "skipped: " + [...new Set(Object.values(c))].join("/") : "none open"; }
+    if (st.step === "fields") return st.state === "worked" ? "tended" : "skipped";
+    const a = (L.animals || {})[st.step]; return !a ? "skipped: none" : a.state;
+  };
+  const name = k => ROT[k] || ((E.animalDef(k) || {}).icon || "") + " " + ((E.structDef(k) || {}).name || k);
+  return `<div style="margin-top:6px" id="rotationrow"><b>🔁 Auto rotation</b> <span class="muted">· spare hours move down the list, skipping anything done, paused or full</span><div class="muted" style="font-size:12px">${L.rotation.map(st => `<span style="color:${st.state === "worked" ? "#9c6" : "#999"}">${name(st.step)}: ${why(st)}${st.hours ? ` (${st.hours} h)` : ""}</span>`).join(" → ")}</div></div>`;
 }

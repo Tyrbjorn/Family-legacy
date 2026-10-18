@@ -1,3 +1,5 @@
+import { refundV40 } from "./legacy.js";
+import { migrateOrders } from "./orders.js";
 import { migrateAnimals } from "./animals.js";
 import { refundV37 } from "./legacy.js";
 import { migrateFields } from "./fields.js";
@@ -606,6 +608,15 @@ export const STEPS = [
     name: "R41 simple coop & cow pen: old buildings keep the animals they have; new ones start empty (buy hens/cows)",
     run(s) {
       migrateAnimals(s);
+    },
+  },
+  {
+    n: 40,
+    once: true,
+    name: "R43 full auto + Work Orders: Steward's Ledger -> Workshop Quotas, Tireless Hands -> Gather & Refine Rate (renown above the new price refunded); per-person craft queues become Work Orders; quotas kept",
+    run(s) {
+      refundV40(s);
+      migrateOrders(s);
     },
   },
 ];

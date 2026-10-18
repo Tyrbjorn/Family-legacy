@@ -47,6 +47,6 @@ ok(D.seasons.list.find(x=>x.id==='winter').yield.milk===0.7,'milk keeps its seas
 ok(D.towns.find(t=>t.id==='millbrook').market.includes('eggs'),'eggs buyable in Millbrook');
 // save step 39: old saves keep animals
 { const s=base(); coop(s); pen(s); delete s.fields.animalsExplicit; s.herds={cowpen:1}; s.schema=38; E.normalize(s);
-  ok(E.herdHead(s,'chickencoop')===6&&E.herdHead(s,'cowpen')===1&&s.schema===39,'save step 39: old coop keeps its full flock, a half pen keeps its 1 cow'); }
-{ const A2=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A2.schema===39,'FL1 fixture migrates to 39'); }
+  ok(E.herdHead(s,'chickencoop')===6&&E.herdHead(s,'cowpen')===1&&s.schema===E.SCHEMA,'save step 39: old coop keeps its full flock, a half pen keeps its 1 cow'); }
+{ const A2=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A2.schema===E.SCHEMA,'FL1 fixture migrates to latest'); }
 console.log('r41 ok',pass);

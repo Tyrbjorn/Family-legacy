@@ -4,7 +4,7 @@ import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
 import { ES, eff, established } from "./estate.js";
 import { bestRecipe, craftItem, recipeDef, recipeIssue, sellTick } from "./inventory.js";
-import { resGain } from "./legacy.js";
+import { resGain, legacyValue } from "./legacy.js";
 import { exploreArea, regionOpen } from "./map.js";
 import { rollRare } from "./quests.js";
 import { D, bl, known, log, r } from "./state.js";
@@ -80,7 +80,7 @@ export const MINION_JOBS = {
     s.res.moonpetal = (s.res.moonpetal || 0) + 0.05 * a * rg * seasonYield(s, "moonpetal");
   },
   craft: (s, mi, a, rg) => {
-    mi.prog = (mi.prog || 0) + 0.2 * a;
+    mi.prog = (mi.prog || 0) + 0.2 * a * (1 + legacyValue(s, "craftspd")); // R43 Workshop: Craft Speed
     const ord = mi.craftOrder && recipeDef(mi.craftOrder);
     const rc = ord && !recipeIssue(s, null, ord) ? ord : bestRecipe(s, null);
     if (rc && mi.prog >= rc.days) {

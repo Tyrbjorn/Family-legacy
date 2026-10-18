@@ -13,6 +13,8 @@ import { daysOfStock } from "./food.js";
 import { dishDef, dishIssue, isFishKey, fishAvail } from "./cooking.js";
 import { jobCap } from "./estate.js";
 
+var ordersDayHook; // var + function: safe to set during the orders.js <-> quotas.js import cycle
+export function setOrdersDayHook(f) { ordersDayHook = f; }
 export const QC = () => (D.legacy && D.legacy.quotas) || { pullDepth: 2, foodSafetyDays: 20, pullAmount: 20 };
 export const quotaTier = s => legacyTier(s, "quotas");
 export const quotaSlots = s => legacyValue(s, "quotas"); // R37: 2 free, 5, unlimited
@@ -74,7 +76,10 @@ export const quotaHave = (s, q) => (q.mode === "once" ? q.made : stock(s, q.item
 export const quotaMet = (s, q) => quotaHave(s, q) >= q.target;
 // R37: top-level quotas beyond the slot count (e.g. after the v37 refund) stay listed but pause, with their sub-quotas
 export function quotaPaused(s, q) {
+  if (q.order) return false; // R43: work-order chains follow their order, not the quota slots
   if ((s.autoOff || {}).quotas) return true; // ⚙ Auto off
+  const root0 = q.parent ? Qs(s).find(x => x.id === q.parent) || q : q;
+  if (root0.off) return true; // R43: paused by hand (or by Pause when done)
   const top = Qs(s).filter(x => !x.parent), root = q.parent ? Qs(s).find(x => x.id === q.parent) || q : q;
   return top.indexOf(root) >= quotaSlots(s);
 }
@@ -139,7 +144,8 @@ export function quotaBlock(s, q) {
   return { why: job ? "no follower on " + job[0] : "nothing makes it here" };
 }
 export const quotaStatus = (s, q) => {
-  if (quotaPaused(s, q)) return { k: "blocked", text: "paused: needs Steward's Ledger tier 1 for more slots" };
+  if (q.off) return { k: "blocked", text: "paused" };
+  if (quotaPaused(s, q)) return { k: "blocked", text: "paused: needs Workshop → Quotas tier 1 for more slots" };
   if (quotaMet(s, q)) return { k: "met", text: q.mode === "once" ? "done" : "met" };
   const b = quotaBlock(s, q);
   return b ? { k: "blocked", text: b.why } : { k: "on", text: "on track" };
@@ -150,8 +156,9 @@ function bestCrafter(s, rc) {
   return (s.members || []).filter(m => m.alive !== false && (m.ageDays || 0) >= 16 * 360).sort((a, b) => ((b.skills[rc.skill] || {}).lvl || 0) - ((a.skills[rc.skill] || {}).lvl || 0))[0];
 }
 // Auto Tend target for a category: the first open quota this category can make
-export function quotaAtTarget(s, c) {
+export function quotaAtTarget(s, c, ordersOnly = false) {
   for (const q of openQuotas(s)) {
+    if (ordersOnly && !q.order) continue; // R43: work orders steer free auto even without a Workshop tier
     // any category can switch to a task of its skills that yields the item (e.g. Hunting -> Hunt for meat)
     const ac = D.activities.find(a => a.yields && a.yields[q.item] && a.skills.some(k => c.skills.includes(k)));
     if (ac) return { kind: "activity", id: ac.id, name: ac.name, quota: q.id };
@@ -168,13 +175,14 @@ export function quotaAtTarget(s, c) {
 
 // ---- daily upkeep: finish one-time quotas, queue crafts, pull inputs (tier 2), monthly follower move (tier 2)
 export function quotaDay(s) {
+  ordersDayHook && ordersDayHook(s); // R43 work orders keep their quota chains in s.quotas
   const L = s.quotas;
   if (!L || !L.length) return;
-  if (!quotaSlots(s)) return;
   for (const q of [...L]) {
     if (q.mode === "once" && !isRes(q.item)) q.made = Math.max(q.made, stock(s, q.item) - (q.from || 0));
+    if (!q.parent) pwdCheck(s, q);
     if (quotaPaused(s, q)) continue;
-    if (q.mode === "once" && quotaMet(s, q)) {
+    if (q.mode === "once" && quotaMet(s, q) && !(q.order && String(q.parent || "").startsWith("order:"))) { // R43: an order's root is closed by the order
       log(s, `📋 Quota done: ${q.target} ${nm(q.item)}${q.parent ? " (for another quota)" : ""}.`);
       removeQuota(s, q.id);
       continue;
@@ -185,19 +193,31 @@ export function quotaDay(s) {
     }
   }
   if (quotaTier(s) >= 2) {
-    for (const q of [...s.quotas]) {
-      const depth = q.depth || 0;
-      if (depth >= QC().pullDepth || quotaMet(s, q)) continue;
-      const b = quotaBlock(s, q);
-      if (b && b.input && producible(b.input) && !s.quotas.some(x => x.item === b.input)) {
-        const c = { id: "q" + (s.quotaSeq = (s.quotaSeq || 0) + 1), item: b.input, target: QC().pullAmount || 20, mode: "once", made: 0, from: stock(s, b.input), parent: q.id, depth: depth + 1 };
-        s.quotas.splice(s.quotas.indexOf(q) + 1, 0, c);
-        log(s, `📋 Pulling inputs: ${c.target} ${nm(c.item)} for the ${nm(q.item)} quota.`);
-      }
-    }
+    for (const q of [...s.quotas]) if (!q.order) pullInputs(s, q, QC().pullDepth, QC().pullAmount || 20);
     if ((s.day || 0) % 30 === 0) moveFollower(s);
   }
 }
+// a blocked quota adds a child quota for its missing input (shared planner: quotas tier 2 and every work order)
+export function pullInputs(s, q, maxDepth, amount) {
+  const depth = q.depth || 0;
+  if (depth >= maxDepth || quotaMet(s, q) || quotaPaused(s, q)) return null;
+  const b = quotaBlock(s, q);
+  if (!(b && b.input && producible(b.input)) || s.quotas.some(x => x.item === b.input && (x.order || null) === (q.order || null))) return null;
+  const c = { id: "q" + (s.quotaSeq = (s.quotaSeq || 0) + 1), item: b.input, target: amount, mode: "once", made: 0, from: stock(s, b.input), parent: q.id, depth: depth + 1, ...(q.order ? { order: q.order } : {}) };
+  s.quotas.splice(s.quotas.indexOf(q) + 1, 0, c);
+  log(s, `📋 Pulling inputs: ${c.target} ${nm(c.item)} for the ${nm(q.item)} ${q.order ? "order" : "quota"}.`);
+  return c;
+}
+// R43 Pause when done: a quota pauses once it next completes a step (once: next item made; standing: target met)
+export function setQuotaPauseWhenDone(s, id, on = true) { const q = Qs(s).find(x => x.id === id); if (!q) return false; q.pwd = on ? { mark: quotaHave(s, q) } : null; return true; }
+export function toggleQuotaOff(s, id) { const q = Qs(s).find(x => x.id === id); if (!q) return false; q.off = !q.off; q.pwd = null; return true; }
+function pwdCheck(s, q) {
+  if (!q.pwd) return;
+  if ((q.mode === "once" ? quotaHave(s, q) > q.pwd.mark : quotaMet(s, q))) { q.off = true; q.pwd = null; log(s, `⏸️ Quota paused when done: ${nm(q.item)}.`); }
+}
+export const quotaStock = stock;
+export const quotaRecipeFor = recipeFor;
+export { bestCrafter };
 const nm = item => (itemDef(item) || {}).name || (dishDef(item) || {}).name || item;
 function moveFollower(s) {
   const fed = new Set(openQuotas(s).flatMap(q => Object.entries(JOB_RES).filter(([, r]) => r.includes(q.item)).map(([j]) => j)));

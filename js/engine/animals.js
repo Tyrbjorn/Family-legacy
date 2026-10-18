@@ -56,11 +56,11 @@ export const tendShare = (s, type) => {
   return t == null ? 1 : t;
 };
 // called from fieldsDay with the shared worker list (after fields are tended)
-export function animalsTend(s, W, last, capOf, have) {
+export function animalsTend(s, W, last, capOf, have, types = animalTypes()) {
   const f = st(s);
   f.animalTend ||= {};
-  last.animals = {};
-  for (const type of animalTypes()) {
+  last.animals ||= {};
+  for (const type of types) {
     const d = animalDef(type), n = herdHead(s, type), b = buildingCount(s, type);
     if (!b || !n) { delete f.animalTend[type]; continue; }
     const fed = !((s.unfed || {})[type] > 0);

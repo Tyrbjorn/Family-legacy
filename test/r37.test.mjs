@@ -7,9 +7,9 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 const LG=D.legacy, up=id=>LG.upgrades.find(u=>u.id===id);
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);s.members[0].ageDays=20*360;return s;};
 // data
-ok(up('at_tend')&&up('at_tend').free===0.35&&up('at_tend').tiers.map(t=>t.cost+':'+t.value).join()==='300:0.55,900:0.75','Tireless Hands 35% free / 300 55% / 900 75%');
+ok(up('at_tend')&&up('at_tend').free===0.35&&up('at_tend').tiers.map(t=>t.cost+':'+t.value).join()==='80:0.55,300:0.75,800:0.9','R43 Gather & Refine Rate 35% free / 80 / 300 / 800');
 ok(!LG.upgrades.some(u=>/^at_(?!tend)/.test(u.id)),'per-skill Auto Tend upgrades removed');
-ok(up('quotas').free===2&&up('quotas').tiers.map(t=>t.cost+':'+t.value).join()==='400:5,1200:999','quotas 2 free / 400 5 / 1200 unlimited');
+ok(up('quotas').free===2&&up('quotas').tiers.map(t=>t.cost+':'+t.value).join()==='60:5,200:10,600:999','R43 quotas 2 free / 60 5 / 200 10 / 600 unlimited');
 for(const [k,a] of [['orders',150],['advance',150],['kids',100],['court',100]]) ok(up('fa_'+k).free===1&&up('fa_'+k).tiers[0].cost===a&&up('fa_'+k).tiers[1].cost===a*3,'fa_'+k+' '+a+'/'+a*3);
 ok(up('tick').name==='Quick Hands','tick upgrade renamed Quick Hands');
 ok(LG.upgrades.every(u=>LG.groups[u.group]),'every upgrade has a Legacy panel group');
@@ -24,7 +24,7 @@ ok(Object.values(LG.v37Refund.costs).flat().reduce((a,b)=>a+b,0)===7680,'refund 
 { const s=fresh(); s.legacy.renown=1e5; const a=E.newMember(s,{gender:'m',age:25}); s.members.push(a);
   ok(E.faTier(s,'advance')===0,'advance free tier'); ok(E.buyLegacy(s,'fa_advance')&&E.faTier(s,'advance')===1,'advance T1'); 
   ok(E.buyLegacy(s,'fa_orders')&&E.buyLegacy(s,'fa_kids')&&E.buyLegacy(s,'fa_court'),'buy family T1s');
-  E.buyLegacy(s,'quotas'); ok(E.quotaSlots(s)===5,'Ledger T1 = 5'); E.buyLegacy(s,'quotas'); ok(E.quotaSlots(s)>99,'Ledger T2 = unlimited'); }
+  E.buyLegacy(s,'quotas'); ok(E.quotaSlots(s)===5,'Ledger T1 = 5'); E.buyLegacy(s,'quotas'); ok(E.quotaSlots(s)===10,'Quotas T2 = 10'); E.buyLegacy(s,'quotas'); ok(E.quotaSlots(s)>99,'Quotas T3 = unlimited'); }
 { // tutor tier gates teen placement
   const s=fresh(); s.fog=false; const t=E.newMember(s,{gender:'f',age:0}); t.ageDays=15*360; t.lean=['lodge']; s.members.push(t); E.legacyState(s).ups.fa_kids=0;
   for(let d=0;d<31;d++){s.day++;E.familyAutoDay(s);} ok(!t.appr,'free Tutor does not place teens'); E.legacyState(s).ups.fa_kids=1; s.day=Math.ceil(s.day/30)*30-1; s.day++; E.familyAutoDay(s); ok(t.appr,'Tutor T1 places teens'); }

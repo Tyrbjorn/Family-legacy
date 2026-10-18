@@ -319,5 +319,15 @@
     }
    }
   }
+ },
+ "rotation": {
+  "_note": "R43 Auto rotation: after the fields, workers with spare hours move down this list in order, skipping anything finished, paused, unfed/empty or with full storage. Steps: an animal building type, or 'chores' (every open chore in activities.json order). Add a step id to change the order.",
+  "order": [
+   "chickencoop",
+   "cowpen",
+   "chores"
+  ],
+  "choreHours": 2,
+  "choreHourRate": 0.125
  }
 }

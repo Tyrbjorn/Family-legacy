@@ -2,6 +2,18 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R43",
+   "title": "Work Orders and the Workshop",
+   "items": [
+    "New 📋 Work Orders on the Crafting tab: add what you want made (\"3 iron swords\") and your workers gather and refine the inputs, then craft, top to bottom. Each order says plainly why it's stuck (missing materials, no Forge, no one skilled enough, storage full).",
+    "Followers on the craft job take orders first; family crafters help when no follower can. You get 2 orders at a time for free.",
+    "⏹ Pause when done: an order or quota can pause after the item it's making now, instead of stopping midway.",
+    "🔁 Auto rotation: workers with spare hours move from the fields to the coop, the cow pen and then every open chore in turn, skipping anything finished, paused or full. It's shown on the Farmstead card.",
+    "New 🛠️ Workshop renown lines: Order Queue, Quotas, Craft Speed, Masterwork Chance and Gather & Refine Rate. Each has 3 tiers, and the first tier costs 80 renown or less.",
+    "The Steward's Ledger became Workshop → Quotas and Tireless Hands became Gather & Refine Rate. You keep what you had, and any renown paid above the new prices is refunded. Old craft queues became Work Orders."
+   ]
+  },
+  {
    "build": "R42",
    "title": "New chores as you grow",
    "items": [

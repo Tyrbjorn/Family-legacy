@@ -12,7 +12,8 @@ import { itemDef } from "./inventory.js";
 import { blendFoodQ, operatorLvl } from "./production.js";
 import { minionSkillLvl, minionLvlMult, mtype } from "./minions.js";
 import { registerDayHook } from "./time.js";
-import { animalsTend } from "./animals.js";
+import { animalsTend, animalTypes } from "./animals.js";
+import { rotationChores } from "./chores.js";
 
 export const FLD = () => D.fields || { crops: {}, sizes: [{ mult: 1, hours: 1 }], levels: { max: 1, perLvl: 0, cost: [] }, hours: {}, tools: { cut: {}, kinds: {} }, haul: {}, processing: {}, hub: { workerUps: [], teamsterUps: [] }, slots: {} };
 const H = () => FLD().hours;
@@ -247,7 +248,6 @@ export function fieldsDay(s) {
     }
     last.fields[f.id] = { state, tended, made };
   }
-  animalsTend(s, W, last, res => capOf(s, res), res => (s.res[res] || 0) + (st.pile[res] || 0)); // R41 coop & cow pen share the hours
   // storage full → workers move to processing (hours that field would have needed)
   if (st.auto.process)
     for (const f of full) {
@@ -300,6 +300,7 @@ export function fieldsDay(s) {
       last.used += used / per;
     }
   }
+  rotationTend(s, W, last, res => capOf(s, res), res => (s.res[res] || 0) + (st.pile[res] || 0)); // R43 Auto rotation (R41 coop & cow pen, R42 chores)
   for (const k of Object.keys(st.pile)) if (st.pile[k] < 1e-6) delete st.pile[k];
   // followers' spare hours still farm the old way (plain food), so nothing is lost
   for (const w of W) if (w.kind === "follower") w.ref.fieldSpare = Math.max(0, w.left / w.hours);
@@ -349,4 +350,18 @@ export function toPile(s, st, res, made) {
   f.pile[res] = (f.pile[res] || 0) + n;
   ((f.prodLast ||= {})[st.uid] = { type: st.type, res, made, stuck: made - n, day: s.day });
   return n;
+}
+
+// ---- R43 Auto rotation: after the fields, spare worker hours move down fields.rotation.order (data)
+export const rotationOrder = () => ((FLD().rotation || {}).order || [...animalTypes(), "chores"]);
+export function rotationTend(s, W, last, cap, have) {
+  last.rotation = [{ step: "fields", state: Object.values(last.fields).some(x => x.state === "tended") ? "worked" : "skipped" }];
+  last.animals = {};
+  for (const step of rotationOrder()) {
+    const before = W.reduce((a, w) => a + w.left, 0);
+    if (step === "chores") rotationChores(s, W, last, cap, FLD().rotation || {});
+    else animalsTend(s, W, last, cap, have, [step]);
+    const used = before - W.reduce((a, w) => a + w.left, 0);
+    last.rotation.push({ step, state: used > 1e-9 ? "worked" : "skipped", hours: Math.round(used * 10) / 10 });
+  }
 }

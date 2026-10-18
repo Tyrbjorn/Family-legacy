@@ -5,7 +5,7 @@ import { hasFeature, parcelDay } from "./world.js";
 import { proposeIssue } from "./family.js";
 import { courtMult, noteStage } from "./courtship.js";
 import { nextQueued } from "./crafting.js";
-import { resGain } from "./legacy.js";
+import { resGain, legacyValue } from "./legacy.js";
 import { cp, level, statVal, traitSum } from "./family.js";
 import { bestRecipe, craftItem, recipeDef, recipeIssue, sellTick } from "./inventory.js";
 import {
@@ -62,7 +62,7 @@ export const ACTIONS = {
     a.target = a.target || null;
     a.rc = rc.id;
     (s.atLast = s.atLast || {})["rc:" + rc.skill] = rc.id; // Auto Tend repeats the last recipe of each skill
-    a.progress = (a.progress || 0) + eff;
+    a.progress = (a.progress || 0) + eff * (1 + legacyValue(s, "craftspd")); // R43 Workshop: Craft Speed
     gainXp(s, m, rc.skill, T.xpPerDay * 0.8 * eff);
     if (a.progress >= rc.days * gameFx(s, "craft", a.diff)) {
       a.progress = 0;

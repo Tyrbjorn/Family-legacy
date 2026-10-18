@@ -74,5 +74,23 @@ export function choresDay(s) {
     markChore(s, ac);
   }
 }
+// R43 Auto rotation: workers' spare hours go to each open chore in turn (skipping paused, no input, full storage)
+export function rotationChores(s, W, last, cap, R) {
+  last.chores = {};
+  const per = R.choreHours || 2, rate = R.choreHourRate || 0.125; // 8 h = one full hand-worked day
+  for (const ac of openChores(s)) {
+    const r = choreRecipe(ac);
+    let why = chorePaused(s, ac.id) ? "paused" : Object.keys(r.out).length && Object.keys(r.out).every(k => (s.res[k] || 0) >= cap(k)) ? "full" : ac.refine && !refineSrc(s, ac) ? "no input" : null;
+    if (why) { last.chores[ac.id] = why; continue; }
+    let got = 0;
+    for (const w of W) { if (got >= per - 1e-9) break; const t = Math.min(w.left, per - got); w.left -= t; got += t; last.used += t; }
+    if (got <= 1e-9) { last.chores[ac.id] = "no hands"; continue; }
+    const k = got * rate;
+    if (ac.refine) refineDay(s, ac, k);
+    else for (const [res, v] of Object.entries(taskYields(s, ac))) { s.res[res] = Math.min(cap(res), (s.res[res] || 0) + v * k); quotaCredit(s, res, v * k); }
+    markChore(s, ac);
+    last.chores[ac.id] = "worked";
+  }
+}
 export const takeChoreNews = s => { const c = cs(s), n = c.news.slice(); c.news = []; return n; };
 registerDayHook("chores", choresDay);

@@ -6,7 +6,7 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const fresh=(tier=1)=>{const s=E.newGame(1);E.normalize(s);s.res.coin=1e6;E.legacyState(s).ups.quotas=tier;return s;};
 let ku=0; const build=(s,type,pieces)=>{const st={uid:'b'+(ku++),type,pieces,up:0};(s.structures=s.structures||[]).push(st);return st;};
-const u=D.legacy.upgrades.find(x=>x.id==='quotas'); ok(u&&u.free===2&&u.tiers[0].cost===400&&u.tiers[1].cost===1200&&u.tiers[0].value===5,'R37 Steward\'s Ledger: 2 free, 400 for 5, 1200 unlimited');
+const u=D.legacy.upgrades.find(x=>x.id==='quotas'); ok(u&&u.free===2&&u.tiers[0].cost===60&&u.tiers[2].cost===600&&u.tiers[0].value===5&&u.tiers[2].value===999,'R43 Quotas: 2 free, 60 for 5, 600 unlimited');
 { const s=E.newGame(1);E.normalize(s); ok(E.quotaSlots(s)===2&&E.addQuota(s,'bread',5)&&E.addQuota(s,'planks',5)&&/slots/.test(E.quotaIssue(s,'stew','standing')),'2 free slots'); E.legacyState(s).renown=400; ok(E.buyLegacy(s,'quotas')&&E.quotaSlots(s)===5,'buy tier 1'); }
 { const s=fresh(); for(const k of ['bread','planks','stew','cheese','ingots']) ok(E.addQuota(s,k,10),'add '+k); ok(/slots/.test(E.quotaIssue(s,'flour','standing')),'tier 1 = 5 slots'); E.legacyState(s).ups.quotas=2; ok(E.addQuota(s,'flour',10),'tier 2 unlimited');
   ok(/nothing/.test(E.quotaIssue(s,'zzz','standing')),'unknown item refused'); ok(/one-time/.test(E.quotaIssue(s,'iron_sword','standing')||'one-time'),'crafted items one-time'); }

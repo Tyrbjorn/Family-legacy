@@ -3,7 +3,9 @@ import fs from 'fs'; import * as E from '../js/engine.js'; import { T } from '..
 const R=new URL('../data/',import.meta.url).pathname, D={};
 for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]=JSON.parse(fs.readFileSync(R+f));
 for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFileSync(R+'structures/'+f+'.json'));
-E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
+E.setData(D);
+// R43: deterministic (seeded) so random market events can't flake the run
+const seeded=(()=>{let a=39;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})(); E.setRng(seeded); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const game=()=>{const s=E.newGame(1);E.normalize(s);s.wevents=[];return s;};
 const tw=id=>D.towns.find(t=>t.id===id);
 // data
@@ -34,7 +36,7 @@ ok(T.market.highAt===1.15&&T.market.lowAt===0.85,'thresholds 115% / 85%');
   const other=E.townSellPrice(s,'thornwick','ale'), oth2=E.townSellPrice(s,'ashford','salt'); s.wevents=[]; ok(other===E.townSellPrice(s,'thornwick','ale')&&oth2===E.townSellPrice(s,'ashford','salt'),'only that good in that town');
   E.startEvent(s,'glut','ashford',12,'flour'); const g=E.priceTag(s,'ashford','flour'); ok(g.level==='low'&&/flooded with flour/.test(g.tip),'glut ▼ + tip');
   const b0=(()=>{const x=game();return E.townBuyPrice(x,'ashford','flour');})(); ok(E.townBuyPrice(s,'ashford','flour')>=b0,'glut never makes buying cheaper (no resale arbitrage)');
-  s.day+=13; E.eventsDay(s); ok(!s.wevents.length&&E.priceTag(s,'ashford','flour').level==='low'&&!/flooded with/.test(E.priceTag(s,'ashford','flour').tip),'event expires');
+  s.day+=13; { const keep=seeded; E.setRng(()=>0.999); E.eventsDay(s); E.setRng(keep); } ok(!s.wevents.length&&E.priceTag(s,'ashford','flour').level==='low'&&!/flooded with/.test(E.priceTag(s,'ashford','flour').tip),'event expires');
 }
 // random spawning: picks right goods, one market event per town, never above maxActive
 { const s=game(); const ch=D.events.chancePerDay; D.events.chancePerDay=1; let seen={shortage:0,glut:0}, bad=0;

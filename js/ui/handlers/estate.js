@@ -14,6 +14,14 @@ export const estateActions = ({ v, b, m }) => ({
   hubup: () => E.buyHubUp(s, v),
   animalbuy: () => E.buyAnimals(s, v), // R41
   choretoggle: () => E.toggleChore(s, v), // R42
+  oadd: () => { const it = U.oItem || document.querySelector("[data-a=oitem]")?.value, n = U.oNum || +(document.querySelector("[data-a=onum]")?.value || 3); E.addOrder(s, it, n); }, // R43 orders
+  oup: () => E.moveOrder(s, v, -1),
+  odown: () => E.moveOrder(s, v, 1),
+  opause: () => E.toggleOrderPause(s, v),
+  opwd: () => { const o = E.orderList(s).find(x => x.id === v); E.setOrderPauseWhenDone(s, v, !(o && o.pwd)); },
+  odel: () => E.removeOrder(s, v),
+  qoff: () => E.toggleQuotaOff(s, v), // R43 quotas: pause / pause when done
+  qpwd: () => { const q = E.quotaList(s).find(x => x.id === v); E.setQuotaPauseWhenDone(s, v, !(q && q.pwd)); },
   animalup: () => E.buySpotsUp(s, v),
   struct: () => E.buildStructure(s, v),
   upstruct: () => E.upgradeStructure(s, v, b.dataset.w),

@@ -1,3 +1,4 @@
+import { ordersCard } from "./orders-ui.js";
 import { fieldsCard } from "./fields-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
@@ -122,6 +123,7 @@ export function estatev() {
   let h = `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members below." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
   h += fieldsCard(); // R40
   h += quotasv();
+  if (!E.craftingUnlocked(s)) h += ordersCard(); // R43: Work Orders live on the Crafting tab once it opens
   h += estate();
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of E.living(s)) {
@@ -182,12 +184,12 @@ export function legacyPanel() {
 // R34: Quotas card (Steward's Ledger). Row: item, target, one-time/standing, progress, status, priority, remove.
 const qName = k => (E.itemDef(k) || {}).name || (E.dishDef(k) || {}).name || k;
 export function quotasv() {
-  const L = E.quotaList(s), slots = E.quotaSlots(s), used = L.filter(q => !q.parent).length, t2 = E.quotaTier(s) >= 2;
+  const L = E.quotaList(s).filter(q => !q.order), slots = E.quotaSlots(s), used = L.filter(q => !q.parent).length, t2 = E.quotaTier(s) >= 2; // R43: work-order chains show on the Orders card
   const row = (q, i) => {
     const st = E.quotaStatus(s, q), have = E.quotaHave(s, q), pct = Math.min(100, (have / q.target) * 100);
     const col = st.k === "met" ? "#7c7" : st.k === "blocked" ? "#e77" : "#ec6";
     return `<div class="card" data-quota="${q.item}" style="padding:5px 8px;margin:3px 0${q.parent ? ";margin-left:18px" : ""}"><div class="row"><span>${q.parent ? "↳ " : ""}${RI[q.item] || "📦"} <b>${qName(q.item)}</b> <span class="muted">${q.mode === "once" ? "make" : "keep"}</span> <input type="number" min="1" value="${q.target}" data-a="qtarget" data-v="${q.id}" style="width:64px"></span>
- <span><button class="b" style="font-size:11px;padding:2px 6px" data-a="qmode" data-v="${q.id}">${q.mode === "once" ? "One-time" : "Standing"}</button><button class="b" style="padding:2px 6px" data-a="qup" data-v="${q.id}" ${i ? "" : "disabled"}>▲</button><button class="b" style="padding:2px 6px" data-a="qdown" data-v="${q.id}" ${i < L.length - 1 ? "" : "disabled"}>▼</button><button class="b" style="padding:2px 6px" data-a="qdel" data-v="${q.id}">✖</button></span></div>
+ <span>${q.parent ? "" : `<button class="b" style="padding:2px 6px" data-a="qoff" data-v="${q.id}" title="${q.off ? "Resume" : "Pause"}">${q.off ? "▶️" : "⏸️"}</button><button class="b ${q.pwd ? "sel" : ""}" style="padding:2px 6px;font-size:11px" data-a="qpwd" data-v="${q.id}" title="Pause when it next finishes">⏹ when done</button>`}<button class="b" style="font-size:11px;padding:2px 6px" data-a="qmode" data-v="${q.id}">${q.mode === "once" ? "One-time" : "Standing"}</button><button class="b" style="padding:2px 6px" data-a="qup" data-v="${q.id}" ${i ? "" : "disabled"}>▲</button><button class="b" style="padding:2px 6px" data-a="qdown" data-v="${q.id}" ${i < L.length - 1 ? "" : "disabled"}>▼</button><button class="b" style="padding:2px 6px" data-a="qdel" data-v="${q.id}">✖</button></span></div>
  <div class="bar"><i style="width:${pct}%;background:${col}"></i></div><div class="muted" style="font-size:12px">${fmt(have)}/${fmt(q.target)} ${q.mode === "once" ? "made" : "in store"} · <span style="color:${col}">${st.k === "met" ? "✅" : st.k === "blocked" ? "⚠️ blocked:" : "⏳"} ${st.text}</span>${q.parent ? " · pulled for the quota above" : ""}</div></div>`;
   };
   const opts = [...new Set([...Object.keys(s.res).filter(k => E.producible(k)), ...(D.cooking?.dishes || []).map(x => x.id)])].sort();

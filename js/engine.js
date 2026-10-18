@@ -64,3 +64,4 @@ export * from "./engine/village.js";
 export * from "./engine/endgame.js";
 export * from "./engine/animals.js";
 export * from "./engine/chores.js";
+export * from "./engine/orders.js";

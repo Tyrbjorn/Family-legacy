@@ -305,6 +305,8 @@ document.addEventListener("change", e => {
     });
   }
   if (el.dataset.a === "qitem") U.qItem = el.value; // R34 quotas
+  if (el.dataset.a === "oitem") U.oItem = el.value; // R43 orders
+  if (el.dataset.a === "onum") U.oNum = +el.value;
   if (el.dataset.a === "qnum") U.qNum = +el.value;
   if (el.dataset.a === "qtarget") E.setQuotaTarget(s, el.dataset.v, el.value);
   if (el.dataset.a === "fatrack") E.setTrack(s, +el.dataset.v, el.value || null);

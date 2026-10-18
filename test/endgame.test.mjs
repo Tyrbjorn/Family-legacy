@@ -12,7 +12,7 @@ const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTut
 // 1) the Auto Tend "buy all" bundle (at_all) was removed (R29): singles only; old saves get its tiers as singles (save step 29)
 { const s=fresh(); s.legacy={renown:5000,earned:0,ups:{}};
   ok(!E.legacyDef('at_all'),'no buy-all bundle');
-  ok(E.legacyCost(s,'at_tend')===300&&E.buyLegacy(s,'at_tend')&&E.legacyValue(s,'at_tend')===0.55&&E.legacyCost(s,'at_tend')===900,'single purchases still work');
+  ok(E.legacyCost(s,'at_tend')===80&&E.buyLegacy(s,'at_tend')&&E.legacyValue(s,'at_tend')===0.55&&E.legacyCost(s,'at_tend')===300,'single purchases still work');
   ok(D.legacy.renown.tithe===0.2&&D.legacy.renown.headBank===0.35,'tithe 20%, head bank 35%'); }
 // 2) wages / gifts
 { const s=fresh(); const mi={uid:'a',type:'laborer',cls:'n_peasant',skills:{},job:'farm'}; const base=E.mtype('laborer').wage;
