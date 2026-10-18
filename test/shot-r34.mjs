@@ -1,0 +1,16 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+await p.evaluate(()=>{const g=__game,s=g.s,E=g.E;s.tut.skipped=true;s.land=['plot'];E.legacyState(s).ups.quotas=2;E.legacyState(s).renown=420;
+  s.structures.push({uid:'k1',type:'kitchen',pieces:['oven','hearth'],up:0});s.res.flour=0;s.res.wheat=0;s.res.planks=95;s.res.meat=12;s.res.food=400;
+  E.addQuota(s,'planks',80,'standing');E.addQuota(s,'bread',60,'standing');E.addQuota(s,'meat',40,'once');E.addQuota(s,'pikepie',5,'standing');E.quotaDay(s);});
+await go(p,'estate');await p.waitForTimeout(900);
+const clip=async(sel,path)=>{const r=await p.evaluate(sel=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};},sel);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});};
+await clip('#quotas',O+'r34-quotas-card.png');
+await p.evaluate(()=>{__game.E.legacyState(__game.s).ups.quotas=1;__game.E.legacyState(__game.s).renown=1900;});await p.waitForTimeout(900);
+await clip('[data-leg="quotas"]',O+'r34-legacy-ledger.png');
+console.log('errors',errs);await b.close();

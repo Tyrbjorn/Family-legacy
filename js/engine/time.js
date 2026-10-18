@@ -1,3 +1,4 @@
+import { quotaDay } from "./quotas.js";
 import { injuryDay, injurySpeed, treat } from "./injuries.js";
 import { enchantDay } from "./gear.js";
 import { notify } from "./notify.js";
@@ -91,6 +92,7 @@ function estateDay(s) {
     s.renown += furn(s).reduce((x, f) => x + (f.bonus.renown || 0), 0) * 30;
   }
   minionDay(s);
+  quotaDay(s); // R34
   processDay(s);
   s.res.food = Math.min(s.res.food, foodCap(s));
   for (const k of ES().caps.capped) if ((s.res[k] || 0) > matCap(s)) s.res[k] = matCap(s);

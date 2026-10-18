@@ -1,3 +1,4 @@
+import { sellFloor } from "./quotas.js";
 import { gameFx, gameLvl } from "./difficulty.js";
 import { pathLen } from "./world-route.js";
 import { tutNote } from "./tutorial.js";
@@ -209,7 +210,7 @@ export function routeWants(s, r) {
     const buy = townBuyPrice(s, r.from, r.res);
     return townSellPrice(s, r.town, r.res) >= buy * (1 + r.margin) && s.res.coin >= buy;
   }
-  if (r.mode === "sell") return (s.res[r.res] || 0) - r.keep >= 1;
+  if (r.mode === "sell") return (s.res[r.res] || 0) - Math.max(r.keep, sellFloor(s, r.res)) >= 1; // R34 sell floor
   const p = townBuyPrice(s, r.town, r.res);
   return (s.res[r.res] || 0) < r.below && (!r.maxPrice || p <= r.maxPrice) && s.res.coin >= p;
 }
@@ -219,7 +220,7 @@ function startTrip(s, r) {
   const n = Math.min(r.qty, cartCarry(s));
   let load = 0;
   if (r.mode === "sell") {
-    load = Math.floor(Math.min(n, (s.res[r.res] || 0) - r.keep));
+    load = Math.floor(Math.min(n, (s.res[r.res] || 0) - Math.max(r.keep, sellFloor(s, r.res))));
     if (load <= 0) return;
     s.res[r.res] -= load;
   }

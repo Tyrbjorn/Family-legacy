@@ -554,6 +554,15 @@ export const STEPS = [
       learnDishes(s, true);
     },
   },
+  {
+    n: 34,
+    once: true,
+    name: "R34 quotas (Steward's Ledger): empty quota list",
+    run(s) {
+      s.quotas = s.quotas || [];
+      s.quotaSeq = s.quotaSeq || 0;
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

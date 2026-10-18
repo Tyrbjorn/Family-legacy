@@ -138,4 +138,5 @@ function cardNav(st, k) {
 }
 
 export const buildingCard = (st, k) =>
-  cardHead(st, k) + cardPieces(st, k) + cardRefine(st) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);
+  cardHead(st, k) +
+  ((st.type === "warehouse" || E.structDef(st.type)?.upgradeFrom === "warehouse") ? `<div class="row" style="justify-content:flex-start"><button class="b" style="font-size:12px" data-a="quotasgo">📋 Quotas${E.hasLegacy(s, "quotas") ? " (" + E.quotaList(s).length + ")" : ""}</button></div>` : "") + cardPieces(st, k) + cardRefine(st) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);

@@ -447,6 +447,9 @@ function bot(s, m) {
   }
   // legacy
   for (const u of D.legacy.upgrades) if (!(process.env.FA_OFF && u.id.startsWith("fa_")) && E.buyLegacy(s, u.id)) seen.legacy.add(u.id);
+  if (process.env.QUOTA_FREE && !E.legacyTier(s, "quotas")) E.legacyState(s).ups.quotas = +process.env.QUOTA_FREE; // sim knob: grant the Ledger
+  // R34 bot rule: with the Steward's Ledger, keep a few staples topped up
+  if (E.quotaSlots && E.quotaSlots(s) && !(s.quotas || []).length) for (const [k, n] of [["bread", 150], ["planks", 80], ["stew", 60]]) E.addQuota(s, k, n, "standing");
   // family
   if (E.isAdult(m) && !m.spouse && E.ageY(m) >= T.courtAge && s.suitors.length) {
     const su = s.suitors.reduce((a, b) => (b.affinity > a.affinity ? b : a));

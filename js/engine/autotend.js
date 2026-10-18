@@ -1,5 +1,6 @@
 // Auto Tend (Legacy upgrades at_<cat>): a skill keeps working with nobody assigned, at 50% (tier 1) / 75% (tier 2)
 // of a hand-worked day. It repeats the last activity / recipe / gathering spot the family used in that skill.
+import { quotaAtTarget, quotaCredit } from "./quotas.js";
 import { taskYields } from "./requests.js";
 import { landFish } from "./fish.js";
 import { LG, legacyTier, legacyValue, resGain } from "./legacy.js";
@@ -26,6 +27,8 @@ export function toggleAuto(s, key) {
 export function atTarget(s, k) {
   const c = AT()[k],
     L = s.atLast || {};
+  const qt = quotaAtTarget(s, c); // R34: an open quota this category can make comes first
+  if (qt) return qt;
   if (c.kind === "gather") {
     const n = L.gather && D.nodes.find(x => x.id === L.gather);
     return n ? { kind: "gather", id: n.id, name: n.name } : null;
@@ -71,12 +74,12 @@ export function autoTendDay(s) {
     if (!t) continue;
     if (t.kind === "activity") {
       const ac = D.activities.find(x => x.id === t.id);
-      for (const [res, v] of Object.entries(taskYields(s, ac))) res === "fish" && ac.id === "fishing" ? landFish(s, v * r) : (s.res[res] = (s.res[res] || 0) + v * r);
+      for (const [res, v] of Object.entries(taskYields(s, ac))) { res === "fish" && ac.id === "fishing" ? landFish(s, v * r) : (s.res[res] = (s.res[res] || 0) + v * r); quotaCredit(s, res, v * r); }
     } else if (t.kind === "gather") {
       const n = D.nodes.find(x => x.id === t.id),
         trip = { load: {}, cap: Infinity };
       gatherInto(s, trip, n, r * gatherShare(s, n) * resGain(s) * gatherMult(s, n.region) * seasonGather(s), () => 0);
-      for (const [res, v] of Object.entries(trip.load)) s.res[res] = (s.res[res] || 0) + v;
+      for (const [res, v] of Object.entries(trip.load)) (s.res[res] = (s.res[res] || 0) + v), quotaCredit(s, res, v);
     } else {
       const rc = recipeDef(t.id),
         m = bestHand(s, rc.skill);

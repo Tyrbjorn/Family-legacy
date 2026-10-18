@@ -212,6 +212,9 @@ document.addEventListener("change", e => {
       target: t === "train" ? "swordsmanship" : t === "quest" ? "outskirts" : t === "gather" ? "scrub" : undefined,
     });
   }
+  if (el.dataset.a === "qitem") U.qItem = el.value; // R34 quotas
+  if (el.dataset.a === "qnum") U.qNum = +el.value;
+  if (el.dataset.a === "qtarget") E.setQuotaTarget(s, el.dataset.v, el.value);
   if (el.dataset.a === "fatrack") E.setTrack(s, +el.dataset.v, el.value || null);
   if (el.dataset.a === "fapref") E.setPref(s, +el.dataset.v, el.value || null);
   if (el.dataset.a === "ordt") {

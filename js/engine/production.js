@@ -1,3 +1,4 @@
+import { quotaCredit, quotaFloor, quotaIdle, quotaRank, sellFloor } from "./quotas.js";
 import { cookOrder, dishReserve, dishDef, dishIssue, fishAvail, isFishKey, learnDishes, spendFish } from "./cooking.js";
 import { veinProcesses } from "./metals.js";
 // Estate production: daily furniture processes, operator skill, reserves/pausing and food/crop quality.
@@ -128,11 +129,12 @@ export function processDay(s, mul = 1) {
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))
       for (const pr0 of cookOrder(s, (p && (p.bonus.veins ? veinProcesses(s, st, p) : p.bonus.processes)) || [])) {
         if (refineHold(s, st, pr0)) continue;
-        if (pr0.dish && dishIssue(s, dishDef(pr0.dish) || {})) continue; // R33: learned, Cooking level, luxury toggle
+        if (quotaIdle(s, pr0)) continue; // R34: standing quota met
+        if (pr0.dish && dishIssue(s, dishDef(pr0.dish) || {}) && !(quotaRank(s, pr0.out) < Infinity && dishIssue(s, dishDef(pr0.dish) || {}) === "enough in store")) continue; // R33: learned, Cooking level, luxury toggle
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
         const yl = skillYield(s, p);
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);
-        for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, (isFishKey(k) ? fishAvail(s, k) : Math.max(0, (s.res[k] || 0) - Math.max(reserveOf(s, k), dishReserve(s, pr.dish, k)))) / v);
+        for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, (isFishKey(k) ? fishAvail(s, k) : Math.max(0, (s.res[k] || 0) - Math.max(reserveOf(s, k), dishReserve(s, pr.dish, k), quotaFloor(s, k, pr.out)))) / v);
         if (n <= 0) continue;
         const inQ = inputQuality(s, pr.in);
         for (const [k, v] of Object.entries(pr.in)) isFishKey(k) ? spendFish(s, k, v * n) : (s.res[k] -= v * n);
@@ -143,6 +145,7 @@ export function processDay(s, mul = 1) {
         else if (inQ !== 1 && isIngredient(pr.out)) blendFoodQ(s, pr.out, made, inQ);
         for (const [k, c] of Object.entries(pr.side || {})) s.res[k] = (s.res[k] || 0) + made * c;
         if (pr.food) (s.cooked = s.cooked || {})[pr.out] = (s.cooked[pr.out] || 0) + made;
+        quotaCredit(s, pr.out, made);
         s.res[pr.out] = (s.res[pr.out] || 0) + made;
         out[pr.out] = (out[pr.out] || 0) + made;
       }
@@ -157,7 +160,7 @@ const basePrice = res => {
 };
 export function autoSell(s, out, cfg, mul = 1) {
   for (const res of Object.keys(out)) {
-    const n = Math.min(cfg.rate * mul, s.res[res] || 0),
+    const n = Math.min(cfg.rate * mul, (s.res[res] || 0) - sellFloor(s, res)), // R34: tier-2 sell floor
       p = basePrice(res) * cfg.price;
     if (n <= 0 || !p) continue;
     s.res[res] -= n;

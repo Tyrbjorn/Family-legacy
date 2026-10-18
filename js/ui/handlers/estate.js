@@ -1,3 +1,4 @@
+import { U } from "../state.js";
 import * as E from "../../engine.js";
 import { s } from "../../main.js";
 
@@ -47,6 +48,12 @@ export const estateActions = ({ v, b, m }) => ({
   vcancel: () => E.cancelProject(s),
   ration: () => E.setRation(s, v),
   diet: () => E.toggleDiet(s, v),
+  qadd: () => { const it = U.qItem || document.querySelector('[data-a=qitem]')?.value, n = U.qNum || +(document.querySelector('[data-a=qnum]')?.value || 50); if (!E.addQuota(s, it, n, v)) E.log(s, "📋 " + (E.quotaIssue(s, it, v) || "can't add that quota")); },
+  qdel: () => E.removeQuota(s, v),
+  qup: () => E.moveQuota(s, v, -1),
+  qdown: () => E.moveQuota(s, v, 1),
+  qmode: () => { const q = E.quotaList(s).find(x => x.id === v); return q && E.setQuotaMode(s, v, q.mode === "once" ? "standing" : "once"); },
+  quotasgo: () => setTimeout(() => document.querySelector("#quotas")?.scrollIntoView({ block: "start" }), 200),
   cooklux: () => E.setCookLuxury(s, !s.cookLuxury),
   room: () => E.addRoom(s, v),
   unroom: () => E.removeRoom(s, +v),

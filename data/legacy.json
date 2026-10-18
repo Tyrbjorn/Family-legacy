@@ -386,6 +386,22 @@
    ]
   },
   {
+   "id": "quotas",
+   "name": "Steward's Ledger",
+   "icon": "📋",
+   "desc": "Quotas: set estate-wide targets (make X once, or keep stock topped up to X). Stations, Auto Cook, Auto Tend and the craft queue work toward them first, top of the list first. Tier 1: 5 quotas. Tier 2: unlimited, blocked quotas pull their missing inputs (2 steps), standing targets become sell floors, and a follower a month moves into a job that feeds a quota.",
+   "tiers": [
+    {
+     "cost": 600,
+     "value": 5
+    },
+    {
+     "cost": 1800,
+     "value": 999
+    }
+   ]
+  },
+  {
    "id": "fa_advance",
    "name": "Mentor's Ledger",
    "icon": "📜",
@@ -550,5 +566,10 @@
     "tailoring"
    ]
   }
+ },
+ "quotas": {
+  "pullDepth": 2,
+  "pullAmount": 20,
+  "foodSafetyDays": 20
  }
 }

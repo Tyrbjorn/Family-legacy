@@ -2,6 +2,7 @@
 // Fish inputs: `fish:<species>` spends that species from the R32 fish record; plain `fish` spends the cheapest fish first.
 // Auto Cook (station rows each day): dishes an open villager request wants first, then dishes that add a new food
 // to the menu, then the rest by food value. 10 raw fish are always kept for requests; luxury dishes need s.cookLuxury.
+import { quotaRank } from "./quotas.js";
 import { D, log } from "./state.js";
 import { fishBagFix, fishDef, famFishLvl } from "./fish.js";
 import { openRequest } from "./requests.js";
@@ -68,6 +69,11 @@ export const isFishKey = k => k === "fish" || k.startsWith("fish:");
 // ---- Auto Cook order for one piece's rows (non-dish rows keep their place between wanted/variety dishes and the rest)
 const wantedRes = s => new Set(((D.requests || {}).npcs || []).flatMap(n => Object.keys((openRequest(s, n.id) || {}).wants || {})));
 export function cookOrder(s, rows) {
+  if (s.quotas && s.quotas.length && rows.some(r => quotaRank(s, r.out) < Infinity)) {
+    // R34: rows making an open quota's item go first, in quota order
+    const rest = cookOrder({ ...s, quotas: [] }, rows.filter(r => quotaRank(s, r.out) === Infinity));
+    return [...rows.filter(r => quotaRank(s, r.out) < Infinity).sort((a, b) => quotaRank(s, a.out) - quotaRank(s, b.out)), ...rest];
+  }
   if (!rows.some(r => r.dish)) return rows;
   const want = wantedRes(s), menu = new Set((s.meal || {}).menu || []);
   const tier = r => (!r.dish ? 2 : want.has(r.out) ? 0 : !menu.has(r.out) && (s.res[r.out] || 0) < 1 ? 1 : 3);
