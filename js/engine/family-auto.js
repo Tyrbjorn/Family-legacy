@@ -5,6 +5,7 @@
 //  advance: join the track/best-fit guild, rank up, evolve (one step per member per month), keeping a 25% coin reserve
 //  kids: children train their track's skills instead of random lessons
 //  court: unmarried adults 18-35 court the best suitor (no feuding house) and marry in; Head only if s.faCourtHead
+import { talentAuto } from "./talents.js";
 import { AP, tutorPlace } from "./apprentice.js";
 import { skillOpen } from "./skills.js";
 import { autoQuest } from "./actions.js";
@@ -94,6 +95,7 @@ function ordersMonth(s) {
 // ---- advance
 const evoScore = (m, c) => Object.keys(c.req || {}).reduce((a, k) => a + lv(m, k), 0) + (c.cpSkills || []).reduce((a, k) => a + lv(m, k), 0) + ((m.lean || []).includes((classGuild(c.id) || {}).id) ? 5 : 0); // R35 lean +5
 function advanceOne(s, m) {
+  talentAuto(s, m); // R36 fill/swap talent slots unless pinned
   // 1) no guild yet: the track guild if eligible, else the best-fitting one
   if (!m.guild && !m.craft) {
     const order = [trackFor(s, m), ...Object.keys(FA().tracks)];

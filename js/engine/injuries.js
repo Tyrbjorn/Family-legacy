@@ -1,6 +1,7 @@
 // Tiered injuries: 1 Bruised (works slower), 2 Wounded, 3 Maimed, 4 Crippling (rest; m.injured = days left).
 // m.inj = { tier, day, treated, counted }; m.perm = [permanent injury ids]; m.load = untreated load (m.loadDay).
 // Death only on a bad Crippling roll or infection when untreated wounds pile up. Numbers: tuning.injuries.
+import { talentSum } from "./talents.js";
 import { T, log, rng } from "./state.js";
 import { gameLvl, chalLvl } from "./difficulty.js";
 import { kill } from "./family.js";
@@ -14,6 +15,8 @@ const healerKin = s => s.members.some(x => x.alive && (x.paths || []).some(p => 
 // opts: { guards, treated, dressing (Field Dressing: tier 2 → 1) }
 export function injure(s, m, tier, why, o = {}) {
   if (!m || m.minion || !m.alive) return;
+  const tc = -talentSum(m, "injury"); // R36 Shield Wall (no rng draw without the talent)
+  if (tc > 0 && rng() < tc) return;
   if (tier === 2 && rng() < IJ().upgradeMaimed[gameLvl(s) - 1]) tier = 3;
   let treated = !!o.treated;
   if (o.dressing && tier === 2) (tier = 1), (treated = true);
@@ -63,7 +66,8 @@ export function gainPerm(s, m, tier = 4) {
 // speed for the day: Bruised −10%; Limp on trips; +5% craft with a Limp
 export const injurySpeed = (s, m) =>
   (m.bruised > s.day ? 1 + injTier(1).speed : 1) *
-  (1 + (m.action && ["quest", "gather", "explore", "dungeon", "travel"].includes(m.action.type) ? permFx(m, "travel") : 0) + (m.action && m.action.type === "craft" ? permFx(m, "craft") : 0));
+  (1 + (m.action && ["quest", "gather", "explore", "dungeon", "travel"].includes(m.action.type) ? permFx(m, "travel") : 0) + (m.action && m.action.type === "craft" ? permFx(m, "craft") : 0)) *
+  (1 + (m.action && ["quest", "gather", "explore", "dungeon", "travel"].includes(m.action.type) ? talentSum(m, "travel") : m.action && m.action.type === "craft" ? talentSum(m, "craft") : 0)); // R36 Pathfinder / Steady Hands
 export const injuryXp = (m, sk) => 1 + (["reading", "history"].includes(sk) ? permFx(m, "loreXp") : 0);
 export const loadWarn = m => (m.load > 0 ? `Untreated wounds: ${m.load}/${IJ().loadLimit}` : "");
 // quest results: deadly fails are Maimed or (20%) Crippling; deadly successes have a 5% Crippling risk

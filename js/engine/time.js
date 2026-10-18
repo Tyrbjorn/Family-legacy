@@ -1,3 +1,4 @@
+import { talentDay } from "./talents.js";
 import { AP, apprDay, apprSkill, birthInherit } from "./apprentice.js";
 import { quotaDay } from "./quotas.js";
 import { injuryDay, injurySpeed, treat } from "./injuries.js";
@@ -94,6 +95,7 @@ function estateDay(s) {
   }
   minionDay(s);
   quotaDay(s); // R34
+  talentDay(s); // R36
   processDay(s);
   s.res.food = Math.min(s.res.food, foodCap(s));
   for (const k of ES().caps.capped) if ((s.res[k] || 0) > matCap(s)) s.res[k] = matCap(s);

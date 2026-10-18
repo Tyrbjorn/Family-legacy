@@ -33,6 +33,7 @@ export * from "./engine/fish.js";
 export * from "./engine/cooking.js";
 export * from "./engine/quotas.js";
 export * from "./engine/apprentice.js";
+export * from "./engine/talents.js";
 export * from "./engine/intros.js";
 export * from "./engine/gear.js";
 export * from "./engine/geartypes.js";

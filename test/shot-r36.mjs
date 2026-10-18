@@ -1,0 +1,18 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+const clip=async(sel,path,pre=0)=>{const r=await p.evaluate(([sel,pre])=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY-pre,width:r.width,height:r.height+pre};},[sel,pre]);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});};
+await p.evaluate(()=>{const g=__game,s=g.s,E=g.E;s.tut.skipped=true;const a=s.members[0];a.cls='knight';
+  for(const id of ['shieldwall','orrinspupil','pathfinder','bridgebuilder']) E.grantTalent(s,a,id,'',true);
+  s.structures.push({uid:'h1',type:'ancestorhall',pieces:[],up:0});s.shrines=['haggler','trackerseye'];window.__ids=[a.id];});
+await go(p,'char');await p.waitForTimeout(600);
+await p.evaluate(()=>document.querySelector('[data-a="charpick"][data-v="'+__ids[0]+'"]').click());await p.waitForTimeout(900);
+await clip('#talents',O+'r36-talents-panel.png',40);
+await clip('[data-talent="pathfinder"]',O+'r36-talent-card.png');
+await p.evaluate(()=>{for(const x of document.querySelectorAll('*'))if(x.style.display==='none')x.style.display='';__game.s.members[0].guild={id:'rogues',rank:0,rep:0};});await p.waitForTimeout(900);
+await clip('#talentnext',O+'r36-talent-hint.png');
+console.log('errors',errs);await b.close();

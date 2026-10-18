@@ -51,5 +51,5 @@ ok(fs.readFileSync(new URL('../js/engine/time.js',import.meta.url)).toString().i
 // migration
 { const s=fresh(); s.schema=34; const k=kid(s,10); delete k.lean; delete k.inh; delete k.appr; const st={...k.stats}; E.migrate?E.migrate(s):E.normalize(s);
   ok(Array.isArray(k.lean)&&k.appr===null&&Array.isArray(k.apprDone)&&k.inh&&JSON.stringify(k.stats)===JSON.stringify(st),'v35 migration: lean, no placement, no stat change');
-  ok(s.members.filter(m=>m.alive).every(m=>m.lean&&m.inh),'all living get lean + inh'); ok(E.SCHEMA===35,'schema 35'); }
+  ok(s.members.filter(m=>m.alive).every(m=>m.lean&&m.inh),'all living get lean + inh'); ok(E.SCHEMA>=35,'schema 35+'); }
 console.log('r35 ok',pass);

@@ -44,6 +44,7 @@ const names = [
   "endgame",
   "requests",
   "apprenticeships",
+  "talents",
   "fish",
   "cooking",
 ];

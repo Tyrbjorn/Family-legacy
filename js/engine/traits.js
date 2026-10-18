@@ -1,4 +1,5 @@
 // Trait rarity tiers, weighted rolls (Legacy-adjusted), inheritance and the Bloodline slot.
+import { talentSkillXp } from "./talents.js";
 import { conflicts, traitDef } from "./family.js";
 import { LG, legacyValue } from "./legacy.js";
 import { D, rng } from "./state.js";
@@ -52,7 +53,7 @@ export function bestTrait(traits) {
 export const traitStat = (m, k) =>
   (m.traits || []).reduce((a, t) => a + (((traitDef(t) || {}).stats || {})[k] || 0), 0);
 export const traitSkillXp = (m, sk) =>
-  (m.traits || []).reduce((a, t) => a + (((traitDef(t) || {}).skillXp || {})[sk] || 0), 0);
+  (m.traits || []).reduce((a, t) => a + (((traitDef(t) || {}).skillXp || {})[sk] || 0), 0) + talentSkillXp(m, sk); // R36 talents
 const lifeOf = traits => traits.reduce((a, t) => a + ((traitDef(t) || {}).life || 0), 0);
 
 // Child gets exactly one guaranteed best trait (highest rarity across both parents; ties random),

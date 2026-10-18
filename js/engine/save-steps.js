@@ -1,3 +1,4 @@
+import { talentMigrate } from "./talents.js";
 import { leanMigrate } from "./apprentice.js";
 import { learnDishes } from "./cooking.js";
 import { DEFAULT_RESERVE } from "./production.js";
@@ -570,6 +571,14 @@ export const STEPS = [
     name: "R35 leans + apprenticeships + inheritance: lean for every living member, no placements, inherited skill boosts for kids (no retroactive stat change)",
     run(s) {
       leanMigrate(s);
+    },
+  },
+  {
+    n: 36,
+    once: true,
+    name: "R36 talents: empty talents for all, class/guild talents from current class line and ranks, head gets quest talents from doneQuests; no shrines",
+    run(s) {
+      talentMigrate(s);
     },
   },
 ];

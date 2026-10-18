@@ -1,3 +1,4 @@
+import { onDeathTalents, talentSum } from "./talents.js";
 import { gearFx, gearStat } from "./gear.js";
 import { rollTraits, traitStat } from "./traits.js";
 import { bankRenown } from "./legacy.js";
@@ -67,7 +68,7 @@ export function pickTraits(n, have = []) {
   return out;
 }
 
-export const traitSum = (m, k) => m.traits.reduce((a, t) => a + ((traitDef(t) || {})[k] || 0), 0);
+export const traitSum = (m, k) => m.traits.reduce((a, t) => a + ((traitDef(t) || {})[k] || 0), 0) + talentSum(m, k); // R36: active talents add on the same keys
 
 export function fixTraits(m) {
   const kept = [];
@@ -106,7 +107,7 @@ export function cp(s, m) {
   if (c) {
     v += c.stats.reduce((a, k) => a + statVal(m, k), 0);
     // magicCap: a limited spell list (Battle Mage) — magic skills only count up to that level; the big spells above it are Archmage-only
-    v += c.cpSkills.reduce((a, k) => a + (c.magicCap && D.gear.kinds.spellFail.magicSkills.includes(k) ? Math.min(c.magicCap, m.skills[k].lvl) : m.skills[k].lvl) * 2, 0);
+    v += c.cpSkills.reduce((a, k) => a + (c.magicCap && D.gear.kinds.spellFail.magicSkills.includes(k) ? Math.min(c.magicCap + talentSum(m, "magicCap"), m.skills[k].lvl) : m.skills[k].lvl) * 2, 0);
     v *= c.cpMult || 1;
   } else v = (statVal(m, "STR") + statVal(m, "AGI")) / 2;
   for (const id of Object.values(m.equip)) v += itemCpFor(m, id); // class fit, proficiency, dodge (geartypes.js)
@@ -120,6 +121,7 @@ export function kill(s, m, why) {
   if (!m.alive) return;
   m.alive = false;
   m.diedDay = s.day;
+  onDeathTalents(s, m); // R36 Hall of Ancestors shrine
   m.action = null;
   for (const id of [...Object.values(m.equip), ...(m.bag || [])]) s.vault.push(id);
   m.equip = {};

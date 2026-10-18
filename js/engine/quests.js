@@ -1,3 +1,4 @@
+import { talentQuest } from "./talents.js";
 import { questInjury } from "./injuries.js";
 import { tutActive } from "./tutorial.js";
 import { questLineNext } from "./requests.js";
@@ -51,6 +52,7 @@ export function resolveQuest(s, m, q, eff) {
   m.questsDone = (m.questsDone || 0) + 1;
   const firstDone = !s.doneQuests.includes(q.id);
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
+  talentQuest(s, m, q.id); // R36
   gain.push(...grantRewards(s, m, q));
   if (firstDone && q.tip) log(s, "💡 " + q.tip); // R31.3: teaching tip on the first clear (e.g. the River boat)
   if (firstDone && q.firstGrants) gain.push(...grantRewards(s, m, { ...q, grants: q.firstGrants })); // R31.2: first-clear rewards

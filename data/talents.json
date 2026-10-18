@@ -1,0 +1,179 @@
+{
+ "_note": "R36 Talents: earned personal bonuses (traits are birth-only). Slots: base + perTier x class tier, capped at cap; Heir of Vael adds +1 (max 5). fx keys: xp, skillXp{skill}, magicCap, craft (craft speed), injury (chance cut), hunt (meat/hides yield on hunting trips), travel (trip speed), buy (market price), slots. from kinds: class (picked or passed through), guild+rank (guild or craft guild), quest (the member who finished it), tutorial (founder/head when the prologue is complete). Nimble stays a birth trait (+2 AGI, light-armor dodge; the gear overhaul's 'Nimble talent' was shipped as that trait), so it is not duplicated here. Expansions add entries.",
+ "slots": {
+  "base": 2,
+  "perTier": 1,
+  "cap": 4,
+  "max": 5
+ },
+ "shrines": {
+  "max": 3,
+  "building": "ancestorhall",
+  "learnAge": 18
+ },
+ "talents": [
+  {
+   "id": "shieldwall",
+   "name": "Shield Wall",
+   "icon": "🛡️",
+   "desc": "−20% chance to be injured",
+   "from": {
+    "class": "fighter"
+   },
+   "fx": {
+    "injury": -0.2
+   },
+   "tags": [
+    "combat"
+   ]
+  },
+  {
+   "id": "trackerseye",
+   "name": "Tracker's Eye",
+   "icon": "🐾",
+   "desc": "+15% meat and hides on their hunting trips",
+   "from": {
+    "class": "hunter"
+   },
+   "fx": {
+    "hunt": 0.15
+   },
+   "tags": [
+    "gather"
+   ]
+  },
+  {
+   "id": "quickstudy",
+   "name": "Quick Study",
+   "icon": "📘",
+   "desc": "+10% XP in Arcana, Fire, Frost and Reading",
+   "from": {
+    "class": "apprentice"
+   },
+   "fx": {
+    "skillXp": {
+     "arcana": 0.1,
+     "fire": 0.1,
+     "frost": 0.1,
+     "reading": 0.1
+    }
+   },
+   "tags": [
+    "xp"
+   ]
+  },
+  {
+   "id": "pathfinder",
+   "name": "Pathfinder",
+   "icon": "🧭",
+   "desc": "Trips go 10% faster",
+   "from": {
+    "class": "scout"
+   },
+   "fx": {
+    "travel": 0.1
+   },
+   "tags": [
+    "gather",
+    "combat"
+   ]
+  },
+  {
+   "id": "steadyhands",
+   "name": "Steady Hands",
+   "icon": "🔨",
+   "desc": "+10% crafting speed",
+   "from": {
+    "guild": "hearth",
+    "rank": "Journeyman"
+   },
+   "fx": {
+    "craft": 0.1
+   },
+   "tags": [
+    "craft"
+   ]
+  },
+  {
+   "id": "spellfocus",
+   "name": "Spell Focus",
+   "icon": "🔥",
+   "desc": "+5% XP and +5 to a limited spell cap",
+   "from": {
+    "class": "elementalist"
+   },
+   "fx": {
+    "xp": 0.05,
+    "magicCap": 5
+   },
+   "tags": [
+    "combat",
+    "xp"
+   ]
+  },
+  {
+   "id": "haggler",
+   "name": "Haggler",
+   "icon": "💬",
+   "desc": "−10% market buy prices while they're in the family",
+   "from": {
+    "guild": "rogues",
+    "rank": "Journeyman"
+   },
+   "fx": {
+    "buy": -0.1
+   },
+   "tags": [
+    "coin"
+   ]
+  },
+  {
+   "id": "orrinspupil",
+   "name": "Orrin's Pupil",
+   "icon": "🎓",
+   "desc": "+5% XP for life",
+   "from": {
+    "tutorial": true
+   },
+   "fx": {
+    "xp": 0.05
+   },
+   "tags": [
+    "xp"
+   ]
+  },
+  {
+   "id": "bridgebuilder",
+   "name": "Bridge Builder",
+   "icon": "🌉",
+   "desc": "+10% XP in Carpentry and Masonry",
+   "from": {
+    "quest": "rq_millbridge"
+   },
+   "fx": {
+    "skillXp": {
+     "carpentry": 0.1,
+     "masonry": 0.1
+    }
+   },
+   "tags": [
+    "craft"
+   ]
+  },
+  {
+   "id": "heirofvael",
+   "name": "Heir of Vael",
+   "icon": "🏰",
+   "desc": "+1 talent slot",
+   "from": {
+    "quest": "st10"
+   },
+   "fx": {
+    "slots": 1
+   },
+   "tags": [
+    "xp"
+   ]
+  }
+ ]
+}

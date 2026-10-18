@@ -33,6 +33,11 @@ export const estateActions = ({ v, b, m }) => ({
     const x = s.members.find(y => y.id === +b.dataset.w);
     if (x) E.setAppr(s, x, v || null);
   },
+  talenttog: () => {
+    const x = s.members.find(y => y.id === +b.dataset.w);
+    if (x) E.toggleTalent(s, x, v);
+  },
+  enshrine: () => E.enshrine(s, v, b.dataset.w),
   faunpin: () => E.unpin(s, +v, b.dataset.w),
   fahead: () => (s.faCourtHead = !s.faCourtHead),
   autorecruit: () => E.toggleRecruit(s),

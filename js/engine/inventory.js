@@ -1,3 +1,4 @@
+import { talentBuy } from "./talents.js";
 import { fishPriceMult } from "./fish.js";
 import { isHeld } from "./holds.js";
 import { reqDiscount } from "./requests.js";
@@ -76,7 +77,7 @@ export function moveItem(s, m, id, toBag) {
 export const BUY_MULT_FLOOR = 0.8;
 export const SELL_CAP = 0.95;
 export const buyPrice = (it, s, townId) =>
-  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)));
+  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)) * (1 + talentBuy(s))); // R36 Haggler
 
 // Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
 // buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).

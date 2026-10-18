@@ -1,3 +1,4 @@
+import { talentSum } from "./talents.js";
 import { injure } from "./injuries.js";
 import { tutNote } from "./tutorial.js";
 import { seasonGather, seasonTravel } from "./seasons.js";
@@ -120,7 +121,7 @@ export function travelTick(s, m, a, eff) {
         seasonGather(s);
       const gb = lineBonus(m);
       (s.atLast = s.atLast || {}).gather = n.id;
-      gatherInto(s, t, n, mul, k => (gb[k] || 0) + memberFx(m, "gather", k), pathFinds(m, n.skill));
+      gatherInto(s, t, n, mul, k => (gb[k] || 0) + memberFx(m, "gather", k) + (n.skill === "hunting" && (k === "meat" || k === "hides") ? talentSum(m, "hunt") : 0), pathFinds(m, n.skill));
       gainXp(s, m, n.skill, T.xpPerDay * 0.6 * eff);
       rollRare(s, n, m);
     }

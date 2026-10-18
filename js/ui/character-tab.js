@@ -29,6 +29,7 @@ export function characterv() {
   h += `<h3>🎓 Class & advancement</h3><div class="card">${nxt.length ? nxt.map(c => `<div>${c.icon || ""} <b>${c.name}</b> <span class="muted">${E.canEvolve(s, m, c) ? "✅ ready (Work → Guilds)" : Object.entries(c.req || {}).map(([k, v]) => `${k} ${v}`).join(", ")}</span></div>`).join("") : '<div class="muted">No further class from here yet (or choose a guild first).</div>'}${m.prefCls ? `<div class="muted">Auto Advance preference: ${m.prefCls}</div>` : ""}</div>`;
   // R35 leans, inheritance, apprenticeship
   h += apprv(m);
+  h += talentsv(m); // R36
   // family
   const nm = id => (s.members.find(x => x.id === id) || {}).name || "?";
   const kids = s.members.filter(x => (x.parents || []).includes(m.id));
@@ -58,5 +59,25 @@ function apprv(m) {
     }
     if ((m.apprDone || []).length) h += `<div class="muted">Trained: ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
   } else if ((m.apprDone || []).length) h += `<div class="muted">🎓 Trained under ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
+  return h + `</div>`;
+}
+
+// R36: talents panel (slots, chips, learned list, next hint, shrines)
+function talentsv(m) {
+  const x = m.talents || { own: [], on: [] }, n = E.talentSlots(m), L = E.TL();
+  const card = (t, on) => `<div class="card" style="padding:5px 8px;margin:3px 0" data-talent="${t.id}"><div class="row"><span>${t.icon} <b>${t.name}</b>${on ? " ✅" : ""}<br><span class="muted">${t.desc} · from ${t.from.class ? (D.classes.find(c => c.id === t.from.class) || {}).name : t.from.guild ? t.from.rank + " " + (D.guilds.guilds.find(g => g.id === t.from.guild) || {}).name : t.from.tutorial ? "the prologue" : "a quest"}</span></span><button class="b ${on ? "sel" : ""}" data-a="talenttog" data-v="${t.id}" data-w="${m.id}" ${!on && x.on.length >= n || on && t.fx.slots ? "disabled" : ""}>${on ? "Active" : "Use"}</button></div></div>`;
+  let h = `<h3>⭐ Talents ${x.on.length}/${n}</h3><div id="talents">`;
+  if (!E.isAdult(m)) h += `<div class="card muted">Talents are earned as an adult: class picks, evolutions, guild ranks and notable quests.</div>`;
+  else {
+    h += `<div class="card"><div>${[...Array(n)].map((_, i) => { const t = E.talentDef(x.on[i]); return t ? `<span class="tb" title="${t.desc}">${t.icon} ${t.name}</span>` : `<span class="tb muted">empty slot</span>`; }).join(" ")}</div><div class="muted">Slots: ${L.slots.base} + 1 per class tier (max ${L.slots.cap}; Heir of Vael +1).${m.pins && m.pins.talents ? " Loadout pinned." : ""}</div></div>`;
+    for (const id of x.own) h += card(E.talentDef(id), x.on.includes(id));
+  }
+  const nx = E.nextTalents(s, m), hid = E.hiddenTalents(m);
+  if (nx.length || hid) h += `<div class="card muted" id="talentnext">${nx.map(({ t, how }) => `Next: ${how} → ${t.icon} ${t.name}`).join("<br>")}${nx.length && hid ? "<br>" : ""}${hid ? `❔ ${hid} hidden talent${hid > 1 ? "s" : ""} from notable quests` : ""}</div>`;
+  if (E.hasHall(s) || (s.shrines || []).length) {
+    h += `<div class="card"><div>🏛️ Family shrines ${(s.shrines || []).length}/${L.shrines.max}: ${(s.shrines || []).map(id => E.talentDef(id).icon + " " + E.talentDef(id).name).join(", ") || "—"}</div><div class="muted">Descendants learn shrined talents free at ${L.shrines.learnAge}.</div>`;
+    if (s.shrineOffer) h += `<div>${s.shrineOffer.name}'s talents (replace a shrine): ${s.shrineOffer.ids.map(id => (s.shrines || []).map(r => `<button class="b" data-a="enshrine" data-v="${id}" data-w="${r}">${E.talentDef(id).name} ⇄ ${E.talentDef(r).name}</button>`).join("")).join("")}</div>`;
+    h += `</div>`;
+  }
   return h + `</div>`;
 }
