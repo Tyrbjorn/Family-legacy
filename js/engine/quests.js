@@ -92,6 +92,7 @@ export function questIssue(s, m, q) {
   if (!questOk(m, q)) return "guild rank";
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
+  if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).endsWith(q.req.item))) return "needs a " + (D.items.find(i => i.id === q.req.item) || {}).name;
   if (q.req?.land && !s.land.includes(q.req.land)) return "needs the " + (ES().lands.find(l => l.id === q.req.land) || {}).name + " deed";
   if (!q.story && q.req?.era && era(s).n < q.req.era) return "Era " + q.req.era;
   if (q.deliver && !afford(s, q.deliver)) return "deliver " + Object.entries(q.deliver).map(([k, v]) => v + " " + k).join(", ");

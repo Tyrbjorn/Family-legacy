@@ -190,6 +190,7 @@ function birthDay(s, m) {
     sp.kids++;
     m.lastChild = s.day;
     log(s, `👶 ${c.name} was born to ${m.name} and ${sp.name}!`);
+    s.celebrate = s.day || 0; // R33: Honey Cakes celebration
   }
 }
 

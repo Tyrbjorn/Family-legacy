@@ -27,6 +27,7 @@ export function pieceRow(p, btn) {
 
 // Stronghold-style food panel: menu, variety, rations, days of stock, active bonuses
 export function foodPanelv() {
+  for (const x of [...(D.cooking?.dishes || []), ...(D.cooking?.extras || [])]) if (!RI[x.id]) RI[x.id] = x.icon; // R33 dish icons
   const f = E.foodPanel(s);
   const days = f.days === Infinity ? "∞" : f.days >= 999 ? "999+" : fmt(f.days);
   const last = f.last;
@@ -40,10 +41,26 @@ export function foodPanelv() {
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${f.all
    .map(
      x =>
-       `<button class="chip ${x.on ? "sel" : ""}" data-a="diet" data-v="${x.k}" ${x.k === "food" ? "disabled" : ""} title="${x.on ? "On the menu" : "Kept for cooking"} · value ${x.value.toFixed(2)}">${RI[x.k] || ""} ${x.k} ${fmt(x.have)}</button>`,
+       `<button class="chip ${x.on ? "sel" : ""}" data-a="diet" data-v="${x.k}" ${x.k === "food" ? "disabled" : ""} title="${x.on ? "On the menu" : "Kept for cooking"} · value ${x.value.toFixed(2)}">${RI[x.k] || ""} ${(E.dishDef(x.k) || {}).name || x.k} ${fmt(x.have)}</button>`,
    )
    .join("")}</div>
- <div class="muted">Bonuses: ${f.bonuses.length ? f.bonuses.join(" · ") : "none"}</div>${warn}${emerg}</div>`;
+ <div class="muted">Bonuses: ${f.bonuses.length ? f.bonuses.join(" · ") : "none"}</div>${warn}${emerg}${recipesv()}</div>`;
+}
+// R33: recipes (dishes from data/cooking.json): learned or how to learn, ingredients, food/sell, buffs; Auto Cook rules
+const inName = k => (k.startsWith("fish:") ? (E.fishDef(k.slice(5)) || {}).name || k : k === "fish" ? "any fish" : k);
+export function recipesv() {
+  const L = E.dishList(s);
+  if (!L.length) return "";
+  const n = L.filter(d => d.known).length;
+  const card = ({ x, known, issue, have }) =>
+    `<details class="card dish" data-dish="${x.id}" style="padding:5px 8px;margin:3px 0"><summary>${x.icon} <b>${x.name}</b> <span class="muted">${known ? (issue ? "· ⏸ " + issue : "· ✅ learned") : "· 🔒 not learned"}${have >= 1 ? " · " + fmt(have) + " in store" : ""}</span></summary>
+ <div class="muted">${Object.entries(x.in).map(([k, v]) => v + " " + inName(k)).join(" + ")} → ${x.per || 1} · ${Object.keys(x.stations).map(p => (D.estate.pieces.find(z => z.id === p) || {}).name || p).join(" / ")}</div>
+ <div class="muted">🍞 food ${x.food} · 🪙 sells ${x.value} · Cooking ${x.cook || 0}${x.luxury ? " · 💎 luxury" : ""}${x.side ? " · " + Object.entries(x.side).map(([k, c]) => Math.round(c * 100) + "% " + k).join(", ") : ""}</div>
+ ${x.buff ? `<div class="muted">✨ ${x.buff.text}</div>` : ""}<div class="muted">📖 ${x.how || ""}</div></details>`;
+  return `<details class="card" id="recipes" style="margin-top:6px" open><summary><b>🍳 Recipes</b> <span class="muted">· ${n}/${L.length} learned</span></summary>
+ <div class="muted" style="font-size:12px">Stations cook learned dishes on their own. Auto Cook: requested dishes first, then new foods for the menu, then best food value. 10 raw fish are kept for requests. Species dishes use that fish; "any fish" uses the cheapest first.</div>
+ <label class="chip" style="font-size:12px"><input type="checkbox" data-a="cooklux" ${s.cookLuxury ? "checked" : ""}> Cook luxury fish (Trout, Sturgeon)</label>
+ ${L.map(card).join("")}</details>`;
 }
 
 export function estate() {

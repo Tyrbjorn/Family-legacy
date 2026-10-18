@@ -1,0 +1,16 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+await p.evaluate(()=>{const g=__game,s=g.s;s.tut.skipped=true;for(const m of s.members)m.skills.cooking.lvl=14;s.vault.push('smallboat');s.doneQuests.push('q_pike');s.fishEver={trout:3};s.res.fish=40;s.fishBag={pike:8,trout:4,eel:6};s.res.pikepie=6;s.res.fishstew=12;s.res.meatpie=5;s.res.omelette=8;s.structures=(s.structures||[]).concat([{uid:'cc',type:'chickencoop',pieces:[],up:0}]);s.land=s.land&&s.land.length?s.land:['plot'];g.E.learnDishes(s);});
+await go(p,'estate');await p.waitForTimeout(800);
+const clip=async(sel,path,prep)=>{const r=await p.evaluate(([sel,prep])=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}if(prep)eval(prep);const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};},[sel,prep]);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});};
+await clip('#recipes',O+'r33-cook-list.png');
+await clip('[data-dish="pikepie"]',O+'r33-dish-card.png',"document.querySelector('[data-dish=pikepie]').open=true");
+await clip('[data-dish="sturgeonfeast"]',O+'r33-dish-card-feast.png',"document.querySelector('[data-dish=sturgeonfeast]').open=true");
+await clip('[data-dish="omelette"]',O+'r33-dish-card-omelette.png',"document.querySelector('[data-dish=omelette]').open=true");
+await clip('#foodpanel',O+'r33-food-menu.png',"document.querySelector('#recipes').open=false");
+console.log('errors',errs);await b.close();

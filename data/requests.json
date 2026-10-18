@@ -238,6 +238,49 @@
      }
     }
    ]
+  },
+  {
+   "id": "maud",
+   "name": "Maud the Baker",
+   "town": "millbrook",
+   "icon": "🥖",
+   "task": "cook",
+   "requests": [
+    {
+     "id": "maud1",
+     "wants": {
+      "bread": 4
+     },
+     "reward": {
+      "coin": 25
+     }
+    },
+    {
+     "id": "maud2",
+     "wants": {
+      "eggs": 6
+     },
+     "reward": {
+      "coin": 30,
+      "food": 5
+     }
+    },
+    {
+     "id": "maud3",
+     "wants": {
+      "butter": 4
+     },
+     "reward": {
+      "coin": 40
+     },
+     "extra": {
+      "type": "bonus",
+      "task": "cook",
+      "mult": 0.1,
+      "text": "Maud's tips: Cook a Meal yields +10%."
+     }
+    }
+   ]
   }
  ]
 }

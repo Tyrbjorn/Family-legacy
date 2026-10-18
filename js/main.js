@@ -44,6 +44,7 @@ const names = [
   "endgame",
   "requests",
   "fish",
+  "cooking",
 ];
 
 export const D = {};

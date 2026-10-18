@@ -2754,7 +2754,6 @@
   "porridge": 1.5,
   "stew": 3.5,
   "cheese": 2.5,
-  "butter": 1,
   "pie": 3,
   "preserves": 2.5,
   "smokedmeat": 3,
@@ -2782,7 +2781,6 @@
    "porridge": 1.5,
    "stew": 3.5,
    "cheese": 2.5,
-   "butter": 1,
    "pie": 3,
    "preserves": 2.5,
    "smokedmeat": 3,
@@ -2801,8 +2799,7 @@
    "meat",
    "eggs",
    "honey",
-   "vegetables",
-   "butter"
+   "vegetables"
   ],
   "rations": [
    {

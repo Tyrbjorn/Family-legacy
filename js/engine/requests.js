@@ -2,6 +2,7 @@
 // Each NPC has one open request at a time; delivering hands over goods (instant in the home village), pays the reward,
 // raises that NPC's favour, then the next request posts after a cooldown. Some requests carry a one-time `extra`:
 // a permanent shop discount, a small task bonus, or a quest-line unlock. Expansions add npcs/requests with no engine change.
+import { spendFish } from "./cooking.js";
 import { addToVault, itemDef } from "./inventory.js";
 import { revealAt } from "./map.js";
 import { srcOk, srcText } from "./skills.js";
@@ -36,7 +37,8 @@ export function refineDay(s, ac, eff) {
   const k = refineSrc(s, ac);
   if (!k) return false;
   const n = Math.min(s.res[k], ac.refine.per * eff), f = n / ac.refine.per;
-  s.res[k] -= n;
+  if (k === "fish") spendFish(s, "fish", n); // R33: any-fish recipes use the cheapest fish first
+  else s.res[k] -= n;
   for (const [o, v] of Object.entries(ac.refine.to)) s.res[o] = (s.res[o] || 0) + v * f * taskMult(s, ac);
   return true;
 }

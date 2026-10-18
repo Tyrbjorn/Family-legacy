@@ -86,7 +86,7 @@ for (const t of D.towns)
 // food chains: every process input has a source, every menu food can be produced or bought
 for (const p of D.estate.pieces)
   for (const pr of [].concat((p.bonus || {}).processes || (p.bonus || {}).process || []))
-    for (const k of Object.keys(pr.in || {})) ok(src.has(k), `process input "${k}" (${p.id}) has a source`);
+    for (const k of Object.keys(pr.in || {})) ok(src.has(k) || (k.startsWith("fish:") && D.fish.species.some(f => f.id === k.slice(5))), `process input "${k}" (${p.id}) has a source`);
 for (const k of Object.keys(D.estate.meals.menu)) ok(src.has(k), `menu food "${k}" has a source`);
 for (const f of ["estate", "towns", "seasons", "quests", "nodes", "events", "crafting", "tutorial"])
   ok(!/"(in|out|res|cost|mats|prices|reward)":\s*\{[^}]*"herbs"/.test(JSON.stringify(D[f])) && !/"out":"herbs"/.test(JSON.stringify(D[f])), `${f}: no generic herbs resource`);

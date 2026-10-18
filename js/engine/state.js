@@ -1,3 +1,4 @@
+import { applyCooking } from "./cooking.js";
 import { expandMetals } from "./metaldata.js";
 import { deriveGear } from "./geardata.js";
 import { noteFromLog } from "./notify.js";
@@ -18,6 +19,7 @@ export function setData(d) {
   if (d.estate && d.estate.structureFiles && !d.estate.structures.length)
     d.estate.structures = d.estate.structureFiles.flatMap(f => d["structures/" + f] || []);
   T = d.tuning;
+  applyCooking(d); // R33 dishes -> station rows, menu, prices
 }
 
 export const STATS = ["STR", "AGI", "INT", "WIL", "CHA", "VIT"];

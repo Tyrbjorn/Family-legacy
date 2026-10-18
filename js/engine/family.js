@@ -200,6 +200,7 @@ export function propose(s, suitorId, m = active(s)) {
     sp.gender = m.gender === "m" ? "f" : "m";
   } // MVP: births need one f partner
   log(s, `💍 ${m.name} married ${sp.name}!`);
+  s.celebrate = s.day || 0; // R33: Honey Cakes celebration
   s.deeds.push(`${m.name} married ${sp.name}.`);
   return true;
 }

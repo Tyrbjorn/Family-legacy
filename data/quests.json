@@ -1942,5 +1942,25 @@
    "item": "wagon"
   },
   "unlocks": "recipe:r_wagon"
+ },
+ {
+  "id": "q_pike",
+  "name": "The Old Pike of Mirrormere",
+  "region": "outskirts",
+  "type": "errand",
+  "cp": 5,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 30,
+   "food": 10
+  },
+  "skill": "fishing",
+  "loot": [],
+  "once": true,
+  "req": {
+   "item": "smallboat"
+  },
+  "desc": "Old Tam swears a monster pike haunts the deep water of Mirrormere. Take your boat out and land it, and the cook will show you her Pike Pie."
  }
 ]

@@ -31,7 +31,7 @@ ok(D.tutorial.steps.slice(0,5).map(x=>x.id).join()==='food,chop,hunt,cook,rats',
 ok(D.tutorial.steps.slice(0,5).every(x=>x.tip&&(x.go||x.check==='quest:rats')),'each early step has a tip and a Go button');
 ok(!D.tutorial.steps.some(x=>x.id==='activity'),'Stretch Your Legs merged into Gather Food');
 // requests
-{ const s=fresh(); ok(D.requests.npcs.length===5,'5 Millbrook villagers');
+{ const s=fresh(); ok(D.requests.npcs.length===6,'6 Millbrook villagers (R33: Maud the Baker)');
   ok(D.requests.npcs.every(n=>n.requests.filter(r=>r.extra).length===1),'1 extra per villager');
   ok(E.deliverIssue(s,'bram').startsWith('need'),'cannot deliver without stock');
   s.res.wood=50; const c0=s.res.coin; const r=E.deliverRequest(s,'bram'); ok(r&&s.res.wood===40&&s.res.coin===c0+30&&s.res.planks>=5,'Bram: 10 wood → 30 coin + planks');

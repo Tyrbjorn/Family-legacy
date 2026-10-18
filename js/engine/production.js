@@ -1,3 +1,4 @@
+import { cookOrder, dishReserve, dishDef, dishIssue, fishAvail, isFishKey, learnDishes, spendFish } from "./cooking.js";
 import { veinProcesses } from "./metals.js";
 // Estate production: daily furniture processes, operator skill, reserves/pausing and food/crop quality.
 // Split from estate.js (re-exported there, so imports elsewhere are unchanged).
@@ -120,24 +121,28 @@ export function refineHold(s, st, pr) {
 }
 
 export function processDay(s, mul = 1) {
+  learnDishes(s);
   for (const st of (s.structures || []).filter(x => !x.unpaid && !(x.raided > s.day))) {
     const syn = activeSynergies(st),
       out = {};
     for (const p of st.pieces.filter(id => !isPaused(s, st.uid, id)).map(id => scaledPiece(st, id)))
-      for (const pr0 of (p && (p.bonus.veins ? veinProcesses(s, st, p) : p.bonus.processes)) || []) {
+      for (const pr0 of cookOrder(s, (p && (p.bonus.veins ? veinProcesses(s, st, p) : p.bonus.processes)) || [])) {
         if (refineHold(s, st, pr0)) continue;
+        if (pr0.dish && dishIssue(s, dishDef(pr0.dish) || {})) continue; // R33: learned, Cooking level, luxury toggle
         const pr = { ...pr0, rate: pr0.rate * skillSpeed(s, p) * classSynMult(s, st) };
         const yl = skillYield(s, p);
         let n = pr.rate * mul * syn.reduce((a, y) => a * ((y.bonus.processMult || {})[pr.out] || 1), 1);
-        for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, Math.max(0, (s.res[k] || 0) - reserveOf(s, k)) / v);
+        for (const [k, v] of Object.entries(pr.in)) n = Math.min(n, (isFishKey(k) ? fishAvail(s, k) : Math.max(0, (s.res[k] || 0) - Math.max(reserveOf(s, k), dishReserve(s, pr.dish, k)))) / v);
         if (n <= 0) continue;
         const inQ = inputQuality(s, pr.in);
-        for (const [k, v] of Object.entries(pr.in)) s.res[k] -= v * n;
-        const made = n * yl * (1 + famFx(s, "yield", pr.out)) * (D.world ? structFeatureMult(s, st.type) * herdMult(s, st.type) : 1) * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out));
+        for (const [k, v] of Object.entries(pr.in)) isFishKey(k) ? spendFish(s, k, v * n) : (s.res[k] -= v * n);
+        const made = n * yl * (1 + famFx(s, "yield", pr.out)) * (D.world ? structFeatureMult(s, st.type) * herdMult(s, st.type) : 1) * resGain(s) * (pr.in && Object.keys(pr.in).length ? 1 : seasonYield(s, pr.out)) * (pr.per || 1); // R33 dishes: portions per batch
         const cq = cropQ(s, p, pr);
         if (pr.food) blendFoodQ(s, pr.out, made, Math.min(Q_MAX, foodQualityOf(s, p) * inQ));
         else if (cq) blendFoodQ(s, pr.out, made, cq);
         else if (inQ !== 1 && isIngredient(pr.out)) blendFoodQ(s, pr.out, made, inQ);
+        for (const [k, c] of Object.entries(pr.side || {})) s.res[k] = (s.res[k] || 0) + made * c;
+        if (pr.food) (s.cooked = s.cooked || {})[pr.out] = (s.cooked[pr.out] || 0) + made;
         s.res[pr.out] = (s.res[pr.out] || 0) + made;
         out[pr.out] = (out[pr.out] || 0) + made;
       }

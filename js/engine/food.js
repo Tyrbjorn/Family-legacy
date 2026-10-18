@@ -1,3 +1,4 @@
+import { dishMorale } from "./cooking.js";
 import { introNote } from "./intros.js";
 // Stronghold-style food: everyone eats evenly from every food on the menu each day.
 // Variety (distinct foods actually eaten) gives satiation + morale with diminishing returns;
@@ -102,7 +103,8 @@ export function eatDay(s) {
         M.shortageMorale * short +
         household(s, "morale") +
         eff(s, "familyMorale") +
-        wearyMorale(s),
+        wearyMorale(s) +
+        dishMorale(s, menu),
     ),
   );
   s.morale = (s.morale || 0) + (target - (s.morale || 0)) * M.smoothing;

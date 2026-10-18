@@ -1,0 +1,430 @@
+{
+ "_note": "R33 dishes. Each dish becomes a station process row (on every listed piece), a menu food (food value) and a town price, merged at load (engine/cooking.js). Inputs `fish:<species>` spend that species from the fish record; plain `fish` spends the cheapest fish first. A dish runs only once learned (learn: start | request id | quest id | location id | caught species | made {res: n}) and when the family's best Cooking >= cook. luxury dishes need the 'Cook luxury fish' toggle. side: extra outputs per dish made (expected share). Non-fish dishes slot in here as more rows, no engine change. Dishes never use the last `reserve` of an ingredient another learned dish needs. keep: only cook while stock is below it.",
+ "rawFishKeep": 10,
+ "dishes": [
+  {
+   "id": "fishstew",
+   "name": "Fisherman's Stew",
+   "icon": "🍲",
+   "group": "fish",
+   "stations": {
+    "hearth": 1.5,
+    "range": 3
+   },
+   "in": {
+    "fish": 2,
+    "vegetables": 1,
+    "thyme": 1
+   },
+   "per": 1,
+   "cook": 0,
+   "food": 3.5,
+   "value": 7,
+   "learn": {
+    "start": true
+   },
+   "how": "Known from the start (the Millbrook cook's pot)."
+  },
+  {
+   "id": "friedperch",
+   "name": "Fried Perch",
+   "icon": "🍤",
+   "group": "fish",
+   "stations": {
+    "hearth": 1.5
+   },
+   "in": {
+    "fish:perch": 2,
+    "flour": 1
+   },
+   "per": 1,
+   "cook": 3,
+   "food": 2.5,
+   "value": 6,
+   "learn": {
+    "start": true
+   },
+   "how": "Known from the start (the Millbrook cook)."
+  },
+  {
+   "id": "smokedeel",
+   "name": "Smoked Eel",
+   "icon": "🥓",
+   "group": "fish",
+   "stations": {
+    "smoker": 1,
+    "smokepit": 2
+   },
+   "in": {
+    "fish:eel": 2,
+    "salt": 1
+   },
+   "per": 1,
+   "cook": 5,
+   "food": 3.5,
+   "value": 18,
+   "learn": {
+    "request": "anne3"
+   },
+   "how": "Widow Anne teaches it after her third request."
+  },
+  {
+   "id": "pikepie",
+   "name": "Pike Pie",
+   "icon": "🥧",
+   "group": "fish",
+   "stations": {
+    "oven": 1
+   },
+   "in": {
+    "fish:pike": 1,
+    "flour": 1,
+    "butter": 1
+   },
+   "per": 1,
+   "cook": 8,
+   "food": 4,
+   "value": 18,
+   "learn": {
+    "quest": "q_pike"
+   },
+   "how": "Reward from the quest The Old Pike of Mirrormere (needs a boat)."
+  },
+  {
+   "id": "pickledherring",
+   "name": "Pickled Herring",
+   "icon": "🫙",
+   "group": "fish",
+   "stations": {
+    "jars": 1,
+    "brinecrocks": 2
+   },
+   "in": {
+    "fish:herring": 3,
+    "salt": 1,
+    "vegetables": 1
+   },
+   "per": 2,
+   "cook": 5,
+   "food": 3,
+   "value": 8,
+   "learn": {
+    "location": "l_gullport"
+   },
+   "how": "The jetty wives at Gull's Landing show you when you find it."
+  },
+  {
+   "id": "herbtrout",
+   "name": "Trout with Herbs",
+   "icon": "🎏",
+   "group": "fish",
+   "stations": {
+    "hearth": 1,
+    "range": 2
+   },
+   "in": {
+    "fish:trout": 1,
+    "thyme": 1,
+    "butter": 1
+   },
+   "per": 1,
+   "cook": 12,
+   "food": 4.5,
+   "value": 32,
+   "luxury": true,
+   "buff": {
+    "menuMorale": 1,
+    "text": "+1 contentment while on the menu"
+   },
+   "learn": {
+    "caught": "trout"
+   },
+   "how": "Learned with your first Mirror Trout."
+  },
+  {
+   "id": "sturgeonfeast",
+   "name": "Sturgeon Feast",
+   "icon": "🍱",
+   "group": "fish",
+   "stations": {
+    "range": 0.5
+   },
+   "in": {
+    "fish:sturgeon": 1,
+    "vegetables": 2,
+    "wine": 1
+   },
+   "per": 2,
+   "cook": 25,
+   "food": 6,
+   "value": 75,
+   "luxury": true,
+   "side": {
+    "caviar": 0.2
+   },
+   "buff": {
+    "feastMorale": 3,
+    "feastDays": 3,
+    "text": "Feast: +3 contentment for 3 days; 20% chance of Caviar"
+   },
+   "learn": {
+    "caught": "sturgeon"
+   },
+   "how": "Learned with your first Sturgeon."
+  },
+  {
+   "id": "fishpie",
+   "name": "Fisherman's Pie",
+   "icon": "🥧",
+   "group": "fish",
+   "stations": {
+    "oven": 1
+   },
+   "in": {
+    "fish": 2,
+    "flour": 1,
+    "butter": 1,
+    "milk": 1
+   },
+   "per": 1.2,
+   "cook": 6,
+   "food": 4,
+   "value": 12,
+   "learn": {
+    "made": {
+     "pie": 10
+    }
+   },
+   "how": "The Millbrook cook shows you once you have baked 10 pies."
+  },
+  {
+   "id": "herbbread",
+   "name": "Herb Bread",
+   "icon": "🥖",
+   "group": "kitchen",
+   "stations": {
+    "oven": 1.5
+   },
+   "in": {
+    "flour": 2,
+    "thyme": 1
+   },
+   "per": 1.2,
+   "cook": 2,
+   "food": 2.5,
+   "value": 6,
+   "learn": {
+    "start": true
+   },
+   "how": "Known from the start (the Millbrook cook)."
+  },
+  {
+   "id": "vegstew",
+   "name": "Vegetable Stew",
+   "icon": "🥣",
+   "group": "kitchen",
+   "stations": {
+    "hearth": 1.5,
+    "range": 3
+   },
+   "in": {
+    "vegetables": 3,
+    "thyme": 1
+   },
+   "per": 1.5,
+   "cook": 0,
+   "food": 2.5,
+   "value": 5,
+   "learn": {
+    "start": true
+   },
+   "how": "Known from the start: stew without meat."
+  },
+  {
+   "id": "omelette",
+   "name": "Omelette",
+   "icon": "🍳",
+   "group": "kitchen",
+   "stations": {
+    "hearth": 1.5,
+    "range": 3
+   },
+   "in": {
+    "eggs": 2,
+    "milk": 1,
+    "thyme": 1
+   },
+   "per": 1.5,
+   "cook": 3,
+   "food": 3,
+   "value": 6,
+   "learn": {
+    "built": "chickencoop"
+   },
+   "how": "Learned when you build a Chicken Coop."
+  },
+  {
+   "id": "pancakes",
+   "name": "Pancakes",
+   "icon": "🥞",
+   "group": "kitchen",
+   "stations": {
+    "hearth": 1.5
+   },
+   "in": {
+    "flour": 1,
+    "eggs": 1,
+    "milk": 1
+   },
+   "per": 1.5,
+   "cook": 4,
+   "food": 2.5,
+   "value": 6,
+   "learn": {
+    "request": "maud2"
+   },
+   "how": "Maud the Baker teaches it after her second request."
+  },
+  {
+   "id": "mushroomsoup",
+   "name": "Mushroom Soup",
+   "icon": "🍄",
+   "group": "kitchen",
+   "stations": {
+    "hearth": 1.5,
+    "range": 3
+   },
+   "in": {
+    "mushrooms": 2,
+    "milk": 1,
+    "vegetables": 1
+   },
+   "per": 1.5,
+   "cook": 5,
+   "food": 3,
+   "value": 6,
+   "learn": {
+    "have": {
+     "mushrooms": 20
+    }
+   },
+   "how": "Learned once you have gathered 20 mushrooms."
+  },
+  {
+   "id": "cheesetart",
+   "name": "Cheese & Onion Tart",
+   "icon": "🥧",
+   "group": "kitchen",
+   "stations": {
+    "oven": 1
+   },
+   "in": {
+    "cheese": 1,
+    "flour": 1,
+    "eggs": 1,
+    "vegetables": 1
+   },
+   "per": 1.5,
+   "cook": 8,
+   "food": 3.5,
+   "value": 10,
+   "learn": {
+    "built": "cowpen"
+   },
+   "how": "Learned when you build a Cow Pen."
+  },
+  {
+   "id": "meatpie",
+   "name": "Meat Pie",
+   "icon": "🥧",
+   "group": "kitchen",
+   "stations": {
+    "oven": 1
+   },
+   "in": {
+    "meat": 1,
+    "flour": 1,
+    "butter": 1
+   },
+   "per": 1.2,
+   "cook": 6,
+   "food": 4,
+   "value": 12,
+   "learn": {
+    "request": "hob2"
+   },
+   "how": "Old Hob the Butcher teaches it after his second request."
+  },
+  {
+   "id": "hunterroast",
+   "name": "Hunter's Roast",
+   "icon": "🍖",
+   "group": "kitchen",
+   "stations": {
+    "range": 1.5
+   },
+   "in": {
+    "meat": 2,
+    "vegetables": 1,
+    "thyme": 1
+   },
+   "per": 1.5,
+   "cook": 10,
+   "food": 4.5,
+   "value": 16,
+   "learn": {
+    "quest": "b_boars"
+   },
+   "how": "Reward for clearing the boar hunt (Boars quest).",
+   "buff": {
+    "menuMorale": 1,
+    "text": "+1 contentment while on the menu"
+   }
+  },
+  {
+   "id": "honeycakes",
+   "name": "Honey Cakes",
+   "icon": "🍯",
+   "group": "kitchen",
+   "stations": {
+    "oven": 1
+   },
+   "in": {
+    "flour": 1,
+    "eggs": 1,
+    "butter": 1,
+    "honey": 1
+   },
+   "per": 1,
+   "cook": 8,
+   "food": 3,
+   "value": 14,
+   "learn": {
+    "anyOf": [
+     {
+      "piece": "hives"
+     },
+     {
+      "married": true
+     }
+    ]
+   },
+   "how": "Learned from your Hives, or at the family's first wedding.",
+   "buff": {
+    "celebrate": 2,
+    "days": 3,
+    "text": "Celebration: +2 contentment for 3 days after a wedding or birth while on the menu. Also the courtship gift (wrap 2 as a gift)."
+   },
+   "keep": 4
+  }
+ ],
+ "extras": [
+  {
+   "id": "caviar",
+   "name": "Caviar",
+   "icon": "🫧",
+   "value": 40
+  }
+ ],
+ "reserve": 10
+}

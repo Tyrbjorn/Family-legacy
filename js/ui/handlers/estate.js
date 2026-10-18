@@ -47,6 +47,7 @@ export const estateActions = ({ v, b, m }) => ({
   vcancel: () => E.cancelProject(s),
   ration: () => E.setRation(s, v),
   diet: () => E.toggleDiet(s, v),
+  cooklux: () => E.setCookLuxury(s, !s.cookLuxury),
   room: () => E.addRoom(s, v),
   unroom: () => E.removeRoom(s, +v),
   mevolve: () => E.evolveMinion(s, v, b.dataset.w),

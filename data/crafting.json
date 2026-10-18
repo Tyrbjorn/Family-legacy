@@ -202,10 +202,9 @@
    "skill": "cooking",
    "station": "larder",
    "mats": {
-    "food": 20,
-    "thyme": 1
+    "honeycakes": 2
    },
-   "days": 2,
+   "days": 1,
    "line": "tailor",
    "path": "cook"
   },

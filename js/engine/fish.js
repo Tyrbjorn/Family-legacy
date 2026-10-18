@@ -81,6 +81,7 @@ export function landFish(s, amt, who) {
   for (const { f, p } of catchTable(s, sp.id, lvl)) {
     if (f.id === "fish") continue;
     const before = b[f.id] || 0;
+    (s.fishEver = s.fishEver || {})[f.id] = ((s.fishEver || {})[f.id] || 0) + amt * p;
     b[f.id] = before + amt * p;
     if ((f.tier === "rare" || f.tier === "veryrare") && Math.floor(b[f.id]) > Math.floor(before))
       log(s, `🎣 ${who ? who.name + " landed" : "Landed"} a ${f.name} ${f.icon} in ${sp.name.toLowerCase()} (worth ${f.value}, vs ${BASE().value} for a creek fish).`);

@@ -1,3 +1,4 @@
+import { learnDishes } from "./cooking.js";
 import { DEFAULT_RESERVE } from "./production.js";
 import { backfillMilestones } from "./minionups.js";
 import { migratePaths, migrateJewelers, renameSpecs } from "./paths.js";
@@ -540,6 +541,17 @@ export const STEPS = [
     run(s) {
       s.fishSpot = s.fishSpot || "auto";
       s.fishBag = s.fishBag || {};
+    },
+  },
+  {
+    n: 33,
+    once: true,
+    name: "R33 fish dishes: learned-dish list (starting dishes plus anything already earned: Anne's 3rd request, Gull's Landing, trout/sturgeon caught, quest done), luxury fish off",
+    run(s) {
+      s.dishes = s.dishes || [];
+      s.cookLuxury = !!s.cookLuxury;
+      if (s.diet) for (const k of ["butter", "flour", "milk"]) delete s.diet[k]; // cooking-only now
+      learnDishes(s, true);
     },
   },
 ];
