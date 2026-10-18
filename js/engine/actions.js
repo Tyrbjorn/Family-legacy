@@ -182,8 +182,8 @@ export function pickAdventure(s, m) {
     .sort((a, b) => b.floors.at(-1).cp - a.floors.at(-1).cp);
   if (dgs.length) return { type: "dungeon", target: dgs[0].id };
   const qs = D.quests
-    .filter(q => !q.story && !q.once && !questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c)
-    .sort((a, b) => b.cp - a.cp);
+    .filter(q => !q.story && (!q.once || q.thread || q.beat) && !questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c)
+    .sort((a, b) => !!b.once - !!a.once || b.cp - a.cp); // R48: house-thread steps and act side beats go first (one-time)
   // R45: a board job from your band when it pays at least as well per trip-day as the quest it would run
   const bar = qs[0] ? ((qs[0].reward || {}).coin || 0) / Math.max(1, 2 * travelDays(qs[0].id) + qs[0].days) : 0;
   const bj = boardsPick(s, m, bar);
@@ -205,7 +205,7 @@ export function standingTick(s, m) {
     return;
   }
   m.action = { ...a, progress: 0 };
-  m.action.trip = newTrip(m.action);
+  m.action.trip = newTrip(m.action, s);
 }
 
 // ---- player actions
@@ -248,7 +248,7 @@ export function setAction(s, a) {
   }
   m.standing = null;
   m.action = { ...a, progress: 0 };
-  if (TRAVEL_TYPES.includes(a.type)) m.action.trip = newTrip(m.action);
+  if (TRAVEL_TYPES.includes(a.type)) m.action.trip = newTrip(m.action, s);
 }
 
 export function defaultAction(s, m) {

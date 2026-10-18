@@ -668,6 +668,17 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 44,
+    name: "R48 Gull's Landing + families: a save that already found Gull's Landing knows it as a town (its villagers wait for a visit); the 6 old houses keep their ids and standing (now in families.json); the new houses (Corwen, Dawnward, Ormond, Sallow) start Neutral; no thread is marked done; no ferry, boat or plans are given",
+    run(s) {
+      if ((s.locSeen || []).includes("l_gullport") && !(s.discovered || (s.discovered = [])).includes("gullport")) s.discovered.push("gullport");
+      if (!s.townsVisited) s.townsVisited = [];
+      s.houses = s.houses || {};
+      for (const h of (D.families || {}).list || []) if (!s.houses[h.id]) s.houses[h.id] = { r: h.start || 0, state: "peace" };
+      if (!s.threads) s.threads = [];
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

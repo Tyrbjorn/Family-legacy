@@ -19,7 +19,7 @@ const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTut
   ok(E.wageOf(mi)===base,'peasant pays base wage');
   const t2=D.minions.npcClasses.find(c=>c.needs&&c.needs.tier===2); mi.cls=t2.id; mi.skills.farm=4*100; // skill 10
   ok(E.wageOf(mi)===Math.round(base*G.wages.tierMult[2]*(1+G.wages.perSkill*10)),'tier-2 title + skill 10 wage');
-  const h=D.marriage.houses.list[0]; ok(E.giftCost(s,h.id)===Math.round(150*(1+h.wealth*G.giftEra.perWealth)),'gift cost early ~base'); }
+  const h=D.families.list[0]; ok(E.giftCost(s,h.id)===Math.round(150*(1+h.wealth*G.giftEra.perWealth)),'gift cost early ~base'); }
 // 3) mounts, patronage, quarries, nodes
 { const s=fresh(); s.res.coin=1e6; s.res.hay=1e4; s.res.ingots=1e4;
   const a={type:'quest',target:D.quests.find(q=>!q.story).id}; const d0=E.newTrip(a,s).out;
@@ -73,7 +73,7 @@ const fresh=()=>{const s=E.newGame(1); E.normalize(s); E.skipTutorial&&E.skipTut
   const d0=E.raidDefense(s); ok(d0>=E.defensePower(s),'walls add to raid defense');
   const c0=s.res.coin; R=0.99; ok(!E.raid(s)&&s.res.coin<c0,'lost raid steals coin'); R=0.001; const c1=s.res.coin; ok(E.raid(s)&&s.res.coin>=c1,'won raid'); R=0.5;
   s.res.coin=0; s.day=30*500; E.endgameDay(s); ok(E.defensePower(s)>0&&s.res.coin===0,'no monthly fee: defenses stay up with an empty purse');
-  const h=D.marriage.houses.list[0], hs=E.houseState(s,h.id); hs.state='feud'; hs.r=-100;
+  const h=D.families.list[0], hs=E.houseState(s,h.id); hs.state='feud'; hs.r=-100;
   s.renown=1e4; s.buildings.farm=80; for(let i=0;i<3;i++) s.members.push(E.newMember(s,{age:25}));
   s.land=['plot']; s.structures.push({uid:'h2',type:'house',pieces:['bunk','larder','storage','workbench'],up:0});
   if(E.era(s).n>=3){ E.warEscalate(s,h,hs); ok(hs.state==='war','feud at -100 becomes a house war (Dynasty)'); } else { console.error('war test skipped, era', E.era(s).n); process.exit(1); }

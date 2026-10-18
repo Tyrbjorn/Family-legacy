@@ -328,6 +328,71 @@
     "coin": 90,
     "favour": 12
    }
+  ],
+  "gullport": [
+   {
+    "id": "gl_planks",
+    "name": "Gull's Landing wants 20 planks for the jetty",
+    "kind": "deliver",
+    "band": 1,
+    "res": "planks",
+    "n": 20,
+    "days": 1,
+    "coin": 55,
+    "favour": 5
+   },
+   {
+    "id": "gl_wreckers",
+    "name": "Chase the beachcombers off the wreck",
+    "kind": "clear",
+    "band": 1,
+    "cp": 12,
+    "days": 2,
+    "coin": 45,
+    "favour": 5
+   },
+   {
+    "id": "gl_flax",
+    "name": "Gull's Landing wants 30 flax for the net sheds",
+    "kind": "deliver",
+    "band": 2,
+    "res": "flax",
+    "n": 30,
+    "days": 1,
+    "coin": 70,
+    "favour": 8
+   },
+   {
+    "id": "gl_escort",
+    "name": "Escort a salt cart to Millbrook",
+    "kind": "escort",
+    "band": 2,
+    "to": "millbrook",
+    "days": 1,
+    "coin": 60,
+    "favour": 8
+   },
+   {
+    "id": "gl_ale",
+    "name": "Gull's Landing wants 20 ale for the fleet's return",
+    "kind": "deliver",
+    "band": 3,
+    "res": "ale",
+    "n": 20,
+    "days": 1,
+    "coin": 90,
+    "favour": 12
+   },
+   {
+    "id": "gl_pirates",
+    "name": "Drive off the coast raiders",
+    "kind": "clear",
+    "band": 3,
+    "cp": 150,
+    "days": 4,
+    "coin": 95,
+    "favour": 12
+   }
   ]
  },
  "lines": [

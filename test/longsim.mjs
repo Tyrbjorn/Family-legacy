@@ -167,7 +167,7 @@ function check(s, seed) {
   for (const [id, h] of Object.entries(s.houses || {})) {
     if (!isFinite(h.r) || h.r < -100 || h.r > 100) bad(seed, s.day, `house ${id} rapport ${h.r}`);
     if (!["peace", "feud", "war"].includes(h.state)) bad(seed, s.day, `house ${id} state ${h.state}`);
-    if (h.state === "war" && s.day - h.warStart > D.marriage.houses.war.maxDays + 1) bad(seed, s.day, `war with ${id} never ends`);
+    if (h.state === "war" && s.day - h.warStart > D.families.war.maxDays + 1) bad(seed, s.day, `war with ${id} never ends`);
   }
   for (const su of s.suitors) if (!su.dowry || !isFinite(su.dowry.coin)) bad(seed, s.day, "suitor dowry broken");
   for (const [k, q] of Object.entries(s.foodQ || {})) if (!isFinite(q) || q <= 0 || q > 2.6) bad(seed, s.day, `foodQ.${k}=${q}`);
@@ -195,7 +195,7 @@ function smartAdventure(s, m) {
     return true;
   }
   const q = D.quests
-    .filter(q => (q.once || q.story) && !q.house && !q.needsFeud && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp * (q.risk === "deadly" ? 1.25 : 1) <= c)
+    .filter(q => (q.once || q.story) && (!q.house || (q.thread && !q.against)) && !q.needsFeud && E.actionAllowed(s, m, { type: "quest", target: q.id }) && q.cp * (q.risk === "deadly" ? 1.25 : 1) <= c)
     .sort((a, b) => (a.story || 99) - (b.story || 99) || a.cp - b.cp)[0];
   if (q) {
     E.setAction(s, { type: "quest", target: q.id });
@@ -213,6 +213,13 @@ function smartAdventure(s, m) {
   return false;
 }
 
+// R48: top a resource up to n from any known town that sells it
+function buyAny(s, k, n) {
+  const need = n - Math.floor(s.res[k] || 0);
+  if (need <= 0) return true;
+  for (const tw of D.towns) if (E.townKnown(s, tw) && (tw.market || []).includes(k) && E.buyRes(s, tw.id, k, need)) return true;
+  return false;
+}
 function bot(s, m) {
   // craft paths: main by best skill, more as slots open, a specialty at Master, any combo that qualifies
   if (s.day % 30 === 6 && E.daysOfStock(s) > 10)
@@ -353,7 +360,7 @@ function bot(s, m) {
     if (st) E.placePiece(s, st.uid, "enchdesk");
   }
   // diplomacy: occasionally work for a friendly house, gift a rival, buy peace when rich
-  for (const h of D.marriage.houses.list) {
+  for (const h of D.families.list) {
     const st = E.houseState(s, h.id);
     if (st.state === "war") {
       seen.wars++;
@@ -465,6 +472,49 @@ function bot(s, m) {
       if (rc) { E.setAction(s, { type: "craft", target: rc.id }); seen.setCrafts++; }
     }
   }
+  // R48 the coast (as a player would): trade at Gull's Landing once found, buy the Sea Boat Plans, Dock → Slipway, build a Sea Boat
+  if (!process.env.NO_SEA && s.day % 30 === 7 && E.townKnownId(s, "gullport")) {
+    (seen.r48 ||= {}).gullKnown ??= +(s.day / YD).toFixed(1);
+    if ((s.res.fish || 0) >= 5) E.sellRes(s, "gullport", "fish", 5);
+    if (s.res.coin > 4000 && !s.unlocks.includes("recipe:r_seaboat") && E.buyItem(s, "gullport", "seaboat_plans")) seen.r48.plans = +(s.day / YD).toFixed(1);
+    if (s.res.coin > 15000 && !E.hasStructType(s, "dock") && E.structIssue(s, "dock") === "no free land slot") { const l = D.estate.lands.filter(l => !s.land.includes(l.id) && E.canBuyLand(s, l.id)).sort((a, b) => (a.cost.coin || 0) - (b.cost.coin || 0))[0]; if (l && s.res.coin > (l.cost.coin || 0) + 15000 && E.buyLand(s, l.id)) seen.r48.landForDock = (seen.r48.landForDock || 0) + 1; }
+    if (s.res.coin > 15000 && !E.hasStructType(s, "dock") && !E.structIssue(s, "dock") && E.buildStructure(s, "dock")) seen.r48.dock = +(s.day / YD).toFixed(1);
+    const dk = s.structures.find(st => st.type === "dock");
+    if (dk && s.res.coin > 20000) {
+      if ((s.res.rope || 0) < 10) E.buyRes(s, "gullport", "rope", 10 - Math.floor(s.res.rope || 0));
+      if (!E.hasStructType(s, "slipway")) for (const [k, n] of [["planks", 40], ["stone", 20]]) buyAny(s, k, n);
+      if (!E.upgradeIssue(s, dk.uid, "slipway") && E.upgradeStructure(s, dk.uid, "slipway")) seen.r48.slipway = +(s.day / YD).toFixed(1);
+    }
+    if (!E.hasSeaBoat(s) && E.hasStructType(s, "slipway") && s.unlocks.includes("recipe:r_seaboat")) {
+      if ((s.res.rope || 0) < 12) E.buyRes(s, "gullport", "rope", 12 - Math.floor(s.res.rope || 0));
+      if (s.res.coin > 3000) for (const [k, n] of [["planks", 40], ["cloth", 8]]) buyAny(s, k, n);
+      const rc = D.crafting.recipes.find(r => r.id === "r_seaboat");
+      if (E.recipeIssue(s, E.living(s).find(o => E.isAdult(o)) || m, rc) === "vault full") { const cheap = [...s.vault].map(id => E.itemDef(id)).filter(it => it && it.id !== "seaboat").sort((x, y) => E.sellValue(s, x) - E.sellValue(s, y))[0]; if (cheap) E.sell(s, cheap.id); }
+      // a non-active adult who can make it takes a standing craft order for the boat (released once it is built)
+      const cr = E.living(s).find(o => o.order && o.order.type === "craft" && o.order.target === rc.id) || E.living(s).find(o => E.isAdult(o) && o.id !== s.activeId && !E.recipeIssue(s, o, rc) && !(o.action && o.action.progress > 0));
+      if (!cr && E.isAdult(m) && !E.recipeIssue(s, m, rc) && !(m.action && m.action.progress > 0)) { E.setAction(s, { type: "craft", target: rc.id }); seen.r48.boatCrafts = (seen.r48.boatCrafts || 0) + 1; seen.r48.boatByHead = 1; }
+      else if (!cr) seen.r48.boatWhy = E.living(s).filter(o => E.isAdult(o)).map(o => E.recipeIssue(s, o, rc)).find(Boolean) || "busy";
+      if (!cr && /Workbench/.test(seen.r48.boatWhy)) { for (const st of s.structures) if (!E.placeIssue(s, st.uid, "workbench") && E.placePiece(s, st.uid, "workbench")) { seen.r48.benchForBoat = 1; break; } if (!seen.r48.benchForBoat) seen.r48.benchWhy = [...new Set(s.structures.map(st => E.placeIssue(s, st.uid, "workbench")))].join("/"); }
+      if (cr && !(cr.order && cr.order.type === "craft" && cr.order.target === rc.id)) { E.setOrder(s, cr.id, { type: "craft", target: rc.id }); seen.r48.boatCrafts = (seen.r48.boatCrafts || 0) + 1; }
+    }
+    if (E.hasStructType(s, "slipway")) seen.r48.slipway ??= +(s.day / YD).toFixed(1);
+    if (E.hasSeaBoat(s)) { seen.r48.seaBoat ??= +(s.day / YD).toFixed(1); for (const o of E.living(s)) if (o.order && o.order.type === "craft" && o.order.target === "r_seaboat") E.setOrder(s, o.id, { type: "quest", target: "outskirts" }); }
+    if (!E.hasStructType(s, "dock")) seen.r48.dockWhy = E.structIssue(s, "dock") || (s.res.coin <= 15000 ? "coin" : null);
+    else if (!E.hasStructType(s, "slipway") && dk) seen.r48.slipWhy = E.upgradeIssue(s, dk.uid, "slipway") || (s.res.coin <= 20000 ? "coin" : null);
+  }
+  // R48 coast jobs: an idle adult takes a repeatable Gull's Landing job (by ferry or Sea Boat when that is quicker)
+  if (!process.env.NO_SEA && Math.floor(s.day / 3) % 2 === 0 && Math.floor(s.day / 30) % 3 === 2 && E.townKnownId(s, "gullport")) { // one month in three
+    if ((s.res.rope || 0) < 4 && s.res.coin > 500) E.buyRes(s, "gullport", "rope", 4);
+    seen.r48 ||= {};
+    // one coast hand: a grown non-active member on a plain quest order is sent on Gull's Landing jobs in rotation (orders repeat)
+    const w = E.living(s).find(o => o.id === seen.r48.hand && E.isAdult(o) && o.order && o.order.type === "quest") || E.living(s).find(o => E.isAdult(o) && o.id !== s.activeId && o.order && o.order.type === "quest");
+    if (w && w.id !== s.activeId) {
+      seen.r48.hand = w.id;
+      const q = D.quests.filter(q => q.id.startsWith("q_gull") && E.actionAllowed(s, w, { type: "quest", target: q.id }) && !E.questIssue(s, w, q) && q.cp <= E.cp(s, w) * 1.1).sort((a, b) => ((seen.r48.coastN || {})[a.id] || 0) - ((seen.r48.coastN || {})[b.id] || 0))[0];
+      if (process.env.SDBG && w.action) console.error("ACT", s.day, w.id, JSON.stringify(w.action).slice(0, 160), JSON.stringify(w.order), w.paused);
+      if (q && !E.isBusy(w)) { w.action = { type: "quest", target: q.id, progress: 0 }; if (process.env.SDBG2 && !w._trap) { w._trap = 1; let v = w.action; Object.defineProperty(w, "action", { get: () => v, set: x => { if (v && String(v.target).startsWith("q_gull") && !(x && x === v) && (v.trip ? v.trip.t < v.trip.out + v.trip.task + v.trip.back : true)) console.error("TRAP", s.day, v.target, v.trip && v.trip.t, x && x.target, new Error().stack.split("\n").slice(2, 6).join(" | ")); v = x; }, configurable: true, enumerable: true }); } seen.r48.coastTaken = (seen.r48.coastTaken || 0) + 1; (seen.r48.coastN ||= {})[q.id] = (seen.r48.coastN[q.id] || 0) + 1; }
+    }
+  }
   seen.maxCarry = Math.max(seen.maxCarry, E.haulTier(s).carry);
   // stone ranks: keep some limestone/granite/marble for the Mason's Table once the estate is rich (bought in town)
   if (s.day % 30 < 3 && s.res.coin > 30000)
@@ -548,6 +598,10 @@ function bot(s, m) {
   // others work quests
   for (const o of E.living(s)) {
     if (o.id === m.id || !E.isAdult(o)) continue;
+    if (o.id === (seen.r48 || {}).hand && o.action && String(o.action.target).startsWith("q_gull")) {
+      if (Math.floor(s.day / 30) % 3 === 2 || (o.action.progress || 0) > 0) continue; // R48 the coast hand finishes the job (coast month, or mid-trip)
+      o.action = null; // back to the usual quests outside the coast month
+    }
     // R46: one month in three, drill a skill the nearest next class still needs
     const dk = !NO_TIERS && Math.floor(s.day / 30) % 3 === 0 && E.drillSkill(s, o);
     if (dk) { if (!o.order || o.order.type !== "train" || o.order.target !== dk) E.setOrder(s, o.id, { type: "train", target: dk }); continue; }
@@ -784,6 +838,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
     boards: JSON.stringify({ ...(s.boardStats || {}), lines: Object.entries(s.lines || {}).filter(([, v]) => v.done).map(([k, v]) => k + "@y" + Math.round((v.doneDay || 0) / YD)) }),
+    r48: JSON.stringify({ ...(seen.r48 || {}), visited: s.townsVisited || [], ferry: (s.unlocks || []).includes("ferry:gullport"), ferryTrips: s.ferryTrips || 0, beat: s.doneQuests.includes("b_lights"), gullQuests: s.doneQuests.filter(q => q.startsWith("q_gull")).length, gullRuns: Object.entries(s.qRuns || {}).filter(([k]) => k.startsWith("q_gull")).reduce((a, [, v]) => a + v, 0), gullReqs: ["odile", "pell", "merrow"].map(n => ((s.req || {})[n] || {}).n || 0), threads: s.threads || [], threadSteps: s.doneQuests.filter(q => q.startsWith("ht_")).length, tiers: Object.fromEntries(E.houseList().map(h => [h.id, E.tierOf(s, h.id)])), salted: Math.round(s.res.saltedfish || 0), rope: Math.round(s.res.rope || 0), deepsea: !!E.hasSeaBoat(s) }),
     r47: JSON.stringify({ second: seen.second || null, archMembers: E.living(s).filter(o => (o.guild && o.guild.id === "architects") || (o.guild2 && o.guild2.id === "architects")).map(o => [o.cls, o.class2]), buildSaved: Math.round(s.buildSaved || 0), disc: Object.fromEntries(((D.guilds.build || {}).tags || []).map(k => [k, E.buildDisc ? +E.buildDisc(s, k).toFixed(2) : 0]).filter(([, v]) => v > 0)), roads: s.roads || null, unlocks: (s.unlocks || []).filter(u => /^(piece|structure|upgrade):|r_g_square/.test(u)) }),
     tiers: JSON.stringify({ ups: seen.tierUps || 0, firstTier: Object.fromEntries(Object.entries(seen.firstTier || {}).map(([n, o]) => [n, Object.values(o).sort((a, b) => a - b)])), classes: E.living(s).map(o => o.cls).filter(Boolean), chainUnlocks: (s.unlocks || []).filter(u => /^recipe:r_g_/.test(u)) }),
     snap, // [renown, followers, buildings] at years 0,10,20,30

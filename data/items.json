@@ -1820,5 +1820,36 @@
    "v": 0.08
   },
   "desc": "Architects' Guild: +8% masonry, carpentry and drafting XP."
+ },
+ {
+  "id": "fishnet",
+  "name": "Fishing Net",
+  "slot": "tool",
+  "rarity": "Common",
+  "cp": 4,
+  "value": 45,
+  "toolFor": "fishing",
+  "desc": "A proper weighted net from Pell's sheds: the Fish task yields +15% while the family owns one."
+ },
+ {
+  "id": "seaboat",
+  "name": "Sea Boat",
+  "slot": "haul",
+  "rarity": "Uncommon",
+  "cp": 0,
+  "value": 420,
+  "noDrop": true,
+  "desc": "A decked sea-going boat: sails coast routes, fishes the deep sea, counts as a haul tier for coast hauls."
+ },
+ {
+  "id": "seaboat_plans",
+  "name": "Sea Boat Plans",
+  "slot": "tool",
+  "rarity": "Uncommon",
+  "cp": 0,
+  "value": 160,
+  "noDrop": true,
+  "teaches": "recipe:r_seaboat",
+  "desc": "Shipwright's drawings. Buying them teaches the Sea Boat recipe (needs a Dock with a Slipway and a Carpenter)."
  }
 ]

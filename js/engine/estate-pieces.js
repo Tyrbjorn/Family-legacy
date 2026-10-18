@@ -90,6 +90,7 @@ export function pieceLock(s, p) {
     return "estate tier " + u.stage;
   if (u.quest && !s.doneQuests.includes(u.quest))
     return "quest: " + ((findId(D.quests, u.quest) || {}).name || u.quest);
+  if (u.loc && !(s.locSeen || []).includes(u.loc)) return "find " + ((D.world.locations.find(l => l.id === u.loc) || {}).name || u.loc); // R48 learned at Gull's Landing
   if (u.key && !(s.unlocks || []).includes(u.key)) return "Architects' Guild chain"; // R47 chain unlocks (piece:…)
   if (
     u.guild &&

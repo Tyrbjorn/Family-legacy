@@ -250,6 +250,30 @@
    "stone": 15
   },
   "level": 1,
-  "desc": "Boatyard: a Carpenter can build a Small Boat once you have one (a boat alone crosses lakes and fishes deep water). (Port and Shipyard for larger ships come later.)"
+  "desc": "Boatyard: a Carpenter can build a Small Boat (a boat alone crosses lakes and fishes deep water). Upgrade to a Slipway for a Sea Boat."
+ },
+ {
+  "id": "slipway",
+  "name": "Dock with Slipway",
+  "icon": "⛵",
+  "land": 1,
+  "slots": 2,
+  "fixed": [
+   "boatslip",
+   "slipwayways"
+  ],
+  "allowed": [
+   "storage",
+   "ropewalk"
+  ],
+  "cost": {
+   "coin": 600,
+   "planks": 40,
+   "stone": 20,
+   "rope": 10
+  },
+  "upgradeFrom": "dock",
+  "level": 2,
+  "desc": "Slipway: a Carpenter can build a Sea Boat here from planks, rope and cloth (with the Sea Boat Plans from Gull's Landing). Small boats still launch. Big ships, a port and a shipyard come with the Seafaring expansion."
  }
 ]

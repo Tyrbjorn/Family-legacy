@@ -61,6 +61,23 @@ function feedLine() {
     .join(" · ")} · stores: ${["hay", "wheat", "vegetables"].map(r => `${RI[r] || r + " "}${fmt(s.res[r] || 0)}`).join(" ")}. Unfed animals stop working; after ${F.runOffDays} days one runs off.</div>`;
 }
 
+// R48 the coast: Sea Boat (Dock → Slipway, plans from Gull's Landing) and the harbour ferry (Act 1 beat)
+export function seaCard() {
+  const SEA = E.SEA();
+  if (!SEA) return "";
+  const port = E.portTown(), known = E.townKnownId(s, SEA.port), F = SEA.ferry || {};
+  const boat = E.hasSeaBoat(s), fo = E.ferryOpen(s), slip = E.hasStructType(s, "slipway"), plans = (s.unlocks || []).includes("recipe:r_seaboat");
+  const tier = (D.world.haul.tiers || []).find(x => x.coast) || {};
+  const ex = D.quests.find(q => q.coastal && q.id !== SEA.port && E.questVisible(s, q) && E.seaOption(s, q.id));
+  const eo = ex && E.seaOption(s, ex.id);
+  const routes = E.ferryRoutes(s).map(r => `${r.name}${r.open ? "" : ` 🔒 <span class="muted">(${r.opens || "later"})</span>`}`).join(" · ");
+  return `<div class="card" id="seacard"><b>⛵ The coast</b> <span class="muted">· ${port ? port.icon + " " + port.name : ""}${known ? "" : " (not found yet: follow the Salt Track west)"}</span>
+ <div class="muted">${tier.icon || "⛵"} Sea Boat: ${boat ? `yours. Sails coast routes (×${SEA.speed} vs walking the shore), fishes the deep sea, and hauls ${tier.carry}${E.perkCargo(s, tier.id) ? "+" + tier.cargoTier * E.perkCargo(s, tier.id) : ""} on coast hauls.` : `${plans ? "✅ plans learned" : "📜 buy the Sea Boat Plans at Gull's Landing"} · ${slip ? "✅ Slipway built" : "🏗️ upgrade a Dock to a Slipway"} · then a Carpenter builds it (planks, rope, cloth).`}</div>
+ <div class="muted">${F.icon || "⛴️"} ${F.name || "Ferry"}: ${fo ? `open · fare ${E.ferryFare(s, 1)}🪙 a short hop (+${Math.round(F.farePerDay * (1 - E.ferryDisc(s)))}🪙 per sea day)${E.ferryDisc(s) ? ` · −${Math.round(E.ferryDisc(s) * 100)}% (harbour pass / House Corwen)` : ""}` : "closed: the harbour needs the wreckers stopped (Act 1 beat “Lights on the Rocks”, after chapter 2)"} · routes: ${routes}</div>
+ ${eo ? `<div class="muted">e.g. ${ex.name}: ${eo.mode === "boat" ? "⛵ by boat" : `⛴️ by ferry (${eo.fare}🪙 each way)`} ${eo.days}d instead of ${E.travelDays(ex.id)}d walking</div>` : ""}
+ ${fo && !boat ? `<div class="row" style="justify-content:flex-start;gap:6px"><span class="muted">Use the ferry automatically for coast trips:</span><button class="b ${s.ferryAuto === false ? "" : "sel"}" data-a="ferryauto">${s.ferryAuto === false ? "Off" : "On"}</button></div>` : ""}</div>`;
+}
+
 export function haulCard() {
   const H = D.world.haul,
     t = E.haulTier(s),
@@ -237,7 +254,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m) + linesCard(m); // R30: story quests moved to the Quests tab
+  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + seaCard() + tradeCard() + worldEventsCard() + standingv(m) + linesCard(m); // R30: story quests moved to the Quests tab
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);

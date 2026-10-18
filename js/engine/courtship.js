@@ -4,6 +4,7 @@ import { findId } from "./lookup.js";
 import { conflicts, level } from "./family.js";
 import { rollTraits } from "./traits.js";
 import { addRapport, atWar, houseDef, houseList, tierFx, tierOf } from "./houses.js";
+import { offersMarriage } from "./families.js";
 import { endWar } from "./war.js";
 import { addRenown } from "./legacy.js";
 import { D, NAMES, active, ageY, isAdult, living, log, r, rng } from "./state.js";
@@ -15,7 +16,7 @@ export const personaDef = id => personas().find(p => p.id === id) || null;
 // ---- suitors
 export function makeSuitor(s, opts = {}) {
   const g = opts.gender || r(["m", "f"]);
-  const houses = houseList().filter(h => tierFx(s, h.id).suitors);
+  const houses = houseList().filter(h => tierFx(s, h.id).suitors && offersMarriage(s, h.id)); // R48 families.json marriage
   // a third of suitors are commoners, so offers never dry up even if every house is hostile
   const hd = opts.house !== undefined ? houseDef(opts.house) : houses.length && rng() < 0.67 ? r(houses) : null;
   const p = r(personas());
@@ -105,7 +106,7 @@ export function suitorsTick(s) {
     for (const m of living(s)) if (m.action && m.action.type === "court" && m.action.target === su.id) m.action = null;
     const jilted = su.affinity >= MC().jiltAt && su.house;
     log(s, `💌 ${su.name} grew tired of waiting and left town${jilted ? "." : "."}`);
-    if (jilted) addRapport(s, su.house, D.marriage.houses.jilt, `${su.name} was jilted`);
+    if (jilted) addRapport(s, su.house, D.families.jilt, `${su.name} was jilted`);
   }
 }
 
@@ -122,7 +123,7 @@ export function applyMarriage(s, m, sp, su) {
   if (dw) log(s, `💍 ${sp.name} brought a dowry: ${dw}.`);
   if (su.house) {
     if (atWar(s, su.house)) endWar(s, su.house, "marriage");
-    addRapport(s, su.house, D.marriage.houses.marryIn, "marriage");
+    addRapport(s, su.house, D.families.marryIn, "marriage");
   }
 }
 

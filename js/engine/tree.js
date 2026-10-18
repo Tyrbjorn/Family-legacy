@@ -36,7 +36,7 @@ export function treeNode(s, m) {
     parents: m.parents || [],
     children: s.members.filter(c => (c.parents || []).includes(m.id)).map(c => c.id),
     minion: !!m.minion,
-    marriedOut: m.marriedOut ? ((D.marriage?.houses?.list || []).find(h => h.id === m.marriedOut) || {}).name || m.marriedOut : null,
+    marriedOut: m.marriedOut ? ((D.families?.list || []).find(h => h.id === m.marriedOut) || {}).name || m.marriedOut : null,
   };
 }
 

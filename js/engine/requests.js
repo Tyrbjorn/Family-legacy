@@ -1,3 +1,4 @@
+import { houseEvent } from "./families.js";
 import { roleBonus } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { opensOk } from "./chores.js";
@@ -72,7 +73,7 @@ export function deliverIssue(s, npcId) {
   const n = npcDef(npcId);
   if (!n) return "no such villager";
   if (!npcOpen(s, n)) return "not here yet";
-  if (n.town !== HOME && n.town !== "village" && !(s.townsVisited || []).includes(n.town)) return "travel to " + n.town;
+  if (n.town !== HOME && n.town !== "village" && !(s.townsVisited || []).includes(n.town)) return "visit " + ((findId(D.towns, n.town) || {}).name || n.town) + " first (trade or work there)"; // R48
   const w = wantsOf(s, npcId);
   if (!w) return "no open request";
   const short = Object.entries(w).filter(([k, v]) => (s.res[k] || 0) < v);
@@ -80,6 +81,13 @@ export function deliverIssue(s, npcId) {
 }
 export const deliverable = s => RQ().npcs.filter(n => !deliverIssue(s, n.id)).length;
 
+// R48: extra cooldown once the same request has been filled more than `repeat.free` times (data/requests.json `repeat`)
+export function repeatDelay(k) {
+  const R = RQ().repeat;
+  if (!R || k <= R.free) return 0;
+  return Math.min(R.max, Math.round(R.base * Math.pow(R.grow, k - R.free - 1)));
+}
+export const reqDone = (s, npcId, reqId) => ((st(s, npcId).done || {})[reqId] || 0);
 export function deliverRequest(s, npcId) {
   if (deliverIssue(s, npcId)) return null;
   const n = npcDef(npcId), r = openRequest(s, npcId), w = wantsOf(s, npcId), x = st(s, npcId);
@@ -96,6 +104,7 @@ export function deliverRequest(s, npcId) {
   let extra = null;
   if (e && !(s.reqPerks || []).some(p => p.from === r.id)) {
     (s.reqPerks = s.reqPerks || []).push({ ...e, from: r.id, npc: n.id });
+    if (e.type === "chart" && !(s.charts ||= []).includes(e.region)) s.charts.push(e.region); // R48 Merrow's sea chart (Saltmere opens in R49)
     if (e.type === "recipe" && e.dish && !(s.dishes ||= []).includes(e.dish)) s.dishes.push(e.dish); // R42
     if (e.type === "questline") {
       const q0 = findId(D.quests, e.quests[0]);
@@ -105,7 +114,8 @@ export function deliverRequest(s, npcId) {
   }
   x.i++;
   const [a, b] = RQ().cooldown || [3, 7];
-  x.at = (s.day || 0) + a + Math.floor(rng() * (b - a + 1));
+  x.at = (s.day || 0) + a + Math.floor(rng() * (b - a + 1)) + repeatDelay(((x.done ||= {})[r.id] = (x.done[r.id] || 0) + 1)); // R48 slower repeats
+  houseEvent(s, "request", { town: n.town, why: `${n.name}'s request` }); // R48 honest houses like requests filled in their seat
   log(s, `📮 ${n.icon} ${n.name}: delivered ${Object.entries(w).map(([a, v]) => v + " " + a).join(", ")} → ${got.join(", ")}.${extra ? " ✨ " + extra : ""}`);
   return { got, extra };
 }

@@ -1,3 +1,4 @@
+import { perkField } from "./families.js";
 // R40 per-crop fields (base game). Each field grows ONE crop (data/fields.json). Tending costs worker hours,
 // not coin: farm-job followers give 8 h/day, family on the Tend Fields chore 8 h, other family 12+ help 1 h.
 // Harvest piles up at the fields; TEAMSTERS (their own follower job) only haul it into storage. Farmers haul
@@ -57,7 +58,7 @@ export const fieldBase = (f, season = 1) => {
   return c ? c.base * (1 + FLD().levels.perLvl * ((f.lvl || 1) - 1)) * sizeDef(f).mult * (f.bonus || 1) * season : 0;
 };
 // full output per day when fully tended (season, hub and Legacy multipliers included)
-export const fieldYield = (s, f) => fieldBase(f, seasonYield(s, cropDef(f.crop)?.res)) * hubMult(s) * resGain(s);
+export const fieldYield = (s, f) => fieldBase(f, seasonYield(s, cropDef(f.crop)?.res)) * hubMult(s) * resGain(s) * (1 + perkField(s)); // R48 Ashbrook allied
 export const capOf = (s, res) => (res === "food" ? foodCap(s) : (ES().caps.capped || []).includes(res) ? matCap(s) : Infinity);
 const stopOf = (s, f) => Math.min(capOf(s, cropDef(f.crop).res), f.stopAt ?? Infinity);
 

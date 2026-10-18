@@ -1,3 +1,5 @@
+import { perkDiscover, perkNode, perkTravel } from "./families.js";
+import { isCoastal, payFerry, seaOption } from "./sea.js";
 import { findId } from "./lookup.js";
 import { bjobOk, bjobDays, bjobResolve } from "./boards.js";
 import { talentSum } from "./talents.js";
@@ -85,6 +87,7 @@ export function travelTick(s, m, a, eff) {
     return;
   }
   if (!a.trip) a.trip = newTrip(a, s);
+  if (a.trip.ferry && !a.trip.ferryPaid) payFerry(s, m, a); // R48
   const t = a.trip;
   const ph = tripPhase(a);
   t.t += ph === "out" || ph === "back" ? eff * seasonTravel(s) : eff;
@@ -215,7 +218,7 @@ export function gatherInto(s, t, n, mul, bonusOf, finds = {}) {
   const tr = D.world ? terrainDef(n.terrain || terrainAt(ptOf(n.id).x, ptOf(n.id).y)) : null;
   const ym = D.world ? nodeYieldMult(s, n) : 1;
   if (!t.load) t.load = {};
-  const cap = t.cap || (D.world ? haulTier(s).carry : Infinity);
+  const cap = t.cap || (D.world ? haulTier(s, { coast: isCoastal(n.id) }).carry : Infinity);
   t.cap = cap;
   let have = Object.values(t.load).reduce((x, y) => x + y, 0),
     took = 0;
@@ -226,7 +229,7 @@ export function gatherInto(s, t, n, mul, bonusOf, finds = {}) {
     have += q;
     took += q;
   };
-  for (const [k, v] of Object.entries(n.res)) add(k, v * mul * ym * (tr ? tr.gather[k] || 1 : 1) * (1 + bonusOf(k)));
+  for (const [k, v] of Object.entries(n.res)) add(k, v * mul * ym * (tr ? tr.gather[k] || 1 : 1) * (1 + bonusOf(k)) * (1 + perkNode(s, n.id)));
   for (const [k, v] of Object.entries(finds)) add(k, v * mul);
   if (D.world && took) drawNode(s, n, took);
   return took;
@@ -250,9 +253,21 @@ export function taskDays(a) {
 }
 
 export function newTrip(a, s) {
-  const out = Math.round((travelDays(a.target) / (s ? mountSpeed(s) : 1)) * 10) / 10;
-  const hs = a.type === "gather" && s && D.world ? haulTier(s).haulSpeed : 1;
-  return { out, task: taskDays(a), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
+  const reg = targetRegion(a), tv = s && reg ? perkTravel(s, reg) : 1; // R48 House Skye allied: ×1.1 in the Highlands
+  const walk = travelDays(a.target);
+  const out = Math.round((walk / (s ? mountSpeed(s) : 1) / tv) * 10) / 10;
+  const hs = a.type === "gather" && s && D.world ? haulTier(s, { coast: isCoastal(a.target) }).haulSpeed : 1;
+  const t = { out, task: taskDays(a), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
+  // R48: by Sea Boat (or the harbour ferry, paid on the first day) to a coastal destination
+  const so = s && D.world ? seaOption(s, a.target, walk) : null;
+  if (so) {
+    const sOut = Math.round((so.land / (mountSpeed(s) || 1) + so.sea) * 10) / 10;
+    if (sOut < out) {
+      Object.assign(t, { walkOut: t.out, walkBack: t.back, out: sOut, back: Math.round((so.land / (mountSpeed(s) || 1) / hs + so.sea) * 10) / 10, sea: so.mode });
+      if (so.mode === "ferry") t.ferry = so.fare * 2; // there and back
+    }
+  }
+  return t;
 }
 
 export function tripPhase(a) {
@@ -309,7 +324,7 @@ export function exploreArea(s, m, ar) {
     const once = sc.type !== "encounter";
     if (once && s.discovered.includes(key)) continue;
     if (sc.needs && !(s.cleared || []).includes(sc.needs)) continue;
-    if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01)) continue;
+    if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01) * (1 + perkDiscover(s, ar.region))) continue; // R48 Skye: Eyrie scouts
     if (sc.type === "town" || sc.type === "region") {
       if (!s.discovered.includes(sc.id)) s.discovered.push(sc.id);
       if (sc.type === "town") revealAt(s, sc.id, WD().fog.town);

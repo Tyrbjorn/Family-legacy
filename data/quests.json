@@ -1460,7 +1460,9 @@
    "minion": "falconer",
    "item": "signet_ring"
   },
-  "desc": "The eagle-riders swear friendship to a house that climbs to them."
+  "desc": "The eagle-riders swear friendship to a house that climbs to them.",
+  "thread": "skye",
+  "step": 1
  },
  {
   "id": "h_stormcave",
@@ -2121,5 +2123,903 @@
   "guild": "architects",
   "rank": 2,
   "desc": "Survey the ruined Vael manor in the highlands: what stands, what can be saved."
+ },
+ {
+  "id": "q_gull_nets",
+  "name": "Gulls in the Nets",
+  "type": "hunt",
+  "cp": 6,
+  "days": 2,
+  "reward": {
+   "coin": 40,
+   "fish": 10
+  },
+  "skill": "fishing",
+  "desc": "Gulls are tearing the drying nets. Shoo them off and mend what's torn.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "risk": "safe",
+  "region": "outskirts"
+ },
+ {
+  "id": "q_gull_crabs",
+  "name": "Crab Pots",
+  "type": "gather",
+  "cp": 4,
+  "days": 2,
+  "reward": {
+   "coin": 30,
+   "fish": 14
+  },
+  "skill": "fishing",
+  "desc": "Haul the old crab pots off the north rocks before the tide.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "risk": "safe",
+  "region": "outskirts"
+ },
+ {
+  "id": "q_gull_lantern",
+  "name": "Lantern Watch",
+  "type": "errand",
+  "cp": 10,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 70,
+   "salt": 10
+  },
+  "skill": "tracking",
+  "desc": "Keep the cape lantern lit through a stormy night, far up the coast.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "region": "outskirts"
+ },
+ {
+  "id": "q_gull_skiff",
+  "name": "Salvage the Skiff",
+  "type": "errand",
+  "cp": 12,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 90,
+   "planks": 8,
+   "rope": 4
+  },
+  "skill": "sailing",
+  "desc": "A skiff broke loose and grounded far down the coast. Bring back what you can.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "region": "outskirts"
+ },
+ {
+  "id": "q_gull_storm",
+  "name": "Storm Mooring",
+  "type": "errand",
+  "cp": 14,
+  "days": 2,
+  "risk": "risky",
+  "reward": {
+   "coin": 120
+  },
+  "skill": "sailing",
+  "deliver": {
+   "rope": 4
+  },
+  "desc": "A gale is coming. Double the moorings on the fishing fleet.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "region": "outskirts"
+ },
+ {
+  "id": "q_gull_tar",
+  "name": "Tar the Hulls",
+  "type": "errand",
+  "cp": 5,
+  "days": 3,
+  "reward": {
+   "coin": 110,
+   "saltedfish": 4
+  },
+  "skill": "carpentry",
+  "deliver": {
+   "planks": 6
+  },
+  "desc": "Help the fisherfolk patch and tar their hulls on the hard.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "act": 1,
+  "band": 1,
+  "coastal": true,
+  "loot": [],
+  "risk": "safe",
+  "region": "outskirts"
+ },
+ {
+  "id": "b_lights",
+  "name": "Lights on the Rocks",
+  "type": "beat",
+  "cp": 20,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 160,
+   "renown": 0
+  },
+  "skill": "tactics",
+  "once": true,
+  "beat": true,
+  "act": 1,
+  "band": 1,
+  "town": "gullport",
+  "coastal": true,
+  "req": {
+   "town": "gullport",
+   "story": 2
+  },
+  "grants": {
+   "unlock": {
+    "key": "ferry:gullport",
+    "text": "Odile reopens the harbour ferry for your family"
+   },
+   "renown": 10
+  },
+  "desc": "Act 1 side beat (after chapter 2): wreckers show false lights on the rocks to lure ships ashore. Catch them, and the harbour can sail again.",
+  "loot": [],
+  "region": "outskirts"
+ },
+ {
+  "id": "ht_ashbrook1",
+  "name": "Mend the Ashbrook Fences",
+  "type": "house",
+  "cp": 5,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 70
+  },
+  "skill": "carpentry",
+  "house": "ashbrook",
+  "thread": "ashbrook",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Ashbrook's thread “The Long Harvest”, part 1 of 3.",
+  "deliver": {
+   "planks": 6
+  },
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_ashbrook2",
+  "name": "Seed Grain for a Hard Year",
+  "type": "house",
+  "cp": 5,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 110
+  },
+  "skill": "farming",
+  "house": "ashbrook",
+  "thread": "ashbrook",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Ashbrook's thread “The Long Harvest”, part 2 of 3.",
+  "deliver": {
+   "wheat": 30
+  },
+  "hidden": true,
+  "after": "ht_ashbrook1",
+  "loot": []
+ },
+ {
+  "id": "ht_ashbrook3",
+  "name": "The Long Harvest",
+  "type": "house",
+  "cp": 12,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 160,
+   "wheat": 60
+  },
+  "skill": "farming",
+  "house": "ashbrook",
+  "thread": "ashbrook",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Ashbrook's thread “The Long Harvest”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_ashbrook2",
+  "loot": []
+ },
+ {
+  "id": "ht_vey1",
+  "name": "Count the Old Oaks",
+  "type": "house",
+  "cp": 10,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "nature",
+  "house": "vey",
+  "thread": "vey",
+  "step": 1,
+  "once": true,
+  "region": "forest",
+  "desc": "House Vey's thread “The Wood Remembers”, part 1 of 3.",
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_vey2",
+  "name": "The Bark-Blight",
+  "type": "house",
+  "cp": 22,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 140,
+   "wood": 30
+  },
+  "skill": "herbalism",
+  "house": "vey",
+  "thread": "vey",
+  "step": 2,
+  "once": true,
+  "region": "forest",
+  "desc": "House Vey's thread “The Wood Remembers”, part 2 of 3.",
+  "hidden": true,
+  "after": "ht_vey1",
+  "loot": []
+ },
+ {
+  "id": "ht_vey3",
+  "name": "The Wood Remembers",
+  "type": "house",
+  "cp": 35,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "nature",
+  "house": "vey",
+  "thread": "vey",
+  "step": 3,
+  "once": true,
+  "region": "forest",
+  "desc": "House Vey's thread “The Wood Remembers”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_vey2",
+  "loot": []
+ },
+ {
+  "id": "ht_marlowe1",
+  "name": "Caulk the Barges",
+  "type": "house",
+  "cp": 6,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "carpentry",
+  "house": "marlowe",
+  "thread": "marlowe",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Marlowe's thread “Marlowe's Barges”, part 1 of 3.",
+  "deliver": {
+   "planks": 8
+  },
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_marlowe2",
+  "name": "River Pirates",
+  "type": "house",
+  "cp": 25,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 180
+  },
+  "skill": "tactics",
+  "house": "marlowe",
+  "thread": "marlowe",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Marlowe's thread “Marlowe's Barges”, part 2 of 3.",
+  "hidden": true,
+  "after": "ht_marlowe1",
+  "loot": []
+ },
+ {
+  "id": "ht_marlowe3",
+  "name": "The Salt Contract",
+  "type": "house",
+  "cp": 10,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 320
+  },
+  "skill": "haggling",
+  "house": "marlowe",
+  "thread": "marlowe",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Marlowe's thread “Marlowe's Barges”, part 3 of 3.",
+  "deliver": {
+   "salt": 30
+  },
+  "hidden": true,
+  "after": "ht_marlowe2",
+  "loot": []
+ },
+ {
+  "id": "ht_skye2",
+  "name": "Feathers for the Eyrie",
+  "type": "house",
+  "cp": 40,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 240
+  },
+  "skill": "hunting",
+  "house": "skye",
+  "thread": "skye",
+  "step": 2,
+  "once": true,
+  "region": "highlands",
+  "desc": "House Skye's thread “The Eyrie Oath”, part 2 of 3.",
+  "hidden": true,
+  "after": "h_eyrie",
+  "loot": []
+ },
+ {
+  "id": "ht_skye3",
+  "name": "An Oath Kept",
+  "type": "house",
+  "cp": 45,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 320
+  },
+  "skill": "etiquette",
+  "house": "skye",
+  "thread": "skye",
+  "step": 3,
+  "once": true,
+  "region": "highlands",
+  "desc": "House Skye's thread “The Eyrie Oath”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_skye2",
+  "loot": []
+ },
+ {
+  "id": "ht_corwen1",
+  "name": "Mark the Wreck",
+  "type": "house",
+  "cp": 8,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 60,
+   "fish": 10
+  },
+  "skill": "sailing",
+  "house": "corwen",
+  "thread": "corwen",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Corwen's thread “Salvage Rights”, part 1 of 3.",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "coastal": true,
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_corwen2",
+  "name": "Raise the Strongbox",
+  "type": "house",
+  "cp": 14,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 140,
+   "rope": 4
+  },
+  "skill": "sailing",
+  "house": "corwen",
+  "thread": "corwen",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Corwen's thread “Salvage Rights”, part 2 of 3.",
+  "hidden": true,
+  "after": "ht_corwen1",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "coastal": true,
+  "loot": []
+ },
+ {
+  "id": "ht_corwen3",
+  "name": "Salvage Rights",
+  "type": "house",
+  "cp": 12,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 200,
+   "saltedfish": 10
+  },
+  "skill": "haggling",
+  "house": "corwen",
+  "thread": "corwen",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Corwen's thread “Salvage Rights”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_corwen2",
+  "town": "gullport",
+  "req": {
+   "town": "gullport"
+  },
+  "coastal": true,
+  "loot": []
+ },
+ {
+  "id": "ht_tallow1",
+  "name": "Tallow's Little Favour",
+  "type": "house",
+  "cp": 4,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "haggling",
+  "house": "tallow",
+  "thread": "tallow",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Tallow's thread “Tallow's Bargain”, part 1 of 3.",
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_tallow2",
+  "name": "Short Weights",
+  "type": "house",
+  "cp": 10,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "thievery",
+  "house": "tallow",
+  "thread": "tallow",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "A crooked deal: thumb the scales on Tallow's grain sales. Profitable, and House Tallow remembers who helped.",
+  "hidden": true,
+  "after": "ht_tallow1",
+  "loot": []
+ },
+ {
+  "id": "ht_tallow3",
+  "name": "Tallow's Bargain",
+  "type": "house",
+  "cp": 12,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 420
+  },
+  "skill": "haggling",
+  "house": "tallow",
+  "thread": "tallow",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "Tallow's big bargain: corner the grain contract out from under House Ashbrook.",
+  "against": "ashbrook",
+  "hidden": true,
+  "after": "ht_tallow2",
+  "loot": []
+ },
+ {
+  "id": "ht_corran1",
+  "name": "Coal for the Corran Forges",
+  "type": "house",
+  "cp": 5,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 120,
+   "ingots": 3
+  },
+  "skill": "mining",
+  "house": "corran",
+  "thread": "corran",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Corran's thread “Corran's Forge Rights”, part 1 of 3.",
+  "deliver": {
+   "coal": 20
+  },
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_corran2",
+  "name": "Guild Strongarm",
+  "type": "house",
+  "cp": 25,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "brawling",
+  "house": "corran",
+  "thread": "corran",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Corran's thread “Corran's Forge Rights”, part 2 of 3.",
+  "hidden": true,
+  "after": "ht_corran1",
+  "loot": []
+ },
+ {
+  "id": "ht_corran3",
+  "name": "Corran's Forge Rights",
+  "type": "house",
+  "cp": 30,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 300,
+   "ingots": 8
+  },
+  "skill": "leadership",
+  "house": "corran",
+  "thread": "corran",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "Pick a side: force House Sallow's last forge out of Ashford for House Corran.",
+  "against": "sallow",
+  "hidden": true,
+  "after": "ht_corran2",
+  "loot": []
+ },
+ {
+  "id": "ht_dawnward1",
+  "name": "Polish the Chapel Bells",
+  "type": "house",
+  "cp": 4,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 60
+  },
+  "skill": "faith",
+  "house": "dawnward",
+  "thread": "dawnward",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Dawnward's thread “Bells of Dawn”, part 1 of 3.",
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_dawnward2",
+  "name": "The Alms Road",
+  "type": "house",
+  "cp": 10,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 90
+  },
+  "skill": "healing",
+  "house": "dawnward",
+  "thread": "dawnward",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Dawnward's thread “Bells of Dawn”, part 2 of 3.",
+  "deliver": {
+   "bread": 15
+  },
+  "hidden": true,
+  "after": "ht_dawnward1",
+  "loot": []
+ },
+ {
+  "id": "ht_dawnward3",
+  "name": "Bells of Dawn",
+  "type": "house",
+  "cp": 20,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "faith",
+  "house": "dawnward",
+  "thread": "dawnward",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Dawnward's thread “Bells of Dawn”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_dawnward2",
+  "loot": []
+ },
+ {
+  "id": "ht_ormond1",
+  "name": "Catalogue the Stacks",
+  "type": "house",
+  "cp": 4,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 70
+  },
+  "skill": "reading",
+  "house": "ormond",
+  "thread": "ormond",
+  "step": 1,
+  "once": true,
+  "region": "forest",
+  "desc": "House Ormond's thread “The Ormond Library”, part 1 of 3.",
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_ormond2",
+  "name": "A Book Gone Missing",
+  "type": "house",
+  "cp": 15,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 140
+  },
+  "skill": "tracking",
+  "house": "ormond",
+  "thread": "ormond",
+  "step": 2,
+  "once": true,
+  "region": "forest",
+  "desc": "House Ormond's thread “The Ormond Library”, part 2 of 3.",
+  "hidden": true,
+  "after": "ht_ormond1",
+  "loot": []
+ },
+ {
+  "id": "ht_ormond3",
+  "name": "The Ormond Library",
+  "type": "house",
+  "cp": 20,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "history",
+  "house": "ormond",
+  "thread": "ormond",
+  "step": 3,
+  "once": true,
+  "region": "forest",
+  "desc": "House Ormond's thread “The Ormond Library”, part 3 of 3.",
+  "hidden": true,
+  "after": "ht_ormond2",
+  "loot": []
+ },
+ {
+  "id": "ht_sallow1",
+  "name": "Sallow's Old Letters",
+  "type": "house",
+  "cp": 5,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 70
+  },
+  "skill": "reading",
+  "house": "sallow",
+  "thread": "sallow",
+  "step": 1,
+  "once": true,
+  "region": "outskirts",
+  "desc": "House Sallow's thread “Old Debts”, part 1 of 3.",
+  "loot": [],
+  "hidden": true,
+  "threadOpen": true
+ },
+ {
+  "id": "ht_sallow2",
+  "name": "Debts Remembered",
+  "type": "house",
+  "cp": 15,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 180
+  },
+  "skill": "etiquette",
+  "house": "sallow",
+  "thread": "sallow",
+  "step": 2,
+  "once": true,
+  "region": "outskirts",
+  "desc": "Pick a side: help House Sallow call in an old debt from House Corran.",
+  "against": "corran",
+  "hidden": true,
+  "after": "ht_sallow1",
+  "loot": []
+ },
+ {
+  "id": "ht_sallow3",
+  "name": "Old Debts",
+  "type": "house",
+  "cp": 25,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "thievery",
+  "house": "sallow",
+  "thread": "sallow",
+  "step": 3,
+  "once": true,
+  "region": "outskirts",
+  "desc": "Ruin House Corran's standing with the debts Sallow kept.",
+  "against": "corran",
+  "hidden": true,
+  "after": "ht_sallow2",
+  "loot": []
+ },
+ {
+  "id": "hq_raid_corwen",
+  "name": "Raid House Corwen's Stores",
+  "type": "house",
+  "cp": 20,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "brawling",
+  "against": "corwen",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Corwen where it hurts.",
+  "region": "outskirts",
+  "loot": []
+ },
+ {
+  "id": "hq_raid_dawnward",
+  "name": "Raid House Dawnward's Stores",
+  "type": "house",
+  "cp": 30,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 120
+  },
+  "skill": "brawling",
+  "against": "dawnward",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Dawnward where it hurts.",
+  "region": "outskirts",
+  "loot": []
+ },
+ {
+  "id": "hq_raid_ormond",
+  "name": "Raid House Ormond's Stores",
+  "type": "house",
+  "cp": 30,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 120
+  },
+  "skill": "brawling",
+  "against": "ormond",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Ormond where it hurts.",
+  "region": "forest",
+  "loot": []
+ },
+ {
+  "id": "hq_raid_sallow",
+  "name": "Raid House Sallow's Stores",
+  "type": "house",
+  "cp": 20,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 80
+  },
+  "skill": "brawling",
+  "against": "sallow",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Sallow where it hurts.",
+  "region": "outskirts",
+  "loot": []
  }
 ]

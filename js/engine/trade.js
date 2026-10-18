@@ -1,3 +1,5 @@
+import { coastHaul, markVisited } from "./sea.js";
+import { perkRoutes } from "./families.js";
 import { findId } from "./lookup.js";
 import { sellFloor } from "./quotas.js";
 import { gameFx, gameLvl } from "./difficulty.js";
@@ -42,7 +44,7 @@ const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).inc
 
 export function routeSlotParts(s) {
   const tier = tradeTier(s);
-  if (!tier) return { building: 0, manor: 0, upgrades: 0, haggling: 0, steward: 0, merchants: 0, total: 0 };
+  if (!tier) return { building: 0, manor: 0, upgrades: 0, haggling: 0, steward: 0, merchants: 0, houses: 0, total: 0 };
   const parts = {
     building: TC().slotsByTier[tier - 1],
     upgrades: (s.structures || [])
@@ -52,8 +54,9 @@ export function routeSlotParts(s) {
     steward: Math.min(TC().stewardSlotMax, stewards(s)),
     merchants: Math.min(TC().merchantSlotMax, factors(s)),
     manor: Math.floor(eff(s, "routeSlots")),
+    houses: perkRoutes(s), // R48 Marlowe allied: +1 route
   };
-  parts.total = parts.building + parts.manor + parts.upgrades + parts.haggling + parts.steward + parts.merchants;
+  parts.total = parts.building + parts.manor + parts.upgrades + parts.haggling + parts.steward + parts.merchants + parts.houses;
   return parts;
 }
 export const routeSlots = s => routeSlotParts(s).total;
@@ -203,7 +206,7 @@ export function removePatrol(s, pid) {
   return true;
 }
 
-export const cartCarry = s => haulTier(s).carry;
+export const cartCarry = (s, r) => haulTier(s, { coast: !!r && coastHaul(r.town) && (r.mode !== "haul" || coastHaul(r.from)) }).carry; // R48 Sea Boat on coast routes
 
 // auto-trade rule check: does this route want to run now?
 export function routeWants(s, r) {
@@ -219,7 +222,8 @@ export function routeWants(s, r) {
 
 // A trip is a list of stops; each stop has the day it is reached and what happens there.
 function startTrip(s, r) {
-  const n = Math.min(r.qty, cartCarry(s));
+  const n = Math.min(r.qty, cartCarry(s, r));
+  markVisited(s, r.town);
   let load = 0;
   if (r.mode === "sell") {
     load = Math.floor(Math.min(n, (s.res[r.res] || 0) - Math.max(r.keep, sellFloor(s, r.res))));

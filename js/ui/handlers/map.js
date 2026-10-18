@@ -49,6 +49,7 @@ export const mapActions = ({ v, w, b, m }) => ({
   gather: () => E.setAction(s, { type: "gather", target: v }),
   parcel: () => E.setAction(s, { type: "parcel", target: v }),
   buyanimal: () => E.buyAnimal(s, v, b.dataset.w),
+  ferryauto: () => (s.ferryAuto = s.ferryAuto === false), // R48
   rumor: () => E.rumor(s, v),
   bjtake: () => E.takeJob(s, m, v), // R45 boards / quest lines
   bjorder: () => E.orderForJob(s, v),

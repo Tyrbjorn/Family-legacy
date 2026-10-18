@@ -1,3 +1,5 @@
+import { perkBuy, perkShop, perkShopItems } from "./families.js";
+import { hasStructType, markVisited } from "./sea.js";
 import { roleBonus } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { choreFx } from "./chores.js";
@@ -80,7 +82,7 @@ export function moveItem(s, m, id, toBag) {
 export const BUY_MULT_FLOOR = 0.8;
 export const SELL_CAP = 0.95;
 export const buyPrice = (it, s, townId) =>
-  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)) * (1 + talentBuy(s)) * (1 - roleBonus(s, "buyDisc"))); // R36 Haggler; R46 Swindler
+  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it) - perkShop(s, townId)) * (1 + talentBuy(s)) * (1 - roleBonus(s, "buyDisc"))); // R36 Haggler; R46 Swindler
 
 // Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
 // buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).
@@ -110,11 +112,20 @@ export const townSellPrice = (s, townId, res) => {
   );
 };
 
+// R48: a town's shop plus items a friendly house adds (Ormond scrolls in Thornwick)
+export const shopOf = (s, townId) => [...new Set([...((findId(D.towns, townId) || {}).shop || []), ...perkShopItems(s, townId)])];
 export function buyItem(s, townId, itemId) {
   const t = findId(D.towns, townId);
   const it = itemDef(itemId);
-  if (!t.shop.includes(itemId) || s.res.coin < buyPrice(it, s, townId) || !vaultRoom(s)) return false;
+  if (!shopOf(s, townId).includes(itemId) || s.res.coin < buyPrice(it, s, townId) || (!it.teaches && !vaultRoom(s))) return false;
+  if (it.teaches && (s.unlocks || []).includes(it.teaches)) return false; // R48 plans: already learned
   s.res.coin -= buyPrice(it, s, townId);
+  markVisited(s, townId);
+  if (it.teaches) {
+    s.unlocks.push(it.teaches); // R48: Sea Boat Plans teach the recipe instead of taking a vault slot
+    log(s, `📜 Bought ${it.name}: learned ${(recipeDef(it.teaches.split(":")[1]) || { name: it.teaches }).name}.`);
+    return true;
+  }
   s.vault.push(itemId);
   log(s, `🛒 Bought ${it.name}.`);
   return true;
@@ -137,6 +148,7 @@ export const townBuyPrice = (s, townId, res) => {
         seasonPrice(s, res) *
         buyDemand(s, townId, res) *
         patronBuy(s, townId) *
+        perkBuy(s, res) * // R48 Ashbrook grain/milk, Vey wood, Corran ingots
         100,
     ) / 100
   );
@@ -148,6 +160,7 @@ export function buyRes(s, townId, res, n) {
   s.res.coin -= c;
   s.res[res] = (s.res[res] || 0) + n;
   shiftSupply(s, townId, res, -n);
+  markVisited(s, townId);
   return true;
 }
 
@@ -158,6 +171,7 @@ export function sellRes(s, townId, res, n) {
   s.res[res] -= n;
   s.res.coin += n * townSellPrice(s, townId, res);
   shiftSupply(s, townId, res, n);
+  markVisited(s, townId);
   tutNote(s, "traded");
   return true;
 }
@@ -218,7 +232,7 @@ export function recipeIssue(s, m, rc) {
   const pi = rc.forClass && recipePathIssue(m, rc, inLine);
   if (pi) return pi;
   if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
-  if (rc.needsStruct && !(s.structures || []).some(st => st.type === rc.needsStruct)) return `needs a ${(findId(D.estate.structures, rc.needsStruct) || { name: rc.needsStruct }).name}`;
+  if (rc.needsStruct && !hasStructType(s, rc.needsStruct)) return `needs a ${(findId(D.estate.structures, rc.needsStruct) || { name: rc.needsStruct }).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
     return `${findId(D.skills, rc.skill).name} ${rc.minSkill}`;
   if (!afford(s, rc.mats)) return "missing materials";

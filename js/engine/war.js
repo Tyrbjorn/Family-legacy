@@ -1,11 +1,12 @@
 import { injure } from "./injuries.js";
 // Feud escalation and war between houses (Dynasty phase): battles, power, truce/tribute, weariness.
-// Numbers in data/marriage.json houses.war / houses.feud.
+// Numbers in data/families.json war / feud.
 import { LG, addRenown } from "./legacy.js";
 import { cp } from "./family.js";
 import { FEUD, HC, atWar, houseDef, houseList, houseState, phaseOk, tierOf } from "./houses.js";
 import { minionPower, minionSurvival } from "./minions.js";
 import { active, isAdult, living, log, rng } from "./state.js";
+import { houseEvent } from "./families.js";
 
 export const WAR = () => HC().war;
 export const wars = s => houseList().filter(h => atWar(s, h.id));
@@ -88,6 +89,7 @@ export function endWar(s, id, how) {
   const set = r => (h.r = Math.max(h.r, r));
   if (how === "victory") {
     set(W.victoryRapport);
+    houseEvent(s, "warWon", { why: `victory over ${hd.name}` }); // R48: ruthless houses respect it
     const m = active(s);
     if (m) addRenown(s, m, W.victoryRenown);
     log(s, `🕊️ Victory over ${hd.name}! They sue for peace (+${W.victoryRenown} renown).`);

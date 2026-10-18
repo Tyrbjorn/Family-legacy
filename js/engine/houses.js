@@ -1,12 +1,13 @@
 // Diplomacy with neighbouring houses: rapport tiers (feud → rival → cold → neutral → friendly → allied),
 // house quests that pick sides, ally perks, rival troubles and the feud state. War lives in war.js.
-// Kept deliberately small and data-driven (data/marriage.json "houses") for the later ruling-house era.
+// Kept deliberately small and data-driven (data/families.json, R48) for the later ruling-house era.
 import { addRenown } from "./legacy.js";
 import { era } from "./family.js";
 import { WAR, warDay, warEscalate, wars } from "./war.js";
 import { D, living, log, rng } from "./state.js";
+import { perkSell, threadOpenCheck, driftFloor, giftScale, rivalSting, temperMonth, temperScale } from "./families.js"; // R48 temperaments
 
-export const HC = () => D.marriage.houses;
+export const HC = () => D.families;
 export const FEUD = () => HC().feud;
 export const houseList = () => HC().list;
 // Phase gates (data houses.gates): marriage/rapport from the Beginning, rivalry quests and troubles once Established,
@@ -36,9 +37,10 @@ export const inFeud = (s, id) => ["feud", "war"].includes(houseState(s, id).stat
 export const ties = (s, id) =>
   living(s).filter(m => m.house === id).length + (s.members || []).filter(m => m.marriedOut === id).length;
 
-export function addRapport(s, id, n, why = "") {
+export function addRapport(s, id, n, why = "", kind = "event") {
   const h = houseState(s, id),
     before = tierOf(s, id);
+  n = temperScale(id, n, kind); // R48: honest/proud/scheming… scale gains and losses (families.json temperaments)
   const [lo, hi] = HC().range;
   h.r = Math.max(lo, Math.min(hi, h.r + n));
   checkFeud(s, id);
@@ -76,9 +78,12 @@ export function houseQuestIssue(s, q) {
 export const houseQuests = (s, id) => D.quests.filter(q => q.house === id || (q.needsFeud && q.against === id));
 
 export function houseQuestDone(s, q) {
-  if (q.house) addRapport(s, q.house, HC().questRapport, q.name);
+  if (q.house) {
+    const r0 = houseState(s, q.house).r;
+    rivalSting(s, q.house, addRapport(s, q.house, HC().questRapport, q.name, "quest") - r0); // R48: helping Sallow angers Corran and back
+  }
   if (q.against) {
-    addRapport(s, q.against, HC().againstRapport, q.name);
+    addRapport(s, q.against, HC().againstRapport, q.name, "against");
     if (atWar(s, q.against)) houseState(s, q.against).score += 0.5; // raids count toward a decisive win
   }
 }
@@ -102,7 +107,7 @@ export function sendGift(s, id) {
   if (giftIssue(s, id)) return false;
   s.res.coin -= giftCost(s, id);
   houseState(s, id).gift = s.day;
-  addRapport(s, id, HC().giftStanding, "gift");
+  addRapport(s, id, HC().giftStanding * giftScale(id), "gift", "gift"); // R48: ruthless houses sneer at gifts
   return true;
 }
 
@@ -110,7 +115,7 @@ export function sendGift(s, id) {
 export function houseSellMult(s, townId) {
   let m = 1;
   for (const h of houseList()) if (h.town === townId) m *= tierFx(s, h.id).sellMult || 1;
-  return m;
+  return m * perkSell(s, townId); // R48 Marlowe +3% in Ashford
 }
 export const courtBonus = (s, houseId) => (houseId ? tierFx(s, houseId).courtMult || 0 : 0);
 
@@ -144,7 +149,10 @@ export function housesDay(s) {
     }
     if (s.day % 30 !== 0) continue;
     // drift toward neutral (or toward the tie floor while a marriage links the houses)
-    const target = ties(s, hd.id) ? HC().tieFloor : 0,
+    threadOpenCheck(s, hd); // R48 house threads open month by month
+    temperMonth(s, hd); // R48: pious likes Church members, scheming may betray when Cold
+    const fl = driftFloor(s, hd.id),
+      target = Math.max(ties(s, hd.id) ? HC().tieFloor : 0, fl ?? -Infinity),
       d = HC().driftPerMonth;
     h.r = h.r > target ? Math.max(target, h.r - d) : Math.min(target, h.r + d);
     checkFeud(s, hd.id);

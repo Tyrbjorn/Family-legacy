@@ -30,6 +30,11 @@
     "chore": "mendnets",
     "mult": 0.2,
     "why": "Mended nets"
+   },
+   {
+    "item": "fishnet",
+    "mult": 0.15,
+    "why": "Fishing Net"
    }
   ],
   "task": true

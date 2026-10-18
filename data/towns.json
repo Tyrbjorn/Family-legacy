@@ -66,7 +66,9 @@
    "hay": 1,
    "limestone": 5,
    "granite": 8,
-   "marble": 25
+   "marble": 25,
+   "saltedfish": 7,
+   "rope": 5
   },
   "shop": [
    "rusty_sword",
@@ -177,7 +179,9 @@
    "hay": 1,
    "limestone": 5,
    "granite": 8,
-   "marble": 25
+   "marble": 25,
+   "saltedfish": 8,
+   "rope": 5.5
   },
   "shop": [
    "iron_sword",
@@ -280,7 +284,9 @@
    "hay": 1,
    "limestone": 5,
    "granite": 8,
-   "marble": 25
+   "marble": 25,
+   "saltedfish": 7.5,
+   "rope": 5
   },
   "shop": [
    "hunting_bow",
@@ -380,7 +386,9 @@
    "hay": 1.5,
    "limestone": 5,
    "granite": 8,
-   "marble": 25
+   "marble": 25,
+   "saltedfish": 8.5,
+   "rope": 6
   },
   "shop": [
    "iron_sword",
@@ -417,6 +425,104 @@
   "wants": [
    "preserves",
    "cloth"
+  ]
+ },
+ {
+  "id": "gullport",
+  "name": "Gull's Landing",
+  "region": "outskirts",
+  "icon": "⚓",
+  "coast": true,
+  "port": true,
+  "act": 1,
+  "desc": "A windy fishing port on the west coast: a stone jetty, net sheds, salt pans and a harbourmistress who misses nothing.",
+  "prices": {
+   "food": 1,
+   "wood": 2,
+   "stone": 3,
+   "thyme": 4,
+   "planks": 6,
+   "ore": 4,
+   "ingots": 14,
+   "potions": 12,
+   "hides": 5,
+   "cloth": 7,
+   "meat": 3,
+   "fish": 1.5,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9,
+   "salves": 14,
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12,
+   "wheat": 1.5,
+   "barley": 1.5,
+   "vegetables": 1.5,
+   "berries": 2.0,
+   "milk": 1.5,
+   "salt": 2.5,
+   "flax": 2.4,
+   "flour": 3.0,
+   "butter": 4.0,
+   "ale": 6,
+   "pie": 8.0,
+   "porridge": 3.0,
+   "draught": 16.0,
+   "manatonic": 20.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2,
+   "wine": 12.5,
+   "spirits": 20.0,
+   "tinore": 4.0,
+   "tin": 10.0,
+   "bronze": 20.0,
+   "coal": 3.0,
+   "steel": 30.0,
+   "silverore": 8.0,
+   "silver": 30.0,
+   "goldore": 15.0,
+   "gold": 60.0,
+   "mithrilore": 40.0,
+   "mithril": 120.0,
+   "adamantore": 70.0,
+   "adamantium": 220.0,
+   "hay": 1,
+   "limestone": 5,
+   "granite": 8,
+   "marble": 25,
+   "saltedfish": 6,
+   "rope": 5
+  },
+  "shop": [
+   "fishnet",
+   "seaboat_plans",
+   "hatchet",
+   "herbknife",
+   "padded_vest"
+  ],
+  "market": [
+   "food",
+   "rope",
+   "hay"
+  ],
+  "produces": [
+   "fish",
+   "salt",
+   "saltedfish"
+  ],
+  "wants": [
+   "planks",
+   "flax",
+   "ale"
   ]
  }
 ]

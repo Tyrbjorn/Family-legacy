@@ -12,7 +12,7 @@ ok(D.fish.species.length===8&&D.fish.species.every(f=>f.value>0&&f.food>0),'8 sp
   s.vault.push('smallboat'); ok(!(s.structures||[]).some(x=>x.type==='dock')&&E.spotOpen(s,sp('deep')),'boat alone opens deep water (no Dock)');
   ok(E.hasBoat(s),'boat alone crosses lakes'); ok(E.fishSpot(s).id==='deep','auto picks deep (worth more)');
   ok(E.setFishSpot(s,'shore')&&E.fishSpot(s).id==='shore'&&E.setFishSpot(s,'auto'),'picker pins a spot');
-  ok(E.spotIssue(s,sp('seashore'))&&E.spotIssue(s,sp('deepsea'))==='coming later','sea shore locked until Gull\'s Landing; deep sea stubbed');
+  ok(E.spotIssue(s,sp('seashore'))&&/Sea Boat/.test(E.spotIssue(s,sp('deepsea'))),'sea shore locked until Gull\'s Landing; deep sea needs a Sea Boat (R48)');
   s.discovered=[...(s.discovered||[]),'loc:l_gullport']; ok(E.spotOpen(s,sp('seashore'))&&E.catchTable(s,'seashore').some(r=>r.f.id==='herring'),'Herring at Gull\'s Landing'); }
 { const s=fresh(); lvl(s,0); const t=E.catchTable(s,'deep').map(r=>r.f.id); ok(!t.includes('trout')&&!t.includes('sturgeon')&&!t.includes('pike'),'minLvl respected');
   lvl(s,30); const t2=E.catchTable(s,'deep'); ok(t2.some(r=>r.f.id==='sturgeon'),'sturgeon at 25+');

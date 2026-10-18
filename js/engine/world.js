@@ -1,3 +1,4 @@
+import { seaCargo } from "./sea.js";
 // Map round (data/world.json): terrain, roads, routes, fog of war, locations, node stock, hauling, land features.
 import { D, T, isAdult, living, log, rng } from "./state.js";
 import { chron } from "./chronicle.js";
@@ -164,14 +165,15 @@ export const stalls = s => {
   return n;
 };
 export const animalCount = s => Object.values(s.animals || {}).reduce((a, b) => a + b, 0);
-export function haulTier(s) {
+export function haulTier(s, ctx = {}) {
   let best = { ...HL().base, q: 0 };
   for (const t of HL().tiers) {
+    if (t.coast && !ctx.coast) continue; // R48: the Sea Boat only hauls on the coast
     const veh = t.item ? ownsVehicle(s, t.item) : [true];
     if (!veh.length) continue;
     if (t.animal && !animalWorks(s, t.animal)) continue;
     const q = t.item ? Math.max(...veh.map(QIDX)) : 0;
-    const carry = t.carry * (1 + HL().qualityCarry * q);
+    const carry = (t.carry + seaCargo(s, t)) * (1 + HL().qualityCarry * q); // R48 Corwen allied: +1 Sea Boat cargo tier
     if (carry * t.haulSpeed > best.carry * best.haulSpeed) best = { ...t, carry, q };
   }
   // a wagon with no working animal is pulled by hand: slow, less cargo

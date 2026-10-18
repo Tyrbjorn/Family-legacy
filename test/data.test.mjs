@@ -109,8 +109,8 @@ for (const t of D.towns)
 ok(D.phases.list.map(p => p.n).join() === "1,2,3,4" && D.phases.list[3].planned, "four phases, Titles planned");
 const STG = D.estate.stages.map(x => x[1]);
 for (const p of D.phases.list.filter(p => p.need && !p.need.homeAndFamily)) ok(STG.includes(p.need.stage) && p.need.adults > 0, `phase ${p.id} stage exists`);
-for (const [k, v] of Object.entries(D.marriage.houses.gates)) if (k[0] !== "_") ok(v >= 1 && v <= 3, `gate ${k} is a built phase`);
-ok(D.marriage.houses.gates.feud === 3 && D.marriage.houses.gates.war === 3, "feud & war are Dynasty-phase");
+for (const [k, v] of Object.entries(D.families.gates)) if (k[0] !== "_") ok(v >= 1 && v <= 3, `gate ${k} is a built phase`);
+ok(D.families.gates.feud === 3 && D.families.gates.war === 3, "feud & war are Dynasty-phase");
 const TABSET = new Set(["main","family","jobs","inv","estate","map","minions","guilds","craft","chron","houses"]), IDS = new Set();
 for (const l of D.intros.lines) {
   ok(!IDS.has(l.id), `intro ${l.id} unique`); IDS.add(l.id);
@@ -152,7 +152,7 @@ for (const l of D.intros.lines) {
 }
 // marriage & diplomacy data
 const MD = D.marriage,
-  HS = new Set(MD.houses.list.map(h => h.id)),
+  HS = new Set(D.families.list.map(h => h.id)),
   STATSET = new Set(["STR", "AGI", "INT", "VIT", "WIL", "CHA"]);
 for (const p of MD.personalities) {
   ok(STATSET.has(p.likesStat), `persona ${p.id} likesStat`);
@@ -160,15 +160,15 @@ for (const p of MD.personalities) {
   for (const t of p.favors) ok(D.traits.some(x => x.id === t), `persona ${p.id} favors trait ${t}`);
   ok(Object.keys(p.household).length > 0, `persona ${p.id} affects the household`);
 }
-for (const h of MD.houses.list) {
+for (const h of D.families.list) {
   ok(D.towns.some(t => t.id === h.town), `house ${h.id} town`);
   ok(h.wealth >= 1 && h.wealth <= 3, `house ${h.id} wealth`);
   ok(D.quests.some(q => q.house === h.id), `house ${h.id} offers a quest`);
   ok(D.quests.some(q => q.needsFeud && q.against === h.id), `house ${h.id} has a feud quest`);
 }
-for (const st of MD.houses.status) ok(MD.houses.tiers[st.id], `tier ${st.id} has effects`);
-ok(MD.houses.status.every((st, i, a) => !i || st.max > a[i - 1].max), "rapport tiers ascend");
-ok(MD.houses.feud.at <= MD.houses.status.find(x => x.id === "feud").max && MD.houses.feud.exit > MD.houses.feud.at, "feud thresholds");
+for (const st of D.families.status) ok(D.families.tiers[st.id], `tier ${st.id} has effects`);
+ok(D.families.status.every((st, i, a) => !i || st.max > a[i - 1].max), "rapport tiers ascend");
+ok(D.families.feud.at <= D.families.status.find(x => x.id === "feud").max && D.families.feud.exit > D.families.feud.at, "feud thresholds");
 for (const q of D.quests.filter(q => q.house || q.against)) {
   if (q.house) ok(HS.has(q.house), `quest ${q.id} house`);
   if (q.against) ok(HS.has(q.against) && q.against !== q.house, `quest ${q.id} against`);
@@ -243,7 +243,7 @@ if (fail) process.exit(1);
   for (const l of WW.locations) ok(LT.includes(l.type) && D.regions.some(r => r.id === l.region) && (!l.town || D.towns.some(t => t.id === l.town)) && (!l.link || [...D.quests, ...D.nodes, ...D.dungeons].some(x => x.id === l.link)), `location ${l.id} valid`);
   ok(WW.locations.some(l => l.id === "l_crone" && l.hidden && l.link === "witch"), "crone/witch is a hidden place");
   ok(WW.locations.some(l => l.stub === "runecarver" && l.locked && l.hidden), "dwarven hold stub (locked, hidden)");
-  ok(WW.locations.some(l => l.port && l.sea === "future"), "a coast/port stub for future sea access");
+  ok(WW.locations.some(l => l.port && l.town && D.towns.some(t => t.id === l.town && t.port)), "R48: the port location is a real port town (Gull's Landing)");
   const secretLocs = D.map.areas.flatMap(a => a.secrets).filter(x => x.type === "location");
   ok(WW.locations.filter(l => l.hidden && !l.town && !l.link).every(l => secretLocs.some(x => x.id === l.id)) && secretLocs.every(x => WW.locations.some(l => l.id === x.id)), "hidden locations are reachable via explore secrets");
   const NN = D.nodes.filter(n => n.terrainNode);

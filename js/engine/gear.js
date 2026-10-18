@@ -250,6 +250,7 @@ export function itemStats(id, m) {
   if (!it) return [];
   const L = [], add = (k, t) => L.push({ k, t });
   if (it.cp) add("cp", `${ROLE[it.slot] || "power"} +${it.cp} CP`);
+  if (it.teaches) add("teaches", `📜 teaches ${it.teaches.startsWith("recipe:") ? "the recipe " : ""}${((D.crafting.recipes.find(r => "recipe:" + r.id === it.teaches) || {}).name) || it.teaches}`); // R48 plans
   if (it.slot === "map") add("map", `🗺️ ${it.desc || "Special map: read it from the Bag"}`);
   L.push(...typeStats(it, m));
   if (it.quality) {
@@ -272,7 +273,7 @@ export function itemStats(id, m) {
   if (it.companion) add("pet", "🐾 companion");
   if (it.slot === "haul") {
     const H = (D.world && D.world.haul) || { tiers: [] }, ts = H.tiers.filter(t => t.item === it.id);
-    if (ts.length) add("haul", ts.map(t => `${t.icon} carry ${t.carry}${t.haulSpeed > 1 ? `, haul ×${t.haulSpeed}` : ""}${t.animal ? ` (with ${t.animal})` : ""}`).join(" · "));
+    if (ts.length) add("haul", ts.map(t => `${t.icon} carry ${t.carry}${t.haulSpeed > 1 ? `, haul ×${t.haulSpeed}` : ""}${t.animal ? ` (with ${t.animal})` : ""}${t.coast ? " on coast hauls; sails coast routes, fishes the deep sea" : ""}`).join(" · "));
     else add("haul", "🚤 lets the family travel by water");
   }
   return L;

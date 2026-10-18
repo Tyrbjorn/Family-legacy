@@ -2371,6 +2371,72 @@
    },
    "desc": "Carved stone cornices (the fine building look): +3% masonry XP",
    "fitting": true
+  },
+  {
+   "id": "saltingtub",
+   "name": "Salting Tub",
+   "icon": "🧂",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 40,
+    "planks": 6
+   },
+   "unlock": {
+    "loc": "l_gullport"
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "fish": 2,
+       "salt": 1
+      },
+      "out": "saltedfish",
+      "rate": 1.5,
+      "food": true
+     }
+    ]
+   },
+   "desc": "Fish + salt → salted fish (keeps for months, sells well). Learned at Gull's Landing."
+  },
+  {
+   "id": "ropewalk",
+   "name": "Rope Walk",
+   "icon": "🪢",
+   "kind": "station",
+   "skill": "tailoring",
+   "cost": {
+    "coin": 50,
+    "planks": 8
+   },
+   "unlock": {
+    "loc": "l_gullport"
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "flax": 2
+      },
+      "out": "rope",
+      "rate": 2
+     }
+    ]
+   },
+   "desc": "Twists 2 flax → 1 rope, 2/day (boats and nets). Learned at Gull's Landing."
+  },
+  {
+   "id": "slipwayways",
+   "name": "Slipway",
+   "icon": "⛵",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "boats": 3
+   },
+   "desc": "Building ways for a decked Sea Boat; keeps small boats too"
   }
  ],
  "synergies": [
@@ -2642,7 +2708,9 @@
    "marble",
    "limeblocks",
    "graniteblocks",
-   "marbleblocks"
+   "marbleblocks",
+   "saltedfish",
+   "rope"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2748,7 +2816,9 @@
     "gold",
     "limeblocks",
     "graniteblocks",
-    "marbleblocks"
+    "marbleblocks",
+    "saltedfish",
+    "rope"
    ]
   },
   "3": {
@@ -2787,7 +2857,8 @@
   "berries": 1,
   "mushrooms": 1,
   "wine": 0.5,
-  "spirits": 0.3
+  "spirits": 0.3,
+  "saltedfish": 2.5
  },
  "classHousingNote": "Class buildings house followers of matching NPC classes like a Bunkhouse (cap 2, +1 per upgrade); residents get +15% output.",
  "foodQuality": {
@@ -2814,7 +2885,8 @@
    "berries": 1,
    "mushrooms": 1,
    "wine": 0.5,
-   "spirits": 0.3
+   "spirits": 0.3,
+   "saltedfish": 2.5
   },
   "defaultOff": [
    "meat",

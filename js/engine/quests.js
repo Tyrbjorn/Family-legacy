@@ -6,6 +6,8 @@ import { tutActive } from "./tutorial.js";
 import { questLineNext } from "./requests.js";
 import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
+import { perkRep, questEvents, threadQuestDone } from "./families.js";
+import { markVisited, townKnownId } from "./sea.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
 import { mapDrop } from "./specialmaps.js";
@@ -52,6 +54,7 @@ export function resolveQuest(s, m, q, eff) {
   const firstOnce = (q.once || q.story) && !s.doneQuests.includes(q.id);
   addRenown(s, m, Math.ceil(q.cp / 20) + (firstOnce ? LG().renown.questFirstOnce || 0 : 0));
   m.questsDone = (m.questsDone || 0) + 1;
+  (s.qRuns ||= {})[q.id] = (s.qRuns[q.id] || 0) + 1; // R48 times each quest was finished (stats)
   const firstDone = !s.doneQuests.includes(q.id);
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   talentQuest(s, m, q.id); // R36
@@ -62,6 +65,9 @@ export function resolveQuest(s, m, q, eff) {
   if (mp) gain.push(itemDef(mp).name);
   rollRare(s, q, m);
   if (q.house || q.against) houseQuestDone(s, q);
+  questEvents(s, q); // R48 temperament events (bandits cleared, cruelty)
+  threadQuestDone(s, q, m); // R48 house thread finished
+  if (q.town) markVisited(s, q.town);
   questLineNext(s, q);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
   if (q.story) chron(s, "story", `📖 Chapter ${q.story}: ${m.name} completed ${q.name}.`, m.name);
@@ -77,8 +83,9 @@ export function resolveQuest(s, m, q, eff) {
   if (m.adv) m.adv.rep += Math.ceil(q.cp / 10) + 1;
   for (const mg of guildsOf(m)) {
     const g = guildDef(mg.id);
-    if (q.guild === g.id) mg.rep += D.guilds.repPerGuildQuest;
-    else if (g.skills.includes(q.skill)) mg.rep += D.guilds.repPerQuestSkill;
+    const rk = 1 + perkRep(s, g.id); // R48 Dawnward: Healers' Guild rep +10%
+    if (q.guild === g.id) mg.rep += D.guilds.repPerGuildQuest * rk;
+    else if (g.skills.includes(q.skill)) mg.rep += D.guilds.repPerQuestSkill * rk;
   }
   const rc = D.minions.rescueQuests[q.id];
   if (rc && rng() < rc) addMinion(s, "refugee", `rescued on ${q.name}`);
@@ -95,6 +102,8 @@ export function questIssue(s, m, q) {
   if (q.once && s.doneQuests.includes(q.id)) return "done";
   if (!regionOpen(s, q.region)) return "region locked";
   if (!questOk(m, q)) return "guild rank";
+  if (q.req?.town && !townKnownId(s, q.req.town)) return "find " + ((findId(D.towns, q.req.town) || {}).name || q.req.town); // R48
+  if (q.req?.story && !storyDone(s, q.req.story)) return "after chapter " + q.req.story; // R48 side beats open after a chapter
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
   if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).endsWith(q.req.item))) return "needs a " + (findId(D.items, q.req.item) || {}).name;
@@ -110,6 +119,7 @@ export function questIssue(s, m, q) {
   return null;
 }
 
+export const storyDone = (s, n) => storyQuests().filter(q => q.story <= n).every(q => s.doneQuests.includes(q.id));
 export const storyQuests = () => D.quests.filter(q => q.story).sort((a, b) => a.story - b.story);
 
 export const storyProgress = s => storyQuests().filter(q => s.doneQuests.includes(q.id)).length;
@@ -211,6 +221,7 @@ export function grantRewards(s, m, q) {
     s.deeds.push("Founded a village by the Baron's charter.");
     out.push("village founded");
   }
+  if (g.unlock && !s.unlocks.includes(g.unlock.key)) { s.unlocks.push(g.unlock.key); out.push("🔓 " + g.unlock.text); } // R48 (the harbour ferry)
   if (g.renown) {
     addRenown(s, m, g.renown);
     out.push("+" + g.renown + " renown");

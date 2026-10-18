@@ -1693,6 +1693,23 @@
    "days": 3,
    "minSkill": 10,
    "hidden": true
+  },
+  {
+   "id": "r_seaboat",
+   "name": "Sea Boat",
+   "base": "seaboat",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 40,
+    "rope": 12,
+    "cloth": 8
+   },
+   "days": 10,
+   "line": "carpenter",
+   "path": "carpenter",
+   "needsStruct": "slipway",
+   "hidden": true
   }
  ],
  "minionSlots": [

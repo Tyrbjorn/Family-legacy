@@ -8,6 +8,7 @@ import { estateStage } from "./estate.js";
 import { taskYields, refineDay, refineSrc } from "./requests.js";
 import { quotaCredit } from "./quotas.js";
 import { registerDayHook } from "./time.js";
+import { townKnownId } from "./sea.js";
 
 export const CH = () => (D.estate && D.estate.chores) || { autoRate: 0.35, fxDays: 1, tiers: {} };
 export const chores = () => (D.activities || []).filter(a => a.chore);
@@ -19,6 +20,7 @@ export function opensOk(s, o) {
   if (o.stage && stageIdx(estateStage(s)) < stageIdx(o.stage)) return false;
   if (o.structure && !(s.structures || []).some(st => st.type === o.structure && !st.unpaid)) return false;
   if (o.village && !s.village) return false;
+  if (o.town && !townKnownId(s, o.town)) return false; // R48: Gull's Landing folk appear once the port is found
   return true;
 }
 export function opensText(o) {
@@ -27,6 +29,7 @@ export function opensText(o) {
   if (o.stage) p.push(`estate reaches ${o.stage}`);
   if (o.structure) p.push(`a ${((D.estate.structures || []).find(x => x.id === o.structure) || {}).name || o.structure}`);
   if (o.village) p.push("your own village");
+  if (o.town) p.push("finding " + ((D.towns.find(x => x.id === o.town) || {}).name || o.town));
   return p.join(" + ");
 }
 export const choreOpen = (s, ac) => !!(ac && ac.chore) && opensOk(s, ac.chore.opens);

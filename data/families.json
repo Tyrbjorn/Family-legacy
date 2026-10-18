@@ -1,0 +1,734 @@
+{
+ "_note": "R48 families of the realm (moved from marriage.json houses; marriage.json keeps only the marriage rules). Same ids as before, so saves keep their standing. Each house: seat town, major/minor, what it's known for, a goal and a temperament (rules below), a 3-quest thread, perks at Friendly and Allied (minor houses: one perk from Friendly), whether it offers marriage (true, or \"allied\"), optional `rival` (helping one angers the other). Later rounds add Gilmane (Saltmere, R49), Crane (the usurper, R50) and Clan Brokka (Dwarfhold, R51) the same way.",
+ "player": {
+  "id": "vael",
+  "name": "House Vael",
+  "icon": "🛡️",
+  "text": "Your own family: the ancestral house of the story (chapters 7 and 10). Never a rival."
+ },
+ "status": [
+  {
+   "id": "feud",
+   "name": "Feud",
+   "icon": "🔥",
+   "max": -75
+  },
+  {
+   "id": "rival",
+   "name": "Rival",
+   "icon": "😠",
+   "max": -50
+  },
+  {
+   "id": "cold",
+   "name": "Cold",
+   "icon": "🥶",
+   "max": -15
+  },
+  {
+   "id": "neutral",
+   "name": "Neutral",
+   "icon": "🏳️",
+   "max": 24
+  },
+  {
+   "id": "friendly",
+   "name": "Friendly",
+   "icon": "🙂",
+   "max": 59
+  },
+  {
+   "id": "allied",
+   "name": "Allied",
+   "icon": "🤝",
+   "max": 100
+  }
+ ],
+ "marryIn": 30,
+ "jilt": -25,
+ "tieFloor": 60,
+ "driftPerMonth": 2,
+ "giftCoin": 150,
+ "giftStanding": 12,
+ "giftCooldown": 30,
+ "list": [
+  {
+   "id": "ashbrook",
+   "name": "House Ashbrook",
+   "icon": "🌾",
+   "town": "millbrook",
+   "wealth": 1,
+   "desc": "Old farming stock",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "millbrook",
+   "major": true,
+   "known": "Old farming stock",
+   "goal": "Land and tradition",
+   "temperament": "honest",
+   "thread": {
+    "name": "The Long Harvest",
+    "quests": [
+     "ht_ashbrook1",
+     "ht_ashbrook2",
+     "ht_ashbrook3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "buy",
+      "res": [
+       "wheat",
+       "barley",
+       "milk",
+       "flour"
+      ],
+      "pct": 0.05,
+      "text": "−5% buying grain and milk"
+     }
+    ],
+    "allied": [
+     {
+      "type": "fieldYield",
+      "pct": 0.03,
+      "text": "+3% field yield"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "vey",
+   "name": "House Vey",
+   "icon": "🌲",
+   "town": "thornwick",
+   "wealth": 1,
+   "desc": "Foresters of the Old Wood",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "thornwick",
+   "major": true,
+   "known": "Foresters of the Old Wood",
+   "goal": "Protect the wood",
+   "temperament": "idealistic",
+   "thread": {
+    "name": "The Wood Remembers",
+    "quests": [
+     "ht_vey1",
+     "ht_vey2",
+     "ht_vey3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "buy",
+      "res": [
+       "wood",
+       "planks"
+      ],
+      "pct": 0.05,
+      "text": "−5% buying wood"
+     }
+    ],
+    "allied": [
+     {
+      "type": "node",
+      "node": "deadfall",
+      "pct": 0.2,
+      "text": "Deadfall node +20%"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "marlowe",
+   "name": "House Marlowe",
+   "icon": "⚓",
+   "town": "ashford",
+   "wealth": 3,
+   "desc": "River traders",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "ashford",
+   "major": true,
+   "known": "River traders",
+   "goal": "Wealth (shrewd but fair)",
+   "temperament": "honest",
+   "thread": {
+    "name": "Marlowe's Barges",
+    "quests": [
+     "ht_marlowe1",
+     "ht_marlowe2",
+     "ht_marlowe3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "sell",
+      "town": "ashford",
+      "pct": 0.03,
+      "text": "+3% selling in Ashford"
+     }
+    ],
+    "allied": [
+     {
+      "type": "tradeRoute",
+      "n": 1,
+      "text": "+1 trade route"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "skye",
+   "name": "House Skye",
+   "icon": "🦅",
+   "town": "eyrie",
+   "wealth": 3,
+   "desc": "Mountain gentry",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "eyrie",
+   "major": true,
+   "known": "Mountain gentry, eagle-riders",
+   "goal": "Honour and oaths",
+   "temperament": "proud",
+   "thread": {
+    "name": "The Eyrie Oath",
+    "quests": [
+     "h_eyrie",
+     "ht_skye2",
+     "ht_skye3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "discover",
+      "region": "highlands",
+      "pct": 0.25,
+      "text": "Eyrie scouts: +25% finds exploring the Highlands"
+     }
+    ],
+    "allied": [
+     {
+      "type": "travel",
+      "region": "highlands",
+      "mult": 1.1,
+      "text": "Travel ×1.1 in the Highlands"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "corwen",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "House Corwen",
+   "icon": "⛵",
+   "town": "gullport",
+   "seat": "gullport",
+   "wealth": 1,
+   "desc": "Fishing fleet and salvage",
+   "major": true,
+   "known": "Fishing fleet and salvage",
+   "goal": "Fortune from the sea",
+   "temperament": "honest",
+   "poor": true,
+   "thread": {
+    "name": "Salvage Rights",
+    "quests": [
+     "ht_corwen1",
+     "ht_corwen2",
+     "ht_corwen3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "ferry",
+      "pct": 0.25,
+      "text": "Harbour ferry −25%"
+     }
+    ],
+    "allied": [
+     {
+      "type": "cargo",
+      "tier": "seaboat",
+      "n": 1,
+      "text": "+1 Sea Boat cargo tier"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "tallow",
+   "name": "House Tallow",
+   "icon": "🕯️",
+   "town": "millbrook",
+   "wealth": 2,
+   "desc": "Chandlers and merchants",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "millbrook",
+   "major": false,
+   "known": "Chandlers and merchants",
+   "goal": "Wealth",
+   "temperament": "scheming",
+   "thread": {
+    "name": "Tallow's Bargain",
+    "quests": [
+     "ht_tallow1",
+     "ht_tallow2",
+     "ht_tallow3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "shopDisc",
+      "town": "millbrook",
+      "pct": 0.05,
+      "text": "Cheap candles and wax: −5% in Millbrook's shop"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "corran",
+   "name": "House Corran",
+   "icon": "⚒️",
+   "town": "ashford",
+   "wealth": 2,
+   "desc": "Smiths and guild masters",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "seat": "ashford",
+   "major": false,
+   "known": "Smiths and guild masters",
+   "goal": "Power in the guilds",
+   "temperament": "ruthless",
+   "thread": {
+    "name": "Corran's Forge Rights",
+    "quests": [
+     "ht_corran1",
+     "ht_corran2",
+     "ht_corran3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "buy",
+      "res": [
+       "ingots"
+      ],
+      "pct": 0.05,
+      "text": "−5% buying ingots"
+     }
+    ]
+   },
+   "marriage": true,
+   "rival": "sallow"
+  },
+  {
+   "id": "dawnward",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "House Dawnward",
+   "icon": "🔔",
+   "town": "millbrook",
+   "seat": "millbrook",
+   "wealth": 2,
+   "desc": "Patrons of the Church",
+   "major": false,
+   "known": "Patrons of the Church",
+   "goal": "Faith",
+   "temperament": "pious",
+   "thread": {
+    "name": "Bells of Dawn",
+    "quests": [
+     "ht_dawnward1",
+     "ht_dawnward2",
+     "ht_dawnward3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "guildRep",
+      "guild": "church",
+      "pct": 0.1,
+      "text": "Healers' Guild rep +10%"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "ormond",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "House Ormond",
+   "icon": "📚",
+   "town": "thornwick",
+   "seat": "thornwick",
+   "wealth": 2,
+   "desc": "Scholars near the Collegium",
+   "major": false,
+   "known": "Scholars near the Collegium",
+   "goal": "Knowledge",
+   "temperament": "honest",
+   "aloof": true,
+   "thread": {
+    "name": "The Ormond Library",
+    "quests": [
+     "ht_ormond1",
+     "ht_ormond2",
+     "ht_ormond3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "xp",
+      "skills": [
+       "reading",
+       "history"
+      ],
+      "pct": 0.05,
+      "text": "+5% Reading and History XP"
+     },
+     {
+      "type": "shop",
+      "town": "thornwick",
+      "items": [
+       "ward_scroll",
+       "grimoire"
+      ],
+      "text": "Rare scrolls for sale in Thornwick"
+     }
+    ]
+   },
+   "marriage": true
+  },
+  {
+   "id": "sallow",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "House Sallow",
+   "icon": "🥀",
+   "town": "ashford",
+   "seat": "ashford",
+   "wealth": 1,
+   "desc": "A fallen house",
+   "major": false,
+   "known": "A fallen house",
+   "goal": "Revenge on House Corran",
+   "temperament": "scheming",
+   "rival": "corran",
+   "thread": {
+    "name": "Old Debts",
+    "quests": [
+     "ht_sallow1",
+     "ht_sallow2",
+     "ht_sallow3"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "sell",
+      "town": "ashford",
+      "pct": 0.02,
+      "text": "Sallow's old contacts: +2% selling in Ashford"
+     }
+    ]
+   },
+   "marriage": true
+  }
+ ],
+ "range": [
+  -100,
+  100
+ ],
+ "tiers": {
+  "rival": {
+   "sellMult": 0.95,
+   "suitors": false,
+   "dowryMult": 0,
+   "troubleChance": 0.12,
+   "quests": false
+  },
+  "cold": {
+   "sellMult": 1,
+   "suitors": false,
+   "dowryMult": 0,
+   "troubleChance": 0,
+   "quests": true
+  },
+  "neutral": {
+   "sellMult": 1,
+   "suitors": true,
+   "dowryMult": 1,
+   "quests": true
+  },
+  "friendly": {
+   "sellMult": 1.02,
+   "suitors": true,
+   "dowryMult": 1.5,
+   "courtMult": 0.1,
+   "quests": true
+  },
+  "allied": {
+   "sellMult": 1.05,
+   "suitors": true,
+   "dowryMult": 2,
+   "courtMult": 0.2,
+   "renownMonth": 1,
+   "giftChance": 0.15,
+   "quests": true
+  },
+  "feud": {
+   "sellMult": 0.9,
+   "suitors": false,
+   "dowryMult": 0,
+   "troubleChance": 0.25,
+   "quests": false
+  }
+ },
+ "questRapport": 12,
+ "againstRapport": -15,
+ "troubles": [
+  {
+   "id": "theft",
+   "msg": "😠 {house} agents pilfered {n} coin.",
+   "coinPct": 0.05,
+   "coinMax": 150
+  },
+  {
+   "id": "spoil",
+   "msg": "😠 {house} spoiled part of your stores (−{n} food).",
+   "foodPct": 0.1
+  },
+  {
+   "id": "slander",
+   "msg": "😠 {house} spread slander about your family (−{n} renown).",
+   "renown": 10
+  },
+  {
+   "id": "poach",
+   "msg": "😠 {house} tried to poach your followers (loyalty −{n}).",
+   "loyalty": 10
+  }
+ ],
+ "gifts": [
+  {
+   "coin": 60
+  },
+  {
+   "res": {
+    "planks": 20
+   }
+  },
+  {
+   "res": {
+    "cheese": 10
+   }
+  },
+  {
+   "res": {
+    "salt": 10
+   }
+  }
+ ],
+ "feud": {
+  "at": -75,
+  "exit": -60,
+  "escalateChance": 0.06,
+  "warnDays": 30,
+  "minPowerForAggression": 40
+ },
+ "war": {
+  "battleEvery": 20,
+  "maxDays": 360,
+  "decisive": 3,
+  "memberPower": 1,
+  "guardPower": 15,
+  "allyPower": 25,
+  "enemyPerWealth": 40,
+  "enemyMinScale": 0.6,
+  "enemyMaxScale": 1.1,
+  "weariness": 1,
+  "wearyMoralePer": 0.5,
+  "wearyMoraleMax": 4,
+  "wearyDecayPerMonth": 1,
+  "spoilsPerWealth": 80,
+  "lossCoinPct": 0.05,
+  "lossCoinMax": 200,
+  "injureDays": 5,
+  "minionLossChance": 0.2,
+  "victoryRapport": -20,
+  "victoryRenown": 60,
+  "defeatTributePct": 0.1,
+  "defeatTributeMax": 600,
+  "defeatRapport": -45,
+  "tributePerWealth": 250,
+  "truceRapport": -45,
+  "marryPeaceRapport": 10,
+  "timeoutRapport": -45
+ },
+ "gates": {
+  "_note": "minimum phase per system: 1 Beginning, 2 Established, 3 Dynasty, 4 Titles",
+  "houseQuests": 1,
+  "againstQuests": 2,
+  "troubles": 2,
+  "feud": 3,
+  "war": 3
+ },
+ "ranks": [
+  {
+   "id": "gentry",
+   "name": "Gentry",
+   "_note": "Phase 4 (Titles) will add baron/count/... lords here; houses keep id/seat/wealth/rank"
+  }
+ ],
+ "temperaments": {
+  "_note": "Per-temperament standing rules. gain/loss scale every rapport change of that sign; gift scales gift standing; likes/dislikes fire on family events (houseEvent); monthly checks run on the 30-day house tick; betray = a trouble roll while Cold or worse; alliedFloor keeps an Allied house from drifting below it.",
+  "honest": {
+   "name": "Honest",
+   "icon": "⚖️",
+   "text": "Standing rises steadily from fair deals and requests filled. Breaking a deal (a quest against them) costs a lot.",
+   "gain": 1.2,
+   "againstMult": 1.6,
+   "likes": [
+    {
+     "on": "request",
+     "seat": true,
+     "n": 2
+    }
+   ]
+  },
+  "scheming": {
+   "name": "Scheming",
+   "icon": "🦊",
+   "text": "Offers shady but profitable deals. Standing swings fast, and it may betray you when Cold.",
+   "gain": 1.5,
+   "loss": 1.5,
+   "betray": {
+    "chance": 0.2,
+    "coinPct": 0.04,
+    "coinMax": 150,
+    "msg": "🦊 {house} undercut you behind your back (−{n} coin)."
+   }
+  },
+  "pious": {
+   "name": "Pious",
+   "icon": "🙏",
+   "text": "Likes Church members and donations, and dislikes Rogues' Guild members.",
+   "likes": [
+    {
+     "on": "charity",
+     "n": 3
+    }
+   ],
+   "monthly": [
+    {
+     "guild": "church",
+     "n": 2
+    },
+    {
+     "guild": "rogues",
+     "n": -2
+    }
+   ]
+  },
+  "ruthless": {
+   "name": "Ruthless",
+   "icon": "🗡️",
+   "text": "Respects strength (raids won, wars won, bandits cleared). It sneers at gifts (half value).",
+   "gift": 0.5,
+   "likes": [
+    {
+     "on": "raidWon",
+     "n": 4
+    },
+    {
+     "on": "warWon",
+     "n": 10
+    },
+    {
+     "on": "bandits",
+     "n": 2
+    }
+   ]
+  },
+  "idealistic": {
+   "name": "Idealistic",
+   "icon": "🕊️",
+   "text": "Likes charity and patronage, and hates cruelty (quests against other houses).",
+   "likes": [
+    {
+     "on": "charity",
+     "n": 4
+    }
+   ],
+   "dislikes": [
+    {
+     "on": "againstAny",
+     "n": -3
+    }
+   ]
+  },
+  "proud": {
+   "name": "Proud",
+   "icon": "🦅",
+   "text": "Slow to warm, quick to take offence, and loyal once Allied.",
+   "gain": 0.6,
+   "loss": 1.5,
+   "alliedFloor": 60
+  },
+  "secretive": {
+   "name": "Secretive",
+   "icon": "🤫",
+   "text": "Likes discretion and hates prying.",
+   "dislikes": [
+    {
+     "on": "prying",
+     "n": -6
+    }
+   ]
+  }
+ },
+ "events": {
+  "_note": "Which quests count for temperament events.",
+  "bandits": [
+   "bandit_scout",
+   "b_smugglers",
+   "g_vanguard_patrol"
+  ]
+ },
+ "threadDone": {
+  "rapport": 15,
+  "renown": 10,
+  "_note": "finishing the last quest of a house thread: extra standing and renown"
+ }
+}

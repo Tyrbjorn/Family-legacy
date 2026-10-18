@@ -15,12 +15,13 @@ export function requestsv() {
   const cards = npcs.map(n => {
     const w = E.wantsOf(s, n.id), r = E.openRequest(s, n.id), x = (s.req || {})[n.id] || {}, iss = E.deliverIssue(s, n.id);
     const ac = E.findId(D.activities, n.task);
-    if (!w) return `<div class="card" style="padding:5px 8px;margin:3px 0">${n.icon} <b>${n.name}</b> <span class="muted">· nothing needed right now (back in ${Math.max(1, (x.at || 0) - s.day)}d) · favour ${x.fav || 0}</span></div>`;
+    if (!w) return `<div class="card" style="padding:5px 8px;margin:3px 0">${n.icon} <b>${n.name}</b> <span class="muted">· nothing needed right now (back in ${Math.max(1, (x.at || 0) - s.day)}d${Object.values(x.done || {}).some(v => v > ((D.requests.repeat || {}).free || 99)) ? ", asks less often now" : ""}) · favour ${x.fav || 0}</span></div>`;
     const want = Object.entries(w).map(([k, v]) => `${ICO[k] || ""} ${Math.floor(s.res[k] || 0)}/${v} ${k}`).join(" · ");
     const rw = r.reward || {}, rs = [rw.coin && rw.coin + "🪙", rw.food && rw.food + " food", ...Object.entries(rw.res || {}).map(([k, v]) => v + " " + k), ...(rw.items || []).map(id => (E.findId(D.items, id) || {}).name), rw.renown && rw.renown + " renown"].filter(Boolean).join(" · ");
-    return `<div class="card ${iss ? "" : "tut"}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${n.icon} <b>${n.name}</b> wants ${want}<br><span class="muted">Reward: ${rs}${r.extra ? " · ✨ something special" : ""}${ac ? ` · fed by ${ac.icon} ${ac.name}` : ""} · favour ${x.fav || 0}</span></span><button class="b ${iss ? "" : "sel"}" data-a="deliver" data-v="${n.id}" ${iss ? "disabled" : ""}>Deliver</button></div>${iss ? `<div class="muted">${iss}</div>` : ""}</div>`;
+    const tw = n.town !== "millbrook" && n.town !== "village" ? E.findId(D.towns, n.town) : null; // R48: Gull's Landing folk
+    return `<div class="card ${iss ? "" : "tut"}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${n.icon} <b>${n.name}</b>${tw ? ` <span class="muted">(${tw.icon} ${tw.name})</span>` : ""} wants ${want}<br><span class="muted">Reward: ${rs}${r.extra ? " · ✨ something special" : ""}${ac ? ` · fed by ${ac.icon} ${ac.name}` : ""} · favour ${x.fav || 0}</span></span><button class="b ${iss ? "" : "sel"}" data-a="deliver" data-v="${n.id}" ${iss ? "disabled" : ""}>Deliver</button></div>${iss ? `<div class="muted">${iss}</div>` : ""}</div>`;
   });
-  return `<h3>📮 Requests (${E.deliverable(s)} ready)</h3><div class="muted" style="font-size:12px">Millbrook folk (and later your own village) want goods your Tasks and chores make. Delivering at home is instant.</div>` + cards.join("");
+  return `<h3>📮 Requests (${E.deliverable(s)} ready)</h3><div class="muted" style="font-size:12px">Millbrook folk (and later your own village) want goods your Tasks and chores make. Delivering at home is instant; folk in other towns (Gull's Landing) take deliveries once someone has traded or worked there.</div>` + cards.join("");
 }
 
 function row(m, q, star) {
@@ -29,7 +30,7 @@ function row(m, q, star) {
   const open = E.regionOpen(s, q.region);
   const iss = !open ? `region locked (CP ${rg.cp})` : E.questIssue(s, m, q) || E.questAgeIssue(m, q, s);
   const k = qKind(q);
-  return `<div class="card ${star ? "tut" : ""}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${star ? "⭐ <b>Start here:</b> " : k[0] + " "}<b>${q.name}</b><br><span class="muted">${rg.icon || ""} ${rg.name} · ${q.risk} · CP ${q.cp} · ${q.days}d · ${rew(q)} · 🚶 ${E.travelDays(q.id)}d</span>${q.desc && (q.grants || q.firstGrants || q.deliver) ? `<br><span class="muted" style="font-size:11px">${q.desc}</span>` : ""}</span>
+  return `<div class="card ${star ? "tut" : ""}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${star ? "⭐ <b>Start here:</b> " : k[0] + " "}<b>${q.name}</b><br><span class="muted">${rg.icon || ""} ${rg.name} · ${q.risk} · CP ${q.cp} · ${q.days}d · ${rew(q)} · 🚶 ${E.travelDays(q.id)}d${(so => (so ? ` · ${so.mode === "boat" ? "⛵" : "⛴️"} ${so.days}d${so.fare ? ` (${so.fare}🪙)` : ""}` : ""))(E.seaOption(s, q.id))}${q.act ? ` · Act ${q.act}${q.beat ? " beat" : ""}` : ""}</span>${q.desc && (q.grants || q.firstGrants || q.deliver) ? `<br><span class="muted" style="font-size:11px">${q.desc}</span>` : ""}</span>
 <span class="row" style="gap:4px"><button class="b" data-a="qmap" data-v="${q.id}" title="Show on the map">📍</button><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss ? "disabled" : ""}>${on ? "On it" : "Go"}</button></span></div>${iss ? `<div class="muted">🔒 ${iss}</div>` : ""}</div>`;
 }
 

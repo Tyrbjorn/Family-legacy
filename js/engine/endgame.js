@@ -9,6 +9,7 @@ import { registerDayHook } from "./time.js";
 import { notify } from "./notify.js";
 import { D, active, afford, known, log, pay, rng } from "./state.js";
 import { bcost, structSum, structTag, roleVal, roadsDay } from "./builders.js";
+import { houseEvent } from "./families.js";
 
 const NONE = { tiers: [] };
 const FALLBACK = { mounts: [], patronage: { list: [] }, quarries: [], creatures: { byPhase: [1], eliteChance: 0 }, raids: { phase: 99 }, defenses: { wall: NONE, tower: NONE, palisade: NONE } };
@@ -48,6 +49,7 @@ export function fundTown(s, id) {
   pay(s, p.cost);
   owned(s).funded.push(id);
   log(s, `${p.icon} You funded the ${p.name}: the town will remember the family.`);
+  houseEvent(s, "charity", { town: p.town, why: `funded the ${p.name}` }); // R48: pious and idealistic houses approve
   return true;
 }
 const perk = (s, town, k) => patronOptions(s, town).reduce((a, p) => a + (funded(s, p.id) ? p[k] || 0 : 0), 0);
@@ -115,6 +117,7 @@ export function raid(s) {
     if (lead) addRenown(s, lead, R().winRenown);
     log(s, `⚔️ Raiders struck the estate and were driven off (${our} vs ${foe})${c ? `: +${c} coin bounty` : ""}.`);
     s.res.coin += c;
+    houseEvent(s, "raidWon", { why: "raiders driven off" }); // R48
   } else {
     const [lo, hi] = R().lossCoin, pct = lo + rng() * (hi - lo);
     const lost = Math.floor((s.res.coin || 0) * pct);

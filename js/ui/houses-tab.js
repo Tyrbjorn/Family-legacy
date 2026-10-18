@@ -49,6 +49,18 @@ function warCard(hd) {
 <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><button class="b" data-a="truce" data-v="${hd.id}" ${ti ? "disabled" : ""}>🕊️ Truce: pay ${E.tributeCost(s, hd.id)}🪙</button><span class="muted">or marry into them, or win ${E.WAR().decisive} battles</span></div></div>`;
 }
 
+// R48 families.json: seat, goal, temperament, perks (✅ when active), the 3-quest thread, marriage, sworn rival
+function famLines(hd) {
+  const tp = E.temperDef(hd.temperament), act = E.activePerks(s, hd.id).map(p => p.text);
+  const pk = Object.entries(hd.perks || {}).map(([k, L]) => `${k === "allied" ? "🤝 Allied" : "🙂 Friendly"}: ${L.map(p => `${act.includes(p.text) ? "✅ " : ""}${p.text}`).join("; ")}`).join(" · ");
+  const th = hd.thread, n = th ? E.threadQuests(hd.id).length : 0, k = th ? E.threadStep(s, hd.id) : 0;
+  const mm = hd.marriage === "allied" ? "marriage once Allied" : hd.marriage === false ? "no marriages" : "offers marriage";
+  return `<div class="muted" style="font-size:12px">${hd.major ? "⭐ Major house" : "Minor house"} · seat ${(E.findId(D.towns, hd.seat) || {}).name || hd.seat} · goal: ${hd.goal || "?"} · <span title="${tp.text || ""}">${tp.icon || ""} ${tp.name || hd.temperament || ""}</span> · ${mm}${hd.rival ? ` · ⚔️ sworn rival of ${(E.houseDef(hd.rival) || {}).name}` : ""}</div>
+<div class="muted" style="font-size:12px">${tp.text || ""}</div>
+${pk ? `<div class="muted" style="font-size:12px">Perks · ${pk}</div>` : ""}
+${th ? `<div class="muted" style="font-size:12px">📜 Thread “${th.name}”: ${E.threadDone(s, hd.id) ? "✅ complete" : `${k}/${n}${k === 0 && !E.threadQuests(hd.id).some(q => E.known(s, q)) ? " (opens once you know their seat and they're Neutral or better)" : ""}`}</div>` : ""}`;
+}
+
 function houseCard(hd) {
   const st = E.houseState(s, hd.id),
     tier = E.tierOf(s, hd.id),
@@ -63,7 +75,7 @@ function houseCard(hd) {
     fx.suitors ? `suitors (dowry ×${fx.dowryMult})` : "no marriage offers",
     fx.troubleChance ? "⚠️ trouble events" : "",
   ].filter(Boolean);
-  const qs = E.houseQuests(s, hd.id);
+  const qs = E.houseQuests(s, hd.id).filter(q => !q.thread || E.known(s, q)); // R48: later thread steps stay hidden until reached
   const m = E.active(s);
   const gi = E.giftIssue(s, hd.id);
   const wi = E.declareWarIssue(s, hd.id);
@@ -71,6 +83,7 @@ function houseCard(hd) {
   const pick = cands.find(x => String(x.id) === (U.moSel || {})[hd.id]) || cands[0];
   return `<div class="card house" id="house-${hd.id}"><div class="row"><b>${hd.icon} ${hd.name}</b><span style="color:${tcol[tier]}">${td.icon} ${td.name}${st.state === "war" ? " · AT WAR" : ""}</span></div>
 <div class="muted">${hd.desc} · ${E.findId(D.towns, hd.town).name} · wealth ${"🪙".repeat(hd.wealth)} · rapport ${Math.round(st.r)}${E.ties(s, hd.id) ? ` · 💍 ${E.ties(s, hd.id)} tie(s)` : ""}</div>
+${famLines(hd)}
 ${bar((st.r - lo) / (hi - lo), tcol[tier])}<div class="muted">${perks.join(" · ")}</div>
 ${st.state === "feud" && st.warned != null ? `<div style="color:#e77">🔥 Mustering for war: ${Math.max(0, E.FEUD().warnDays - (s.day - st.warned))}d left to cool the feud.</div>` : ""}
 ${st.state === "war" ? warCard(hd) : ""}
@@ -88,8 +101,11 @@ export function housesv() {
   h += s.suitors.length ? s.suitors.map(suitorCard).join("") : `<div class="muted">No suitors yet. They arrive every ~45 days (only from neutral or friendlier houses, plus commoners).</div>`;
   h += householdCard();
   const ws = E.wars(s);
-  h += `<h3>🏰 Houses</h3><div class="muted">Quests for a house build rapport; quests against a house lower it. Below Rival a house feuds; feuds can escalate to war (you are warned first). Rapport drifts back toward neutral over time.${!E.phaseOk(s, "againstQuests") ? " <b>Rivalry quests and trouble events unlock in the Established phase; feuds and war in the Dynasty phase.</b>" : !E.phaseOk(s, "feud") ? ` <b>Feuds and war unlock in the Dynasty phase (${E.nextEraHint(s)})</b>` : ""}${s.weary ? ` War weariness: contentment ${E.wearyMorale(s).toFixed(1)}.` : ""}</div>`;
+  h += `<h3>🏰 Families of the realm</h3><div class="muted">Each house has a seat, a goal and a temperament that changes how standing moves. Quests for a house build rapport; quests against a house lower it. Below Rival a house feuds; feuds can escalate to war (you are warned first). Rapport drifts back toward neutral over time.${!E.phaseOk(s, "againstQuests") ? " <b>Rivalry quests and trouble events unlock in the Established phase; feuds and war in the Dynasty phase.</b>" : !E.phaseOk(s, "feud") ? ` <b>Feuds and war unlock in the Dynasty phase (${E.nextEraHint(s)})</b>` : ""}${s.weary ? ` War weariness: contentment ${E.wearyMorale(s).toFixed(1)}.` : ""}</div>`;
   if (ws.length) h += `<div class="card" style="border-color:#c55">🏴 At war with ${ws.map(x => x.name).join(", ")}</div>`;
-  h += E.houseList().map(houseCard).join("");
+  const ph = E.playerHouse();
+  h += `<div class="card" id="famvael"><b>${ph.icon || "🛡️"} ${ph.name}</b> <span class="muted">· your family</span><div class="muted">${ph.text || ""}</div></div>`;
+  const maj = E.houseList().filter(x => x.major), mnr = E.houseList().filter(x => !x.major);
+  h += `<h3>⭐ Major houses (one per town)</h3>` + maj.map(houseCard).join("") + (mnr.length ? `<h3>🏠 Minor houses</h3>` + mnr.map(houseCard).join("") : "");
   return h;
 }

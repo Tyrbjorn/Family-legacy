@@ -125,7 +125,8 @@
    "gather": {
     "salt": 1.25,
     "fish": 1.15
-   }
+   },
+   "sea": true
   }
  },
  "regionTerrain": {
@@ -739,8 +740,8 @@
    "y": 705,
    "region": "outskirts",
    "port": true,
-   "sea": "future",
-   "desc": "A fishing jetty on the coast. Ships may call here one day."
+   "desc": "Gull's Landing: a fishing port with a market, net-menders and a harbour ferry.",
+   "town": "gullport"
   }
  ],
  "nodeDefaults": {
@@ -790,6 +791,17 @@
     "haulSpeed": 1.6,
     "item": "wagon",
     "animal": "horse"
+   },
+   {
+    "id": "seaboat",
+    "name": "Sea Boat",
+    "icon": "⛵",
+    "carry": 300,
+    "haulSpeed": 1.4,
+    "item": "seaboat",
+    "coast": true,
+    "cargoTier": 100,
+    "_note": "R48: only for coast hauls (trade routes to a coast town, gather trips to a coast node)"
    }
   ],
   "qualityCarry": 0.08,
@@ -1196,6 +1208,32 @@
   "boat": {
    "item": "smallboat",
    "speed": 1
+  },
+  "sea": {
+   "_note": "R48 sea travel: a Sea Boat (or the harbour ferry, pay per trip) sails from the port to any coastal destination (on coast terrain or flagged coastal) at `speed` instead of walking the coast. Saltmere (R49) adds a ferry route the same way.",
+   "item": "seaboat",
+   "port": "gullport",
+   "speed": 2.2,
+   "ferry": {
+    "name": "Harbour ferry",
+    "icon": "⛴️",
+    "unlock": "ferry:gullport",
+    "fare": 20,
+    "farePerDay": 6,
+    "routes": [
+     {
+      "id": "coast",
+      "name": "Coast run",
+      "to": "coast"
+     },
+     {
+      "id": "saltmere",
+      "name": "Saltmere",
+      "region": "saltmere",
+      "opens": "R49: needs the Saltmere Coast open"
+     }
+    ]
+   }
   }
  },
  "feed": {

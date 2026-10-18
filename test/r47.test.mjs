@@ -11,7 +11,7 @@ const setSk=(m,o)=>{for(const[k,v]of Object.entries(o))m.skills[k].lvl=v;};
 const lvTo=(m,lv)=>{const ks=Object.keys(m.skills);let i=0;while(E.level(m)<lv)m.skills[ks[i++%ks.length]].lvl++;};
 const kid=(s,par,age=25)=>{const m=JSON.parse(JSON.stringify(s.members[0]));m.id=s.nextId++;m.name='Kid'+m.id;m.parents=par;m.ageDays=age*Y;m.guild=null;m.guild2=null;m.class2=null;m.cls=null;m.secondGuild=null;m.paths=[];s.members.push(m);return m;};
 // ---- data + build + schema
-ok(BUILD.startsWith('R47')&&E.SCHEMA===43,'R47, save step 43');
+ok(E.SCHEMA>=43,'R47: save step 43 (later rounds add steps)');
 const A=E.guildDef('architects'); ok(A&&!A.open&&A.town==='ashford'&&A.board==='millbrook'&&A.grantsClass==='builder'&&A.req.skills.masonry===5&&A.req.skills.carpentry===5&&A.req.coin===120,"Architects' Guild: sworn, Ashford (board Millbrook), masonry 5 + carpentry 5 + 120 coin, entry Builder");
 const T=id=>E.findId(D.classes,id).tier; ok(T('builder')===0&&T('b_masterbuilder')===1&&T('b_surveyor')===1&&T('b_architect')===2&&T('b_fortwright')===2&&T('b_planner')===2,'Builder → Master Builder/Surveyor → Architect/Fortwright/Town Planner');
 ok(['builder','b_masterbuilder','b_surveyor','b_architect','b_fortwright','b_planner'].every(id=>E.guildOfCls(id)==='architects')&&!D.classes.find(c=>c.id==='architect').guild,"all six classes belong to the Architects' Guild; the retired architect id is untouched");
@@ -110,5 +110,5 @@ ok(E.findId(D.skills,'drafting').guild==='architects'&&E.guildShop('architects')
 // ---- save step 43
 { const s=base(), m=s.members[0]; m.cls='paladin'; m.guild={id:'church',rank:2,rep:300}; delete m.guild2; delete m.class2; delete m.secondGuild;
   const k=kid(s,[]); k.secondGuild={via:'craft',path:'mason',day:5}; delete k.guild2; s.schema=42; E.normalize(s);
-  ok(s.schema===43&&m.guild2===null&&m.class2===null&&m.secondGuild.via==='tier3'&&k.secondGuild.via==='craft'&&k.guild2===null,'step 43: empty second guild fields; tier-3 marks it open; craft openings kept; nobody joined'); }
+  ok(s.schema===E.SCHEMA&&m.guild2===null&&m.class2===null&&m.secondGuild.via==='tier3'&&k.secondGuild.via==='craft'&&k.guild2===null,'step 43: empty second guild fields; tier-3 marks it open; craft openings kept; nobody joined'); }
 console.log(pass+' R47 checks passed');

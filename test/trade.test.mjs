@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
+const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let seed=7; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
@@ -43,7 +43,7 @@ const rb=E.addRoute(s,'millbrook','buy','salt'); s.res.salt=0; E.setCrew(s,rb.id
 for(let i=0;i<30;i++) E.tradeDay(s); ok(rb.trips>0,'buy route ran');
 ok(E.removeRoute(s,r.id)&&d.job==='idle','remove frees crew');
 // town specialties
-for(const tw of D.towns){ok(tw.produces.length&&tw.produces.length<=2&&tw.wants.length&&tw.wants.length<=2,'specialties '+tw.id);
+for(const tw of D.towns){ok(tw.produces.length&&tw.produces.length<=(tw.port?3:2)&&tw.wants.length&&tw.wants.length<=(tw.port?3:2),'specialties '+tw.id);
  for(const k of tw.produces) ok(E.marketOf(tw.id).includes(k)&&E.townSupply(s,tw.id,k)>1,'produce sold & plentiful '+tw.id+' '+k);
  for(const k of tw.wants) ok(E.townSupply(s,tw.id,k)<1,'want scarce '+tw.id+' '+k);}
 { const m=D.towns.find(x=>x.id==='millbrook'); const other=D.towns.find(x=>x.id==='thornwick');

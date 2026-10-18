@@ -1,3 +1,4 @@
+import { perkXp } from "./families.js";
 import { findId } from "./lookup.js";
 import { choreOpen, choreActive } from "./chores.js";
 import { apprOpens, inhXp, leanXp } from "./apprentice.js";
@@ -30,6 +31,7 @@ export function xpMult(s, m, skillId) {
   mult += gearFx(m.equip).xpPct || 0;
   for (const id of Object.values(m.equip || {})) { const it = typeof id === "string" && itemDef(id); if (it && it.xpSkills && it.xpSkills.skills.includes(skillId)) mult += it.xpSkills.v; } // R47 Builder's Square
   mult += buffSum(s, "xp");
+  mult += perkXp(s, skillId); // R48 Ormond: Reading/History XP
   mult += traitSkillXp(m, skillId);
   mult += leanXp(m, skillId) + inhXp(m, skillId) + (m.appr && legacyTier(s, "fa_kids") >= 2 && leanXp(m, skillId) ? 0.05 : 0); // R37 Family Tutor tier 2: lean +15% while apprenticed // R35 leans + inherited skill boost (under 18)
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
@@ -121,8 +123,7 @@ export const inLine = (m, cid) => [m.cls, m.prof, ...(m.clsHist || [])].some(x =
 
 export const ownsItem = (s, m, id) =>
   (s.vault || []).some(x => x === id || String(x).endsWith(id)) ||
-  (m.bag || []).includes(id) ||
-  Object.values(m.equip || {}).includes(id);
+  (m ? [m] : s.members || []).some(x => (x.bag || []).includes(id) || Object.values(x.equip || {}).includes(id)); // R48: no member given (a task boost) = anyone in the family
 
 export function srcOk(s, m, u, ac) {
   if (u.cls) return inLine(m, u.cls);
