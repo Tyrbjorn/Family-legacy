@@ -5,6 +5,8 @@
 //  advance: join the track/best-fit guild, rank up, evolve (one step per member per month), keeping a 25% coin reserve
 //  kids: children train their track's skills instead of random lessons
 //  court: unmarried adults 18-35 court the best suitor (no feuding house) and marry in; Head only if s.faCourtHead
+import { AP, tutorPlace } from "./apprentice.js";
+import { skillOpen } from "./skills.js";
 import { autoQuest } from "./actions.js";
 import { level, propose, proposeIssue } from "./family.js";
 import { canEvolve, canRankUp, classGuild, cls, evolve, guildDef, joinGuild, joinIssues, nextRank, rankUp } from "./guilds.js";
@@ -34,6 +36,7 @@ const lv = (m, k) => ((m.skills || {})[k] || { lvl: 0 }).lvl;
 // ---- tracks (children and guild picks): a guild id; from the higher-level parent's guild/class, else best skills
 export function trackFor(s, m) {
   if (m.track) return m.track;
+  if (m.lean && m.lean[0] && FA().tracks[m.lean[0]]) return m.lean[0]; // R35: lean first (it already weighs the parents)
   const ps = (m.parents || []).map(id => s.members.find(x => x.id === id)).filter(Boolean).sort((a, b) => level(b) - level(a));
   for (const p of ps) {
     const g = (p.guild && p.guild.id) || (p.cls && (classGuild(p.cls) || {}).id) || (p.craft && p.craft.id);
@@ -57,8 +60,9 @@ export function kidSkill(s, m) {
     m.track = trackFor(s, m);
     say(s, `Auto Upbringing: ${m.name} follows the ${guildDef(m.track).name} track.`);
   }
-  const ks = FA().tracks[m.track];
-  return ks[(m.ageDays || 0) % ks.length];
+  // R35 fix: guild-exclusive track skills are closed to kids (that XP was silently dropped); skip them
+  const ks = FA().tracks[m.track].filter(k => skillOpen(m, k));
+  return ks.length ? ks[(m.ageDays || 0) % ks.length] : null;
 }
 
 // ---- orders
@@ -88,7 +92,7 @@ function ordersMonth(s) {
 }
 
 // ---- advance
-const evoScore = (m, c) => Object.keys(c.req || {}).reduce((a, k) => a + lv(m, k), 0) + (c.cpSkills || []).reduce((a, k) => a + lv(m, k), 0);
+const evoScore = (m, c) => Object.keys(c.req || {}).reduce((a, k) => a + lv(m, k), 0) + (c.cpSkills || []).reduce((a, k) => a + lv(m, k), 0) + ((m.lean || []).includes((classGuild(c.id) || {}).id) ? 5 : 0); // R35 lean +5
 function advanceOne(s, m) {
   // 1) no guild yet: the track guild if eligible, else the best-fitting one
   if (!m.guild && !m.craft) {
@@ -153,6 +157,7 @@ export function familyAutoDay(s) {
   if (!F) return;
   if (faOn(s, "court") && s.day % F.courtEvery === 0) courtWeek(s);
   if (s.day % F.every !== 0) return;
+  if (faOn(s, "kids")) for (const m of living(s).filter(m => faFor(s, m) && ageY(m) >= AP().minAge && ageY(m) <= AP().maxAge)) tutorPlace(s, m); // R35
   if (faOn(s, "advance")) for (const m of living(s).filter(m => isAdult(m) && faFor(s, m))) advanceOne(s, m);
   if (faOn(s, "orders")) ordersMonth(s);
 }

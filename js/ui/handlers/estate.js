@@ -29,6 +29,10 @@ export const estateActions = ({ v, b, m }) => ({
     const x = s.members.find(y => y.id === +v);
     if (x) x.noAutoEq = !x.noAutoEq;
   },
+  apprset: () => {
+    const x = s.members.find(y => y.id === +b.dataset.w);
+    if (x) E.setAppr(s, x, v || null);
+  },
   faunpin: () => E.unpin(s, +v, b.dataset.w),
   fahead: () => (s.faCourtHead = !s.faCourtHead),
   autorecruit: () => E.toggleRecruit(s),

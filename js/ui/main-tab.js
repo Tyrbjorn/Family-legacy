@@ -136,11 +136,11 @@ export function jobsv() {
   const m = E.active(s),
     a = m.action,
     ad = E.isAdult(m);
-  let h = `<div class="card muted">${m.name} (${E.ageY(m)}) ${ad ? "works as a journeyman for full pay." : "can apprentice for small pay plus stat and skill growth. Adult pay is higher."}</div>`;
+  let h = `<div class="card muted">${m.name} (${E.ageY(m)}) ${ad ? "works as a journeyman for full pay." : "can work for youth pay plus stat and skill growth. Adult pay is higher."}</div>`;
   for (const j of D.jobs) {
     const ok = E.jobOk(m, j),
       on = a && a.type === "job" && a.target === j.id;
-    h += `<div class="card row"><span>${j.icon} <b>${j.name}</b><br><span class="muted">${j.desc}<br>${Object.keys(j.stats).join("/")} · ${j.skills.map(k => sk(k).name).join(", ")} · apprentice ${j.payChild}🪙/day · adult ${j.payAdult}🪙/day · age ${j.minAge}+</span></span><button class="b ${on ? "sel" : ""}" data-a="job" data-v="${j.id}" ${ok ? "" : "disabled"}>${ok ? (on ? "Working" : "Work") : "🔒"}</button></div>`;
+    h += `<div class="card row"><span>${j.icon} <b>${j.name}</b><br><span class="muted">${j.desc}<br>${Object.keys(j.stats).join("/")} · ${j.skills.map(k => sk(k).name).join(", ")} · youth pay ${j.payChild}🪙/day · adult ${j.payAdult}🪙/day · age ${j.minAge}+</span></span><button class="b ${on ? "sel" : ""}" data-a="job" data-v="${j.id}" ${ok ? "" : "disabled"}>${ok ? (on ? "Working" : "Work") : "🔒"}</button></div>`;
   }
   return h;
 }

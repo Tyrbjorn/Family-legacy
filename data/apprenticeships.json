@@ -1,0 +1,122 @@
+{
+ "_note": "R35 town apprenticeships: idle teens 14-17 placed with a master (town must be known). Daily: kid lessons on the master's skills x xpMult, wage coin; the master's guild-exclusive skills are open while placed. Finishing (serveDays) once: that track guild's join fee x guildFee and +rep starting rep. Expansions add masters here.",
+ "minAge": 14,
+ "maxAge": 17,
+ "xpMult": 1.5,
+ "serveDays": 720,
+ "leanXp": 0.1,
+ "reward": {
+  "guildFee": 0.5,
+  "rep": 20
+ },
+ "masters": [
+  {
+   "id": "m_smith",
+   "town": "millbrook",
+   "name": "Brann the Smith",
+   "icon": "🔨",
+   "track": "hearth",
+   "skills": [
+    "smithing",
+    "mining"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_hunter",
+   "town": "millbrook",
+   "name": "Old Wenna the Huntress",
+   "icon": "🏹",
+   "track": "lodge",
+   "skills": [
+    "hunting",
+    "archery",
+    "tracking"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_drill",
+   "town": "millbrook",
+   "name": "Sergeant Holt",
+   "icon": "⚔️",
+   "track": "vanguard",
+   "skills": [
+    "swordsmanship",
+    "shield"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_herbal",
+   "town": "millbrook",
+   "name": "Sister Maren",
+   "icon": "🌿",
+   "track": "church",
+   "skills": [
+    "herbalism",
+    "healing",
+    "faith"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_carpenter",
+   "town": "ashford",
+   "name": "Joss the Carpenter",
+   "icon": "🪚",
+   "track": "hearth",
+   "skills": [
+    "carpentry",
+    "masonry"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_merchant",
+   "town": "ashford",
+   "name": "Mistress Pell",
+   "icon": "⚖️",
+   "track": "rogues",
+   "skills": [
+    "haggling",
+    "etiquette",
+    "appraisal"
+   ],
+   "slots": 1,
+   "wage": 2
+  },
+  {
+   "id": "m_scribe",
+   "town": "thornwick",
+   "name": "Archivist Quill",
+   "icon": "📜",
+   "track": "collegium",
+   "skills": [
+    "reading",
+    "arcana",
+    "history"
+   ],
+   "slots": 1,
+   "wage": 1
+  },
+  {
+   "id": "m_tanner",
+   "town": "thornwick",
+   "name": "Garrick the Tanner",
+   "icon": "🧵",
+   "track": "hearth",
+   "skills": [
+    "tailoring",
+    "hunting"
+   ],
+   "slots": 1,
+   "wage": 1
+  }
+ ]
+}

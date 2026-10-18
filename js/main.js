@@ -43,6 +43,7 @@ const names = [
   "metals",
   "endgame",
   "requests",
+  "apprenticeships",
   "fish",
   "cooking",
 ];

@@ -1,3 +1,4 @@
+import { apprOpens, inhXp, leanXp } from "./apprentice.js";
 import { injuryXp } from "./injuries.js";
 import { toolIssue } from "./requests.js";
 import { diffXp } from "./difficulty.js";
@@ -27,6 +28,7 @@ export function xpMult(s, m, skillId) {
   mult += gearFx(m.equip).xpPct || 0;
   mult += buffSum(s, "xp");
   mult += traitSkillXp(m, skillId);
+  mult += leanXp(m, skillId) + inhXp(m, skillId); // R35 leans + inherited skill boost (under 18)
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
   mult += moraleXp(s) + tonicXp(s, sk.family);
   if (!isAdult(m)) mult += household(s, "childXp");
@@ -146,6 +148,7 @@ export const activityReq = ac => (!ac.unlock ? "" : "Requires: " + [].concat(ac.
 export function skillOpen(m, skillId) {
   const x = (D.skills.find(k => k.id === skillId) || {}).exclusive;
   if (!x) return true;
+  if (apprOpens(m, skillId)) return true; // R35: the master's skills while apprenticed
   return x.guilds.some(g => memberGuild(m, g) || (g === "adventurers" && m.adv)) || x.classes.some(c => inLine(m, c));
 }
 

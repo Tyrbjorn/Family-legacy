@@ -526,6 +526,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   const coinAt = [];
   const snap = [];
   for (let day = 0; day < YEARS * YD; day++) {
+    if (day % 30 === 0) for (const m of s.members) { if (m.appr) (seen.appr ||= new Set()).add(seed + ':' + m.id); if ((m.apprDone || []).length) (seen.apprDone ||= new Set()).add(seed + ':' + m.id); if (m.lean) { (seen.lean ||= new Map()).set(seed + ':' + m.id, m.lean.length); } } // R35
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
       if (process.env.DBG) console.log("GAMEOVER", day, s.log.slice(0, 6).map(l => l.msg).join(" | "));
@@ -802,5 +803,6 @@ console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:
 console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
 console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "convoy trips (max/seed)", seen.convoyTrips, "herd days", seen.herdDays, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
+console.log("R35 apprentices placed:", (seen.appr || new Set()).size, "finished:", (seen.apprDone || new Set()).size, "members with leans:", (seen.lean || new Map()).size, "two leans:", [...(seen.lean || new Map()).values()].filter(x => x === 2).length);
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

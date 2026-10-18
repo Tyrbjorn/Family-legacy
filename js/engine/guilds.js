@@ -1,3 +1,4 @@
+import { apprFee, apprRep } from "./apprentice.js";
 import { addRenown } from "./legacy.js";
 import { structDef } from "./estate.js";
 import { statVal } from "./family.js";
@@ -95,19 +96,20 @@ export function joinIssues(s, m, gid) {
   for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
   for (const [k, v] of Object.entries(q.skills || {}))
     if (m.skills[k].lvl < v) out.push(`${D.skills.find(x => x.id === k).name} ${m.skills[k].lvl}/${v}`);
-  if (s.res.coin < (q.coin || 0)) out.push(`${q.coin} coin`);
+  const fee = Math.round((q.coin || 0) * apprFee(m, gid)); // R35 apprenticeship reward
+  if (s.res.coin < fee) out.push(`${fee} coin`);
   return out;
 }
 
 export function joinGuild(s, m, gid) {
   if (joinIssues(s, m, gid).length) return false;
   const g = guildDef(gid);
-  s.res.coin -= g.req.coin || 0;
+  s.res.coin -= Math.round((g.req.coin || 0) * apprFee(m, gid));
   if (g.open) {
-    m.craft = { id: gid, rank: 0, rep: 0 };
+    m.craft = { id: gid, rank: 0, rep: apprRep(m, gid) };
     if (!m.paths) m.paths = [];
   } else {
-    m.guild = { id: gid, rank: 0, rep: 0 };
+    m.guild = { id: gid, rank: 0, rep: apprRep(m, gid) };
     if (g.grantsClass && (!m.cls || m.cls === "adventurer")) {
       const was = m.cls;
       m.cls = g.grantsClass;

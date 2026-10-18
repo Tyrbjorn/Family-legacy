@@ -565,6 +565,80 @@
     "smithing",
     "tailoring"
    ]
+  },
+  "affinity": {
+   "_note": "R35 Leans (m.lean): trait weights + parent tracks + random; top track, plus the second within secondGap.",
+   "names": {
+    "vanguard": "⚔️ Fighter",
+    "lodge": "🏹 Wilds",
+    "collegium": "📚 Scholar",
+    "church": "🙏 Faith",
+    "rogues": "🗝️ Rogue",
+    "hearth": "🔨 Craft"
+   },
+   "traits": {
+    "keeneyed": {
+     "lodge": 2
+    },
+    "greenthumb": {
+     "lodge": 1,
+     "hearth": 1
+    },
+    "nimble": {
+     "rogues": 1,
+     "lodge": 1
+    },
+    "clumsy": {
+     "rogues": -1,
+     "lodge": -1
+    },
+    "bookish": {
+     "collegium": 2,
+     "church": 1
+    },
+    "prodigy": {
+     "collegium": 1
+    },
+    "dreamer": {
+     "collegium": 1
+    },
+    "curious": {
+     "collegium": 1
+    },
+    "silvertongue": {
+     "rogues": 1,
+     "church": 1
+    },
+    "charming": {
+     "church": 1
+    },
+    "stubborn": {
+     "church": 1
+    },
+    "brave": {
+     "vanguard": 1
+    },
+    "ironblood": {
+     "vanguard": 1
+    },
+    "bulwark": {
+     "vanguard": 1
+    },
+    "dragonblood": {
+     "vanguard": 2
+    },
+    "timid": {
+     "vanguard": -1,
+     "hearth": 1
+    },
+    "thrifty": {
+     "hearth": 1
+    }
+   },
+   "parentMain": 2,
+   "parentOther": 1,
+   "rand": 1,
+   "secondGap": 1
   }
  },
  "quotas": {

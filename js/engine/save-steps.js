@@ -1,3 +1,4 @@
+import { leanMigrate } from "./apprentice.js";
 import { learnDishes } from "./cooking.js";
 import { DEFAULT_RESERVE } from "./production.js";
 import { backfillMilestones } from "./minionups.js";
@@ -561,6 +562,14 @@ export const STEPS = [
     run(s) {
       s.quotas = s.quotas || [];
       s.quotaSeq = s.quotaSeq || 0;
+    },
+  },
+  {
+    n: 35,
+    once: true,
+    name: "R35 leans + apprenticeships + inheritance: lean for every living member, no placements, inherited skill boosts for kids (no retroactive stat change)",
+    run(s) {
+      leanMigrate(s);
     },
   },
 ];

@@ -1,3 +1,4 @@
+import { AP, apprDay, apprSkill, birthInherit } from "./apprentice.js";
 import { quotaDay } from "./quotas.js";
 import { injuryDay, injurySpeed, treat } from "./injuries.js";
 import { enchantDay } from "./gear.js";
@@ -186,6 +187,7 @@ function birthDay(s, m) {
   ) {
     const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
     inheritTraits(s, c, [m, sp]);
+    birthInherit(s, c, [m, sp]); // R35 stats/skill boosts from parents + lean
     c.ageDays = 0;
     s.members.push(c);
     m.kids++;
@@ -200,7 +202,10 @@ function memberDay(s, m, effActive, effIdle) {
   if (!ageMember(s, m)) return;
   if (ageY(m) < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
     const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
-    gainXp(s, m, kidSkill(s, m) || r(D.skills).id, T.xpPerDay * 0.15 * f); // Auto Upbringing: the child's track
+    if (m.appr) {
+      gainXp(s, m, apprSkill(m), T.xpPerDay * 0.15 * f * AP().xpMult); // R35 apprenticeship lessons
+      apprDay(s, m);
+    } else gainXp(s, m, kidSkill(s, m) || r(D.skills).id, T.xpPerDay * 0.15 * f); // Auto Upbringing: the child's track
     return;
   }
   const isAct = m.id === s.activeId;

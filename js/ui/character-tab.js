@@ -27,10 +27,36 @@ export function characterv() {
   // advancement
   const nxt = D.classes.filter(c => c.from && c.from === m.cls);
   h += `<h3>🎓 Class & advancement</h3><div class="card">${nxt.length ? nxt.map(c => `<div>${c.icon || ""} <b>${c.name}</b> <span class="muted">${E.canEvolve(s, m, c) ? "✅ ready (Work → Guilds)" : Object.entries(c.req || {}).map(([k, v]) => `${k} ${v}`).join(", ")}</span></div>`).join("") : '<div class="muted">No further class from here yet (or choose a guild first).</div>'}${m.prefCls ? `<div class="muted">Auto Advance preference: ${m.prefCls}</div>` : ""}</div>`;
+  // R35 leans, inheritance, apprenticeship
+  h += apprv(m);
   // family
   const nm = id => (s.members.find(x => x.id === id) || {}).name || "?";
   const kids = s.members.filter(x => (x.parents || []).includes(m.id));
   h += `<h3>🌳 Family</h3><div class="card"><div>Spouse: <b>${m.spouse ? nm(m.spouse) : "—"}</b></div><div>Parents: ${(m.parents || []).map(nm).join(" & ") || "—"}</div><div>Children: ${kids.map(x => x.name + (x.alive ? "" : " †")).join(", ") || "—"}</div></div>`;
   h += `<h3>⚙️ Automation</h3><div class="card"><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="faex" data-v="${m.id}">${m.noAutoEq ? "Excluded" : "Included"}</button> <span class="muted">Auto Equip + family automation${Object.keys(m.pins || {}).length ? " · pinned: " + Object.keys(m.pins).join(", ") : ""}</span></div>`;
   return h + sheet(m);
+}
+
+// R35: Leans line, From parents line, apprenticeship picker (14-17)
+function apprv(m) {
+  const A = E.AP(), age = E.ageY(m), why = m.leanWhy || {};
+  const tip = `From ${[(why.traits || []).length ? "traits: " + why.traits.join(", ") : "", (why.parents || []).length ? "parents: " + why.parents.map(E.leanName).join(", ") : "", "a little luck"].filter(Boolean).join(" · ")}. +10% XP on these guilds' skills; Family Tutor and apprenticeships follow them.`;
+  let h = `<h3>🧭 Leans & upbringing</h3><div class="card" id="leans">`;
+  h += `<div title="${tip}">Leans: <b>${(m.lean || []).map(E.leanName).join(", ") || "—"}</b> <span class="muted">ⓘ +10% XP</span></div>`;
+  const inh = m.inh || {}, st = Object.entries(inh.stats || {}), sk = Object.entries(inh.skills || {});
+  if (st.length || sk.length) h += `<div>From parents: ${st.map(([k, v]) => `${k} +${v}`).join(", ") || ""}${st.length && sk.length ? " · " : ""}${sk.map(([k, v]) => `${(D.skills.find(x => x.id === k) || { name: k }).name} +${Math.round(v * 100)}% XP`).join(", ")}${sk.length && age >= 18 ? ' <span class="muted">(skill boost ended at 18)</span>' : ""}</div>`;
+  if (age < A.minAge) h += `<div class="muted">Can apprentice at ${A.minAge}.</div>`;
+  else if (age <= A.maxAge) {
+    if (m.appr) {
+      const M = E.masterDef(m.appr.id), p = E.apprProgress(s, m);
+      h += `<div>🎓 Apprentice to <b>${M.icon} ${M.name}</b> · ${M.skills.map(k => (D.skills.find(x => x.id === k) || { name: k }).name).join(", ")} ×${A.xpMult} · ${M.wage}🪙/day</div><div class="bar"><i style="width:${Math.round(p * 100)}%"></i></div><div class="muted">${Math.round(p * A.serveDays)}/${A.serveDays} days · finishing: ${E.guildDef(M.track)?.name || M.track} fee ½, +${A.reward.rep} rep</div><button class="b" data-a="apprset" data-v="" data-w="${m.id}">Leave</button>`;
+    }
+    h += `<div class="muted" style="margin-top:4px">Masters (one place each; switching restarts):</div>`;
+    for (const M of A.masters) {
+      const iss = E.apprIssue(s, m, M.id), on = m.appr && m.appr.id === M.id, lean = (m.lean || []).includes(M.track);
+      h += `<div class="row" style="margin:2px 0"><span>${M.icon} <b>${M.name}</b>${lean ? " 🧭" : ""}<br><span class="muted">${(D.towns.find(t => t.id === M.town) || {}).name} · ${M.skills.map(k => (D.skills.find(x => x.id === k) || { name: k }).name).join(", ")} · ${M.wage}🪙/day${iss && !on ? " · " + iss : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="apprset" data-v="${M.id}" data-w="${m.id}" ${iss || on ? "disabled" : ""}>${on ? "Placed" : "Apprentice"}</button></div>`;
+    }
+    if ((m.apprDone || []).length) h += `<div class="muted">Trained: ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
+  } else if ((m.apprDone || []).length) h += `<div class="muted">🎓 Trained under ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
+  return h + `</div>`;
 }

@@ -490,5 +490,14 @@
    "care": 0.01,
    "floor": 0.25
   }
+ },
+ "inherit": {
+  "statShare": 0.25,
+  "statCapEach": 3,
+  "statCapTotal": 8,
+  "skillMinLvl": 10,
+  "skillTop": 2,
+  "skillXp": 0.2,
+  "skillXpCap": 0.4
  }
 }
