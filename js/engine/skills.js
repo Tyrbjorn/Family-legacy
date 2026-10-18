@@ -86,11 +86,14 @@ export function gainXp(s, m, skillId, amt) {
   }
 }
 
+// R47.1 entry drill: a guild flagged entryTrain lets non-members train its gated join skills up to the join level
+// (Architects' need masonry 5, which only members could train: not circular any more)
+export const entryTrainOk = (m, sk) => D.guilds.guilds.some(g => g.entryTrain && [sk.guild, ...(sk.alsoGuilds || [])].includes(g.id) && ((m.skills[sk.id] || { lvl: 0 }).lvl < ((g.req || {}).skills || {})[sk.id]));
 export function trainIssue(m, skillId, s) {
   const sk = findId(D.skills, skillId);
   if (!sk) return "unknown";
   const a = ageY(m);
-  if (sk.guild && !memberGuild(m, sk.guild)) return "guild";
+  if (sk.guild && ![sk.guild, ...(sk.alsoGuilds || [])].some(g => memberGuild(m, g)) && !entryTrainOk(m, sk)) return "guild"; // R47.1: alsoGuilds (masonry: Architects' too)
   if (sk.unlockQuest && s && !(s.unlocks || []).includes("skill:" + skillId)) return "quest";
   if (a < 12) return "age12";
   if (sk.family === "magic" && a < 14) return "age14";

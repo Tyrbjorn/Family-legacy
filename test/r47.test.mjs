@@ -11,7 +11,7 @@ const setSk=(m,o)=>{for(const[k,v]of Object.entries(o))m.skills[k].lvl=v;};
 const lvTo=(m,lv)=>{const ks=Object.keys(m.skills);let i=0;while(E.level(m)<lv)m.skills[ks[i++%ks.length]].lvl++;};
 const kid=(s,par,age=25)=>{const m=JSON.parse(JSON.stringify(s.members[0]));m.id=s.nextId++;m.name='Kid'+m.id;m.parents=par;m.ageDays=age*Y;m.guild=null;m.guild2=null;m.class2=null;m.cls=null;m.secondGuild=null;m.paths=[];s.members.push(m);return m;};
 // ---- data + build + schema
-ok(BUILD==='R47'&&E.SCHEMA===43,'R47, save step 43');
+ok(BUILD.startsWith('R47')&&E.SCHEMA===43,'R47, save step 43');
 const A=E.guildDef('architects'); ok(A&&!A.open&&A.town==='ashford'&&A.board==='millbrook'&&A.grantsClass==='builder'&&A.req.skills.masonry===5&&A.req.skills.carpentry===5&&A.req.coin===120,"Architects' Guild: sworn, Ashford (board Millbrook), masonry 5 + carpentry 5 + 120 coin, entry Builder");
 const T=id=>E.findId(D.classes,id).tier; ok(T('builder')===0&&T('b_masterbuilder')===1&&T('b_surveyor')===1&&T('b_architect')===2&&T('b_fortwright')===2&&T('b_planner')===2,'Builder → Master Builder/Surveyor → Architect/Fortwright/Town Planner');
 ok(['builder','b_masterbuilder','b_surveyor','b_architect','b_fortwright','b_planner'].every(id=>E.guildOfCls(id)==='architects')&&!D.classes.find(c=>c.id==='architect').guild,"all six classes belong to the Architects' Guild; the retired architect id is untouched");
@@ -105,7 +105,7 @@ ok(E.findId(D.skills,'drafting').guild==='architects'&&E.guildShop('architects')
   s.members.filter(x=>x.guild&&x.guild.id==='rogues').forEach(x=>x.alive=false); setSk(m,{brawling:6,haggling:6}); ok(E.pick2(s,m).gid==='rogues'&&/no Rogues/.test(E.pick2(s,m).why),'a role the family lacks comes first');
   E.setPref2(s,m.id,'lodge'); ok(E.pick2(s,m).gid==='lodge'&&m.pins.guild2,'a hand choice is pinned'); }
 { const s=base(), m=s.members[0]; m.cls='fighter'; m.guild={id:'vanguard',rank:0,rep:0}; m.secondGuild={via:'craft',path:'mason',day:0}; delete m.craft; m.skills.masonry.lvl=0; for(const k in m.stats)m.stats[k]=10;
-  const p=E.pick2(s,m); ok(p.gid!=='architects'&&E.joinDrill(s,m)&&Object.keys(E.guildDef(p.gid).req.skills).includes(E.joinDrill(s,m)),"Auto skips a guild it can't train toward (masonry needs the Crafters' Guild) and drills the pick's join skill");
+  const p=E.pick2(s,m); ok(p.gid==='architects'&&E.joinDrill(s,m)==='masonry',"R47.1: masonry 0 no longer blocks the Architects' (entry drill); Auto drills the pick's join skill");
   ok(E.drillSkill(s,m)===E.joinDrill(s,m)||Math.floor(s.day/30)%2===1,'drillSkill alternates in the join skill'); }
 // ---- save step 43
 { const s=base(), m=s.members[0]; m.cls='paladin'; m.guild={id:'church',rank:2,rep:300}; delete m.guild2; delete m.class2; delete m.secondGuild;

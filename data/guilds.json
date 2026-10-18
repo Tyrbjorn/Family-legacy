@@ -235,7 +235,9 @@
     "history",
     "leadership"
    ],
-   "grantsClass": "builder"
+   "grantsClass": "builder",
+   "entryTrain": true,
+   "_entryNote": "R47.1: entryTrain lets anyone train this guild's gated join skills (masonry) up to the join level; members train masonry fully (skills.json alsoGuilds)."
   }
  ],
  "adventurers": {

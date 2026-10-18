@@ -2,6 +2,15 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R47.1",
+   "title": "The Architects' Teach Masonry",
+   "items": [
+    "🧱 The Architects' Guild now teaches Masonry too (the Crafters' Guild still does).",
+    "📐 Entry drill: anyone may train Masonry up to 5, the Architects' entry level, so you no longer need the Crafters' Guild first.",
+    "🤖 Auto Advance drills a guildless builder-leaning heir's entry skill and can take the Architects' as main or second guild."
+   ]
+  },
+  {
    "build": "R47",
    "title": "Second Guilds and the Architects' Guild",
    "items": [

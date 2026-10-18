@@ -514,8 +514,8 @@ function bot(s, m) {
   // guilds
   // R46: each adult joins their class's guild first (then any guild they qualify for)
   for (const o of NO_TIERS ? [m] : E.living(s).filter(x => E.isAdult(x) && !x.guild)) {
-    const own = o.cls && (E.classGuild(o.cls) || {}).id;
-    for (const gd of [...(D.guilds.guilds || D.guilds)].sort((a, b) => (b.id === own) - (a.id === own)))
+    const own = o.cls && (E.classGuild(o.cls) || {}).id, tr = !process.env.NO_TRACK && E.trackFor ? E.trackFor(s, o) : null; // R47.1: then the track guild, as Auto Advance does
+    for (const gd of [...(D.guilds.guilds || D.guilds)].sort((a, b) => (b.id === own) - (a.id === own) || (b.id === tr) - (a.id === tr)))
       if (!o.guild && !E.joinIssues(s, o, gd.id).length && E.joinGuild(s, o, gd.id)) seen.guilds.add(gd.id);
   }
   if (m.guild) E.rankUp(s, m);

@@ -6,6 +6,7 @@ import { classGuild, cls, memberGuild, structReqOk, structReqText, rankName } fr
 import { level } from "./family.js";
 import { canTrain } from "./skills.js";
 import { joinDrill } from "./guild2.js";
+import { trackFor } from "./family-auto.js";
 import { D, Y, log, living } from "./state.js";
 
 const GT = () => D.guilds.tiers || [];
@@ -111,6 +112,7 @@ export const roleBonus = (s, key) => {
 
 // Skill a member should drill toward their nearest next class (lowest share first), or null.
 export function drillSkill(s, m) {
+  if (!m.guild && !m.craft) { const g = D.guilds.guilds.find(x => x.id === trackFor(s, m)); const need = g && Object.entries(g.req.skills || {}).filter(([k, v]) => (m.skills[k] || { lvl: 0 }).lvl < v && canTrain(m, k, s)); if (need && need.length) return need[0][0]; } // R47.1: no guild yet: drill the track guild's join skill
   const j = joinDrill(s, m); // R47: the second-guild pick's join skills, every other month (or when no class step is left)
   const x = nearestClasses(s, m, 1, true)[0];
   if (j && (!x || Math.floor((s.day || 0) / 30) % 2 === 0)) return j;
