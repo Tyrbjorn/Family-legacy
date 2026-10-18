@@ -1,0 +1,24 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+const unhide=()=>p.evaluate(()=>{for(const x of document.querySelectorAll('*'))if(x.style.display==='none')x.style.display='';});
+const clip=async(sel,path,pre=0,post=0)=>{const r=await p.evaluate(([sel,pre,post])=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY-pre,width:r.width,height:Math.min(r.height+pre+post,1700)};},[sel,pre,post]);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});await unhide();};
+await p.evaluate(()=>{const g=__game,E=g.E,s=g.s;s.tut.skipped=true;const S=E.Slots,now=Date.now();
+  const mk=(name,yrs,legacy,coin,note,ago)=>{const x=JSON.parse(JSON.stringify(s));x.members[0].name=name;x.day=Math.round(yrs*g.D.tuning.daysPerYear);x.legacy.renown=legacy;x.res.coin=coin;x.renown=legacy*3;return [x,note,now-ago];};
+  const L=[[2,mk('Ashford',27.6,1240,48210,'trade route run',3*86400e3)],[3,mk('Marrow',8.2,95,3120,'no-minion challenge',5*3600e3)],[4,mk('Vael',61.3,8800,402000,'',26*86400e3)]];
+  for(const [n,[x,note,t]] of L){S.saveSlot(localStorage,n,x,t);S.renameSlot(localStorage,n,'House '+x.members[0].name,note);}
+  S.saveSlot(localStorage,1,s);});
+await p.evaluate(()=>document.querySelector('#savesbtn').click());await p.waitForTimeout(900);
+await p.screenshot({path:O+'r38-slot-picker.png',fullPage:true});
+await p.evaluate(()=>document.querySelector('[data-a="slotdel"][data-v="3"]').click());await p.waitForTimeout(700);
+await clip('[data-slot="3"]',O+'r38-delete-confirm.png',10,10);
+await p.evaluate(()=>document.querySelector('[data-a="slotdel"][data-v="3"]').click());await p.waitForTimeout(700);
+await p.evaluate(()=>scrollTo(0,0));await p.screenshot({path:O+'r38-delete-undo.png',fullPage:false});
+await p.evaluate(()=>{localStorage.setItem('pad','x'.repeat(Math.ceil(5*1048576*0.84/2)));});await p.waitForTimeout(900);
+await clip('#storagebar',O+'r38-storage-bar.png',10,10);
+await p.evaluate(()=>localStorage.removeItem('pad'));
+console.log('errors',errs);await b.close();

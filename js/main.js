@@ -71,11 +71,20 @@ export let s,
   invF = { type: "all", q: "all", sort: "value" },
   report = null;
 
-const raw = localStorage.getItem(KEY);
-
+// R38 save slots: copy the old single save into slot 1 once (original kept), then open the last played slot.
+const SL = E.Slots;
+export let slot = 1;
+const mig = SL.migrateSlots(localStorage);
+let legacyKeyMode = !!(mig.error && mig.fallback); // copy failed: keep playing the old save in place
 try {
-  if (raw) {
-    s = E.deserialize(raw);
+  if (legacyKeyMode) {
+    const raw = localStorage.getItem(KEY);
+    if (raw) s = E.deserialize(raw);
+  } else {
+    slot = SL.lastSlot(localStorage);
+    s = SL.loadSlot(localStorage, slot);
+  }
+  if (s) {
     report = E.applyOffline(s);
     if (report && report.elapsed < 60) report = null;
   }
@@ -83,11 +92,66 @@ try {
   console.warn(e);
 }
 
-if (!s) s = E.newGame();
+if (!s) {
+  if (!legacyKeyMode && SL.listSlots(localStorage).every(x => x.empty)) U.tab = "saves"; // nothing saved yet: show the picker
+  s = E.newGame();
+  E.normalize(s);
+  if (!legacyKeyMode && !window.__noSave) SL.saveSlot(localStorage, slot, s); // the new dynasty takes its slot right away
+}
 
 E.normalize(s);
 
-const save = () => !window.__noSave && localStorage.setItem(KEY, E.serialize(s));
+const save = () => {
+  if (window.__noSave) return;
+  if (legacyKeyMode) {
+    try { localStorage.setItem(KEY, E.serialize(s)); } catch (e) { U.saveErr = "Couldn't save: storage full. Export this game or delete a slot."; }
+    return;
+  }
+  const r = SL.saveSlot(localStorage, slot, s);
+  U.saveErr = r.ok ? "" : r.err === "storage full" ? "Couldn't save: storage full. Export this slot or delete another. Retrying at the next autosave." : "Couldn't save: " + r.err;
+};
+// switch / new / import into a slot (the current slot is saved first)
+function playSlot(n) {
+  if (n === slot) return void (U.tab = "main");
+  save();
+  const next = SL.loadSlot(localStorage, n);
+  if (!next) return;
+  s = next;
+  E.normalize(s);
+  slot = n;
+  report = E.applyOffline(s);
+  if (report && report.elapsed < 60) report = null;
+  U.tab = "main";
+}
+function newInSlot(n) {
+  if (!SL.listSlots(localStorage)[n - 1].empty) return;
+  save();
+  s = E.newGame();
+  slot = n;
+  report = null;
+  save();
+  U.tab = "main";
+}
+function importIntoSlot(n, text) {
+  let next;
+  try { next = E.importSave(text); } catch (err) { U.slotMsg = "❌ " + err.message; return; }
+  const cur = SL.listSlots(localStorage)[n - 1];
+  if (!cur.empty && !confirm(`Replace "${cur.name}" in slot ${n} with this save?`)) return;
+  if (n === slot) { s = next; report = null; save(); }
+  else { const r = SL.saveSlot(localStorage, n, next); if (!r.ok) return void (U.slotMsg = "❌ " + r.err); SL.loadSlot(localStorage, slot) && SL.saveSlot(localStorage, slot, s); }
+  U.slotMsg = `✅ Imported into slot ${n}.`;
+}
+function exportSlot(n) {
+  const raw = n === slot ? null : localStorage.getItem(SL.slotKey(n));
+  const sv = raw ? E.deserialize(raw) : s, info = SL.listSlots(localStorage)[n - 1];
+  const code = E.exportCode(sv);
+  U.slotCode = code;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
+  a.download = `family-legacy-${(info.name || "slot" + n).replace(/[^a-z0-9]+/gi, "-")}-Y${Math.floor(sv.day / D.tuning.daysPerYear) + 1}.txt`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
 
 window.__game = {
   get s() {
@@ -110,7 +174,7 @@ document.addEventListener("click", e => {
   const t = e.target.closest("[data-tab]");
   if (t) {
     U.tab = t.dataset.tab;
-    if (U.tab !== "legacy") (U.groupLast ||= {})[groupOf(U.tab)] = U.tab; // R37: Legacy panel is outside the nav groups
+    if (U.tab !== "legacy" && U.tab !== "saves") (U.groupLast ||= {})[groupOf(U.tab)] = U.tab; // R37: Legacy panel is outside the nav groups
     if (U.tab === "estate") E.tutNote(s, "estate");
     E.introView(s, U.tab);
     U.lastHTML = "";
@@ -139,8 +203,26 @@ document.addEventListener("click", e => {
         document.querySelector("#savecode") ? document.querySelector("#savecode").value : prompt("Paste save code:"),
       ),
     importsave: () => importText(document.querySelector("#savecode") && document.querySelector("#savecode").value),
+    slotplay: () => playSlot(+v),
+    slotnew: () => newInSlot(+v),
+    slotdel: () => {
+      if (+v === slot) return void (U.slotMsg = "Switch to another slot before deleting this one.");
+      if (U.delArm !== +v) return void (U.delArm = +v); // first press arms (button turns red: "Press again to delete")
+      U.delArm = 0;
+      if (SL.deleteSlot(localStorage, +v)) U.slotMsg = `Deleted slot ${v}.`, (U.undoSlot = +v);
+    },
+    slotundo: () => { if (SL.undoDelete(localStorage, +v)) (U.slotMsg = `Restored slot ${v}.`), (U.undoSlot = 0); },
+    slotrename: () => {
+      const cur = SL.listSlots(localStorage)[+v - 1];
+      const nm = prompt("Name for this dynasty", cur.name || "");
+      if (nm === null) return;
+      const note = prompt("Note (optional, e.g. 'trade route run')", cur.note || "");
+      SL.renameSlot(localStorage, +v, nm, note === null ? undefined : note);
+    },
+    slotexport: () => exportSlot(+v),
+    slotimport: () => importIntoSlot(+v, document.querySelector("#slotcode") && document.querySelector("#slotcode").value),
     reset: () => {
-      if (s.gameOver || confirm("Abandon this lineage and start over?")) {
+      if (s.gameOver || confirm(`Abandon this lineage and start over in slot ${slot}?`)) {
         s = E.newLineage(s);
         report = null;
       }

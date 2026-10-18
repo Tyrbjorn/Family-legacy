@@ -808,5 +808,6 @@ console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes
 console.log("R35 apprentices placed:", (seen.appr || new Set()).size, "finished:", (seen.apprDone || new Set()).size, "members with leans:", (seen.lean || new Map()).size, "two leans:", [...(seen.lean || new Map()).values()].filter(x => x === 2).length);
 console.log("R36 talents earned per seed:", JSON.stringify(Object.fromEntries(Object.entries(seen.tal || {}).map(([k, v]) => [k, v.size]))), "by talent:", JSON.stringify([...Object.values(seen.tal || {})].flatMap(v => [...v]).reduce((a, x) => ((a[x.split(":")[1]] = (a[x.split(":")[1]] || 0) + 1), a), {})));
 console.log("R37 early [year, coin, food, structs, minions, legacyRenown]:", JSON.stringify(seen.early || {}));
+if (process.env.SAVESIZE && lastS) { const j = E.serialize(lastS), c = E.exportCode(lastS); console.log("SAVESIZE json", j.length, "exportCode", c.length, "years", (lastS.day / YD).toFixed(1), "members", lastS.members.length, "log", (lastS.log || []).length, "chron", (lastS.chron || []).length); fs.writeFileSync("/tmp/longsave.json", j); }
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

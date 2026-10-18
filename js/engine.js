@@ -34,6 +34,7 @@ export * from "./engine/cooking.js";
 export * from "./engine/quotas.js";
 export * from "./engine/apprentice.js";
 export * from "./engine/talents.js";
+export * as Slots from "./engine/slots.js"; // R38 save slots (namespaced)
 export * from "./engine/intros.js";
 export * from "./engine/gear.js";
 export * from "./engine/geartypes.js";
