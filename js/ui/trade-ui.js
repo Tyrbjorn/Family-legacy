@@ -2,6 +2,7 @@
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { RI } from "./common.js";
+import { priceTagHtml } from "./market-ui.js";
 import { D, s } from "../main.js";
 
 const MODES = ["sell", "buy", "haul"];
@@ -33,8 +34,8 @@ const mname = uid => ((s.minions || []).find(x => x.uid === uid) || {}).name || 
 function routeRow(r, pool) {
   const price =
     r.mode === "haul"
-      ? `buy ${r1(E.townBuyPrice(s, r.from, r.res))}🪙 → sell ${r1(E.townSellPrice(s, r.town, r.res))}🪙`
-      : `now ${r1(r.mode === "sell" ? E.townSellPrice(s, r.town, r.res) : E.townBuyPrice(s, r.town, r.res))}🪙`;
+      ? `buy ${r1(E.townBuyPrice(s, r.from, r.res))}🪙${priceTagHtml(r.from, r.res, "buy")} → sell ${r1(E.townSellPrice(s, r.town, r.res))}🪙${priceTagHtml(r.town, r.res)}`
+      : `now ${r1(r.mode === "sell" ? E.townSellPrice(s, r.town, r.res) : E.townBuyPrice(s, r.town, r.res))}🪙${priceTagHtml(r.town, r.res, r.mode === "sell" ? "sell" : "buy")}`;
   const tr = r.trip;
   const st = tr
     ? `${tr.step < tr.stops.length ? "heading to " + E.tradePlace(tr.stops[tr.step].at) : "home"} ${Math.round(tr.t)}/${tr.total}d`

@@ -499,5 +499,13 @@
   "skillTop": 2,
   "skillXp": 0.2,
   "skillXpCap": 0.4
+ },
+ "market": {
+  "_note": "R39 market board + price tags. Ratio = town price vs normal (supply + events).",
+  "highAt": 1.15,
+  "lowAt": 0.85,
+  "tagMax": 3,
+  "boardRows": 8,
+  "recoverHint": 0.05
  }
 }

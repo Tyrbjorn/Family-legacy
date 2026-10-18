@@ -108,3 +108,8 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 /* R31.1 map: pins/labels counter-scaled so they keep their on-screen size as you zoom */
 #worldmap .pz{transform:scale(var(--k,1));transform-box:view-box}
 #worldmap .tv{transform:scale(var(--k,1));transform-box:view-box}
+/* R39.1 tester badge + What's new */
+.testerbadge{background:#2c5d4a;color:#d9ffe9;border-radius:9px;padding:1px 7px;font-size:12px;font-weight:700;margin-left:4px}
+#wnpanel{position:fixed;inset:0;z-index:61;background:rgba(0,0,0,.55);overflow:auto;padding:10px;-webkit-overflow-scrolling:touch}
+#wnpanel[hidden]{display:none}
+.wncard{max-width:560px;margin:0 auto}.wncard ul{margin:4px 0 8px 18px;padding:0}.wncard li{margin:2px 0}

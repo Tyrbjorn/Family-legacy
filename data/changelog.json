@@ -1,0 +1,49 @@
+{
+ "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
+ "entries": [
+  {
+   "build": "R39.1",
+   "title": "Tester links and What's new",
+   "items": [
+    "This 'What's new' window: it pops up once after each update. Reopen it any time from 📂 Saves.",
+    "Playtesters can open a special tester link to get a 🧪 Tester badge and a quick Feedback button."
+   ]
+  },
+  {
+   "build": "R39",
+   "title": "Markets you can read",
+   "items": [
+    "New 📊 Market Board at the top of the Map: the best town to sell each thing you own, and the cheapest place to buy.",
+    "Prices now show ▲ (high) or ▼ (low) with a short reason, like 'they want it' or 'flooded: you sold a lot here'.",
+    "Towns show what they're Short of and Flooded with.",
+    "New town events: shortages (a good pays 1.5×) and gluts (a good pays little), lasting 10–20 days.",
+    "The Bag tab shows your best three places to sell."
+   ]
+  },
+  {
+   "build": "R38",
+   "title": "Save slots",
+   "items": [
+    "Keep up to 5 dynasties side by side from the new 📂 Saves screen. Each has its own Legacy.",
+    "Rename, delete (with undo), import and export each slot. A bar shows how much storage you're using."
+   ]
+  },
+  {
+   "build": "R37",
+   "title": "Free automation basics",
+   "items": [
+    "Basic automation is now free from the start: auto-tending, family orders, kids' tutoring, courtship and a few quotas.",
+    "Upgrades make automation faster or bigger. Legacy you already spent on the old upgrades was refunded.",
+    "Legacy upgrades moved to their own 🏛️ screen in the top bar."
+   ]
+  },
+  {
+   "build": "R36",
+   "title": "Talents",
+   "items": [
+    "Family members can earn talents by doing things, like Tracker's Eye for hunters or Haggler for traders.",
+    "Each talent gives a small bonus. They show on the Character screen."
+   ]
+  }
+ ]
+}

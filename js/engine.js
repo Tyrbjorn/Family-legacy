@@ -16,6 +16,8 @@ export * from "./engine/crafting.js";
 export * from "./engine/chronicle.js";
 export * from "./engine/achievements.js";
 export * from "./engine/worldevents.js";
+export * from "./engine/market.js";
+export * from "./engine/playpass.js";
 export * from "./engine/encounters.js";
 export * from "./engine/traits.js";
 export * from "./engine/seasons.js";

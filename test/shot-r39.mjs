@@ -1,0 +1,24 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
+const O='/workspace/fl-screenshots/';
+const unhide=()=>p.evaluate(()=>{for(const x of document.querySelectorAll('*'))if(x.style.display==='none')x.style.display='';});
+const clip=async(sel,path,pre=0,post=0)=>{const r=await p.evaluate(([sel,pre,post])=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY-pre,width:r.width,height:Math.min(r.height+pre+post,1700)};},[sel,pre,post]);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});await unhide();};
+await p.evaluate(()=>{const g=__game,E=g.E,s=g.s,D=g.D;s.tut.skipped=true;s.discovered=[...new Set([...(s.discovered||[]),...D.towns.map(t=>t.id)])];
+  for(const r of D.regions.filter(r=>!r.future)){(s.regions=s.regions||{});}
+  Object.assign(s.res,{wheat:400,planks:120,salt:60,ingots:30,hides:80,leather:40,cloth:25,ore:90,coin:5000});
+  s.wevents=[];E.startEvent(s,'shortage','ashford',16,'leather');E.startEvent(s,'glut','millbrook',12,'wheat');
+  s.res.milk=(s.res.milk||0)+300;E.sellRes(s,'millbrook','milk',250);s.res.milk=60;
+  window.__known=E.knownTowns(s).map(t=>t.id);});
+console.log('known',await p.evaluate(()=>window.__known));
+await go(p,'map');await p.waitForTimeout(600);
+await clip('#marketboard',O+'r39-market-board.png',8,8);
+const cardSel=async(name,file)=>{await p.evaluate(n=>{document.querySelectorAll('.card').forEach(c=>c.removeAttribute('data-shot'));const c=[...document.querySelectorAll('.card')].find(c=>c.querySelector('b')&&c.querySelector('b').textContent.includes(n)&&c.textContent.includes('· trade'));if(c)c.setAttribute('data-shot','1');},name);await clip('[data-shot="1"]',file,8,8);};
+await cardSel('Millbrook',O+'r39-map-price-tags.png');
+await cardSel('Ashford',O+'r39-town-shortage.png');
+await go(p,'inv');await p.waitForTimeout(600);
+await clip('#marketsummary',O+'r39-bag-summary.png',40,8);
+console.log('errors',errs);await b.close();

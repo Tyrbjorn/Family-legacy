@@ -22,6 +22,9 @@ const LG_DEED = +(process.env.LG_DEED || 0), deedSeen = new WeakMap();
 if (process.env.LIFE) D.tuning.baseLifespan = +process.env.LIFE;
 if (process.env.CHILD) D.tuning.childEvery = +process.env.CHILD;
 if (process.env.KIDS) D.tuning.maxKidsPerCouple = +process.env.KIDS;
+// NO_MKT=1 (sim only): drop the R39 shortage/glut events for A/B
+if (process.env.NO_MKT) D.events.types = D.events.types.filter(t => !t.pick);
+if (process.env.SH_MULT) D.events.types.filter(t => t.pick).forEach(t => (t.effects.resPrice = t.id === "shortage" ? +process.env.SH_MULT : t.effects.resPrice));
 E.setData(D);
 const SEEDS = +(process.argv[2] || 3),
   YEARS = +(process.argv[3] || 200);

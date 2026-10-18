@@ -7,6 +7,7 @@ import { guildHall } from "./guilds-tab.js";
 import { D, s } from "../main.js";
 import { busyBanner } from "./main-tab.js";
 import { tradeCard } from "./trade-ui.js";
+import { marketBoardCard, priceTagHtml, priceTipOf, townTagsHtml } from "./market-ui.js";
 import { hintSpots, mapSvg } from "./map-draw.js";
 export { mapSvg };
 
@@ -204,7 +205,7 @@ export function mapDetail(m) {
   if (k === "t") {
     const t = D.towns.find(x => x.id === id);
     const ev = E.eventsAtTown(s, t.id);
-    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${quadBtn(t.id)}${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
+    h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${townTagsHtml(t.id)}${quadBtn(t.id)}${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
   }
   return h;
 }
@@ -234,7 +235,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
+  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);
@@ -242,19 +243,19 @@ export function mapv() {
     if (!open) continue;
     const hidden = [...D.quests, ...D.nodes].filter(x => x.region === rg.id && !E.known(s, x)).length;
     for (const t of D.towns.filter(t => t.region === rg.id && E.townKnown(s, t)))
-      h += `<div class="card"><b>${t.icon} ${t.name}</b> <span class="muted">· trade</span><div class="row" style="flex-wrap:wrap;margin-top:4px">${Object.entries(
+      h += `<div class="card"><b>${t.icon} ${t.name}</b> <span class="muted">· trade</span>${townTagsHtml(t.id)}<div class="row" style="flex-wrap:wrap;margin-top:4px">${Object.entries(
         t.prices,
       )
         .map(
           ([k, p]) =>
-            `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"}>Sell 10${RI[k]} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙</button>`,
+            `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"} title="${priceTipOf(t.id, k)}">Sell 10${RI[k] || " " + k} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙${priceTagHtml(t.id, k)}</button>`,
         )
         .join("")}</div>${
         E.marketOf(t.id).length
           ? `<div class="muted" style="margin-top:4px">Makes: ${(t.produces || []).map(k => (RI[k] || "") + k).join(", ") || "—"} · Wants: ${(t.wants || []).map(k => (RI[k] || "") + k).join(", ") || "—"}</div><div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${E.marketOf(t.id)
               .map(k => {
                 const p = E.townBuyPrice(s, t.id, k);
-                return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"}>Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙</button>`;
+                return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"} title="${priceTipOf(t.id, k, "buy")}">Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙${priceTagHtml(t.id, k, "buy")}</button>`;
               })
               .join("")}</div>`
           : ""
@@ -273,7 +274,7 @@ export function mapv() {
         .map(n => {
           const on = m.action && m.action.type === "gather" && m.action.target === n.id;
           return `<div class="card row"><span>${n.icon} ${n.name}<br><span class="muted">${Object.entries(n.res)
-            .map(([k, v]) => `+${v}${RI[k]}/day`)
+            .map(([k, v]) => `+${v}${RI[k] || " " + k}/day`)
             .join(
               " ",
             )} · ${sk(n.skill).name}</span><div class="bar" style="width:120px"><i style="width:${(E.nodeStock(s, n) / E.nodeMax(n)) * 100}%"></i></div></span><button class="b ${on ? "sel" : ""}" data-a="gather" data-v="${n.id}">Gather</button></div>`;
@@ -285,7 +286,7 @@ export function mapv() {
       h += `<div class="card row"><span>${qKind(q)[0]} ${q.name} <span class="muted" style="font-size:11px">${qKind(q)[2]}</span> <span class="risk-${q.risk}">[${q.risk}]</span><br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(
         q.reward,
       )
-        .map(([k, v]) => v + RI[k])
+        .map(([k, v]) => v + (RI[k] || " " + k))
         .join(
           " ",
         )} · ${Math.round(E.successChance(s, m, q) * 100)}%${q.risk === "deadly" ? " · ☠️ death risk" : ""}${q.unlocks ? ` · 🔓 ${s.unlocks.includes(q.unlocks) ? "unlocked" : "unlocks"} ${unlockName(q.unlocks)}` : ""}</span>${on ? `<div class="bar"><i style="width:${(m.action.progress / q.days) * 100}%"></i></div>` : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q, s) ? "" : "disabled"}>Go</button></div>`;

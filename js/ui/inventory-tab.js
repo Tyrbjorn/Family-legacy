@@ -1,6 +1,7 @@
 import * as E from "../engine.js";
 import { MATS, QC, RI, fmt, it, itemRow, itemStatsHtml } from "./common.js";
 import { D, invF, s } from "../main.js";
+import { marketSummaryCard, priceTagHtml } from "./market-ui.js";
 import { enchantCard, gearTags, setsCard } from "./gear-ui.js";
 
 export function vault() {
@@ -34,9 +35,9 @@ export function invv() {
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
       k =>
-        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙</button>` : ""}</div>`,
+        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
     ).join("") +
-    `<div class="muted">Sells at ${town.name}.</div></div>`;
+    `<div class="muted">Sells at ${town.name}.</div></div>` + marketSummaryCard();
   h +=
     `<h3>🎒 Personal pack (${m.bag.length}/${E.packCap()})</h3>` +
     (m.bag.length

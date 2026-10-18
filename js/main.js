@@ -1,5 +1,6 @@
 import { runAction } from "./ui/handlers/index.js";
 import "./ui/feedback.js";
+import { startWhatsNew } from "./ui/playpass-ui.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
 import { groupOf, render } from "./ui/render.js";
@@ -7,6 +8,9 @@ import { groupOf, render } from "./ui/render.js";
 const KEY = "familyLegacy.save.v1";
 
 const names = [
+  "build",
+  "testers",
+  "changelog",
   "skills",
   "classes",
   "traits",
@@ -57,14 +61,13 @@ await Promise.all(D.estate.structureFiles.map(async f => (D["structures/" + f] =
 E.setData(D);
 
 // Dev Mode lives in its own localStorage key (never in saves/exports). ?dev=1 reveals + enables, ?dev=0 disables.
-const DEV_KEY = "fl-dev";
+const DEV_KEY = E.DEV_KEY;
 {
-  const q = new URLSearchParams(location.search).get("dev");
-  if (q === "1") localStorage.setItem(DEV_KEY, "1");
-  if (q === "0") localStorage.removeItem(DEV_KEY);
-  E.setDevMode(localStorage.getItem(DEV_KEY) === "1");
-  if (q === "1") U.devRevealed = true;
+  const r = E.resolveDevMode(localStorage, new URLSearchParams(location.search).get("dev")); // R39.1: locked off in release builds
+  if (r.reveal) U.devRevealed = true;
 }
+// R39.1 tester play pass: ?tester=<token> (tokens in data/testers.json). Own key, never in saves; not Dev Mode.
+U.passInit = E.initPlayPass(localStorage, new URLSearchParams(location.search).get("tester"));
 
 export let s,
   sheetOpen = false,
@@ -92,6 +95,7 @@ try {
   console.warn(e);
 }
 
+export const freshPlayer = !s && SL.listSlots(localStorage).every(x => x.empty);
 if (!s) {
   if (!legacyKeyMode && SL.listSlots(localStorage).every(x => x.empty)) U.tab = "saves"; // nothing saved yet: show the picker
   s = E.newGame();
@@ -100,6 +104,7 @@ if (!s) {
 }
 
 E.normalize(s);
+startWhatsNew(freshPlayer); // R39.1
 
 const save = () => {
   if (window.__noSave) return;
@@ -264,7 +269,7 @@ document.addEventListener("change", e => {
     if (el.checked && !confirm("Enable Dev Mode? This run will be marked as a dev run and stop earning achievements."))
       el.checked = false;
     E.setDevMode(el.checked);
-    if (el.checked) localStorage.setItem(DEV_KEY, "1");
+    if (el.checked && !E.devLocked()) localStorage.setItem(DEV_KEY, "1");
     else {
       localStorage.removeItem(DEV_KEY);
       if (!E.speedOptions(s).includes(s.speed)) s.speed = 1;

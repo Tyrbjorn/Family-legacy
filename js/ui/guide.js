@@ -92,7 +92,7 @@ export function settingsCard() {
   .join("")}</div>
 <div class="row"><button class="b" data-a="tourstart">🧭 Tab tour</button>${E.tutActive(s) ? `<button class="b" data-a="tutskip">Skip apprenticeship</button>` : ""}</div>
 ${
-  U.devRevealed || dev
+  !E.devLocked() && (U.devRevealed || dev)
     ? `<div class="row"><label class="chip"><input type="checkbox" data-a="devmode" ${dev ? "checked" : ""}> 🛠️ Dev Mode</label><span class="muted">Dev runs earn no achievements.</span></div>${
         dev
           ? `<div class="row" style="flex-wrap:wrap;gap:4px"><button class="b" data-a="dev" data-v="coin">+10k coin</button><button class="b" data-a="dev" data-v="res">+500 resources</button><button class="b" data-a="dev" data-v="turbo">Max turbo</button><button class="b" data-a="dev" data-v="tabs">Unlock tabs</button><button class="b" data-a="devtut">Complete tutorial</button><button class="b" data-a="tutskip">Skip tutorial</button></div>`

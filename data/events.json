@@ -220,6 +220,38 @@
    "season": [
     "autumn"
    ]
+  },
+  {
+   "id": "shortage",
+   "name": "Shortage",
+   "icon": "📉",
+   "scope": "town",
+   "days": [
+    10,
+    20
+   ],
+   "text": "{place} is short of {res}: it pays well",
+   "pick": "wants",
+   "group": "market",
+   "effects": {
+    "resPrice": 1.5
+   }
+  },
+  {
+   "id": "glut",
+   "name": "Glut",
+   "icon": "📦",
+   "scope": "town",
+   "days": [
+    10,
+    20
+   ],
+   "text": "{place} is flooded with {res}: it pays little",
+   "pick": "produces",
+   "group": "market",
+   "effects": {
+    "resPrice": 0.6
+   }
   }
  ]
 }

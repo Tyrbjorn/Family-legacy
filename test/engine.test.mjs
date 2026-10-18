@@ -29,7 +29,7 @@ s.res.coin=5000; s.suitors.push({id:'x',name:'Ysolde',gender:'f',cls:'scout',aff
 const home=estate(s,['bunk']); f.ageDays=Math.max(f.ageDays,D.tuning.courtAge*D.tuning.daysPerYear); ok(E.propose(s,'x')&&s.members.length===2,'marriage adds playable spouse');
 home.pieces=['bunk','bunk2'].slice(0,1).concat(['cradle','larder','minionbunk']); home.pieces.push('bunk'); s.res.food=1e6; for(let i=0;i<40&&s.members.length<3;i++) E.advanceReal(s,10*360);
 ok(s.members.length>=3,'child born'); const kid=s.members[2];
-f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&!kid.cls,'child inherits 10% at 16, stays classless');
+(s.autoOff=s.autoOff||{}).fam_advance=true; /* R39: inheritance check, not Auto Advance (RNG path shifted) */ f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&!kid.cls,'child inherits 10% at 16, stays classless');
 ok(E.switchTo(s,kid.id)&&E.active(s)===kid,'switch members');
 E.setOrder(s,f.id,{type:'quest',target:'outskirts'}); E.advanceReal(s,100); ok(f.action&&f.action.type==='quest','idle standing order quests');
 E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on active death');

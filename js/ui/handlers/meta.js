@@ -41,7 +41,7 @@ export const metaActions = ({ v, b, m }) => ({
     E.markTourSeen(s);
   },
   ver: () => {
-    if (++U.verTaps >= 5) U.devRevealed = true;
+    if (++U.verTaps >= 5 && !E.devLocked()) U.devRevealed = true;
   },
   dev: () => E.devCheat(s, v),
   devtut: () => E.completeTutorial(s),

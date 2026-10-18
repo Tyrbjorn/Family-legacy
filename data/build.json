@@ -1,0 +1,4 @@
+{
+ "_note": "R39.1 build channel. dev = Dev Mode available (?dev=1). release = Dev Mode locked off. Leave this on dev in source; tools/make-release.mjs writes release into the release copy.",
+ "channel": "dev"
+}

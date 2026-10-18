@@ -14,7 +14,14 @@ export const activeEvents = s => (s.wevents || []).filter(e => e.until > s.day);
 export const placeName = e =>
   ((e.scope === "town" ? D.towns : D.regions).find(x => x.id === e.place) || {}).name || e.place;
 
-export const eventText = e => eventType(e.type).text.replace("{place}", placeName(e));
+export const eventText = e => eventType(e.type).text.replace("{place}", placeName(e)).replace("{res}", e.res || "goods");
+// R39: shortage/glut events pick one good: "wants" = what the town wants (falls back to anything it buys), "produces" = what it makes
+export function pickRes(t, place) {
+  const town = D.towns.find(x => x.id === place) || {};
+  let pool = town[t.pick] || [];
+  if (!pool.length) pool = Object.keys(town.prices || {});
+  return pool.length ? pool[Math.floor(rng() * pool.length)] : null;
+}
 
 export const townRegion = townId => (D.towns.find(t => t.id === townId) || {}).region;
 
@@ -26,11 +33,12 @@ export const eventsAtTown = (s, townId) =>
 export const eventsInRegion = (s, region) =>
   activeEvents(s).filter(e => (e.scope === "region" ? e.place === region : townRegion(e.place) === region));
 
-export function startEvent(s, typeId, place, days) {
+export function startEvent(s, typeId, place, days, res) {
   const t = eventType(typeId);
   if (!s.wevents) s.wevents = [];
   const len = days || t.days[0] + Math.floor(rng() * (t.days[1] - t.days[0] + 1));
   const e = { type: typeId, scope: t.scope, place, from: s.day, until: s.day + len };
+  if (t.pick) e.res = res || pickRes(t, place); // R39: optional field, old saves load unchanged
   s.wevents.push(e);
   const msg = `${t.icon} ${eventText(e)} (${len} days).`;
   log(s, msg);
@@ -55,14 +63,15 @@ export function eventsDay(s) {
   );
   if (!pool.length) return;
   const place = pool[Math.floor(rng() * pool.length)].id;
-  if (s.wevents.some(x => x.place === place && x.type === t.id)) return;
+  if (s.wevents.some(x => x.place === place && (x.type === t.id || (t.group && (eventType(x.type) || {}).group === t.group)))) return; // R39: one shortage/glut per town
   startEvent(s, t.id, place);
 }
 
 const prod = (list, f) => list.reduce((a, e) => a * f(eventType(e.type).effects), 1);
 const sum = (list, f) => list.reduce((a, e) => a + f(eventType(e.type).effects), 0);
 
-export const priceMult = (s, townId, res) => prod(eventsAtTown(s, townId), x => (x.price || {})[res] || 1);
+export const priceMult = (s, townId, res) =>
+  eventsAtTown(s, townId).reduce((a, e) => a * ((eventType(e.type).effects.price || {})[res] || 1) * (e.res === res ? eventType(e.type).effects.resPrice || 1 : 1), 1);
 export const buyMult = (s, townId) => prod(eventsAtTown(s, townId), x => x.buyMult || 1);
 export const sellMult = (s, townId) => prod(eventsAtTown(s, townId), x => x.sellMult || 1);
 export const travelRisk = (s, region) => sum(eventsInRegion(s, region), x => x.travelRisk || 0);

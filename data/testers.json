@@ -1,0 +1,10 @@
+{
+ "_note": "R39.1 tester links: <site>/?tester=<token>. Rename a token or name freely; delete an entry to retire it (that browser's play pass turns off on next load). Convenience, not security: tokens are visible in the game files.",
+ "tokens": [
+  { "token": "tester1", "name": "Tester 1" },
+  { "token": "tester2", "name": "Tester 2" },
+  { "token": "tester3", "name": "Tester 3" },
+  { "token": "tester4", "name": "Tester 4" },
+  { "token": "tester5", "name": "Tester 5" }
+ ]
+}

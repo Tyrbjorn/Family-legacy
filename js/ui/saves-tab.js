@@ -3,6 +3,7 @@ import * as E from "../engine.js";
 import { slot } from "../main.js";
 import { U } from "./state.js";
 import { fmt } from "./common.js";
+import { savesExtras } from "./playpass-ui.js";
 
 const ago = t => {
   if (!t) return "never";
@@ -18,7 +19,7 @@ export function storageBar() {
 }
 export function savesv() {
   const L = E.Slots.listSlots(localStorage);
-  let h = `<div class="card"><b>📂 Saves</b><div class="muted">Keep up to ${E.Slots.SLOTS} dynasties side by side. Each slot has its own Legacy renown and upgrades. The game opens the last one you played.</div>${U.slotMsg ? `<div>${U.slotMsg}</div>` : ""}${U.undoSlot ? `<button class="b" data-a="slotundo" data-v="${U.undoSlot}">↩ Undo delete (slot ${U.undoSlot})</button>` : ""}</div>`;
+  let h = `<div class="card"><b>📂 Saves</b><div class="muted">Keep up to ${E.Slots.SLOTS} dynasties side by side. Each slot has its own Legacy renown and upgrades. The game opens the last one you played.</div></div>${savesExtras()}<div>${U.slotMsg ? `<div>${U.slotMsg}</div>` : ""}${U.undoSlot ? `<button class="b" data-a="slotundo" data-v="${U.undoSlot}">↩ Undo delete (slot ${U.undoSlot})</button>` : ""}</div>`;
   for (const x of L) {
     const c = x.card, cur = x.n === slot;
     if (x.empty) {
