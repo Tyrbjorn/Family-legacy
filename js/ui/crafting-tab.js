@@ -21,7 +21,7 @@ function selected() {
   if (!opts.some(o => o[0] === U.crafter)) U.crafter = opts.length ? opts[0][0] : null;
   if (!U.crafter) return {};
   const [kind, id] = U.crafter.split(":");
-  if (kind === "m") return { m: s.members.find(x => x.id === +id) };
+  if (kind === "m") return { m: E.findId(s.members, +id) };
   return { mi: s.minions.find(x => x.uid === id) };
 }
 

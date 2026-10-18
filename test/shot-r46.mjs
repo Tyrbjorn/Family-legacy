@@ -1,0 +1,31 @@
+const {chromium}=await import('/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);await p.waitForTimeout(400);};
+const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('console',m=>{if(m.text().startsWith('dbg'))console.log(m.text())});p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});p.on('pageerror',e=>errs.push(String(e)));
+const O='/workspace/fl-screenshots/';
+const unhide=()=>p.evaluate(()=>{for(const x of document.querySelectorAll('*'))if(x.style.display==='none')x.style.display='';});
+const clip=async(sel,path,pre=0,post=0)=>{const r=await p.evaluate(([sel,pre,post])=>{for(const x of document.querySelectorAll('*')){const c=getComputedStyle(x);if(c.position==='fixed'||c.position==='sticky')x.style.display='none';}const e=document.querySelector(sel);e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY-pre,width:r.width,height:Math.min(r.height+pre+post,1700)};},[sel,pre,post]);await p.waitForTimeout(150);await p.screenshot({path,clip:r,fullPage:true});await unhide();};
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>{localStorage.clear();localStorage.setItem('fl-whatsnew','R46');});await p.reload();await p.waitForTimeout(2000);
+await p.evaluate(()=>{const g=__game,E=g.E,s=g.s,D=g.D;s.tut.skipped=true;const m=s.members[0];m.ageDays=24*D.tuning.daysPerYear;m.action=null;s.res.coin=3000;
+  for(const k in m.skills)m.skills[k].lvl=Math.min(m.skills[k].lvl,3);Object.assign(m.skills.etiquette,{lvl:13});Object.assign(m.skills.haggling,{lvl:16});Object.assign(m.skills.thievery,{lvl:11});Object.assign(m.skills.brawling,{lvl:9});Object.assign(m.skills.appraisal,{lvl:6});
+  m.guild={id:'rogues',rank:1,rep:80};m.cls='cutpurse';s.doneQuests.push('g_rogues_heist');E.grantUnlock(s,'recipe:r_g_lockpicks');g.save();});
+await p.reload();await p.waitForTimeout(2000);
+await go(p,'main');await p.waitForTimeout(500);await clip('#guildtiers',O+'r46-tier-hints.png',8,8);
+await p.evaluate(()=>document.querySelector('[data-a="evolve"][data-v="swindler"]').click());await p.waitForTimeout(500);
+await clip('#guildtiers',O+'r46-swindler-next.png',8,8);
+await p.evaluate(()=>document.querySelector('[data-a="clsall"]').click());await p.waitForTimeout(500);
+await clip('#guildtiers',O+'r46-show-all.png',8,8);
+// crafter slots
+await p.evaluate(()=>{const g=__game,s=g.s,m=s.members[0];m.craft={id:'hearth',rank:2,rep:0};
+  m.paths=[{id:'smithing',xp:9e3,rank:2,spec:'toolsmith',sxp:2e3,srank:1,slot:'main'},{id:'tailor',xp:2e3,rank:1,spec:null,sxp:0,srank:0,slot:'second'},{id:'woodsman',xp:9e3,rank:2,spec:null,sxp:0,srank:0,slot:'gather'},{id:'farmer',xp:2e3,rank:1,spec:null,sxp:0,srank:0,slot:'gather'},{id:'cook',xp:900,rank:0,spec:null,sxp:0,srank:0,slot:'dabble'},{id:'mason',xp:1200,rank:0,spec:null,sxp:0,srank:0,slot:'dabble'}];
+  for(const k of ['smithing','tailoring','foraging','farming','cooking','masonry'])m.skills[k].lvl=Math.max(m.skills[k].lvl,30);g.save();});
+await p.reload();await p.waitForTimeout(2000);await go(p,'main');await p.waitForTimeout(500);
+await clip('#craftslots',O+'r46-craft-slots.png',8,8);
+// Clerk path (Steward at tier 3, Seneschal expansion)
+await p.evaluate(()=>{const g=__game,s=g.s,m=s.members[0];
+  m.paths=[{id:'clerk',xp:12e3,rank:2,spec:'steward',sxp:3e3,srank:2,slot:'main'},{id:'smithing',xp:2e3,rank:1,spec:null,sxp:0,srank:0,slot:'second'},{id:'woodsman',xp:3e3,rank:1,spec:null,sxp:0,srank:0,slot:'gather'}];
+  for(const k of ['reading','haggling','appraisal'])m.skills[k].lvl=Math.max(m.skills[k].lvl,32);g.save();});
+await p.reload();await p.waitForTimeout(2000);await go(p,'main');await p.waitForTimeout(500);
+await p.evaluate(()=>{const e=document.querySelector('[data-path="clerk"]');e.id='clerkrow';});await clip('#clerkrow',O+'r46-clerk-path.png',8,8);
+console.log('errors',errs);await b.close();if(errs.length)process.exit(1);

@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { sellFloor } from "./quotas.js";
 import { gameFx, gameLvl } from "./difficulty.js";
 import { pathLen } from "./world-route.js";
@@ -9,7 +10,7 @@ import { fight, fighter } from "./combat.js";
 import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "./inventory.js";
 import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
-import { famFx, isArtisan } from "./paths.js";
+import { effRank, famFx, isArtisan } from "./paths.js";
 import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
@@ -35,7 +36,7 @@ export const tradeTier = s => Math.max(0, ...(s.structures || []).map(st => TRAD
 const bestHaggle = s => Math.max(0, ...living(s).map(m => (m.skills && m.skills.haggling ? m.skills.haggling.lvl : 0)));
 // Scribe Stewards add a route slot each; at the artisan stage (Seneschal) two
 const stewards = s =>
-  living(s).reduce((a, m) => a + (m.paths || []).filter(p => p.id === "scribe" && (TC().stewardSpecs || []).includes(p.spec)).reduce((x, p) => x + (isArtisan(p) ? 2 : 1), 0), 0);
+  living(s).reduce((a, m) => a + (m.paths || []).filter(p => ["scribe", "clerk"].includes(p.id) && (TC().stewardSpecs || []).includes(p.spec)).reduce((x, p) => x + (isArtisan(p) && effRank(m, p) >= 3 ? 2 : 1), 0), 0); // R46: Steward lives on the Clerk path
 const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).includes(mi.cls)).length;
 
 export function routeSlotParts(s) {
@@ -57,7 +58,7 @@ export function routeSlotParts(s) {
 export const routeSlots = s => routeSlotParts(s).total;
 
 export const tradeTowns = s => D.towns.filter(t => townKnown(s, t));
-export const tradePlace = id => (id === HOME ? "Estate" : (D.towns.find(t => t.id === id) || { name: id }).name);
+export const tradePlace = id => (id === HOME ? "Estate" : (findId(D.towns, id) || { name: id }).name);
 const minion = (s, uid) => (s.minions || []).find(x => x.uid === uid);
 
 // ---- roads: estate legs use the map's road time; town-to-town legs scale straight distance by the
@@ -102,12 +103,12 @@ export function routeIssue(s, r) {
   if (r.from && r.from !== HOME) {
     if (r.from === r.town) return "same town";
     if (!marketOf(r.from).includes(r.res)) return "start town doesn't sell that";
-    if (!(D.towns.find(t => t.id === r.town).prices || {})[r.res]) return "town doesn't buy that";
+    if (!(findId(D.towns, r.town).prices || {})[r.res]) return "town doesn't buy that";
     return null;
   }
   if (!["sell", "buy"].includes(r.mode)) return "bad mode";
   if (r.mode === "buy" && !marketOf(r.town).includes(r.res)) return "town doesn't sell that";
-  if (r.mode === "sell" && !(D.towns.find(t => t.id === r.town).prices || {})[r.res]) return "town doesn't buy that";
+  if (r.mode === "sell" && !(findId(D.towns, r.town).prices || {})[r.res]) return "town doesn't buy that";
   return null;
 }
 
@@ -153,7 +154,7 @@ function release(s, uid, job = "idle") {
 }
 
 export function removeRoute(s, id) {
-  const r = s.trade.routes.find(x => x.id === id);
+  const r = findId(s.trade.routes, id);
   if (!r) return false;
   for (const u of [r.driver, r.guard, ...(r.escorts || [])]) if (u) release(s, u);
   s.trade.routes = s.trade.routes.filter(x => x !== r);
@@ -162,7 +163,7 @@ export function removeRoute(s, id) {
 
 // role: driver | guard | escort. Assigning pulls the follower off their old job.
 export function setCrew(s, id, role, uid) {
-  const r = s.trade.routes.find(x => x.id === id);
+  const r = findId(s.trade.routes, id);
   const mi = uid ? minion(s, uid) : null;
   if (!r || (uid && !mi)) return false;
   if (role === "escort" && (!mi || !isEscort(mi) || (r.escorts || []).length >= TC().maxEscorts)) return false;
@@ -185,7 +186,7 @@ export function addPatrol(s, a, b) {
   return p;
 }
 export function setPatrol(s, pid, uid) {
-  const p = s.trade.patrols.find(x => x.id === pid),
+  const p = findId(s.trade.patrols, pid),
     mi = minion(s, uid);
   if (!p || !mi || p.members.length >= TC().maxPatrol) return false;
   release(s, uid);
@@ -194,7 +195,7 @@ export function setPatrol(s, pid, uid) {
   return true;
 }
 export function removePatrol(s, pid) {
-  const p = s.trade.patrols.find(x => x.id === pid);
+  const p = findId(s.trade.patrols, pid);
   if (!p) return false;
   for (const u of [...p.members]) release(s, u);
   s.trade.patrols = s.trade.patrols.filter(x => x !== p);

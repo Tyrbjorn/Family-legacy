@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R35 Leans, town apprenticeships and inheritance (data/apprenticeships.json, legacy.familyAuto.affinity, tuning.inherit).
 // Leans (m.lean): 1-2 Auto Upbringing track ids from traits + parents' tracks + a little luck, rolled at birth; +10% XP
 // on the lean tracks' guild skills for everyone. Apprenticeships: idle teens 14-17 with a town master: lessons on the
@@ -83,7 +84,7 @@ export function apprIssue(s, m, mid) {
   if (a > AP().maxAge) return "too old";
   if (m.id === s.activeId) return "playing";
   if ((m.apprDone || []).includes(mid)) return "already trained here";
-  const town = D.towns.find(t => t.id === M.town);
+  const town = findId(D.towns, M.town);
   if (town && !townKnown(s, town)) return "find " + town.name + " first";
   if (!(m.appr && m.appr.id === mid) && apprentices(s, mid).length >= (M.slots || 1)) return "no free place";
   return null;
@@ -99,7 +100,7 @@ export function setAppr(s, m, mid, auto) {
   m.appr = { id: mid, since: s.day || 0 }; // switching resets progress
   if (!auto) (m.pins = m.pins || {}).appr = true;
   const M = masterDef(mid);
-  log(s, `${auto ? "🤖 Family Tutor: " : "🎓 "}${m.name} is apprenticed to ${M.name} (${D.towns.find(t => t.id === M.town)?.name || M.town}).`);
+  log(s, `${auto ? "🤖 Family Tutor: " : "🎓 "}${m.name} is apprenticed to ${M.name} (${findId(D.towns, M.town)?.name || M.town}).`);
   return true;
 }
 // the master's skills are open while placed (incl. guild-exclusive ones)
@@ -137,7 +138,7 @@ export function tutorPlace(s, m) {
 // ---- migration (save v35)
 export function leanMigrate(s) {
   for (const m of (s.members || []).filter(x => x.alive)) {
-    const ps = (m.parents || []).map(id => s.members.find(x => x.id === id)).filter(Boolean);
+    const ps = (m.parents || []).map(id => findId(s.members, id)).filter(Boolean);
     if (!m.lean) rollLean(s, m, ps);
     if (m.appr === undefined) m.appr = null;
     m.apprDone = m.apprDone || [];

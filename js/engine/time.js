@@ -44,7 +44,13 @@ export const offlineCapSec = s => (T.offlineCapHours + bl(s, "hourglass") * 2) *
 
 // One in-game day = the registered hooks below, run in order. Order matters (RNG sequence, food before births).
 export const DAY_HOOKS = [];
-export const registerDayHook = (name, fn, at = DAY_HOOKS.length) => DAY_HOOKS.splice(at, 0, { name, fn });
+// Fixed run order, independent of module import order (unknown names run after these, in registration order).
+const HOOK_ORDER = ["world", "milestones", "tutorial", "estate", "automation", "suitors", "houses", "members", "generations", "endgame", "boards", "fields", "chores", "trade", "village", "autocraft"];
+const hookRank = n => { const i = HOOK_ORDER.indexOf(n); return i < 0 ? HOOK_ORDER.length : i; };
+export const registerDayHook = (name, fn, at) => {
+  if (at == null) { at = DAY_HOOKS.findIndex(h => hookRank(h.name) > hookRank(name)); if (at < 0) at = DAY_HOOKS.length; }
+  DAY_HOOKS.splice(at, 0, { name, fn });
+};
 
 export function dayTick(s, effActive, effIdle) {
   if (s.gameOver) return;

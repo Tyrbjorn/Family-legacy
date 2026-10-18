@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { extraSlots } from "./minionups.js";
 import { CR } from "./inventory.js";
 import { famFx } from "./paths.js";
@@ -23,7 +24,7 @@ export function specialSource(s, t) {
     return m ? `${rankName(src.rank)} of ${guildDef(src.guild).name}` : null;
   }
   if (src.quest)
-    return (s.doneQuests || []).includes(src.quest) ? `quest: ${D.quests.find(q => q.id === src.quest).name}` : null;
+    return (s.doneQuests || []).includes(src.quest) ? `quest: ${findId(D.quests, src.quest).name}` : null;
   if (src.buildings)
     return buildingReqMet(s, src.buildings)
       ? "drawn by your " + src.buildings.map(g => structDef(g.find(id => hasStruct(s, id))).name).join(" + ")
@@ -35,9 +36,9 @@ export function sourceLabel(t) {
   const src = t.source;
   if (src.buildings)
     return "Estate: " + src.buildings.map(g => g.map(id => structDef(id).name).join(" or ")).join(" + ");
-  if (src.class) return `Class: ${D.classes.find(c => c.id === src.class).name}`;
+  if (src.class) return `Class: ${findId(D.classes, src.class).name}`;
   if (src.guild) return `${guildDef(src.guild).name} – ${rankName(src.rank)}`;
-  return `Quest: ${D.quests.find(q => q.id === src.quest).name}`;
+  return `Quest: ${findId(D.quests, src.quest).name}`;
 }
 
 export function checkSpecialMinions(s) {

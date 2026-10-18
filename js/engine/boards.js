@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R45 Town quest boards, multi-stop quest lines and phase bands (data/boards.json).
 // Boards: each discovered town shows `show` jobs, a new set every `rotateDays` days: `fromBand` from your band
 // (phase: Beginning / Established / Dynasty) and the rest one band up (a stretch). Coin rewards × band mult.
@@ -20,7 +21,7 @@ export const bandOf = s => Math.min(bands().length, Math.max(1, era(s).n)); // R
 export const bandDef = n => bands().find(b => b.n === n) || bands()[0];
 export const bandMult = n => bandDef(n).mult || 1;
 const townDef = id => (D.towns || []).find(t => t.id === id);
-export const boardPlace = id => (id === "home" ? "Home (the Dock)" : (townDef(id) || {}).name || (D.quests.find(q => q.id === id) || {}).name || id);
+export const boardPlace = id => (id === "home" ? "Home (the Dock)" : (townDef(id) || {}).name || (findId(D.quests, id) || {}).name || id);
 const B = s => (s.boards ||= { towns: {}, seq: 0 });
 export const townFavour = (s, id) => ((s.townFav || {})[id] || 0);
 const addFav = (s, id, n) => { (s.townFav ||= {})[id] = Math.min(100, townFavour(s, id) + n); };

@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Unlock intros (data/intros.json): when a system first opens (Crafting, Food, Minions, Guilds, Houses, Dynasty…)
 // a 1-3 step "do it" quest line starts with small rewards. Lines never block play and are skippable.
 // Also announces phase changes once (data/phases.json). State: s.intros = { lines: {id: {step, state}}, flags }.
@@ -34,7 +35,7 @@ const PRED = {
   pathRank: s => living(s).some(m => (m.paths || []).some(e => e.rank >= 1)),
   courted: s => (s.suitors || []).some(x => x.affinity > 0) || living(s).some(m => m.spouse),
   friendly: s => houseList().some(h => ["friendly", "allied"].includes(tierOf(s, h.id))),
-  houseQuest: s => (s.doneQuests || []).some(id => (D.quests.find(q => q.id === id) || {}).house),
+  houseQuest: s => (s.doneQuests || []).some(id => (findId(D.quests, id) || {}).house),
 };
 export const INTRO_PREDS = Object.keys(PRED);
 export function introTest(s, c) {

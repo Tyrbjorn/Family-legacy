@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Item types in play: per-member item power (class fit, proficiency, dodge, caster robes, Bulwark),
 // two-handed clashes, enemy armor vs weapon hits, arcane spell failure, proficiency growth and the old-save start.
 import { baseStats } from "./geardata.js";
@@ -7,7 +8,7 @@ import { itemDef } from "./inventory.js";
 import { D } from "./state.js";
 
 export const GK = () => D.gear.kinds;
-const qMult = it => (it.quality ? (D.crafting.qualities.find(q => q.id === it.quality) || { mult: 1 }).mult : 1);
+const qMult = it => (it.quality ? (findId(D.crafting.qualities, it.quality) || { mult: 1 }).mult : 1);
 // stats of an item (quality included; enchant cp stays a flat add on it.cp)
 export function gstats(idOrIt) {
   const it = typeof idOrIt === "string" ? itemDef(idOrIt) : idOrIt;

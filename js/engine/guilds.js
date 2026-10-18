@@ -1,3 +1,5 @@
+import { findId } from "./lookup.js";
+import { classIssues, moveCost, moveKind } from "./guildtiers.js";
 import { apprFee, apprRep } from "./apprentice.js";
 import { addRenown } from "./legacy.js";
 import { structDef } from "./estate.js";
@@ -5,19 +7,19 @@ import { statVal } from "./family.js";
 import { buyPrice, itemDef, vaultRoom } from "./inventory.js";
 import { D, ageY, isAdult, log } from "./state.js";
 
-export const cls = m => D.classes.find(c => c.id === m.cls);
+export const cls = m => findId(D.classes, m.cls);
 
 export function lineBonus(m) {
   let c = cls(m);
   while (c) {
     if (c.gatherBonus) return c.gatherBonus;
-    c = c.from && D.classes.find(x => x.id === c.from);
+    c = c.from && findId(D.classes, c.from);
   }
   return {};
 }
 
 export function chooseClass(s, mid, cid) {
-  const m = s.members.find(x => x.id === mid);
+  const m = findId(s.members, mid);
   m.cls = cid;
   s.pendingClass = s.pendingClass.filter(x => x !== mid);
   log(s, `🎓 ${m.name} became a ${cls(m).name}.`);
@@ -31,6 +33,7 @@ export const structReqText = reqs =>
 
 export function canEvolve(s, m, c) {
   if (c.retired) return false;
+  if (!c.profession) return !classIssues(s, m, c).length; // R46: guild tiers
   if (c.needsBuildings && !structReqOk(s, c.needsBuildings)) return false;
   const mg = c.guild && memberGuild(m, c.guild);
   return (
@@ -44,11 +47,16 @@ export function canEvolve(s, m, c) {
 }
 
 export function evolve(s, m, cid) {
-  const c = D.classes.find(x => x.id === cid);
+  const c = findId(D.classes, cid);
   if (!canEvolve(s, m, c)) return false;
-  s.res.coin -= c.cost;
+  const kind = c.profession ? "up" : moveKind(m, c);
+  s.res.coin -= c.profession ? c.cost : moveCost(m, c);
   if (c.profession) m.prof = cid;
-  else m.cls = cid;
+  else {
+    if (m.cls && !(m.clsHist || (m.clsHist = [])).includes(m.cls)) m.clsHist.push(m.cls);
+    if (kind === "side") m.sideDay = s.day;
+    m.cls = cid;
+  }
   log(s, `🌟 ${m.name} evolved into a ${c.name}!`);
   s.deeds.push(`${m.name} became a ${c.name}.`);
   return true;
@@ -56,8 +64,8 @@ export function evolve(s, m, cid) {
 
 // ---- guilds
 export function classGuild(cid) {
-  let c = D.classes.find(x => x.id === cid);
-  while (c && c.from) c = D.classes.find(x => x.id === c.from);
+  let c = findId(D.classes, cid);
+  while (c && c.from) c = findId(D.classes, c.from);
   return (
     c &&
     (D.guilds.guilds.find(g => g.grantsClass === c.id || g.profession === c.id) ||
@@ -65,7 +73,7 @@ export function classGuild(cid) {
   );
 }
 
-export const guildDef = id => D.guilds.guilds.find(g => g.id === id);
+export const guildDef = id => findId(D.guilds.guilds, id);
 
 export const rankName = r => D.guilds.ranks[r].name;
 
@@ -95,7 +103,7 @@ export function joinIssues(s, m, gid) {
   if (ageY(m) < (D.guilds.minJoinAge || 16)) out.push("age " + (D.guilds.minJoinAge || 16) + "+");
   for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
   for (const [k, v] of Object.entries(q.skills || {}))
-    if (m.skills[k].lvl < v) out.push(`${D.skills.find(x => x.id === k).name} ${m.skills[k].lvl}/${v}`);
+    if (m.skills[k].lvl < v) out.push(`${findId(D.skills, k).name} ${m.skills[k].lvl}/${v}`);
   const fee = Math.round((q.coin || 0) * apprFee(m, gid)); // R35 apprenticeship reward
   if (s.res.coin < fee) out.push(`${fee} coin`);
   return out;
@@ -110,7 +118,14 @@ export function joinGuild(s, m, gid) {
     if (!m.paths) m.paths = [];
   } else {
     m.guild = { id: gid, rank: 0, rep: apprRep(m, gid) };
-    if (g.grantsClass && (!m.cls || m.cls === "adventurer")) {
+    const cur = m.cls && findId(D.classes, m.cls);
+    if (g.grantsClass && cur && !cur.tier && m.cls !== "adventurer" && m.cls !== g.grantsClass && (classGuild(m.cls) || {}).id !== gid) {
+      // R46: an entry class from another guild is retrained as this guild's entry class (tiers only advance within one guild)
+      if (!(m.clsHist || (m.clsHist = [])).includes(m.cls)) m.clsHist.push(m.cls);
+      const was = cur.name;
+      m.cls = g.grantsClass;
+      log(s, `🎓 ${m.name} retrained from ${was} to ${cls(m).name} on joining the ${g.name}.`);
+    } else if (g.grantsClass && (!m.cls || m.cls === "adventurer")) {
       const was = m.cls;
       m.cls = g.grantsClass;
       log(

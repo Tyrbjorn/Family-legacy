@@ -28,7 +28,7 @@ export function guildsv() {
   const m = E.active(s),
     A = D.guilds.adventurers;
   let h = `<div class="muted">Showing guild standing for <b>${m.name}</b> (switch members on Main).</div>`;
-  h += `<h3>${A.icon} ${A.name}</h3><div class="card"><div class="muted">${A.desc} Branches: ${A.towns.map(t => D.towns.find(x => x.id === t).name).join(", ")}.</div>`;
+  h += `<h3>${A.icon} ${A.name}</h3><div class="card"><div class="muted">${A.desc} Branches: ${A.towns.map(t => E.findId(D.towns, t).name).join(", ")}.</div>`;
   if (!m.adv)
     h += `<div class="row" style="margin-top:6px"><span class="muted">Not registered</span><button class="b" data-a="advjoin" ${E.isAdult(m) && s.res.coin >= A.joinCost ? "" : "disabled"}>Register ${A.joinCost}🪙</button></div>`;
   else {
@@ -54,7 +54,7 @@ export function guildsv() {
       .filter(q => q.adv)
       .map(
         q =>
-          `<div>${E.questOk(m, q) ? "📌" : "🔒"} ${q.name} <span class="muted">Rank ${E.advRankName(q.adv)} · CP ${q.cp} · on Map: ${D.regions.find(r => r.id === q.region).name}</span></div>`,
+          `<div>${E.questOk(m, q) ? "📌" : "🔒"} ${q.name} <span class="muted">Rank ${E.advRankName(q.adv)} · CP ${q.cp} · on Map: ${E.findId(D.regions, q.region).name}</span></div>`,
       )
       .join("");
   h +=
@@ -71,7 +71,7 @@ export function guildsv() {
     D.guilds.guilds
       .map(
         g =>
-          `<div class="muted">📍 ${D.towns.find(t => t.id === g.town).name}${E.regionOpen(s, D.towns.find(t => t.id === g.town).region) ? "" : " 🔒 region locked"}</div>` +
+          `<div class="muted">📍 ${E.findId(D.towns, g.town).name}${E.regionOpen(s, E.findId(D.towns, g.town).region) ? "" : " 🔒 region locked"}</div>` +
           guildHall(m, g),
       )
       .join("");

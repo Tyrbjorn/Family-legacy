@@ -1,3 +1,5 @@
+import { roleBonus } from "./guildtiers.js";
+import { findId } from "./lookup.js";
 import { opensOk } from "./chores.js";
 // R31 villager requests (data/requests.json) + task yields.
 // Each NPC has one open request at a time; delivering hands over goods (instant in the home village), pays the reward,
@@ -80,14 +82,14 @@ export const deliverable = s => RQ().npcs.filter(n => !deliverIssue(s, n.id)).le
 
 export function deliverRequest(s, npcId) {
   if (deliverIssue(s, npcId)) return null;
-  const n = npcDef(npcId), r = openRequest(s, npcId), w = wantsOf(s, npcId), k = cycleMult(s, npcId), x = st(s, npcId);
+  const n = npcDef(npcId), r = openRequest(s, npcId), w = wantsOf(s, npcId), x = st(s, npcId);
   for (const [a, v] of Object.entries(w)) s.res[a] -= v;
-  const rw = r.reward || {}, got = [];
+  const rw = r.reward || {}, got = [], k = cycleMult(s, npcId) * (1 + roleBonus(s, "reqBonus")); // R46 Swindler
   if (rw.coin) (s.res.coin += Math.round(rw.coin * k)), got.push(Math.round(rw.coin * k) + " coin");
   if (rw.food) (s.res.food += Math.round(rw.food * k)), got.push(Math.round(rw.food * k) + " food");
   for (const [a, v] of Object.entries(rw.res || {})) (s.res[a] = (s.res[a] || 0) + v), got.push(v + " " + a);
   if (rw.renown) (s.renown = (s.renown || 0) + rw.renown), got.push(rw.renown + " renown");
-  for (const id of rw.items || []) if (addToVault(s, id)) got.push((D.items.find(i => i.id === id) || {}).name || id);
+  for (const id of rw.items || []) if (addToVault(s, id)) got.push((findId(D.items, id) || {}).name || id);
   x.fav = Math.min(100, x.fav + (RQ().favourPerDelivery || 10));
   x.n++;
   const e = r.extra;
@@ -96,7 +98,7 @@ export function deliverRequest(s, npcId) {
     (s.reqPerks = s.reqPerks || []).push({ ...e, from: r.id, npc: n.id });
     if (e.type === "recipe" && e.dish && !(s.dishes ||= []).includes(e.dish)) s.dishes.push(e.dish); // R42
     if (e.type === "questline") {
-      const q0 = D.quests.find(q => q.id === e.quests[0]);
+      const q0 = findId(D.quests, e.quests[0]);
       if (q0 && !s.revealed.includes(q0.id)) s.revealed.push(q0.id), revealAt(s, q0.id);
     }
     extra = e.text;

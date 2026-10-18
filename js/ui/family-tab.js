@@ -30,7 +30,7 @@ export function familyv() {
       for (const n of g) {
         if (seen.has(n.id)) continue;
         seen.add(n.id);
-        const sp = g.find(x => x.id === n.spouse);
+        const sp = E.findId(g, n.spouse);
         order.push(
           sp && !seen.has(sp.id)
             ? (seen.add(sp.id), `<div class="couple">${node(n)}<span class="ring">💍</span>${node(sp)}</div>`)
@@ -41,7 +41,7 @@ export function familyv() {
     })
     .join('<div class="genlink">│</div>');
   let card = "";
-  const m = U.treeSel && s.members.find(x => x.id === U.treeSel);
+  const m = U.treeSel && E.findId(s.members, U.treeSel);
   if (m) {
     const n = byId[m.id];
     const kids = (n?.children || []).map(id => byId[id]?.name).filter(Boolean);

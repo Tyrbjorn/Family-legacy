@@ -42,7 +42,7 @@ function familyCard(btn) {
       : "";
   }).join("");
   const any = E.FA_KEYS.some(k => E.faOwned(s, k));
-  const evoNames = m => D.classes.filter(c => c.from && c.from === m.cls);
+  const evoNames = m => E.classMoves(s, m).filter(c => E.moveKind(m, c) === "up"); // R46 tiers
   const mem = any
     ? E.living(s).map(m => {
         const act = m.id === s.activeId, ad = E.isAdult(m);

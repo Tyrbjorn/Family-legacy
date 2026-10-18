@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R30 special maps (data/map.json specialMaps): map items found as dungeon/quest drops and read from the Bag.
 // They reveal what quadrant maps never do: hidden quests (caches), hidden resource nodes, secret dungeons, hidden spots.
 // Data-driven: add a map = an items.json entry (slot "map") + a specialMaps.maps entry + a mapDrop on a source.
@@ -17,7 +18,7 @@ export function mapDrop(s, src, first) {
   const p = first && md.firstClear != null ? md.firstClear : md.chance;
   if (rng() >= p) return null;
   if (!addToVault(s, md.item)) return null;
-  log(s, `🗺️ Found a special map: ${D.items.find(i => i.id === md.item).name} (read it from the Bag).`);
+  log(s, `🗺️ Found a special map: ${findId(D.items, md.item).name} (read it from the Bag).`);
   return md.item;
 }
 
@@ -53,7 +54,7 @@ export function readMapIssue(s, itemId) {
 // read a map: it is used up, its targets are revealed (pins appear) and the find is logged
 export function readMap(s, itemId) {
   if (readMapIssue(s, itemId)) return null;
-  const d = mapDef(itemId), it = D.items.find(i => i.id === itemId);
+  const d = mapDef(itemId), it = findId(D.items, itemId);
   s.vault.splice(s.vault.indexOf(itemId), 1);
   (s.mapsRead = s.mapsRead || []).push(itemId);
   const found = d.effects.flatMap(e => applyEffect(s, e));

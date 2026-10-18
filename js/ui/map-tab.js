@@ -85,7 +85,7 @@ export function parcelCard(m) {
   if (!fs.length) return `<div class="card muted">🏞️ Own land to work its features here with no travel (+${D.world.parcelBonus * 100}%). Land is sold in towns.</div>`;
   const busy = E.isBusy(m);
   return `<div class="card"><b>🏞️ Your land</b> <span class="muted">· work features with no travel (+${D.world.parcelBonus * 100}%)</span>${(s.land || [])
-    .map(id => `<div class="muted">${(D.estate.lands.find(x => x.id === id) || { name: id }).name}: ${(D.world.landFeatures[id] || []).map(f => E.featureDef(f).icon + " " + E.featureDef(f).name).join(", ") || "no features"}</div>`)
+    .map(id => `<div class="muted">${(E.findId(D.estate.lands, id) || { name: id }).name}: ${(D.world.landFeatures[id] || []).map(f => E.featureDef(f).icon + " " + E.featureDef(f).name).join(", ") || "no features"}</div>`)
     .join("")}
  ${fs
    .map(f => {
@@ -113,7 +113,7 @@ export function mapDetail(m) {
   const trav = `${E.travelDays(id)} days each way (~${dur(E.travelDays(id))})`;
   if (k === "g") {
     // R31.2: grouped quest badge → small list with Go buttons
-    const qs = id.split(",").map(x => D.quests.find(q => q.id === x)).filter(Boolean);
+    const qs = id.split(",").map(x => E.findId(D.quests, x)).filter(Boolean);
     return `<div class="card"><b>📜 ${qs.length} quests here</b>${qs
       .map(q => {
         const kd = qKind(q), iss = E.questIssue(s, m, q) || E.questAgeIssue(m, q, s), on = m.action && m.action.type === "quest" && m.action.target === q.id;
@@ -122,7 +122,7 @@ export function mapDetail(m) {
       .join("")}</div>`;
   }
   if (k === "q") {
-    const q = D.quests.find(x => x.id === id),
+    const q = E.findId(D.quests, id),
       kd = qKind(q),
       iss = E.questIssue(s, m, q) || E.questAgeIssue(m, q, s),
       on = m.action && m.action.type === "quest" && m.action.target === id;
@@ -148,7 +148,7 @@ export function mapDetail(m) {
   <div class="row"><span class="muted">${iss ? "🔒 " + iss : busy && !on ? "🚶 busy travelling" : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss || (busy && !on) ? "disabled" : ""}>${on ? "On it" : "Go"}</button></div></div>`;
   }
   if (k === "n") {
-    const n = D.nodes.find(x => x.id === id),
+    const n = E.findId(D.nodes, id),
       on = m.action && m.action.type === "gather" && m.action.target === id,
       ok = E.actionAllowed(s, m, { type: "gather", target: id });
     h = `<div class="card"><b>${n.icon} ${n.name}</b> <span class="tb">🔁 Resource node</span>${edgeNote(n)}<div class="muted">${Object.entries(
@@ -204,7 +204,7 @@ export function mapDetail(m) {
     return `<div class="card"><b>❔ Undiscovered</b><div class="muted">There is ${nm} here. Travel or explore nearby to find it, or buy this quarter's map in a town.</div></div>`;
   }
   if (k === "t") {
-    const t = D.towns.find(x => x.id === id);
+    const t = E.findId(D.towns, id);
     const ev = E.eventsAtTown(s, t.id);
     h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${townTagsHtml(t.id)}${quadBtn(t.id)}${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
     h += boardCard(t.id, m); // R45
@@ -222,7 +222,7 @@ export function storyv(m) {
         const done = s.doneQuests.includes(q.id),
           iss = done ? null : E.questIssue(s, m, q);
         const nxt = !done && !(iss || "").startsWith("finish");
-        return `<div class="card row" style="padding:5px 8px;margin:3px 0;${done ? "opacity:.6" : ""}"><span>${done ? "✅" : nxt ? "📖" : "🔒"} Ch. ${q.story}: ${done || nxt ? q.name : "???"}<br><span class="muted">${done ? "complete" : iss ? "🔒 " + iss : "ready · " + D.regions.find(r => r.id === q.region).name}</span></span>${nxt && !iss ? `<button class="b" data-a="mapsel" data-v="q:${q.id}">Show</button>` : ""}</div>`;
+        return `<div class="card row" style="padding:5px 8px;margin:3px 0;${done ? "opacity:.6" : ""}"><span>${done ? "✅" : nxt ? "📖" : "🔒"} Ch. ${q.story}: ${done || nxt ? q.name : "???"}<br><span class="muted">${done ? "complete" : iss ? "🔒 " + iss : "ready · " + E.findId(D.regions, q.region).name}</span></span>${nxt && !iss ? `<button class="b" data-a="mapsel" data-v="q:${q.id}">Show</button>` : ""}</div>`;
       })
       .join("")
   );

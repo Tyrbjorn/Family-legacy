@@ -11,7 +11,7 @@ const base=()=>{const s=E.newGame(1);E.normalize(s);s.land=['plot'];s.members[0]
 const forge=s=>s.structures.push({uid:'sm'+s.nextId++,type:'smithy',pieces:['forge'],up:0});
 const BD=D.boards, adv=s=>{const m=s.members[0];m.ageDays=25*D.tuning.daysPerYear;m.action=null;return m;};
 const run=(s,m,n)=>{for(let i=0;i<n&&m.action;i++)E.doAction(s,m,m.action,1);};
-ok(BUILD==='R45'&&E.SCHEMA===41,'R45, save step 41');
+ok(E.SCHEMA>=41,'save step 41+');
 // data
 ok(BD.rotateDays===7&&BD.show===3&&BD.fromBand===2,'boards: 3 jobs, 2 from your band, new set every 7 days');
 ok(BD.bands.map(b=>b.mult).join()==='1,2.5,6','bands ×1 / ×2.5 / ×6');
@@ -78,7 +78,7 @@ ok(E.lineDef('lost_shipment').stops[0].at==='home'&&E.lineDef('lost_shipment').s
 { const s=base(); const m=adv(s); const k=JSON.parse(JSON.stringify(m)); k.id=888; s.members.push(k); s.activeId=m.id; s.boards={towns:{millbrook:{next:99,jobs:[{...BD.pools.millbrook[2],uid:'jz',coin:40,band:1}]}},seq:1}; s.res.fish=20; k.order={type:'work'};
   ok(E.takeJob(s,k,'jz'),'family member takes a job'); for(let i=0;i<30&&E.boardOf(s,'millbrook').length;i++)E.dayTick(s,1,1); ok(!E.boardOf(s,'millbrook').some(j=>j.uid==='jz')&&E.townFavour(s,'millbrook')>=4,'a non-active member finishes the job despite their work order'); }
 // save step 41
-{ const s=base(); delete s.boards; delete s.lines; delete s.townFav; s.schema=40; E.normalize(s); ok(s.boards&&s.lines&&s.townFav&&s.schema===41,'step 41: fresh boards, no lines, no favour'); }
+{ const s=base(); delete s.boards; delete s.lines; delete s.townFav; s.schema=40; E.normalize(s); ok(s.boards&&s.lines&&s.townFav&&s.schema>=41,'step 41: fresh boards, no lines, no favour'); }
 { const seen={}; for(const f of fs.readFileSync(new URL('../js/engine.js',import.meta.url),'utf8').match(/\.\/engine\/[a-z0-9-]+\.js/g)){ const mod=await import('../js/'+f.slice(2)); for(const k of Object.keys(mod))(seen[k]||=[]).push(f);} const dup=Object.entries(seen).filter(([,v])=>v.length>1).map(([k])=>k); ok(!dup.length,'no export name clashes in the engine barrel ('+dup+')'); }
 { const s=base(); const m=adv(s); m.standing='adventure'; s.boards={towns:{millbrook:{next:99,jobs:[{...BD.pools.millbrook[2],uid:'jl',coin:16,band:1}]}},seq:1}; s.res.fish=50; E.standingTick(s,m); ok(!(m.action&&m.action.job==='jl'),'auto skips a job that pays worse per trip-day than the quest it would run'); }
 { const s=base(); s.boards={towns:{millbrook:{next:99,jobs:[{...BD.pools.millbrook[0],uid:'jq',coin:45,band:1}]}},seq:1}; s.res.wood=0; E.addOrder(s,'planks',5); E.addOrder(s,'ingots',5); ok(!E.orderForJob(s,'jq',true)&&E.orderForJob(s,'jq'),'auto never crowds a full Work Orders queue (the button still can)'); }

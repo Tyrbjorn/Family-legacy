@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Late game (data/endgame.json): coin sinks (mounts, town patronage, stone quarries), era-scaled creatures and
 // elites, raids from the Dynasty phase and defenses (walls, Watchtower, Village Palisade) (one-time purchases, no upkeep).
 import { era } from "./family.js";
@@ -56,7 +57,7 @@ export const patronBuy = (s, town) => 1 - perk(s, town, "buy");
 export const quarryDef = id => EG().quarries.find(q => q.id === id);
 export const quarryTier = (s, id) => (s.eg && s.eg.quarries[id]) || 0;
 export function quarryIssue(s, id) {
-  const q = quarryDef(id), n = q && D.nodes.find(x => x.id === q.node);
+  const q = quarryDef(id), n = q && findId(D.nodes, q.node);
   if (!q || !n) return "missing";
   if (!known(s, n)) return "find the " + n.name + " first";
   return buyIssue(s, q.tiers[quarryTier(s, id)] && q.tiers[quarryTier(s, id)].cost);
@@ -123,7 +124,7 @@ export function raid(s) {
     if (vb.length && !pal) {
       const st = vb[Math.floor(rng() * vb.length)];
       st.raided = s.day + R().idleDays;
-      hit = `, a village ${D.estate.structures.find(d => d.id === st.type).name} burned for a month`;
+      hit = `, a village ${findId(D.estate.structures, st.type).name} burned for a month`;
     } else
       for (const k of D.estate.caps.capped || []) if (s.res[k] > 0) s.res[k] = Math.floor(s.res[k] * (1 - R().lossStock));
     log(s, `🔥 Raiders broke through (${our} vs ${foe}): −${lost} coin${hit || ", stores plundered"}.`);

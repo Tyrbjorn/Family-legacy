@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { refundV40 } from "./legacy.js";
 import { migrateOrders } from "./orders.js";
 import { migrateAnimals } from "./animals.js";
@@ -8,7 +9,7 @@ import { leanMigrate } from "./apprentice.js";
 import { learnDishes } from "./cooking.js";
 import { DEFAULT_RESERVE } from "./production.js";
 import { backfillMilestones } from "./minionups.js";
-import { migratePaths, migrateJewelers, renameSpecs } from "./paths.js";
+import { migrateCraftSlots, migratePaths, migrateJewelers, renameSpecs } from "./paths.js";
 import { fogBase, fogInit, reveal } from "./world.js";
 import { introsMigrate } from "./intros.js";
 import { ensureSuitor } from "./courtship.js";
@@ -131,7 +132,7 @@ export const STEPS = [
           if (!m.prof) m.prof = "artisan";
           delete m.title;
         }
-        if (m.cls && !m.guild && (D.classes.find(c => c.id === m.cls) || {}).line === "adventurer") {
+        if (m.cls && !m.guild && (findId(D.classes, m.cls) || {}).line === "adventurer") {
           if (!m.adv) m.adv = { rank: 0, rep: 0 };
         } else if (m.cls && !m.guild) {
           const g = classGuild(m.cls);
@@ -505,7 +506,7 @@ export const STEPS = [
         t.done = t.done || [];
         // mid-tutorial on Gear Up = started, not skipped, gear not done and nothing later done
         if (t.started && !t.skipped && !t.done.includes("gear") && !newIds.some(id => t.done.includes(id))) {
-          const m = s.members.find(x => x.id === s.activeId) || s.members[0];
+          const m = findId(s.members, s.activeId) || s.members[0];
           if (m && m.equip && !m.equip.weapon && (s.vault || []).includes("rusty_sword")) {
             s.vault.splice(s.vault.indexOf("rusty_sword"), 1);
             m.equip.weapon = "rusty_sword";
@@ -627,6 +628,31 @@ export const STEPS = [
       s.boards = s.boards || { towns: {}, seq: 0 };
       s.lines = s.lines || {};
       s.townFav = s.townFav || {};
+    },
+  },
+  {
+    n: 42,
+    name: "R46 guild tiers + chains: unlocks for chain quests already done or below the rank held, class lineage kept as history, old-rule classes kept (grandfathered)",
+    run(s) {
+      const qr = id => (findId(D.quests, id) || {}).rank || 0;
+      s.unlocks = s.unlocks || [];
+      for (const [gid, ch] of Object.entries(D.guilds.chains || {}))
+        for (const st of ch) {
+          const held = (s.members || []).some(m => m.guild && m.guild.id === gid && m.guild.rank > qr(st.quest)) || (s.doneQuests || []).includes(st.quest);
+          if (held) for (const u of st.unlock || []) if (!s.unlocks.includes(u)) s.unlocks.push(u);
+        }
+      for (const m of s.members || []) {
+        if (!m.cls) continue;
+        const hist = [];
+        for (let c = findId(D.classes, m.cls); c && c.from && !hist.includes(c.from); c = findId(D.classes, c.from)) hist.push(c.from);
+        m.clsHist = [...new Set([...(m.clsHist || []), ...hist])];
+        if (m.cls === "spy") m.clsGrandfathered = true; // Spy moved from tier 2 to tier 3: kept, with tier-3 power
+        // an entry class from another guild than the sworn one (picked before joining) becomes that guild's entry class
+        const c = findId(D.classes, m.cls), g = m.guild && findId(D.guilds.guilds, m.guild.id);
+        const root = c && [m.cls, ...hist].at(-1);
+        if (c && !c.tier && g && g.grantsClass && m.cls !== "adventurer" && root !== g.grantsClass) { if (!m.clsHist.includes(m.cls)) m.clsHist.push(m.cls); m.cls = g.grantsClass; }
+      }
+      migrateCraftSlots(s); // crafter slots + Scribe-Stewards onto the Clerk path
     },
   },
 ];

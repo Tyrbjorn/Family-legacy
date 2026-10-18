@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Followers core: types, levels, evolution, hiring and jobs. Housing, the daily job loop and special minions/gear
 // live in minion-housing.js, minion-jobs.js and minion-special.js (re-exported here).
 import { onMinionEvolve, onMinionLevel } from "./minionups.js";
@@ -7,7 +8,7 @@ import { D, known, log, r } from "./state.js";
 import { isHoused, minionRoom } from "./minion-housing.js";
 import { minionGearMult } from "./minion-special.js";
 
-export const mtype = id => D.minions.types.find(t => t.id === id);
+export const mtype = id => findId(D.minions.types, id);
 
 export const MLV = () => D.minions.leveling;
 
@@ -135,13 +136,13 @@ export function hire(s, townId, type) {
 }
 
 export function jobOpen(s, jobId) {
-  const j = D.minions.jobs.find(x => x.id === jobId);
+  const j = findId(D.minions.jobs, jobId);
   return !!j && (jobId === "idle" || (established(s) && jobCap(s, jobId) > 0));
 }
 
 export function setMinionNode(s, uid, nodeId) {
   const mi = s.minions.find(x => x.uid === uid),
-    n = D.nodes.find(x => x.id === nodeId);
+    n = findId(D.nodes, nodeId);
   if (!mi || !n || !known(s, n)) return false;
   mi.node = nodeId;
   mi.trip = null;

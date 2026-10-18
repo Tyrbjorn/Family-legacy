@@ -51,7 +51,7 @@ export function enchantCard() {
     item = items.includes(sel.item) ? sel.item : items[0];
   const it = item && E.itemDef(item);
   const ens = D.gear.enchants.filter(e => !it || e.on.includes(it.slot)),
-    en = ens.find(e => e.id === sel.ench) || ens[0];
+    en = E.findId(ens, sel.ench) || ens[0];
   const cur = item ? E.splitId(item).ench : [];
   const slots = it ? Math.min(E.enchSlots(it), F.maxSlots) : 0;
   const idx = sel.idx != null && +sel.idx < slots ? +sel.idx : Math.min(cur.length, Math.max(0, slots - 1));

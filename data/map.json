@@ -503,6 +503,30 @@
   "q_pike": {
    "x": 640,
    "y": 830
+  },
+  "g_vanguard_yard": {
+   "x": 1000,
+   "y": 372
+  },
+  "g_vanguard_banner": {
+   "x": 1040,
+   "y": 330
+  },
+  "g_collegium_notes": {
+   "x": 1125,
+   "y": 945
+  },
+  "g_collegium_library": {
+   "x": 1170,
+   "y": 985
+  },
+  "g_rogues_cellar": {
+   "x": 905,
+   "y": 460
+  },
+  "g_rogues_ledger": {
+   "x": 875,
+   "y": 420
   }
  },
  "areas": [

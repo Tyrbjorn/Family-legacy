@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R36 Talents (data/talents.json): earned, personal bonuses. Traits stay birth-only (Nimble is a trait, not a talent).
 // m.talents = { own: [ids in earn order], on: [active ids] }. Slots = base + perTier x class tier (cap 4) + fx.slots (Heir of Vael, max 5).
 // Earned once per member, adults only; auto-activated into a free slot. Never passed on directly: with a Hall of Ancestors the
@@ -10,7 +11,7 @@ export const TL = () => D.talents || { slots: { base: 2, perTier: 1, cap: 4, max
 export const talentDef = id => TL().talents.find(t => t.id === id);
 const RANKS = () => ((D.guilds && D.guilds.ranks) || []).map(r => r.name);
 const tl = m => m.talents || (m.talents = { own: [], on: [] });
-const clsDef = id => D.classes.find(c => c.id === id);
+const clsDef = id => findId(D.classes, id);
 // active talents' sum for a numeric fx key (traitSum adds this)
 export function talentSum(m, k) {
   let v = 0;
@@ -91,7 +92,7 @@ export function nextTalents(s, m) {
     if (x.own.includes(t.id)) continue;
     const f = t.from;
     if (f.class && (clsDef(f.class) || {}).from === m.cls || (f.class && !m.cls && !(clsDef(f.class) || {}).from)) out.push({ t, how: (clsDef(f.class) || {}).name });
-    else if (f.guild && ((m.guild && m.guild.id === f.guild) || (m.craft && m.craft.id === f.guild))) out.push({ t, how: `${f.rank} in ${(D.guilds.guilds.find(g => g.id === f.guild) || {}).name}` });
+    else if (f.guild && ((m.guild && m.guild.id === f.guild) || (m.craft && m.craft.id === f.guild))) out.push({ t, how: `${f.rank} in ${(findId(D.guilds.guilds, f.guild) || {}).name}` });
   }
   return out;
 }

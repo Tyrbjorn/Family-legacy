@@ -13,9 +13,9 @@ export const mmss = sec => `${Math.floor(sec / 60)}m ${String(Math.floor(sec % 6
 
 export const hm = sec => `${Math.floor(sec / 3600)}h ${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}m`;
 
-export const sk = id => D.skills.find(x => x.id === id),
+export const sk = id => E.findId(D.skills, id),
   it = id => E.itemDef(id),
-  cl = id => D.classes.find(x => x.id === id);
+  cl = id => E.findId(D.classes, id);
 
 export const yr = d => Math.floor(d / D.tuning.daysPerYear);
 
@@ -148,12 +148,12 @@ export function logv() {
 export function doing(a) {
   if (!a) return "nothing";
   const n = {
-    quest: () => D.quests.find(q => q.id === a.target).name,
+    quest: () => E.findId(D.quests, a.target).name,
     train: () => sk(a.target).name,
-    court: () => (s.suitors.find(x => x.id === a.target) || {}).name,
-    gather: () => D.nodes.find(x => x.id === a.target).name,
-    job: () => D.jobs.find(x => x.id === a.target).name,
-    activity: () => D.activities.find(x => x.id === a.target).name,
+    court: () => (E.findId(s.suitors, a.target) || {}).name,
+    gather: () => E.findId(D.nodes, a.target).name,
+    job: () => E.findId(D.jobs, a.target).name,
+    activity: () => E.findId(D.activities, a.target).name,
   }[a.type];
   return a.type + (n ? " – " + n() : "");
 }
@@ -248,9 +248,9 @@ export function unlockName(u) {
     ? "training: " + sk(id).name
     : k === "recipe"
       ? s.unlocks.includes(u)
-        ? "recipe: " + (D.crafting.recipes.find(r => r.id === id) || {}).name
+        ? "recipe: " + (E.findId(D.crafting.recipes, id) || {}).name
         : "a secret recipe"
-      : "activity: " + ((D.activities.find(x => x.id === id) || {}).name || id);
+      : "activity: " + ((E.findId(D.activities, id) || {}).name || id);
 }
 
 export const curList = () =>

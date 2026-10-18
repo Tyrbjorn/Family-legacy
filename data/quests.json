@@ -1962,5 +1962,95 @@
    "item": "smallboat"
   },
   "desc": "Old Tam swears a monster pike haunts the deep water of Mirrormere. Take your boat out and land it, and the cook will show you her Pike Pie."
+ },
+ {
+  "id": "g_vanguard_yard",
+  "name": "Drill at the Training Yard",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 45,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 320
+  },
+  "skill": "shield",
+  "guild": "vanguard",
+  "rank": 1
+ },
+ {
+  "id": "g_vanguard_banner",
+  "name": "Raise the War Banner",
+  "region": "forest",
+  "type": "guild",
+  "cp": 160,
+  "days": 10,
+  "risk": "risky",
+  "reward": {
+   "coin": 1200
+  },
+  "skill": "leadership",
+  "guild": "vanguard",
+  "rank": 3
+ },
+ {
+  "id": "g_collegium_notes",
+  "name": "Copy the Study Notes",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 12,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 160
+  },
+  "skill": "reading",
+  "guild": "collegium",
+  "rank": 0
+ },
+ {
+  "id": "g_collegium_library",
+  "name": "Restore the Rune Library",
+  "region": "forest",
+  "type": "guild",
+  "cp": 100,
+  "days": 9,
+  "risk": "risky",
+  "reward": {
+   "coin": 700
+  },
+  "skill": "runecraft",
+  "guild": "collegium",
+  "rank": 2
+ },
+ {
+  "id": "g_rogues_cellar",
+  "name": "The Smuggler's Cellar",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 40,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 420
+  },
+  "skill": "thievery",
+  "guild": "rogues",
+  "rank": 1
+ },
+ {
+  "id": "g_rogues_ledger",
+  "name": "The Ledger of Debts",
+  "region": "forest",
+  "type": "guild",
+  "cp": 90,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 800
+  },
+  "skill": "etiquette",
+  "guild": "rogues",
+  "rank": 2
  }
 ]

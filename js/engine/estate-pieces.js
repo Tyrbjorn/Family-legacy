@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Estate items: crafter class perks, item ids/tiers/scaling, bed roles, locks and item upgrades (re-exported by estate.js).
 import { guildDef, memberGuild } from "./guilds.js";
 import { D, afford, living, log, pay } from "./state.js";
@@ -10,7 +11,7 @@ import { eff, estateStage, structDef } from "./estate.js";
 // ---- crafter class perks (data/crafting.json classPerks): stored on the structure when built
 const CPK = () => Object.entries(D.crafting.classPerks || {}).filter(([k]) => k[0] !== "_");
 export const famHasClass = (s, c) => living(s).some(m => inLine(m, c));
-export const className = c => pathReqName(c) || (D.classes.find(x => x.id === c) || { name: c }).name;
+export const className = c => pathReqName(c) || (findId(D.classes, c) || { name: c }).name;
 export const classLock = (s, c) => (c && !famHasClass(s, c) ? `needs ${/^[AEIOU]/.test(className(c)) ? "an" : "a"} ${className(c)} in the family` : null);
 export const piecePerk = (s, pid) =>
   CPK().reduce((a, [c, k]) => a + (k.pieces.includes(baseId(pid)) && famHasClass(s, c) ? k.furniture : 0), 0);
@@ -27,7 +28,7 @@ export const baseId = id => String(id).split("@")[0];
 
 export const pieceTier = id => +(String(id).split("@")[1] || 0);
 
-const rawPiece = b => ES().pieces.find(p => p.id === b) || D.furniture.find(p => p.id === b);
+const rawPiece = b => ES().pieces.find(p => p.id === b) || findId(D.furniture, b);
 // merged items (furniture redo) resolve to the item they were folded into
 export const pieceDef = id => {
   const p = rawPiece(baseId(id));
@@ -87,7 +88,7 @@ export function pieceLock(s, p) {
   if (u.stage && STAGE_ORDER().indexOf(estateStage(s)) < STAGE_ORDER().indexOf(u.stage))
     return "estate tier " + u.stage;
   if (u.quest && !s.doneQuests.includes(u.quest))
-    return "quest: " + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest);
+    return "quest: " + ((findId(D.quests, u.quest) || {}).name || u.quest);
   if (
     u.guild &&
     !living(s).some(m => {

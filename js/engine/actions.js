@@ -1,3 +1,5 @@
+import { guildQuestFor } from "./guildtiers.js";
+import { findId } from "./lookup.js";
 import { boardsPick } from "./boards.js";
 import { markChore } from "./chores.js";
 import { quotaCredit } from "./quotas.js";
@@ -75,7 +77,7 @@ export const ACTIONS = {
     }
   },
   job(s, m, a, eff) {
-    const j = D.jobs.find(x => x.id === a.target);
+    const j = findId(D.jobs, a.target);
     if (!j || !jobOk(m, j)) {
       m.action = null;
       return;
@@ -86,7 +88,7 @@ export const ACTIONS = {
     if (j.id === "shop") sellTick(s, eff * (1 + m.skills.haggling.lvl * 0.02));
   },
   activity(s, m, a, eff) {
-    const ac = D.activities.find(x => x.id === a.target);
+    const ac = findId(D.activities, a.target);
     if (!ac || !activityOk(s, m, ac)) {
       m.action = null;
       return;
@@ -105,7 +107,7 @@ export const ACTIONS = {
     m.injured = Math.max(0, m.injured - 1 - furn(s).reduce((x, f) => x + (f.bonus.rest || 0), 0));
   },
   court(s, m, a, eff) {
-    const su = s.suitors.find(x => x.id === a.target);
+    const su = findId(s.suitors, a.target);
     if (!su) {
       m.action = null;
       return;
@@ -156,7 +158,7 @@ export function autoQuest(s, m, region) {
       q.cp <= cp(s, m) &&
       regionOpen(s, region),
   );
-  return qs.sort((a, b) => b.cp - a.cp)[0] || D.quests.find(q => q.id === "rats");
+  return qs.sort((a, b) => b.cp - a.cp)[0] || findId(D.quests, "rats");
 }
 
 // ---- standing orders: Explore / Adventure
@@ -173,6 +175,8 @@ export function pickAdventure(s, m) {
   const ln = boardsPick(s, m, Infinity); // R45: follow a quest line this person started
   if (ln) return ln;
   const c = cp(s, m);
+  const gq = guildQuestFor(s, m, q => !questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c); // R46: own guild's chain quest first
+  if (gq) return { type: "quest", target: gq.id };
   const dgs = (D.dungeons || [])
     .filter(d => !dungeonIssue(s, m, d) && d.floors[0].cp <= c * 1.1)
     .sort((a, b) => b.floors.at(-1).cp - a.floors.at(-1).cp);
@@ -250,7 +254,7 @@ export function setAction(s, a) {
 export function defaultAction(s, m) {
   const age = ageY(m);
   for (const id of age < 12 ? ["play", "stories"] : ["chores", "hiking"]) {
-    const ac = D.activities.find(x => x.id === id);
+    const ac = findId(D.activities, id);
     if (ac && activityOk(s, m, ac)) return { type: "activity", target: id, progress: 0 };
   }
   const ac = D.activities.find(x => activityOk(s, m, x));
@@ -262,19 +266,19 @@ export function actionAllowed(s, m, a) {
   if (!a) return false;
   const t = a.type;
   if (t === "train") return !!themedFor(s, m, a.target);
-  if (t === "job") return jobOk(m, D.jobs.find(j => j.id === a.target) || { minAge: 99 });
+  if (t === "job") return jobOk(m, findId(D.jobs, a.target) || { minAge: 99 });
   if (t === "activity") {
-    const ac = D.activities.find(x => x.id === a.target);
+    const ac = findId(D.activities, a.target);
     return !!ac && activityOk(s, m, ac);
   }
   if (t === "rest") return true;
   if (t === "parcel") return ageY(m) >= 10 && !!D.world && hasFeature(s, a.target);
   if (t === "gather") {
-    const n = D.nodes.find(x => x.id === a.target);
+    const n = findId(D.nodes, a.target);
     return ageY(m) >= 10 && (!n || (known(s, n) && regionOpen(s, n.region)));
   }
   if (t === "quest") {
-    const q = D.quests.find(x => x.id === a.target);
+    const q = findId(D.quests, a.target);
     return !!q && canQuest(m, q, s) && !questIssue(s, m, q);
   }
   if (t === "explore") return !exploreIssue(s, m, a.target);

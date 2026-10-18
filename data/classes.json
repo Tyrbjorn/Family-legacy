@@ -545,15 +545,42 @@
   "icon": "🪤"
  },
  {
-  "id": "spy",
-  "name": "Spy",
+  "id": "swindler",
+  "name": "Swindler",
   "tier": 1,
   "from": "cutpurse",
   "req": {
-   "thievery": 25,
-   "etiquette": 20
+   "etiquette": 20,
+   "haggling": 25
   },
   "cost": 500,
+  "stats": [
+   "CHA",
+   "INT"
+  ],
+  "cpSkills": [
+   "haggling",
+   "etiquette",
+   "brawling"
+  ],
+  "cpMult": 1.6,
+  "icon": "🎭",
+  "role": {
+   "buyDisc": 0.08,
+   "reqBonus": 0.1
+  },
+  "desc": "Con artist: the family buys 8% cheaper; +10% coin on village requests"
+ },
+ {
+  "id": "spy",
+  "name": "Spy",
+  "tier": 2,
+  "from": "swindler",
+  "req": {
+   "etiquette": 40,
+   "thievery": 35
+  },
+  "cost": 2000,
   "stats": [
    "AGI",
    "INT"
@@ -563,8 +590,41 @@
    "etiquette",
    "brawling"
   ],
-  "cpMult": 1.6,
-  "icon": "🕵️"
+  "cpMult": 2.4,
+  "icon": "🕵️",
+  "guild": "rogues",
+  "guildRank": 2,
+  "desc": "Secrets: rumours, hidden quests, rival house intel (Swindler leads into Spy)"
+ },
+ {
+  "id": "fence",
+  "name": "Fence",
+  "tier": 2,
+  "from": "rogue",
+  "req": {
+   "appraisal": 30,
+   "haggling": 35,
+   "thievery": 30
+  },
+  "cost": 2000,
+  "guild": "rogues",
+  "guildRank": 2,
+  "needsQuest": "g_rogues_ledger",
+  "stats": [
+   "CHA",
+   "AGI"
+  ],
+  "cpSkills": [
+   "haggling",
+   "appraisal",
+   "thievery"
+  ],
+  "cpMult": 2.4,
+  "icon": "💰",
+  "role": {
+   "sellPct": 0.9
+  },
+  "desc": "Sells loot and gear at 90% of value"
  },
  {
   "id": "cleric",

@@ -1,3 +1,4 @@
+import { famFx } from "./paths.js";
 // R34 Quotas (Legacy "Steward's Ledger"): estate-wide production targets. A quota is {id,item,target,mode}:
 // "once" = make `target` more then finish; "standing" = keep stock topped up to `target`.
 // Tier 1: 5 quotas. Tier 2: unlimited, blocked quotas pull their missing input (child quotas, 2 steps deep),
@@ -17,7 +18,7 @@ var ordersDayHook; // var + function: safe to set during the orders.js <-> quota
 export function setOrdersDayHook(f) { ordersDayHook = f; }
 export const QC = () => (D.legacy && D.legacy.quotas) || { pullDepth: 2, foodSafetyDays: 20, pullAmount: 20 };
 export const quotaTier = s => legacyTier(s, "quotas");
-export const quotaSlots = s => legacyValue(s, "quotas"); // R37: 2 free, 5, unlimited
+export const quotaSlots = s => legacyValue(s, "quotas") + Math.floor(famFx(s, "quotaSlot")); // R37: 2 free, 5, unlimited; R46 Clerk +1 per rank (max 3)
 const Qs = s => (s.quotas = s.quotas || []);
 export const quotaList = s => Qs(s);
 const isRes = item => !itemDef(item);

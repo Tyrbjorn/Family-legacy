@@ -5,7 +5,7 @@ import { D, s } from "../main.js";
 
 export function villagePanel() {
   const V = D.estate.village,
-    q = D.quests.find(x => x.id === "q_charter");
+    q = E.findId(D.quests, "q_charter");
   if (!s.village) {
     if (!s.land.includes("valley")) return "";
     const m = E.active(s),

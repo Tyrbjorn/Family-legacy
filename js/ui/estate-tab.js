@@ -14,7 +14,7 @@ export function landShop(where) {
     .filter(l => !s.land.includes(l.id) && (!where || l.towns.includes(where)))
     .map(
       l =>
-        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + D.estate.lands.find(x => x.id === l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span></span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(l.cost)}</button></div>`,
+        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span></span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(l.cost)}</button></div>`,
     )
     .join("");
 }
@@ -57,7 +57,7 @@ export function recipesv() {
   const n = L.filter(d => d.known).length;
   const card = ({ x, known, issue, have }) =>
     `<details class="card dish" data-dish="${x.id}" style="padding:5px 8px;margin:3px 0"><summary>${x.icon} <b>${x.name}</b> <span class="muted">${known ? (issue ? "· ⏸ " + issue : "· ✅ learned") : "· 🔒 not learned"}${have >= 1 ? " · " + fmt(have) + " in store" : ""}</span></summary>
- <div class="muted">${Object.entries(x.in).map(([k, v]) => v + " " + inName(k)).join(" + ")} → ${x.per || 1} · ${Object.keys(x.stations).map(p => (D.estate.pieces.find(z => z.id === p) || {}).name || p).join(" / ")}</div>
+ <div class="muted">${Object.entries(x.in).map(([k, v]) => v + " " + inName(k)).join(" + ")} → ${x.per || 1} · ${Object.keys(x.stations).map(p => (E.findId(D.estate.pieces, p) || {}).name || p).join(" / ")}</div>
  <div class="muted">🍞 food ${x.food} · 🪙 sells ${x.value} · Cooking ${x.cook || 0}${x.luxury ? " · 💎 luxury" : ""}${x.side ? " · " + Object.entries(x.side).map(([k, c]) => Math.round(c * 100) + "% " + k).join(", ") : ""}</div>
  ${x.buff ? `<div class="muted">✨ ${x.buff.text}</div>` : ""}<div class="muted">📖 ${x.how || ""}</div></details>`;
   return `<details class="card" id="recipes" style="margin-top:6px" open><summary><b>🍳 Recipes</b> <span class="muted">· ${n}/${L.length} learned</span></summary>
@@ -67,7 +67,7 @@ export function recipesv() {
 }
 
 export function estate() {
-  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => D.estate.lands.find(l => l.id === id).name).join(", ")}</div></div>${landShop()}${villagePanel()}${endgamePanel()}`;
+  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => E.findId(D.estate.lands, id).name).join(", ")}</div></div>${landShop()}${villagePanel()}${endgamePanel()}`;
   h += `<div class="card"><b>📦 Capacity</b><div class="muted">🍞 ${fmt(s.res.food)}/${fmt(E.foodCap(s))} food · materials cap ${fmt(E.matCap(s))} each</div>
  <div class="muted">${Object.entries(D.estate.resourceTiers)
    .map(
@@ -128,7 +128,7 @@ export function estatev() {
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of E.living(s)) {
     const o = x.order;
-    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(playing)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (s.members.find(y => y.id === x.spouse) || {}).name : "Single"} · ${x.id === s.activeId ? "" : "Doing: " + doing(x.action || (o.type !== "quest" ? o : null))}</div>`;
+    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(playing)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"} · ${x.id === s.activeId ? "" : "Doing: " + doing(x.action || (o.type !== "quest" ? o : null))}</div>`;
     if (x.id !== s.activeId) {
       h += `<div class="row" style="margin-top:4px">`;
       if (!E.isAdult(x)) h += `<span class="muted">growing up</span>`;

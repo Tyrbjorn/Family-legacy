@@ -16,20 +16,42 @@ const fxText = fx =>
               ? `+${f.v} land slot`
               : f.kind === "vault"
                 ? `+${f.v} vault slot`
+                : f.kind === "quotaSlot"
+                  ? `+${f.v} quota slot${f.max ? " (max +" + f.max + ")" : ""}`
+                  : f.kind === "route"
+                    ? `+${f.v} trade route`
+                    : f.kind === "orderSlot"
+                      ? `+${f.v} Work Orders slot`
+                      : f.kind === "storage"
+                        ? `+${Math.round(f.v * 100)}% storage`
+                        : f.kind === "trade"
+                          ? `+${Math.round(f.v * 100)}% trade sale prices`
                 : `+${Math.round(f.v * 100)}% ${f.kind === "trainXp" ? "family training XP" : f.kind}${f.res ? " " + f.res.filter(x => x !== "*").join("/") : ""}`,
     )
-    .join(" · ") + " per rank";
+    .join(" · ") + (fx.every(f => f.flat) ? "" : " per rank");
 
+const slotIcon = sl => ({ main: "⭐", second: "🔹", gather: "🌿", dabble: "·" })[sl] || "";
+const slotSelect = (m, e, sl) => `<select data-a="pslot" data-v="${e.id}" data-w="${m.id}" aria-label="Slot for ${E.pathDef(e.id).name}">${E.SLOT_IDS.filter(k => k === sl || k === "dabble" || E.slotDef(k).kind === (E.pathDef(e.id).kind || "crafting")).map(k => `<option value="${k}" ${k === sl ? "selected" : ""}>${E.slotName(k)}</option>`).join("")}</select>`;
+// R46 slots summary: who fills main / secondary / gathering, and the caps
+function slotsSummary(s, m) {
+  const P = E.memberPaths(m).filter(e => !E.pathDef(e.id).advanced);
+  const nm = k => P.filter(e => e.slot === k).map(e => E.pathDef(e.id).icon + " " + E.pathDef(e.id).name).join(", ") || "—";
+  const capN = k => rk(E.slotCapOf(k)).name;
+  return `<div class="card" id="craftslots" style="padding:6px 8px;margin:4px 0"><b>🎚️ Trade slots</b> <span class="muted" style="font-size:12px">learn any number; only these rank up</span>
+<div class="grid" style="font-size:13px"><span>⭐ Main (to ${capN("main")})</span><b>${nm("main")}</b><span>🔹 Secondary (a rank below main)</span><b>${nm("second")}</b><span>🌿 Gathering ×${E.slotDef("gather").n || 2} (to ${capN("gather")})</span><b>${nm("gather")}</b><span>· Dabbling (Apprentice only)</span><b>${nm("dabble")}</b></div>
+<div class="muted" style="font-size:12px">Crafting trades fill Main and Secondary; Woodsman, Farmer and Mason fill Gathering. Switch a slot once a year for free; ranks above a slot's cap are kept and count at the cap. Until you pick, your highest crafting trade is main and the next highest secondary.${m.slotDay != null && s.day - m.slotDay < 360 ? " · next switch in " + (360 - (s.day - m.slotDay)) + " days" : ""}</div></div>`;
+}
 function pathRow(m, e) {
   const p = E.pathDef(e.id),
     pr = E.pathProgress(m, e),
-    main = e === E.mainPath(m);
+    sl = E.pathSlotOf(m, e), cap = E.pathCap(m, e);
+  const why = sl === "dabble" ? "dabbling stays Apprentice: move it into a slot" : sl === "second" && E.slotDef("second").belowMain && cap < (E.slotDef("second").cap ?? 0) ? "secondary stays a rank below the main" : "slot cap";
   const label = pr.next
     ? pr.capped
-      ? `held at ${rk(e.rank).name}: ${p.advanced ? "" : "raise your main path"}`
+      ? `held at ${rk(Math.min(e.rank, cap)).name}: ${why}`
       : `→ ${pr.next.name}: ${Math.floor(pr.xp)}/${pr.next.xp} XP · skill ${pr.lvl}/${pr.next.skill}`
     : "Grandmaster";
-  let h = `<div class="card" style="padding:6px 8px;margin:4px 0"><div class="row"><b>${p.icon} ${p.name}</b><span class="tb">${rk(e.rank).icon} ${rk(e.rank).name}${main ? " · main" : p.advanced ? " · combo" : ""}</span></div>${pbar(pr.pct, label, null, "thin")}`;
+  let h = `<div class="card" data-path="${e.id}" style="padding:6px 8px;margin:4px 0"><div class="row"><b>${p.icon} ${p.name}</b><span class="tb">${rk(e.rank).icon} ${rk(e.rank).name}${e.rank > cap ? ` (counts as ${rk(cap).name})` : ""}</span></div><div class="row" style="gap:6px;font-size:12px"><span class="muted">${p.advanced ? "🧬 combo · no slot, uncapped" : `${slotIcon(sl)} ${E.slotName(sl)} · ${p.kind || "crafting"} · up to ${rk(cap).name}`}</span>${p.advanced ? "" : slotSelect(m, e, sl)}</div>${pbar(pr.pct, label, null, "thin")}`;
   if (e.spec) {
     const sp = E.pathSpecDef(e.id, e.spec),
       sq = E.pathProgress(m, e, true);
@@ -55,12 +77,13 @@ function pathRow(m, e) {
 export function pathsCard(s, m) {
   if (!E.isAdult(m)) return "";
   const defs = E.pathDefs();
-  let h = `<h3>🔨 Craft paths <span class="muted" style="font-size:12px">${E.memberPaths(m).filter(e => !E.pathDef(e.id).advanced).length}/${E.pathSlots(m)} open · max ${E.pathCapMax()}</span>${E.pendingPathChoices(m) ? ` <span class="tb">🎯 ${E.pendingPathChoices(m)}</span>` : ""}</h3>`;
+  let h = `<h3>🔨 Craft paths <span class="muted" style="font-size:12px">${E.memberPaths(m).filter(e => !E.pathDef(e.id).advanced).length} learned</span>${E.pendingPathChoices(m) ? ` <span class="tb">🎯 ${E.pendingPathChoices(m)}</span>` : ""}</h3>`;
   if (!m.craft) return h + `<div class="card muted">Join the 🔨 Crafters' Guild to start a main path (Apprentice → Journeyman → Master → Grandmaster).</div>`;
+  if (E.memberPaths(m).length) h += slotsSummary(s, m);
   for (const e of E.memberPaths(m)) h += pathRow(m, e);
   const opens = defs.filter(x => !x.advanced && !E.pathOf(m, x.id));
   const iss = opens.length ? E.openPathIssue(s, m, opens[0].id) : "all paths taken";
-  h += `<div class="card" style="padding:6px 8px;margin:4px 0"><b>${E.memberPaths(m).length ? "Open another path" : "🎯 Choose your main path"}</b><div class="muted" style="font-size:12px">${E.memberPaths(m).length ? "Each rank gained opens one more (secondaries stay a rank below the main)." : "XP in the path's skills ranks it up."}${iss ? " · 🔒 " + iss : ""}</div><div class="row" style="flex-wrap:wrap;gap:4px">${opens
+  h += `<div class="card" style="padding:6px 8px;margin:4px 0"><b>${E.memberPaths(m).length ? "Open another path" : "🎯 Choose your main path"}</b><div class="muted" style="font-size:12px">${E.memberPaths(m).length ? "A new trade takes a free slot (secondary or gathering), otherwise you dabble in it at Apprentice." : "XP in the path's skills ranks it up. Your first crafting trade becomes your main."}${iss ? " · 🔒 " + iss : ""}</div><div class="row" style="flex-wrap:wrap;gap:4px">${opens
     .map(x => `<button class="b" data-a="openpath" data-v="${x.id}" ${iss ? "disabled" : ""} title="${x.desc}">${x.icon} ${x.name}</button>`)
     .join("")}</div></div>`;
   const combos = defs.filter(x => x.advanced && !E.pathOf(m, x.id));

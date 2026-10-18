@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R39: base-game supply & demand made visible. Read-only helpers: price tags, town Short/Flooded tags
 // and the Market Board. No state of its own (shortage/glut events live in s.wevents, see worldevents.js).
 import { D, T } from "./state.js";
@@ -6,7 +7,7 @@ import { priceMult, eventsAtTown, eventType } from "./worldevents.js";
 import { townKnown, regionOpen, travelDays } from "./map.js";
 
 const MK = () => T.market || {};
-const town = id => D.towns.find(t => t.id === id) || {};
+const town = id => findId(D.towns, id) || {};
 
 // How a town's price compares to normal (supply 1, no events). Player bonuses (house, patron, talents) don't count.
 export const marketRatio = (s, townId, res, side = "sell") =>

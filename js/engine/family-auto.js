@@ -1,3 +1,5 @@
+import { findId } from "./lookup.js";
+import { drillSkill, tier2Skills } from "./guildtiers.js";
 // Family automation (Legacy upgrades fa_*; switches in s.autoOff as fam_<k>, on by default once owned).
 // Never drives the active member. Excluded members (m.noAutoEq, the one "Automation" switch on the member sheet) are skipped.
 // Hand-set choices are pinned (m.pins.order / .track / .court) until unpinned. Every automatic choice is logged (🤖).
@@ -27,7 +29,7 @@ export const faOn = (s, k) => faOwned(s, k) && !(s.autoOff || {})["fam_" + k];
 const pins = m => m.pins || (m.pins = {});
 export const pinned = (m, k) => !!(m.pins && m.pins[k]);
 export function unpin(s, id, k) {
-  const m = s.members.find(x => x.id === id);
+  const m = findId(s.members, id);
   if (m && m.pins) delete m.pins[k];
   return !!m;
 }
@@ -41,7 +43,7 @@ const lv = (m, k) => ((m.skills || {})[k] || { lvl: 0 }).lvl;
 export function trackFor(s, m) {
   if (m.track) return m.track;
   if (m.lean && m.lean[0] && FA().tracks[m.lean[0]]) return m.lean[0]; // R35: lean first (it already weighs the parents)
-  const ps = (m.parents || []).map(id => s.members.find(x => x.id === id)).filter(Boolean).sort((a, b) => level(b) - level(a));
+  const ps = (m.parents || []).map(id => findId(s.members, id)).filter(Boolean).sort((a, b) => level(b) - level(a));
   for (const p of ps) {
     const g = (p.guild && p.guild.id) || (p.cls && (classGuild(p.cls) || {}).id) || (p.craft && p.craft.id);
     if (g && FA().tracks[g]) return g;
@@ -50,7 +52,7 @@ export function trackFor(s, m) {
 }
 export const bestTrack = m => Object.entries(FA().tracks).map(([g, ks]) => [g, ks.reduce((a, k) => a + lv(m, k), 0)]).sort((a, b) => b[1] - a[1])[0][0];
 export function setTrack(s, id, g) {
-  const m = s.members.find(x => x.id === id);
+  const m = findId(s.members, id);
   if (!m || (g && !FA().tracks[g])) return false;
   m.track = g || null;
   if (g) pins(m).track = true;
@@ -65,12 +67,15 @@ export function kidSkill(s, m) {
     say(s, `Auto Upbringing: ${m.name} follows the ${guildDef(m.track).name} track.`);
   }
   // R35 fix: guild-exclusive track skills are closed to kids (that XP was silently dropped); skip them
-  const ks = FA().tracks[m.track].filter(k => skillOpen(m, k));
+  const ks = [...new Set([...FA().tracks[m.track], ...tier2Skills(m.track)])].filter(k => skillOpen(m, k)); // R46: plus the skills its tier-2 classes need
   return ks.length ? ks[(m.ageDays || 0) % ks.length] : null;
 }
 
 // ---- orders
 function pickOrder(s, m) {
+  // R46: every few order cycles, drill a skill the nearest next class still needs
+  const dk = drillSkill(s, m);
+  if (dk && (m.drillN = ((m.drillN || 0) + 1)) % (D.guilds.drillEvery || 3) === 0) return { type: "train", target: dk };
   const c = cls(m), artisan = (m.craft && !m.guild) || (c && !(c.cpSkills || []).length);
   if (artisan && bestRecipe(s, m)) return { type: "craft" };
   if (c && (c.cpSkills || []).length) {
@@ -102,7 +107,7 @@ function advanceOne(s, m) {
   if (faTier(s, "advance") >= 1) talentAuto(s, m); // R36 fill/swap talent slots unless pinned (R37: tier 1)
   // 1) no guild yet: the track guild if eligible, else the best-fitting one
   if (!m.guild && !m.craft) {
-    const order = [trackFor(s, m), ...Object.keys(FA().tracks)];
+    const order = [m.cls && (classGuild(m.cls) || {}).id, trackFor(s, m), ...Object.keys(FA().tracks)].filter(Boolean); // R46: the class's own guild first
     const g = order.find(g => guildDef(g) && !joinIssues(s, m, g).length && reserveOk(s, guildDef(g).req.coin || 0));
     if (g && joinGuild(s, m, g)) return say(s, `Auto Advance: ${m.name} joined the ${guildDef(g).name}.`), true;
   }
@@ -113,12 +118,12 @@ function advanceOne(s, m) {
   // 3) evolve: preference, else the branch that fits their skills
   const opts = faTier(s, "advance") >= 1 ? D.classes.filter(c => !c.profession && canEvolve(s, m, c) && reserveOk(s, c.cost)) : []; // R37: evolving is tier 1
   if (!opts.length) return false;
-  const c = opts.find(c => c.id === m.prefCls) || opts.sort((a, b) => evoScore(m, b) - evoScore(m, a))[0];
+  const c = findId(opts, m.prefCls) || opts.sort((a, b) => evoScore(m, b) - evoScore(m, a))[0];
   if (evolve(s, m, c.id)) return say(s, `Auto Advance: ${m.name} became a ${c.name}${opts.length > 1 ? " (best fit of " + opts.map(x => x.name).join("/") + ")" : ""}.`), true;
   return false;
 }
 export function setPref(s, id, cid) {
-  const m = s.members.find(x => x.id === id);
+  const m = findId(s.members, id);
   if (!m) return false;
   m.prefCls = cid || null;
   return true;
@@ -131,7 +136,7 @@ const RAR = { bad: -1, common: 0, good: 1, rare: 2, epic: 3 };
 function suitorScore(s, su) {
   const t = faTier(s, "court");
   let v = su.affinity || 0;
-  if (t >= 1) v += 10 * (su.traits || []).reduce((a, id) => a + (RAR[(D.traits.find(x => x.id === id) || {}).rarity] ?? 0), 0);
+  if (t >= 1) v += 10 * (su.traits || []).reduce((a, id) => a + (RAR[(findId(D.traits, id) || {}).rarity] ?? 0), 0);
   if (t >= 2) v += ((su.dowry || {}).coin || 0) / 100 + (su.house ? 10 : 0);
   return v;
 }
@@ -152,7 +157,7 @@ function courtWeek(s) {
         m.faCourt = false;
         m.order = { type: "work" };
         m.action = null;
-        say(s, `Auto Courtship: ${m.name} married ${m.spouse ? s.members.find(x => x.id === m.spouse).name : "their suitor"}.`);
+        say(s, `Auto Courtship: ${m.name} married ${m.spouse ? findId(s.members, m.spouse).name : "their suitor"}.`);
       }
     }
   }

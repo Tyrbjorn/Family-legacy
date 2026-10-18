@@ -21,7 +21,7 @@ function upgradesBlock(mi) {
 
 export function minionsv() {
   const M = D.minions;
-  const mt = id => M.types.find(t => t.id === id);
+  const mt = id => E.findId(M.types, id);
   let h = `<div class="card"><b>🧑‍🤝‍🧑 Followers ${s.minions.filter(x => !x.special).length}/${E.minionCap(s)}${s.minions.some(x => x.special) ? " + " + s.minions.filter(x => x.special).length + " ⭐" : ""}</b><div class="muted">Wages ${E.monthlyWages(s)}🪙/month · eat ${E.minionFood(s)}🍞/day (pool ${fmt(s.res.food)}${s.res.food < E.minionFood(s) ? " ⚠️ hungry!" : ""}) · 🛌 bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}${E.housingCap(s, "bunk") ? "" : " – build a Bunk or Bunkhouse to hire"} · ${E.established(s) ? "assign them to estate work below" : "jobs unlock once a House establishes the estate"}</div><div class="muted">Gained by hiring in towns, rescues on some quests, tavern rumors, and estate reputation (every ${M.reputationEveryRenown} Renown).</div></div>`;
   h += `<div class="row" id="minauto" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin:3px 0">${autoChip("ascend", "Ascend", E.ascendOn(s), E.established(s) ? null : "needs an established estate")}<button class="b ${E.recruitOn(s) ? "sel" : ""}" style="font-size:12px;padding:2px 8px" data-a="autorecruit">⚙ Auto Recruit ${E.recruitOn(s) ? "On" : "Off"}</button></div>`; // R37
   if (!s.minions.length) h += `<div class="muted">No followers yet.</div>`;
@@ -41,7 +41,7 @@ export function minionsv() {
                   .map(([k, v]) => "+" + v * 100 + "% " + k)
                   .join(
                     ", ",
-                  )}">${c.icon} ${c.name} <span class="muted">(${c.branch}${c.needs && c.needs.all ? " · " + E.structReqText(c.needs.all) : c.needs && c.needs.buildings.length ? " · " + (c.needs.buildings.length > 2 ? "class building" : c.needs.buildings.map(id => D.estate.structures.find(x => x.id === id).name).join("/")) + (c.needs.up ? " upg " + c.needs.up : "") : ""}${E.minionEvolveIssue(s, mi, c.id) ? " · 🔒 " + E.minionEvolveIssue(s, mi, c.id) : ""})</span></button>`,
+                  )}">${c.icon} ${c.name} <span class="muted">(${c.branch}${c.needs && c.needs.all ? " · " + E.structReqText(c.needs.all) : c.needs && c.needs.buildings.length ? " · " + (c.needs.buildings.length > 2 ? "class building" : c.needs.buildings.map(id => E.findId(D.estate.structures, id).name).join("/")) + (c.needs.up ? " upg " + c.needs.up : "") : ""}${E.minionEvolveIssue(s, mi, c.id) ? " · 🔒 " + E.minionEvolveIssue(s, mi, c.id) : ""})</span></button>`,
             )
             .join("")}</div>`
         : ""
@@ -80,7 +80,7 @@ export function minionsv() {
   <div class="muted">Gear: job output ×${E.minionGearMult(mi, mi.job).toFixed(2)}${E.minionSurvival(mi) < 1 ? " · hunger resistance " + Math.round((1 - E.minionSurvival(mi)) * 100) + "%" : ""}</div><div class="muted">Good at: ${Object.entries(
     t.apt,
   )
-    .map(([j, v]) => M.jobs.find(x => x.id === j).name + " ×" + v)
+    .map(([j, v]) => E.findId(M.jobs, j).name + " ×" + v)
     .join(", ")}</div>
   <div class="row" style="margin-top:4px"><select data-a="mjob" data-v="${mi.uid}">${M.jobs.map(j => `<option value="${j.id}" ${mi.job === j.id ? "selected" : ""} ${E.jobOpen(s, j.id) ? "" : "disabled"}>${j.icon} ${j.name}${j.id === "idle" || j.id === "guard" ? "" : " " + E.jobUsed(s, j.id) + "/" + (isFinite(E.jobCap(s, j.id)) ? E.jobCap(s, j.id) : "∞")}${E.jobOpen(s, j.id) ? "" : " 🔒"}</option>`).join("")}</select><button class="b" data-a="dismiss" data-v="${mi.uid}">Dismiss</button></div>${mi.job === "noderun" ? nodeRunRow(mi) : ""}</div>`;
   }
@@ -106,7 +106,7 @@ export function minionsv() {
       .filter(j => j.id !== "idle")
       .map(
         j =>
-          `<div class="muted">${j.icon} ${j.name}${j.needs ? ` (needs ${D.buildings.find(b => b.id === j.needs).name})` : ""}: ${j.desc} · assigned ${s.minions.filter(x => x.job === j.id).length}</div>`,
+          `<div class="muted">${j.icon} ${j.name}${j.needs ? ` (needs ${E.findId(D.buildings, j.needs).name})` : ""}: ${j.desc} · assigned ${s.minions.filter(x => x.job === j.id).length}</div>`,
       )
       .join("");
   h += `<h3>Hire</h3>`;

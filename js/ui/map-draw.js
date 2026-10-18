@@ -87,7 +87,7 @@ export function mapSvg(m) {
   const WD = D.world;
   let g = parchment(MP, WD) + fogLayer(MP, WD);
   for (const r of MP.regions) {
-    const rg = D.regions.find(x => x.id === r.id),
+    const rg = E.findId(D.regions, r.id),
       kn = E.regionKnown(s, r.id),
       op = E.regionOpen(s, r.id);
     g += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="14" fill="none" stroke="#6b4a26" stroke-width="2" stroke-dasharray="10 6" stroke-opacity=".6"/>`;

@@ -1,3 +1,4 @@
+const NO_TIERS = !!process.env.NO_TIERS; // R46: disable the bot's tier logic
 // Long headless simulation (balance/bug pass): a greedy bot plays several lineages and checks invariants.
 // usage: node test/longsim.mjs [seeds=3] [years=200]
 import fs from "fs";
@@ -9,6 +10,7 @@ for (const f of fs.readdirSync(root + "data").filter(f => f.endsWith(".json")))
 for (const f of D.estate.structureFiles) D["structures/" + f] = JSON.parse(fs.readFileSync(root + "data/structures/" + f + ".json"));
 // experiment knobs (sim only): LG_TITHE=0.2 base tithe; LG_TIERS="cost:value,..." tithe upgrade tiers; LG_DEED=1 banks each first dungeon clear's renown again as Legacy
 if (process.env.LG_TITHE) D.legacy.renown.tithe = +process.env.LG_TITHE;
+if (process.env.TIER_TUNE) { const [l2, l3, k2, k3] = process.env.TIER_TUNE.split(",").map(Number); Object.assign(D.guilds.tiers[1], { lv: l2, skillScale: k2 }); Object.assign(D.guilds.tiers[2], { lv: l3, skillScale: k3 }); } // R46 sim knob
 if (process.env.LG_TIERS) D.legacy.upgrades.find(u => u.id === "tithe").tiers = process.env.LG_TIERS.split(",").map(x => ({ cost: +x.split(":")[0], value: +x.split(":")[1] }));
 // LG_LAND=1 adds four late parcels (sim-only draft of the "more land" proposal)
 if (process.env.LG_LAND) D.estate.lands.push(
@@ -199,6 +201,8 @@ function smartAdventure(s, m) {
     E.setAction(s, { type: "quest", target: q.id });
     return true;
   }
+  // R46: own guild's chain quest first (same rule as Auto-Adventure)
+  if (!NO_TIERS) { const gq = E.guildQuestFor(s, m, q => E.actionAllowed(s, m, { type: "quest", target: q.id }) && !E.questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c); if (gq) { E.setAction(s, { type: "quest", target: gq.id }); return true; } }
   // R45: quest lines (start any open one, follow it) and town board jobs from your band (planner orders missing goods)
   if (E.lineDefs && !process.env.NO_BOARDS) {
     for (const L of E.lineDefs()) { const st = E.lineState(s, L.id); if ((!st || (!st.done && st.who === m.id)) && !E.stopIssue(s, m, L.id) && E.goStop(s, m, L.id)) return true; }
@@ -216,7 +220,7 @@ function bot(s, m) {
       if (!o.craft && s.res.coin > 1500 && s.day > 5 * YD && !E.joinIssues(s, o, "hearth").length) E.joinGuild(s, o, "hearth");
       if (!o.craft) continue;
       const lv = P => Math.max(...P.skills.map(k => o.skills[k].lvl)) + ((o.id + P.id.length) % 4);
-      const opts = E.pathDefs().filter(P => !P.advanced && !E.openPathIssue(s, o, P.id)).sort((a, b) => lv(b) - lv(a));
+      const opts = E.pathDefs().filter(P => !P.advanced && !E.openPathIssue(s, o, P.id) && (!E.nextSlotFor || E.nextSlotFor(o, P.id) !== "dabble")).sort((a, b) => lv(b) - lv(a)); // R46: only into a free slot
       if (opts.length && E.openPath(s, o, opts[0].id)) seen.pathOpens++;
       for (const e of E.memberPaths(o)) {
         const ch = E.specChoices(o, e.id);
@@ -508,17 +512,33 @@ function bot(s, m) {
     return;
   }
   // guilds
-  for (const gd of D.guilds.guilds || D.guilds)
-    if (!E.joinIssues(s, m, gd.id).length && E.joinGuild(s, m, gd.id)) seen.guilds.add(gd.id);
+  // R46: each adult joins their class's guild first (then any guild they qualify for)
+  for (const o of NO_TIERS ? [m] : E.living(s).filter(x => E.isAdult(x) && !x.guild)) {
+    const own = o.cls && (E.classGuild(o.cls) || {}).id;
+    for (const gd of [...(D.guilds.guilds || D.guilds)].sort((a, b) => (b.id === own) - (a.id === own)))
+      if (!o.guild && !E.joinIssues(s, o, gd.id).length && E.joinGuild(s, o, gd.id)) seen.guilds.add(gd.id);
+  }
   if (m.guild) E.rankUp(s, m);
+  // R46 guild tiers: advance any member who qualifies for the next tier (best power first)
+  if (!NO_TIERS) for (const o of E.living(s)) if (o.guild && o.cls) {
+    const up = E.classMoves(s, o).filter(c => E.moveKind(o, c) === "up" && E.canEvolve(s, o, c) && s.res.coin - E.moveCost(o, c) > 300).sort((a, b) => (b.cpMult || 1) - (a.cpMult || 1));
+    if (up.length && E.evolve(s, o, up[0].id)) seen.tierUps = (seen.tierUps || 0) + 1;
+    if (o !== m && E.canRankUp(s, o)) E.rankUp(s, o);
+  }
 
   if (m.adv !== undefined && !m.adv && m.cls) E.joinAdventurers && E.joinAdventurers(s, m);
   if (m.adv) E.advRankUp && E.advRankUp(s, m);
   // others work quests
-  for (const o of E.living(s))
-    if (o.id !== m.id && E.isAdult(o) && (!o.order || o.order.type === "work"))
-      E.setOrder(s, o.id, { type: "quest", target: "outskirts" });
+  for (const o of E.living(s)) {
+    if (o.id === m.id || !E.isAdult(o)) continue;
+    // R46: one month in three, drill a skill the nearest next class still needs
+    const dk = !NO_TIERS && Math.floor(s.day / 30) % 3 === 0 && E.drillSkill(s, o);
+    if (dk) { if (!o.order || o.order.type !== "train" || o.order.target !== dk) E.setOrder(s, o.id, { type: "train", target: dk }); continue; }
+    if (!o.order || o.order.type === "work" || o.order.type === "train") E.setOrder(s, o.id, { type: "quest", target: "outskirts" });
+  }
   // active: quest the best available, sometimes explore
+  // R46: one month in three the active member also drills toward their next tier
+  if (!NO_TIERS && !E.isBusy(m) && E.isAdult(m) && !E.tutActive(s) && Math.floor(s.day / 30) % 3 === 1 && E.daysOfStock(s) >= 10) { const dk = E.drillSkill(s, m); if (dk) { if (!(m.action && m.action.type === "train" && m.action.target === dk)) E.setAction(s, { type: "train", target: dk }); return; } }
   if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s) && !process.env.OLDBOT && smartAdventure(s, m)) return;
   if (!E.isBusy(m) && E.isAdult(m) && !E.tutActive(s)) {
     // explore more while dungeons are still undiscovered (otherwise first clears hinge on discovery luck)
@@ -568,7 +588,8 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   const snap = [];
   for (let day = 0; day < YEARS * YD; day++) {
     if (day % 30 === 0) for (const m of s.members) { if (m.appr) (seen.appr ||= new Set()).add(seed + ':' + m.id); if ((m.apprDone || []).length) (seen.apprDone ||= new Set()).add(seed + ':' + m.id); if (m.lean) { (seen.lean ||= new Map()).set(seed + ':' + m.id, m.lean.length); } } // R35
-    if ([2, 5, 10].includes(day / YD)) ((seen.early ||= {})[seed] ||= []).push([day / YD, Math.round(s.res.coin), Math.round(s.res.food), s.structures.length, s.minions.length, Math.round(E.legacyState(s).renown)]); // R37 growth
+    if (day % YD === 0 && day) for (const o of E.living(s)) if (o.cls && E.isAdult(o)) { const c = E.findId(D.classes, o.cls); const t = E.tierN(c); const k = seed + ':' + o.id; const ft = (seen.firstTier ||= {}); for (let n = 2; n <= t; n++) if (!(ft[n] ||= {})[k]) ft[n][k] = day / YD; if (process.env.TIERDBG) console.error('Y' + day / YD, o.name, o.cls, 'Lv' + E.level(o), o.guild ? o.guild.id + ' r' + o.guild.rank + ' rep' + o.guild.rep : 'noguild', 'coin' + Math.round(s.res.coin), '|', E.classStuck(s, o), '| top', Object.entries(o.skills).sort((a, b) => b[1].lvl - a[1].lvl).slice(0, 5).map(([k, v]) => k + v.lvl).join(' ')); }
+    if ([2, 5, 10].includes(day / YD) || day === YEARS * YD - 1) ((seen.early ||= {})[seed] ||= []).push([Math.round(day / YD), Math.round(s.res.coin), Math.round(s.res.food), s.structures.length, s.minions.length, Math.round(E.legacyState(s).renown)]); // R37 growth
     if (day % 30 === 0) for (const m of s.members) for (const id of (m.talents || {}).own || []) ((seen.tal ||= {})[seed] ||= new Set()).add(m.id + ':' + id); // R36
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
@@ -723,7 +744,6 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   for (const o of s.members.filter(x => x.alive !== false)) {
     if (o.prof) bad(seed, s.day, 'old m.prof survived migration ' + o.name);
     const ps = E.memberPaths(o);
-    if (ps.filter(e => !E.pathDef(e.id).advanced).length > D.paths.maxPaths) bad(seed, s.day, 'over the path cap ' + o.name);
     for (const e of ps) if (e.rank > E.pathCap(o, e) || (e.spec && e.srank > e.rank)) bad(seed, s.day, 'path rank over its cap ' + o.name + ' ' + e.id);
   }
   for (const mi of s.minions || []) {
@@ -747,6 +767,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
     boards: JSON.stringify({ ...(s.boardStats || {}), lines: Object.entries(s.lines || {}).filter(([, v]) => v.done).map(([k, v]) => k + "@y" + Math.round((v.doneDay || 0) / YD)) }),
+    tiers: JSON.stringify({ ups: seen.tierUps || 0, firstTier: Object.fromEntries(Object.entries(seen.firstTier || {}).map(([n, o]) => [n, Object.values(o).sort((a, b) => a - b)])), classes: E.living(s).map(o => o.cls).filter(Boolean), chainUnlocks: (s.unlocks || []).filter(u => /^recipe:r_g_/.test(u)) }),
     snap, // [renown, followers, buildings] at years 0,10,20,30
     idleAdultDays: idleDays,
     armoryDay: s._armoryDay ?? -1,

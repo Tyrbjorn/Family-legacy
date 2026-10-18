@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { memberFx } from "./paths.js";
 // Gear sets (2/4-piece bonuses scaled by the worn pieces' quality/rarity) and enchanting (data/gear.json).
 // Enchants ride on the item id as a suffix: "<id>#keen.vigor*" ("*" = greater). Slots come from quality/rarity.
@@ -252,7 +253,7 @@ export function itemStats(id, m) {
   if (it.slot === "map") add("map", `🗺️ ${it.desc || "Special map: read it from the Bag"}`);
   L.push(...typeStats(it, m));
   if (it.quality) {
-    const Q = D.crafting.qualities.find(q => q.id === it.quality);
+    const Q = findId(D.crafting.qualities, it.quality);
     if (Q) add("q", `${Q.name} quality ×${Q.mult}`);
   }
   for (const tok of splitId(it.id).ench) {

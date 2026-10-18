@@ -6,12 +6,12 @@ export const craftingActions = ({ v, b, m }) => ({
   cqueue: () =>
     E.queueCraft(
       s,
-      s.members.find(x => x.id === +v),
+      E.findId(s.members, +v),
       b.dataset.w,
     ),
   cunq: () =>
     E.unqueueCraft(
-      s.members.find(x => x.id === +v),
+      E.findId(s.members, +v),
       +b.dataset.w,
     ),
   mcraft: () => {

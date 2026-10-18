@@ -1,3 +1,5 @@
+import { chainDone } from "./guildtiers.js";
+import { findId } from "./lookup.js";
 import { talentQuest } from "./talents.js";
 import { questInjury } from "./injuries.js";
 import { tutActive } from "./tutorial.js";
@@ -68,9 +70,10 @@ export function resolveQuest(s, m, q, eff) {
     const [k, id] = q.unlocks.split(":");
     log(
       s,
-      `🔓 ${q.name} unlocked ${k === "skill" ? "training: " + D.skills.find(x => x.id === id).name : k === "recipe" ? "recipe: " + recipeDef(id).name : "activity: " + D.activities.find(x => x.id === id).name}!`,
+      `🔓 ${q.name} unlocked ${k === "skill" ? "training: " + findId(D.skills, id).name : k === "recipe" ? "recipe: " + recipeDef(id).name : "activity: " + findId(D.activities, id).name}!`,
     );
   }
+  chainDone(s, q); // R46 guild chain unlocks
   if (m.adv) m.adv.rep += Math.ceil(q.cp / 10) + 1;
   for (const mg of guildsOf(m)) {
     const g = guildDef(mg.id);
@@ -94,7 +97,7 @@ export function questIssue(s, m, q) {
   if (!questOk(m, q)) return "guild rank";
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
-  if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).endsWith(q.req.item))) return "needs a " + (D.items.find(i => i.id === q.req.item) || {}).name;
+  if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).endsWith(q.req.item))) return "needs a " + (findId(D.items, q.req.item) || {}).name;
   if (q.req?.land && !s.land.includes(q.req.land)) return "needs the " + (ES().lands.find(l => l.id === q.req.land) || {}).name + " deed";
   if (!q.story && q.req?.era && era(s).n < q.req.era) return "Era " + q.req.era;
   if (q.deliver && !afford(s, q.deliver)) return "deliver " + Object.entries(q.deliver).map(([k, v]) => v + " " + k).join(", ");

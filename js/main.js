@@ -310,6 +310,7 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "onum") U.oNum = +el.value;
   if (el.dataset.a === "qnum") U.qNum = +el.value;
   if (el.dataset.a === "qtarget") E.setQuotaTarget(s, el.dataset.v, el.value);
+  if (el.dataset.a === "pslot") E.setPathSlot(s, E.findId(s.members, +el.dataset.w), el.dataset.v, el.value); // R46 crafter slots
   if (el.dataset.a === "fatrack") E.setTrack(s, +el.dataset.v, el.value || null);
   if (el.dataset.a === "fapref") E.setPref(s, +el.dataset.v, el.value || null);
   if (el.dataset.a === "ordt") {

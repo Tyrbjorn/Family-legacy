@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { choreOpen, choreActive } from "./chores.js";
 import { apprOpens, inhXp, leanXp } from "./apprentice.js";
 import { injuryXp } from "./injuries.js";
@@ -23,7 +24,7 @@ export function softCap(m) {
 }
 
 export function xpMult(s, m, skillId) {
-  const sk = D.skills.find(x => x.id === skillId);
+  const sk = findId(D.skills, skillId);
   let mult = 1;
   mult += traitSum(m, "xp");
   mult += gearFx(m.equip).xpPct || 0;
@@ -68,7 +69,7 @@ export function gainXp(s, m, skillId, amt) {
     k.xp -= xpNeed(k.lvl);
     k.lvl++;
     addMemberRenown(m, LG().renown.perSkillLevel || 0);
-    if (k.lvl % 10 === 0) log(s, `⭐ ${m.name} reached ${D.skills.find(x => x.id === skillId).name} ${k.lvl}.`);
+    if (k.lvl % 10 === 0) log(s, `⭐ ${m.name} reached ${findId(D.skills, skillId).name} ${k.lvl}.`);
     const before = level(m);
     if (level(m) > before) {
     }
@@ -85,7 +86,7 @@ export function gainXp(s, m, skillId, amt) {
 }
 
 export function trainIssue(m, skillId, s) {
-  const sk = D.skills.find(x => x.id === skillId);
+  const sk = findId(D.skills, skillId);
   if (!sk) return "unknown";
   const a = ageY(m);
   if (sk.guild && !memberGuild(m, sk.guild)) return "guild";
@@ -104,15 +105,15 @@ export const jobOk = (m, j) => ageY(m) >= j.minAge;
 
 export const clsLine = id => {
   const out = [];
-  let c = id && D.classes.find(x => x.id === id);
+  let c = id && findId(D.classes, id);
   while (c && !out.includes(c.id)) {
     out.push(c.id);
-    c = c.from && D.classes.find(x => x.id === c.from);
+    c = c.from && findId(D.classes, c.from);
   }
   return out;
 };
 
-export const inLine = (m, cid) => [m.cls, m.prof].some(x => x && clsLine(x).includes(cid)) || pathReqOk(m, cid);
+export const inLine = (m, cid) => [m.cls, m.prof, ...(m.clsHist || [])].some(x => x && clsLine(x).includes(cid)) || pathReqOk(m, cid);
 
 export const ownsItem = (s, m, id) =>
   (s.vault || []).some(x => x === id || String(x).endsWith(id)) ||
@@ -137,23 +138,23 @@ export function srcOk(s, m, u, ac) {
 }
 
 export function srcText(u) {
-  if (u.cls) return (D.classes.find(c => c.id === u.cls) || {}).name + " line";
+  if (u.cls) return (findId(D.classes, u.cls) || {}).name + " line";
   if (u.piece) return (ES().pieces.find(p => p.id === u.piece) || {}).name || u.piece;
   if (u.item) return (itemDef(u.item) || {}).name || u.item;
   if (u.guild) return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
-  if (u.quest) return "quest “" + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest) + "”";
+  if (u.quest) return "quest “" + ((findId(D.quests, u.quest) || {}).name || u.quest) + "”";
   if (u.tut) return "tutorial: " + ((D.tutorial?.steps.find(x => x.id === u.tut) || {}).title || u.tut);
   if (u.fields) return "a field (Estate → Farmstead)";
   if (u.chore === true) return "it opens as you grow";
-  if (u.chore) return ((D.activities.find(a => a.id === u.chore) || {}).name || u.chore) + " worked today";
-  if (u.building) return "build " + ((D.buildings.find(b => b.id === u.building) || {}).name || u.building);
+  if (u.chore) return ((findId(D.activities, u.chore) || {}).name || u.chore) + " worked today";
+  if (u.building) return "build " + ((findId(D.buildings, u.building) || {}).name || u.building);
   return "";
 }
 
 export const activityReq = ac => (!ac.unlock ? "" : "Requires: " + [].concat(ac.unlock).map(srcText).join(" or "));
 
 export function skillOpen(m, skillId) {
-  const x = (D.skills.find(k => k.id === skillId) || {}).exclusive;
+  const x = (findId(D.skills, skillId) || {}).exclusive;
   if (!x) return true;
   if (apprOpens(m, skillId)) return true; // R35: the master's skills while apprenticed
   return x.guilds.some(g => memberGuild(m, g) || (g === "adventurers" && m.adv)) || x.classes.some(c => inLine(m, c));

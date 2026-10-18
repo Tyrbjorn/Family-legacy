@@ -2,6 +2,24 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R46",
+   "title": "Guild Tiers, Guild Quest Chains and Trade Slots",
+   "items": [
+    "🎓 Every guild now has tiers. To move up a tier you need any class from the tier below in your guild, a character level (Lv 7 for tier 2, Lv 16 for tier 3), the class's own skills, a guild rank (Journeyman for tier 2, Adept for tier 3) and coin.",
+    "🧭 The class card shows your 2 nearest next classes and only what you are still missing, with Show all for the rest.",
+    "↔️ You can switch sideways to another class on the same tier once a year for half the tier's coin. You keep all your skills.",
+    "🔁 Joining a guild with an entry class from another guild retrains you as this guild's entry class, so you can climb its tiers.",
+    "🎭 New Rogue classes: Swindler (tier 2: the family buys 8% cheaper and gets +10% coin from village requests) leads into Spy, now tier 3. Fence (tier 3) sells loot at 90% of its value and opens after the Ledger of Debts.",
+    "📜 Guild quest chains: the Warriors', Magic and Rogues' Guilds have new chain quests that unlock hidden recipes such as Thieves' Lockpicks, Banded Plate, Runed Orb and the Forged Seal. Auto-Adventure now takes your own guild's next chain quest first, and repeats guild quests while you are short of rep.",
+    "🤖 Auto Upbringing teaches the skills your guild's tier-2 classes need, and Auto Orders spends some months drilling the skill your next tier still needs.",
+    "🎚️ Trade slots: learn as many crafts as you like. Your main crafting trade ranks all the way to Grandmaster and artisan titles. Your secondary stays a rank below your main, your 2 gathering trades (Woodsman, Farmer, Mason) go up to Master, and anything else stays at Apprentice. Until you choose, your highest-ranked crafting trade is your main and the next highest your secondary. You can switch slots once a year for free.",
+    "🧾 New Clerk path: +1 quota slot per rank (up to +3), more storage and better trade prices. Steward moves here from Scribe (+1 trade route, +1 Work Orders slot), with the Seneschal title at Grandmaster.",
+    "Old saves keep every class (Spies get their new tier-3 power) and every craft rank: your highest crafting trade becomes your main, so no bonus is lost. Scribe-Stewards become Clerk-Stewards at the same rank, and recipes from chain quests below the rank you already hold are unlocked.",
+    "🎓 Reaching Master in a slotted trade opens a second guild for that person. Second guilds arrive in a coming update.",
+    "Engineering tidy pass: one test command, a shared lookup helper and the old data generator archived. Nothing changes in play."
+   ]
+  },
+  {
    "build": "R45",
    "title": "Town Boards, Quest Lines and Phase Bands",
    "items": [

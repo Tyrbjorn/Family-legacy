@@ -1,3 +1,4 @@
+import { classCard } from "./classes-ui.js";
 // R30 Character tab (Family group, first sub-tab): the full sheet for one member.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
@@ -8,7 +9,7 @@ import { sheet } from "./main-tab.js";
 const pct = v => Math.round(v * (v <= 1 ? 100 : 1)) + "%";
 export function characterv() {
   const all = E.living(s);
-  const m = all.find(x => x.id === U.charId) || E.active(s);
+  const m = E.findId(all, U.charId) || E.active(s);
   if (!m) return "";
   const K = D.gear.kinds, eq = m.equip || {};
   let h = `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${all.map(x => `<button class="b ${x.id === m.id ? "sel" : ""}" data-a="charpick" data-v="${x.id}">${x.name} (${E.ageY(x)})</button>`).join("")}</div>`;
@@ -25,13 +26,12 @@ export function characterv() {
   const fams = Object.entries(K.famNames).map(([f, n]) => [n, E.prof(m, f), E.profCap(m, f)]).filter(([, v, c]) => v > 0 || c > 0);
   h += `<h3>🎯 Proficiency</h3><div class="card"><div class="muted">Grows with use (and from related skills) up to the class cap.</div><div class="grid">${fams.map(([n, v, c]) => `<span>${n} <b>${Math.round(v)}</b>/${c}</span>`).join("")}</div></div>`;
   // advancement
-  const nxt = D.classes.filter(c => c.from && c.from === m.cls);
-  h += `<h3>🎓 Class & advancement</h3><div class="card">${nxt.length ? nxt.map(c => `<div>${c.icon || ""} <b>${c.name}</b> <span class="muted">${E.canEvolve(s, m, c) ? "✅ ready (Work → Guilds)" : Object.entries(c.req || {}).map(([k, v]) => `${k} ${v}`).join(", ")}</span></div>`).join("") : '<div class="muted">No further class from here yet (or choose a guild first).</div>'}${m.prefCls ? `<div class="muted">Auto Advance preference: ${m.prefCls}</div>` : ""}</div>`;
+  h += classCard(m) + (m.prefCls ? `<div class="muted">Auto Advance preference: ${m.prefCls}</div>` : ""); // R46 guild tiers
   // R35 leans, inheritance, apprenticeship
   h += apprv(m);
   h += talentsv(m); // R36
   // family
-  const nm = id => (s.members.find(x => x.id === id) || {}).name || "?";
+  const nm = id => (E.findId(s.members, id) || {}).name || "?";
   const kids = s.members.filter(x => (x.parents || []).includes(m.id));
   h += `<h3>🌳 Family</h3><div class="card"><div>Spouse: <b>${m.spouse ? nm(m.spouse) : "—"}</b></div><div>Parents: ${(m.parents || []).map(nm).join(" & ") || "—"}</div><div>Children: ${kids.map(x => x.name + (x.alive ? "" : " †")).join(", ") || "—"}</div></div>`;
   h += `<h3>⚙️ Automation</h3><div class="card"><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="faex" data-v="${m.id}">${m.noAutoEq ? "Excluded" : "Included"}</button> <span class="muted">Auto Equip + family automation${Object.keys(m.pins || {}).length ? " · pinned: " + Object.keys(m.pins).join(", ") : ""}</span></div>`;
@@ -45,17 +45,17 @@ function apprv(m) {
   let h = `<h3>🧭 Leans & upbringing</h3><div class="card" id="leans">`;
   h += `<div title="${tip}">Leans: <b>${(m.lean || []).map(E.leanName).join(", ") || "—"}</b> <span class="muted">ⓘ +10% XP</span></div>`;
   const inh = m.inh || {}, st = Object.entries(inh.stats || {}), sk = Object.entries(inh.skills || {});
-  if (st.length || sk.length) h += `<div>From parents: ${st.map(([k, v]) => `${k} +${v}`).join(", ") || ""}${st.length && sk.length ? " · " : ""}${sk.map(([k, v]) => `${(D.skills.find(x => x.id === k) || { name: k }).name} +${Math.round(v * 100)}% XP`).join(", ")}${sk.length && age >= 18 ? ' <span class="muted">(skill boost ended at 18)</span>' : ""}</div>`;
+  if (st.length || sk.length) h += `<div>From parents: ${st.map(([k, v]) => `${k} +${v}`).join(", ") || ""}${st.length && sk.length ? " · " : ""}${sk.map(([k, v]) => `${(E.findId(D.skills, k) || { name: k }).name} +${Math.round(v * 100)}% XP`).join(", ")}${sk.length && age >= 18 ? ' <span class="muted">(skill boost ended at 18)</span>' : ""}</div>`;
   if (age < A.minAge) h += `<div class="muted">Can apprentice at ${A.minAge}.</div>`;
   else if (age <= A.maxAge) {
     if (m.appr) {
       const M = E.masterDef(m.appr.id), p = E.apprProgress(s, m);
-      h += `<div>🎓 Apprentice to <b>${M.icon} ${M.name}</b> · ${M.skills.map(k => (D.skills.find(x => x.id === k) || { name: k }).name).join(", ")} ×${A.xpMult} · ${M.wage}🪙/day</div><div class="bar"><i style="width:${Math.round(p * 100)}%"></i></div><div class="muted">${Math.round(p * A.serveDays)}/${A.serveDays} days · finishing: ${E.guildDef(M.track)?.name || M.track} fee ½, +${A.reward.rep} rep</div><button class="b" data-a="apprset" data-v="" data-w="${m.id}">Leave</button>`;
+      h += `<div>🎓 Apprentice to <b>${M.icon} ${M.name}</b> · ${M.skills.map(k => (E.findId(D.skills, k) || { name: k }).name).join(", ")} ×${A.xpMult} · ${M.wage}🪙/day</div><div class="bar"><i style="width:${Math.round(p * 100)}%"></i></div><div class="muted">${Math.round(p * A.serveDays)}/${A.serveDays} days · finishing: ${E.guildDef(M.track)?.name || M.track} fee ½, +${A.reward.rep} rep</div><button class="b" data-a="apprset" data-v="" data-w="${m.id}">Leave</button>`;
     }
     h += `<div class="muted" style="margin-top:4px">Masters (one place each; switching restarts):</div>`;
     for (const M of A.masters) {
       const iss = E.apprIssue(s, m, M.id), on = m.appr && m.appr.id === M.id, lean = (m.lean || []).includes(M.track);
-      h += `<div class="row" style="margin:2px 0"><span>${M.icon} <b>${M.name}</b>${lean ? " 🧭" : ""}<br><span class="muted">${(D.towns.find(t => t.id === M.town) || {}).name} · ${M.skills.map(k => (D.skills.find(x => x.id === k) || { name: k }).name).join(", ")} · ${M.wage}🪙/day${iss && !on ? " · " + iss : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="apprset" data-v="${M.id}" data-w="${m.id}" ${iss || on ? "disabled" : ""}>${on ? "Placed" : "Apprentice"}</button></div>`;
+      h += `<div class="row" style="margin:2px 0"><span>${M.icon} <b>${M.name}</b>${lean ? " 🧭" : ""}<br><span class="muted">${(E.findId(D.towns, M.town) || {}).name} · ${M.skills.map(k => (E.findId(D.skills, k) || { name: k }).name).join(", ")} · ${M.wage}🪙/day${iss && !on ? " · " + iss : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="apprset" data-v="${M.id}" data-w="${m.id}" ${iss || on ? "disabled" : ""}>${on ? "Placed" : "Apprentice"}</button></div>`;
     }
     if ((m.apprDone || []).length) h += `<div class="muted">Trained: ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
   } else if ((m.apprDone || []).length) h += `<div class="muted">🎓 Trained under ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
@@ -65,7 +65,7 @@ function apprv(m) {
 // R36: talents panel (slots, chips, learned list, next hint, shrines)
 function talentsv(m) {
   const x = m.talents || { own: [], on: [] }, n = E.talentSlots(m), L = E.TL();
-  const card = (t, on) => `<div class="card" style="padding:5px 8px;margin:3px 0" data-talent="${t.id}"><div class="row"><span>${t.icon} <b>${t.name}</b>${on ? " ✅" : ""}<br><span class="muted">${t.desc} · from ${t.from.class ? (D.classes.find(c => c.id === t.from.class) || {}).name : t.from.guild ? t.from.rank + " " + (D.guilds.guilds.find(g => g.id === t.from.guild) || {}).name : t.from.tutorial ? "the prologue" : "a quest"}</span></span><button class="b ${on ? "sel" : ""}" data-a="talenttog" data-v="${t.id}" data-w="${m.id}" ${!on && x.on.length >= n || on && t.fx.slots ? "disabled" : ""}>${on ? "Active" : "Use"}</button></div></div>`;
+  const card = (t, on) => `<div class="card" style="padding:5px 8px;margin:3px 0" data-talent="${t.id}"><div class="row"><span>${t.icon} <b>${t.name}</b>${on ? " ✅" : ""}<br><span class="muted">${t.desc} · from ${t.from.class ? (E.findId(D.classes, t.from.class) || {}).name : t.from.guild ? t.from.rank + " " + (E.findId(D.guilds.guilds, t.from.guild) || {}).name : t.from.tutorial ? "the prologue" : "a quest"}</span></span><button class="b ${on ? "sel" : ""}" data-a="talenttog" data-v="${t.id}" data-w="${m.id}" ${!on && x.on.length >= n || on && t.fx.slots ? "disabled" : ""}>${on ? "Active" : "Use"}</button></div></div>`;
   let h = `<h3>⭐ Talents ${x.on.length}/${n}</h3><div id="talents">`;
   if (!E.isAdult(m)) h += `<div class="card muted">Talents are earned as an adult: class picks, evolutions, guild ranks and notable quests.</div>`;
   else {

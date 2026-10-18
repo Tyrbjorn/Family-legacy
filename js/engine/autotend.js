@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Auto Tend (Legacy upgrades at_<cat>): a skill keeps working with nobody assigned, at 50% (tier 1) / 75% (tier 2)
 // of a hand-worked day. It repeats the last activity / recipe / gathering spot the family used in that skill.
 import { quotaAtTarget, quotaCredit } from "./quotas.js";
@@ -20,11 +21,11 @@ export function atIssue(s, k) {
   if (!c) return "unknown";
   const ad = living(s).filter(isAdult);
   const ks = c.skills || [];
-  if (ks.length && !ks.some(x => ad.some(m => ((m.skills[x] || {}).lvl || 0) >= 1))) return `needs ${c.skills.map(x => (D.skills.find(y => y.id === x) || { name: x }).name).join("/")} 1`;
+  if (ks.length && !ks.some(x => ad.some(m => ((m.skills[x] || {}).lvl || 0) >= 1))) return `needs ${c.skills.map(x => (findId(D.skills, x) || { name: x }).name).join("/")} 1`;
   const t = atTargetRaw(s, k);
   if (!t && c.kind === "craft" && c.default && recipeDef(c.default)) { const d = recipeDef(c.default), m = bestHand(s, d.skill); let r = "no crafter"; try { r = m ? recipeIssue(s, m, d) : r; } catch {} if (r && r !== "missing materials") return r; } // R44: e.g. "needs Larder"
-  if (!t) return c.kind === "gather" ? "gather somewhere by hand once" : `do a ${(D.skills.find(y => y.id === ks[0]) || { name: k }).name} task by hand once`;
-  if (t.kind === "activity") { const ac = D.activities.find(x => x.id === t.id); if (!ad.some(m => activityOk(s, m, ac))) return `${ac.name} is locked`; }
+  if (!t) return c.kind === "gather" ? "gather somewhere by hand once" : `do a ${(findId(D.skills, ks[0]) || { name: k }).name} task by hand once`;
+  if (t.kind === "activity") { const ac = findId(D.activities, t.id); if (!ad.some(m => activityOk(s, m, ac))) return `${ac.name} is locked`; }
   if (t.kind === "craft") { const rc = recipeDef(t.id), m = bestHand(s, rc.skill), r = m ? recipeIssue(s, m, rc) : "no crafter"; if (r && !/need|have|missing|\d/.test(r)) return r; }
   return null;
 }
@@ -53,12 +54,12 @@ function atTargetRaw(s, k) {
   const c = AT()[k],
     L = s.atLast || {};
   if (c.kind === "gather") {
-    const n = (L.gather && D.nodes.find(x => x.id === L.gather)) || D.nodes.find(x => x.res && !x.skill && (s.revealed || []).includes(x.id)); // R43: full auto from day 1 (first known spot)
+    const n = (L.gather && findId(D.nodes, L.gather)) || D.nodes.find(x => x.res && !x.skill && (s.revealed || []).includes(x.id)); // R43: full auto from day 1 (first known spot)
     return n ? { kind: "gather", id: n.id, name: n.name } : null;
   }
   if (c.kind === "activity") {
     const id = c.skills.map(sk => L["ac:" + sk]).find(Boolean) || c.default;
-    const ac = D.activities.find(x => x.id === id);
+    const ac = findId(D.activities, id);
     return ac ? { kind: "activity", id, name: ac.name } : null;
   }
   const id = c.skills.map(sk => L["rc:" + sk]).find(Boolean);
@@ -105,7 +106,7 @@ function manned(s, k) {
     const a = m.action;
     if (!a) return false;
     if (c.kind === "gather") return a.type === "gather";
-    if (c.kind === "activity") return a.type === "activity" && (D.activities.find(x => x.id === a.target)?.skills || []).some(sk => c.skills.includes(sk));
+    if (c.kind === "activity") return a.type === "activity" && (findId(D.activities, a.target)?.skills || []).some(sk => c.skills.includes(sk));
     return a.type === "craft" && c.skills.includes((recipeDef(a.rc || a.target) || {}).skill);
   });
 }
@@ -122,11 +123,11 @@ export function autoTendDay(s) {
     const t = atTarget(s, k);
     if (!t) continue;
     if (t.kind === "activity") {
-      const ac = D.activities.find(x => x.id === t.id);
+      const ac = findId(D.activities, t.id);
       for (const [res, v] of Object.entries(taskYields(s, ac))) { res === "fish" && ac.id === "fishing" ? landFish(s, v * r) : (s.res[res] = (s.res[res] || 0) + v * r); quotaCredit(s, res, v * r); }
       autoPwdFire(s, "at_" + k, `Auto ${ac.name}`);
     } else if (t.kind === "gather") {
-      const n = D.nodes.find(x => x.id === t.id),
+      const n = findId(D.nodes, t.id),
         trip = { load: {}, cap: Infinity };
       gatherInto(s, trip, n, r * gatherShare(s, n) * resGain(s) * gatherMult(s, n.region) * seasonGather(s), () => 0);
       for (const [res, v] of Object.entries(trip.load)) (s.res[res] = (s.res[res] || 0) + v), quotaCredit(s, res, v);

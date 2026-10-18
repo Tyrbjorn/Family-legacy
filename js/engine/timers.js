@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { FEUD, houseList, houseState } from "./houses.js";
 import { warTimer } from "./war.js";
 // Every running timer in one list (for progress bars and the Timers dock).
@@ -19,7 +20,7 @@ function skillTimer(m, skills, rate) {
   if (!ks.length) return { p: 0, left: null, label: "" };
   const [id, k] = ks[0];
   const need = xpNeed(k.lvl);
-  const sk = D.skills.find(x => x.id === id);
+  const sk = findId(D.skills, id);
   return {
     p: clamp(k.xp / need),
     left: rate > 0 ? Math.max(0, need - k.xp) / rate : null,
@@ -88,7 +89,7 @@ export function memberTimer(s, m) {
     }
   }
   if (a.type === "court") {
-    const su = s.suitors.find(x => x.id === a.target);
+    const su = findId(s.suitors, a.target);
     if (su)
       return { ...base, icon: "💌", what: `courting ${su.name}`, p: clamp(su.affinity / 100), left: null, tab: "main" };
   }

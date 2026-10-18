@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { applyCooking } from "./cooking.js";
 import { expandMetals } from "./metaldata.js";
 import { deriveGear } from "./geardata.js";
@@ -56,7 +57,7 @@ export function log(s, msg) {
 
 export const living = s => s.members.filter(m => m.alive);
 
-export const active = s => s.members.find(m => m.id === s.activeId);
+export const active = s => findId(s.members, s.activeId);
 
 export const isAdult = m => ageY(m) >= T.adultAge;
 

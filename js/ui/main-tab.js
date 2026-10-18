@@ -1,3 +1,4 @@
+import { classCard } from "./classes-ui.js";
 import { fieldsLine } from "./fields-ui.js";
 import { choresLine } from "./chores-ui.js";
 import { ordersLine } from "./orders-ui.js";
@@ -17,25 +18,10 @@ export function hero() {
   const a = m.action;
   let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}<div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
- ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / D.quests.find(q => q.id === a.target).days) * 100}%"></i></div>` : ""}
+ ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / E.findId(D.quests, a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button><button class="b" data-a="market" title="Buy and sell at the nearest town">🏪 Market</button></div></div>`;
   h += trainingv(m) + activities(m) + pathsCard(s, m);
-  const evo = D.classes.filter(
-    c => c.from === m.cls && !c.profession && !c.retired,
-  );
-  if (evo.length)
-    h +=
-      `<h3>Evolution</h3>` +
-      evo
-        .map(
-          c =>
-            `<div class="card row"><span>${c.icon} ${c.name}<br><span class="muted">${Object.entries(c.req)
-              .map(([k, v]) => `${sk(k).name} ${m.skills[k].lvl}/${v}`)
-              .join(
-                " · ",
-              )}${c.needsBuildings ? ` · ${E.structReqOk(s, c.needsBuildings) ? "✅" : "🔒"} needs ${E.structReqText(c.needsBuildings)}` : ""}${c.guild ? ` · ${E.guildDef(c.guild).icon} ${E.rankName(c.guildRank)} of ${E.guildDef(c.guild).name}` : ""}${c.advRank != null ? ` · Adventurers' Rank ${E.advRankName(c.advRank)}` : ""}${c.crafterRank != null ? ` · Crafters' ${E.rankName(c.crafterRank)}` : ""}${c.profession ? " · profession" : ""} · ${c.cost}🪙</span></span><button class="b" data-a="evolve" data-v="${c.id}" ${E.canEvolve(s, m, c) ? "" : "disabled"}>Evolve</button></div>`,
-        )
-        .join("");
+  h += classCard(m); // R46 guild tiers
   return h;
 }
 
@@ -180,7 +166,7 @@ export function family() {
   let h = `<h3>Members (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of s.members.filter(y => y.alive)) {
     const o = x.order;
-    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(active)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (s.members.find(y => y.id === x.spouse) || {}).name : "Single"}</div>
+    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(active)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"}</div>
   ${
     x.id !== s.activeId
       ? `<div class="row" style="margin-top:4px"><span class="muted">Order:</span>${
@@ -287,7 +273,7 @@ export function busyBanner(m) {
       a.type === "explore"
         ? E.areaDef(a.target).name
         : a.type === "quest"
-          ? D.quests.find(q => q.id === a.target).name
-          : D.nodes.find(n => n.id === a.target).name;
+          ? E.findId(D.quests, a.target).name
+          : E.findId(D.nodes, a.target).name;
   return `<div class="card" style="border-color:#d9b44a"><b>🚶 ${m.name} is busy</b> <span class="muted">· ${{ out: "travelling to", task: a.type === "quest" ? "questing at" : a.type === "explore" ? "exploring" : "gathering at", back: "returning from" }[ph]} ${nm}</span>${timerBar(E.memberTimer(s, m))}<div class="muted">⏳ ${E.tripLeft(a).toFixed(1)} days left · locked until home</div></div>`;
 }

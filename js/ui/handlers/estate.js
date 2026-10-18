@@ -47,15 +47,15 @@ export const estateActions = ({ v, b, m }) => ({
   autotog: () => E.toggleAuto(s, v),
   buyquad: () => E.buyQuadMap(s, v),
   faex: () => {
-    const x = s.members.find(y => y.id === +v);
+    const x = E.findId(s.members, +v);
     if (x) x.noAutoEq = !x.noAutoEq;
   },
   apprset: () => {
-    const x = s.members.find(y => y.id === +b.dataset.w);
+    const x = E.findId(s.members, +b.dataset.w);
     if (x) E.setAppr(s, x, v || null);
   },
   talenttog: () => {
-    const x = s.members.find(y => y.id === +b.dataset.w);
+    const x = E.findId(s.members, +b.dataset.w);
     if (x) E.toggleTalent(s, x, v);
   },
   enshrine: () => E.enshrine(s, v, b.dataset.w),

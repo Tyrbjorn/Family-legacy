@@ -1,6 +1,6 @@
 // R39.1 release packager: copies the game into a release folder + zip with Dev Mode locked off.
 // usage: node tools/make-release.mjs [outDir=../release]
-// - copies everything except node_modules, .git, test/ and tools/
+// - copies everything except node_modules, .git, test/, tools/ and archive/
 // - writes data/build.json with "channel": "release" (Dev Mode code stays but is hard-disabled: ?dev=1 does nothing,
 //   the Dev Mode switch never appears, any stored dev flag is wiped on load). Tester links keep working.
 // - zips it with python zipfile to <outDir>/family-legacy-idle-release.zip
@@ -12,7 +12,7 @@ import { execFileSync } from "child_process";
 const src = path.resolve(new URL("..", import.meta.url).pathname);
 const out = path.resolve(process.argv[2] || path.join(src, "..", "release"));
 const dest = path.join(out, "family-legacy-idle");
-const SKIP = new Set(["node_modules", ".git", "test", "tools"]);
+const SKIP = new Set(["node_modules", ".git", "test", "tools", "archive"]);
 if (dest.startsWith(src + path.sep) || dest === src) throw new Error("outDir must be outside the project");
 fs.rmSync(dest, { recursive: true, force: true });
 fs.mkdirSync(dest, { recursive: true });

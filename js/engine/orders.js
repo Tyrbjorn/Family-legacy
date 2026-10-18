@@ -1,3 +1,4 @@
+import { famFx } from "./paths.js";
 // R43 Work Orders: one estate-wide queue. Add an item with a count; workers plan the chain (gather → refine →
 // craft) with the shared quota planner and work the orders top to bottom. Each order keeps one quota chain in
 // s.quotas (tagged `order`), which never uses quota slots. Followers with the craft job take crafted orders
@@ -10,7 +11,7 @@ import { producible, quotaBlock, quotaMet, removeQuota, pullInputs, quotaStock, 
 import { capOf } from "./fields.js";
 
 export const OC = () => (D.legacy && D.legacy.orders) || { pullDepth: 3, pullAmountMin: 5 };
-export const queueSize = s => legacyValue(s, "orders") || 2;
+export const queueSize = s => (legacyValue(s, "orders") || 2) + Math.floor(famFx(s, "orderSlot")); // R46 Steward
 const OS = s => (s.orders ||= { list: [], seq: 0 });
 export const orderList = s => OS(s).list;
 const isRes = item => !itemDef(item);

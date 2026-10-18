@@ -266,5 +266,122 @@
   },
   "grantsClass": "adventurer"
  },
- "minJoinAge": 18
+ "minJoinAge": 18,
+ "tiers": [
+  {
+   "n": 1,
+   "name": "Entry",
+   "lv": 1,
+   "rank": 0,
+   "cost": 0,
+   "skillScale": 1
+  },
+  {
+   "n": 2,
+   "name": "Journeyman",
+   "lv": 7,
+   "rank": 1,
+   "cost": 500,
+   "skillScale": 0.6
+  },
+  {
+   "n": 3,
+   "name": "Adept",
+   "lv": 16,
+   "rank": 2,
+   "cost": 2000,
+   "skillScale": 0.55
+  },
+  {
+   "n": 4,
+   "name": "Prestige",
+   "lv": 40,
+   "rank": 3,
+   "cost": 5000,
+   "trial": true,
+   "expansion": true,
+   "skillScale": 1
+  }
+ ],
+ "sidewaysCostShare": 0.5,
+ "hints": 2,
+ "chains": {
+  "vanguard": [
+   {
+    "quest": "g_vanguard_patrol"
+   },
+   {
+    "quest": "g_vanguard_yard",
+    "unlock": [
+     "recipe:r_g_plate"
+    ]
+   },
+   {
+    "quest": "g_vanguard_siege"
+   },
+   {
+    "quest": "g_vanguard_banner",
+    "unlock": [
+     "recipe:r_g_tabard"
+    ]
+   }
+  ],
+  "collegium": [
+   {
+    "quest": "g_collegium_notes",
+    "unlock": [
+     "recipe:r_g_tome"
+    ]
+   },
+   {
+    "quest": "g_collegium_rift"
+   },
+   {
+    "quest": "g_collegium_library",
+    "unlock": [
+     "recipe:r_g_orb"
+    ]
+   }
+  ],
+  "rogues": [
+   {
+    "quest": "g_rogues_heist",
+    "unlock": [
+     "recipe:r_g_lockpicks"
+    ]
+   },
+   {
+    "quest": "g_rogues_cellar",
+    "unlock": [
+     "recipe:r_g_shadow"
+    ]
+   },
+   {
+    "quest": "g_rogues_ledger",
+    "unlock": [
+     "recipe:r_g_signet"
+    ]
+   }
+  ],
+  "lodge": [
+   {
+    "quest": "g_lodge_hunt"
+   }
+  ],
+  "church": [
+   {
+    "quest": "g_church_plague"
+   },
+   {
+    "quest": "g_church_crypt"
+   }
+  ],
+  "hearth": [
+   {
+    "quest": "g_hearth_bridge"
+   }
+  ]
+ },
+ "_tiersNote": "R46 pacing (sim-tuned, 8 seeds): skill needs in classes.json are scaled by tier skillScale; Lv 7/16 puts a typical family at tier 2 in years 2-4 and tier 3 in years 5-9 (median 7).",
+ "drillEvery": 3
 }

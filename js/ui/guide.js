@@ -21,7 +21,7 @@ export function tutorialCard() {
     mt = E.tutMentor(),
     steps = E.tutSteps(),
     n = s.tut.step;
-  const rq = st.check === "quest:rats" && D.quests.find(q => q.id === "rats"),
+  const rq = st.check === "quest:rats" && E.findId(D.quests, "rats"),
     rIss = rq && (E.questIssue(s, E.active(s), rq) || E.questAgeIssue(E.active(s), rq, s)),
     ron = rq && E.active(s).action && E.active(s).action.target === "rats";
   const ratsBtn = rq ? `<button class="b sel big" data-a="quest" data-v="rats" ${rIss || ron ? "disabled" : ""}>🐀 ${ron ? "On it: Rats in the Cellar" : "Go: Rats in the Cellar"}</button>${rIss ? `<span class="muted">${rIss}</span>` : ""}` : "";
@@ -109,7 +109,7 @@ function goBtns(st) {
   const m = E.active(s);
   return (st.go || [])
     .map(g => {
-      const ac = D.activities.find(a => a.id === g.target);
+      const ac = E.findId(D.activities, g.target);
       if (!ac || !m) return "";
       const on = m.action && m.action.type === "activity" && m.action.target === ac.id;
       const why = E.taskLock(s, m, ac);

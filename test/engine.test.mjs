@@ -31,7 +31,7 @@ home.pieces=['bunk','bunk2'].slice(0,1).concat(['cradle','larder','minionbunk'])
 ok(s.members.length>=3,'child born'); const kid=s.members[2];
 (s.autoOff=s.autoOff||{}).fam_advance=true; /* R39: inheritance check, not Auto Advance (RNG path shifted) */ f.skills.swordsmanship.lvl=40; E.advanceReal(s,10*360*17); ok(kid.skills.swordsmanship.lvl>=4&&!kid.cls,'child inherits 10% at 16, stays classless');
 ok(E.switchTo(s,kid.id)&&E.active(s)===kid,'switch members');
-E.setOrder(s,f.id,{type:'quest',target:'outskirts'}); E.advanceReal(s,100); ok(f.action&&f.action.type==='quest','idle standing order quests');
+{ const g=f.alive?f:(E.living(s).find(x=>x!==kid&&E.isAdult(x))||(Object.assign(f,{alive:true}))); E.setOrder(s,g.id,{type:'quest',target:'outskirts'}); E.advanceReal(s,100); ok(g.action&&g.action.type==='quest','idle standing order quests'); } // R46: RNG shift can retire f first
 E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on active death');
 for(const m of E.living(s)) E.kill(s,m,'test'); ok(s.gameOver,'game over when all die (no safety net)');
 const g=E.newGame(t0); ok(E.estateStage(g)==='Landless'&&!E.established(g)&&!E.buildStructure(g,'shack'),'estate locked until land is bought');
@@ -807,20 +807,20 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
   ok(E.joinGuild(G,m,'hearth')&&E.pendingPathChoices(m)===1,'joining offers a main path (badge count)');
   ok(E.openPathIssue(G,m,'architect')==='pick a main path first','combo needs a main path first');
   ok(E.openPath(G,m,'carpenter')&&E.mainPath(m).id==='carpenter'&&E.mainPath(m).rank===0,'main path starts at Apprentice');
-  ok(/gain a rank/.test(E.openPathIssue(G,m,'mason')||''),'no second path before a rank-up');
+  ok(!E.openPathIssue(G,m,'mason'),'R46: any number of paths may be learned (no rank-up needed)');
   const nl=G.log.length; E.gainXp(G,m,'carpentry',R[1].xp+10); m.skills.carpentry.lvl=Math.max(m.skills.carpentry.lvl,R[1].skill); E.refreshPaths(G,m);
   ok(E.mainPath(m).rank===1&&G.log.some(l=>/🔨.*Journeyman Carpenter/.test(l.msg)),'skill XP feeds the path; rank-up logged (🔨 craft notify)');
   ok(m.craft.rank===1,'Crafters\' Guild rank follows the main path');
   ok(!E.canRankUp(G,m,'hearth'),'guild rep no longer ranks Crafters');
-  ok(E.openPath(G,m,'mason')&&!E.openPathIssue(G,m,'mason')===false,'a rank-up opens one more path');
+  ok(E.openPath(G,m,'mason')&&E.pathOf(m,'mason').slot==='gather','Mason fills a gathering slot');
   const ms=E.pathOf(m,'mason'); m.skills.masonry.lvl=60; E.gainXp(G,m,'masonry',R[3].xp*2);
-  ok(ms.rank===0&&E.pathCap(m,ms)===0,'secondary capped just under the main path');
+  ok(ms.rank===2&&E.pathCap(m,ms)===2,'gathering trades cap at Master');
   ok(E.pathProgress(m,ms).capped,'capped progress is flagged for the UI');
   m.skills.carpentry.lvl=R[2].skill; E.gainXp(G,m,'carpentry',R[2].xp); 
-  ok(E.mainPath(m).rank===2&&ms.rank===1,'main rank lifts the secondary cap; secondary catches up');
-  ok(E.pathSlots(m)===D.paths.maxPaths,'slots grow per rank, capped by maxPaths');
-  ok(E.openPath(G,m,'scribe'),'third path');
-  ok(/at most 3/.test(E.openPathIssue(G,m,'cook')||''),'maxPaths cap enforced');
+  ok(E.mainPath(m).rank===2,'main reaches Master');
+  ok(E.pathCap(m,E.mainPath(m))===3,'main can reach Grandmaster in the base game (R46 decision)');
+  ok(E.openPath(G,m,'scribe')&&E.pathOf(m,'scribe').slot==='second'&&E.pathCap(m,E.pathOf(m,'scribe'))===1,'second crafting trade = secondary, a rank below the main');
+  ok(E.openPath(G,m,'cook')&&E.pathOf(m,'cook').slot==='dabble'&&E.pathCap(m,E.pathOf(m,'cook'))===0,'further trades are dabbled at Apprentice');
   // specialty at Master
   ok(E.specChoices(m,'carpenter').map(x=>x.id).includes('cooper')&&!E.specChoices(m,'carpenter').some(x=>x.id==='shipwright'),'Master offers Carpenter specialties (Cooper; Shipwright moved to a combo)');
   ok(!E.chooseSpec(G,m,'carpenter','weaver')&&E.chooseSpec(G,m,'carpenter','bowyer'),'only that path\'s specialties');
@@ -829,7 +829,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
   ok(E.profBonus(m,E.recipeDef('r_bow'))>E.profBonus(m,E.recipeDef('r_staff')),'Bowyer boosts bows over staves');
   // combo: Architect (Mason J + Carpenter J + Scribe) does not use a slot, inputs keep ranking
   ok(E.advancedReqs(m,'architect').every(x=>x.ok)&&!E.openPathIssue(G,m,'architect'),'Architect unlocks on one member with Mason + Carpenter + Scribe');
-  ok(E.openPath(G,m,'architect')&&E.pathSlots(m)===3,'combo path opened beyond the 3-path cap');
+  ok(E.openPath(G,m,'architect')&&E.pathSlotOf(m,E.pathOf(m,'architect'))==='combo','combo path uses no slot');
   const sx=E.pathOf(m,'scribe').xp; E.gainXp(G,m,'reading',500); ok(E.pathOf(m,'scribe').xp>sx,'combo inputs are never blocked');
   ok(E.pathCap(m,E.pathOf(m,'architect'))===R.length-1,'combos uncapped by the main path');
   ok(E.famHasClass(G,'architect')&&E.upgradePerk(G,'house')>0,'old Architect perks now come from the Architect path');

@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { onDeathTalents, talentSum } from "./talents.js";
 import { gearFx, gearStat } from "./gear.js";
 import { rollTraits, traitStat } from "./traits.js";
@@ -50,7 +51,7 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
   return m;
 }
 
-export const traitDef = id => D.traits.find(t => t.id === id);
+export const traitDef = id => findId(D.traits, id);
 
 export const conflicts = (a, b) => {
   const x = traitDef(a),
@@ -126,7 +127,7 @@ export function kill(s, m, why) {
   for (const id of [...Object.values(m.equip), ...(m.bag || [])]) s.vault.push(id);
   m.equip = {};
   m.bag = [];
-  const sp = s.members.find(x => x.id === m.spouse);
+  const sp = findId(s.members, m.spouse);
   if (sp) sp.widowed = true;
   log(s, `🕯️ ${m.name} (${ageY(m)}) ${why}.`);
   s.deeds.push(`${m.name} ${why} at ${ageY(m)}.`);
@@ -154,7 +155,7 @@ export function kill(s, m, why) {
 }
 
 export function inherit(s, child) {
-  const ps = (child.parents || []).map(id => s.members.find(x => x.id === id)).filter(Boolean);
+  const ps = (child.parents || []).map(id => findId(s.members, id)).filter(Boolean);
   const share = (T.inheritShare + bl(s, "library") * 0.01) * (1 + (T.inheritBoost || 0));
   for (const sk of D.skills) {
     const best = Math.max(0, ...ps.map(p => p.skills[sk.id].lvl));
@@ -169,13 +170,13 @@ export function spawnSuitor(s) {
     h = su.house && houseDef(su.house);
   log(
     s,
-    `💌 A suitor, ${su.name} the ${D.classes.find(c => c.id === su.cls).name}${h ? " of " + h.name : ""}${p ? " (" + p.name + ")" : ""}, appeared in town.`,
+    `💌 A suitor, ${su.name} the ${findId(D.classes, su.cls).name}${h ? " of " + h.name : ""}${p ? " (" + p.name + ")" : ""}, appeared in town.`,
   );
 }
 
 export const PROPOSE_COST = 200;
 export function proposeIssue(s, suitorId, m = active(s)) {
-  const su = s.suitors.find(x => x.id === suitorId);
+  const su = findId(s.suitors, suitorId);
   if (!su) return "suitor gone";
   if (m.spouse) return "already married";
   if (ageY(m) < T.courtAge) return `age ${T.courtAge}+`;
@@ -186,7 +187,7 @@ export function proposeIssue(s, suitorId, m = active(s)) {
 }
 
 export function propose(s, suitorId, m = active(s)) {
-  const su = s.suitors.find(x => x.id === suitorId);
+  const su = findId(s.suitors, suitorId);
   const cost = PROPOSE_COST;
   if (proposeIssue(s, suitorId, m)) return false;
   s.res.coin -= cost;
@@ -209,7 +210,7 @@ export function propose(s, suitorId, m = active(s)) {
 
 export function giveGift(s, suitorId, itemId) {
   const i = s.vault.indexOf(itemId);
-  const su = s.suitors.find(x => x.id === suitorId);
+  const su = findId(s.suitors, suitorId);
   const it = itemDef(itemId);
   if (i < 0 || !su || !it.affinity) return false;
   s.vault.splice(i, 1);
@@ -228,7 +229,7 @@ export function switchTo(s, id) {
 }
 
 export function setOrder(s, id, order) {
-  const m = s.members.find(x => x.id === id);
+  const m = findId(s.members, id);
   m.order = order;
   m.paused = false; // R44: a new order resumes a paused member
   (m.pins = m.pins || {}).order = true; // a hand-set order is pinned: Auto Orders / Courtship leave it alone (unpin on the member card)

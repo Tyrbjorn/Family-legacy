@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { bjobOk, bjobDays, bjobResolve } from "./boards.js";
 import { talentSum } from "./talents.js";
 import { injure } from "./injuries.js";
@@ -63,11 +64,11 @@ import { gainXp } from "./skills.js";
 import { D, T, active, isAdult, known, living, log, r, rng } from "./state.js";
 
 export function travelTick(s, m, a, eff) {
-  if (a.type === "quest" && !D.quests.find(x => x.id === a.target)) {
+  if (a.type === "quest" && !findId(D.quests, a.target)) {
     m.action = null;
     return;
   }
-  if (a.type === "gather" && !D.nodes.find(x => x.id === a.target)) {
+  if (a.type === "gather" && !findId(D.nodes, a.target)) {
     m.action = null;
     return;
   }
@@ -91,7 +92,7 @@ export function travelTick(s, m, a, eff) {
   if (ph === "out" || ph === "back") roadDay(s, m, a, eff);
   if (ph === "task") {
     if (a.type === "quest") {
-      const q = D.quests.find(x => x.id === a.target);
+      const q = findId(D.quests, a.target);
       gainXp(s, m, q.skill, T.xpPerDay * 0.6 * eff);
     }
     if (a.type === "dungeon") {
@@ -116,7 +117,7 @@ export function travelTick(s, m, a, eff) {
       }
     }
     if (a.type === "gather") {
-      const n = D.nodes.find(x => x.id === a.target);
+      const n = findId(D.nodes, a.target);
       const mul =
         (1 + m.skills[n.skill].lvl * 0.03) *
         eff *
@@ -137,7 +138,7 @@ export function travelTick(s, m, a, eff) {
       resolveQuest(
         s,
         m,
-        D.quests.find(x => x.id === a.target),
+        findId(D.quests, a.target),
         eff,
       );
     if (a.type === "explore") exploreArea(s, m, areaDef(a.target));
@@ -149,7 +150,7 @@ export function travelTick(s, m, a, eff) {
       m.action = null;
       return;
     }
-    const q = a.type === "quest" && D.quests.find(x => x.id === a.target);
+    const q = a.type === "quest" && findId(D.quests, a.target);
     const stop =
       a.type === "explore" ||
       a.type === "dungeon" ||
@@ -165,14 +166,14 @@ export function travelTick(s, m, a, eff) {
 }
 
 export function regionOpen(s, id) {
-  const rg = D.regions.find(x => x.id === id);
+  const rg = findId(D.regions, id);
   if (!rg) return false;
   if (rg.hidden && !(s.discovered || []).includes(id)) return false;
   return living(s).some(m => cp(s, m) >= rg.cp) || id === "outskirts";
 }
 
 export const regionKnown = (s, id) => {
-  const rg = D.regions.find(x => x.id === id);
+  const rg = findId(D.regions, id);
   return !!rg && (!rg.hidden || (s.discovered || []).includes(id));
 };
 
@@ -242,7 +243,7 @@ export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon", "bjob"];
 
 export function taskDays(a) {
   if (a.type === "dungeon") return dungeonDef(a.target).floors.reduce((x, f) => x + f.days, 0);
-  if (a.type === "quest") return D.quests.find(q => q.id === a.target).days;
+  if (a.type === "quest") return findId(D.quests, a.target).days;
   if (a.type === "explore") return areaDef(a.target).days;
   if (a.type === "bjob") return bjobDays(a);
   return MP().gatherTripDays;

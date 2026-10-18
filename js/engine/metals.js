@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Metals in play: recipe metal + quality step (boosted by Forge Hall/Foundry/Jeweler upgrades) and mines
 // that dig the ore of every vein the family owns (rare veins need a deeper mine tier).
 import { D } from "./state.js";
@@ -30,7 +31,7 @@ export const metalQuality = (s, rc) => {
 export const veinOf = st => st.vein || "ore_vein";
 const isVein = f => !!(featureDef(f) || {}).mine;
 export const freeVeins = s => ownedFeatures(s).filter(f => isVein(f) && !(s.structures || []).some(st => structMine(st) && veinOf(st) === f));
-const structMine = st => !!(D.estate.structures.find(d => d.id === st.type) || {}).mine;
+const structMine = st => !!(findId(D.estate.structures, st.type) || {}).mine;
 export const veinsFor = (s, st) => {
   const f = { id: veinOf(st), ...featureDef(veinOf(st)) };
   return f.mine && ownedFeatures(s).includes(f.id) && (st.tier || 0) >= (f.mine.tier || 0) ? [f] : [];

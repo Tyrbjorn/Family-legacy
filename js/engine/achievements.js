@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { taintDev } from "./dev.js";
 // Achievements: data-driven goals with progress, hidden entries and small rewards.
 import { craftingUnlocked } from "./crafting.js";
@@ -13,7 +14,7 @@ export const inc = (s, k, n = 1) => {
 function generation(s, m, seen = new Set()) {
   if (!m || !m.parents || seen.has(m.id)) return 1;
   seen.add(m.id);
-  const ps = m.parents.map(id => s.members.find(x => x.id === id)).filter(Boolean);
+  const ps = m.parents.map(id => findId(s.members, id)).filter(Boolean);
   return 1 + Math.max(0, ...ps.map(p => generation(s, p, seen)));
 }
 

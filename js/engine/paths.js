@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Crafting paths for family members (data/paths.json). Followers keep their NPC classes.
 // A member has m.paths = [{ id, xp, rank, spec, sxp, srank }]; paths[0] is the main path.
 import { D, isAdult, living, log, xpNeed } from "./state.js";
@@ -46,29 +47,95 @@ const specMult = e => (isArtisan(e) || mergedTitle(e) ? PD().artisanMult || 1 : 
 const specsOf = e => [[e.spec && pathSpecDef(e.id, e.spec), e.srank], [e.spec2 && pathSpecDef(e.id, e.spec2), e.s2rank]].filter(x => x[0]);
 export const memberPaths = m => (m && m.paths) || [];
 export const pathOf = (m, id) => memberPaths(m).find(e => e.id === id);
-export const mainPath = m => memberPaths(m)[0] || null;
+export const mainPath = m => (SL() ? memberPaths(m).find(e => pathSlotOf(m, e) === "main") || memberPaths(m)[0] : memberPaths(m)[0]) || null; // R46: the main slot
 
-// highest rank a path may hold: main is uncapped; secondaries sit secondaryGap below the main
-export function pathCap(m, e) {
-  const top = PD().ranks.length - 1,
-    mp = mainPath(m);
-  if (e && pathDef(e.id) && pathDef(e.id).advanced) return top;
-  return !mp || e === mp ? top : Math.max(0, Math.min(top, mp.rank - PD().secondaryGap));
-}
+// ---- R46 crafter slots (paths.json slots): 1 main + 1 secondary crafting, 2 gathering, the rest dabbled
+const SL = () => (PD() || {}).slots || null;
+export const SLOT_IDS = ["main", "second", "gather", "dabble"];
+export const pathKind = id => (pathDef(id) || {}).kind || "crafting";
+export const slotDef = id => (SL() || {})[id] || {};
+export const slotName = id => slotDef(id).name || id;
+export const slotCapOf = id => (id === "main" && (SL() || {}).expansionTiers ? slotDef(id).capExpansion ?? slotDef(id).cap : slotDef(id).cap) ?? 0;
 const basic = m => memberPaths(m).filter(e => !(pathDef(e.id) || {}).advanced);
-export const pathSlots = m =>
-  Math.min(PD().maxPaths, 1 + basic(m).reduce((a, e) => a + e.rank + (e.spec ? e.srank : 0), 0));
+const slotFits = (id, e) => id === "dabble" || slotDef(id).kind === pathKind(e.id);
+// give every basic path a slot: keep valid ones, then fill main → secondary → gathering in path order; the rest dabble
+// Until the person picks slots themselves (m.slotChosen), the highest-ranked crafting trade is main and the next highest
+// secondary (ties keep the current main, then path order), so nobody loses rank or bonuses.
+export function assignSlots(m, order) {
+  if (!SL()) return;
+  const left = { main: slotDef("main").n || 1, second: slotDef("second").n || 1, gather: slotDef("gather").n || 2 };
+  if (!m.slotChosen) {
+    const P = basic(m), cur = P.find(e => e.slot === "main");
+    for (const e of P) delete e.slot;
+    order = [...P].sort((a, b) => b.rank - a.rank || (b === cur) - (a === cur) || P.indexOf(a) - P.indexOf(b));
+  }
+  const B = order || basic(m);
+  for (const e of B) if (e.slot && e.slot !== "dabble" && slotFits(e.slot, e) && left[e.slot] > 0) left[e.slot]--; else delete e.slot;
+  for (const e of B) {
+    if (e.slot) continue;
+    e.slot = ["main", "second", "gather"].find(k => left[k] > 0 && slotFits(k, e)) || "dabble";
+    if (left[e.slot] > 0) left[e.slot]--;
+  }
+}
+// the slot a newly opened path would take (dabble when its kind's slots are full)
+export function nextSlotFor(m, id) {
+  if (!SL()) return "main";
+  const used = k => basic(m).filter(e => e.slot === k).length;
+  const kind = pathKind(id);
+  return ["main", "second", "gather"].find(k => slotDef(k).kind === kind && used(k) < (slotDef(k).n || 1)) || "dabble";
+}
+export const pathSlotOf = (m, e) => {
+  if (e && (pathDef(e.id) || {}).advanced) return "combo";
+  if (e && !e.slot && m && SL() && memberPaths(m).includes(e)) assignSlots(m); // lazy: paths set without slots
+  return (e && e.slot) || "dabble";
+};
+export const slotPath = (m, id) => basic(m).find(e => e.slot === id) || null;
+
+// highest rank a path may hold (rank index): combos uncapped; otherwise its slot's cap. Older saves without slots: main uncapped, secondaries one below.
+export function pathCap(m, e) {
+  const top = PD().ranks.length - 1;
+  if (e && pathDef(e.id) && pathDef(e.id).advanced) return top;
+  if (!SL()) { const mp = mainPath(m); return !mp || e === mp ? top : Math.max(0, Math.min(top, mp.rank - (PD().secondaryGap || 1))); }
+  const sl = pathSlotOf(m, e), d = slotDef(sl);
+  let cap = sl === "main" && SL().expansionTiers ? d.capExpansion ?? d.cap : d.cap ?? 0;
+  if (d.belowMain) { const mp = slotPath(m, "main"); cap = Math.min(cap, mp ? effRank(m, mp) - d.belowMain : 0); }
+  return Math.max(0, Math.min(top, cap));
+}
+// the rank whose bonuses count: grandfathered ranks above a cap count at the cap
+export const effRank = (m, e) => Math.min(e.rank, pathCap(m, e));
+export const pathSlots = m => (SL() ? Infinity : Math.min(PD().maxPaths, 1 + basic(m).reduce((a, e) => a + e.rank + (e.spec ? e.srank : 0), 0)));
+export const slotSwitchIssue = (s, m, pid, to) => {
+  const e = pathOf(m, pid);
+  if (!e || (pathDef(pid) || {}).advanced) return "not a craft path";
+  if (!SLOT_IDS.includes(to) || e.slot === to) return "same slot";
+  if (!slotFits(to, e)) return `${slotName(to)} takes ${slotDef(to).kind} trades`;
+  if (m.slotDay != null && s.day - m.slotDay < (SL().switchDays || 360)) return "switch once a year";
+  return null;
+};
+// move a path into a slot (once a year, free); a full slot sends its path back to the mover's old slot (or dabbling)
+export function setPathSlot(s, m, pid, to) {
+  if (slotSwitchIssue(s, m, pid, to)) return false;
+  const e = pathOf(m, pid), from = e.slot || "dabble";
+  const full = to !== "dabble" && basic(m).filter(x => x.slot === to).length >= (slotDef(to).n || 1);
+  if (full) { const out = basic(m).find(x => x.slot === to); out.slot = slotFits(from, out) ? from : "dabble"; }
+  e.slot = to;
+  m.slotDay = s.day;
+  m.slotChosen = true; // from now on the player's own slot choice holds
+  log(s, `🔨 ${m.name}: ${pathDef(pid).name} is now their ${slotName(to).toLowerCase()} trade.`);
+  refreshPaths(s, m);
+  return true;
+}
 // advanced paths (e.g. Architect): requirement list with have/need for the locked view
 export const advancedReqs = (m, id) =>
   (pathDef(id).requires || []).map(q => {
     const e = q.path && pathOf(m, q.path);
     if (q.classLine) {
-      const c = D.classes.find(k => k.id === q.classLine) || { name: q.classLine };
+      const c = findId(D.classes, q.classLine) || { name: q.classLine };
       return { text: q.name || `${c.name}-line class`, ok: !!_inLine && _inLine(m, q.classLine) };
     }
     if (q.skill) {
       const lvl = (m.skills[q.skill] || { lvl: 0 }).lvl;
-      return { text: `${(D.skills.find(k => k.id === q.skill) || { name: q.skill }).name} ${q.skill && lvl}/${q.lvl}`, ok: lvl >= q.lvl };
+      return { text: `${(findId(D.skills, q.skill) || { name: q.skill }).name} ${q.skill && lvl}/${q.lvl}`, ok: lvl >= q.lvl };
     }
     if (q.spec) return { text: `${pathSpecDef(q.path, q.spec).name} (${pathDef(q.path).name} specialty)`, ok: !!e && e.spec === q.spec };
     return { text: `${pathRankName(q.rank)} ${pathDef(q.path).name}${e ? ` (now ${pathRankName(e.rank)})` : ""}`, ok: !!e && e.rank >= q.rank };
@@ -105,10 +172,11 @@ export function refreshPaths(s, m) {
     const r = Math.min(pathCap(m, e), rankFor(e.xp, lvl));
     if (r > e.rank) {
       e.rank = r;
-      log(s, `🔨 ${m.name} is now a ${pathRankName(r)} ${p.name}${e === mainPath(m) ? "" : " (secondary)"}.`);
+      log(s, `🔨 ${m.name} is now a ${pathRankName(r)} ${p.name}${SL() ? (e.slot && e.slot !== "main" ? " (" + slotName(e.slot).toLowerCase() + ")" : "") : e === mainPath(m) ? "" : " (secondary)"}.`);
       s.deeds && s.deeds.push(`${m.name} became a ${pathRankName(r)} ${p.name}.`);
       if (r >= PD().specAt && !e.spec) log(s, `🔨 ${m.name} can choose a ${p.name} specialty.`);
-      if (basic(m).length < pathSlots(m) && pathDefs().some(x => !x.advanced && !pathOf(m, x.id)))
+      masterGuildCheck(s, m, e);
+      if (!SL() && basic(m).length < pathSlots(m) && pathDefs().some(x => !x.advanced && !pathOf(m, x.id)))
         log(s, `🔨 ${m.name} can open another craft path.`);
       for (const x of pathDefs().filter(x => x.advanced && !pathOf(m, x.id)))
         if (!openPathIssue(s, m, x.id) && !(m._advNote || []).includes(x.id)) {
@@ -137,6 +205,15 @@ export function refreshPaths(s, m) {
   if (m.craft && mainPath(m)) m.craft.rank = Math.min(D.guilds.ranks.length - 1, mainPath(m).rank);
 }
 
+// R46 → R47: reaching Master (slots.masterOpensGuild) in a slotted trade opens a second guild for that person.
+// Recorded now (m.secondGuild); R47 builds the second guild and honours it alongside the tier-3 class rule.
+export function masterGuildCheck(s, m, e) {
+  const at = (SL() || {}).masterOpensGuild;
+  if (at == null || m.secondGuild || !e || e.rank < at || pathSlotOf(m, e) === "dabble" || (pathDef(e.id) || {}).advanced) return false;
+  m.secondGuild = { via: "craft", path: e.id, day: s ? s.day : 0 };
+  if (s) log(s, `🎓 ${m.name} reached ${pathRankName(e.rank)} ${pathDef(e.id).name}: a second guild opens for them in a coming update.`);
+  return true;
+}
 // called from gainXp: XP in a path's skills feeds that path (and its specialty)
 export function pathXp(s, m, skill, amt) {
   if (!PD() || !m.paths || !m.paths.length || !(amt > 0)) return;
@@ -163,7 +240,7 @@ export function openPathIssue(s, m, id) {
     return miss.length ? "needs " + miss.map(x => x.text).join(" + ") : null;
   }
   if (basic(m).length >= pathSlots(m))
-    return basic(m).length >= PD().maxPaths ? `at most ${PD().maxPaths} paths` : "gain a rank to open another path";
+    return basic(m).length >= PD().maxPaths ? `at most ${PD().maxPaths} paths` : "gain a rank to open another path"; // pre-R46 rule (no slots data)
   return null;
 }
 
@@ -175,7 +252,9 @@ export function openPath(s, m, id) {
   let cum = 0;
   for (let l = 0; l < bestLvl(m, p); l++) cum += xpNeed(l);
   m.paths.push({ id, xp: Math.round(cum * (PD().openCredit || 0)), rank: 0, spec: null, sxp: 0, srank: 0 });
-  log(s, `🔨 ${m.name} took up ${p.name} as ${p.advanced ? "an advanced" : m.paths.length === 1 ? "their main" : "a secondary"} path.`);
+  assignSlots(m);
+  const e = pathOf(m, id);
+  log(s, `🔨 ${m.name} took up ${p.name} as ${p.advanced ? "an advanced" : SL() ? (e.slot === "dabble" ? "a dabbling (Apprentice-only)" : "their " + slotName(e.slot).toLowerCase()) : m.paths.length === 1 ? "their main" : "a secondary"} path.`);
   refreshPaths(s, m);
   return true;
 }
@@ -187,7 +266,7 @@ export const specChoices = (m, pid) => {
 export const pendingPathChoices = m =>
   (isAdult(m) && m.craft && !memberPaths(m).length ? 1 : 0) +
   memberPaths(m).filter(e => specChoices(m, e.id).length || spec2Choices(m, e.id).length).length +
-  (basic(m).length && basic(m).length < pathSlots(m) && pathDefs().some(x => !x.advanced && !pathOf(m, x.id)) ? 1 : 0) +
+  (!SL() && basic(m).length && basic(m).length < pathSlots(m) && pathDefs().some(x => !x.advanced && !pathOf(m, x.id)) ? 1 : 0) +
   pathDefs().filter(x => x.advanced && !pathOf(m, x.id) && memberPaths(m).length && !advancedReqs(m, x.id).some(r => !r.ok)).length;
 
 export function chooseSpec(s, m, pid, sid) {
@@ -215,8 +294,9 @@ export function memberFx(m, kind, key, rc, itemDef) {
   for (const e of memberPaths(m)) {
     const p = pathDef(e.id);
     if (!p || (kind === "craft" && rc && rc.path !== p.id)) continue;
-    for (const f of p.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.v * (e.rank + 1);
-    for (const [sp, r] of specsOf(e)) for (const f of sp.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.v * (r + 1) * specMult(e);
+    const er = effRank(m, e);
+    for (const f of p.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.flat ? f.v : Math.min(f.max ?? Infinity, f.v * (er + 1));
+    for (const [sp, r] of specsOf(e)) for (const f of sp.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.flat ? f.v * specMult(e) : f.v * (Math.min(r, er) + 1) * specMult(e);
   }
   return v;
 }
@@ -229,7 +309,8 @@ export function pathFinds(m, skill) {
   const out = {};
   for (const e of memberPaths(m)) {
     const p = pathDef(e.id);
-    for (const [f, r, mul] of [...(p ? p.fx : []).map(f => [f, e.rank]), ...specsOf(e).flatMap(([sp, sr]) => sp.fx.map(f => [f, sr, specMult(e)]))])
+    const er = effRank(m, e);
+    for (const [f, r, mul] of [...(p ? p.fx : []).map(f => [f, er]), ...specsOf(e).flatMap(([sp, sr]) => sp.fx.map(f => [f, Math.min(sr, er), specMult(e)]))])
       if (f.kind === "find" && f.skills.includes(skill)) out[f.res] = (out[f.res] || 0) + f.v * (r + 1) * (mul || 1);
   }
   return out;
@@ -252,7 +333,7 @@ export function recipePathIssue(m, rc, inLine) {
   if (!rc.forClass) return null;
   const e = m && pathOf(m, rc.path);
   if (!e || e.rank < (rc.pathRank || 0)) return `${pathRankName(rc.pathRank || 0)} ${pathDef(rc.path).name}`;
-  if (!inLine(m, rc.forClass)) return `${(D.classes.find(c => c.id === rc.forClass) || { name: rc.forClass }).name}s only`;
+  if (!inLine(m, rc.forClass)) return `${(findId(D.classes, rc.forClass) || { name: rc.forClass }).name}s only`;
   return null;
 }
 
@@ -279,7 +360,26 @@ export function migratePaths(s) {
     if (m.craft) m.craft.rank = Math.min(D.guilds.ranks.length - 1, m.paths[0] ? m.paths[0].rank : 0);
   }
 }
-export const pathCapMax = () => PD().maxPaths;
+export const pathCapMax = () => (SL() ? Infinity : PD().maxPaths);
+// save step 42: slots for every member; Scribe-Stewards move onto the Clerk path at the same rank (they keep everything)
+export function migrateCraftSlots(s) {
+  for (const m of s.members || []) {
+    const sc = pathOf(m, "scribe");
+    if (sc && sc.spec === "steward" && pathDef("clerk")) {
+      const cl = pathOf(m, "clerk");
+      const moved = { id: "clerk", xp: Math.max(sc.xp, (cl || {}).xp || 0), rank: Math.max(sc.rank, (cl || {}).rank || 0), spec: "steward", sxp: sc.sxp, srank: sc.srank };
+      if (cl) Object.assign(cl, moved); else m.paths.splice(m.paths.indexOf(sc) + 1, 0, moved);
+      Object.assign(sc, { spec: null, sxp: 0, srank: 0 });
+      delete sc.spec2;
+    }
+    // highest-ranked other crafting path goes second, gathering paths by rank (main stays first)
+    const B = basic(m);
+    for (const e of B) delete e.slot;
+    delete m.slotChosen;
+    assignSlots(m); // highest crafting rank = main, next = secondary; path order unchanged
+    for (const e of memberPaths(m)) masterGuildCheck(null, m, e);
+  }
+}
 
 // daily "make" fx (specialties): Herbalist bandages, Gemcutter cuts gems (`from` is consumed 1:1)
 export function pathsDay(s) {
@@ -288,7 +388,7 @@ export function pathsDay(s) {
       for (const [sp, r] of specsOf(e))
       for (const f of sp.fx) {
         if (f.kind !== "make") continue;
-        let n = f.v * (r + 1) * specMult(e);
+        let n = f.v * (Math.min(r, effRank(m, e)) + 1) * specMult(e);
         if (f.from) n = Math.min(n, s.res[f.from] || 0), (s.res[f.from] -= n);
         if (n > 0) s.res[f.res] = (s.res[f.res] || 0) + n;
       }

@@ -1,5 +1,5 @@
 {
- "_note": "Crafting paths for FAMILY MEMBERS (followers keep their NPC classes). Each path ranks Apprentice→Journeyman→Master→Grandmaster by path XP (earned 1:1 from XP in the path's skills) plus a skill gate. A member starts one main path; every rank gained anywhere opens one more slot (up to maxPaths). Secondary paths are capped at secondaryGap below the main path. At specAt (Master) a path offers ONE specialty, which ranks the same way (capped at the path's rank). fx values scale by (rank+1). Add a path by appending here (e.g. Jeweler, Scribe): engine and UI read this list. comboPaths: `requires` is a list of {path,rank} | {path,spec} | {skill,lvl} | {classLine} (adventuring class line, e.g. apprentice = mage line) on ONE member; Scribe (business, drafting, writing) is an input of every combo; combos have their own ranks and specialties, never use a path slot, are uncapped, and never block their input paths. openCredit: share of the XP already in the path's best skill credited when the path is opened. Ladder: base ranks → specialty (at specAt) → artisan title (spec rank artisanAt, specs with an `artisan` block: new name, fx ×artisanMult). Merges (path.merges): a Grandmaster specialty listed in a merge may take the other one as spec2; Grandmaster in both gives the merged title.",
+ "_note": "Crafting paths for FAMILY MEMBERS (followers keep their NPC classes). Each path ranks Apprentice→Journeyman→Master→Grandmaster by path XP (earned 1:1 from XP in the path's skills) plus a skill gate. A member starts one main path; every rank gained anywhere opens one more slot (up to maxPaths). Secondary paths are capped at secondaryGap below the main path. At specAt (Master) a path offers ONE specialty, which ranks the same way (capped at the path's rank). fx values scale by (rank+1). Add a path by appending here (e.g. Jeweler, Scribe): engine and UI read this list. comboPaths: `requires` is a list of {path,rank} | {path,spec} | {skill,lvl} | {classLine} (adventuring class line, e.g. apprentice = mage line) on ONE member; Scribe (business, drafting, writing) is an input of every combo; combos have their own ranks and specialties, never use a path slot, are uncapped, and never block their input paths. openCredit: share of the XP already in the path's best skill credited when the path is opened. Ladder: base ranks → specialty (at specAt) → artisan title (spec rank artisanAt, specs with an `artisan` block: new name, fx ×artisanMult). Merges (path.merges): a Grandmaster specialty listed in a merge may take the other one as spec2; Grandmaster in both gives the merged title. R46: maxPaths/secondaryGap are replaced by `slots` (main/secondary/gathering/dabbling); path `kind` is crafting or gathering.",
  "maxPaths": 3,
  "secondaryGap": 1,
  "specAt": 2,
@@ -149,7 +149,8 @@
      "icon": "💍",
      "desc": "Above both artisan titles: a Master Goldsmith or Lapidary may take the other specialty as a second one; Grandmaster in both = Jeweler (gem inlays)."
     }
-   ]
+   ],
+   "kind": "crafting"
   },
   {
    "id": "armorer",
@@ -199,7 +200,8 @@
     }
    ],
    "station": "forge",
-   "craftSkill": "smithing"
+   "craftSkill": "smithing",
+   "kind": "crafting"
   },
   {
    "id": "carpenter",
@@ -303,7 +305,8 @@
     }
    ],
    "station": "workbench",
-   "craftSkill": "carpentry"
+   "craftSkill": "carpentry",
+   "kind": "crafting"
   },
   {
    "id": "tailor",
@@ -361,7 +364,8 @@
     }
    ],
    "station": "loom",
-   "craftSkill": "tailoring"
+   "craftSkill": "tailoring",
+   "kind": "crafting"
   },
   {
    "id": "alchemy",
@@ -437,7 +441,8 @@
     }
    ],
    "station": "herbrack",
-   "craftSkill": "alchemy"
+   "craftSkill": "alchemy",
+   "kind": "crafting"
   },
   {
    "id": "woodsman",
@@ -531,7 +536,8 @@
     }
    ],
    "station": "tanrack",
-   "craftSkill": "hunting"
+   "craftSkill": "hunting",
+   "kind": "gathering"
   },
   {
    "id": "mason",
@@ -586,7 +592,8 @@
     }
    ],
    "station": "masontable",
-   "craftSkill": "masonry"
+   "craftSkill": "masonry",
+   "kind": "gathering"
   },
   {
    "id": "farmer",
@@ -670,7 +677,8 @@
     }
    ],
    "station": "workbench",
-   "craftSkill": "farming"
+   "craftSkill": "farming",
+   "kind": "gathering"
   },
   {
    "id": "cook",
@@ -774,7 +782,8 @@
     }
    ],
    "station": "larder",
-   "craftSkill": "cooking"
+   "craftSkill": "cooking",
+   "kind": "crafting"
   },
   {
    "id": "scribe",
@@ -838,17 +847,6 @@
      }
     },
     {
-     "id": "steward",
-     "name": "Steward",
-     "icon": "🗝️",
-     "desc": "Money: keeps the books; +1 trade route slot (Seneschal: +2).",
-     "fx": [],
-     "artisan": {
-      "name": "Seneschal",
-      "icon": "📜"
-     }
-    },
-    {
      "id": "cartographer",
      "name": "Cartographer",
      "icon": "🗺️",
@@ -869,7 +867,59 @@
     }
    ],
    "station": "arcanefocus",
-   "craftSkill": "arcana"
+   "craftSkill": "arcana",
+   "kind": "crafting"
+  },
+  {
+   "id": "clerk",
+   "name": "Clerk",
+   "icon": "🧾",
+   "kind": "crafting",
+   "skills": [
+    "reading",
+    "haggling",
+    "appraisal"
+   ],
+   "desc": "Manager line: more quota slots, storage and better trade prices.",
+   "fx": [
+    {
+     "kind": "quotaSlot",
+     "v": 1,
+     "max": 3
+    },
+    {
+     "kind": "storage",
+     "v": 0.02
+    },
+    {
+     "kind": "trade",
+     "v": 0.01
+    }
+   ],
+   "specs": [
+    {
+     "id": "steward",
+     "name": "Steward",
+     "icon": "🗝️",
+     "desc": "Keeps the books: +1 trade route slot and +1 Work Orders slot.",
+     "fx": [
+      {
+       "kind": "route",
+       "v": 1,
+       "flat": true
+      },
+      {
+       "kind": "orderSlot",
+       "v": 1,
+       "flat": true
+      }
+     ],
+     "artisan": {
+      "name": "Seneschal",
+      "icon": "📜"
+     }
+    }
+   ]
   }
  ],
  "classMap": {
@@ -1508,5 +1558,35 @@
   "smithing": {
    "jeweler": "goldsmith"
   }
+ },
+ "slots": {
+  "_note": "R46 crafter slots: 1 main + 1 secondary crafting trade, 2 gathering trades, any number dabbled at Apprentice. cap = highest rank index (0 Apprentice … 3 Grandmaster). Main reaches Grandmaster (and artisan titles) in the base game; secondary stays belowMain ranks under the main (so up to Master); gathering to Master. Until a person picks slots themselves, their highest-ranked crafting trade is main and the next highest secondary. Reaching Master (masterOpensGuild) in a slotted trade opens a second guild (R47).",
+  "main": {
+   "n": 1,
+   "kind": "crafting",
+   "cap": 3,
+   "capExpansion": 3,
+   "name": "Main"
+  },
+  "second": {
+   "n": 1,
+   "kind": "crafting",
+   "cap": 3,
+   "belowMain": 1,
+   "name": "Secondary"
+  },
+  "gather": {
+   "n": 2,
+   "kind": "gathering",
+   "cap": 2,
+   "name": "Gathering"
+  },
+  "dabble": {
+   "cap": 0,
+   "name": "Dabbling"
+  },
+  "switchDays": 360,
+  "expansionTiers": true,
+  "masterOpensGuild": 2
  }
 }

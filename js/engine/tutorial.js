@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Apprentice prologue (rewarded, skippable tutorial) + tab-tour state. Progress lives in s.tut.
 import { chron } from "./chronicle.js";
 import { addToVault, craftItem, equip, recipeDef } from "./inventory.js";
@@ -43,7 +44,7 @@ export function startTutorial(s) {
 export function giveStartGear(s) {
   const m = active(s);
   for (const id of (TD().start || {}).equip || []) {
-    const it = D.items.find(x => x.id === id);
+    const it = findId(D.items, id);
     if (!m || !it || (m.equip && m.equip[it.slot])) continue;
     if (addToVault(s, id)) equip(s, m, id);
   }

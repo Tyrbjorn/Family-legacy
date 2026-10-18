@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { gameFx } from "./difficulty.js";
 import { season, seasonEvents } from "./seasons.js";
 const seasonId = s => season(s).id;
@@ -17,13 +18,13 @@ export const placeName = e =>
 export const eventText = e => eventType(e.type).text.replace("{place}", placeName(e)).replace("{res}", e.res || "goods");
 // R39: shortage/glut events pick one good: "wants" = what the town wants (falls back to anything it buys), "produces" = what it makes
 export function pickRes(t, place) {
-  const town = D.towns.find(x => x.id === place) || {};
+  const town = findId(D.towns, place) || {};
   let pool = town[t.pick] || [];
   if (!pool.length) pool = Object.keys(town.prices || {});
   return pool.length ? pool[Math.floor(rng() * pool.length)] : null;
 }
 
-export const townRegion = townId => (D.towns.find(t => t.id === townId) || {}).region;
+export const townRegion = townId => (findId(D.towns, townId) || {}).region;
 
 export const eventsAtTown = (s, townId) =>
   activeEvents(s).filter(

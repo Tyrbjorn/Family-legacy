@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { farmSpotsFromHub, teamsterCap } from "./fields.js";
 import { fittingFx } from "./estate-pieces.js";
 import { ES, baseId, pieceDef, scaledPiece } from "./estate-pieces.js";
@@ -111,9 +112,9 @@ export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +
   (s.structures || []).filter(st => st.site !== "village").reduce((a, st) => a + structDef(st.type).land + ((prodTier(st) || {}).land || 0), 0);
 
-export const foodCap = s => ES().caps.foodBase + eff(s, "foodCap") + bl(s, "farm") * 100;
+export const foodCap = s => (ES().caps.foodBase + eff(s, "foodCap") + bl(s, "farm") * 100) * (1 + famFx(s, "storage")); // R46 Clerk
 
-export const matCap = s => ES().caps.matBase + eff(s, "matCap");
+export const matCap = s => (ES().caps.matBase + eff(s, "matCap")) * (1 + famFx(s, "storage")); // R46 Clerk
 
 export const craftQuality = s => eff(s, "craftQuality");
 
@@ -216,7 +217,7 @@ export function buildIssue(s, b) {
 }
 
 export function build(s, id) {
-  const b = D.buildings.find(x => x.id === id);
+  const b = findId(D.buildings, id);
   if (buildIssue(s, b)) return false;
   const c = cost(s, b);
   if (!afford(s, c)) return false;

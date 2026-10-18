@@ -5,14 +5,14 @@ const D={};for(const n of ['fields','skills','classes','traits','buildings','fur
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const sp=(p,id)=>D.paths.paths.find(x=>x.id===p).specs.find(x=>x.id===id);
-ok(D.paths.paths.find(x=>x.id==='scribe').specs.map(x=>x.name+'>'+x.artisan.name).join()==='Loremaster>Sage,Draftsman>Master Draftsman,Steward>Seneschal,Cartographer>Royal Cartographer','Scribe branches');
+ok(D.paths.paths.find(x=>x.id==='scribe').specs.map(x=>x.name+'>'+x.artisan.name).join()==='Loremaster>Sage,Draftsman>Master Draftsman,Cartographer>Royal Cartographer'&&D.paths.paths.find(x=>x.id==='clerk').specs.map(x=>x.name+'>'+x.artisan.name).join()==='Steward>Seneschal','Scribe branches; Steward moved to the Clerk path (R46)');
 ok(sp('cook','baker').name==='Pastry Chef'&&sp('cook','butcher').name==='Smoker'&&sp('alchemy','herbalist').artisan.name==='Apothecary'&&sp('smithing','gemcutter')&&sp('smithing','gemcutter').artisan.name==='Lapidary'&&sp('smithing','goldsmith').artisan.name==='Master Goldsmith'&&sp('woodsman','forestsense'),'renames + Gemcutter + Herbalist > Apothecary');
 const s=E.newGame(1); E.normalize(s); const m=s.members[0]; m.ageDays=30*360;
-const e={id:'scribe',xp:1e5,rank:3,spec:'steward',sxp:0,srank:2}; m.paths=[e];
+const e={id:'clerk',xp:1e5,rank:3,spec:'steward',sxp:0,srank:2}; m.paths=[e]; D.paths.slots.expansionTiers=true; // Grandmaster/Seneschal are expansion tiers
 ok(E.specName(e)==='Steward'&&!E.isArtisan(e),'specialist stage'); e.srank=3; ok(E.specName(e)==='Seneschal'&&E.isArtisan(e),'artisan at Grandmaster');
-s.structures.push({uid:'w1',type:'warehouse',pieces:[],up:0}); ok(E.routeSlotParts(s).steward===2,'Seneschal adds 2 route slots'); e.srank=2; ok(E.routeSlotParts(s).steward===1,'Steward adds 1 route slot (bug fixed)');
+s.structures.push({uid:'w1',type:'warehouse',pieces:[],up:0}); ok(E.routeSlotParts(s).steward===2,'Seneschal adds 2 route slots'); e.srank=2; ok(E.routeSlotParts(s).steward===1,'Steward adds 1 route slot (bug fixed)'); e.srank=3; ok(D.paths.slots.expansionTiers===true&&E.routeSlotParts(s).steward===2,'base game: Seneschal (Grandmaster main) gives 2 route slots (R46 decision)');
 m.paths=[{id:'alchemy',xp:1e5,rank:2,spec:'herbalist',sxp:0,srank:1}]; s.res.bandages=0; E.pathsDay(s); ok(Math.abs(s.res.bandages-0.1)<1e-9,'Herbalist makes bandages');
-m.paths=[{id:'smithing',xp:1e5,rank:3,spec:'gemcutter',sxp:0,srank:3}]; s.res.gems=1; s.res.cutgems=0; E.pathsDay(s); ok(Math.abs(s.res.cutgems-0.5)<1e-9,'Lapidary cuts gems ×1.25');
+D.paths.slots.expansionTiers=true; m.paths=[{id:'smithing',xp:1e5,rank:3,spec:'gemcutter',sxp:0,srank:3}]; s.res.gems=1; s.res.cutgems=0; E.pathsDay(s); ok(Math.abs(s.res.cutgems-0.5)<1e-9,'Lapidary cuts gems ×1.25 (base game)');
 // inlays
 s.vault=['copper_ring','c|copper_ring|fine']; s.res.gold=2; s.res.cutgems=2;
 ok(/Goldsmith/.test(E.inlayIssue(s,'copper_ring','gold')),'gold inlay needs a Goldsmith');

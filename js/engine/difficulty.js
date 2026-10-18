@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { permFx } from "./injuries.js";
 // Difficulty: A) game level (global, s.difficulty, 1..5) and B) personal challenge (family member, m.challenge).
 // Level 3 = the base game. The game level is snapshotted on an action when it starts (a.diff) and that copy is
@@ -26,7 +27,7 @@ export function setDifficulty(s, lvl) {
 }
 export const chalOpen = m => m && !m.minion && m.alive !== false && m.chUntil != null && m.ageDays < m.chUntil;
 export function setChallenge(s, id, lvl) {
-  const m = s.members.find(x => x.id === id);
+  const m = findId(s.members, id);
   if (!chalOpen(m) || !(lvl >= 1 && lvl <= 5)) return false;
   m.challenge = lvl;
   return true;

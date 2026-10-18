@@ -15,7 +15,7 @@ export function endgamePanel() {
   h += row(`🐴 Stable`, mt ? `${G.mounts[mt - 1].name}: travel ×${E.mountSpeed(s)}` : "no mounts yet", nm ? btn("egmount", 0, E.mountIssue(s), nm.cost) : "");
   for (const q of G.quarries) {
     const t = E.quarryTier(s, q.id), nx = q.tiers[t];
-    h += row(`${q.icon} ${q.name}`, t ? `tier ${t}: ${q.tiers[t - 1].rate} ${q.res}/day` : `at the ${D.nodes.find(n => n.id === q.node).name}`, nx ? btn("egquarry", q.id, E.quarryIssue(s, q.id), nx.cost) : "");
+    h += row(`${q.icon} ${q.name}`, t ? `tier ${t}: ${q.tiers[t - 1].rate} ${q.res}/day` : `at the ${E.findId(D.nodes, q.node).name}`, nx ? btn("egquarry", q.id, E.quarryIssue(s, q.id), nx.cost) : "");
   }
   for (const k of ["wall", "tower", "palisade"]) {
     const d = G.defenses[k], t = E.defTier(s, k), nx = d.tiers[t];
@@ -25,7 +25,7 @@ export function endgamePanel() {
   h += `<div style="margin-top:4px"><b>🏛️ Town patronage</b></div>`;
   for (const p of E.patronOptions(s)) {
     const iss = E.patronIssue(s, p.id);
-    h += row(`${p.icon} ${p.name}`, `${D.towns.find(t => t.id === p.town).name}: ${p.sell ? "+" + p.sell * 100 + "% sell" : "−" + p.buy * 100 + "% market buys"}`, iss === "funded" ? '<span class="tb">funded</span>' : btn("egfund", p.id, iss, p.cost));
+    h += row(`${p.icon} ${p.name}`, `${E.findId(D.towns, p.town).name}: ${p.sell ? "+" + p.sell * 100 + "% sell" : "−" + p.buy * 100 + "% market buys"}`, iss === "funded" ? '<span class="tb">funded</span>' : btn("egfund", p.id, iss, p.cost));
   }
   return h + "</div>";
 }

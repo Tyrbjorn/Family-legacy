@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { injure } from "./injuries.js";
 import { gameFx } from "./difficulty.js";
 import { notify } from "./notify.js";
@@ -90,8 +91,8 @@ export function resolvePending(s, optId) {
   const p = s.pendingEnc;
   if (!p) return null;
   const e = encDef(p.id);
-  const m = s.members.find(x => x.id === p.mid);
-  const o = e && e.options.find(x => x.id === optId);
+  const m = findId(s.members, p.mid);
+  const o = e && findId(e.options, optId);
   if (!o || !m || !optionOk(s, o)) return null;
   s.pendingEnc = null;
   return applyOption(s, m, e, o, false);
@@ -110,7 +111,7 @@ function applyOutcome(s, m, out) {
   if (out.item && addToVault(s, out.item)) bits.push(itemDef(out.item).name);
   if (out.recipe && !s.unlocks.includes("recipe:" + out.recipe)) {
     s.unlocks.push("recipe:" + out.recipe);
-    bits.push("recipe: " + ((D.crafting.recipes.find(r => r.id === out.recipe) || {}).name || out.recipe));
+    bits.push("recipe: " + ((findId(D.crafting.recipes, out.recipe) || {}).name || out.recipe));
   }
   if (out.buff) {
     addBuff(s, out.buff);

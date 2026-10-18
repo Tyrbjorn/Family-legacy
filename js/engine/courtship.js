@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // Marriage depth: suitor personalities, visible traits, houses, courtship stages and patience,
 // dowries both ways (marrying in / marrying out) and household effects of spouse personalities.
 import { conflicts, level } from "./family.js";
@@ -88,7 +89,7 @@ export function foodGiftIssue(s, su, k) {
   return null;
 }
 export function giveFoodGift(s, suitorId, k) {
-  const su = s.suitors.find(x => x.id === suitorId);
+  const su = findId(s.suitors, suitorId);
   if (!su || foodGiftIssue(s, su, k)) return false;
   s.res[k] -= MC().foodGift.units;
   su.affinity = Math.min(100, su.affinity + MC().foodGift.affinity * giftMult(su, k));
@@ -141,7 +142,7 @@ export function marryOutIssue(s, memberId, houseId) {
 }
 export function marryOut(s, memberId, houseId) {
   if (marryOutIssue(s, memberId, houseId)) return false;
-  const m = s.members.find(x => x.id === memberId),
+  const m = findId(s.members, memberId),
     hd = houseDef(houseId);
   s.res.coin -= marryOutDowry(m);
   m.alive = false;

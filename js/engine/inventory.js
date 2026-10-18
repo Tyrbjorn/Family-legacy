@@ -1,3 +1,5 @@
+import { roleBonus } from "./guildtiers.js";
+import { findId } from "./lookup.js";
 import { choreFx } from "./chores.js";
 import { talentBuy } from "./talents.js";
 import { fishPriceMult } from "./fish.js";
@@ -44,7 +46,7 @@ export function equip(s, m, itemId, from = "vault") {
 }
 
 export const sellValue = (s, it) =>
-  Math.round(it.value * Math.min(SELL_CAP, (hasService(s, "appraisal") ? 0.8 : 0.5) * (1 + eff(s, "saleBonus"))));
+  Math.round(it.value * Math.max(roleBonus(s, "sellPct"), Math.min(SELL_CAP, (hasService(s, "appraisal") ? 0.8 : 0.5) * (1 + eff(s, "saleBonus"))))); // R46 Fence
 
 export function sell(s, itemId) {
   const i = s.vault.indexOf(itemId);
@@ -78,14 +80,14 @@ export function moveItem(s, m, id, toBag) {
 export const BUY_MULT_FLOOR = 0.8;
 export const SELL_CAP = 0.95;
 export const buyPrice = (it, s, townId) =>
-  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)) * (1 + talentBuy(s))); // R36 Haggler
+  Math.round(it.value * T.buyMarkup * (s && townId ? Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) : 1) * (1 - reqDiscount(s, townId, it)) * (1 + talentBuy(s)) * (1 - roleBonus(s, "buyDisc"))); // R36 Haggler; R46 Swindler
 
 // Trade round: per-town supply drives demand pricing. supply 1 = normal; selling raises it (price falls),
 // buying lowers it (price rises); it drifts back each day as the town produces and consumes (trade.js).
 const TR = () => T.trade || {};
 // Town specialties (towns.json produces / wants) set where a good's supply rests: plenty = cheaper, scarce = dearer.
 export const baseSupply = (townId, res) => {
-  const t = D.towns.find(x => x.id === townId) || {};
+  const t = findId(D.towns, townId) || {};
   return (t.produces || []).includes(res) ? TR().produceSupply || 1 : (t.wants || []).includes(res) ? TR().wantSupply || 1 : 1;
 };
 export const townSupply = (s, townId, res) => ((s.trade && s.trade.supply[townId]) || {})[res] ?? baseSupply(townId, res);
@@ -99,17 +101,17 @@ export function shiftSupply(s, townId, res, n) {
 }
 
 export const townSellPrice = (s, townId, res) => {
-  const t = D.towns.find(x => x.id === townId);
+  const t = findId(D.towns, townId);
   return (
     Math.round(
       t.prices[res] * (res === "fish" ? fishPriceMult(s) : 1) * // R31.3: the species mix sets the fish price
-        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell") + choreFx(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
+        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell") + choreFx(s, "tradeSell") + famFx(s, "trade")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );
 };
 
 export function buyItem(s, townId, itemId) {
-  const t = D.towns.find(x => x.id === townId);
+  const t = findId(D.towns, townId);
   const it = itemDef(itemId);
   if (!t.shop.includes(itemId) || s.res.coin < buyPrice(it, s, townId) || !vaultRoom(s)) return false;
   s.res.coin -= buyPrice(it, s, townId);
@@ -121,15 +123,15 @@ export function buyItem(s, townId, itemId) {
 // Town markets sell staple goods (salt, grain, milk...). Buying costs resBuyMarkup × the town's base price,
 // with the same event/season multipliers as selling, so resale can never profit (see data.test).
 export const marketOf = townId => {
-  const t = D.towns.find(x => x.id === townId) || {};
+  const t = findId(D.towns, townId) || {};
   return [...new Set([...(t.market || []), ...(t.produces || [])])];
 };
 export const townBuyPrice = (s, townId, res) => {
-  const t = D.towns.find(x => x.id === townId);
+  const t = findId(D.towns, townId);
   return (
     Math.round(
       t.prices[res] *
-        (((D.towns.find(x => x.id === townId) || {}).produces || []).includes(res) ? TR().produceMarkup || 1.2 : (T.resBuyMarkupBy || {})[res] || T.resBuyMarkup || 2.5) *
+        (((findId(D.towns, townId) || {}).produces || []).includes(res) ? TR().produceMarkup || 1.2 : (T.resBuyMarkupBy || {})[res] || T.resBuyMarkup || 2.5) *
         Math.max(BUY_MULT_FLOOR, buyMult(s, townId)) *
         Math.max(1, priceMult(s, townId, res)) *
         seasonPrice(s, res) *
@@ -150,7 +152,7 @@ export function buyRes(s, townId, res, n) {
 }
 
 export function sellRes(s, townId, res, n) {
-  const t = D.towns.find(x => x.id === townId);
+  const t = findId(D.towns, townId);
   n = Math.min(n, Math.floor(s.res[res]));
   if (n <= 0) return false;
   s.res[res] -= n;
@@ -177,7 +179,7 @@ export function itemDef(id) {
   if (id.includes("~")) return inlaidDef(id);
   if (id.startsWith("c|")) {
     const [, b, q] = id.split("|");
-    const base = D.items.find(i => i.id === b),
+    const base = findId(D.items, b),
       Q = CR().qualities.find(x => x.id === q);
     if (!base || !Q) return null;
     return {
@@ -192,7 +194,7 @@ export function itemDef(id) {
       affinity: base.affinity ? Math.round(base.affinity * Q.mult) : undefined,
     };
   }
-  return D.items.find(i => i.id === id) || null;
+  return findId(D.items, id) || null;
 }
 
 export const vaultCap = s => CR().vaultBase + Math.floor((eff(s, "matCap") / 400) * CR().vaultPerStorage + 1e-9) + upPacks(s) + Math.floor(famFx(s, "vault"));
@@ -216,9 +218,9 @@ export function recipeIssue(s, m, rc) {
   const pi = rc.forClass && recipePathIssue(m, rc, inLine);
   if (pi) return pi;
   if (rc.station !== "mentor" && !hasPiece(s, rc.station)) return `needs ${pieceDef(rc.station).name}`;
-  if (rc.needsStruct && !(s.structures || []).some(st => st.type === rc.needsStruct)) return `needs a ${(D.estate.structures.find(x => x.id === rc.needsStruct) || { name: rc.needsStruct }).name}`;
+  if (rc.needsStruct && !(s.structures || []).some(st => st.type === rc.needsStruct)) return `needs a ${(findId(D.estate.structures, rc.needsStruct) || { name: rc.needsStruct }).name}`;
   if (m && m.skills[rc.skill].lvl < (rc.minSkill || 0))
-    return `${D.skills.find(k => k.id === rc.skill).name} ${rc.minSkill}`;
+    return `${findId(D.skills, rc.skill).name} ${rc.minSkill}`;
   if (!afford(s, rc.mats)) return "missing materials";
   if (!vaultRoom(s)) return "vault full";
   return null;

@@ -81,7 +81,7 @@ export function modal() {
   const el = $("#modal");
   if (s.gameOver) {
     el.hidden = false;
-    el.innerHTML = `<div class="card"><h3>⚰️ The ${s.members[0].name} line has ended</h3><p>Renown: <b>${fmt(s.renown)}</b> · Generations of members: ${s.members.length} · Years: ${yr(s.day)}</p><h3>Family tree</h3>${s.members.map(m => `<div>${m.name} (${E.ageY(m)}y)${m.parents ? " – child of " + m.parents.map(p => s.members.find(x => x.id === p).name).join(" & ") : ""}</div>`).join("")}<h3>Deeds</h3>${s.deeds
+    el.innerHTML = `<div class="card"><h3>⚰️ The ${s.members[0].name} line has ended</h3><p>Renown: <b>${fmt(s.renown)}</b> · Generations of members: ${s.members.length} · Years: ${yr(s.day)}</p><h3>Family tree</h3>${s.members.map(m => `<div>${m.name} (${E.ageY(m)}y)${m.parents ? " – child of " + m.parents.map(p => E.findId(s.members, p).name).join(" & ") : ""}</div>`).join("")}<h3>Deeds</h3>${s.deeds
       .slice(-15)
       .map(d => `<div class="muted">${d}</div>`)
       .join("")}<p><button class="b" data-a="reset">Start a New Lineage</button></p></div>`;
@@ -95,7 +95,7 @@ export function modal() {
   if (s.pendingEnc) {
     const p = s.pendingEnc;
     const e = E.encDef(p.id);
-    const m = s.members.find(x => x.id === p.mid);
+    const m = E.findId(s.members, p.mid);
     el.hidden = false;
     el.innerHTML = `<div class="card"><h3>${e.icon} ${e.name}</h3><p>${e.text.replace("{who}", m.name)}</p>${e.options
       .map(
@@ -107,7 +107,7 @@ export function modal() {
   }
   const pc = s.pendingClass[0];
   if (pc) {
-    const m = s.members.find(x => x.id === pc);
+    const m = E.findId(s.members, pc);
     el.hidden = false;
     el.innerHTML = `<div class="card"><h3>${m.name} came of age! Choose a class</h3>${D.classes
       .filter(c => c.tier === 0)

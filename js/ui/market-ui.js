@@ -3,7 +3,7 @@ import * as E from "../engine.js";
 import { RI, fmt } from "./common.js";
 import { D, s } from "../main.js";
 
-const tName = id => (D.towns.find(t => t.id === id) || {}).name || id;
+const tName = id => (E.findId(D.towns, id) || {}).name || id;
 const esc = x => String(x).replace(/"/g, "&quot;");
 
 // small coloured arrow after a price; nothing when the price is normal

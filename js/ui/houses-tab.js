@@ -56,7 +56,7 @@ function houseCard(hd) {
     fx = E.tierFx(s, hd.id);
   const [lo, hi] = E.HC().range;
   const perks = [
-    fx.sellMult && fx.sellMult !== 1 ? `sell ${fx.sellMult > 1 ? "+" : ""}${Math.round((fx.sellMult - 1) * 100)}% in ${D.towns.find(t => t.id === hd.town).name}` : "",
+    fx.sellMult && fx.sellMult !== 1 ? `sell ${fx.sellMult > 1 ? "+" : ""}${Math.round((fx.sellMult - 1) * 100)}% in ${E.findId(D.towns, hd.town).name}` : "",
     fx.courtMult ? `+${Math.round(fx.courtMult * 100)}% courting their suitors` : "",
     fx.renownMonth ? `+${fx.renownMonth} renown/month` : "",
     fx.giftChance ? "occasional gifts" : "",
@@ -70,7 +70,7 @@ function houseCard(hd) {
   const cands = E.living(s).filter(x => x.id !== s.activeId && !x.spouse && E.isAdult(x));
   const pick = cands.find(x => String(x.id) === (U.moSel || {})[hd.id]) || cands[0];
   return `<div class="card house" id="house-${hd.id}"><div class="row"><b>${hd.icon} ${hd.name}</b><span style="color:${tcol[tier]}">${td.icon} ${td.name}${st.state === "war" ? " · AT WAR" : ""}</span></div>
-<div class="muted">${hd.desc} · ${D.towns.find(t => t.id === hd.town).name} · wealth ${"🪙".repeat(hd.wealth)} · rapport ${Math.round(st.r)}${E.ties(s, hd.id) ? ` · 💍 ${E.ties(s, hd.id)} tie(s)` : ""}</div>
+<div class="muted">${hd.desc} · ${E.findId(D.towns, hd.town).name} · wealth ${"🪙".repeat(hd.wealth)} · rapport ${Math.round(st.r)}${E.ties(s, hd.id) ? ` · 💍 ${E.ties(s, hd.id)} tie(s)` : ""}</div>
 ${bar((st.r - lo) / (hi - lo), tcol[tier])}<div class="muted">${perks.join(" · ")}</div>
 ${st.state === "feud" && st.warned != null ? `<div style="color:#e77">🔥 Mustering for war: ${Math.max(0, E.FEUD().warnDays - (s.day - st.warned))}d left to cool the feud.</div>` : ""}
 ${st.state === "war" ? warCard(hd) : ""}

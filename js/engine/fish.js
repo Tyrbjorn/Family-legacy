@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 // R31.3 fishing spots (data/fish.json). The Fish task fishes one spot: Shore (anyone), Deep water (needs a Small Boat;
 // no Dock needed), Sea shore (Gull's Landing found). Every species counts as `fish`: s.res.fish is the total and
 // s.fishBag records the species share, so all existing fish uses keep working; the mix sets fish sell price and food value.
@@ -38,7 +39,7 @@ export const spotValue = (s, id) => catchTable(s, id).reduce((a, r) => a + r.p *
 // Auto picks the open spot whose catch is worth the most
 export function fishSpot(s) {
   const open = FD().spots.filter(sp => spotOpen(s, sp));
-  const pin = s.fishSpot && s.fishSpot !== "auto" && open.find(sp => sp.id === s.fishSpot);
+  const pin = s.fishSpot && s.fishSpot !== "auto" && findId(open, s.fishSpot);
   if (pin) return pin;
   // an open villager request for a particular species wins (Auto Tend/Orders use this too)
   const want = new Set(((D.requests || {}).npcs || []).flatMap(n => Object.keys((openRequest(s, n.id) || {}).wants || {})).filter(k => k !== "fish" && fishDef(k)));

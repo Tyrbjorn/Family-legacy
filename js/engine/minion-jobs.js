@@ -1,3 +1,4 @@
+import { findId } from "./lookup.js";
 import { followerPwdCheck } from "./pausedone.js";
 import { haulTier, parcelJobMult } from "./world.js";
 import { deliverLoad, gatherInto, travelDays } from "./map.js";
@@ -94,7 +95,7 @@ export const MINION_JOBS = {
   },
   // node runs: out → gather → haul home (timed trip on the follower; resources land on return)
   noderun: (s, mi, a, rg) => {
-    const n = mi.node && D.nodes.find(x => x.id === mi.node);
+    const n = mi.node && findId(D.nodes, mi.node);
     if (!n || !known(s, n)) return;
     if (!mi.trip) {
       const out = travelDays(n.id);

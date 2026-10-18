@@ -1578,6 +1578,107 @@
    "days": 3,
    "line": "blacksmith",
    "path": "armorer"
+  },
+  {
+   "id": "r_g_plate",
+   "name": "Banded Plate",
+   "base": "plate_cuirass",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 10,
+    "leather": 2
+   },
+   "days": 8,
+   "minSkill": 25,
+   "line": "blacksmith",
+   "path": "armorer",
+   "hidden": true
+  },
+  {
+   "id": "r_g_tabard",
+   "name": "War Banner Tabard",
+   "base": "vanguard_tabard",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 6,
+    "leather": 2
+   },
+   "days": 5,
+   "hidden": true,
+   "path": "tailor"
+  },
+  {
+   "id": "r_g_tome",
+   "name": "Study Notes (Spell Tome)",
+   "base": "spell_tome",
+   "skill": "arcana",
+   "station": "arcanefocus",
+   "mats": {
+    "planks": 2,
+    "cloth": 1
+   },
+   "days": 3,
+   "hidden": true
+  },
+  {
+   "id": "r_g_orb",
+   "name": "Runed Orb",
+   "base": "runed_orb",
+   "skill": "runecraft",
+   "station": "arcanefocus",
+   "mats": {
+    "ingots": 2,
+    "blocks": 2
+   },
+   "days": 6,
+   "minSkill": 20,
+   "hidden": true
+  },
+  {
+   "id": "r_g_lockpicks",
+   "name": "Thieves' Lockpicks",
+   "base": "rogue_lockpicks",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 2,
+    "copper": 2
+   },
+   "days": 3,
+   "hidden": true,
+   "line": "blacksmith",
+   "path": "smithing"
+  },
+  {
+   "id": "r_g_shadow",
+   "name": "Shadow Leathers",
+   "base": "shadow_leathers",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "leather": 6,
+    "cloth": 2
+   },
+   "days": 6,
+   "hidden": true,
+   "path": "tailor"
+  },
+  {
+   "id": "r_g_signet",
+   "name": "Forged Seal (Signet Ring)",
+   "base": "signet_ring",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 1,
+    "copper": 2
+   },
+   "days": 3,
+   "hidden": true,
+   "line": "blacksmith",
+   "path": "smithing"
   }
  ],
  "minionSlots": [
