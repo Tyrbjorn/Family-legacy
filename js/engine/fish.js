@@ -1,4 +1,5 @@
 import { findId } from "./lookup.js";
+import { coastFishMult, oddCatch } from "./worldevents.js";
 // R31.3 fishing spots (data/fish.json). The Fish task fishes one spot: Shore (anyone), Deep water (needs a Small Boat;
 // no Dock needed), Sea shore (Gull's Landing found). Every species counts as `fish`: s.res.fish is the total and
 // s.fishBag records the species share, so all existing fish uses keep working; the mix sets fish sell price and food value.
@@ -78,6 +79,7 @@ export const fishFoodMult = s => mixMult(s, "food");
 export function landFish(s, amt, who) {
   if (!(amt > 0)) return;
   const sp = fishSpot(s), b = fishBagFix(s), lvl = famFishLvl(s);
+  if (sp.coast) (amt *= coastFishMult(s)), oddCatch(s, amt); // R49 reef fog over the coast spots
   s.res.fish = (s.res.fish || 0) + amt;
   for (const { f, p } of catchTable(s, sp.id, lvl)) {
     if (f.id === "fish") continue;

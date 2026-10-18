@@ -4,6 +4,7 @@ import { introNote } from "./intros.js";
 // Variety (distinct foods actually eaten) gives satiation + morale with diminishing returns;
 // the ration level trades consumption for morale; shortages drag morale (and so output) down.
 import { ES, eff, reserveOf } from "./estate.js";
+import { reqHold } from "./requests.js";
 import { D, living } from "./state.js";
 import { famFx } from "./paths.js";
 import { household } from "./courtship.js";
@@ -32,7 +33,7 @@ export function toggleDiet(s, k) {
 
 // food value of one unit: base value × quality (quality from cooks, stations and farmers)
 export const unitValue = (s, k) => MEALS().menu[k] * ((s.foodQ || {})[k] || 1);
-const edible = (s, k) => Math.max(0, (s.res[k] || 0) - (k === "food" ? 0 : reserveOf(s, k)));
+const edible = (s, k) => Math.max(0, (s.res[k] || 0) - (k === "food" ? 0 : reserveOf(s, k) + reqHold(s, k))); // R49: + what villagers asked for
 
 export const mouths = s => living(s).length + (s.minions || []).length * ES().minionFoodPerDay;
 

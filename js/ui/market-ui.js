@@ -17,9 +17,10 @@ export const priceTipOf = (townId, res, side = "sell") => E.priceTag(s, townId, 
 
 export function townTagsHtml(townId) {
   const { short, flooded } = E.townTags(s, townId);
-  if (!short.length && !flooded.length) return "";
+  const shut = E.marketClosed(s, townId) ? `<div class="mtags" style="margin-top:4px;color:#e0a040">🕯️ Market shut today (Lodge procession): no buying or selling here.</div>` : ""; // R49
+  if (!short.length && !flooded.length) return shut;
   const list = xs => xs.map(x => `<span title="${esc(x.tip)}">${RI[x.res] || ""}${x.res}</span>`).join(", ");
-  return `<div class="mtags" style="margin-top:4px">${short.length ? `<span style="color:#3fbf5f">▲ Short of:</span> ${list(short)}` : ""}${short.length && flooded.length ? " · " : ""}${flooded.length ? `<span style="color:#e0533d">▼ Flooded with:</span> ${list(flooded)}` : ""}</div>`;
+  return shut + `<div class="mtags" style="margin-top:4px">${short.length ? `<span style="color:#3fbf5f">▲ Short of:</span> ${list(short)}` : ""}${short.length && flooded.length ? " · " : ""}${flooded.length ? `<span style="color:#e0533d">▼ Flooded with:</span> ${list(flooded)}` : ""}</div>`;
 }
 
 const sellRow = (r, link) =>

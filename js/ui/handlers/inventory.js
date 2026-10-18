@@ -13,6 +13,7 @@ export const inventoryActions = ({ v, b, m }) => ({
   buy: () => E.buyItem(s, v, b.dataset.w),
   sellres: () => E.sellRes(s, v, b.dataset.w, 10),
   buyres: () => E.buyRes(s, v, b.dataset.w, 10),
+  buybrew: () => E.buyBrew(s, v, b.dataset.w, 4),
   sellallres: () => E.sellAllRes(s, v, b.dataset.w),
   bulksell: () => E.sellMany(s, curList()),
   bulklist: () => curList().filter(id => !E.isHeld(s, id)).forEach(id => E.listForSale(s, id)),

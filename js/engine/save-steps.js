@@ -679,6 +679,22 @@ export const STEPS = [
       if (!s.threads) s.threads = [];
     },
   },
+  {
+    n: 45,
+    name: "R49 the Saltmere Coast: Merrow's chart (earned in R48 as \"saltmere\") now finds the Saltmere Coast and marks Saltmere; its ferry route then sails; House Gilmane starts Neutral; no chain step, choice or reef-gold is given",
+    run(s) {
+      s.charts = (s.charts || []).map(c => (c === "saltmere" ? "saltcoast" : c));
+      for (const p of s.reqPerks || []) if (p.type === "chart" && p.region === "saltmere") (p.region = "saltcoast"), (p.town = "saltmere");
+      if (s.charts.includes("saltcoast")) {
+        s.discovered = s.discovered || [];
+        for (const id of ["saltcoast", "saltmere"]) if (!s.discovered.includes(id)) s.discovered.push(id);
+      }
+      s.houses = s.houses || {};
+      for (const h of (D.families || {}).list || []) if (!s.houses[h.id]) s.houses[h.id] = { r: h.start || 0, state: "peace" };
+      if (!s.choices) s.choices = [];
+      if (!s.boons) s.boons = [];
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

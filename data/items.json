@@ -1851,5 +1851,39 @@
   "noDrop": true,
   "teaches": "recipe:r_seaboat",
   "desc": "Shipwright's drawings. Buying them teaches the Sea Boat recipe (needs a Dock with a Slipway and a Carpenter)."
+ },
+ {
+  "id": "reefgold_circlet",
+  "name": "Reef-Gold Circlet",
+  "slot": "accessory",
+  "rarity": "Fine",
+  "cp": 10,
+  "value": 260,
+  "fx": {
+   "stats": {
+    "CHA": 1
+   }
+  },
+  "desc": "Pale gold in a shape no smith can name. +1 CHA and +5% from the Fish task. It's always faintly cold."
+ },
+ {
+  "id": "smugglers_cutlass",
+  "name": "Smuggler's Cutlass",
+  "slot": "weapon",
+  "rarity": "Fine",
+  "cp": 30,
+  "value": 180,
+  "type": "sword",
+  "mat": "steel",
+  "g": 0.9
+ },
+ {
+  "id": "tide_charm",
+  "name": "Tide Charm",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 16,
+  "value": 140,
+  "desc": "A smooth stone threaded on cord, smuggled out of the Grotto."
  }
 ]

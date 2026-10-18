@@ -3021,5 +3021,561 @@
   "desc": "Only while feuding: hit House Sallow where it hurts.",
   "region": "outskirts",
   "loot": []
+ },
+ {
+  "id": "q_salt_raiders",
+  "name": "Sea Raiders at the Pans",
+  "type": "fight",
+  "cp": 85,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 260
+  },
+  "skill": "swordsmanship",
+  "desc": "Raiders row in at dusk to steal salt. Drive them back to their boat.",
+  "act": 1,
+  "band": 2,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_whale",
+  "name": "The Beached Whale",
+  "type": "errand",
+  "cp": 60,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 150,
+   "food": 60
+  },
+  "skill": "hunting",
+  "desc": "A whale has come ashore south of the pans. Help cut it up before it spoils (and before the Lodge claims it).",
+  "act": 1,
+  "band": 1,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_lighthouse",
+  "name": "Lighthouse Supplies",
+  "type": "errand",
+  "cp": 50,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 180
+  },
+  "skill": "sailing",
+  "deliver": {
+   "planks": 10,
+   "rope": 4
+  },
+  "desc": "The old lighthouse keeper needs timber and rope before the winter storms.",
+  "act": 1,
+  "band": 1,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_pans",
+  "name": "Rake the Salt Pans",
+  "type": "errand",
+  "cp": 40,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 90,
+   "salt": 15
+  },
+  "skill": "foraging",
+  "desc": "Hask is short of hands at the Great Salt Pans.",
+  "act": 1,
+  "band": 1,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_kelp",
+  "name": "Kelp Harvest",
+  "type": "errand",
+  "cp": 45,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 80,
+   "kelp": 12
+  },
+  "skill": "fishing",
+  "desc": "Cut kelp at low water before the tide comes back in.",
+  "act": 1,
+  "band": 1,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_fog",
+  "name": "Lost in the Fog",
+  "type": "errand",
+  "cp": 70,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "sailing",
+  "desc": "A fishing boat never came home in the fog. Find it before dark.",
+  "act": 1,
+  "band": 2,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_divers",
+  "name": "The Pearl Divers' Rope",
+  "type": "errand",
+  "cp": 75,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 160,
+   "pearls": 1
+  },
+  "skill": "sailing",
+  "desc": "Hold the line for the pearl divers off the Tidal Pools.",
+  "act": 1,
+  "band": 2,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_eels",
+  "name": "Eel Nest in the Sluice",
+  "type": "fight",
+  "cp": 95,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "brawling",
+  "desc": "Giant eels have nested in the sluice gates of the salt works.",
+  "act": 1,
+  "band": 3,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_tithe",
+  "name": "Escort the Salt Tithe",
+  "type": "errand",
+  "cp": 90,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 320
+  },
+  "skill": "tactics",
+  "desc": "The salt tithe goes inland under guard. The Lodge's men walk with it and say nothing all the way.",
+  "act": 1,
+  "band": 3,
+  "coastal": false,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "q_salt_dunes",
+  "name": "Amber in the Dunes",
+  "type": "errand",
+  "cp": 65,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 120,
+   "amber": 4
+  },
+  "skill": "foraging",
+  "desc": "A storm has uncovered amber in the dunes. Get there before the dune-pickers do.",
+  "act": 1,
+  "band": 2,
+  "hidden": true,
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "b_bell",
+  "name": "The Drowned Bell",
+  "type": "beat",
+  "cp": 95,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 400
+  },
+  "skill": "sailing",
+  "once": true,
+  "beat": true,
+  "act": 2,
+  "band": 3,
+  "req": {
+   "town": "saltmere",
+   "story": 4
+  },
+  "grants": {
+   "renown": 15
+  },
+  "desc": "Act 2 beat (after chapter 4): a sunken chapel bell rings at low tide. Raise it, and learn why the chapel was drowned.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true
+ },
+ {
+  "id": "b_vaelsmugglers",
+  "name": "Vael's Smugglers",
+  "type": "beat",
+  "cp": 110,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 600
+  },
+  "skill": "tactics",
+  "once": true,
+  "beat": true,
+  "act": 2,
+  "band": 3,
+  "req": {
+   "town": "saltmere",
+   "story": 6
+  },
+  "grants": {
+   "renown": 20
+  },
+  "desc": "Act 2 beat (after chapter 6): House Vael's own goods once moved through Saltmere's smugglers. Someone in the Grotto still keeps the old manifests, and they lead to chapter 7.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true
+ },
+ {
+  "id": "reef1",
+  "name": "Old Tobiah's Stories",
+  "type": "chain",
+  "cp": 0,
+  "days": 1,
+  "risk": "safe",
+  "reward": {
+   "coin": 10
+  },
+  "skill": "etiquette",
+  "once": true,
+  "act": 2,
+  "chain": "reef",
+  "step": 1,
+  "deliver": {
+   "ale": 3
+  },
+  "req": {
+   "town": "saltmere",
+   "story": 4
+  },
+  "desc": "“What the Reef Keeps”, 1 of 4: buy Old Tobiah a few ales and let him talk about the reef.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "chainName": "What the Reef Keeps"
+ },
+ {
+  "id": "reef2",
+  "name": "Lights on Blackwater Reef",
+  "type": "chain",
+  "cp": 80,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 120
+  },
+  "skill": "sailing",
+  "once": true,
+  "act": 2,
+  "chain": "reef",
+  "step": 2,
+  "hidden": true,
+  "check": {
+   "skills": [
+    "sailing",
+    "tracking"
+   ],
+   "lvl": 15
+  },
+  "req": {
+   "town": "saltmere",
+   "story": 4,
+   "done": [
+    "reef1"
+   ],
+   "item": "seaboat"
+  },
+  "desc": "2 of 4: sail out at night and watch the lights on Blackwater Reef (Sailing or Scouting check; needs your own Sea Boat).",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true
+ },
+ {
+  "id": "reef3",
+  "name": "The Lodge's Ledger",
+  "type": "chain",
+  "cp": 60,
+  "days": 2,
+  "risk": "risky",
+  "reward": {
+   "coin": 100
+  },
+  "skill": "etiquette",
+  "once": true,
+  "act": 2,
+  "chain": "reef",
+  "step": 3,
+  "hidden": true,
+  "check": {
+   "skills": [
+    "etiquette",
+    "thievery"
+   ],
+   "lvl": 15
+  },
+  "req": {
+   "town": "saltmere",
+   "story": 4,
+   "done": [
+    "reef2"
+   ]
+  },
+  "desc": "3 of 4: get a look at the Lodge's ledger (Etiquette or Thievery check). Gold comes in from the reef; fish and “guests” go out.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true
+ },
+ {
+  "id": "reef4",
+  "name": "Low Tide on the Reef",
+  "type": "chain",
+  "cp": 90,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "sailing",
+  "once": true,
+  "act": 2,
+  "chain": "reef",
+  "step": 4,
+  "hidden": true,
+  "req": {
+   "town": "saltmere",
+   "story": 4,
+   "done": [
+    "reef3"
+   ]
+  },
+  "desc": "4 of 4: wade the reef at the lowest tide. Carved stones, a sealed sea-cave mouth, and then the tide turns. What you do with what you saw is up to you.",
+  "choice": {
+   "id": "reef",
+   "title": "What the Reef Keeps",
+   "text": "You saw the carved stones and the sealed cave. The sea-cave stays sealed either way.",
+   "options": [
+    {
+     "id": "keep",
+     "name": "Keep the secret",
+     "icon": "🤫",
+     "text": "House Gilmane's standing rises and reef-gold gets cheaper for you.",
+     "fx": {
+      "rapport": {
+       "gilmane": 20
+      },
+      "boon": {
+       "type": "buy",
+       "res": [
+        "reefgold"
+       ],
+       "pct": 0.15,
+       "text": "Reef-gold −15% (you kept the secret)"
+      }
+     }
+    },
+    {
+     "id": "tell",
+     "name": "Tell the Church",
+     "icon": "⛪",
+     "text": "Healers' Guild rep rises and House Gilmane turns Cold.",
+     "fx": {
+      "guildRep": {
+       "church": 150
+      },
+      "cold": "gilmane",
+      "renown": 5
+     }
+    }
+   ]
+  },
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true
+ },
+ {
+  "id": "ht_gilmane1",
+  "name": "Quiet Cargo",
+  "type": "house",
+  "cp": 70,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 160,
+   "salt": 20
+  },
+  "skill": "sailing",
+  "house": "gilmane",
+  "thread": "gilmane",
+  "step": 1,
+  "once": true,
+  "hidden": true,
+  "threadOpen": true,
+  "desc": "House Gilmane's thread “The Gilmane Ledger”, part 1 of 3: carry sealed crates and ask nothing.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "ht_gilmane2",
+  "name": "Salt for the Lodge",
+  "type": "house",
+  "cp": 80,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "haggling",
+  "house": "gilmane",
+  "thread": "gilmane",
+  "step": 2,
+  "once": true,
+  "hidden": true,
+  "after": "ht_gilmane1",
+  "deliver": {
+   "salt": 40
+  },
+  "desc": "Part 2 of 3: the Lodge wants salt, delivered at night.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "ht_gilmane3",
+  "name": "The Gilmane Ledger",
+  "type": "house",
+  "cp": 95,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 320,
+   "pearls": 2
+  },
+  "skill": "etiquette",
+  "house": "gilmane",
+  "thread": "gilmane",
+  "step": 3,
+  "once": true,
+  "hidden": true,
+  "after": "ht_gilmane2",
+  "desc": "Part 3 of 3: recover a page of the Gilmane ledger before the Church does.",
+  "loot": [],
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "req": {
+   "town": "saltmere"
+  }
+ },
+ {
+  "id": "hq_raid_gilmane",
+  "name": "Raid House Gilmane's Stores",
+  "type": "house",
+  "cp": 95,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 260
+  },
+  "skill": "brawling",
+  "against": "gilmane",
+  "needsFeud": true,
+  "desc": "Only while feuding: hit House Gilmane where it hurts.",
+  "region": "saltcoast",
+  "loot": []
  }
 ]

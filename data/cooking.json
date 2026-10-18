@@ -416,6 +416,29 @@
     "text": "Celebration: +2 contentment for 3 days after a wedding or birth while on the menu. Also the courtship gift (wrap 2 as a gift)."
    },
    "keep": 4
+  },
+  {
+   "id": "kelpchowder",
+   "name": "Kelda's Kelp Chowder",
+   "icon": "🥣",
+   "group": "fish",
+   "stations": {
+    "hearth": 1.5,
+    "range": 3
+   },
+   "in": {
+    "fish": 2,
+    "kelp": 1,
+    "milk": 1
+   },
+   "per": 1,
+   "cook": 0,
+   "food": 4,
+   "value": 9,
+   "learn": {
+    "request": "kelda3"
+   },
+   "how": "Widow Kelda's recipe (Saltmere)."
   }
  ],
  "extras": [

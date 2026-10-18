@@ -464,6 +464,61 @@
     ]
    },
    "marriage": true
+  },
+  {
+   "id": "gilmane",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "House Gilmane",
+   "icon": "🕯️",
+   "town": "saltmere",
+   "seat": "saltmere",
+   "wealth": 3,
+   "desc": "Owns the salt works and leads the Lodge",
+   "major": true,
+   "known": "Owns the salt works and leads the Lodge of the Drowned Light",
+   "goal": "Secrecy: keeping “the old bargain”",
+   "temperament": "secretive",
+   "thread": {
+    "name": "The Gilmane Ledger",
+    "quests": [
+     "ht_gilmane1",
+     "ht_gilmane2",
+     "ht_gilmane3"
+    ],
+    "also": "reef"
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "buy",
+      "res": [
+       "reefgold"
+      ],
+      "pct": 0.15,
+      "text": "Reef-gold −15%"
+     }
+    ],
+    "allied": [
+     {
+      "type": "buy",
+      "res": [
+       "salt"
+      ],
+      "town": "saltmere",
+      "pct": 0.2,
+      "text": "Saltmere salt −20%"
+     }
+    ]
+   },
+   "marriage": true,
+   "marriageTrait": {
+    "id": "seatouched",
+    "chance": 0.5,
+    "text": "children may be Sea-touched (+25% Fishing/Sailing XP)"
+   },
+   "region": "saltcoast"
   }
  ],
  "range": [
@@ -719,11 +774,16 @@
   }
  },
  "events": {
-  "_note": "Which quests count for temperament events.",
+  "_note": "Which quests count for temperament events. prying: the reef chain (House Gilmane is secretive).",
   "bandits": [
    "bandit_scout",
    "b_smugglers",
    "g_vanguard_patrol"
+  ],
+  "prying": [
+   "reef2",
+   "reef3",
+   "reef4"
   ]
  },
  "threadDone": {

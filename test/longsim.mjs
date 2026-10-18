@@ -36,6 +36,7 @@ const T = D.tuning,
 const issues = [];
 let lastS = null;
 const mapTick = new WeakMap();
+const findQ = id => D.quests.find(q => q.id === id);
 const seen = {
   enchants: 0,
   pathOpens: 0,
@@ -218,6 +219,8 @@ function buyAny(s, k, n) {
   const need = n - Math.floor(s.res[k] || 0);
   if (need <= 0) return true;
   for (const tw of D.towns) if (E.townKnown(s, tw) && (tw.market || []).includes(k) && E.buyRes(s, tw.id, k, need)) return true;
+  // R49: a town brewery's small monthly stock (ale at Gull's Landing, Saltmere, Millbrook) when no market has it
+  for (const tw of D.towns) if (E.townKnown(s, tw) && E.brewLeft(s, tw.id, k) >= need) { const n = E.buyBrew(s, tw.id, k, need); if (n) { (seen.brew ||= {})[k] = (seen.brew[k] || 0) + n; return true; } }
   return false;
 }
 function bot(s, m) {
@@ -515,6 +518,67 @@ function bot(s, m) {
       if (q && !E.isBusy(w)) { w.action = { type: "quest", target: q.id, progress: 0 }; if (process.env.SDBG2 && !w._trap) { w._trap = 1; let v = w.action; Object.defineProperty(w, "action", { get: () => v, set: x => { if (v && String(v.target).startsWith("q_gull") && !(x && x === v) && (v.trip ? v.trip.t < v.trip.out + v.trip.task + v.trip.back : true)) console.error("TRAP", s.day, v.target, v.trip && v.trip.t, x && x.target, new Error().stack.split("\n").slice(2, 6).join(" | ")); v = x; }, configurable: true, enumerable: true }); } seen.r48.coastTaken = (seen.r48.coastTaken || 0) + 1; (seen.r48.coastN ||= {})[q.id] = (seen.r48.coastN[q.id] || 0) + 1; }
     }
   }
+  // R49 Saltmere (as a player would): find the coast (Strand / Merrow's chart), keep ale for Old Tobiah, send the coast hand on Saltmere work by the ferry route,
+  // walk the reef chain and make its choice (keep on even seeds, tell on odd), build the Salt Works, a Kelp Vat, and run a little reef-gold trade
+  if (!process.env.NO_SEA && !process.env.NO_R49) {
+    const r9 = (seen.r49 ||= {}), yr = () => +(s.day / YD).toFixed(1);
+    const c0 = s.res.coin, sp = k => { (r9.spend ||= {})[k] = Math.round((r9.spend[k] || 0) + c0 - s.res.coin); };
+    if (E.regionKnown(s, "saltcoast")) r9.coastKnown ??= yr();
+    if (E.townKnownId(s, "saltmere")) r9.townKnown ??= yr();
+    if ((s.charts || []).includes("saltcoast")) r9.chart ??= yr();
+    // scout the Southern Strand now and then once Gull's Landing is found and the coast is still unknown
+    if (!E.regionKnown(s, "saltcoast") && E.townKnownId(s, "gullport") && s.day % 60 < 3 && m && !E.isBusy(m) && E.isAdult(m) && !E.exploreIssue(s, m, "a_strand")) { E.setAction(s, { type: "explore", target: "a_strand" }); r9.strandTries = (r9.strandTries || 0) + 1; }
+    if (E.regionKnown(s, "saltcoast") && !E.explored(s, "a_saltshore") && s.day % 30 < 3 && m && !E.isBusy(m) && E.isAdult(m) && !E.exploreIssue(s, m, "a_saltshore")) { E.setAction(s, { type: "explore", target: "a_saltshore" }); r9.shoreTries = (r9.shoreTries || 0) + 1; }
+      sp("explore");
+    if (E.townKnownId(s, "saltmere")) {
+      // Old Tobiah drinks: buy exactly what he asks for, hand it over at once (ale also goes elsewhere, so no standing stock)
+      // ale is brewed, not bought: once a coast villager asks for it and barley is piling up, build a Brewery and its vats
+      if (((E.wantsOf(s, "tobiah") || {}).ale || (E.wantsOf(s, "merrow") || {}).ale) && (s.res.barley || 0) > 100 && s.res.coin > 6000) {
+        if (!E.hasStructType(s, "brewery") && !E.structIssue(s, "brewery") && E.buildStructure(s, "brewery")) r9.brewery = +(s.day / YD).toFixed(1);
+        if (!r9.vats) for (const st of s.structures) if (!E.placeIssue(s, st.uid, "brewvats") && E.placePiece(s, st.uid, "brewvats")) { r9.vats = +(s.day / YD).toFixed(1); break; }
+        if (!r9.vats) r9.vatsWhy = [...new Set(s.structures.map(st => E.placeIssue(s, st.uid, "brewvats")))].slice(0, 3).join("/") + (E.hasStructType(s, "brewery") ? "" : " | brewery: " + E.structIssue(s, "brewery"));
+      }
+      // the same for Captain Merrow (ale, salted fish) until his chart is handed over
+      for (const [who, town, max] of [["tobiah", "saltmere", 3], ["merrow", "gullport", 3]]) {
+        const tw = E.wantsOf(s, who);
+        if (!tw || !E.visited(s, town) || s.res.coin < 3000 || (((s.req || {})[who] || {}).n || 0) >= max) continue;
+        if (tw.saltedfish && !r9.tub) { for (const st of s.structures) if (!E.placeIssue(s, st.uid, "saltingtub") && E.placePiece(s, st.uid, "saltingtub")) { r9.tub = +(s.day / YD).toFixed(1); break; } if (!r9.tub) r9.tubWhy = [...new Set(s.structures.map(st => E.placeIssue(s, st.uid, "saltingtub")))].slice(0, 3).join("/"); }
+        if (tw.saltedfish) { buyAny(s, "fish", 40); buyAny(s, "salt", 20); }
+        if (tw.saltedfish && (s.res.saltedfish || 0) < tw.saltedfish) continue; // wait for the tub
+        const got = Object.entries(tw).every(([k, v]) => buyAny(s, k, Math.ceil((s.res[k] || 0) >= v ? 0 : v)));
+        if (process.env.R9DBG && !got) console.error("BUY", s.day, who, JSON.stringify(tw), Math.round(s.res.coin), JSON.stringify(Object.fromEntries(Object.keys(tw).map(k => [k, s.res[k]]))), D.towns.filter(tw2 => E.townKnown(s, tw2) && (tw2.market || []).includes("ale")).map(x => x.id).join());
+        if (got && !E.deliverIssue(s, who)) { E.deliverRequest(s, who); r9[who + "Gave"] = (r9[who + "Gave"] || 0) + 1; } else r9[who + "Why"] = E.deliverIssue(s, who);
+      }
+      const r1 = findQ("reef1");
+      sp("ale");
+      // the reef choice
+      for (const c of E.pendingChoices(s)) { const pick = (globalThis.SIMSEED || 0) % 2 ? "tell" : "keep"; if (!E.choiceIssue(s, c.id, pick) && E.makeChoice(s, c.id, pick)) r9.choice = pick + "@" + yr(); }
+      // Salt Works once there is a Dock
+      if (s.res.coin > 25000 && E.hasStructType(s, "dock") && !E.hasStructType(s, "saltworks") && E.structIssue(s, "saltworks") === "no free land slot") { const l = D.estate.lands.filter(l => !s.land.includes(l.id) && E.canBuyLand(s, l.id)).sort((a, c) => (a.cost.coin || 0) - (c.cost.coin || 0))[0]; if (l && s.res.coin > (l.cost.coin || 0) + 20000 && E.buyLand(s, l.id)) r9.landForSW = (r9.landForSW || 0) + 1; }
+      if (s.res.coin > 20000 && !E.hasStructType(s, "saltworks") && !E.structIssue(s, "saltworks") && E.buildStructure(s, "saltworks")) r9.saltworks = yr();
+      if (!r9.kelpvat && s.res.coin > 10000) for (const st of s.structures) if (!E.placeIssue(s, st.uid, "kelpvat") && E.placePiece(s, st.uid, "kelpvat")) { r9.kelpvat = yr(); break; }
+      if ((s.res.kelp || 0) < 30 && r9.kelpvat && s.res.coin > 2000) E.buyRes(s, "saltmere", "kelp", 30);
+      sp("build");
+      // reef-gold: buy a few cheap in Saltmere, sell them where they fetch more (monthly)
+      if (s.day % 30 < 3 && s.res.coin > 8000) { const b = E.buyRes(s, "saltmere", "reefgold", 4); if (b) { const to = D.towns.filter(tw => tw.id !== "saltmere" && E.townKnown(s, tw)).sort((a, c) => E.townSellPrice(s, c.id, "reefgold") - E.townSellPrice(s, a.id, "reefgold"))[0]; const sold = to && E.sellRes(s, to.id, "reefgold", 4); r9.goldTrips = (r9.goldTrips || 0) + 1; if (sold) r9.goldSold = (r9.goldSold || 0) + 4; } }
+      sp("gold");
+      // the coast hand: one month in three (the month the Gull's Landing jobs are not running) on Saltmere work: chain/beats/thread first, then jobs
+      if (process.env.R9DBG && seen.r48 && seen.r48.hand) { const h = E.living(s).find(o => o.id === seen.r48.hand); if (h) console.error("H", s.day, JSON.stringify(h.action || null).slice(0, 220), JSON.stringify(h.order)); }
+      { const h = seen.r48 && E.living(s).find(o => o.id === seen.r48.hand); if (h && h.action && h.action.target === "reef1" && (s.res.ale || 0) < 3) buyAny(s, "ale", 3); if (process.env.R9DBG && h && h.action && h.action.target === "reef1") console.error("RF", s.day, s.res.ale, JSON.stringify(h.action.trip), (s.log || []).filter(l => /Tobiah|failed/.test(l.msg)).slice(0, 2).map(l => JSON.stringify(l).slice(0, 160)).join(" / ")); } // keep the ale for Tobiah until the hand arrives
+      if (Math.floor(s.day / 30) % 3 === 1) {
+        const w = E.living(s).find(o => o.id === (seen.r48 || {}).hand && E.isAdult(o) && o.id !== s.activeId) || E.living(s).find(o => E.isAdult(o) && o.id !== s.activeId && o.order && o.order.type === "quest");
+        if (w && !E.isBusy(w)) {
+          (seen.r48 ||= {}).hand = w.id;
+          if (r1 && !s.doneQuests.includes("reef1") && E.questVisible(s, r1) && !(w.action && w.action.target === "reef1")) buyAny(s, "ale", Math.ceil((s.res.ale || 0) + 3)); // reef1 hands Tobiah a few ales
+          const ok = q => E.questVisible(s, q) && !(q.once && s.doneQuests.includes(q.id)) && E.actionAllowed(s, w, { type: "quest", target: q.id }) && !E.questIssue(s, w, q) && q.cp <= E.cp(s, w) * 1.1;
+          const pri = q => (q.chain ? 0 : q.beat || q.id.startsWith("b_") ? 1 : q.id.startsWith("ht_") ? 2 : 3);
+          const q = D.quests.filter(q => q.town === "saltmere" && ok(q)).sort((a, b) => pri(a) - pri(b) || ((r9.n || {})[a.id] || 0) - ((r9.n || {})[b.id] || 0))[0];
+          if (process.env.R9DBG) console.error("R9", s.day, w.id, q && q.id, JSON.stringify(w.action || null).slice(0, 200), JSON.stringify(w.order)); if (q) { E.setOrder(s, w.id, { type: "quest", target: q.id }); w.action = { type: "quest", target: q.id, progress: 0 }; (r9.n ||= {})[q.id] = (r9.n[q.id] || 0) + 1; r9.taken = (r9.taken || 0) + 1; }
+          else if (!r9.whyNone && E.cp(s, w) > 0) r9.whyNone = D.quests.filter(q => q.town === "saltmere" && q.chain && !s.doneQuests.includes(q.id)).map(q => q.id + ":" + (E.questVisible(s, q) ? E.questIssue(s, w, q) || "cp" : "hidden")).join(",");
+        }
+      }
+    }
+  }
   seen.maxCarry = Math.max(seen.maxCarry, E.haulTier(s).carry);
   // stone ranks: keep some limestone/granite/marble for the Mason's Table once the estate is rich (bought in town)
   if (s.day % 30 < 3 && s.res.coin > 30000)
@@ -598,6 +662,11 @@ function bot(s, m) {
   // others work quests
   for (const o of E.living(s)) {
     if (o.id === m.id || !E.isAdult(o)) continue;
+    if (o.id === (seen.r48 || {}).hand && o.action && (findQ(o.action.target) || {}).town === "saltmere") {
+      if (Math.floor(s.day / 30) % 3 === 1 || (o.action.progress || 0) > 0 || o.action.trip) continue; // R49 the coast hand finishes Saltmere work
+      o.action = null;
+    }
+    if (o.id === (seen.r48 || {}).hand && o.order && (findQ(o.order.target) || {}).town === "saltmere" && Math.floor(s.day / 30) % 3 !== 1 && !(o.action && (findQ(o.action.target) || {}).town === "saltmere")) E.setOrder(s, o.id, { type: "quest", target: "outskirts" });
     if (o.id === (seen.r48 || {}).hand && o.action && String(o.action.target).startsWith("q_gull")) {
       if (Math.floor(s.day / 30) % 3 === 2 || (o.action.progress || 0) > 0) continue; // R48 the coast hand finishes the job (coast month, or mid-trip)
       o.action = null; // back to the usual quests outside the coast month
@@ -643,6 +712,7 @@ const report = [];
 const SEED0 = +(process.env.SEED || 1);
 for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   let sd = seed * 104729;
+  globalThis.SIMSEED = seed;
   E.setRng(() => ((sd = (sd * 16807) % 2147483647), sd / 2147483647));
   let s = E.newGame(1e12);
   lastS = s;
@@ -838,6 +908,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
     boards: JSON.stringify({ ...(s.boardStats || {}), lines: Object.entries(s.lines || {}).filter(([, v]) => v.done).map(([k, v]) => k + "@y" + Math.round((v.doneDay || 0) / YD)) }),
+    r49: JSON.stringify({ ...(seen.r49 || {}), jobs: s.doneQuests.filter(q => q.startsWith("q_salt")).length, saltRuns: Object.entries(s.qRuns || {}).filter(([k]) => k.startsWith("q_salt")).reduce((a, [, v]) => a + v, 0), chain: E.questChainStep(s, "reef"), pick: E.choiceMade(s, "reef"), beats: ["b_bell", "b_vaelsmugglers"].filter(q => s.doneQuests.includes(q)), routes: s.ferryRoutesUsed || {}, shore: E.explored(s, "a_saltshore"), strand: E.explored(s, "a_strand"), grotto: (s.cleared || []).includes("d_grotto") ? "cleared" : E.dungeonIssue(s, E.living(s).find(o => o.id === s.activeId) || E.living(s)[0], D.dungeons.find(d => d.id === "d_grotto")) || "open", swWhy: E.hasStructType(s, "saltworks") ? null : E.structIssue(s, "saltworks"), vatWhy: (seen.r49 || {}).kelpvat ? null : [...new Set(s.structures.map(st => E.placeIssue(s, st.uid, "kelpvat")))].slice(0, 3).join("/"), fert: s.fert || null, kelpfert: Math.round(s.res.kelpfert || 0), gilmane: E.tierOf(s, "gilmane"), gilSteps: s.doneQuests.filter(q => q.startsWith("ht_gilmane")).length, brewBought: seen.brew || {}, reefWhy: ["reef2", "reef3", "reef4"].map(id => { const q = D.quests.find(x => x.id === id), w = E.living(s).find(o => o.id === (seen.r48 || {}).hand) || E.living(s)[0]; return id + ":" + (s.doneQuests.includes(id) ? "done" : !E.questVisible(s, q) ? "hidden" : E.questIssue(s, w, q) || (q.cp > E.cp(s, w) * 1.1 ? "cp " + Math.round(E.cp(s, w)) : "ok")); }).join(","), ale: Math.round(s.res.ale || 0), brewery: (s.structures || []).some(st => st.type === "brewery" || String(st.id).startsWith("brewery")), barley: Math.round(s.res.barley || 0), tob: ((s.req || {}).tobiah || {}).n || 0, merrow: ((s.req || {}).merrow || {}).n || 0, hask: ((s.req || {}).hask || {}).n || 0, kelda: ((s.req || {}).kelda || {}).n || 0, boons: s.boons || [], reefgold: Math.round(s.res.reefgold || 0), seatouched: E.living(s).filter(o => (o.traits || []).includes("seatouched")).length }),
     r48: JSON.stringify({ ...(seen.r48 || {}), visited: s.townsVisited || [], ferry: (s.unlocks || []).includes("ferry:gullport"), ferryTrips: s.ferryTrips || 0, beat: s.doneQuests.includes("b_lights"), gullQuests: s.doneQuests.filter(q => q.startsWith("q_gull")).length, gullRuns: Object.entries(s.qRuns || {}).filter(([k]) => k.startsWith("q_gull")).reduce((a, [, v]) => a + v, 0), gullReqs: ["odile", "pell", "merrow"].map(n => ((s.req || {})[n] || {}).n || 0), threads: s.threads || [], threadSteps: s.doneQuests.filter(q => q.startsWith("ht_")).length, tiers: Object.fromEntries(E.houseList().map(h => [h.id, E.tierOf(s, h.id)])), salted: Math.round(s.res.saltedfish || 0), rope: Math.round(s.res.rope || 0), deepsea: !!E.hasSeaBoat(s) }),
     r47: JSON.stringify({ second: seen.second || null, archMembers: E.living(s).filter(o => (o.guild && o.guild.id === "architects") || (o.guild2 && o.guild2.id === "architects")).map(o => [o.cls, o.class2]), buildSaved: Math.round(s.buildSaved || 0), disc: Object.fromEntries(((D.guilds.build || {}).tags || []).map(k => [k, E.buildDisc ? +E.buildDisc(s, k).toFixed(2) : 0]).filter(([, v]) => v > 0)), roads: s.roads || null, unlocks: (s.unlocks || []).filter(u => /^(piece|structure|upgrade):|r_g_square/.test(u)) }),
     tiers: JSON.stringify({ ups: seen.tierUps || 0, firstTier: Object.fromEntries(Object.entries(seen.firstTier || {}).map(([n, o]) => [n, Object.values(o).sort((a, b) => a - b)])), classes: E.living(s).map(o => o.cls).filter(Boolean), chainUnlocks: (s.unlocks || []).filter(u => /^recipe:r_g_/.test(u)) }),

@@ -416,5 +416,59 @@
   "terrain": "highlands",
   "fog": true,
   "rare": []
+ },
+ {
+  "id": "n_saltpans",
+  "name": "Great Salt Pans",
+  "region": "saltcoast",
+  "res": {
+   "salt": 4
+  },
+  "skill": "foraging",
+  "icon": "🧂",
+  "terrain": "coast"
+ },
+ {
+  "id": "n_kelpbeds",
+  "name": "Kelp Beds",
+  "region": "saltcoast",
+  "res": {
+   "kelp": 3
+  },
+  "skill": "fishing",
+  "icon": "🌿",
+  "terrain": "coast"
+ },
+ {
+  "id": "n_tidalpools",
+  "name": "Tidal Pools",
+  "region": "saltcoast",
+  "res": {
+   "fish": 3
+  },
+  "skill": "fishing",
+  "icon": "🦀",
+  "terrain": "coast",
+  "hidden": true,
+  "rare": [
+   {
+    "id": "res:pearls",
+    "chance": 0.03,
+    "n": 1
+   }
+  ]
+ },
+ {
+  "id": "n_amberdunes",
+  "name": "Amber Dunes",
+  "region": "saltcoast",
+  "res": {
+   "amber": 0.5,
+   "wood": 1
+  },
+  "skill": "foraging",
+  "icon": "🟠",
+  "terrain": "coast",
+  "hidden": true
  }
 ]

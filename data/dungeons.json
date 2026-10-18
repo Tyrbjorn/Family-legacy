@@ -338,5 +338,68 @@
   "skill": "tactics",
   "dragon": true,
   "desc": "Beyond the Stormhold, an old wyrm sleeps on a hoard. Slaying it is the deed of a lifetime."
+ },
+ {
+  "id": "d_grotto",
+  "name": "Smugglers' Grotto",
+  "region": "saltcoast",
+  "icon": "🕳️",
+  "hidden": true,
+  "coastal": true,
+  "floors": [
+   {
+    "name": "Tide Caves",
+    "days": 2,
+    "cp": 80,
+    "reward": {
+     "coin": 200,
+     "pearls": 1
+    }
+   },
+   {
+    "name": "Smugglers' Hold",
+    "days": 3,
+    "cp": 95,
+    "reward": {
+     "coin": 300,
+     "amber": 3
+    }
+   },
+   {
+    "name": "The Drowned Stair",
+    "days": 3,
+    "cp": 110,
+    "reward": {
+     "coin": 450,
+     "pearls": 2
+    }
+   },
+   {
+    "name": "The Sea Gate",
+    "days": 2,
+    "cp": 110,
+    "boat": true,
+    "reward": {
+     "coin": 400,
+     "pearls": 3,
+     "amber": 4
+    },
+    "desc": "A flooded passage out to open water: only a boat gets through."
+   }
+  ],
+  "loot": [
+   "smugglers_cutlass",
+   "tide_charm"
+  ],
+  "rare": [
+   {
+    "id": "reefgold_circlet",
+    "chance": 0.05
+   }
+  ],
+  "skill": "tactics",
+  "deedTier": 3,
+  "tier": 3,
+  "desc": "A sea cave of smugglers' loot. The last floor, the Sea Gate, needs your own Sea Boat."
  }
 ]

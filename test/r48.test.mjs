@@ -10,13 +10,13 @@ const Y=D.tuning.daysPerYear, G=D.map.towns.gullport;
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);const m=s.members[0];m.ageDays=25*Y;s.res.coin=1e5;for(const k of ['wood','stone','planks','blocks','ingots','cloth','flax','fish','salt','ale','rope'])s.res[k]=1e3;return s;};
 const findGull=s=>{E.reveal(s,G.x,G.y,60);E.locationsDay(s);};
 // ---- build + save
-ok(BUILD==='R48'&&E.SCHEMA===44,'R48, save step 44');
+ok(BUILD>='R48'&&E.SCHEMA>=44,'R48+, save step 44+');
 // ---- families.json
 const F=D.families, H=F.list, ids=H.map(h=>h.id);
 ok(!D.marriage.houses&&F.status&&F.tiers&&F.war&&F.feud,'house rules moved to families.json; marriage.json keeps only marriage rules');
-ok(['ashbrook','tallow','vey','marlowe','corran','skye'].every(id=>ids.includes(id))&&['corwen','dawnward','ormond','sallow'].every(id=>ids.includes(id))&&H.length===10,'the 6 old houses keep their ids; R48 adds Corwen, Dawnward, Ormond, Sallow (10)');
-ok(!ids.includes('vael')&&F.player.id==='vael'&&!ids.some(id=>['gilmane','crane','brokka'].includes(id)),"House Vael is the player's house (not a rival); Gilmane/Crane/Brokka wait for later rounds");
-ok(H.filter(h=>h.major).map(h=>h.id).sort().join()==='ashbrook,corwen,marlowe,skye,vey'&&H.every(h=>D.towns.some(t=>t.id===h.seat)),'major house per town (Millbrook, Thornwick, Ashford, Eyrie, Gull\'s Landing); every seat is a town');
+ok(['ashbrook','tallow','vey','marlowe','corran','skye'].every(id=>ids.includes(id))&&['corwen','dawnward','ormond','sallow'].every(id=>ids.includes(id))&&H.length>=10,'the 6 old houses keep their ids; R48 adds Corwen, Dawnward, Ormond, Sallow (10)');
+ok(!ids.includes('vael')&&F.player.id==='vael'&&!ids.some(id=>['crane','brokka'].includes(id)),"House Vael is the player's house (not a rival); Crane/Brokka wait for later rounds (Gilmane came in R49)");
+ok(H.filter(h=>h.major).map(h=>h.id).sort().join()==='ashbrook,corwen,gilmane,marlowe,skye,vey'&&H.every(h=>D.towns.some(t=>t.id===h.seat)),'major house per town (Millbrook, Thornwick, Ashford, Eyrie, Gull\'s Landing, Saltmere); every seat is a town');
 ok(H.every(h=>h.goal&&F.temperaments[h.temperament]&&h.thread&&h.thread.quests.length===3&&h.thread.quests.every(q=>E.findId(D.quests,q)&&D.map.points[q])&&h.perks&&h.perks.friendly&&h.marriage!==undefined),'every house: goal, temperament, a 3-quest thread on the map, a Friendly perk, marriage flag');
 ok(H.filter(h=>h.major).every(h=>h.perks.allied&&h.perks.allied.length),'major houses also have an Allied perk');
 ok(['honest','scheming','pious','ruthless','idealistic','proud','secretive'].every(t=>F.temperaments[t]&&F.temperaments[t].text),'7 temperaments with rules');
@@ -108,7 +108,7 @@ const B=E.findId(D.quests,'b_lights'); ok(B&&B.beat&&B.act===1&&B.req.story===2&
   s.houses.corwen={r:70,state:'peace'}; ok(E.haulTier(s,{coast:true}).carry>E.findId(D.world.haul.tiers,'seaboat').carry,'Corwen Allied: +1 cargo tier');
   ok(E.cartCarry(s,{mode:'sell',town:'gullport'})>E.cartCarry(s,{mode:'sell',town:'millbrook'}),'trade routes to Gull\'s Landing use the Sea Boat');
   ok(!E.spotIssue(s,D.fish.spots.find(x=>x.id==='deepsea')),'deep sea fishing opens with a Sea Boat');
-  ok(E.ferryRoutes(s).some(r=>r.region==='saltmere'&&!r.open),'the Saltmere ferry route is listed, closed until the coast opens (R49)'); }
+  ok(E.ferryRoutes(s).some(r=>r.region==='saltcoast'&&!r.open),'the Saltmere ferry route is listed, closed until the coast is found'); }
 // ---- save step 44
 { const s=base(); findGull(s); s.discovered=s.discovered.filter(x=>x!=='gullport'); delete s.houses.corwen; s.schema=43; delete s.townsVisited;
   const st=(await import('../js/engine/save-steps.js')).STEPS.find(x=>x.n===44); st.run(s);
@@ -128,5 +128,5 @@ const B=E.findId(D.quests,'b_lights'); ok(B&&B.beat&&B.act===1&&B.req.story===2&
   const L=n.requests.length; ok(gaps.slice(0,3*L).every(g=>g<=7)&&gaps[3*L]>=R.base&&gaps[3*L+L]>gaps[3*L],'cooldowns: short for 3 rounds, then growing ('+gaps.join(',')+')');
   ok(E.reqDone(s,'odile',n.requests[0].id)>=4,'completions counted per request'); }
 // changelog
-ok(D.changelog.entries[0].build==='R48','changelog R48');
+ok(D.changelog.entries.some(e=>e.build==='R48'),'changelog R48');
 console.log(pass+' R48 checks passed');

@@ -1,4 +1,5 @@
 import { houseEvent } from "./families.js";
+import { readChart } from "./saltmere.js";
 import { roleBonus } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { opensOk } from "./chores.js";
@@ -69,6 +70,21 @@ export function wantsOf(s, npcId) {
   const k = cycleMult(s, npcId);
   return Object.fromEntries(Object.entries(r.wants).map(([a, v]) => [a, Math.ceil(v * k)]));
 }
+// R49: food a villager has asked for is set aside (not eaten) while the request is open and their town has been visited
+const holdCache = new WeakMap();
+export function reqHold(s, k) {
+  let c = holdCache.get(s);
+  if (!c || c.d !== s.day) {
+    c = { d: s.day, h: {} };
+    for (const n of (D.requests && D.requests.npcs) || []) {
+      if (!npcOpen(s, n) || (n.town !== HOME && n.town !== "village" && !(s.townsVisited || []).includes(n.town))) continue;
+      const w = wantsOf(s, n.id);
+      if (w) for (const [a, v] of Object.entries(w)) c.h[a] = (c.h[a] || 0) + v;
+    }
+    holdCache.set(s, c);
+  }
+  return c.h[k] || 0;
+}
 export function deliverIssue(s, npcId) {
   const n = npcDef(npcId);
   if (!n) return "no such villager";
@@ -104,7 +120,7 @@ export function deliverRequest(s, npcId) {
   let extra = null;
   if (e && !(s.reqPerks || []).some(p => p.from === r.id)) {
     (s.reqPerks = s.reqPerks || []).push({ ...e, from: r.id, npc: n.id });
-    if (e.type === "chart" && !(s.charts ||= []).includes(e.region)) s.charts.push(e.region); // R48 Merrow's sea chart (Saltmere opens in R49)
+    if (e.type === "chart") readChart(s, e); // R48/R49 Merrow's sea chart: the Saltmere Coast is found
     if (e.type === "recipe" && e.dish && !(s.dishes ||= []).includes(e.dish)) s.dishes.push(e.dish); // R42
     if (e.type === "questline") {
       const q0 = findId(D.quests, e.quests[0]);

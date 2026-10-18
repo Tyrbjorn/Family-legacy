@@ -58,7 +58,9 @@ function famLines(hd) {
   return `<div class="muted" style="font-size:12px">${hd.major ? "⭐ Major house" : "Minor house"} · seat ${(E.findId(D.towns, hd.seat) || {}).name || hd.seat} · goal: ${hd.goal || "?"} · <span title="${tp.text || ""}">${tp.icon || ""} ${tp.name || hd.temperament || ""}</span> · ${mm}${hd.rival ? ` · ⚔️ sworn rival of ${(E.houseDef(hd.rival) || {}).name}` : ""}</div>
 <div class="muted" style="font-size:12px">${tp.text || ""}</div>
 ${pk ? `<div class="muted" style="font-size:12px">Perks · ${pk}</div>` : ""}
-${th ? `<div class="muted" style="font-size:12px">📜 Thread “${th.name}”: ${E.threadDone(s, hd.id) ? "✅ complete" : `${k}/${n}${k === 0 && !E.threadQuests(hd.id).some(q => E.known(s, q)) ? " (opens once you know their seat and they're Neutral or better)" : ""}`}</div>` : ""}`;
+${th ? `<div class="muted" style="font-size:12px">📜 Thread “${th.name}”: ${E.threadDone(s, hd.id) ? "✅ complete" : `${k}/${n}${k === 0 && !E.threadQuests(hd.id).some(q => E.known(s, q)) ? " (opens once you know their seat and they're Neutral or better)" : ""}`}</div>` : ""}
+${th && th.also ? `<div class="muted" style="font-size:12px">🪸 Also: “${E.questChainName(th.also)}” ${E.questChainStep(s, th.also)}/${E.questChain(th.also).length}${E.choiceMade(s, th.also) ? (E.choiceMade(s, th.also) === "keep" ? " · you kept their secret" : " · you told the Church") : ""}</div>` : ""}
+${hd.marriageTrait ? `<div class="muted" style="font-size:12px">💍 Marrying in: ${hd.marriageTrait.text || hd.marriageTrait.id}</div>` : ""}`;
 }
 
 function houseCard(hd) {

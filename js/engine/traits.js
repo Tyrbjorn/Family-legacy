@@ -23,7 +23,7 @@ export function traitWeights(s) {
 
 export function rollTrait(s, have) {
   const w = traitWeights(s);
-  const pool = D.traits.filter(t => !have.some(o => conflicts(o, t.id)));
+  const pool = D.traits.filter(t => !t.houseOnly && !have.some(o => conflicts(o, t.id))); // R49 house traits come only by blood
   const tot = pool.reduce((a, t) => a + (w[t.rarity || "common"] || 0), 0);
   let x = rng() * tot;
   for (const t of pool) {

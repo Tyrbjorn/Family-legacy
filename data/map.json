@@ -1,7 +1,7 @@
 {
  "size": {
   "w": 1600,
-  "h": 1400
+  "h": 1720
  },
  "speed": 225,
  "minTravel": 0.5,
@@ -35,6 +35,14 @@
    "w": 1440,
    "h": 255,
    "color": "#55606b"
+  },
+  {
+   "id": "saltcoast",
+   "x": 30,
+   "y": 1340,
+   "w": 780,
+   "h": 350,
+   "color": "#3d5a63"
   }
  ],
  "towns": {
@@ -57,6 +65,10 @@
   "gullport": {
    "x": 63,
    "y": 705
+  },
+  "saltmere": {
+   "x": 130,
+   "y": 1430
   }
  },
  "points": {
@@ -711,6 +723,106 @@
   "ht_sallow3": {
    "x": 159,
    "y": 212
+  },
+  "n_saltpans": {
+   "x": 270,
+   "y": 1470
+  },
+  "n_kelpbeds": {
+   "x": 72,
+   "y": 1510
+  },
+  "n_tidalpools": {
+   "x": 80,
+   "y": 1625
+  },
+  "n_amberdunes": {
+   "x": 430,
+   "y": 1600
+  },
+  "d_grotto": {
+   "x": 150,
+   "y": 1665
+  },
+  "q_salt_raiders": {
+   "x": 75,
+   "y": 1412
+  },
+  "q_salt_whale": {
+   "x": 200,
+   "y": 1560
+  },
+  "q_salt_lighthouse": {
+   "x": 42,
+   "y": 1425
+  },
+  "q_salt_pans": {
+   "x": 300,
+   "y": 1440
+  },
+  "q_salt_kelp": {
+   "x": 95,
+   "y": 1530
+  },
+  "q_salt_fog": {
+   "x": 128,
+   "y": 1585
+  },
+  "q_salt_divers": {
+   "x": 110,
+   "y": 1610
+  },
+  "q_salt_eels": {
+   "x": 240,
+   "y": 1640
+  },
+  "q_salt_tithe": {
+   "x": 520,
+   "y": 1420
+  },
+  "q_salt_dunes": {
+   "x": 470,
+   "y": 1560
+  },
+  "b_bell": {
+   "x": 60,
+   "y": 1470
+  },
+  "b_vaelsmugglers": {
+   "x": 170,
+   "y": 1650
+  },
+  "reef1": {
+   "x": 140,
+   "y": 1440
+  },
+  "reef2": {
+   "x": 55,
+   "y": 1545
+  },
+  "reef3": {
+   "x": 262,
+   "y": 1380
+  },
+  "reef4": {
+   "x": 36,
+   "y": 1540
+  },
+  "ht_gilmane1": {
+   "x": 150,
+   "y": 1415
+  },
+  "ht_gilmane2": {
+   "x": 290,
+   "y": 1500
+  },
+  "ht_gilmane3": {
+   "x": 270,
+   "y": 1374
+  },
+  "hq_raid_gilmane": {
+   "x": 330,
+   "y": 1460
   }
  },
  "areas": [
@@ -938,6 +1050,84 @@
      "needs": "d_stormhold"
     }
    ]
+  },
+  {
+   "id": "a_strand",
+   "name": "Southern Strand",
+   "region": "outskirts",
+   "x": 110,
+   "y": 1000,
+   "r": 70,
+   "days": 3,
+   "secrets": [
+    {
+     "type": "region",
+     "id": "saltcoast",
+     "chance": 0.45
+    },
+    {
+     "type": "encounter",
+     "id": "e_bogwisp",
+     "chance": 0.05,
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "type": "cache",
+     "id": "c_strand",
+     "chance": 0.5,
+     "reward": {
+      "coin": 90,
+      "salt": 20
+     }
+    }
+   ]
+  },
+  {
+   "id": "a_saltshore",
+   "name": "Saltmere Shore",
+   "region": "saltcoast",
+   "x": 470,
+   "y": 1510,
+   "r": 150,
+   "days": 4,
+   "secrets": [
+    {
+     "type": "town",
+     "id": "saltmere",
+     "chance": 1
+    },
+    {
+     "type": "reveal",
+     "id": "n_tidalpools",
+     "chance": 0.7
+    },
+    {
+     "type": "reveal",
+     "id": "n_amberdunes",
+     "chance": 0.6
+    },
+    {
+     "type": "dungeon",
+     "id": "d_grotto",
+     "chance": 0.6
+    },
+    {
+     "type": "reveal",
+     "id": "q_salt_dunes",
+     "chance": 0.5
+    },
+    {
+     "type": "cache",
+     "id": "c_saltwreck",
+     "chance": 0.4,
+     "reward": {
+      "coin": 220,
+      "amber": 3
+     }
+    }
+   ]
   }
  ],
  "encounterNames": {
@@ -953,7 +1143,7 @@
   }
  },
  "quadrantMaps": {
-  "_note": "R30: each town sells the map of the quarter of the world it stands in. Buying charts the terrain (fog '2': drawn clear but not 'seen') and marks towns, dungeons and landmark locations discovered. Quests, resource nodes and hidden spots still need exploring. Placeholder prices.",
+  "_note": "R30: each town sells the map of the quarter of the world it stands in. Buying charts the terrain (fog '2': drawn clear but not 'seen') and marks towns, dungeons and landmark locations discovered. Quests, resource nodes and hidden spots still need exploring. Placeholder prices. R49: maxY: the Saltmere Coast below it is charted only by exploring or Merrow's chart.",
   "split": {
    "x": 800,
    "y": 700
@@ -976,7 +1166,8 @@
     "price": 400
    }
   },
-  "homeQuad": "nw"
+  "homeQuad": "nw",
+  "maxY": 1335
  },
  "specialMaps": {
   "_note": "R30 special maps: items with slot 'map'. Found via a source's mapDrop (dungeon clear or quest), read from the Bag. Effects: reveal (quest/node/dungeon ids, or loc:<id>), nodes (hidden nodes in a region with any of the listed resources). Quadrant maps never show these.",

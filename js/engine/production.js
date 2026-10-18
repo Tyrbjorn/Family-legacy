@@ -59,7 +59,11 @@ export const DEFAULT_RESERVE = {
   vegetables: 0,
 };
 
-export const reserveOf = (s, k) => (s.reserve || {})[k] || 0;
+// R49: goods carried to a deliver quest are held back (not eaten, cooked or sent off) until the traveller hands them over
+let dq = null, dqSrc = null;
+const deliverQ = id => { if (dqSrc !== D.quests) { dqSrc = D.quests; dq = new Map((D.quests || []).filter(q => q.deliver).map(q => [q.id, q.deliver])); } return dq.get(id); };
+export const enRoute = (s, k) => { let n = 0; for (const m of s.members || []) { const a = m.alive && m.action; if (a && a.type === "quest" && !(a.trip && a.trip.resolved)) { const d = deliverQ(a.target); if (d && d[k]) n += d[k]; } } return n; };
+export const reserveOf = (s, k) => ((s.reserve || {})[k] || 0) + enRoute(s, k);
 
 export function setReserve(s, k, n) {
   if (!(k in DEFAULT_RESERVE)) return false;

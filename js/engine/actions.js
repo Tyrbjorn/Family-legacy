@@ -26,6 +26,7 @@ import {
 import { minionPower } from "./minions.js";
 import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
 import { refineDay, taskYields } from "./requests.js";
+import { checkBonus } from "./saltmere.js";
 import { landFish } from "./fish.js";
 import { exploreDay, travelDays } from "./map.js";
 import { activityOk, canTrain, gainXp, jobOk, themedFor } from "./skills.js";
@@ -35,7 +36,7 @@ import { memberFail } from "./geartypes.js";
 export function successChance(s, m, q) {
   const c = cp(s, m);
   const qc = enemyCp(s, m, q.cp);
-  const p = Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll")));
+  const p = Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll") + checkBonus(m, q))); // R49 skill checks
   // a caster's spells can fail in armor: fights and magic-skill quests lose that share of the odds
   const f = q.cp > 0 || D.gear.kinds.spellFail.magicSkills.includes(q.skill) ? memberFail(m) : 0;
   return f ? Math.max(0.05, p * (1 - f)) : p;

@@ -17,7 +17,7 @@ ok(!/list below the map/.test(JSON.stringify(D.tutorial)),'no stale quest-list t
   E.setAction(s,{type:'quest',target:'rats'}); for(let i=0;i<60&&!s.doneQuests.includes('rats');i++) E.advanceReal(s,10);
   ok(s.doneQuests.includes('rats')&&E.stepDone(s,D.tutorial.steps.find(x=>x.id==='rats'))&&!s.log.some(l=>/failed Rats/.test(l.msg)),'rats is won on day 1 with the starting kit (R31: rats step counts done whenever it is reached)'); }
 // --- map size, start reveal
-ok(D.map.size.w===1600&&D.map.size.h===1400,'map 1600x1400');
+ok(D.map.size.w===1600&&D.map.size.h>=1400,'map 1600 wide (R49: taller for the Saltmere Coast)');
 { const s=fresh(); const pc=E.fogPct(s);
   ok(pc>0.03&&pc<0.1,'start: ~7% charted (home + Millbrook) '+pc.toFixed(3));
   const th=D.towns.find(t=>t.id==='thornwick'); ok(!E.townKnown(s,th)&&E.townKnown(s,D.towns.find(t=>t.id==='millbrook')),'Thornwick not known at start, Millbrook is');
@@ -32,7 +32,7 @@ ok(D.map.size.w===1600&&D.map.size.h===1400,'map 1600x1400');
   const q0=D.quests.filter(q=>E.questVisible(s,q)).length, n0=D.nodes.filter(n=>E.nodeVisible(s,n)).length, f0=E.fogPct(s);
   const ash=D.towns.find(t=>t.id==='ashford'); ok(!E.townKnown(s,ash),'Ashford unknown before');
   ok(E.buyQuadMap(s,'millbrook')&&E.quadOwned(s,'nw')&&!E.buyQuadMap(s,'millbrook'),'buy the NW map once');
-  ok(E.fogPct(s)>f0+0.15&&E.townKnown(s,ash),'map charts the quarter and marks its towns');
+  ok(E.fogPct(s)>f0+0.15*1400/D.map.size.h&&E.townKnown(s,ash),'map charts the quarter and marks its towns');
   ok(D.quests.filter(q=>E.questVisible(s,q)).length===q0&&D.nodes.filter(n=>E.nodeVisible(s,n)).length===n0,'quests and resource nodes still need exploring');
   ok(D.dungeons.filter(d=>E.townQuad&&E.quadOf(D.map.points[d.id].x,D.map.points[d.id].y)==='nw').every(d=>s.revealed.includes(d.id)),'dungeons in the quarter marked');
   const hid=D.world.locations.filter(l=>l.hidden&&E.quadOf(l.x,l.y)==='nw'); ok(hid.every(l=>!E.locKnown(s,l)),'hidden spots stay hidden');
@@ -52,7 +52,7 @@ ok(D.map.size.w===1600&&D.map.size.h===1400,'map 1600x1400');
 { const s=fresh(); const old='0'.repeat(360).split(''); old[8*20+6]='1'; old[2*20+19]='1';
   s.fog=old.join(''); s.schema=29; s.tut={step:0,done:[],skipped:false,flags:{},tourSeen:true,started:true};
   const m=E.active(s); m.equip={}; s.vault=['rusty_sword']; const c0=s.res.coin; E.normalize(s);
-  ok(s.fog.length===32*28,'fog on the new grid');
+  ok(s.fog.length===32*Math.ceil(D.map.size.h/50),'fog on the new grid');
   ok(E.fogSeen(s,(6*50+25)*1.5,(8*50+25)*1.5)&&E.fogSeen(s,(19*50+25)*1.5,(2*50+25)*1.5),'every old revealed cell stays revealed (scaled)');
   ok(m.equip.weapon==='rusty_sword'&&D.tutorial.steps[s.tut.step].id==='rats'&&s.res.coin===c0+20,'mid-Gear-Up save: blade equipped, old reward paid, now on rats');
   const s2=JSON.parse(JSON.stringify(s)); delete s2.schema; E.normalize(s2); ok(s2.res.coin===s.res.coin,'re-running the step pays nothing twice'); }

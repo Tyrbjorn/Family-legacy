@@ -35,6 +35,11 @@
     "item": "fishnet",
     "mult": 0.15,
     "why": "Fishing Net"
+   },
+   {
+    "item": "reefgold_circlet",
+    "mult": 0.05,
+    "why": "Reef-Gold Circlet"
    }
   ],
   "task": true

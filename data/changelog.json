@@ -2,6 +2,24 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R49",
+      "title": "The Saltmere Coast",
+      "items": [
+        "🌫️ The Saltmere Coast opens south of Gull's Landing: explore the Southern Strand, or earn Captain Merrow's sea chart. Walk the slow coast road, or take the harbour ferry's Saltmere route (now sailing) or your own Sea Boat.",
+        "🧂 Saltmere: a salt-works town of fog, closed shutters and locals who stare a moment too long. Cheapest salt in the realm, plus kelp, pearls, amber and reef-gold, pale gold in shapes no smith can name. Reef-gold sells for about 115 everywhere except Saltmere (about 85 there). It wants flour, timber and ale.",
+        "🕯️ The Lodge of the Drowned Light owns most of the town, and Blackwater Reef lies offshore. Nobody talks about it. Three villagers: Salt-reeve Hask (a salt deal), Widow Kelda (her kelp chowder) and Old Tobiah, the harbour drunk, whose stories lead somewhere.",
+        "🪸 New optional Act 2 chain, “What the Reef Keeps”: Tobiah's stories, the lights on the reef (Sailing or Scouting; needs your Sea Boat), the Lodge's ledger (Etiquette or Thievery) and a low-tide wade. It ends with a choice: keep the secret (House Gilmane warms, reef-gold gets cheaper) or tell the Church (Healers' Guild rep, Gilmane turns Cold). The sea-cave stays sealed.",
+        "🕳️ The Smugglers' Grotto: three floors (power 80, 95, 110) of pearls, amber and smugglers' loot, and the Sea Gate at the end for families with their own Sea Boat.",
+        "🦀 Four nodes (Great Salt Pans, Kelp Beds, Tidal Pools with a rare pearl, Amber Dunes), ten coast jobs, a Saltmere job board and two Act 2 beats: “The Drowned Bell” and “Vael's Smugglers”, which leads into chapter 7.",
+        "🏭 The Salt Works (needs a Dock) boils brine into salt. The Kelp Vat makes kelp fertiliser, which Fields' Auto spreads for +5% field yield that season. New pearl and amber inlays, and the Reef-Gold Circlet (+1 CHA, +5% fishing; it's always faintly cold).",
+        "🌊 Rare coast events: reef fog (poor coast fishing, odd catches), a wide-eyed stranger who pays double for fish, and the Lodge procession, which shuts the Saltmere market for a day.",
+        "🕯️ House Gilmane of Saltmere, secretive keepers of “the old bargain”: reef-gold −15% at Friendly, Saltmere salt −20% at Allied, the thread “The Gilmane Ledger”, and children who may be born Sea-touched (+25% Fishing and Sailing XP). They hate prying.",
+        "🍺 The family no longer eats food a villager has asked for: the ale, fish or salted fish they want is set aside until you hand it over. Goods carried to a delivery quest stay packed until they arrive.",
+        "🍺 Towns can have a brewery that sells a few casks a month at a markup: ale at The Gull & Anchor (Gull's Landing), The Drowned Lamp (Saltmere) and Millbrook Brewhouse, and bramble wine at Thornwick's Bramble Cellar. Your own Brewery is still the cheaper source. On the map, quest-pin bubbles now sit clear of place names.",
+        "💾 Save step 45: Merrow's chart, if you already earned it, now finds the Saltmere Coast. House Gilmane starts Neutral. Your map keeps all its explored ground."
+      ]
+    },
+    {
       "build": "R48",
       "title": "Gull's Landing, the Sea Boat and the Families of the Realm",
       "items": [

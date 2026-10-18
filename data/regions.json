@@ -34,12 +34,12 @@
   "icon": "⚓",
   "cp": 80,
   "hidden": true,
-  "future": true,
   "requires": {
    "cp": 80,
    "discovered": "saltcoast",
    "location": "l_gullport"
   },
-  "desc": "Future: sea access from Gull's Landing (not yet open)."
+  "desc": "A fog-bound salt-works coast south of Gull's Landing, past the mountains' feet. Found by exploring the southern strand or with Captain Merrow's chart.",
+  "act": 1
  }
 ]

@@ -261,7 +261,7 @@ if (fail) process.exit(1);
   for (const [k, f] of Object.entries(WW.features)) ok(Object.keys(f.res).length && D.skills.some(x => x.id === f.skill) && (!f.structures || f.structures.every(st => D.estate.structures.some(x => x.id === st))), `feature ${k} valid`);
   ok(D.estate.lands.every(l => (WW.landFeatures[l.id] || []).length && WW.landFeatures[l.id].every(f => WW.features[f])), "every land parcel shows features");
   for (const [st, f] of Object.entries(WW.structureFeature)) ok([].concat(f).every(x => WW.features[x]) && D.estate.lands.some(l => [].concat(f).some(x => WW.landFeatures[l.id].includes(x))), `structure ${st} has a land with its feature`);
-  ok(D.regions.every(r => r.requires) && D.regions.some(r => r.future && r.requires.location), "regions carry unlock requirements; a future coast region stub");
+  ok(D.regions.every(r => r.requires) && D.regions.some(r => r.id === "saltcoast" && !r.future && r.requires.location), "regions carry unlock requirements; R49: the Saltmere Coast is open (no longer a stub)");
   const EV = D.events.types; ok(["bandits", "storm", "merchant", "lost", "monsters", "festival"].every(id => EV.some(e => e.id === id)) && EV.some(e => e.season) && EV.some(e => e.regions), "world events incl. season/region-tied ones");
   ok(EV.every(e => (e.season || []).every(x => D.seasons.order.includes(x)) && (e.regions || []).every(x => D.regions.some(r => r.id === x))), "event season/region filters valid");
   const EN = D.encounters.list; ok(["ambush", "lostsoul", "wmerchant", "sighting", "stormroad", "festband"].every(id => EN.some(e => e.id === id)), "road encounters added");

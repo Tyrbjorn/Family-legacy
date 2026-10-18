@@ -265,5 +265,17 @@
   "bulwark": 0.1,
   "desc": "+10% defense in heavy armor",
   "rarity": "good"
+ },
+ {
+  "id": "seatouched",
+  "name": "Sea-touched",
+  "icon": "🌊",
+  "rarity": "good",
+  "houseOnly": true,
+  "skillXp": {
+   "fishing": 0.25,
+   "sailing": 0.25
+  },
+  "desc": "+25% Fishing/Sailing XP. They love the sea (House Gilmane blood)."
  }
 ]

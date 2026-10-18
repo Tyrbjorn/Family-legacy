@@ -28,7 +28,8 @@
    "needs": {
     "location": "l_gullport",
     "text": "finding Gull's Landing"
-   }
+   },
+   "coast": true
   },
   {
    "id": "deepsea",
@@ -38,7 +39,8 @@
    "needs": {
     "item": "seaboat",
     "text": "a Sea Boat (Dock Slipway)"
-   }
+   },
+   "coast": true
   }
  ],
  "species": [

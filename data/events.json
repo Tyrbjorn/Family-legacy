@@ -252,6 +252,65 @@
    "effects": {
     "resPrice": 0.6
    }
+  },
+  {
+   "id": "reeffog",
+   "name": "Reef fog",
+   "icon": "🌫️",
+   "scope": "region",
+   "regions": [
+    "saltcoast"
+   ],
+   "weight": 0.4,
+   "days": [
+    3,
+    3
+   ],
+   "text": "Reef fog rolls over {place}: coast fishing is poor, and the odd catch comes up strange",
+   "effects": {
+    "coastFish": 0.8,
+    "oddCatch": 0.04
+   }
+  },
+  {
+   "id": "stranger",
+   "name": "A wide-eyed stranger",
+   "icon": "👁️",
+   "scope": "town",
+   "towns": [
+    "saltmere",
+    "gullport"
+   ],
+   "weight": 0.3,
+   "days": [
+    2,
+    4
+   ],
+   "text": "A wide-eyed stranger in {place} buys fish at double price, asking nothing",
+   "effects": {
+    "price": {
+     "fish": 2,
+     "saltedfish": 2
+    }
+   }
+  },
+  {
+   "id": "procession",
+   "name": "Lodge procession",
+   "icon": "🕯️",
+   "scope": "town",
+   "towns": [
+    "saltmere"
+   ],
+   "weight": 0.3,
+   "days": [
+    1,
+    1
+   ],
+   "text": "The Lodge walks to the harbour in {place}: the market is shut for the day",
+   "effects": {
+    "closed": true
+   }
   }
  ]
 }

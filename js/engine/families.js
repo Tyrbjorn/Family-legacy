@@ -29,7 +29,9 @@ export function activePerks(s, id) {
 export const allPerks = (s, type) => (s ? houseList().flatMap(h => activePerks(s, h.id)).filter(p => !type || p.type === type) : []);
 const sumPct = (L, f) => L.filter(f).reduce((a, p) => a + (p.pct || 0), 0);
 // −x on buying these market goods
-export const perkBuy = (s, res) => 1 - sumPct(allPerks(s, "buy"), p => (p.res || []).includes(res));
+// R49: a perk may name a town (Gilmane allied: Saltmere salt); villager deals (Hask) and choice boons count too
+export const perkBuy = (s, res, town) =>
+  Math.max(0.4, 1 - sumPct([...allPerks(s, "buy"), ...((s && s.reqPerks) || []).filter(p => p.type === "buy"), ...((s && s.boons) || []).filter(p => p.type === "buy")], p => (p.res || []).includes(res) && (!p.town || p.town === town)));
 // +x on selling in this town
 export const perkSell = (s, town) => 1 + sumPct(allPerks(s, "sell"), p => p.town === town);
 // −x on a town's shop items

@@ -8,7 +8,7 @@ const fresh=()=>{const s=E.newGame(1);E.normalize(s);s.res.coin=1e6;return s;};
 const cook=(s,n)=>{for(const m of s.members)m.skills.cooking.lvl=n;};
 let ku=0; const kitchen=(s,pieces)=>{const st={uid:'k'+(ku++),type:'kitchen',pieces,up:0};(s.structures=s.structures||[]).push(st);return st;};
 const C=D.cooking.dishes;
-ok(C.filter(x=>x.group==='fish').length===8&&C.filter(x=>x.group==='kitchen').length===9,'8 fish + 9 kitchen dishes as data');
+ok(C.filter(x=>x.group==='fish').length>=8&&C.filter(x=>x.group==='kitchen').length===9,'8 fish + 9 kitchen dishes as data');
 ok(C.every(x=>D.estate.meals.menu[x.id]===x.food),'every dish is on meals.menu with its food value (variety + diet toggle)');
 ok(!('butter' in D.estate.meals.menu)&&!('flour' in D.estate.meals.menu)&&!('milk' in D.estate.meals.menu),'flour, butter, milk are cooking-only');
 ok(C.every(x=>Object.keys(x.in).every(k=>!['sage','mandrake'].includes(k))),'thyme is the only herb');

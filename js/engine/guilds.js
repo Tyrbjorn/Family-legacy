@@ -121,6 +121,7 @@ export function joinGuild(s, m, gid) {
     if (!m.paths) m.paths = [];
   } else {
     m.guild = { id: gid, rank: 0, rep: apprRep(m, gid) };
+    if ((s.guildFavour || {})[gid]) (m.guild.rep += s.guildFavour[gid]), delete s.guildFavour[gid]; // R49 the Church remembers (reef chain)
     const cur = m.cls && findId(D.classes, m.cls);
     if (g.grantsClass && cur && !cur.tier && m.cls !== "adventurer" && m.cls !== g.grantsClass && (classGuild(m.cls) || {}).id !== gid) {
       // R46: an entry class from another guild is retrained as this guild's entry class (tiers only advance within one guild)

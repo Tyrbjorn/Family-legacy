@@ -71,6 +71,7 @@ export function reprojectFog(old, c, r, k) {
 export function fogInit(s) {
   const [c, r] = dims();
   if (s.fog && s.fog.length === OLD_FOG.c * OLD_FOG.r && c * r !== s.fog.length) s.fog = reprojectFog(s.fog, c, r, FG().cell);
+  if (s.fog && s.fog.length < c * r && s.fog.length % c === 0) s.fog += "0".repeat(c * r - s.fog.length); // R49: the map grew south (Saltmere Coast): keep the fog, add unseen rows
   if (!s.fog || s.fog.length !== c * r) s.fog = "0".repeat(c * r);
 }
 export function reveal(s, x, y, rad) {
@@ -303,7 +304,7 @@ export function hasBoat(s) {
 
 // ---- R30 quadrant maps (data/map.json quadrantMaps): sold by each town for its own quarter of the world
 const QM = () => MPD().quadrantMaps;
-export const quadOf = (x, y) => (y < QM().split.y ? "n" : "s") + (x < QM().split.x ? "w" : "e");
+export const quadOf = (x, y) => (QM().maxY && y > QM().maxY ? null : (y < QM().split.y ? "n" : "s") + (x < QM().split.x ? "w" : "e")); // R49: the Saltmere Coast (below maxY) is on no quarter map
 export const townQuad = id => { const p = MPD().towns[id]; return p ? quadOf(p.x, p.y) : null; };
 export const quadOwned = (s, q) => (s.quadMaps || []).includes(q);
 export const quadPrice = q => QM().quads[q].price;

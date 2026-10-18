@@ -30,8 +30,27 @@ function row(m, q, star) {
   const open = E.regionOpen(s, q.region);
   const iss = !open ? `region locked (CP ${rg.cp})` : E.questIssue(s, m, q) || E.questAgeIssue(m, q, s);
   const k = qKind(q);
-  return `<div class="card ${star ? "tut" : ""}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${star ? "⭐ <b>Start here:</b> " : k[0] + " "}<b>${q.name}</b><br><span class="muted">${rg.icon || ""} ${rg.name} · ${q.risk} · CP ${q.cp} · ${q.days}d · ${rew(q)} · 🚶 ${E.travelDays(q.id)}d${(so => (so ? ` · ${so.mode === "boat" ? "⛵" : "⛴️"} ${so.days}d${so.fare ? ` (${so.fare}🪙)` : ""}` : ""))(E.seaOption(s, q.id))}${q.act ? ` · Act ${q.act}${q.beat ? " beat" : ""}` : ""}</span>${q.desc && (q.grants || q.firstGrants || q.deliver) ? `<br><span class="muted" style="font-size:11px">${q.desc}</span>` : ""}</span>
+  return `<div class="card ${star ? "tut" : ""}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${star ? "⭐ <b>Start here:</b> " : k[0] + " "}<b>${q.name}</b><br><span class="muted">${rg.icon || ""} ${rg.name} · ${q.risk} · CP ${q.cp} · ${q.days}d · ${rew(q)} · 🚶 ${E.travelDays(q.id)}d${(so => (so ? ` · ${so.mode === "boat" ? "⛵" : "⛴️"} ${so.days}d${so.fare ? ` (${so.fare}🪙)` : ""}` : ""))(E.seaOption(s, q.id))}${q.act ? ` · Act ${q.act}${q.beat ? " beat" : ""}` : ""}${q.chain ? ` · 🪸 ${E.questChainName(q.chain)} ${q.step}/${E.questChain(q.chain).length}` : ""}${q.check ? ` · 🎲 ${E.checkText(m, q)}` : ""}</span>${q.desc && (q.grants || q.firstGrants || q.deliver || q.chain) ? `<br><span class="muted" style="font-size:11px">${q.desc}</span>` : ""}</span>
 <span class="row" style="gap:4px"><button class="b" data-a="qmap" data-v="${q.id}" title="Show on the map">📍</button><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss ? "disabled" : ""}>${on ? "On it" : "Go"}</button></span></div>${iss ? `<div class="muted">🔒 ${iss}</div>` : ""}</div>`;
+}
+
+// R49: choices waiting from a quest's ending (the reef chain): never block play
+export function choicesv() {
+  return E.pendingChoices(s).map(c => {
+    const ch = E.choiceOf(c.q);
+    return ch ? `<div class="card tut" id="choice-${c.id}" style="padding:8px"><b>❓ ${ch.title}</b><div class="muted">${ch.text}</div>${ch.options.map(o => `<div class="row" style="margin-top:6px"><span>${o.icon || ""} <b>${o.name}</b><br><span class="muted">${o.text}</span></span><button class="b" data-a="choose" data-v="${c.id}:${o.id}">Choose</button></div>`).join("")}</div>` : "";
+  }).join("");
+}
+// R49: optional quest chains (quests.json chain/step): shown once their first step is in reach
+export function chainsv() {
+  const ids = [...new Set(D.quests.filter(q => q.chain).map(q => q.chain))];
+  return ids.map(id => {
+    const L = E.questChain(id), n = E.questChainStep(s, id);
+    if (!n && !E.questVisible(s, L[0])) return "";
+    const pick = E.choiceMade(s, (L.find(q => q.choice) || {}).choice?.id);
+    const opt = pick && (L.find(q => q.choice).choice.options.find(o => o.id === pick) || {});
+    return `<div class="card" id="chain-${id}" style="padding:6px 8px;margin:4px 0"><b>🪸 ${E.questChainName(id)}</b> <span class="muted">${n}/${L.length}${L[0].act ? " · Act " + L[0].act : ""} · optional</span>${L.map(q => `<div class="muted">${s.doneQuests.includes(q.id) ? "✅" : E.questVisible(s, q) ? "▫️" : "🔒"} ${q.step}. ${E.questVisible(s, q) || s.doneQuests.includes(q.id) ? q.name : "(Old Tobiah may tell you more)"}</div>`).join("")}${opt ? `<div style="margin-top:4px">${opt.icon || ""} You chose: <b>${opt.name}</b>. The sea-cave stays sealed.</div>` : ""}</div>`;
+  }).join("");
 }
 
 export function questsv() {
@@ -39,7 +58,9 @@ export function questsv() {
   let h = "";
   const rats = E.findId(D.quests, "rats");
   if (ratsOpen()) h += row(m, rats, true);
+  h += choicesv();
   h += requestsv();
+  h += chainsv();
   const act = E.living(s).filter(x => x.action && x.action.type === "quest");
   h += `<h3>⚔️ Active (${act.length})</h3>` + (act.length ? act.map(x => {
     const q = E.findId(D.quests, x.action.target);

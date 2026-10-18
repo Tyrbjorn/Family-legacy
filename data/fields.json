@@ -329,5 +329,11 @@
   ],
   "choreHours": 2,
   "choreHourRate": 0.125
+ },
+ "fertiliser": {
+  "_note": "R49 kelp fertiliser: when a season starts, Fields' Auto spreads `perField` per field (all or nothing) for +bonus field yield that season.",
+  "res": "kelpfert",
+  "perField": 1,
+  "bonus": 0.05
  }
 }

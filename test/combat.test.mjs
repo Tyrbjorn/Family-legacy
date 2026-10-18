@@ -32,7 +32,7 @@ const gf=E.fight(s,[E.fighter('a',40,{mor:20}),E.fighter('b',40,{mor:20})],[E.fi
 ok(['win','fled','defeat','withdraw'].includes(E.fight(s,me(),foe()).result)&&/after round \d/.test(E.fightWord({result:'fled',rounds:3})),'results + "fled after round 3" wording');
 // dungeons: tiers, event counts, story/onClear hooks, loot per tier
 const DG=D.dungeons; const tiers=DG.map(E.dungeonTier);
-ok(tiers.join()==='1,1,2,3,4,4','dungeon tiers by first-floor power ('+tiers.join()+')');
+ok(tiers.join()==='1,1,2,3,4,4,3','dungeon tiers by first-floor power ('+tiers.join()+')');
 ok(DG.every(d=>E.dungeonEvents(d).length===2*E.dungeonTier(d)+2&&E.dungeonEvents(d).at(-1).kind==='fight'),'2·tier+2 events, ending on a fight');
 const sd={...DG[0],id:'t_story',story:[{at:1,text:'An old carving.'}],onClear:{unlock:'recipe:r_sword',text:'You found plans.'}};
 ok(E.dungeonEvents(sd).filter(e=>e.kind==='story').length===1,'story beats insert into the sequence');

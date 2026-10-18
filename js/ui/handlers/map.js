@@ -17,6 +17,7 @@ export const mapActions = ({ v, w, b, m }) => ({
     U.tab = "map";
   },
   qfilter: () => (U.qFilter = v),
+  choose: () => { const [id, opt] = v.split(":"); E.makeChoice(s, id, opt); }, // R49 quest choices
   deliver: () => E.deliverRequest(s, v),
   fishspot: () => E.setFishSpot(s, v),
   hidelocked: () => (s.hideLocked = s.hideLocked === false),

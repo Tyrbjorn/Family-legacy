@@ -55,13 +55,13 @@ export function eventsDay(s) {
   if (s.wevents.length >= CFG().maxActive || rng() >= CFG().chancePerDay * seasonEvents(s)) return;
   const sid = (D.seasons ? seasonId(s) : null);
   const types = CFG().types.filter(t => !t.season || !sid || t.season.includes(sid));
-  const w = types.map(t => (t.bad ? gameFx(s, "events") : 1)); // bad events weighted by difficulty
+  const w = types.map(t => (t.bad ? gameFx(s, "events") : 1) * (t.weight ?? 1)); // bad events weighted by difficulty; R49 rare ones carry `weight`
   let x = rng() * w.reduce((a, b) => a + b, 0);
   const t = types.find((_, i) => (x -= w[i]) < 0) || types[types.length - 1];
   if (!t) return;
   const pool = (t.scope === "town" ? D.towns : D.regions.filter(r => !r.future)).filter(
-    x => !t.regions || t.regions.includes(t.scope === "town" ? x.region : x.id),
-  );
+    x => (!t.regions || t.regions.includes(t.scope === "town" ? x.region : x.id)) && (!t.towns || t.towns.includes(x.id)),
+  ); // R49: `towns` pins a town event to these towns (the Lodge procession: Saltmere)
   if (!pool.length) return;
   const place = pool[Math.floor(rng() * pool.length)].id;
   if (s.wevents.some(x => x.place === place && (x.type === t.id || (t.group && (eventType(x.type) || {}).group === t.group)))) return; // R39: one shortage/glut per town
@@ -78,3 +78,17 @@ export const sellMult = (s, townId) => prod(eventsAtTown(s, townId), x => x.sell
 export const travelRisk = (s, region) => sum(eventsInRegion(s, region), x => x.travelRisk || 0);
 export const gatherMult = (s, region) => prod(eventsInRegion(s, region), x => x.gather || 1);
 export const eventMult = (s, region, key) => prod(eventsInRegion(s, region), x => x[key] || 1);
+
+// R49 (Saltmere) a closed market (Lodge procession), reef fog on the coast fishing spots (+ an odd catch)
+export const marketClosed = (s, townId) => !!s && eventsAtTown(s, townId).some(e => (eventType(e.type).effects || {}).closed);
+export const coastFishMult = s => activeEvents(s).reduce((a, e) => a * ((eventType(e.type).effects || {}).coastFish || 1), 1);
+export function oddCatch(s, amt) {
+  const p = activeEvents(s).reduce((a, e) => a + ((eventType(e.type).effects || {}).oddCatch || 0), 0);
+  if (p > 0 && rng() < p * Math.min(3, amt)) {
+    s.res.pearls = (s.res.pearls || 0) + 1;
+    log(s, "🌫️ Something odd came up in the fog-net: a pale fish with too-round eyes, and a pearl in its throat.");
+    return true;
+  }
+  return false;
+}
+

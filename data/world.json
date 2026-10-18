@@ -132,7 +132,8 @@
  "regionTerrain": {
   "outskirts": "plains",
   "forest": "forest",
-  "highlands": "highlands"
+  "highlands": "highlands",
+  "saltcoast": "coast"
  },
  "zones": [
   {
@@ -297,6 +298,15 @@
    "y": 1222.5,
    "rx": 150,
    "ry": 90
+  },
+  {
+   "id": "z_coastroad",
+   "t": "coast",
+   "shape": "rect",
+   "x": 30,
+   "y": 1040,
+   "w": 65,
+   "h": 660
   }
  ],
  "roadTypes": {
@@ -531,6 +541,29 @@
      1185
     ]
    ]
+  },
+  {
+   "id": "coastroad",
+   "type": "track",
+   "name": "The Coast Road",
+   "pts": [
+    [
+     64,
+     1060
+    ],
+    [
+     62,
+     1250
+    ],
+    [
+     70,
+     1380
+    ],
+    [
+     130,
+     1430
+    ]
+   ]
   }
  ],
  "fog": {
@@ -582,6 +615,14 @@
   "port": {
    "name": "Port",
    "icon": "⚓"
+  },
+  "lodge": {
+   "name": "Lodge",
+   "icon": "🕯️"
+  },
+  "reef": {
+   "name": "Reef",
+   "icon": "🪸"
   }
  },
  "locations": [
@@ -742,6 +783,35 @@
    "port": true,
    "desc": "Gull's Landing: a fishing port with a market, net-menders and a harbour ferry.",
    "town": "gullport"
+  },
+  {
+   "id": "l_saltmere",
+   "type": "port",
+   "name": "Saltmere",
+   "x": 130,
+   "y": 1430,
+   "region": "saltcoast",
+   "port": true,
+   "town": "saltmere",
+   "desc": "Saltmere: salt pans, closed shutters and a harbour full of fog."
+  },
+  {
+   "id": "l_lodge",
+   "type": "lodge",
+   "name": "Lodge of the Drowned Light",
+   "x": 262,
+   "y": 1386,
+   "region": "saltcoast",
+   "desc": "A tall, windowless hall by the harbour. Its members nod politely and say nothing. A pale lamp burns over the door day and night."
+  },
+  {
+   "id": "l_reef",
+   "type": "reef",
+   "name": "Blackwater Reef",
+   "x": 48,
+   "y": 1560,
+   "region": "saltcoast",
+   "desc": "Black rocks offshore that the tide uncovers twice a day. The fishing boats give it a wide berth, and nobody will say why."
   }
  ],
  "nodeDefaults": {
@@ -1229,8 +1299,9 @@
      {
       "id": "saltmere",
       "name": "Saltmere",
-      "region": "saltmere",
-      "opens": "R49: needs the Saltmere Coast open"
+      "region": "saltcoast",
+      "opens": "once the Saltmere Coast is found",
+      "to": "saltmere"
      }
     ]
    }

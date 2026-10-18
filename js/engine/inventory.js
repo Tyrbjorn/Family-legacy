@@ -1,4 +1,5 @@
 import { perkBuy, perkShop, perkShopItems } from "./families.js";
+import { marketClosed } from "./worldevents.js";
 import { hasStructType, markVisited } from "./sea.js";
 import { roleBonus } from "./guildtiers.js";
 import { findId } from "./lookup.js";
@@ -148,13 +149,14 @@ export const townBuyPrice = (s, townId, res) => {
         seasonPrice(s, res) *
         buyDemand(s, townId, res) *
         patronBuy(s, townId) *
-        perkBuy(s, res) * // R48 Ashbrook grain/milk, Vey wood, Corran ingots
+        perkBuy(s, res, townId) * // R48 Ashbrook grain/milk, Vey wood, Corran ingots; R49 Gilmane reef-gold / Saltmere salt, Hask
         100,
     ) / 100
   );
 };
 export function buyRes(s, townId, res, n) {
   if (!marketOf(townId).includes(res)) return false;
+  if (marketClosed(s, townId)) return false; // R49 Lodge procession
   const c = townBuyPrice(s, townId, res) * n;
   if (n <= 0 || s.res.coin < c) return false;
   s.res.coin -= c;
@@ -164,10 +166,32 @@ export function buyRes(s, townId, res, n) {
   return true;
 }
 
+// R49: town breweries (towns[].brewery): each sells a few brews a month at a markup over the town price; stock refills every 30 days
+export const breweryOf = townId => (findId(D.towns, townId) || {}).brewery || null;
+export const brewsOf = townId => Object.fromEntries(Object.entries((breweryOf(townId) || {}).brews || {}).filter(([k]) => k[0] !== "_"));
+export function brewLeft(s, townId, res) {
+  const d = brewsOf(townId)[res];
+  if (!d) return 0;
+  const b = ((s.brewBought || {})[townId] || {})[res];
+  return Math.max(0, d.n - (b && b.mo === Math.floor((s.day || 0) / 30) ? b.n : 0));
+}
+export const brewPrice = (s, townId, res) => Math.round((findId(D.towns, townId).prices[res] || 0) * ((brewsOf(townId)[res] || {}).mult || 1) * perkBuy(s, res, townId) * 100) / 100;
+export function buyBrew(s, townId, res, n) {
+  n = Math.min(n, brewLeft(s, townId, res));
+  const c = brewPrice(s, townId, res) * n;
+  if (n <= 0 || s.res.coin < c || marketClosed(s, townId)) return false;
+  s.res.coin -= c;
+  s.res[res] = (s.res[res] || 0) + n;
+  const mo = Math.floor((s.day || 0) / 30), tb = ((s.brewBought ||= {})[townId] ||= {});
+  tb[res] = tb[res] && tb[res].mo === mo ? { mo, n: tb[res].n + n } : { mo, n };
+  markVisited(s, townId);
+  return n;
+}
+
 export function sellRes(s, townId, res, n) {
   const t = findId(D.towns, townId);
   n = Math.min(n, Math.floor(s.res[res]));
-  if (n <= 0) return false;
+  if (n <= 0 || marketClosed(s, townId)) return false; // R49 Lodge procession
   s.res[res] -= n;
   s.res.coin += n * townSellPrice(s, townId, res);
   shiftSupply(s, townId, res, n);

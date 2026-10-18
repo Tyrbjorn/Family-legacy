@@ -97,9 +97,11 @@ export function mapSvg(m) {
   // R30: landmark locations that aren't hidden spots are always drawn, greyed until discovered
   for (const l of WD.locations)
     if (!l.hidden && !l.town && !E.locKnown(s, l)) g += greyPin("l:" + l.id, l.x, l.y, WD.locTypes[l.type].icon);
+  const kz = mapK(U.mv), marks = []; // R49: place pins + names drawn so far (map units), kept clear by quest-cluster bubbles
   for (const l of WD.locations)
     if (E.locKnown(s, l) && E.regionKnown(s, l.region) && !l.town) {
       const ty = WD.locTypes[l.type];
+      marks.push({ x: l.x - 17 * kz, y: l.y - 17 * kz, w: 34 * kz, h: 34 * kz }, { x: l.x - l.name.length * 4.2 * kz, y: l.y + 20 * kz, w: l.name.length * 8.4 * kz, h: 17 * kz });
       g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer">${pzO(l.x, l.y)}<rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${l.locked ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${l.locked ? "🔒" : ty.icon}</text><text class="ml" x="${l.x}" y="${l.y + 32}" font-size="14" font-weight="600" text-anchor="middle" fill="#2a1808" stroke="#f6ead0" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" font-family="serif">${l.name}</text></g></g>`;
     }
   for (const a of MP.areas.filter(a => E.regionKnown(s, a.region))) {
@@ -107,7 +109,9 @@ export function mapSvg(m) {
       sel = U.mapSel === "a:" + a.id;
     g += `<g data-a="mapsel" data-v="a:${a.id}" style="cursor:pointer"><circle cx="${a.x}" cy="${a.y}" r="${a.r}" fill="${ex ? "none" : "#cfd6d6"}" fill-opacity="${ex ? 0 : 0.75}" stroke="${sel ? "#ffd34d" : "#fff"}" stroke-width="${sel ? 5 : 2}" stroke-dasharray="${ex ? "8 6" : "0"}"/><text x="${a.x}" y="${a.y + 8}" font-size="${ex ? 20 : 34}" text-anchor="middle">${ex ? "🧭" : "❓"}</text><text x="${a.x}" y="${a.y + a.r - 10}" font-size="15" text-anchor="middle" fill="#fff">${ex ? a.name : "Unexplored"}</text></g>`;
   }
-  const pin = (id, x, y, ic, col, lab, kind) =>
+  // R49: drawn place pins + names, so a quest-cluster bubble can sit where it covers neither (map units at this zoom)
+  const pin = (id, x, y, ic, col, lab, kind) => (kind !== "q" && marks.push({ x: x - 17 * kz, y: y - 17 * kz, w: 34 * kz, h: 34 * kz }), kind !== "q" && lab && marks.push({ x: x - String(lab).length * 4.6 * kz, y: y + 19 * kz, w: String(lab).length * 9.2 * kz, h: 19 * kz }), pinSvg(id, x, y, ic, col, lab, kind));
+  const pinSvg = (id, x, y, ic, col, lab, kind) =>
     `<g data-a="mapsel" data-v="${kind}:${id}" style="cursor:pointer">${pzO(x, y)}<circle cx="${x}" cy="${y}" r="${U.mapSel === kind + ":" + id ? 20 : 15}" fill="#141824" stroke="${col}" stroke-width="2.5"/><text x="${x}" y="${y + 6}" font-size="16" text-anchor="middle">${ic}</text>${lab ? `<text class="ml" x="${x}" y="${y + 33}" font-size="15" font-weight="600" text-anchor="middle" fill="#fff" stroke="#1a1208" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">${lab}</text>` : ""}</g></g>`;
   for (const t of D.towns) if (!(E.townKnown(s, t) && E.regionKnown(s, t.region))) g += greyPin("t:" + t.id, MP.towns[t.id].x, MP.towns[t.id].y, t.icon);
   for (const t of D.towns)
@@ -140,7 +144,11 @@ export function mapSvg(m) {
     }
     const cx = grp.reduce((a, q) => a + MP.points[q.id].x, 0) / grp.length, cy = grp.reduce((a, q) => a + MP.points[q.id].y, 0) / grp.length;
     const star = grp.some(q => q.once || q.story), key = "g:" + grp.map(q => q.id).join(","), sel = U.mapSel === key;
-    const bx = cx + 30, by = cy - 30; // beside the spot (above-right), clear of the place name drawn below
+    // beside the spot: above-right unless that covers a place pin or name, then the first clear side (R49)
+    const hit = (bx, by) => marks.some(r => bx + 24 * kz > r.x && bx - 24 * kz < r.x + r.w && by + 15 * kz > r.y && by - 15 * kz < r.y + r.h);
+    const off = [[30, -30], [-30, -30], [46, 0], [-46, 0], [0, -42], [30, 30], [-30, 30], [0, 44], [60, -40], [-60, -40]].map(([dx, dy]) => [cx + dx * kz, cy + dy * kz]).find(([x, y]) => !hit(x, y)) || [cx + 30 * kz, cy - 30 * kz];
+    const bx = off[0], by = off[1];
+    marks.push({ x: bx - 25 * kz, y: by - 16 * kz, w: 50 * kz, h: 32 * kz }); // later bubbles keep clear of this one
     g += `<g data-a="mapsel" data-v="${key}" style="cursor:pointer">${pzO(bx, by)}<rect x="${bx - 24}" y="${by - 15}" width="48" height="30" rx="15" fill="#141824" stroke="${sel ? "#ffd34d" : star ? "#e8b84a" : "#59b7ff"}" stroke-width="${sel ? 4 : 2.5}"/><text x="${bx}" y="${by + 6}" font-size="15" font-weight="700" text-anchor="middle" fill="#fff">${star ? "⭐" : "🔁"} ${grp.length}</text></g></g>`;
   }
   for (const d of D.dungeons) if (!(E.known(s, d) && E.regionKnown(s, d.region)) && MP.points[d.id]) g += greyPin("d:" + d.id, MP.points[d.id].x, MP.points[d.id].y, d.icon);

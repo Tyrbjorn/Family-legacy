@@ -745,14 +745,176 @@
           },
           "extra": {
             "type": "chart",
-            "region": "saltmere",
-            "text": "Merrow's sea chart: the way to the Saltmere Coast is marked (the coast opens in a later update)."
+            "region": "saltcoast",
+            "town": "saltmere",
+            "text": "Merrow's sea chart: the way down the coast to Saltmere is marked (the Saltmere Coast is found)."
           }
         }
       ],
       "opens": {
         "town": "gullport"
       }
+    },
+    {
+      "id": "hask",
+      "town": "saltmere",
+      "name": "Salt-reeve Hask",
+      "icon": "🧂",
+      "task": "chop",
+      "opens": {
+        "town": "saltmere"
+      },
+      "desc": "A Lodge man: polite, and he never lets you near the reef.",
+      "requests": [
+        {
+          "id": "hask1",
+          "wants": {
+            "wood": 20
+          },
+          "reward": {
+            "coin": 60
+          }
+        },
+        {
+          "id": "hask2",
+          "wants": {
+            "wood": 30,
+            "planks": 10
+          },
+          "reward": {
+            "coin": 110,
+            "renown": 3
+          }
+        },
+        {
+          "id": "hask3",
+          "wants": {
+            "wood": 40,
+            "planks": 20
+          },
+          "reward": {
+            "coin": 170
+          },
+          "extra": {
+            "type": "buy",
+            "res": [
+              "salt"
+            ],
+            "pct": 0.15,
+            "text": "Hask's salt deal: salt costs you 15% less everywhere."
+          }
+        }
+      ]
+    },
+    {
+      "id": "kelda",
+      "town": "saltmere",
+      "name": "Widow Kelda",
+      "icon": "🕯️",
+      "task": "cook",
+      "opens": {
+        "town": "saltmere"
+      },
+      "desc": "Her husband went out to the reef and came back different. She warns you off the Lodge.",
+      "requests": [
+        {
+          "id": "kelda1",
+          "wants": {
+            "flour": 10
+          },
+          "reward": {
+            "coin": 50
+          }
+        },
+        {
+          "id": "kelda2",
+          "wants": {
+            "flour": 15,
+            "fish": 10
+          },
+          "reward": {
+            "coin": 90,
+            "food": 20
+          }
+        },
+        {
+          "id": "kelda3",
+          "wants": {
+            "flour": 20,
+            "kelp": 10
+          },
+          "reward": {
+            "coin": 140
+          },
+          "extra": {
+            "type": "recipe",
+            "dish": "kelpchowder",
+            "text": "Kelda shares her kelp chowder, the one thing her husband still asks for."
+          }
+        }
+      ]
+    },
+    {
+      "id": "tobiah",
+      "town": "saltmere",
+      "name": "Old Tobiah, the harbour drunk",
+      "icon": "🍺",
+      "task": "cook",
+      "opens": {
+        "town": "saltmere"
+      },
+      "desc": "Tells reef stories for ale. Each telling points you one step further along “What the Reef Keeps”.",
+      "requests": [
+        {
+          "id": "tobiah1",
+          "wants": {
+            "ale": 4
+          },
+          "reward": {
+            "coin": 20
+          },
+          "extra": {
+            "type": "questline",
+            "quests": [
+              "reef2"
+            ],
+            "text": "Tobiah swears he saw lights out on Blackwater Reef, the night his brother went missing."
+          }
+        },
+        {
+          "id": "tobiah2",
+          "wants": {
+            "ale": 6
+          },
+          "reward": {
+            "coin": 30
+          },
+          "extra": {
+            "type": "questline",
+            "quests": [
+              "reef3"
+            ],
+            "text": "Tobiah whispers that the Lodge keeps a ledger of everything that comes in from the reef."
+          }
+        },
+        {
+          "id": "tobiah3",
+          "wants": {
+            "ale": 8
+          },
+          "reward": {
+            "coin": 40
+          },
+          "extra": {
+            "type": "questline",
+            "quests": [
+              "reef4"
+            ],
+            "text": "Tobiah tells you when the low tide falls this month, and begs you not to go."
+          }
+        }
+      ],
+      "chain": "reef"
     }
   ],
   "repeat": {

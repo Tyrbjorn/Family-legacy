@@ -2437,6 +2437,53 @@
     "boats": 3
    },
    "desc": "Building ways for a decked Sea Boat; keeps small boats too"
+  },
+  {
+   "id": "kelpvat",
+   "name": "Kelp Vat",
+   "icon": "🌿",
+   "kind": "station",
+   "skill": "farming",
+   "cost": {
+    "coin": 60,
+    "planks": 8
+   },
+   "unlock": {
+    "loc": "l_saltmere"
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "kelp": 3
+      },
+      "out": "kelpfert",
+      "rate": 1
+     }
+    ]
+   },
+   "desc": "Kelp → kelp fertiliser. Fields' Auto spreads it: +5% field yield for a season. Learned at Saltmere."
+  },
+  {
+   "id": "brinepans",
+   "name": "Brine Pans",
+   "icon": "🧂",
+   "kind": "station",
+   "cost": {},
+   "fixedOnly": true,
+   "bonus": {
+    "processes": [
+     {
+      "in": {},
+      "out": "salt",
+      "rate": 4
+     }
+    ],
+    "jobs": {
+     "gather": 1
+    }
+   },
+   "desc": "Boils sea brine down: 4 salt/day."
   }
  ],
  "synergies": [
@@ -2710,7 +2757,12 @@
    "graniteblocks",
    "marbleblocks",
    "saltedfish",
-   "rope"
+   "rope",
+   "kelp",
+   "pearls",
+   "amber",
+   "reefgold",
+   "kelpfert"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2818,7 +2870,9 @@
     "graniteblocks",
     "marbleblocks",
     "saltedfish",
-    "rope"
+    "rope",
+    "kelp",
+    "kelpfert"
    ]
   },
   "3": {

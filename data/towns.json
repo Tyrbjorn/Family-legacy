@@ -68,7 +68,12 @@
    "granite": 8,
    "marble": 25,
    "saltedfish": 7,
-   "rope": 5
+   "rope": 5,
+   "kelp": 2.5,
+   "pearls": 55,
+   "amber": 35,
+   "reefgold": 115,
+   "kelpfert": 7
   },
   "shop": [
    "rusty_sword",
@@ -110,7 +115,18 @@
   "wants": [
    "ingots",
    "cloth"
-  ]
+  ],
+  "brewery": {
+   "name": "Millbrook Brewhouse",
+   "brews": {
+    "ale": {
+     "n": 16,
+     "mult": 1.6,
+     "from": "barley"
+    }
+   },
+   "_note": "R49 town breweries: brews (res → n per 30 days, price mult over the town price, from = local ingredient). Any town may list one; later rounds can give each region its own brews (cider in orchards, mead by beekeepers). A family Brewery stays cheaper."
+  }
  },
  {
   "id": "thornwick",
@@ -181,7 +197,12 @@
    "granite": 8,
    "marble": 25,
    "saltedfish": 8,
-   "rope": 5.5
+   "rope": 5.5,
+   "kelp": 2.5,
+   "pearls": 55,
+   "amber": 35,
+   "reefgold": 115,
+   "kelpfert": 7
   },
   "shop": [
    "iron_sword",
@@ -215,7 +236,17 @@
   "wants": [
    "salt",
    "ale"
-  ]
+  ],
+  "brewery": {
+   "name": "Bramble Cellar",
+   "brews": {
+    "wine": {
+     "n": 6,
+     "mult": 1.6,
+     "from": "berries"
+    }
+   }
+  }
  },
  {
   "id": "ashford",
@@ -286,7 +317,12 @@
    "granite": 8,
    "marble": 25,
    "saltedfish": 7.5,
-   "rope": 5
+   "rope": 5,
+   "kelp": 2.5,
+   "pearls": 55,
+   "amber": 35,
+   "reefgold": 115,
+   "kelpfert": 7
   },
   "shop": [
    "hunting_bow",
@@ -388,7 +424,12 @@
    "granite": 8,
    "marble": 25,
    "saltedfish": 8.5,
-   "rope": 6
+   "rope": 6,
+   "kelp": 2.5,
+   "pearls": 55,
+   "amber": 35,
+   "reefgold": 115,
+   "kelpfert": 7
   },
   "shop": [
    "iron_sword",
@@ -500,7 +541,12 @@
    "granite": 8,
    "marble": 25,
    "saltedfish": 6,
-   "rope": 5
+   "rope": 5,
+   "kelp": 2,
+   "pearls": 55,
+   "amber": 35,
+   "reefgold": 110,
+   "kelpfert": 7
   },
   "shop": [
    "fishnet",
@@ -523,6 +569,129 @@
    "planks",
    "flax",
    "ale"
-  ]
+  ],
+  "brewery": {
+   "name": "The Gull & Anchor",
+   "brews": {
+    "ale": {
+     "n": 12,
+     "mult": 1.8,
+     "from": "barley"
+    }
+   }
+  }
+ },
+ {
+  "id": "saltmere",
+  "name": "Saltmere",
+  "region": "saltcoast",
+  "icon": "🧂",
+  "coast": true,
+  "port": true,
+  "act": 1,
+  "desc": "Fog over the harbour, shutters closed by day, and locals who stare a moment too long. Saltmere lives on its salt pans, and most of the town belongs to a quiet sea lodge. Nobody talks about the reef.",
+  "prices": {
+   "food": 1,
+   "wood": 3.2,
+   "stone": 3,
+   "thyme": 4,
+   "planks": 6,
+   "ore": 4,
+   "ingots": 14,
+   "potions": 12,
+   "hides": 5,
+   "cloth": 7,
+   "meat": 3,
+   "fish": 1.8,
+   "honey": 6,
+   "eggs": 1,
+   "remedies": 8,
+   "leather": 9,
+   "salves": 14,
+   "dust": 10,
+   "bread": 4,
+   "cheese": 6,
+   "preserves": 6,
+   "smokedmeat": 7,
+   "sage": 3,
+   "mandrake": 8,
+   "moonpetal": 12,
+   "wheat": 1.5,
+   "barley": 1.5,
+   "vegetables": 1.5,
+   "berries": 2.0,
+   "milk": 1.5,
+   "salt": 2.0,
+   "flax": 2.4,
+   "flour": 4.4,
+   "butter": 4.0,
+   "ale": 6.0,
+   "pie": 8.0,
+   "porridge": 3.0,
+   "draught": 16.0,
+   "manatonic": 20.0,
+   "gems": 40,
+   "clay": 2,
+   "peat": 2,
+   "mushrooms": 2,
+   "wine": 12.5,
+   "spirits": 20.0,
+   "tinore": 4.0,
+   "tin": 10.0,
+   "bronze": 20.0,
+   "coal": 3.0,
+   "steel": 30.0,
+   "silverore": 8.0,
+   "silver": 30.0,
+   "goldore": 15.0,
+   "gold": 60.0,
+   "mithrilore": 40.0,
+   "mithril": 120.0,
+   "adamantore": 70.0,
+   "adamantium": 220.0,
+   "hay": 1,
+   "limestone": 5,
+   "granite": 8,
+   "marble": 25,
+   "saltedfish": 5.5,
+   "rope": 5,
+   "kelp": 1.5,
+   "pearls": 40,
+   "amber": 25,
+   "reefgold": 85,
+   "kelpfert": 5
+  },
+  "shop": [
+   "reefgold_circlet",
+   "fishnet",
+   "herbknife",
+   "padded_vest"
+  ],
+  "market": [
+   "food"
+  ],
+  "produces": [
+   "salt",
+   "kelp",
+   "pearls",
+   "amber",
+   "reefgold"
+  ],
+  "wants": [
+   "flour",
+   "wood",
+   "ale"
+  ],
+  "specialtyCap": 5,
+  "brewery": {
+   "name": "The Drowned Lamp",
+   "brews": {
+    "ale": {
+     "n": 8,
+     "mult": 2.0,
+     "from": "barley"
+    }
+   }
+  }
  }
 ]

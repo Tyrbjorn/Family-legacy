@@ -393,6 +393,71 @@
     "coin": 95,
     "favour": 12
    }
+  ],
+  "saltmere": [
+   {
+    "id": "sm_wood",
+    "name": "Saltmere wants 30 wood for the pan fires",
+    "kind": "deliver",
+    "band": 1,
+    "res": "wood",
+    "n": 30,
+    "days": 1,
+    "coin": 80,
+    "favour": 5
+   },
+   {
+    "id": "sm_gulls",
+    "name": "Clear the gull rookery off the pans",
+    "kind": "clear",
+    "band": 1,
+    "cp": 60,
+    "days": 2,
+    "coin": 90,
+    "favour": 5
+   },
+   {
+    "id": "sm_flour",
+    "name": "Saltmere wants 25 flour",
+    "kind": "deliver",
+    "band": 2,
+    "res": "flour",
+    "n": 25,
+    "days": 1,
+    "coin": 110,
+    "favour": 8
+   },
+   {
+    "id": "sm_escort",
+    "name": "Escort a salt wagon to Gull's Landing",
+    "kind": "escort",
+    "band": 2,
+    "to": "gullport",
+    "days": 2,
+    "coin": 130,
+    "favour": 8
+   },
+   {
+    "id": "sm_ale",
+    "name": "Saltmere wants 30 ale (the Lodge pays)",
+    "kind": "deliver",
+    "band": 3,
+    "res": "ale",
+    "n": 30,
+    "days": 1,
+    "coin": 160,
+    "favour": 12
+   },
+   {
+    "id": "sm_raiders",
+    "name": "Sink the raiders' longboat",
+    "kind": "clear",
+    "band": 3,
+    "cp": 100,
+    "days": 3,
+    "coin": 220,
+    "favour": 12
+   }
   ]
  },
  "lines": [

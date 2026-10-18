@@ -147,6 +147,7 @@ export function structIssue(s, type) {
   if (!hasLand(s)) return "buy land first";
   if (d.villageOnly) return "village only";
   if (landUsed(s) + d.land > landSlots(s)) return "no free land slot";
+  if (d.needsTown && !(s.discovered || []).includes(d.needsTown)) return "learned at " + ((D.towns.find(x => x.id === d.needsTown) || {}).name || d.needsTown); // R49 Salt Works
   if (d.requires && !(s.structures || []).some(x => x.type === d.requires || structDef(x.type).upgradeFrom === d.requires))
     return `needs a ${structDef(d.requires).name}`;
   if (d.legacy && !hasLegacy(s, d.legacy)) return "needs Legacy upgrade";

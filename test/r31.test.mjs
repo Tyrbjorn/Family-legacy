@@ -32,7 +32,7 @@ ok(D.tutorial.steps.slice(0,5).every(x=>x.tip&&(x.go||x.check==='quest:rats')),'
 ok(!D.tutorial.steps.some(x=>x.id==='activity'),'Stretch Your Legs merged into Gather Food');
 // requests
 { const s=fresh(); ok(D.requests.npcs.filter(n=>n.town==='millbrook').length===6,'6 Millbrook villagers (R33: Maud the Baker)');
-  ok(D.requests.npcs.every(n=>n.requests.filter(r=>r.extra).length===1),'1 extra per villager');
+  ok(D.requests.npcs.every(n=>n.requests.filter(r=>r.extra).length===(n.chain?n.requests.length:1)),'1 extra per villager');
   ok(E.deliverIssue(s,'bram').startsWith('need'),'cannot deliver without stock');
   s.res.wood=50; const c0=s.res.coin; const r=E.deliverRequest(s,'bram'); ok(r&&s.res.wood===40&&s.res.coin===c0+30&&s.res.planks>=5,'Bram: 10 wood → 30 coin + planks');
   ok(!E.openRequest(s,'bram')&&E.deliverIssue(s,'bram')==='no open request','one open request, then a cooldown');

@@ -1,4 +1,5 @@
 import { memberSnap, memberPwdCheck } from "./pausedone.js";
+import { houseBirthTrait } from "./saltmere.js";
 import { talentDay } from "./talents.js";
 import { AP, apprDay, apprSkill, birthInherit } from "./apprentice.js";
 import { quotaDay } from "./quotas.js";
@@ -198,6 +199,7 @@ function birthDay(s, m) {
   ) {
     const c = newMember(s, { age: 0, parents: [m.id, sp.id] });
     inheritTraits(s, c, [m, sp]);
+    houseBirthTrait(s, c, [m, sp]); // R49 House Gilmane: Sea-touched
     birthInherit(s, c, [m, sp]); // R35 stats/skill boosts from parents + lean
     c.ageDays = 0;
     s.members.push(c);

@@ -7,7 +7,8 @@ import { questLineNext } from "./requests.js";
 import { actLvl } from "./difficulty.js";
 import { houseQuestDone, houseQuestIssue } from "./houses.js";
 import { perkRep, questEvents, threadQuestDone } from "./families.js";
-import { markVisited, townKnownId } from "./sea.js";
+import { hasSeaBoat, markVisited, townKnownId } from "./sea.js";
+import { askChoice, checkSkill } from "./saltmere.js";
 import { chron } from "./chronicle.js";
 import { rollLoot, rollOre } from "./loot.js";
 import { mapDrop } from "./specialmaps.js";
@@ -46,7 +47,7 @@ export function resolveQuest(s, m, q, eff) {
     s.res[k] = (s.res[k] || 0) + n;
     gain.push(`+${n} ${k}`);
   }
-  gainXp(s, m, q.skill, T.xpPerDay * 2);
+  gainXp(s, m, checkSkill(m, q), T.xpPerDay * 2); // R49: a skill check trains the skill used
   const id = rollLoot(q, (cls(m) || {}).lootBonus || 0, actLvl(s, m));
   if (id) gain.push(addToVault(s, id) ? itemDef(id).name : "(vault full – loot lost)");
   const ore = rollOre(q);
@@ -67,6 +68,7 @@ export function resolveQuest(s, m, q, eff) {
   if (q.house || q.against) houseQuestDone(s, q);
   questEvents(s, q); // R48 temperament events (bandits cleared, cruelty)
   threadQuestDone(s, q, m); // R48 house thread finished
+  if (firstDone && q.choice) askChoice(s, q); // R49 the reef chain's ending waits for your choice
   if (q.town) markVisited(s, q.town);
   questLineNext(s, q);
   if (q.story) s.deeds.push(`Story ch. ${q.story}: ${q.name}.`);
@@ -94,6 +96,12 @@ export function resolveQuest(s, m, q, eff) {
 }
 
 export const dungeonDef = id => (D.dungeons || []).find(d => d.id === id);
+// R49: the run as it will go today: `boat` floors (the Grotto's Sea Gate) only with your own Sea Boat
+export function dungeonRun(s, id) {
+  const dg = dungeonDef(id);
+  if (!dg || !dg.floors.some(f => f.boat) || (s && hasSeaBoat(s))) return dg;
+  return { ...dg, floors: dg.floors.filter(f => !f.boat) };
+}
 
 // ---- quests: story / one-time / rare drops
 export function questIssue(s, m, q) {
@@ -104,9 +112,11 @@ export function questIssue(s, m, q) {
   if (!questOk(m, q)) return "guild rank";
   if (q.req?.town && !townKnownId(s, q.req.town)) return "find " + ((findId(D.towns, q.req.town) || {}).name || q.req.town); // R48
   if (q.req?.story && !storyDone(s, q.req.story)) return "after chapter " + q.req.story; // R48 side beats open after a chapter
+  const nd = (q.req?.done || []).find(id => !s.doneQuests.includes(id));
+  if (nd) return "first: " + ((findId(D.quests, nd) || {}).name || nd); // R49 chain steps in order
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
-  if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).endsWith(q.req.item))) return "needs a " + (findId(D.items, q.req.item) || {}).name;
+  if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).split("#")[0].split("|")[1] === q.req.item)) return "needs a " + (findId(D.items, q.req.item) || {}).name;
   if (q.req?.land && !s.land.includes(q.req.land)) return "needs the " + (ES().lands.find(l => l.id === q.req.land) || {}).name + " deed";
   if (!q.story && q.req?.era && era(s).n < q.req.era) return "Era " + q.req.era;
   if (q.deliver && !afford(s, q.deliver)) return "deliver " + Object.entries(q.deliver).map(([k, v]) => v + " " + k).join(", ");

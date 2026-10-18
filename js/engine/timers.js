@@ -8,6 +8,7 @@ import { itemDef, recipeDef } from "./inventory.js";
 import { enchDef, enchTimer } from "./gear.js";
 import { MLV, minionXpNeed } from "./minions.js";
 import { tripLeft, tripPhase, tripTotal } from "./map.js";
+import { dungeonRun } from "./quests.js";
 import { D, T, living, xpNeed } from "./state.js";
 import { activeEvents, eventText, eventType } from "./worldevents.js";
 
@@ -51,7 +52,7 @@ export function memberTimer(s, m) {
       ph = tripPhase(a);
     let what = `${a.type} ${a.target} · ${PHASE[ph] || "done"}`;
     if (a.type === "dungeon" && ph === "task") {
-      const dg = (D.dungeons.list || D.dungeons).find(x => x.id === a.target);
+      const dg = dungeonRun(s, a.target); // R49 boat floors
       if (dg) {
         let t = a.trip.t - a.trip.out,
           f = 0;

@@ -1885,7 +1885,7 @@
   }
  },
  "inlays": {
-  "_note": "Inlays at the forge: one per accessory or charm without enchants. Gold/silver need a Goldsmith; a cut gem needs a Jeweler (Grandmaster Goldsmith + Gemcutter) and adds an enchant slot.",
+  "_note": "Inlays at the forge: one per accessory or charm without enchants. Gold/silver need a Goldsmith; a cut gem needs a Jeweler (Grandmaster Goldsmith + Gemcutter) and adds an enchant slot. R49: pearl and amber inlays (Saltmere) also need a Goldsmith.",
   "slots": [
    "accessory",
    "charm"
@@ -1907,6 +1907,16 @@
     "value": 0.15,
     "enchSlot": 1,
     "needs": "jeweler"
+   },
+   "pearls": {
+    "name": "pearl",
+    "value": 0.3,
+    "needs": "goldsmith"
+   },
+   "amber": {
+    "name": "amber",
+    "value": 0.2,
+    "needs": "goldsmith"
    }
   }
  }

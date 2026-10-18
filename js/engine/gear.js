@@ -74,6 +74,7 @@ export function gearFx(equip, who = "member") {
     const tbl = who === "minion" ? p.set.minion || {} : p.set.bonus;
     for (const [k, fx] of Object.entries(tbl)) if (p.n >= +k) addFx(t, scaleFx(fx, p.scale));
   }
+  for (const id of Object.values(equip || {})) if ((findId(D.items, splitId(id).base.split("~")[0]) || {}).fx) addFx(t, findId(D.items, splitId(id).base.split("~")[0]).fx); // R49 item `fx` (Reef-Gold Circlet +1 CHA)
   for (const id of Object.values(equip || {}))
     for (const tok of splitId(id).ench) {
       const fx = { ...tokFx(tok) };
@@ -250,6 +251,7 @@ export function itemStats(id, m) {
   if (!it) return [];
   const L = [], add = (k, t) => L.push({ k, t });
   if (it.cp) add("cp", `${ROLE[it.slot] || "power"} +${it.cp} CP`);
+  if (it.fx && it.fx.stats) add("fx", "✨ " + Object.entries(it.fx.stats).map(([k, v]) => `${v > 0 ? "+" : ""}${v} ${k}`).join(", ") + " when worn"); // R49 item fx
   if (it.teaches) add("teaches", `📜 teaches ${it.teaches.startsWith("recipe:") ? "the recipe " : ""}${((D.crafting.recipes.find(r => "recipe:" + r.id === it.teaches) || {}).name) || it.teaches}`); // R48 plans
   if (it.slot === "map") add("map", `🗺️ ${it.desc || "Special map: read it from the Bag"}`);
   L.push(...typeStats(it, m));

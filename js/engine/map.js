@@ -61,7 +61,7 @@ import { memberFx, pathFinds } from "./paths.js";
 import { addToVault, itemDef } from "./inventory.js";
 import { mountSpeed } from "./endgame.js";
 import { addMinion, minionRoom } from "./minions.js";
-import { dungeonClear, dungeonDef, dungeonFloor, questIssue, resolveQuest, rollRare } from "./quests.js";
+import { dungeonClear, dungeonDef, dungeonFloor, dungeonRun, questIssue, resolveQuest, rollRare } from "./quests.js";
 import { gainXp } from "./skills.js";
 import { D, T, active, isAdult, known, living, log, r, rng } from "./state.js";
 
@@ -99,7 +99,7 @@ export function travelTick(s, m, a, eff) {
       gainXp(s, m, q.skill, T.xpPerDay * 0.6 * eff);
     }
     if (a.type === "dungeon") {
-      const dg = dungeonDef(a.target);
+      const dg = dungeonRun(s, a.target); // R49: the Grotto's Sea Gate floor only with your own Sea Boat
       gainXp(s, m, dg.skill, T.xpPerDay * 0.7 * eff);
       let cum = t.out;
       t.floor = t.floor || 0;
@@ -244,8 +244,8 @@ export function deliverLoad(s, who, t) {
 
 export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon", "bjob"];
 
-export function taskDays(a) {
-  if (a.type === "dungeon") return dungeonDef(a.target).floors.reduce((x, f) => x + f.days, 0);
+export function taskDays(a, s) {
+  if (a.type === "dungeon") return dungeonRun(s, a.target).floors.reduce((x, f) => x + f.days, 0); // R49: boat floors only with a Sea Boat
   if (a.type === "quest") return findId(D.quests, a.target).days;
   if (a.type === "explore") return areaDef(a.target).days;
   if (a.type === "bjob") return bjobDays(a);
@@ -257,14 +257,14 @@ export function newTrip(a, s) {
   const walk = travelDays(a.target);
   const out = Math.round((walk / (s ? mountSpeed(s) : 1) / tv) * 10) / 10;
   const hs = a.type === "gather" && s && D.world ? haulTier(s, { coast: isCoastal(a.target) }).haulSpeed : 1;
-  const t = { out, task: taskDays(a), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
+  const t = { out, task: taskDays(a, s), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
   // R48: by Sea Boat (or the harbour ferry, paid on the first day) to a coastal destination
   const so = s && D.world ? seaOption(s, a.target, walk) : null;
   if (so) {
     const sOut = Math.round((so.land / (mountSpeed(s) || 1) + so.sea) * 10) / 10;
     if (sOut < out) {
       Object.assign(t, { walkOut: t.out, walkBack: t.back, out: sOut, back: Math.round((so.land / (mountSpeed(s) || 1) / hs + so.sea) * 10) / 10, sea: so.mode });
-      if (so.mode === "ferry") t.ferry = so.fare * 2; // there and back
+      if (so.mode === "ferry") (t.ferry = so.fare * 2), (t.route = so.route); // there and back
     }
   }
   return t;

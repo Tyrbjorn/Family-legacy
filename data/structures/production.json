@@ -2943,5 +2943,47 @@
     ]
    }
   ]
+ },
+ {
+  "id": "saltworks",
+  "name": "Salt Works",
+  "icon": "🧂",
+  "fixed": [
+   "brinepans"
+  ],
+  "allowed": [
+   "storage"
+  ],
+  "cost": {
+   "coin": 400,
+   "planks": 20,
+   "stone": 30
+  },
+  "upgrades": [
+   {
+    "name": "Deeper Pans",
+    "cost": {
+     "coin": 300,
+     "planks": 10
+    },
+    "mult": 0.25,
+    "cap": 1
+   },
+   {
+    "name": "Boiling House",
+    "cost": {
+     "coin": 700,
+     "stone": 30
+    },
+    "mult": 0.25,
+    "cap": 1
+   }
+  ],
+  "desc": "Brine into salt (4/day), hauled by your teamsters. Needs a Dock; learned at Saltmere.",
+  "land": 1,
+  "slots": 1,
+  "level": 1,
+  "requires": "dock",
+  "needsTown": "saltmere"
  }
 ]
