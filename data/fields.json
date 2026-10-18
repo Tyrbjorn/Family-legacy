@@ -160,6 +160,12 @@
   "producers": {
    "orchard": {
     "note": "Orchard fruit trees: berries wait at the trees for haul"
+   },
+   "chickencoop": {
+    "note": "eggs wait at the coop"
+   },
+   "cowpen": {
+    "note": "milk waits at the pen"
    }
   },
   "producersNote": "Any producer building listed here sends its raw harvest (outputs with no inputs) to the haul pile instead of straight to storage. Livestock (chicken coop, cow pen, ranch) can be added here later."
@@ -260,6 +266,58 @@
    "barley": 1.5,
    "vegetables": 2,
    "flax": 0.8
+  }
+ },
+ "animals": {
+  "note": "Simple base-game animals kept by producer buildings. Bought, fed (world.feed), tended ~1 h/day like a field. No breeding or butchering (expansion).",
+  "untended": 0.25,
+  "restWhenFull": true,
+  "noRegrow": true,
+  "types": {
+   "chickencoop": {
+    "name": "Hens",
+    "icon": "🐔",
+    "out": "eggs",
+    "hours": 1,
+    "buy": {
+     "n": 6,
+     "cost": {
+      "coin": 60
+     },
+     "label": "Buy 6 hens"
+    },
+    "spotsUp": {
+     "id": "coop_run",
+     "name": "Bigger Henhouse",
+     "add": 2,
+     "cost": {
+      "coin": 300,
+      "planks": 20
+     }
+    }
+   },
+   "cowpen": {
+    "name": "Cows",
+    "icon": "🐄",
+    "out": "milk",
+    "hours": 1,
+    "buy": {
+     "n": 1,
+     "cost": {
+      "coin": 90
+     },
+     "label": "Buy a cow"
+    },
+    "spotsUp": {
+     "id": "pen_stall",
+     "name": "Extra Stall",
+     "add": 1,
+     "cost": {
+      "coin": 600,
+      "planks": 30
+     }
+    }
+   }
   }
  }
 }

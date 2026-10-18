@@ -297,6 +297,9 @@ function bot(s, m) {
         const busyT = s.minions.filter(x => x.job === "teamster").length >= E.jobCap(s, "teamster");
         const want = k === "teamster" ? (waits && (busyT || E.jobCap(s, "teamster") === 0) ? 1.1 : 6) : 5;
         if (s.res.coin > (u.cost.coin || 0) * want) { E.buyHubUp(s, k); if (k === "teamster") (seen.teamBuys ||= []).push(`${u.id}@y${(s.day / D.tuning.daysPerYear).toFixed(1)}`); } } }
+    // R41: stock the coop / pen when there's room (feed + tending are the running cost)
+    for (const t of E.animalTypes()) { if (!E.buyAnimalsIssue(s, t) && s.res.coin > 400) { E.buyAnimals(s, t); (seen.animalBuys ||= {})[t] = (seen.animalBuys[t] || 0) + 1; }
+      if (!E.spotsUpIssue(s, t) && s.res.coin > (E.animalDef(t).spotsUp.cost.coin || 0) * 15) E.buySpotsUp(s, t); }
     (seen.fields ||= { max: 0, teamsters: 0 }).max = Math.max(seen.fields.max, E.fieldsState(s).list.length);
     seen.fields.teamsters = Math.max(seen.fields.teamsters, s.minions.filter(x => x.job === "teamster").length);
     const L = E.fieldsState(s).last;
@@ -833,6 +836,7 @@ console.log(
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
 console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
+console.log("R41 animal buys:", JSON.stringify(seen.animalBuys || {}));
 console.log("R401 teamster buys:", JSON.stringify(seen.teamBuys || []));
 console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "convoy trips (max/seed)", seen.convoyTrips, "herd days", seen.herdDays, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));

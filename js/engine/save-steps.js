@@ -1,3 +1,4 @@
+import { migrateAnimals } from "./animals.js";
 import { refundV37 } from "./legacy.js";
 import { migrateFields } from "./fields.js";
 import { talentMigrate } from "./talents.js";
@@ -597,6 +598,14 @@ export const STEPS = [
     name: "R40 per-crop fields: old Farm/Garden plain food becomes a Kitchen Plot (>= 90% of the old food), Farm 3+ adds a Wheat Field, old Crop Fields become one field per crop; Farm/Garden kept for follower spots and storage",
     run(s) {
       migrateFields(s);
+    },
+  },
+  {
+    n: 39,
+    once: true,
+    name: "R41 simple coop & cow pen: old buildings keep the animals they have; new ones start empty (buy hens/cows)",
+    run(s) {
+      migrateAnimals(s);
     },
   },
 ];

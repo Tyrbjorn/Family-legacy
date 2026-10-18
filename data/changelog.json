@@ -2,6 +2,19 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R41",
+   "title": "Hens and cows that need looking after",
+   "items": [
+    "The 🐔 Chicken Coop and 🐄 Cow Pen now start empty: buy 6 hens for 60 coin or a cow for 90 on the Farmstead card's Animals row.",
+    "Each needs about 1 hour of tending a day, shared with your field workers. Untended animals give only a quarter of their eggs or milk.",
+    "Feed is the only cost: hens eat wheat or vegetables, cows eat hay, wheat or vegetables. No coin upkeep. Animals rest when your egg or milk storage is full.",
+    "Eggs and milk now wait at the building for teamsters or farmers to haul them in, like the orchard.",
+    "New upgrades: Bigger Henhouse (+2 hens) and Extra Stall (+1 cow). Bought animals don't breed.",
+    "Eggs can now be bought in Millbrook. Hens lay a bit less in winter.",
+    "Old saves keep the hens and cows they already have."
+   ]
+  },
+  {
    "build": "R40",
    "title": "Fields with their own crops",
    "items": [

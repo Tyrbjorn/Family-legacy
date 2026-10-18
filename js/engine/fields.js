@@ -12,6 +12,7 @@ import { itemDef } from "./inventory.js";
 import { blendFoodQ, operatorLvl } from "./production.js";
 import { minionSkillLvl, minionLvlMult, mtype } from "./minions.js";
 import { registerDayHook } from "./time.js";
+import { animalsTend } from "./animals.js";
 
 export const FLD = () => D.fields || { crops: {}, sizes: [{ mult: 1, hours: 1 }], levels: { max: 1, perLvl: 0, cost: [] }, hours: {}, tools: { cut: {}, kinds: {} }, haul: {}, processing: {}, hub: { workerUps: [], teamsterUps: [] }, slots: {} };
 const H = () => FLD().hours;
@@ -246,6 +247,7 @@ export function fieldsDay(s) {
     }
     last.fields[f.id] = { state, tended, made };
   }
+  animalsTend(s, W, last, res => capOf(s, res), res => (s.res[res] || 0) + (st.pile[res] || 0)); // R41 coop & cow pen share the hours
   // storage full → workers move to processing (hours that field would have needed)
   if (st.auto.process)
     for (const f of full) {

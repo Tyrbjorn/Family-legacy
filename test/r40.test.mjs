@@ -8,7 +8,7 @@ const F=D.fields;
 const homestead=()=>{const s=E.newGame(1);E.normalize(s);s.land=['plot'];s.buildings.farm=5;s.buildings.garden=3;s.buildings.lumber=2;s.members[0].ageDays=20*D.tuning.daysPerYear;s.res.coin=1e6;Object.assign(s.res,{wood:5000,planks:5000,stone:5000,ingots:500,leather:100});s.minions=[];return s;};
 const fol=(s,job='farm',type='laborer')=>{const mi={uid:'mi'+s.nextId++,type,equip:{},name:'F'+s.nextId,job,loyalty:100,lvl:1,skills:{}};s.minions.push(mi);return mi;};
 const avg=(s)=>E.seasonYield(s,'wheat');
-ok(BUILD==='R40'&&E.SCHEMA===38,'R40, schema 38');
+ok(E.SCHEMA>=38,'schema 38+');
 ok(['food','wheat','barley','vegetables','flax','berries'].every(c=>F.crops[c]),'crops from existing goods (+ Kitchen Plot for food)');
 // slots
 { const s=E.newGame(1);E.normalize(s); ok(E.fieldSlots(s)===0&&/Homestead/.test(E.buildFieldIssue(s,'wheat')),'landless/scrub: no fields yet');
@@ -75,7 +75,7 @@ ok(['food','wheat','barley','vegetables','flax','berries'].every(c=>F.crops[c]),
     if(cf) ok(['wheat','barley','vegetables','flax'].every(c=>s.fields.list.some(f=>f.crop===c)),'old Crop Fields → one field per crop');
     ok(s.fields.list.length<=E.fieldSlots(s),'converted fields fit their slots (extra granted)'); }
   ok(worst>=0.9,'every combo keeps >= 90% of old food (worst '+worst.toFixed(2)+')'); console.log('  worst food share after migration', worst.toFixed(3)); }
-{ const A=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A.schema===38,'old FL1 save migrates to 38');
+{ const A=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A.schema===E.SCHEMA,'old FL1 save migrates to latest');
   const old=E.oldFarmFood(A); ok(!old||E.fieldsFoodPerDay(A)>=0.9*old,'fixture keeps its food ('+old+')'); }
 { const s=homestead(); const f=E.buildField(s,'food'); s.res.food=0; const L=E.fieldsDay(s); ok(s.res.food>0&&!(s.fields.pile.food>0),'Kitchen Plot food goes straight to the table (no hauling)'); }
 // R40.1: farmers' hand-hauling has a whole-farm daily limit, so big farms need teamsters
@@ -88,7 +88,7 @@ ok(D.fields.haul.farmerDayCap>0,'farmers have a daily hand-haul limit (data)');
 { const r=farmRun(8,0); ok(r.waiting>=20,'8 fields without teamsters: harvest backs up ('+r.waiting+' field-days stuck waiting for haul in 20 days)'); }
 { const r=farmRun(8,1); ok(r.waiting===0,'8 fields + one teamster (Cart Shed): all hauled'); ok(r.s.minions.some(m=>m.job==='teamster'),'auto moved a farmer to the teamster spot when no one was idle'); }
 // generic producers: the orchard's berries wait at the trees for haul (data list, livestock can join later)
-{ const s=homestead(); ok(E.hauledProducer('orchard')&&!E.hauledProducer('chickencoop'),'orchard is a hauled producer (data); livestock not yet');
+{ const s=homestead(); ok(E.hauledProducer('orchard')&&!E.hauledProducer('quarry'),'orchard is a hauled producer (data list)');
   s.structures.push({uid:'sto',type:'orchard',pieces:['fruittrees'],up:0}); s.res.berries=0; E.processDay(s);
   const p0=s.fields.pile.berries||0; ok(p0>0&&s.res.berries===0,'orchard berries go to the haul pile, not straight to storage');
   fol(s); E.fieldsDay(s); ok(s.res.berries>0&&!(s.fields.pile.berries>0.01),'a farmer hauls the orchard harvest into storage'); }

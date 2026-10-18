@@ -2,6 +2,7 @@
 import * as E from "../engine.js";
 import { RI, fmt } from "./common.js";
 import { D, s } from "../main.js";
+import { animalsRow } from "./animals-ui.js";
 
 const cost = c => Object.entries(c || {}).map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(" ");
 const r1 = x => Math.round(x * 10) / 10;
@@ -31,7 +32,7 @@ export function fieldsCard() {
   const st = E.fieldsState(s), L = st.last, slots = E.fieldSlots(s);
   const need = E.tendNeeded(s), avail = E.tendAvail(s);
   let h = `<div class="card" id="fieldshub"><div class="row"><b>🌾 ${D.fields.hub.name} · Fields</b><span class="muted">${st.list.length}/${slots} fields</span></div>`;
-  if (!slots && !st.list.length) return h + `<div class="muted">Fields open at the ${D.fields.slots.stage} stage. Each field grows one crop; tending takes about 1 hour a day.</div></div>`;
+  if (!slots && !st.list.length) return h + `<div class="muted">Fields open at the ${D.fields.slots.stage} stage. Each field grows one crop; tending takes about 1 hour a day.</div>${animalsRow()}</div>`;
   h += `<div class="muted">Tending: <b>${r1(need)} h</b> needed / <b>${r1(avail)} h</b> available today${need > avail ? ' · <span style="color:#e0533d">short of hands</span>' : ""}. Farm followers give 8 h, a family member on Tend Fields 8 h, everyone else 1 h.</div>`;
   h += st.list.map(f => fieldRow(f, L)).join("");
   if (st.list.length < slots) {
@@ -42,6 +43,7 @@ export function fieldsCard() {
   const tm = (s.minions || []).filter(x => x.job === "teamster").length;
   h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(", ")}</div>` : ""}</div>`;
   const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(u.cost)}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
+  h += animalsRow(); // R41
   h += `<div style="margin-top:6px"><b>Upgrades</b> <span class="muted">· farm spots ${E.jobCap(s, "farm")}</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${up("worker")}${up("teamster")}</div></div>`;
   h += `<div style="margin-top:6px"><b>Auto</b> <span class="muted">(free, on from the start)</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${chip("tend", "Tend")}${chip("family", "Family helps")}${chip("process", "Process when full")}${chip("haul", "Haul")}${chip("teamsters", "Assign teamsters")}</div></div>`;
   return h + `</div>`;
@@ -54,5 +56,6 @@ export function fieldsLine() {
   if (!st.list.length) return "";
   const L = st.last, tended = L ? st.list.filter(f => (L.fields[f.id] || {}).state === "tended" || (L.fields[f.id] || {}).state === "full").length : 0;
   const short = Math.max(0, E.tendNeeded(s) - E.tendAvail(s));
-  return `<div class="muted" id="fieldsline">🌾 Fields: ${tended}/${st.list.length} tended${short > 0 ? ` · ${r1(short)} h short` : ""}</div>`;
+  const hungry = E.animalTypes().filter(t => E.herdHead(s, t) > 0 && (s.unfed || {})[t] > 0).map(t => `${E.animalDef(t).icon} no feed`).join(" · ");
+  return `<div class="muted" id="fieldsline">🌾 Fields: ${tended}/${st.list.length} tended${short > 0 ? ` · ${r1(short)} h short` : ""}${hungry ? ` · <span style="color:#e0533d">${hungry}</span>` : ""}</div>`;
 }

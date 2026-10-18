@@ -37,13 +37,13 @@ for(const id of ['silverseam','n_gemvein','n_lake']){const n=D.nodes.find(x=>x.i
 // feed
 {const s=E.newGame(1); s.animals={ox:1}; s.res.hay=10; s.res.wheat=10; s.res.vegetables=10; E.feedAnimals(s); ok(s.res.hay===8&&s.res.wheat===10,'grazers eat hay first');
  s.res.hay=1; E.feedAnimals(s); ok(s.res.wheat===8,'then grain');
- s.structures.push({uid:'c1',type:'chickencoop',pieces:['nestboxes'],up:0}); s.res.hay=100; s.res.wheat=0; s.res.vegetables=5; E.feedAnimals(s);
+ s.structures.push({uid:'c1',type:'chickencoop',pieces:['nestboxes'],up:0}); s.herds={chickencoop:6}; s.res.hay=100; s.res.wheat=0; s.res.vegetables=5; E.feedAnimals(s);
  ok(s.res.hay===98&&Math.abs(s.res.vegetables-(5-0.6))<1e-9,'hens never eat hay: they take vegetables when grain is out');
  ok(E.herdMult(s,'chickencoop')===1,'fed coop works');
  s.res.vegetables=0; E.feedAnimals(s); ok(E.herdMult(s,'chickencoop')===0&&s.unfed.chickencoop===1,'unfed coop stops');
  for(let i=0;i<9;i++)E.feedAnimals(s); ok(E.herdHead(s,'chickencoop')===5,'after 10 unfed days one hen runs off');
  s.res.wheat=1000; E.feedAnimals(s); ok(E.herdMult(s,'chickencoop')>0.8&&E.herdMult(s,'chickencoop')<1,'fed again: works with fewer hens');
- for(let i=0;i<W.feed.regrowDays;i++)E.feedAnimals(s); ok(E.herdHead(s,'chickencoop')===6,'the flock regrows while fed');
+ for(let i=0;i<W.feed.regrowDays;i++)E.feedAnimals(s); ok(E.herdHead(s,'chickencoop')===5,'R41: bought flocks do not regrow (no breeding)');
  const h=E.newGame(1); h.animals={mule:2}; h.structures.push({uid:'st',type:'shack',pieces:['stablestall'],up:0});
  for(let i=0;i<10;i++)E.feedAnimals(h); ok(h.animals.mule===1,'unfed 10 days: a mule runs off');
  ok(!E.animalWorks(h,'mule')&&h.animalsFed===false,'unfed mule does not haul');

@@ -7,6 +7,7 @@ import { wagonSpeed } from "./estate.js";
 import { tutNote } from "./tutorial.js";
 export * from "./world-route.js";
 import { setBoatAccess } from "./world-route.js";
+import { spotsBonus, animalsExplicit, tendShare, animalDef, AN } from "./animals.js";
 
 export const WD = () => D.world;
 const MPD = () => D.map;
@@ -205,13 +206,14 @@ export function buyAnimal(s, id, town) {
 // Each group eats per×head a day from the first food in its diet list that covers it.
 const FD = () => WD().feed;
 export const animalWorks = (s, id) => (s.animals || {})[id] > 0 && !((s.unfed || {})[id] > 0) && animalCount(s) <= stalls(s);
-export const herdMax = (s, type) => ((FD().herds || {})[type] ? FD().herds[type].head * (s.structures || []).filter(st => st.type === type).length : 0);
-export const herdHead = (s, type) => Math.min(herdMax(s, type), (s.herds || {})[type] ?? herdMax(s, type));
+export const herdMax = (s, type) => ((FD().herds || {})[type] ? FD().herds[type].head * (s.structures || []).filter(st => st.type === type).length + spotsBonus(s, type) : 0);
+// R41: after save step 39 herds are bought (missing = 0); older saves meant 'full'
+export const herdHead = (s, type) => Math.min(herdMax(s, type), (s.herds || {})[type] ?? (animalsExplicit(s) ? 0 : herdMax(s, type)));
 // production share of a herd building: 0 while unfed, else heads left / full herd
 export const herdMult = (s, type) => {
   const max = herdMax(s, type);
   if (!max) return 1;
-  return (s.unfed || {})[type] > 0 ? 0 : herdHead(s, type) / max;
+  return (s.unfed || {})[type] > 0 ? 0 : (herdHead(s, type) / max) * (animalDef(type) ? tendShare(s, type) : 1); // R41: tending
 };
 export function feedGroups(s) {
   const g = Object.entries(s.animals || {})
@@ -235,7 +237,7 @@ export function feedAnimals(s) {
       if (food) s.res[food] -= need;
       if (s.unfed[g.key] > 0) log(s, `🌾 The ${g.herd ? (k.name || g.kind).toLowerCase() : HL().animals[g.key].name.toLowerCase() + "s"} are fed again.`);
       delete s.unfed[g.key];
-      if (g.herd && herdHead(s, g.key) < herdMax(s, g.key)) {
+      if (g.herd && herdHead(s, g.key) < herdMax(s, g.key) && !(AN().noRegrow && animalDef(g.key))) { // R41: bought animals don't breed
         s.herdFed = s.herdFed || {};
         s.herdFed[g.key] = (s.herdFed[g.key] || 0) + 1;
         if (s.herdFed[g.key] >= FD().regrowDays) {

@@ -92,7 +92,8 @@
     "wheat": 0.2,
     "barley": 0.2,
     "berries": 0.1,
-    "milk": 0.7
+    "milk": 0.7,
+    "eggs": 0.8
    },
    "gather": 0.8,
    "travel": 0.7,
