@@ -1,0 +1,461 @@
+{
+ "_note": "R45 town quest boards, multi-stop quest lines and phase bands. Boards: discovered towns only; `show` jobs, new set every `rotateDays`. `fromBand` jobs come from your band (phase), the rest from the band above (stretch). Rewards: coin × band mult; town favour as listed. Job kinds use existing mechanics: deliver (goods handed over at the town; get them made with Work Orders), clear (a fight near the town: needs the CP), escort (a cart to another town). DLC towns add a pool here. autoBar: Auto-Adventure takes a band job only when its coin per trip-day (minus the goods' value) is at least autoBar × the coin per trip-day of the repeat quest it would otherwise run (quests also give loot, XP and renown). Each finished job also gives renown = its band and some XP (fights: the member's best combat skill).",
+ "rotateDays": 7,
+ "show": 3,
+ "fromBand": 2,
+ "bands": [
+  {
+   "n": 1,
+   "id": "beginning",
+   "name": "Beginning",
+   "icon": "🧭",
+   "mult": 1
+  },
+  {
+   "n": 2,
+   "id": "established",
+   "name": "Established",
+   "icon": "🏡",
+   "mult": 2.5
+  },
+  {
+   "n": 3,
+   "id": "dynasty",
+   "name": "Dynasty",
+   "icon": "🏰",
+   "mult": 6
+  }
+ ],
+ "pools": {
+  "millbrook": [
+   {
+    "id": "mb_grain",
+    "name": "Millbrook wants 20 wood for fence posts",
+    "kind": "deliver",
+    "band": 1,
+    "res": "wood",
+    "n": 20,
+    "days": 1,
+    "coin": 45,
+    "favour": 5
+   },
+   {
+    "id": "mb_rats",
+    "name": "Clear the granary rats",
+    "kind": "clear",
+    "band": 1,
+    "cp": 8,
+    "days": 2,
+    "coin": 40,
+    "favour": 5
+   },
+   {
+    "id": "mb_fish",
+    "name": "Millbrook wants 15 fish for market day",
+    "kind": "deliver",
+    "band": 1,
+    "res": "fish",
+    "n": 15,
+    "days": 1,
+    "coin": 40,
+    "favour": 4
+   },
+   {
+    "id": "mb_planks",
+    "name": "Millbrook wants 25 planks for the mill bridge",
+    "kind": "deliver",
+    "band": 2,
+    "res": "planks",
+    "n": 25,
+    "days": 1,
+    "coin": 60,
+    "favour": 8
+   },
+   {
+    "id": "mb_cart",
+    "name": "Escort a grain cart to Thornwick",
+    "kind": "escort",
+    "band": 2,
+    "to": "thornwick",
+    "days": 1,
+    "coin": 55,
+    "favour": 8
+   },
+   {
+    "id": "mb_bandits",
+    "name": "Drive off the road bandits",
+    "kind": "clear",
+    "band": 2,
+    "cp": 60,
+    "days": 3,
+    "coin": 70,
+    "favour": 8
+   },
+   {
+    "id": "mb_ingots",
+    "name": "Millbrook wants 20 ingots for the bell tower",
+    "kind": "deliver",
+    "band": 3,
+    "res": "ingots",
+    "n": 20,
+    "days": 1,
+    "coin": 80,
+    "favour": 12
+   },
+   {
+    "id": "mb_ogre",
+    "name": "Slay the ogre at the ford",
+    "kind": "clear",
+    "band": 3,
+    "cp": 160,
+    "days": 4,
+    "coin": 90,
+    "favour": 12
+   }
+  ],
+  "thornwick": [
+   {
+    "id": "tw_salt",
+    "name": "Thornwick wants 20 salt delivered",
+    "kind": "deliver",
+    "band": 1,
+    "res": "salt",
+    "n": 20,
+    "days": 1,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "tw_wolves",
+    "name": "Clear wolves near Thornwick",
+    "kind": "clear",
+    "band": 1,
+    "cp": 20,
+    "days": 2,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "tw_hides",
+    "name": "Thornwick wants 15 hides for the tannery",
+    "kind": "deliver",
+    "band": 1,
+    "res": "hides",
+    "n": 15,
+    "days": 1,
+    "coin": 45,
+    "favour": 4
+   },
+   {
+    "id": "tw_ale",
+    "name": "Thornwick wants 20 ale for the trappers",
+    "kind": "deliver",
+    "band": 2,
+    "res": "ale",
+    "n": 20,
+    "days": 1,
+    "coin": 65,
+    "favour": 8
+   },
+   {
+    "id": "tw_escort",
+    "name": "Escort a cart to Ashford",
+    "kind": "escort",
+    "band": 2,
+    "to": "ashford",
+    "days": 1,
+    "coin": 60,
+    "favour": 8
+   },
+   {
+    "id": "tw_bear",
+    "name": "Hunt the cave bear",
+    "kind": "clear",
+    "band": 2,
+    "cp": 70,
+    "days": 3,
+    "coin": 70,
+    "favour": 8
+   },
+   {
+    "id": "tw_leather",
+    "name": "Thornwick wants 25 leather for armour",
+    "kind": "deliver",
+    "band": 3,
+    "res": "leather",
+    "n": 25,
+    "days": 1,
+    "coin": 85,
+    "favour": 12
+   },
+   {
+    "id": "tw_wyrm",
+    "name": "Drive the forest wyrm away",
+    "kind": "clear",
+    "band": 3,
+    "cp": 170,
+    "days": 4,
+    "coin": 95,
+    "favour": 12
+   }
+  ],
+  "ashford": [
+   {
+    "id": "af_leather",
+    "name": "Ashford wants 10 leather for saddles",
+    "kind": "deliver",
+    "band": 1,
+    "res": "leather",
+    "n": 10,
+    "days": 1,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "af_toll",
+    "name": "Clear the toll-bridge thieves",
+    "kind": "clear",
+    "band": 1,
+    "cp": 15,
+    "days": 2,
+    "coin": 45,
+    "favour": 5
+   },
+   {
+    "id": "af_planks",
+    "name": "Ashford wants 30 planks for the crossing",
+    "kind": "deliver",
+    "band": 2,
+    "res": "planks",
+    "n": 30,
+    "days": 1,
+    "coin": 65,
+    "favour": 8
+   },
+   {
+    "id": "af_escort",
+    "name": "Escort a merchant to Millbrook",
+    "kind": "escort",
+    "band": 2,
+    "to": "millbrook",
+    "days": 1,
+    "coin": 55,
+    "favour": 8
+   },
+   {
+    "id": "af_cloth",
+    "name": "Ashford wants 25 cloth for the fair",
+    "kind": "deliver",
+    "band": 3,
+    "res": "cloth",
+    "n": 25,
+    "days": 1,
+    "coin": 85,
+    "favour": 12
+   },
+   {
+    "id": "af_raiders",
+    "name": "Break the raiders' camp",
+    "kind": "clear",
+    "band": 3,
+    "cp": 165,
+    "days": 4,
+    "coin": 95,
+    "favour": 12
+   }
+  ],
+  "eyrie": [
+   {
+    "id": "ey_preserves",
+    "name": "The Eyrie wants 10 preserves for winter",
+    "kind": "deliver",
+    "band": 1,
+    "res": "preserves",
+    "n": 10,
+    "days": 1,
+    "coin": 55,
+    "favour": 5
+   },
+   {
+    "id": "ey_goats",
+    "name": "Find the strayed goats",
+    "kind": "clear",
+    "band": 1,
+    "cp": 25,
+    "days": 2,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "ey_cloth",
+    "name": "The Eyrie wants 20 cloth for the climbers",
+    "kind": "deliver",
+    "band": 2,
+    "res": "cloth",
+    "n": 20,
+    "days": 1,
+    "coin": 70,
+    "favour": 8
+   },
+   {
+    "id": "ey_escort",
+    "name": "Escort ore carts to Thornwick",
+    "kind": "escort",
+    "band": 2,
+    "to": "thornwick",
+    "days": 1,
+    "coin": 65,
+    "favour": 8
+   },
+   {
+    "id": "ey_griffon",
+    "name": "Calm the griffon roost",
+    "kind": "clear",
+    "band": 3,
+    "cp": 180,
+    "days": 4,
+    "coin": 100,
+    "favour": 12
+   },
+   {
+    "id": "ey_steel",
+    "name": "The Eyrie wants 10 steel for pitons",
+    "kind": "deliver",
+    "band": 3,
+    "res": "steel",
+    "n": 10,
+    "days": 1,
+    "coin": 90,
+    "favour": 12
+   }
+  ]
+ },
+ "lines": [
+  {
+   "id": "millers_contract",
+   "name": "The Miller's Contract",
+   "icon": "🌾",
+   "band": 1,
+   "opens": {
+    "stage": "Homestead"
+   },
+   "stops": [
+    {
+     "at": "millbrook",
+     "name": "Collect the miller's contract",
+     "days": 1,
+     "reward": {
+      "coin": 20
+     }
+    },
+    {
+     "at": "ashford",
+     "name": "Deliver 15 flour to the Ashford bakers",
+     "days": 1,
+     "deliver": {
+      "flour": 15
+     },
+     "reward": {
+      "coin": 40
+     }
+    }
+   ],
+   "reward": {
+    "coin": 120,
+    "renown": 3
+   },
+   "favour": {
+    "millbrook": 10,
+    "ashford": 10
+   }
+  },
+  {
+   "id": "barons_courier",
+   "name": "The Baron's Courier",
+   "icon": "📜",
+   "band": 2,
+   "opens": {
+    "stage": "Farmstead"
+   },
+   "stops": [
+    {
+     "at": "millbrook",
+     "name": "Pick up the Baron's letter",
+     "days": 1,
+     "reward": {
+      "coin": 20
+     }
+    },
+    {
+     "at": "thornwick",
+     "name": "Deliver it to the Thornwick factor",
+     "days": 1,
+     "reward": {
+      "coin": 30
+     }
+    },
+    {
+     "at": "eyrie",
+     "name": "Fetch the reply from the Eyrie",
+     "days": 1,
+     "reward": {
+      "coin": 40
+     }
+    }
+   ],
+   "reward": {
+    "coin": 160,
+    "renown": 5
+   },
+   "favour": {
+    "millbrook": 8,
+    "thornwick": 8,
+    "eyrie": 8
+   }
+  },
+  {
+   "id": "lost_shipment",
+   "name": "The Lost Shipment",
+   "icon": "📦",
+   "band": 2,
+   "opens": {
+    "structure": "dock"
+   },
+   "stops": [
+    {
+     "at": "home",
+     "name": "Read the dock's manifest",
+     "days": 1,
+     "reward": {
+      "coin": 10
+     }
+    },
+    {
+     "at": "thornwick",
+     "name": "Ask after the shipment in Thornwick",
+     "days": 1,
+     "reward": {
+      "coin": 30
+     }
+    },
+    {
+     "at": "stag",
+     "name": "Recover the crates in the forest",
+     "days": 2,
+     "cp": 60,
+     "reward": {
+      "coin": 50
+     }
+    }
+   ],
+   "reward": {
+    "coin": 180,
+    "renown": 5
+   },
+   "favour": {
+    "thornwick": 12
+   }
+  }
+ ],
+ "autoBar": 2
+}

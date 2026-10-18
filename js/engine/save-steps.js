@@ -619,6 +619,16 @@ export const STEPS = [
       migrateOrders(s);
     },
   },
+  {
+    n: 41,
+    once: true,
+    name: "R45 town quest boards + quest lines: old saves start with fresh boards (rolled on the next day), no lines in progress and no town favour",
+    run(s) {
+      s.boards = s.boards || { towns: {}, seq: 0 };
+      s.lines = s.lines || {};
+      s.townFav = s.townFav || {};
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

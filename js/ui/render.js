@@ -89,7 +89,7 @@ export function modal() {
   }
   if (report) {
     el.hidden = false;
-    el.innerHTML = `<div class="card"><h3>While you were away</h3><p>You were away ${hm(report.elapsed)}: ⚡ +${Math.round(report.turboAdded / 60)} min turbo${report.turboFull ? " (bar full)" : ""}.</p><p class="muted">The world waits for you: no aging, production or travel happens while away.</p><p><button class="b" data-a="close">Continue</button></p></div>`;
+    el.innerHTML = `<div class="card"><h3>While you were away</h3><p>You were away ${hm(report.elapsed)}: ⚡ +${Math.round(report.turboAdded / 60)} min turbo${report.turboFull ? " (bar full)" : ""}.</p><p class="muted">Your time away is banked as ⚡ turbo (fast-forward), up to the bar's cap (each Hourglass Tower level raises it). The world itself waits: no aging, production or travel happens while you are away. Spend the turbo to catch up.</p><p><button class="b" data-a="close">Continue</button></p></div>`;
     return;
   }
   if (s.pendingEnc) {

@@ -2,6 +2,21 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R45",
+   "title": "Town Boards, Quest Lines and Phase Bands",
+   "items": [
+    "📋 Every town you have discovered now has a quest board with 3 jobs, and a new set is posted every 7 days. Jobs fit the town: deliveries (\"Thornwick wants 20 salt\"), fights nearby (\"Clear wolves near Thornwick\") and escorts to another town. They pay coin plus town favour.",
+    "Short of goods for a delivery? Tap 📋 Order it and Work Orders gathers, refines and crafts what is missing.",
+    "🧭 Quest lines: several stops in a row with a reward at each stop and a bigger one at the end. The first three are The Miller's Contract, The Baron's Courier and The Lost Shipment. Tap 🗺️ Route to see the route drawn on the map.",
+    "Phase bands: each job and line is Beginning, Established or Dynasty. Boards show 2 jobs from your band plus 1 stretch from the band above. Rewards scale ×1 / ×2.5 / ×6.",
+    "Auto-Adventure takes board jobs from your band, orders goods it is missing, and follows a quest line once that person has started it.",
+    "Old saves start with fresh boards and no lines in progress; nothing is lost.",
+    "Time away is banked as ⚡ turbo (fast-forward), and the welcome-back screen now says so. The Hourglass Tower text is corrected: each level adds 30 min to the turbo bank.",
+    "The unfinished Titles phase is hidden for now, so phases read 1–3.",
+    "Throwing Knives and Hunting Spear can now be forged at the Smithy."
+   ]
+  },
+  {
    "build": "R44",
    "title": "Auto-craft and Pause When Done",
    "items": [

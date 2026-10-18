@@ -1551,6 +1551,33 @@
    "path": "carpenter",
    "pathRank": 1,
    "minSkill": 12
+  },
+  {
+   "id": "r_throwing_knives",
+   "name": "Throwing Knives",
+   "base": "throwing_knives",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 2
+   },
+   "days": 2,
+   "line": "blacksmith",
+   "path": "armorer"
+  },
+  {
+   "id": "r_hunting_spear",
+   "name": "Hunting Spear",
+   "base": "hunting_spear",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "ingots": 1,
+    "planks": 2
+   },
+   "days": 3,
+   "line": "blacksmith",
+   "path": "armorer"
   }
  ],
  "minionSlots": [

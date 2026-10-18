@@ -10,6 +10,7 @@ const KEY = "familyLegacy.save.v1";
 
 const names = [
   "fields",
+  "boards",
   "build",
   "testers",
   "changelog",

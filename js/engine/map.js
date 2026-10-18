@@ -1,3 +1,4 @@
+import { bjobOk, bjobDays, bjobResolve } from "./boards.js";
 import { talentSum } from "./talents.js";
 import { injure } from "./injuries.js";
 import { tutNote } from "./tutorial.js";
@@ -78,6 +79,10 @@ export function travelTick(s, m, a, eff) {
     m.action = null;
     return;
   }
+  if (a.type === "bjob" && !bjobOk(s, a)) {
+    m.action = null; // R45: the board job or line went away
+    return;
+  }
   if (!a.trip) a.trip = newTrip(a, s);
   const t = a.trip;
   const ph = tripPhase(a);
@@ -136,6 +141,7 @@ export function travelTick(s, m, a, eff) {
         eff,
       );
     if (a.type === "explore") exploreArea(s, m, areaDef(a.target));
+    if (a.type === "bjob") bjobResolve(s, m, a); // R45 board job / quest line stop
   }
   if (t.load && tripPhase(a) === "done") deliverLoad(s, m.name, t);
   if (m.alive && m.action === a && tripPhase(a) === "done") {
@@ -147,6 +153,7 @@ export function travelTick(s, m, a, eff) {
     const stop =
       a.type === "explore" ||
       a.type === "dungeon" ||
+      a.type === "bjob" ||
       (q && (q.once || q.story) && s.doneQuests.includes(q.id)) ||
       (q && questIssue(s, m, q));
     if (stop) m.action = m.id === s.activeId ? defaultAction(s, m) : null;
@@ -231,12 +238,13 @@ export function deliverLoad(s, who, t) {
   t.cap = 0;
 }
 
-export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon"];
+export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon", "bjob"];
 
 export function taskDays(a) {
   if (a.type === "dungeon") return dungeonDef(a.target).floors.reduce((x, f) => x + f.days, 0);
   if (a.type === "quest") return D.quests.find(q => q.id === a.target).days;
   if (a.type === "explore") return areaDef(a.target).days;
+  if (a.type === "bjob") return bjobDays(a);
   return MP().gatherTripDays;
 }
 

@@ -186,7 +186,7 @@ E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'id
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
 const kids=g=>{for(let i=0;i<2;i++){const k=E.newMember(g,{age:5});g.members.push(k);}return g;};
 const ER=E.newGame(t0); ok(E.era(ER).n===1,'new game is Era 1: Solo Adventurer'); estate(ER,['bunk']); ER.members[0].spouse=5; ok(E.era(ER).n===2,'home + family → Era 2');
-ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=30;ER.buildings.lumber=30; ok(E.era(ER).n===2,'Manor alone (2 living) stays Established'); kids(ER); ok(E.era(ER).n===2,'Manor + young kids stays Established'); for(const k of ER.members)k.ageDays=20*D.tuning.daysPerYear; ER.renown=0; ok(E.era(ER).n===3,'Manor + 3 living adults → Phase 3 Dynasty (no Renown needed)'); ok(E.ERAS[3].planned&&E.era(ER).n<4,'Titles phase is planned, never reached');
+ER.renown=6000; ER.structures[0].pieces=['bunk','larder','storage','workbench','forge','studydesk']; ER.buildings.farm=30;ER.buildings.lumber=30; ok(E.era(ER).n===2,'Manor alone (2 living) stays Established'); kids(ER); ok(E.era(ER).n===2,'Manor + young kids stays Established'); for(const k of ER.members)k.ageDays=20*D.tuning.daysPerYear; ER.renown=0; ok(E.era(ER).n===3,'Manor + 3 living adults → Phase 3 Dynasty (no Renown needed)'); ok(D.phases.list[3].planned&&D.phases.list[3].hidden&&!E.ERAS[3]&&E.era(ER).n<4,'Titles phase is planned and hidden, never reached');
 ER.members[0].ageDays=20*360; ok(E.actionAllowed(ER,ER.members[0],{type:'quest',target:'rats'})&&E.setAction(ER,{type:'job',target:'shop'})!==false&&E.setAction(ER,{type:'train',target:'farming'})!==false&&E.setAction(ER,{type:'quest',target:'rats'})!==false,'later eras keep questing, jobs and training open');
 for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(ac.stats).length===n&&ac.skills.length===n,`${ac.name} tier ${ac.tier} gives ${n} stats + ${n} skills`); }
 { const T2=E.newGame(t0), m=T2.members[0]; m.ageDays=20*360; ok(!E.activityOk(T2,m,D.activities.find(a=>a.id==='wardrill')),'guild training locked without guild');
@@ -554,7 +554,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,fields,chores,trade,village,autocraft','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,boards,fields,chores,trade,village,autocraft','day hooks registered in order');
 }
 
 // Polish-pass bug fixes
@@ -688,7 +688,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
 { const G=E.newGame(t0); E.skipTutorial(G); estate(G,['bunk']); G.members[0].ageDays=25*360; G.renown=400; ok(E.era(G).n===2,'Established phase');
  ok(E.phaseOk(G,'againstQuests')&&!E.phaseOk(G,'feud'),'rivalry quests at Established, feuds wait'); E.addRapport(G,'vey',-95); ok(E.houseState(G,'vey').state==='peace','no feud in Established');
  G.houses.vey={r:-90,state:'feud'}; ok(/Dynasty/.test(E.declareWarIssue(G,'vey')||''),'declaring war needs Dynasty');
- est(G); ok(E.era(G).n===3&&!E.declareWarIssue(G,'vey'),'Dynasty opens war'); ok(E.nextEraHint(G).includes('planned'),'header hint points at planned Titles');
+ est(G); ok(E.era(G).n===3&&!E.declareWarIssue(G,'vey'),'Dynasty opens war'); ok(E.nextEraHint(G)==='','Dynasty: no hint at the hidden Titles phase');
  const n0=G.chronicle?G.chronicle.length:0; G.phaseSeen=2; E.introsDay(G); ok(G.phaseSeen===3&&(G.chronicle||[]).length>n0,'phase change goes to the Chronicle once'); E.introsDay(G); ok((G.chronicle||[]).length===n0+1,'no repeated phase entry');
 }
 // Unlock intros: short rewarded lines per unlock, skippable, never blocking, no spam for old saves

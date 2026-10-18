@@ -1,3 +1,4 @@
+import { boardsPick } from "./boards.js";
 import { markChore } from "./chores.js";
 import { quotaCredit } from "./quotas.js";
 import { chalFx, enemyCp, gameFx, stampDiff } from "./difficulty.js";
@@ -24,7 +25,7 @@ import { minionPower } from "./minions.js";
 import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
 import { refineDay, taskYields } from "./requests.js";
 import { landFish } from "./fish.js";
-import { exploreDay } from "./map.js";
+import { exploreDay, travelDays } from "./map.js";
 import { activityOk, canTrain, gainXp, jobOk, themedFor } from "./skills.js";
 import { D, T, active, ageY, furn, isAdult, known, log } from "./state.js";
 
@@ -169,6 +170,8 @@ export function pickExplore(s, m) {
 }
 
 export function pickAdventure(s, m) {
+  const ln = boardsPick(s, m, Infinity); // R45: follow a quest line this person started
+  if (ln) return ln;
   const c = cp(s, m);
   const dgs = (D.dungeons || [])
     .filter(d => !dungeonIssue(s, m, d) && d.floors[0].cp <= c * 1.1)
@@ -177,6 +180,10 @@ export function pickAdventure(s, m) {
   const qs = D.quests
     .filter(q => !q.story && !q.once && !questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c)
     .sort((a, b) => b.cp - a.cp);
+  // R45: a board job from your band when it pays at least as well per trip-day as the quest it would run
+  const bar = qs[0] ? ((qs[0].reward || {}).coin || 0) / Math.max(1, 2 * travelDays(qs[0].id) + qs[0].days) : 0;
+  const bj = boardsPick(s, m, bar);
+  if (bj) return bj;
   return qs[0] ? { type: "quest", target: qs[0].id } : null;
 }
 

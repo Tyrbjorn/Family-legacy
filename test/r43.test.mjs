@@ -53,7 +53,7 @@ ok(U('mwork').tiers.map(t=>t.value).join()==='0.02,0.04,0.07'&&U('craftspd').tie
   ok(L.ups.quotas===3&&L.ups.at_tend===1,'Ledger tier 2 -> Quotas tier 3 (unlimited); Tireless Hands tier 1 -> tier 1');
   ok(L.renown===(1600-860)+(300-80),'refund: renown paid above the new price ('+L.renown+')');
   ok(E.orderList(s).length===1&&E.orderList(s)[0].target===2&&!s.members[0].craftQueue.length,'old craft queue becomes an order');
-  ok(s.quotas.some(q=>q.id==='q1'),'quotas kept'); ok(s.schema===40,'schema 40');
+  ok(s.quotas.some(q=>q.id==='q1'),'quotas kept'); ok(s.schema===E.SCHEMA,'schema current');
   const t=base(); t.schema=39; E.normalize(t); ok((E.legacyState(t).renown||0)===0,'nothing bought: no refund'); }
 // R43 Auto rotation (data order, skip done/paused/full)
 { const s=base(); at('Homestead'); s.buildings.farm=3; E.migrateFields(s); s.structures.push({uid:'c1',type:'chickencoop',pieces:['nestboxes'],up:0},{uid:'p1',type:'cowpen',pieces:['milkstalls'],up:0});

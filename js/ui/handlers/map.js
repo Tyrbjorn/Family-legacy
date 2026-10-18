@@ -50,6 +50,11 @@ export const mapActions = ({ v, w, b, m }) => ({
   parcel: () => E.setAction(s, { type: "parcel", target: v }),
   buyanimal: () => E.buyAnimal(s, v, b.dataset.w),
   rumor: () => E.rumor(s, v),
+  bjtake: () => E.takeJob(s, m, v), // R45 boards / quest lines
+  bjorder: () => E.orderForJob(s, v),
+  lgo: () => E.goStop(s, m, v),
+  lorder: () => E.orderForStop(s, v),
+  lshow: () => { U.lineShow = U.lineShow === v ? null : v; },
   advjoin: () => E.joinAdventurers(s, m),
   advrank: () => E.advRankUp(s, m),
   advbuy: () => E.buyAdvItem(s, m, v),

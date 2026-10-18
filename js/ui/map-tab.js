@@ -1,3 +1,4 @@
+import { boardCard, linesCard } from "./boards-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
@@ -206,6 +207,7 @@ export function mapDetail(m) {
     const t = D.towns.find(x => x.id === id);
     const ev = E.eventsAtTown(s, t.id);
     h = `<div class="card"><b>${t.icon} ${t.name}</b><div class="muted">Town · trade, rumors, hiring and guilds below · 🚶 ${trav}</div>${townTagsHtml(t.id)}${quadBtn(t.id)}${ev.map(e => `<div>${E.eventType(e.type).icon} ${E.eventText(e)}${pbar(e.from != null ? (s.day - e.from) / Math.max(1, e.until - e.from) : 0.5, `${e.until - s.day}d left`, (e.until - s.day) * secPerDay())}</div>`).join("")}</div>`;
+    h += boardCard(t.id, m); // R45
   }
   return h;
 }
@@ -235,7 +237,7 @@ export function standingv(m) {
 
 export function mapv() {
   const m = E.active(s);
-  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m); // R30: story quests moved to the Quests tab
+  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + tradeCard() + worldEventsCard() + standingv(m) + linesCard(m); // R30: story quests moved to the Quests tab
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
     const open = E.regionOpen(s, rg.id);
@@ -265,6 +267,7 @@ export function mapv() {
      .filter(g => g.town === t.id)
      .map(g => guildHall(m, g))
      .join("")}
+   ${boardCard(t.id, m)}
    <div class="muted" style="margin-top:4px">⚔️ Adventurers' Guild branch here (see Guilds tab)</div>
    <div class="row" style="margin-top:6px"><span class="muted">🗣️ Tavern rumors (${hidden} secrets left)</span><button class="b" data-a="rumor" data-v="${rg.id}" ${s.res.coin >= D.tuning.rumorCost && hidden ? "" : "disabled"}>Listen ${D.tuning.rumorCost}🪙</button></div></div>`;
     h +=

@@ -75,7 +75,7 @@
    "wood": 80,
    "stone": 80
   },
-  "desc": "Turbo cap +30 min, offline cap +2h per level",
+  "desc": "Turbo bank +30 min per level (time away is banked as fast-forward turbo)",
   "start": 0,
   "land": 1
  }

@@ -1,5 +1,5 @@
 {
- "_note": "Four phases. Each only ADDS systems. era(s) returns one of these; Titles (4) is planned and never triggers yet.",
+ "_note": "Four phases. Each only ADDS systems. era(s) returns one of these; Titles (4) is planned and never triggers yet. R45: Titles is hidden for launch (hidden: true keeps it in the data for a later update).",
  "list": [
   {
    "n": 1,
@@ -39,7 +39,8 @@
    "icon": "👑",
    "desc": "Barony, land, towns, lords, roads, court and taxes.",
    "planned": true,
-   "hint": "Titles (barony, lords, court, taxes) are planned"
+   "hint": "Titles (barony, lords, court, taxes) are planned",
+   "hidden": true
   }
  ]
 }

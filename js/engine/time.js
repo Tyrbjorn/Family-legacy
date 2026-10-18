@@ -39,6 +39,7 @@ export const idleEff = s => T.idleEff + bl(s, "yard") * 0.05;
 
 export const turboCapSec = s => (T.turboCapMin + bl(s, "hourglass") * 30) * 60;
 
+// R45: unused (offline time is the turbo bank; no real offline progress). Kept for reference.
 export const offlineCapSec = s => (T.offlineCapHours + bl(s, "hourglass") * 2) * 3600;
 
 // One in-game day = the registered hooks below, run in order. Order matters (RNG sequence, food before births).
@@ -159,6 +160,7 @@ function healDay(s, m) {
 
 // what a non-active member does: their standing order
 function orderDay(s, m, eff) {
+  if (m.action && m.action.type === "bjob") return doAction(s, m, m.action, eff); // R45: a board job / line stop runs to the end
   const o = established(s) ? m.order : { type: "work" };
   if (o.type === "quest") {
     if (!m.action || m.action.type !== "quest") {

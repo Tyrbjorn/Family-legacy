@@ -237,7 +237,8 @@ export function setOrder(s, id, order) {
 }
 
 // ---- phases (data/phases.json; each phase only ADDS systems; nothing earlier is ever locked)
-const PH = () => D.phases.list;
+const PH = () => D.phases.list.filter(p => !p.hidden); // R45: hidden phases (Titles) stay in the data but are not shown
+export const phaseCount = () => PH().length;
 export const ERAS = new Proxy([], { get: (_, k) => PH()[k] });
 const stageAt = (s, st) => { const o = D.estate.stages.map(x => x[1]); return o.indexOf(estateStage(s)) >= o.indexOf(st); };
 export function phaseReached(s, p) {

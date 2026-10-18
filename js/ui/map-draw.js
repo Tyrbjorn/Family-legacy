@@ -1,4 +1,5 @@
 // World map SVG: parchment terrain, roads, fog, markers, rumor hints and travellers (split from map-tab.js).
+import { lineRouteSvg } from "./boards-ui.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { D, s } from "../main.js";
@@ -149,6 +150,7 @@ export function mapSvg(m) {
       g += pin(d.id, p.x, p.y, d.icon, (s.cleared || []).includes(d.id) ? "#888" : "#ff7a5c", "", "d");
     }
   g += hintLayer();
+  g += lineRouteSvg(MP); // R45 quest line route
   const hm = MP.home;
   g += `<g>${pzO(hm.x, hm.y)}<circle cx="${hm.x}" cy="${hm.y}" r="22" fill="#3a2a10" stroke="#ffd34d" stroke-width="3"/><text x="${hm.x}" y="${hm.y + 9}" font-size="26" text-anchor="middle">🏡</text></g></g>`;
   const mins = s.minions.filter(x => ["gather", "herbs", "mine", "farm"].includes(x.job));

@@ -199,6 +199,13 @@ function smartAdventure(s, m) {
     E.setAction(s, { type: "quest", target: q.id });
     return true;
   }
+  // R45: quest lines (start any open one, follow it) and town board jobs from your band (planner orders missing goods)
+  if (E.lineDefs && !process.env.NO_BOARDS) {
+    for (const L of E.lineDefs()) { const st = E.lineState(s, L.id); if ((!st || (!st.done && st.who === m.id)) && !E.stopIssue(s, m, L.id) && E.goStop(s, m, L.id)) return true; }
+    const c = E.cp(s, m), qb = D.quests.filter(q => !q.story && !q.once && !E.questIssue(s, m, q) && q.risk !== "deadly" && q.cp <= c).sort((a, b) => b.cp - a.cp)[0];
+    const bar = qb ? ((qb.reward || {}).coin || 0) / Math.max(1, 2 * E.travelDays(qb.id) + qb.days) : 0;
+    if (E.boardsPick(s, m, bar)) return true; // same rule as Auto-Adventure
+  }
   return false;
 }
 
@@ -739,6 +746,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     structs: s.structures.length,
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
+    boards: JSON.stringify({ ...(s.boardStats || {}), lines: Object.entries(s.lines || {}).filter(([, v]) => v.done).map(([k, v]) => k + "@y" + Math.round((v.doneDay || 0) / YD)) }),
     snap, // [renown, followers, buildings] at years 0,10,20,30
     idleAdultDays: idleDays,
     armoryDay: s._armoryDay ?? -1,
