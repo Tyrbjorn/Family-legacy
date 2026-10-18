@@ -1,3 +1,4 @@
+import { choreFx } from "./chores.js";
 import { talentBuy } from "./talents.js";
 import { fishPriceMult } from "./fish.js";
 import { isHeld } from "./holds.js";
@@ -102,7 +103,7 @@ export const townSellPrice = (s, townId, res) => {
   return (
     Math.round(
       t.prices[res] * (res === "fish" ? fishPriceMult(s) : 1) * // R31.3: the species mix sets the fish price
-        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
+        sellDemand(s, townId, res) * (1 + eff(s, "tradeSell") + choreFx(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );
 };

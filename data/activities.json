@@ -25,6 +25,11 @@
     "piece": "fishrack",
     "mult": 0.5,
     "why": "Fish Rack"
+   },
+   {
+    "chore": "mendnets",
+    "mult": 0.2,
+    "why": "Mended nets"
    }
   ],
   "task": true
@@ -155,7 +160,14 @@
     "stew": 0.7
    }
   },
-  "desc": "Turn raw meat or fish into stew at the hearth"
+  "desc": "Turn raw meat or fish into stew at the hearth",
+  "boosts": [
+   {
+    "chore": "kindling",
+    "mult": 0.25,
+    "why": "Kindling"
+   }
+  ]
  },
  {
   "id": "chores",
@@ -1147,6 +1159,13 @@
    {
     "piece": "rootcellar"
    }
+  ],
+  "boosts": [
+   {
+    "chore": "kindling",
+    "mult": 0.25,
+    "why": "Kindling"
+   }
   ]
  },
  {
@@ -1499,5 +1518,373 @@
    "building": "yard"
   },
   "tier": "advanced"
+ },
+ {
+  "id": "glean",
+  "name": "Glean the Hedgerows",
+  "icon": "🧺",
+  "minAge": 8,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "foraging"
+  ],
+  "tier": "basic",
+  "desc": "Pick the hedgerows clean: a little food and berries",
+  "task": true,
+  "chore": {
+   "tier": 1,
+   "opens": {
+    "stage": "Homestead"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "yields": {
+   "food": 0.6,
+   "berries": 0.3
+  }
+ },
+ {
+  "id": "kindling",
+  "name": "Gather Kindling",
+  "icon": "🔥",
+  "minAge": 8,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "nature"
+  ],
+  "tier": "basic",
+  "desc": "Dry sticks for the hearth: wood, and cooking goes 25% further that day",
+  "task": true,
+  "chore": {
+   "tier": 1,
+   "opens": {
+    "stage": "Homestead"
+   },
+   "fx": {
+    "boost": {
+     "task": "cook",
+     "mult": 0.25
+    }
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "yields": {
+   "wood": 1
+  }
+ },
+ {
+  "id": "millflour",
+  "name": "Mill Flour",
+  "icon": "🌾",
+  "minAge": 10,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Grind wheat at the Gristmill: 2 wheat → 1 flour",
+  "task": true,
+  "chore": {
+   "tier": 2,
+   "opens": {
+    "stage": "Farmstead",
+    "structure": "gristmill"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "refine": {
+   "from": [
+    "wheat"
+   ],
+   "per": 2,
+   "to": {
+    "flour": 1
+   }
+  }
+ },
+ {
+  "id": "sawplanks",
+  "name": "Saw Planks",
+  "icon": "🪵",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "carpentry"
+  ],
+  "tier": "basic",
+  "desc": "Saw logs at the Sawmill: 2 wood → 1 plank",
+  "task": true,
+  "chore": {
+   "tier": 2,
+   "opens": {
+    "stage": "Farmstead",
+    "structure": "sawmill"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "refine": {
+   "from": [
+    "wood"
+   ],
+   "per": 2,
+   "to": {
+    "planks": 1
+   }
+  }
+ },
+ {
+  "id": "mendnets",
+  "name": "Mend Nets",
+  "icon": "🐟",
+  "minAge": 10,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "fishing"
+  ],
+  "tier": "basic",
+  "desc": "Patch the family's nets: fishing +20% that day",
+  "task": true,
+  "chore": {
+   "tier": 2,
+   "opens": {
+    "stage": "Farmstead"
+   },
+   "fx": {
+    "boost": {
+     "task": "fishing",
+     "mult": 0.2
+    }
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ]
+ },
+ {
+  "id": "ledgers",
+  "name": "Keep the Ledgers",
+  "icon": "🧾",
+  "minAge": 12,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "haggling"
+  ],
+  "tier": "basic",
+  "desc": "Tally the estate's books: a little coin and +2% trade prices that day",
+  "task": true,
+  "chore": {
+   "tier": 3,
+   "opens": {
+    "stage": "Manor"
+   },
+   "fx": {
+    "tradeSell": 0.02
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "yields": {
+   "coin": 4
+  }
+ },
+ {
+  "id": "smithyhelp",
+  "name": "Help at the Smithy",
+  "icon": "⚒️",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "smithing"
+  ],
+  "tier": "basic",
+  "desc": "Work the bellows: 1 ore → 0.5 ingots",
+  "task": true,
+  "chore": {
+   "tier": 3,
+   "opens": {
+    "stage": "Manor",
+    "structure": "smithy"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "refine": {
+   "from": [
+    "ore"
+   ],
+   "per": 1,
+   "to": {
+    "ingots": 0.5
+   }
+  }
+ },
+ {
+  "id": "cutblocks",
+  "name": "Cut Blocks",
+  "icon": "🪨",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "masonry"
+  ],
+  "tier": "basic",
+  "desc": "Square stone at the Quarry: 1 stone → 0.5 blocks",
+  "task": true,
+  "chore": {
+   "tier": 3,
+   "opens": {
+    "stage": "Manor",
+    "structure": "quarry"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "refine": {
+   "from": [
+    "stone"
+   ],
+   "per": 1,
+   "to": {
+    "blocks": 0.5
+   }
+  }
+ },
+ {
+  "id": "workdock",
+  "name": "Work the Dock",
+  "icon": "🛶",
+  "minAge": 12,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "sailing"
+  ],
+  "tier": "basic",
+  "desc": "Load and unload boats for coin",
+  "task": true,
+  "chore": {
+   "tier": 4,
+   "opens": {
+    "village": true,
+    "structure": "dock"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "yields": {
+   "coin": 6
+  }
+ },
+ {
+  "id": "brewale",
+  "name": "Brew Small Ale",
+  "icon": "🍺",
+  "minAge": 14,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "farming"
+  ],
+  "tier": "basic",
+  "desc": "Brew at the Brewery: 2 barley → 1 ale",
+  "task": true,
+  "chore": {
+   "tier": 4,
+   "opens": {
+    "village": true,
+    "structure": "brewery"
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ],
+  "refine": {
+   "from": [
+    "barley"
+   ],
+   "per": 2,
+   "to": {
+    "ale": 1
+   }
+  }
+ },
+ {
+  "id": "errands",
+  "name": "Run Village Errands",
+  "icon": "🏘️",
+  "minAge": 12,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "leadership"
+  ],
+  "tier": "basic",
+  "desc": "Keep your village ticking: village upkeep −10% while worked",
+  "task": true,
+  "chore": {
+   "tier": 4,
+   "opens": {
+    "village": true
+   },
+   "fx": {
+    "upkeep": -0.1
+   }
+  },
+  "unlock": [
+   {
+    "chore": true
+   }
+  ]
  }
 ]

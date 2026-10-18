@@ -1,3 +1,4 @@
+import { choreOpen, choreActive } from "./chores.js";
 import { apprOpens, inhXp, leanXp } from "./apprentice.js";
 import { injuryXp } from "./injuries.js";
 import { toolIssue } from "./requests.js";
@@ -129,6 +130,8 @@ export function srcOk(s, m, u, ac) {
   if (u.quest) return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
   if (u.building) return bl(s, u.building) > 0;
   if (u.fields) return ((s.fields || {}).list || []).length > 0; // R40
+  if (u.chore === true) return choreOpen(s, ac); // R42 chore tiers
+  if (u.chore) return choreActive(s, u.chore); // R42: a chore worked today boosts this task
   if (u.tut) return !!(s.tut && ((s.tut.done || []).includes(u.tut) || s.tut.skipped || !s.tut.started || (D.tutorial && s.tut.step > D.tutorial.steps.findIndex(x => x.id === u.tut))));
   return true;
 }
@@ -141,6 +144,8 @@ export function srcText(u) {
   if (u.quest) return "quest “" + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest) + "”";
   if (u.tut) return "tutorial: " + ((D.tutorial?.steps.find(x => x.id === u.tut) || {}).title || u.tut);
   if (u.fields) return "a field (Estate → Farmstead)";
+  if (u.chore === true) return "it opens as you grow";
+  if (u.chore) return ((D.activities.find(a => a.id === u.chore) || {}).name || u.chore) + " worked today";
   if (u.building) return "build " + ((D.buildings.find(b => b.id === u.building) || {}).name || u.building);
   return "";
 }

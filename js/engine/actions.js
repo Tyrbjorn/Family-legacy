@@ -1,3 +1,4 @@
+import { markChore } from "./chores.js";
 import { quotaCredit } from "./quotas.js";
 import { chalFx, enemyCp, gameFx, stampDiff } from "./difficulty.js";
 import { hasFeature, parcelDay } from "./world.js";
@@ -93,6 +94,7 @@ export const ACTIONS = {
     for (const k of ac.skills) if (canTrain(m, k, s, true)) gainXp(s, m, k, T.xpPerDay * 0.6 * eff);
     for (const [k, v] of Object.entries(taskYields(s, ac))) { k === "fish" && ac.id === "fishing" ? landFish(s, v * eff, m) : (s.res[k] = (s.res[k] || 0) + v * eff); quotaCredit(s, k, v * eff); }
     if (ac.effect === "explore") exploreDay(s, m, eff);
+    if (ac.chore) markChore(s, ac); // R42
     let did = !!(ac.yields || ac.effect);
     if (ac.refine) did = refineDay(s, ac, eff);
     if (did && s.tut && s.tut.flags) s.tut.flags["t_" + ac.id] = (s.tut.flags["t_" + ac.id] || 0) + eff;

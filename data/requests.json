@@ -1,5 +1,5 @@
 {
- "_note": "R31 villager requests. Data-driven: add npcs/requests (expansions can add whole towns). wants = resources; reward = coin/food/res/items/favour; extra (once, on that request) = discount|bonus|questline.",
+ "_note": "R31 villager requests. Data-driven: add npcs/requests (expansions can add whole towns). wants = resources; reward = coin/food/res/items/favour; extra (once, on that request) = discount|bonus|questline. R42: set2 = a second set opened by `opens` (stage/structure/village); npcs with `opens` appear only once it holds (town 'village' = your own village).",
  "cooldown": [
   3,
   7
@@ -54,7 +54,46 @@
       "text": "Bram wants to rebuild the old mill bridge."
      }
     }
-   ]
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "bram4",
+      "wants": {
+       "planks": 10
+      },
+      "reward": {
+       "coin": 70,
+       "res": {
+        "stone": 10
+       }
+      }
+     },
+     {
+      "id": "bram5",
+      "wants": {
+       "planks": 16,
+       "wood": 10
+      },
+      "reward": {
+       "coin": 100
+      }
+     },
+     {
+      "id": "bram6",
+      "wants": {
+       "planks": 24
+      },
+      "reward": {
+       "coin": 140,
+       "renown": 5
+      }
+     }
+    ]
+   }
   },
   {
    "id": "mira",
@@ -100,7 +139,43 @@
       "coin": 80
      }
     }
-   ]
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "mira4",
+      "wants": {
+       "hides": 8
+      },
+      "reward": {
+       "coin": 90
+      }
+     },
+     {
+      "id": "mira5",
+      "wants": {
+       "leather": 4
+      },
+      "reward": {
+       "coin": 120
+      }
+     },
+     {
+      "id": "mira6",
+      "wants": {
+       "leather": 6,
+       "hides": 6
+      },
+      "reward": {
+       "coin": 170,
+       "renown": 5
+      }
+     }
+    ]
+   }
   },
   {
    "id": "elswyth",
@@ -148,7 +223,46 @@
       "text": "Lady Elswyth has an errand for the manor."
      }
     }
-   ]
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "els4",
+      "wants": {
+       "thyme": 14,
+       "berries": 6
+      },
+      "reward": {
+       "coin": 60,
+       "renown": 6
+      }
+     },
+     {
+      "id": "els5",
+      "wants": {
+       "flour": 6
+      },
+      "reward": {
+       "coin": 70,
+       "renown": 6
+      }
+     },
+     {
+      "id": "els6",
+      "wants": {
+       "ale": 4,
+       "thyme": 10
+      },
+      "reward": {
+       "coin": 90,
+       "renown": 10
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hob",
@@ -193,7 +307,46 @@
       "food": 25
      }
     }
-   ]
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "hob4",
+      "wants": {
+       "meat": 10,
+       "flour": 4
+      },
+      "reward": {
+       "coin": 60,
+       "food": 40
+      }
+     },
+     {
+      "id": "hob5",
+      "wants": {
+       "milk": 6
+      },
+      "reward": {
+       "coin": 60,
+       "food": 40
+      }
+     },
+     {
+      "id": "hob6",
+      "wants": {
+       "meat": 12,
+       "ale": 3
+      },
+      "reward": {
+       "coin": 90,
+       "food": 60
+      }
+     }
+    ]
+   }
   },
   {
    "id": "anne",
@@ -237,7 +390,44 @@
       "food": 10
      }
     }
-   ]
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "anne4",
+      "wants": {
+       "fish": 14
+      },
+      "reward": {
+       "coin": 60,
+       "food": 15
+      }
+     },
+     {
+      "id": "anne5",
+      "wants": {
+       "fish": 16,
+       "planks": 4
+      },
+      "reward": {
+       "coin": 75
+      }
+     },
+     {
+      "id": "anne6",
+      "wants": {
+       "fish": 20
+      },
+      "reward": {
+       "coin": 100,
+       "food": 25
+      }
+     }
+    ]
+   }
   },
   {
    "id": "maud",
@@ -278,6 +468,139 @@
       "task": "cook",
       "mult": 0.1,
       "text": "Maud's tips: Cook a Meal yields +10%."
+     }
+    }
+   ],
+   "set2": {
+    "opens": {
+     "stage": "Farmstead"
+    },
+    "requests": [
+     {
+      "id": "maud4",
+      "wants": {
+       "flour": 8
+      },
+      "reward": {
+       "coin": 60
+      }
+     },
+     {
+      "id": "maud5",
+      "wants": {
+       "milk": 6,
+       "eggs": 6
+      },
+      "reward": {
+       "coin": 75,
+       "food": 10
+      }
+     },
+     {
+      "id": "maud6",
+      "wants": {
+       "flour": 10,
+       "butter": 4
+      },
+      "reward": {
+       "coin": 110,
+       "renown": 4
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "reeve",
+   "town": "village",
+   "name": "Aldous the Reeve",
+   "icon": "📜",
+   "task": "errands",
+   "opens": {
+    "village": true
+   },
+   "requests": [
+    {
+     "id": "reeve1",
+     "wants": {
+      "planks": 20
+     },
+     "reward": {
+      "coin": 120
+     }
+    },
+    {
+     "id": "reeve2",
+     "wants": {
+      "blocks": 15
+     },
+     "reward": {
+      "coin": 160
+     },
+     "extra": {
+      "type": "upkeep",
+      "pct": 0.1,
+      "text": "The Reeve trims your village upkeep by 10%, for good."
+     }
+    },
+    {
+     "id": "reeve3",
+     "wants": {
+      "planks": 30,
+      "blocks": 20
+     },
+     "reward": {
+      "coin": 260,
+      "renown": 8
+     }
+    }
+   ]
+  },
+  {
+   "id": "millerwife",
+   "town": "village",
+   "name": "Edda, the Miller's Wife",
+   "icon": "🧑‍🍳",
+   "task": "millflour",
+   "opens": {
+    "village": true
+   },
+   "requests": [
+    {
+     "id": "edda1",
+     "wants": {
+      "flour": 10
+     },
+     "reward": {
+      "coin": 60,
+      "food": 40
+     }
+    },
+    {
+     "id": "edda2",
+     "wants": {
+      "milk": 8,
+      "flour": 6
+     },
+     "reward": {
+      "coin": 80,
+      "food": 50
+     },
+     "extra": {
+      "type": "recipe",
+      "dish": "pancakes",
+      "text": "Edda shares her pancake recipe."
+     }
+    },
+    {
+     "id": "edda3",
+     "wants": {
+      "flour": 16,
+      "milk": 10
+     },
+     "reward": {
+      "coin": 140,
+      "food": 80
      }
     }
    ]

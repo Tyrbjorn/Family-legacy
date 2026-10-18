@@ -63,3 +63,4 @@ export * from "./engine/minion-auto.js";
 export * from "./engine/village.js";
 export * from "./engine/endgame.js";
 export * from "./engine/animals.js";
+export * from "./engine/chores.js";

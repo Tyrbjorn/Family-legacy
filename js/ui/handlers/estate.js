@@ -13,6 +13,7 @@ export const estateActions = ({ v, b, m }) => ({
   fieldsauto: () => E.setFieldsAuto(s, v),
   hubup: () => E.buyHubUp(s, v),
   animalbuy: () => E.buyAnimals(s, v), // R41
+  choretoggle: () => E.toggleChore(s, v), // R42
   animalup: () => E.buySpotsUp(s, v),
   struct: () => E.buildStructure(s, v),
   upstruct: () => E.upgradeStructure(s, v, b.dataset.w),

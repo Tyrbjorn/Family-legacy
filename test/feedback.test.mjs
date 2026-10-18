@@ -2,7 +2,7 @@
 import { BUILD, FEEDBACK_FORM } from '../js/config.js';
 import * as F from '../js/feedback-core.js';
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
-ok(BUILD==='R41','build R41');
+ok(BUILD==='R42','build R42');
 ok(/^https:\/\/docs\.google\.com\/forms\/d\/e\/.+\/viewform$/.test(FEEDBACK_FORM.formUrl)&&['fun','confused','bored','tooMuch','tomorrow','notes','context'].every(k=>/^\d+$/.test(FEEDBACK_FORM.entries[k])),'config has form url and every field id');
 ok(F.formReady(FEEDBACK_FORM),'live config is form-ready');
 ok(!F.formReady({formUrl:'',entries:{}})&&F.prefillUrl({formUrl:'',entries:{}},{},{})===null,'empty config: no URL (copy fallback)');

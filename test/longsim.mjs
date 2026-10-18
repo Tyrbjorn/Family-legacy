@@ -26,6 +26,7 @@ if (process.env.KIDS) D.tuning.maxKidsPerCouple = +process.env.KIDS;
 if (process.env.NO_MKT) D.events.types = D.events.types.filter(t => !t.pick);
 if (process.env.SH_MULT) D.events.types.filter(t => t.pick).forEach(t => (t.effects.resPrice = t.id === "shortage" ? +process.env.SH_MULT : t.effects.resPrice));
 E.setData(D);
+if (process.env.NO_CHORES && D.estate.chores) D.estate.chores.autoRate = 0; // R42 isolate chores
 const SEEDS = +(process.argv[2] || 3),
   YEARS = +(process.argv[3] || 200);
 const T = D.tuning,
@@ -376,8 +377,8 @@ function bot(s, m) {
   // R31: hand in any villager request we can fill
   if (E.deliverable) for (const n of D.requests?.npcs || []) {
     const w = E.deliverIssue(s, n.id) ? null : E.wantsOf(s, n.id);
-    // keep building materials for the estate: only hand over wood/stone with 3x the ask in stock
-    if (w && Object.entries(w).every(([k, v]) => !["wood", "stone"].includes(k) || (s.res[k] || 0) >= v * 3)) E.deliverRequest(s, n.id);
+    // keep building materials for the estate: only hand over building materials (R42: + planks, blocks, leather, ingots) with 3x the ask in stock
+    if (w && Object.entries(w).every(([k, v]) => !["wood", "stone", "planks", "blocks", "leather", "ingots"].includes(k) || (s.res[k] || 0) >= v * 3)) E.deliverRequest(s, n.id);
   }
   const FOODTASK = D.activities.some(a => a.id === "fishing" && a.task) ? "fishing" : "chores"; // R31: Fish is the day-1 food task
   // food: never let the larder run dry — buy provisions, else do chores (the starter path)

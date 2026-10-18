@@ -8,7 +8,7 @@ const base=()=>{const s=E.newGame(1);E.normalize(s);s.land=['plot'];s.members[0]
 const coop=s=>{s.structures.push({uid:'c'+s.nextId++,type:'chickencoop',pieces:['nestboxes'],up:0});};
 const pen=s=>{s.structures.push({uid:'p'+s.nextId++,type:'cowpen',pieces:['milkstalls'],up:0});};
 const fol=s=>{s.minions.push({uid:'mi'+s.nextId++,type:'laborer',equip:{},name:'F',job:'farm',loyalty:100,lvl:1,skills:{}});};
-ok(BUILD==='R41'&&E.SCHEMA===39,'R41, schema 39');
+ok(E.SCHEMA>=39,'schema 39+');
 ok(A&&A.types.chickencoop&&A.types.cowpen,'animals defined in data/fields.json');
 ok(A.types.chickencoop.buy.n===6&&A.types.chickencoop.buy.cost.coin===60&&A.types.cowpen.buy.n===1&&A.types.cowpen.buy.cost.coin===90,'6 hens for 60, a cow for 90');
 ok(A.types.chickencoop.hours===1&&A.types.cowpen.hours===1&&A.untended===0.25,'about 1 h tending each, 25% untended');

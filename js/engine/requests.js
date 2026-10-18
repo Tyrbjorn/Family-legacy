@@ -1,3 +1,4 @@
+import { opensOk } from "./chores.js";
 // R31 villager requests (data/requests.json) + task yields.
 // Each NPC has one open request at a time; delivering hands over goods (instant in the home village), pays the reward,
 // raises that NPC's favour, then the next request posts after a cooldown. Some requests carry a one-time `extra`:
@@ -10,6 +11,11 @@ import { D, log, rng } from "./state.js";
 
 const RQ = () => D.requests || { npcs: [], cooldown: [3, 7], favourPerDelivery: 10 };
 export const npcDef = id => RQ().npcs.find(n => n.id === id);
+// R42: a villager appears once `opens` holds; `set2` adds a second set of requests once its `opens` holds
+export const npcOpen = (s, n) => !!n && opensOk(s, n.opens);
+export const allRequests = n => [...(n.requests || []), ...((n.set2 || {}).requests || [])];
+export const reqList = (s, n) => [...n.requests, ...(n.set2 && opensOk(s, n.set2.opens) ? n.set2.requests : [])];
+export const openNpcs = s => RQ().npcs.filter(n => npcOpen(s, n));
 const st = (s, id) => ((s.req = s.req || {})[id] = s.req[id] || { i: 0, at: 0, n: 0, fav: 0 });
 const HOME = "millbrook";
 
@@ -46,13 +52,14 @@ export function refineDay(s, ac, eff) {
 // the request an NPC currently has open (null while cooling down or finished with non-repeating list)
 export function openRequest(s, npcId) {
   const n = npcDef(npcId);
-  if (!n || !n.requests.length) return null;
+  if (!n || !n.requests.length || !npcOpen(s, n)) return null;
   const x = st(s, npcId);
   if ((s.day || 0) < x.at) return null;
-  return n.requests[x.i % n.requests.length];
+  const L = reqList(s, n);
+  return L[x.i % L.length];
 }
 // later cycles ask for a little more and pay a little more (+25% per full cycle, capped x2)
-export const cycleMult = (s, npcId) => Math.min(2, 1 + 0.25 * Math.floor(st(s, npcId).i / npcDef(npcId).requests.length));
+export const cycleMult = (s, npcId) => Math.min(2, 1 + 0.25 * Math.floor(st(s, npcId).i / reqList(s, npcDef(npcId)).length));
 export function wantsOf(s, npcId) {
   const r = openRequest(s, npcId);
   if (!r) return null;
@@ -62,7 +69,8 @@ export function wantsOf(s, npcId) {
 export function deliverIssue(s, npcId) {
   const n = npcDef(npcId);
   if (!n) return "no such villager";
-  if (n.town !== HOME && !(s.townsVisited || []).includes(n.town)) return "travel to " + n.town;
+  if (!npcOpen(s, n)) return "not here yet";
+  if (n.town !== HOME && n.town !== "village" && !(s.townsVisited || []).includes(n.town)) return "travel to " + n.town;
   const w = wantsOf(s, npcId);
   if (!w) return "no open request";
   const short = Object.entries(w).filter(([k, v]) => (s.res[k] || 0) < v);
@@ -86,6 +94,7 @@ export function deliverRequest(s, npcId) {
   let extra = null;
   if (e && !(s.reqPerks || []).some(p => p.from === r.id)) {
     (s.reqPerks = s.reqPerks || []).push({ ...e, from: r.id, npc: n.id });
+    if (e.type === "recipe" && e.dish && !(s.dishes ||= []).includes(e.dish)) s.dishes.push(e.dish); // R42
     if (e.type === "questline") {
       const q0 = D.quests.find(q => q.id === e.quests[0]);
       if (q0 && !s.revealed.includes(q0.id)) s.revealed.push(q0.id), revealAt(s, q0.id);

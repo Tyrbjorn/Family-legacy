@@ -4,6 +4,7 @@ import { startWhatsNew } from "./ui/playpass-ui.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
 import { groupOf, render } from "./ui/render.js";
+import { choreNewsCheck } from "./ui/chores-ui.js";
 
 const KEY = "familyLegacy.save.v1";
 
@@ -325,6 +326,7 @@ function loop() {
   last = now;
   if (dt > 5) dt = 5; // big gaps handled by offline calc
   if (!report) E.advanceReal(s, dt);
+  choreNewsCheck(); // R42
   saveT += dt;
   if (saveT >= D.tuning.autosaveSec) {
     saveT = 0;

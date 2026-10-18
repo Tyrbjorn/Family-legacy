@@ -1,3 +1,4 @@
+import { allRequests } from "./requests.js";
 // R33 dishes (data/cooking.json): merged at load into station process rows, the menu, food values and town prices.
 // Fish inputs: `fish:<species>` spends that species from the R32 fish record; plain `fish` spends the cheapest fish first.
 // Auto Cook (station rows each day): dishes an open villager request wants first, then dishes that add a new food
@@ -86,7 +87,7 @@ function learnOk(s, l) {
   if (l.start) return true;
   if (l.request) {
     // delivered: that NPC's request pointer has moved past it
-    const n = ((D.requests || {}).npcs || []).find(x => x.requests.some(r => r.id === l.request));
+    const n = ((D.requests || {}).npcs || []).find(x => allRequests(x).some(r => r.id === l.request));
     return !!n && ((s.req || {})[n.id] || {}).i > n.requests.findIndex(r => r.id === l.request);
   }
   if (l.quest) return (s.doneQuests || []).includes(l.quest);

@@ -1,3 +1,4 @@
+import { choreFx } from "./chores.js";
 // Personal village (Era 3): founded by the Baron's charter quest (data/quests.json q_charter grants it).
 // Village buildings live in s.structures with site "village": they use village slots, not land; production
 // types take slotsPer slots, make outMult× output with jobMult× follower spots (estate-pieces scaledPiece),
@@ -118,13 +119,14 @@ function autoDeliver(s) {
 }
 
 // monthly upkeep; an unpaid building stops producing until the next paid month
-export const villageUpkeep = s => (s.structures || []).filter(isVillage).reduce((a, st) => a + Math.round((st.vcost || 0) * V().upkeep), 0);
+export const upkeepMult = s => Math.max(0.5, 1 + choreFx(s, "upkeep") - (s.reqPerks || []).filter(p => p.type === "upkeep").reduce((a, p) => a + p.pct, 0)); // R42 errands + Reeve
+export const villageUpkeep = s => (s.structures || []).filter(isVillage).reduce((a, st) => a + Math.round((st.vcost || 0) * V().upkeep * upkeepMult(s)), 0);
 export function villageDay(s) {
   if (!s.village) return;
   if (s.village.auto && project(s)) autoDeliver(s);
   if (s.day % 30) return;
   for (const st of s.structures.filter(isVillage)) {
-    const fee = Math.round((st.vcost || 0) * V().upkeep);
+    const fee = Math.round((st.vcost || 0) * V().upkeep * upkeepMult(s));
     if ((s.res.coin || 0) >= fee) (s.res.coin -= fee), delete st.unpaid;
     else st.unpaid = true;
   }

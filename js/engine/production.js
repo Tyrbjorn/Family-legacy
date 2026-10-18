@@ -20,6 +20,7 @@ export function foodQualityOf(s, p) {
 }
 
 export function blendFoodQ(s, res, n, q) {
+  if (!(n > 0)) return; // R42: nothing made, keep the old quality (avoids 0/0)
   if (!s.foodQ) s.foodQ = {};
   const have = Math.max(0, s.res[res] || 0);
   const old = s.foodQ[res] || 1;

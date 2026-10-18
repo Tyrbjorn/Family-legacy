@@ -2,6 +2,7 @@ const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
 const go=async(p,t)=>{await p.evaluate(t=>{const g=window.__tabGroup(t);document.querySelector('#tabs [data-group="'+g+'"]').click();},t);await p.waitForTimeout(150);await p.evaluate(t=>{const b=document.querySelector('#subtabs [data-tab="'+t+'"]');if(b)b.click();},t);};
 const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2})).newPage();
+await p.addInitScript(()=>{document.addEventListener('DOMContentLoaded',()=>{const st=document.createElement('style');st.textContent='#chorepanel{display:none!important}';document.head.appendChild(st);});}); // R42: the New-chore popup is covered by shot-r42
 const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>m.type()==='error'&&errs.push(m.text()));
 await p.goto('http://localhost:'+(process.env.PORT||8080)+'/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2500);
 console.log('teen tabs',await p.$$eval('#tabs button',b=>b.map(x=>x.dataset.tab).join()));await p.screenshot({path:'/workspace/fl-screenshots/screenshot-teen.png'});

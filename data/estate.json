@@ -2959,5 +2959,16 @@
     "blocks": "marbleblocks"
    }
   ]
+ },
+ "chores": {
+  "_note": "R42 chore tiers: chores live in activities.json with chore.opens (all must hold: stage, structure, village). Free basic auto runs every open chore at autoRate when nobody works it by hand. DLC adds chores by adding entries.",
+  "autoRate": 0.35,
+  "fxDays": 1,
+  "tiers": {
+   "1": "Homestead",
+   "2": "Farmstead",
+   "3": "Manor",
+   "4": "Your village"
+  }
  }
 }

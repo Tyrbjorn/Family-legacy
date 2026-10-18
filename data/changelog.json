@@ -2,6 +2,17 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R42",
+   "title": "New chores as you grow",
+   "items": [
+    "11 new chores open as your estate grows: Glean the Hedgerows and Gather Kindling (Homestead); Mill Flour, Saw Planks and Mend Nets (Farmstead); Keep the Ledgers, Help at the Smithy and Cut Blocks (Manor); Work the Dock, Brew Small Ale and Run Village Errands (your village).",
+    "A 🆕 popup tells you when a chore opens. Chores run on Auto for free at a basic rate; work one by hand for the full amount. Pause any of them from the Chores line on Main.",
+    "Some chores help other work: kindling stretches cooking, mended nets improve fishing, ledgers raise trade prices and errands lower village upkeep.",
+    "At Farmstead every Millbrook villager has a second set of requests asking for flour, milk, planks, leather and ale, with better rewards.",
+    "Your own village brings two new villagers: Aldous the Reeve (planks and blocks; he can cut your upkeep) and Edda, the Miller's Wife (flour and milk; she shares a recipe)."
+   ]
+  },
+  {
    "build": "R41",
    "title": "Hens and cows that need looking after",
    "items": [
