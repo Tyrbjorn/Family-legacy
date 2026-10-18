@@ -6,12 +6,16 @@ export function guildHall(m, g) {
   const mg = E.memberGuild(m, g.id),
     mine = !!mg;
   const iss = E.joinIssues(s, m, g.id);
-  let h = `<div class="card" style="margin:6px 0"><div class="row"><b>${g.icon} ${g.name}</b>${mine ? `<span>🎖️ ${E.rankName(mg.rank)}</span>` : `<button class="b" data-a="join" data-v="${g.id}" ${iss.length ? "disabled" : ""}>Join ${g.req.coin}🪙</button>`}</div><div class="muted">${g.desc} ${g.grantsClass ? `Joining grants: <b>${cl(g.grantsClass).icon} ${cl(g.grantsClass).name}</b>.` : g.pathRanks ? "Your rank follows your main craft path." : g.profession ? `Open to all. Grants the <b>${cl(g.profession).icon} ${cl(g.profession).name}</b> profession track.` : ""} Paths: ${g.path.join(", ")}.</div>`;
-  if (!mine) h += `<div class="muted">${iss.length ? "Needs: " + iss.join(" · ") : "Requirements met."}</div>`;
+  const two = mine && m.guild2 === mg, can2 = !mine && !g.open && m.guild && E.secondVia(m) && !m.guild2, iss2 = can2 ? E.join2Issues(s, m, g.id) : [];
+  let h = `<div class="card" style="margin:6px 0" data-guild="${g.id}"><div class="row"><b>${g.icon} ${g.name}</b>${mine ? `<span>🎖️ ${E.rankName(mg.rank)}</span>` : can2 ? `<button class="b" data-a="join2" data-v="${g.id}" ${iss2.length ? "disabled" : ""}>Join as second guild ${E.join2Fee(s, m, g.id)}🪙</button>` : `<button class="b" data-a="join" data-v="${g.id}" ${iss.length ? "disabled" : ""}>Join ${g.req.coin}🪙</button>`}</div>${two ? `<div class="muted">Second guild · capped at tier 2 · Journeyman needs half the rep</div>` : ""}<div class="muted">${g.desc} ${g.grantsClass ? `Joining grants: <b>${cl(g.grantsClass).icon} ${cl(g.grantsClass).name}</b>.` : g.pathRanks ? "Your rank follows your main craft path." : g.profession ? `Open to all. Grants the <b>${cl(g.profession).icon} ${cl(g.profession).name}</b> profession track.` : ""} Paths: ${g.path.map(id => (E.findId(D.classes, id) || E.pathDef(id) || { name: id }).name).join(", ")}.</div>`;
+  if (can2) h += `<div class="muted">${iss2.length ? "Needs: " + iss2.join(" · ") : "Requirements met (second guild)."}${E.bloodline(s, m, g.id) ? " · 🩸 bloodline: no fee" : ""} <button class="b" data-a="pref2" data-v="${g.id}">${m.pref2 === g.id ? "📌 Auto's pick" : "Prefer for Auto"}</button></div>`;
+  else if (!mine) h += `<div class="muted">${iss.length ? "Needs: " + iss.join(" · ") : "Requirements met."}</div>`;
   else {
-    const n = E.nextRank(m, g.id);
-    h += n
-      ? `<div class="row"><span class="muted">${mg.rep >= n.rep ? "✓ Rep " + n.rep + " reached" : "Rep " + mg.rep + "/" + n.rep} → ${n.name} (${n.cost}🪙)</span><button class="b" data-a="rankup" data-v="${g.id}" ${E.canRankUp(s, m, g.id) ? "" : "disabled"}>Rank up</button></div>`
+    const n = E.nextRank(m, g.id), need = n && (two ? E.rep2Need(n) : n.rep);
+    h += two && n && mg.rank + 1 > E.capRank()
+      ? `<div class="muted">Second guild capped at tier 2 (${E.rankName(mg.rank)}).</div>`
+      : n
+      ? `<div class="row"><span class="muted">${mg.rep >= need ? "✓ Rep " + need + " reached" : "Rep " + mg.rep + "/" + need} → ${n.name} (${n.cost}🪙)</span><button class="b" data-a="rankup" data-v="${g.id}" ${E.canRankUp(s, m, g.id) ? "" : "disabled"}>Rank up</button></div>`
       : "";
   }
   if (mine)
@@ -67,7 +71,7 @@ export function guildsv() {
       .join("") +
     `</div>`;
   h +=
-    `<h3>🏛️ Class & Craft Guilds <span class="muted">(Warriors/Rangers/Magic/Healers/Rogues: one per member for life · Crafters: open to all)</span></h3>` +
+    `<h3>🏛️ Class & Craft Guilds <span class="muted">(Warriors/Rangers/Magic/Healers/Rogues/Architects: one per member for life, plus one second guild after tier 3 or Master in a trade · Crafters: open to all)</span></h3>` +
     D.guilds.guilds
       .map(
         g =>

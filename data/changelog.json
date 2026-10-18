@@ -2,6 +2,20 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R47",
+   "title": "Second Guilds and the Architects' Guild",
+   "items": [
+    "🔓 Second guilds: reach a tier-3 class in your guild, or Master in a main, secondary or gathering trade, and you may join one more sworn guild for life. You start at its tier 1, it caps at tier 2, and Journeyman there needs only half the rep. Its class adds its role bonus, guild skills, quests and shop; power still comes from your main class.",
+    "🩸 Bloodline: if a parent or grandparent reached tier 2 in that guild, joining it as a second guild is free and starts you at tier 2 when your level and skills already fit.",
+    "🤖 Auto Advance picks a second guild once (a role the family lacks, then a bloodline guild, then the guild that fits the trade: Masons and Carpenters go to the Architects'), ranks it up and advances its class. Prefer for Auto on the Guilds tab pins your own pick.",
+    "📐 New Architects' Guild (Ashford, notice board in Millbrook): Builder, then Master Builder or Surveyor, then Architect, Fortwright or Town Planner. Each cuts coin and materials on its kind of building (up to 25%): estate buildings and upgrades, manor branches, fields and land, walls and towers, the village. The family's best holder counts.",
+    "🧭 Surveyor: +1 land slot at Journeyman rank and opens road works with a Builder's Yard. 🏰 Fortwright: +10% defence. 🗺️ Town Planner: two village projects at once, deliveries count ×1.25, village upkeep −20%.",
+    "📜 Architects' chain quests unlock the Builder's Square charm (+5% masonry and carpentry XP), the Drafting Room (Workshop Hall fitting, −5% on upgrades), the Builder's Yard (storage, a teamster spot, −5% builds), and road works plus the Fine Cornice.",
+    "🛤️ Road works are live: cart tracks and paved roads add trade-route earnings; they wear 5% a year and can be repaired.",
+    "📒 The Steward's extra trade route now comes from the Clerk path data (the Seneschal title adds a second)."
+   ]
+  },
+  {
    "build": "R46",
    "title": "Guild Tiers, Guild Quest Chains and Trade Slots",
    "items": [

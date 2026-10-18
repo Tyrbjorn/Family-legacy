@@ -1886,5 +1886,29 @@
     "chore": true
    }
   ]
+ },
+ {
+  "id": "drawplans",
+  "name": "Draw Up Plans",
+  "icon": "📐",
+  "minAge": 16,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "drafting"
+  ],
+  "tier": "basic",
+  "desc": "Draw Up Plans",
+  "unlock": [
+   {
+    "cls": "builder"
+   },
+   {
+    "guild": "architects",
+    "rank": 0
+   }
+  ],
+  "signature": true
  }
 ]

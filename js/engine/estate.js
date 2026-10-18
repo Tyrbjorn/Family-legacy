@@ -9,6 +9,7 @@ import { hasLegacy } from "./legacy.js";
 import { regionKnown } from "./map.js";
 import { D, afford, bl, cost, living, log, pay } from "./state.js";
 import { famFx } from "./paths.js";
+import { bcost, landBonus, structSum, structTag } from "./builders.js";
 import { stalls, structFeatureIssue } from "./world.js";
 export * from "./production.js";
 export * from "./tiers.js";
@@ -106,7 +107,7 @@ export const hasLand = s => (s.land || []).length > 0;
 export const established = s => hasLand(s) && (s.structures || []).length > 0;
 
 export const landSlots = s =>
-  (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0) + ((s.land || []).length ? Math.floor(famFx(s, "land")) : 0);
+  (s.land || []).reduce((a, id) => a + ES().lands.find(l => l.id === id).slots, 0) + ((s.land || []).length ? Math.floor(famFx(s, "land")) + landBonus(s) : 0); // R47 Surveyor
 
 export const landUsed = s =>
   D.buildings.reduce((a, b) => a + (bl(s, b.id) > 0 ? b.land : 0), 0) +
@@ -114,7 +115,7 @@ export const landUsed = s =>
 
 export const foodCap = s => (ES().caps.foodBase + eff(s, "foodCap") + bl(s, "farm") * 100) * (1 + famFx(s, "storage")); // R46 Clerk
 
-export const matCap = s => (ES().caps.matBase + eff(s, "matCap")) * (1 + famFx(s, "storage")); // R46 Clerk
+export const matCap = s => (ES().caps.matBase + eff(s, "matCap") + structSum(s, "matCap")) * (1 + famFx(s, "storage")); // R46 Clerk
 
 export const craftQuality = s => eff(s, "craftQuality");
 
@@ -127,14 +128,14 @@ export function canBuyLand(s, id) {
     (!l.region || regionKnown(s, l.region)) &&
     !(s.land || []).includes(id) &&
     (!l.requires || s.land.includes(l.requires)) &&
-    afford(s, l.cost)
+    afford(s, bcost(s, l.cost, "land"))
   );
 }
 
 export function buyLand(s, id) {
   if (!canBuyLand(s, id)) return false;
   const l = ES().lands.find(x => x.id === id);
-  pay(s, l.cost);
+  pay(s, bcost(s, l.cost, "land")); // R47 Surveyor
   s.land.push(id);
   log(s, `📜 Bought ${l.name} (+${l.slots} land slots).`);
   s.deeds.push(`Bought ${l.name}.`);
@@ -149,17 +150,20 @@ export function structIssue(s, type) {
   if (d.requires && !(s.structures || []).some(x => x.type === d.requires || structDef(x.type).upgradeFrom === d.requires))
     return `needs a ${structDef(d.requires).name}`;
   if (d.legacy && !hasLegacy(s, d.legacy)) return "needs Legacy upgrade";
+  if (d.needsUnlock && !(s.unlocks || []).includes(d.needsUnlock)) return "needs the Architects' Guild chain"; // R47 Builder's Yard
   const fi = D.world ? structFeatureIssue(s, type) : null;
   if (fi) return fi;
   if (d.mine && D.world && !freeVeins(s).length) return "every vein on your land already has a mine";
-  if (!afford(s, d.cost)) return "cannot afford";
+  if (!afford(s, structCost(s, type))) return "cannot afford";
   return null;
 }
+// R47: what a new building costs after Architects' discounts
+export const structCost = (s, type) => bcost(s, structDef(type).cost, structTag(structDef(type)));
 
 export function buildStructure(s, type, vein) {
   if (structIssue(s, type)) return null;
   const d = structDef(type);
-  pay(s, d.cost);
+  pay(s, structCost(s, type));
   const st = { uid: "st" + s.nextId++, type, pieces: [...(d.fixed || [])], up: 0 };
   if (d.mine) st.vein = vein && freeVeins(s).includes(vein) ? vein : freeVeins(s)[0];
   s.structures.push(st);
@@ -212,14 +216,14 @@ export function buildIssue(s, b) {
   if (s.buildings[b.id] >= b.max) return "max level";
   if (!established(s)) return "build a Shack first";
   if (!s.buildings[b.id] && landUsed(s) + b.land > landSlots(s)) return "no free land slot";
-  if (!afford(s, cost(s, b))) return "cannot afford";
+  if (!afford(s, bcost(s, cost(s, b), "estate", !!s.buildings[b.id]))) return "cannot afford";
   return null;
 }
 
 export function build(s, id) {
   const b = findId(D.buildings, id);
   if (buildIssue(s, b)) return false;
-  const c = cost(s, b);
+  const c = bcost(s, cost(s, b), "estate", !!s.buildings[b.id]); // R47
   if (!afford(s, c)) return false;
   pay(s, c);
   s.buildings[id]++;

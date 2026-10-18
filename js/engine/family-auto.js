@@ -20,6 +20,9 @@ import { legacyTier } from "./legacy.js";
 import { tierOf } from "./houses.js";
 import { regionOpen } from "./map.js";
 import { D, ageY, isAdult, living, log } from "./state.js";
+import { class2Issues, evolve2, join2Fee, join2Issues, joinSecond, pick2, rank2Issue, rankUp2, secondVia, view2 } from "./guild2.js";
+import { classMoves } from "./guildtiers.js";
+import { defTier } from "./endgame.js";
 
 export const FA_KEYS = ["orders", "advance", "kids", "court"];
 export const FA = () => D.legacy.familyAuto;
@@ -102,7 +105,9 @@ function ordersMonth(s) {
 }
 
 // ---- advance
-const evoScore = (m, c) => Object.keys(c.req || {}).reduce((a, k) => a + lv(m, k), 0) + (c.cpSkills || []).reduce((a, k) => a + lv(m, k), 0) + ((m.lean || []).includes((classGuild(c.id) || {}).id) ? 5 : 0); // R35 lean +5
+// R47 Architects' picks by family need: Fortwright after a lost raid while walls lag, Town Planner with a village, else Architect
+const archNeed = (s, c) => (c.id === "b_fortwright" && ((s.eg || {}).raidsLost || 0) > 0 && defTier(s, "wall") < 2 ? 50 : c.id === "b_planner" && s.village ? 40 : c.id === "b_architect" ? 20 : 0);
+const evoScore = (m, c, s) => (s ? archNeed(s, c) : 0) + Object.keys(c.req || {}).reduce((a, k) => a + lv(m, k), 0) + (c.cpSkills || []).reduce((a, k) => a + lv(m, k), 0) + ((m.lean || []).includes((classGuild(c.id) || {}).id) ? 5 : 0); // R35 lean +5
 function advanceOne(s, m) {
   if (faTier(s, "advance") >= 1) talentAuto(s, m); // R36 fill/swap talent slots unless pinned (R37: tier 1)
   // 1) no guild yet: the track guild if eligible, else the best-fitting one
@@ -115,12 +120,36 @@ function advanceOne(s, m) {
   if (m.guild && canRankUp(s, m) && reserveOk(s, nextRank(m).cost)) {
     if (rankUp(s, m)) return say(s, `Auto Advance: ${m.name} ranked up.`), true;
   }
+  // R47 second guild: pick once when eligible (pinned hand choice m.pref2; pause with fam_second), rank and advance it to tier 2
+  if (second(s, m)) return true;
   // 3) evolve: preference, else the branch that fits their skills
   const opts = faTier(s, "advance") >= 1 ? D.classes.filter(c => !c.profession && canEvolve(s, m, c) && reserveOk(s, c.cost)) : []; // R37: evolving is tier 1
   if (!opts.length) return false;
-  const c = findId(opts, m.prefCls) || opts.sort((a, b) => evoScore(m, b) - evoScore(m, a))[0];
+  const c = findId(opts, m.prefCls) || opts.sort((a, b) => evoScore(m, b, s) - evoScore(m, a, s))[0];
   if (evolve(s, m, c.id)) return say(s, `Auto Advance: ${m.name} became a ${c.name}${opts.length > 1 ? " (best fit of " + opts.map(x => x.name).join("/") + ")" : ""}.`), true;
   return false;
+}
+function second(s, m) {
+  if (!secondVia(m) || (s.autoOff || {}).fam_second || faTier(s, "advance") < 1) return false;
+  if (!m.guild2) {
+    const p = pick2(s, m);
+    if (!p || join2Issues(s, m, p.gid).length || !reserveOk(s, join2Fee(s, m, p.gid))) return false;
+    return joinSecond(s, m, p.gid) && (say(s, `Auto Advance: ${m.name} joined the ${guildDef(p.gid).name} as a second guild (${p.why}).`), true);
+  }
+  const n = D.guilds.ranks[m.guild2.rank + 1];
+  if (n && !rank2Issue(s, m) && reserveOk(s, n.cost)) return rankUp2(s, m) && (say(s, `Auto Advance: ${m.name} ranked up in their second guild.`), true);
+  const opts = classMoves(s, view2(m)).filter(c => c.tier === (findId(D.classes, m.class2).tier || 0) + 1 && !class2Issues(s, m, c).length && reserveOk(s, c.cost || 0));
+  if (!opts.length) return false;
+  const c = opts.sort((a, b) => evoScore(m, b, s) - evoScore(m, a, s))[0];
+  return evolve2(s, m, c.id) && (say(s, `Auto Advance: ${m.name}'s second class is now ${c.name}.`), true);
+}
+export function setPref2(s, id, gid) {
+  const m = findId(s.members, id);
+  if (!m || m.guild2) return false;
+  m.pref2 = gid || null;
+  if (gid) pins(m).guild2 = true;
+  else delete pins(m).guild2;
+  return true;
 }
 export function setPref(s, id, cid) {
   const m = findId(s.members, id);

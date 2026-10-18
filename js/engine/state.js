@@ -80,4 +80,5 @@ export const afford = (s, c) => Object.entries(c).every(([k, v]) => s.res[k] >= 
 
 export const pay = (s, c) => {
   for (const [k, v] of Object.entries(c)) s.res[k] -= v;
+  if (c.saved) s.buildSaved = (s.buildSaved || 0) + c.saved; // R47: coin the Architects' discounts saved (bcost tags it)
 };

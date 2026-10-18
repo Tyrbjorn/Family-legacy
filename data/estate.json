@@ -2329,6 +2329,48 @@
     ]
    },
    "desc": "Quarry Works: 1.5 granite/day"
+  },
+  {
+   "id": "draftingroom",
+   "name": "Drafting Room",
+   "icon": "📐",
+   "kind": "station",
+   "cost": {
+    "coin": 400,
+    "planks": 20,
+    "cloth": 4
+   },
+   "bonus": {
+    "family": "lore",
+    "xp": 0.02
+   },
+   "upCut": 0.05,
+   "unlock": {
+    "key": "piece:draftingroom"
+   },
+   "desc": "Architects' fitting: −5% on every building and furnishing upgrade, +2% Lore XP",
+   "fitting": true
+  },
+  {
+   "id": "finecornice",
+   "name": "Fine Cornice",
+   "icon": "🏛️",
+   "kind": "station",
+   "cost": {
+    "coin": 600,
+    "blocks": 20,
+    "marbleblocks": 6
+   },
+   "bonus": {
+    "skill": "masonry",
+    "xp": 0.03
+   },
+   "look": "fine",
+   "unlock": {
+    "key": "piece:finecornice"
+   },
+   "desc": "Carved stone cornices (the fine building look): +3% masonry XP",
+   "fitting": true
   }
  ],
  "synergies": [

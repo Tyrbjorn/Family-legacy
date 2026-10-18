@@ -15,20 +15,19 @@ export function villagePanel() {
   const t = E.villageTier(s),
     nx = V.tiers[s.village.tier + 1],
     ui = E.villageUpIssue(s);
-  let h = `<div class="card"><div class="row"><b>🏘️ ${t.name}</b><span>${E.villageUsed(s)}/${E.villageSlots(s)} village slots · upkeep ${fmt(E.villageUpkeep(s))}🪙/month</span></div>`;
-  if (nx) h += `<div class="row"><span class="muted">Grow to ${nx.name} (${nx.slots} slots)</span><button class="b" data-a="vup" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(nx.cost)}</button></div>`;
-  const p = E.project(s);
-  if (p) {
-    const L = E.projectLeft(s);
-    h += `<div class="card"><b>🏗️ Project: ${E.projectName(p)}</b><div class="muted">Still to deliver: ${costStr(L)} (delivered ${costStr(p.paid) || "nothing yet"})</div><div class="row" style="gap:4px;justify-content:flex-start"><button class="b" data-a="vdeliver">📦 Deliver what we have</button><button class="b ${s.village.auto ? "sel" : ""}" data-a="vauto" title="Each day, feed the project from surplus: coin above ${fmt(V.autoCoin)}, materials above their keep-in-reserve setting">🤖 Auto Deliver ${s.village.auto ? "on" : "off"}</button><button class="b" data-a="vcancel">Cancel (refund)</button></div></div>`;
-  }
-  h += `<div class="muted">Start a building project in the village (one at a time; deliver its price in parts; production takes ${V.slotsPer} slots; any tier you have raised can be built directly):</div>`;
+  let h = `<div class="card" id="village-card"><div class="row"><b>🏘️ ${t.name}</b><span>${E.villageUsed(s)}/${E.villageSlots(s)} village slots · upkeep ${fmt(E.villageUpkeep(s))}🪙/month</span></div>`;
+  if (nx) h += `<div class="row"><span class="muted">Grow to ${nx.name} (${nx.slots} slots)</span><button class="b" data-a="vup" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(E.bcost(s, nx.cost, "village", true))}</button></div>`;
+  E.projects(s).forEach((p, i) => {
+    const L = E.projectLeft(s, i);
+    h += `<div class="card"><b>🏗️ Project${E.projectCap(s) > 1 ? " " + (i + 1) : ""}: ${E.projectName(p)}</b><div class="muted">Still to deliver: ${costStr(L)} (delivered ${costStr(p.paid) || "nothing yet"})</div><div class="row" style="gap:4px;justify-content:flex-start"><button class="b" data-a="vdeliver">📦 Deliver what we have</button><button class="b ${s.village.auto ? "sel" : ""}" data-a="vauto" title="Each day, feed the projects from surplus: coin above ${fmt(V.autoCoin)}, materials above their keep-in-reserve setting">🤖 Auto Deliver ${s.village.auto ? "on" : "off"}</button><button class="b" data-a="vcancel" data-w="${i}">Cancel (refund)</button></div></div>`;
+  });
+  h += `<div class="muted">Start a building project in the village (${E.projectCap(s) > 1 ? `${E.projectCap(s)} at once with your Town Planner, deliveries count ×${E.roleVal(s, "deliverMult")}` : "one at a time"}; deliver its price in parts; production takes ${V.slotsPer} slots; any tier you have raised can be built directly):</div>`;
   for (const id of E.villageTypes()) {
     const d = E.structDef(id);
     for (let k = 0; k <= E.maxTier(s, id); k++) {
       const iss = E.villageBuildIssue(s, id, k),
         nm = k ? d.tiers[k - 1].name : d.name;
-      h += `<div class="row" style="margin:3px 0"><span>${d.icon} ${nm}</span><button class="b" data-a="vbuild" data-v="${id}" data-w="${k}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.villageCost(id, k))}</button></div>`;
+      h += `<div class="row" style="margin:3px 0"><span>${d.icon} ${nm}</span><button class="b" data-a="vbuild" data-v="${id}" data-w="${k}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.villageCost(id, k, s))}</button></div>`;
     }
   }
   return h + "</div>";
@@ -39,5 +38,5 @@ export function villageRow(st) {
   if (E.isVillage(st)) return `<div class="muted">🏘️ In the village${st.unpaid ? " · ⚠️ upkeep unpaid, idle" : ""}</div>`;
   if (!s.village || !D.estate.village.types.includes(st.type)) return "";
   const iss = E.relocateIssue(s, st.uid);
-  return `<div class="row" style="margin-top:4px"><span class="muted">Move to the village: ${D.estate.village.outMult}× output, frees ${E.structDef(st.type).land} land, refunds ${costStr(E.demolishRefund(st))}</span><button class="b" data-a="reloc" data-v="${st.uid}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.villageCost(st.type))}</button></div>`;
+  return `<div class="row" style="margin-top:4px"><span class="muted">Move to the village: ${D.estate.village.outMult}× output, frees ${E.structDef(st.type).land} land, refunds ${costStr(E.demolishRefund(st))}</span><button class="b" data-a="reloc" data-v="${st.uid}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.villageCost(st.type, 0, s))}</button></div>`;
 }

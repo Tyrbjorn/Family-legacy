@@ -204,6 +204,38 @@
    ],
    "open": true,
    "pathRanks": true
+  },
+  {
+   "id": "architects",
+   "name": "Architects' Guild",
+   "icon": "📐",
+   "town": "ashford",
+   "board": "millbrook",
+   "path": [
+    "builder",
+    "b_masterbuilder",
+    "b_surveyor",
+    "b_architect",
+    "b_fortwright",
+    "b_planner"
+   ],
+   "desc": "Builders, surveyors and planners. Every building, field, wall and village project costs less with one in the family.",
+   "req": {
+    "skills": {
+     "masonry": 5,
+     "carpentry": 5
+    },
+    "coin": 120
+   },
+   "skills": [
+    "drafting",
+    "masonry",
+    "carpentry",
+    "reading",
+    "history",
+    "leadership"
+   ],
+   "grantsClass": "builder"
   }
  ],
  "adventurers": {
@@ -380,8 +412,94 @@
    {
     "quest": "g_hearth_bridge"
    }
+  ],
+  "architects": [
+   {
+    "quest": "g_arch_survey",
+    "unlock": [
+     "recipe:r_g_square"
+    ]
+   },
+   {
+    "quest": "g_arch_granary",
+    "unlock": [
+     "piece:draftingroom"
+    ]
+   },
+   {
+    "quest": "g_arch_chapel",
+    "unlock": [
+     "structure:buildersyard"
+    ]
+   },
+   {
+    "quest": "g_arch_keep",
+    "unlock": [
+     "upgrade:roadworks",
+     "piece:finecornice"
+    ]
+   }
   ]
  },
  "_tiersNote": "R46 pacing (sim-tuned, 8 seeds): skill needs in classes.json are scaled by tier skillScale; Lv 7/16 puts a typical family at tier 2 in years 2-4 and tier 3 in years 5-9 (median 7).",
- "drillEvery": 3
+ "drillEvery": 3,
+ "second": {
+  "_note": "R47 second guilds: one per person for life, opened by a tier-3 class (tier3) or Master in a slotted trade (craftMaster, paths.json slots.masterOpensGuild). Capped at tier 2; Journeyman needs repShare of the rep; a parent/grandparent at tier 2+ in that guild waives the fee and may start you at tier 2.",
+  "capTier": 2,
+  "repShare": 0.5,
+  "bloodlineTier": 2,
+  "rules": [
+   "tier3",
+   "craftMaster"
+  ],
+  "tradeGuild": {
+   "mason": "architects",
+   "carpenter": "architects",
+   "alchemy": "church",
+   "woodsman": "lodge",
+   "farmer": "lodge",
+   "cook": "lodge",
+   "smithing": "vanguard",
+   "armorer": "vanguard",
+   "tailor": "rogues",
+   "scribe": "collegium",
+   "clerk": "rogues"
+  }
+ },
+ "build": {
+  "_note": "R47 Architects' Guild: buildMult(s, tag). Each class's role.build {tag: share, all: share}; the family's best holder per tag counts (not stacked), plus Builder's Yard / Drafting Room, capped.",
+  "cap": 0.25,
+  "tags": [
+   "estate",
+   "manor",
+   "hub",
+   "field",
+   "land",
+   "defense",
+   "barracks",
+   "village",
+   "divine",
+   "road",
+   "piece",
+   "quarry"
+  ],
+  "defaultTag": "estate",
+  "specBoost": {
+   "castellan": {
+    "tags": [
+     "defense",
+     "barracks"
+    ],
+    "v": 0.05
+   },
+   "sculptor": {
+    "tags": [
+     "manor",
+     "piece"
+    ],
+    "v": 0.05
+   }
+  }
+ },
+ "_chainsNote": " R47: the Architects' Master trial (The Grand Commission, opens tier 4) is expansion and not listed."
 }

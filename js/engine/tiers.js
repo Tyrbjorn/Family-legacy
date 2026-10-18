@@ -1,5 +1,6 @@
 // Building tiers: upgrade options (House → manor branches), branch unlocks, respec, demolish (half refund, bed check).
 import { D, afford, isAdult, living, log, pay } from "./state.js";
+import { bcost, structTag } from "./builders.js";
 import { inLine } from "./skills.js";
 import { isHoused } from "./minions.js";
 import { era } from "./family.js";
@@ -45,9 +46,10 @@ export function upgradeIssue(s, uid, to) {
     const bi = branchReqIssue(s, nx) || typeBedIssue(s, st, nx.id);
     if (bi) return bi;
   }
-  if (!afford(s, nx.cost)) return "cannot afford";
+  if (!afford(s, upCost(s, nx))) return "cannot afford";
   return null;
 }
+export const upCost = (s, nx) => bcost(s, nx.cost, structTag(nx), true); // R47 Architects'
 
 function setType(st, id) {
   const fx = structDef(st.type).fixed || [];
@@ -60,7 +62,7 @@ export function upgradeStructure(s, uid, to) {
   if (upgradeIssue(s, uid, to)) return false;
   const st = s.structures.find(x => x.uid === uid);
   const nx = pickNext(st, to);
-  pay(s, nx.cost);
+  pay(s, upCost(s, nx));
   log(s, `🏗️ ${structDef(st.type).name} upgraded to ${nx.name}.`);
   setType(st, nx.id);
   return true;
@@ -82,7 +84,7 @@ export function respecIssue(s, uid, to) {
   const bi = branchReqIssue(s, nx) || typeBedIssue(s, st, nx.id);
   if (bi) return bi;
   const r = refundOf(cur.cost);
-  if (!Object.entries(nx.cost).every(([k, v]) => (s.res[k] || 0) + (r[k] || 0) >= v)) return "cannot afford";
+  if (!Object.entries(bcost(s, nx.cost, structTag(nx))).every(([k, v]) => (s.res[k] || 0) + (r[k] || 0) >= v)) return "cannot afford";
   return null;
 }
 export function respecStructure(s, uid, to) {
@@ -91,7 +93,7 @@ export function respecStructure(s, uid, to) {
     cur = structDef(st.type),
     nx = structDef(to);
   give(s, refundOf(cur.cost));
-  pay(s, nx.cost);
+  pay(s, bcost(s, nx.cost, structTag(nx)));
   setType(st, nx.id);
   log(s, `🔁 ${cur.name} rebuilt as a ${nx.name} (half the old cost refunded).`);
   return true;
@@ -140,14 +142,15 @@ export function tierUpIssue(s, uid) {
   if (!nx) return "max";
   if ((st.up || 0) < curUpgrades(st).length) return "finish the upgrade line";
   if (st.site !== "village" && landUsed(s) + (nx.land || 0) - ((prodTier(st) || {}).land || 0) > landSlots(s)) return "no free land slot";
-  if (!afford(s, nx.cost)) return "cannot afford";
+  if (!afford(s, tierCost(s, st))) return "cannot afford";
   return null;
 }
+export const tierCost = (s, st) => bcost(s, nextTier(st).cost, structTag(structDef(st.type)), true); // R47
 export function tierUp(s, uid) {
   if (tierUpIssue(s, uid)) return false;
   const st = s.structures.find(x => x.uid === uid),
     nx = nextTier(st);
-  pay(s, nx.cost);
+  pay(s, tierCost(s, st));
   // bank what was bought: this line's upgrades (+ the base line's level-slot bonus) stay in effect
   const base = st.tier ? 0 : rankSlots(st);
   st.keptUps = [...(st.keptUps || []), ...curUpgrades(st).slice(0, st.up || 0), ...(base ? [{ name: "base line slots", slots: base }] : [])];

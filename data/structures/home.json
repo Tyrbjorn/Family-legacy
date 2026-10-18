@@ -167,7 +167,8 @@
    "studycorner",
    "shrine",
    "perch",
-   "brazier"
+   "brazier",
+   "finecornice"
   ]
  },
  {
@@ -245,7 +246,8 @@
    "studycorner",
    "shrine",
    "perch",
-   "brazier"
+   "brazier",
+   "finecornice"
   ]
  },
  {
@@ -325,7 +327,8 @@
    "studycorner",
    "shrine",
    "perch",
-   "brazier"
+   "brazier",
+   "finecornice"
   ],
   "bedRole": "followers"
  },
@@ -411,7 +414,8 @@
    "studycorner",
    "shrine",
    "perch",
-   "brazier"
+   "brazier",
+   "finecornice"
   ]
  },
  {
@@ -495,7 +499,9 @@
    "studycorner",
    "shrine",
    "perch",
-   "brazier"
-  ]
+   "brazier",
+   "finecornice"
+  ],
+  "tag": "divine"
  }
 ]

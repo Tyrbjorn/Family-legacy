@@ -361,5 +361,14 @@
   "family": "combat",
   "stat": "AGI",
   "icon": "💨"
+ },
+ {
+  "id": "drafting",
+  "name": "Drafting",
+  "family": "lore",
+  "stat": "INT",
+  "icon": "📐",
+  "guild": "architects",
+  "desc": "Architects' Guild craft: plans, elevations and surveys."
  }
 ]

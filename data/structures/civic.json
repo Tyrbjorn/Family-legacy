@@ -22,7 +22,8 @@
   ],
   "fittings": [
    "stonehearth",
-   "distillery"
+   "distillery",
+   "draftingroom"
   ]
  },
  {
@@ -496,7 +497,8 @@
   "unlockUp": {
    "herbrack": 1,
    "infirmary": 2
-  }
+  },
+  "tag": "divine"
  },
  {
   "id": "barracks",
@@ -640,7 +642,8 @@
   },
   "unlockUp": {
    "pells": 1
-  }
+  },
+  "tag": "barracks"
  },
  {
   "id": "thievesden",
@@ -867,7 +870,8 @@
   "unlockUp": {
    "masontable": 1,
    "altar": 2
-  }
+  },
+  "tag": "divine"
  },
  {
   "id": "ancestorhall",
@@ -935,7 +939,8 @@
     "mult": 0.5,
     "cap": 0
    }
-  ]
+  ],
+  "tag": "divine"
  },
  {
   "id": "kitchen",
@@ -1086,5 +1091,31 @@
   "level": 1,
   "allowed": [],
   "bedRole": "followers"
+ },
+ {
+  "id": "buildersyard",
+  "name": "Builder's Yard",
+  "icon": "🏗️",
+  "fixed": [],
+  "allowed": [
+   "storage",
+   "toolrack"
+  ],
+  "cost": {
+   "coin": 600,
+   "planks": 30,
+   "blocks": 20
+  },
+  "desc": "Architects' yard: +300 material storage, +1 teamster spot, −5% on every build, +10% XP for Architects' Guild members",
+  "land": 1,
+  "slots": 1,
+  "matCap": 300,
+  "teamsterSpots": 1,
+  "buildDisc": 0.05,
+  "needsUnlock": "structure:buildersyard",
+  "guildBoost": {
+   "guild": "architects",
+   "xp": 0.1
+  }
  }
 ]

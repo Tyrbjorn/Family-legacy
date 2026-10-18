@@ -1,15 +1,15 @@
 {
  "_note": "Map round. Terrain zones paint the parchment map and set travel speed, risk, discovery and gathering per terrain. Roads (track/road/highway) are faster and safer; off-road is slower but discovers more. Locations, nodes and markers are revealed through fog cells. Nodes deplete and regrow by season. Gathering runs out → gather → haul back; carry per trip and haul speed come from the hauling tier. Land parcels carry features you can work with no travel. Regions unlock by requirements; ports are stubs for future sea access.",
- "baseSpeed": 225.0,
+ "baseSpeed": 225,
  "terrain": {
   "plains": {
    "name": "Plains",
    "icon": "🌾",
    "fill": "#e9d9a6",
    "ink": "#9a8550",
-   "speed": 1.0,
-   "risk": 1.0,
-   "discover": 1.0,
+   "speed": 1,
+   "risk": 1,
+   "discover": 1,
    "gather": {
     "thyme": 1.1,
     "food": 1.1
@@ -79,8 +79,8 @@
    "fill": "#a9c7c9",
    "ink": "#3f6f7a",
    "speed": 0.7,
-   "risk": 1.0,
-   "discover": 1.0,
+   "risk": 1,
+   "discover": 1,
    "gather": {
     "fish": 1.25
    }
@@ -121,7 +121,7 @@
    "ink": "#7a7357",
    "speed": 0.9,
    "risk": 0.95,
-   "discover": 1.0,
+   "discover": 1,
    "gather": {
     "salt": 1.25,
     "fish": 1.15
@@ -196,32 +196,32 @@
    "w": 24,
    "pts": [
     [
-     240.0,
-     60.0
+     240,
+     60
     ],
     [
-     345.0,
-     210.0
+     345,
+     210
     ],
     [
      427.5,
-     369.0
+     369
     ],
     [
-     477.0,
-     495.0
+     477,
+     495
     ],
     [
-     435.0,
-     645.0
+     435,
+     645
     ],
     [
-     345.0,
-     780.0
+     345,
+     780
     ],
     [
      262.5,
-     900.0
+     900
     ]
    ]
   },
@@ -330,13 +330,13 @@
  },
  "offroad": {
   "name": "Off-road",
-  "speed": 1.0,
-  "risk": 1.0,
+  "speed": 1,
+  "risk": 1,
   "discover": 1.35
  },
- "roadSnap": 60.0,
+ "roadSnap": 60,
  "roadWorks": {
-  "_note": "Data hook only (not built yet): road building/repair by the Mason path.",
+  "_note": "R47: road works are live. Opened by the Architects' chain (upgrade:roadworks) or a Surveyor with a Builder's Yard. Each level adds trade-route earnings; condition decays yearly and a repair restores it.",
   "builder": {
    "path": "mason",
    "rank": 1
@@ -350,6 +350,14 @@
     "coin": 800,
     "blocks": 40
    }
+  },
+  "max": {
+   "track": 3,
+   "road": 3
+  },
+  "fx": {
+   "track": 0.02,
+   "road": 0.04
   },
   "repair": {
    "decayPerYear": 0.05,
@@ -365,24 +373,24 @@
    "name": "Old King's Way",
    "pts": [
     [
-     135.0,
-     225.0
+     135,
+     225
     ],
     [
-     300.0,
-     345.0
+     300,
+     345
     ],
     [
-     495.0,
-     450.0
+     495,
+     450
     ],
     [
-     780.0,
-     510.0
+     780,
+     510
     ],
     [
-     1050.0,
-     570.0
+     1050,
+     570
     ]
    ]
   },
@@ -392,16 +400,16 @@
    "name": "Mill Road",
    "pts": [
     [
-     300.0,
-     600.0
+     300,
+     600
     ],
     [
-     390.0,
-     525.0
+     390,
+     525
     ],
     [
-     495.0,
-     450.0
+     495,
+     450
     ]
    ]
   },
@@ -411,16 +419,16 @@
    "name": "Creek Track",
    "pts": [
     [
-     300.0,
-     600.0
+     300,
+     600
     ],
     [
-     225.0,
-     750.0
+     225,
+     750
     ],
     [
      145.5,
-     942.0
+     942
     ]
    ]
   },
@@ -430,16 +438,16 @@
    "name": "Herb Path",
    "pts": [
     [
-     300.0,
-     600.0
+     300,
+     600
     ],
     [
-     192.0,
-     564.0
+     192,
+     564
     ],
     [
-     162.0,
-     681.0
+     162,
+     681
     ]
    ]
   },
@@ -449,20 +457,20 @@
    "name": "Miners' Track",
    "pts": [
     [
-     495.0,
-     450.0
+     495,
+     450
     ],
     [
-     525.0,
-     315.0
+     525,
+     315
     ],
     [
-     537.0,
+     537,
      208.5
     ],
     [
-     645.0,
-     135.0
+     645,
+     135
     ]
    ]
   },
@@ -472,16 +480,16 @@
    "name": "Lakeside Track",
    "pts": [
     [
-     300.0,
-     600.0
+     300,
+     600
     ],
     [
-     450.0,
-     750.0
+     450,
+     750
     ],
     [
-     615.0,
-     840.0
+     615,
+     840
     ]
    ]
   },
@@ -491,16 +499,16 @@
    "name": "Salt Track",
    "pts": [
     [
-     300.0,
-     600.0
+     300,
+     600
     ],
     [
-     165.0,
-     645.0
+     165,
+     645
     ],
     [
      67.5,
-     705.0
+     705
     ]
    ]
   },
@@ -510,16 +518,16 @@
    "name": "High Pass",
    "pts": [
     [
-     1050.0,
-     570.0
+     1050,
+     570
     ],
     [
-     1170.0,
-     900.0
+     1170,
+     900
     ],
     [
-     1230.0,
-     1185.0
+     1230,
+     1185
     ]
    ]
   }
@@ -746,7 +754,7 @@
    "name": "On foot",
    "icon": "🎒",
    "carry": 80,
-   "haulSpeed": 1.0
+   "haulSpeed": 1
   },
   "tiers": [
    {
@@ -754,7 +762,7 @@
     "name": "Handcart",
     "icon": "🛒",
     "carry": 140,
-    "haulSpeed": 1.0,
+    "haulSpeed": 1,
     "item": "handcart"
    },
    {
@@ -1169,7 +1177,7 @@
  },
  "discoverPerOffroadDay": 0.08,
  "regrowBySeason": {
-  "spring": 1.0,
+  "spring": 1,
   "summer": 0.8,
   "autumn": 0.6,
   "winter": 0.2
@@ -1183,11 +1191,11 @@
   "_note": "Mountains and lakes are impassable. A route checks points along its line (at least `samples`, one per `step` px); each blocked stretch adds a detour point just past that zone's edge, on the shorter side, up to maxDetours. R32: owning a Small Boat lets routes cross lakes (no Dock needed); the Dock is where boats are built and, later, where bigger ships berth. Larger ships (Port + Shipyard, coast/sea) are a later hook: add a terrain flag `ship` and a ship item the same way.",
   "samples": 8,
   "step": 37.5,
-  "margin": 27.0,
+  "margin": 27,
   "maxDetours": 2,
   "boat": {
    "item": "smallboat",
-   "speed": 1.0
+   "speed": 1
   }
  },
  "feed": {

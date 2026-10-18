@@ -21,8 +21,8 @@ function fieldRow(f, L) {
 <div class="row"><span>${c.icon} ${sel} <span class="muted">Lv ${f.lvl}/${D.fields.levels.max} · ${sz.name}</span></span><span>${r1(E.fieldYield(s, f))}${RI[c.res] || " " + c.res}/day${arrow}</span></div>
 <div class="muted" style="font-size:12px">⏱️ ${r1(sz.hours)} h/day · ${st.state || "new"}${st.tended != null && st.state !== "full" ? ` (${Math.round(st.tended * 100)}% tended)` : ""}${f.stopAt ? ` · stop at ${fmt(f.stopAt)}` : ""}</div>
 <div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin-top:3px">
-<button class="b" data-a="fieldlvl" data-v="${f.id}" ${lvlI ? `disabled title="${lvlI}"` : ""}>⬆️ Level ${lvlI === "max" ? "max" : cost(E.levelCost(f))}</button>
-<button class="b" data-a="fieldsize" data-v="${f.id}" ${szI ? `disabled title="${szI}"` : ""} title="More crop, longer to tend">➕ Bigger ${szI === "max" ? "max" : (f.size || 0) < (f.sizeMax || 0) ? "(paid)" : cost(E.sizeCost(f))}</button>
+<button class="b" data-a="fieldlvl" data-v="${f.id}" ${lvlI ? `disabled title="${lvlI}"` : ""}>⬆️ Level ${lvlI === "max" ? "max" : cost(E.levelCost(f, s))}</button>
+<button class="b" data-a="fieldsize" data-v="${f.id}" ${szI ? `disabled title="${szI}"` : ""} title="More crop, longer to tend">➕ Bigger ${szI === "max" ? "max" : (f.size || 0) < (f.sizeMax || 0) ? "(paid)" : cost(E.sizeCost(f, s))}</button>
 ${f.size ? `<button class="b" data-a="fieldsmall" data-v="${f.id}" title="Back to a smaller plot (free to re-enlarge)">➖</button>` : ""}
 <button class="b ${f.auto === false ? "" : "sel"}" data-a="fieldtoggle" data-v="${f.id}" title="Auto-tend this field">${f.auto === false ? "⏸️ Paused" : "✅ Auto"}</button></div></div>`;
 }
@@ -37,12 +37,12 @@ export function fieldsCard() {
   h += st.list.map(f => fieldRow(f, L)).join("");
   if (st.list.length < slots) {
     const btns = E.cropIds().map(id => { const why = E.buildFieldIssue(s, id); return `<button class="b" data-a="fieldbuild" data-v="${id}" ${why ? `disabled title="${why}"` : ""}>${E.cropDef(id).icon} ${E.cropDef(id).name}</button>`; }).join("");
-    h += `<div style="margin-top:4px"><b>New field</b> <span class="muted">(${cost(D.fields.build)})</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${btns}</div></div>`;
+    h += `<div style="margin-top:4px"><b>New field</b> <span class="muted">(${cost(E.fieldCost(s))})</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${btns}</div></div>`;
   }
   const pile = Object.entries(st.pile).filter(([, v]) => v >= 0.5);
   const tm = (s.minions || []).filter(x => x.job === "teamster").length;
   h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(", ")}</div>` : ""}</div>`;
-  const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(u.cost)}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
+  const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(E.bcost(s, u.cost, "hub", true))}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
   h += animalsRow(); // R41
   h += rotationRow(); // R43
   h += `<div style="margin-top:6px"><b>Upgrades</b> <span class="muted">· farm spots ${E.jobCap(s, "farm")}</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${up("worker")}${up("teamster")}</div></div>`;

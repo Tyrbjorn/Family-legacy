@@ -24,6 +24,7 @@ export const familyActions = ({ v, b, m }) => ({
     return sel ? E.marryOut(s, +sel.value, v) : false;
   },
   evolve: () => E.evolve(s, m, v),
+  evolve2: () => E.evolve2(s, m, v),
   clsall: () => {
     U.clsAll = U.clsAll === +v ? null : +v;
   },

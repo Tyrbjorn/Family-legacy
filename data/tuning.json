@@ -68,9 +68,6 @@
   ],
   "haggleLvlPerSlot": 10,
   "haggleSlotMax": 2,
-  "stewardSpecs": [
-   "steward"
-  ],
   "stewardSlotMax": 2,
   "slotClasses": [
    "n_tradefactor"

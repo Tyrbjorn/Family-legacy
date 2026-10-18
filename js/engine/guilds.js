@@ -6,6 +6,7 @@ import { structDef } from "./estate.js";
 import { statVal } from "./family.js";
 import { buyPrice, itemDef, vaultRoom } from "./inventory.js";
 import { D, ageY, isAdult, log } from "./state.js";
+import { markSecond, rep2Need, capRank } from "./guild2.js";
 
 export const cls = m => findId(D.classes, m.cls);
 
@@ -59,6 +60,7 @@ export function evolve(s, m, cid) {
   }
   log(s, `🌟 ${m.name} evolved into a ${c.name}!`);
   s.deeds.push(`${m.name} became a ${c.name}.`);
+  markSecond(s, m); // R47: tier 3 opens a second guild
   return true;
 }
 
@@ -81,11 +83,12 @@ export function memberGuild(m, gid) {
   const g = guildDef(gid);
   if (!g) return null;
   if (g.open) return m.craft && gid === "hearth" ? { id: gid, ...m.craft, _ref: m.craft } : null;
+  if (m.guild2 && m.guild2.id === gid) return m.guild2; // R47 second guild
   return m.guild && m.guild.id === gid ? m.guild : null;
 }
 
 export function guildsOf(m) {
-  return [m.guild, m.craft ? Object.assign(m.craft, { id: "hearth" }) : null].filter(Boolean);
+  return [m.guild, m.guild2, m.craft ? Object.assign(m.craft, { id: "hearth" }) : null].filter(Boolean);
 }
 
 export function questOk(m, q) {
@@ -141,7 +144,7 @@ export function joinGuild(s, m, gid) {
 
 export const mgOf = (m, gid) => (gid ? memberGuild(m, gid) : m.guild);
 
-export const store = (m, gid) => (gid === "hearth" ? m.craft : m.guild);
+export const store = (m, gid) => (gid === "hearth" ? m.craft : m.guild2 && m.guild2.id === gid ? m.guild2 : m.guild);
 
 export function nextRank(m, gid) {
   const g = mgOf(m, gid);
@@ -152,6 +155,7 @@ export function canRankUp(s, m, gid) {
   const g = mgOf(m, gid),
     n = nextRank(m, gid);
   if (g && guildDef(g.id || gid) && guildDef(g.id || gid).pathRanks) return false; // Crafters' rank follows the main path
+  if (g && g === m.guild2) return !!n && g.rank + 1 <= capRank() && g.rep >= rep2Need(n) && s.res.coin >= n.cost; // R47 second guild: capped, half rep
   return !!n && g.rep >= n.rep && s.res.coin >= n.cost;
 }
 

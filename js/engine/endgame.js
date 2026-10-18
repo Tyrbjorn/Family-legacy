@@ -8,6 +8,7 @@ import { addRenown } from "./legacy.js";
 import { registerDayHook } from "./time.js";
 import { notify } from "./notify.js";
 import { D, active, afford, known, log, pay, rng } from "./state.js";
+import { bcost, structSum, structTag, roleVal, roadsDay } from "./builders.js";
 
 const NONE = { tiers: [] };
 const FALLBACK = { mounts: [], patronage: { list: [] }, quarries: [], creatures: { byPhase: [1], eliteChance: 0 }, raids: { phase: 99 }, defenses: { wall: NONE, tower: NONE, palisade: NONE } };
@@ -60,12 +61,12 @@ export function quarryIssue(s, id) {
   const q = quarryDef(id), n = q && findId(D.nodes, q.node);
   if (!q || !n) return "missing";
   if (!known(s, n)) return "find the " + n.name + " first";
-  return buyIssue(s, q.tiers[quarryTier(s, id)] && q.tiers[quarryTier(s, id)].cost);
+  return buyIssue(s, q.tiers[quarryTier(s, id)] && bcost(s, q.tiers[quarryTier(s, id)].cost, "quarry", quarryTier(s, id) > 0));
 }
 export function buildQuarry(s, id) {
   if (quarryIssue(s, id)) return false;
   const q = quarryDef(id), t = quarryTier(s, id);
-  pay(s, q.tiers[t].cost);
+  pay(s, bcost(s, q.tiers[t].cost, "quarry", t > 0));
   owned(s).quarries[id] = t + 1;
   log(s, `${q.icon} ${q.name} ${t ? "upgraded to tier " + (t + 1) : "opened"}: ${q.tiers[t].rate} ${q.res}/day.`);
   return true;
@@ -77,12 +78,12 @@ export function defIssue(s, k) {
   const d = EG().defenses[k];
   if (!d) return "missing";
   if (d.village && !s.village) return "needs the village";
-  return buyIssue(s, (d.tiers[defTier(s, k)] || {}).cost);
+  return buyIssue(s, bcost(s, (d.tiers[defTier(s, k)] || {}).cost, "defense", defTier(s, k) > 0)); // R47 Fortwright
 }
 export function buildDefense(s, k) {
   if (defIssue(s, k)) return false;
   const d = EG().defenses[k], t = d.tiers[defTier(s, k)];
-  pay(s, t.cost);
+  pay(s, bcost(s, t.cost, "defense", defTier(s, k) > 0));
   owned(s).defs[k] = defTier(s, k) + 1;
   log(s, `${d.icon} Built the ${t.name}.`);
   return true;
@@ -90,7 +91,7 @@ export function buildDefense(s, k) {
 const DEF_KEYS = ["wall", "tower", "palisade"];
 const defTiers = s => DEF_KEYS.filter(k => defTier(s, k)).map(k => EG().defenses[k].tiers[defTier(s, k) - 1]);
 export const hasWarning = s => defTiers(s).some(t => t.warn);
-export const defensePower = s => defTiers(s).reduce((a, t) => a + t.power, 0);
+export const defensePower = s => Math.round(defTiers(s).reduce((a, t) => a + t.power, 0) * (1 + roleVal(s, "defPct"))); // R47 Fortwright +10%
 
 // ---- creatures: repeat fights scale with the phase; elites roll on ~10% of them
 export const creatureScale = s => at(EG().creatures.byPhase, era(s).n - 1);
@@ -118,6 +119,7 @@ export function raid(s) {
     const [lo, hi] = R().lossCoin, pct = lo + rng() * (hi - lo);
     const lost = Math.floor((s.res.coin || 0) * pct);
     s.res.coin -= lost;
+    owned(s).raidsLost = (owned(s).raidsLost || 0) + 1; // R47: Auto Advance leans Fortwright
     const vb = (s.structures || []).filter(st => st.site === "village");
     const pal = defTier(s, "palisade");
     let hit = "";
@@ -150,4 +152,4 @@ export function endgameDay(s) {
   }
 }
 export const endgameInit = s => owned(s);
-registerDayHook("endgame", s => (owned(s), endgameDay(s)));
+registerDayHook("endgame", s => (owned(s), endgameDay(s), roadsDay(s))); // R47 road wear

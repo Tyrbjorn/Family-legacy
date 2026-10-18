@@ -1019,5 +1019,194 @@
   ],
   "cpSkills": [],
   "retired": true
+ },
+ {
+  "id": "builder",
+  "name": "Builder",
+  "tier": 0,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "icon": "🧱",
+  "desc": "Architects' Guild entry: −5% coin and materials on every build and upgrade.",
+  "role": {
+   "build": {
+    "all": 0.05
+   }
+  }
+ },
+ {
+  "id": "b_masterbuilder",
+  "name": "Master Builder",
+  "tier": 1,
+  "from": "builder",
+  "req": {
+   "masonry": 25,
+   "carpentry": 25
+  },
+  "cost": 500,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "cpMult": 1.6,
+  "icon": "🏠",
+  "desc": "−10% on estate buildings and upgrades; furnishing upgrades −10%.",
+  "role": {
+   "build": {
+    "all": 0.05,
+    "estate": 0.1,
+    "piece": 0.1
+   }
+  }
+ },
+ {
+  "id": "b_surveyor",
+  "name": "Surveyor",
+  "tier": 1,
+  "from": "builder",
+  "req": {
+   "masonry": 20,
+   "reading": 15,
+   "history": 10
+  },
+  "cost": 500,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "cpMult": 1.6,
+  "icon": "🧭",
+  "desc": "−15% on fields, hub upgrades, land and roads; +1 land slot at Journeyman rank; opens road works (with a Builder's Yard).",
+  "role": {
+   "build": {
+    "all": 0.05,
+    "field": 0.15,
+    "hub": 0.15,
+    "land": 0.15,
+    "road": 0.15
+   },
+   "landSlot": 1,
+   "roads": 1
+  }
+ },
+ {
+  "id": "b_architect",
+  "name": "Architect",
+  "tier": 2,
+  "from": "b_masterbuilder",
+  "req": {
+   "masonry": 45,
+   "carpentry": 35,
+   "reading": 20,
+   "leadership": 15
+  },
+  "cost": 2000,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "cpMult": 2.4,
+  "icon": "🏛️",
+  "desc": "−20% on estate and manor buildings; fine buildings use 15% fewer marble blocks. The Architect combo path cuts these needs by 10.",
+  "role": {
+   "build": {
+    "all": 0.05,
+    "estate": 0.2,
+    "manor": 0.2,
+    "piece": 0.1
+   },
+   "resCut": {
+    "marbleblocks": 0.15
+   }
+  },
+  "comboCut": {
+   "path": "architect",
+   "by": 10
+  },
+  "guild": "architects"
+ },
+ {
+  "id": "b_fortwright",
+  "name": "Fortwright",
+  "tier": 2,
+  "from": "b_masterbuilder",
+  "req": {
+   "masonry": 45,
+   "tactics": 25,
+   "leadership": 20
+  },
+  "cost": 2000,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "cpMult": 2.4,
+  "icon": "🏰",
+  "desc": "−25% on walls, towers and palisades; defence power +10%; barracks −15%.",
+  "role": {
+   "build": {
+    "all": 0.05,
+    "defense": 0.25,
+    "barracks": 0.15
+   },
+   "defPct": 0.1
+  },
+  "guild": "architects"
+ },
+ {
+  "id": "b_planner",
+  "name": "Town Planner",
+  "tier": 2,
+  "from": "b_surveyor",
+  "req": {
+   "masonry": 40,
+   "etiquette": 20,
+   "haggling": 20
+  },
+  "cost": 2000,
+  "stats": [
+   "STR",
+   "INT"
+  ],
+  "cpSkills": [
+   "brawling",
+   "masonry"
+  ],
+  "cpMult": 2.4,
+  "icon": "🗺️",
+  "needsVillage": true,
+  "desc": "Village: 2 construction projects at once, deliveries count ×1.25, upkeep −20%.",
+  "role": {
+   "build": {
+    "all": 0.05,
+    "village": 0.1
+   },
+   "projects": 2,
+   "deliverMult": 1.25,
+   "upkeepCut": 0.2
+  },
+  "guild": "architects"
  }
 ]

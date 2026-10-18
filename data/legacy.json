@@ -551,6 +551,11 @@
     "carpentry",
     "smithing",
     "tailoring"
+   ],
+   "architects": [
+    "masonry",
+    "carpentry",
+    "reading"
    ]
   },
   "affinity": {

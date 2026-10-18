@@ -1,5 +1,6 @@
 // Furniture redo: slot-free fittings and the save migration that folds merged items and trims building lists.
 import { D, afford, log, pay } from "./state.js";
+import { bcost } from "./builders.js";
 import { ES, baseId, pieceDef, pieceLock, structDef } from "./estate.js";
 
 export const fittingOptions = st => (structDef(st.type).fittings || []).map(pieceDef).filter(Boolean);
@@ -10,14 +11,14 @@ export function fittingIssue(s, uid, id) {
   if ((st.fittings || []).includes(p.id)) return "owned";
   const lk = pieceLock(s, p);
   if (lk) return lk;
-  if (!afford(s, p.cost)) return "cannot afford";
+  if (!afford(s, bcost(s, p.cost, "piece"))) return "cannot afford";
   return null;
 }
 export function buyFitting(s, uid, id) {
   if (fittingIssue(s, uid, id)) return false;
   const st = s.structures.find(x => x.uid === uid),
     p = pieceDef(id);
-  pay(s, p.cost);
+  pay(s, bcost(s, p.cost, "piece"));
   (st.fittings = st.fittings || []).push(p.id);
   log(s, `🔩 Fitted ${p.name} in the ${structDef(st.type).name}.`);
   return true;

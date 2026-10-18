@@ -11,7 +11,7 @@ const meet=(m,c)=>setSk(m,E.classReq(c));
 const lvTo=(m,lv,avoid=[])=>{const ks=Object.keys(m.skills).filter(k=>!avoid.includes(k));let i=0;while(E.level(m)<lv)m.skills[ks[i++%ks.length]].lvl++;};
 const rogue=(s,rank=1)=>{const m=s.members[0];m.guild={id:'rogues',rank,rep:999};m.cls='cutpurse';return m;};
 // ---- data
-ok(BUILD==='R46'&&E.SCHEMA===42,'R46, save step 42');
+ok(/^R4[6-9]/.test(BUILD)&&E.SCHEMA>=42,'R46+, save step 42+');
 ok(T.length===4&&T.every((t,i)=>t.n===i+1)&&T[1].lv<T[2].lv&&T[2].lv<T[3].lv,'4 tiers with rising Lv gates');
 ok(T.map(t=>t.cost).join()==='0,500,2000,5000'&&T[1].rank===1&&T[2].rank===2&&T[3].rank===3&&T[3].expansion,'coin 500/2000/5000; Journeyman/Adept/Master; tier 4 is expansion');
 ok(T[1].skillScale>0&&T[1].skillScale<=1&&T[2].skillScale>0&&T[2].skillScale<=1,'pacing scale lives in guilds.json');
@@ -20,7 +20,7 @@ ok(C('swindler').tier===1&&C('spy').tier===2&&C('spy').from==='swindler','Swindl
 ok(C('fence').tier===2&&C('fence').needsQuest==='g_rogues_ledger','Fence is tier 3 and needs the Ledger of Debts');
 { const by={}; for(const c of D.classes.filter(c=>!c.retired&&!c.profession&&c.tier>0)){const k=E.guildOfCls(c.id)+'|'+c.tier+'|'+Object.keys(c.req).slice(0,2).sort().join('+');(by[k]||=[]).push(c.id);} const d=Object.entries(by).filter(([,v])=>v.length>1); ok(!d.length,'no two classes on a tier share the same two main skills '+JSON.stringify(d)); }
 ok(D.classes.filter(c=>!c.retired&&!c.profession).every(c=>E.guildOfCls(c.id)),'every guild class belongs to a guild');
-{ const ids=new Set(D.quests.map(q=>q.id)), rc=new Set(D.crafting.recipes.map(r=>r.id)); const st=Object.values(D.guilds.chains).flat(); ok(st.every(x=>ids.has(x.quest))&&st.flatMap(x=>x.unlock||[]).every(u=>u.startsWith('recipe:')&&rc.has(u.slice(7))),'chains point at real quests and recipes'); ok(st.every(x=>D.map.points[x.quest]),'chain quests have map pins'); }
+{ const ids=new Set(D.quests.map(q=>q.id)), rc=new Set(D.crafting.recipes.map(r=>r.id)); const st=Object.values(D.guilds.chains).flat(); ok(st.every(x=>ids.has(x.quest))&&st.flatMap(x=>x.unlock||[]).every(u=>E.unlockReal(u)),'chains point at real quests and unlocks'); ok(st.every(x=>D.map.points[x.quest]),'chain quests have map pins'); }
 ok(['g_vanguard_patrol','g_vanguard_siege','g_collegium_rift','g_rogues_heist','g_church_plague','g_church_crypt','g_lodge_hunt','g_hearth_bridge'].every(q=>E.chainStep(q)),'the 8 existing guild quests sit in the chains');
 ok(D.crafting.recipes.filter(r=>/^r_g_/.test(r.id)).every(r=>r.hidden&&E.itemDef(r.base)),'chain recipes are hidden until unlocked, for real items');
 // ---- tier rules
@@ -75,7 +75,7 @@ ok(E.slotCapOf('main')===3&&SLO.second.belowMain===1&&E.slotCapOf('gather')===2&
   m.paths[0].rank=2; m.paths[0].spec='steward'; s.structures.push({uid:'w9',type:'warehouse',pieces:[],up:0}); ok(E.routeSlotParts(s).steward===1&&E.queueSize(s)===o0+1&&E.quotaSlots(s)===q0+3,'Steward (tier 3): +1 route, +1 Orders slot; quota bonus maxes at +3');
   m.paths[0].rank=3; m.paths[0].srank=3; ok(E.routeSlotParts(s).steward===2,'Seneschal (Grandmaster) is in the base game: +2 routes'); }
 // ---- save step 42
-{ const s=base(), m=rogue(s,2); m.cls='spy'; delete m.clsHist; s.unlocks=s.unlocks.filter(u=>!/r_g_/.test(u)); s.schema=41; E.normalize(s); ok(s.schema===42&&m.clsGrandfathered&&m.cls==='spy','step 42: Spies keep their class (grandfathered)'); ok(s.unlocks.includes('recipe:r_g_lockpicks')&&s.unlocks.includes('recipe:r_g_shadow')&&!s.unlocks.includes('recipe:r_g_signet'),'step 42: unlocks for chain quests below the rank held'); ok(m.clsHist.includes('swindler')&&m.clsHist.includes('cutpurse'),'step 42: lineage kept as history'); }
+{ const s=base(), m=rogue(s,2); m.cls='spy'; delete m.clsHist; s.unlocks=s.unlocks.filter(u=>!/r_g_/.test(u)); s.schema=41; E.normalize(s); ok(s.schema===E.SCHEMA&&m.clsGrandfathered&&m.cls==='spy','step 42: Spies keep their class (grandfathered)'); ok(s.unlocks.includes('recipe:r_g_lockpicks')&&s.unlocks.includes('recipe:r_g_shadow')&&!s.unlocks.includes('recipe:r_g_signet'),'step 42: unlocks for chain quests below the rank held'); ok(m.clsHist.includes('swindler')&&m.clsHist.includes('cutpurse'),'step 42: lineage kept as history'); }
 { const s=base(), m=s.members[0]; m.cls='knight'; m.guild={id:'vanguard',rank:0,rep:0}; s.schema=41; E.normalize(s); ok(m.cls==='knight','step 42: classes taken under old rules are kept'); }
 { const s=base(), m=s.members[0]; m.cls='hunter'; m.guild={id:'rogues',rank:1,rep:60}; s.schema=41; E.normalize(s); ok(m.cls==='cutpurse'&&m.clsHist.includes('hunter'),'step 42: an entry class from another guild becomes the sworn guild\'s entry class'); }
 { const s=base(), m=s.members[0]; m.craft={id:'hearth',rank:2,rep:0}; m.paths=[{id:'smithing',xp:1e5,rank:3,spec:null,sxp:0,srank:0},{id:'scribe',xp:9e3,rank:2,spec:'steward',sxp:500,srank:2},{id:'farmer',xp:9e3,rank:2,spec:null,sxp:0,srank:0},{id:'cook',xp:2e3,rank:1,spec:null,sxp:0,srank:0}]; s.schema=41; E.normalize(s);

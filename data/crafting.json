@@ -9,7 +9,7 @@
   {
    "id": "common",
    "name": "Common",
-   "mult": 1.0,
+   "mult": 1,
    "score": 0.25
   },
   {
@@ -33,7 +33,7 @@
  ],
  "craftedValueMult": 1.6,
  "quickSellRate": 0.5,
- "stallSellRate": 1.0,
+ "stallSellRate": 1,
  "stallDaysPerItem": 3,
  "vaultBase": 20,
  "vaultPerStorage": 10,
@@ -1679,6 +1679,20 @@
    "hidden": true,
    "line": "blacksmith",
    "path": "smithing"
+  },
+  {
+   "id": "r_g_square",
+   "name": "Builder's Square",
+   "base": "builders_square",
+   "skill": "carpentry",
+   "station": "mentor",
+   "mats": {
+    "planks": 3,
+    "ingots": 1
+   },
+   "days": 3,
+   "minSkill": 10,
+   "hidden": true
   }
  ],
  "minionSlots": [

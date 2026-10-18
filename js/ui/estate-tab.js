@@ -14,7 +14,7 @@ export function landShop(where) {
     .filter(l => !s.land.includes(l.id) && (!where || l.towns.includes(where)))
     .map(
       l =>
-        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span></span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(l.cost)}</button></div>`,
+        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span></span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(E.bcost(s, l.cost, "land"))}</button></div>`,
     )
     .join("");
 }
@@ -98,7 +98,7 @@ export function estate() {
       .filter(d => !d.upgradeFrom && !d.villageOnly)
       .map(d => {
         const iss = E.structIssue(s, d.id);
-        return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${d.icon} ${d.name} <span class="muted">${d.land} land · ${d.desc}</span></span><button class="b" data-a="struct" data-v="${d.id}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(d.cost)}</button></div>`;
+        return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${d.icon} ${d.name} <span class="muted">${d.land} land · ${d.desc}</span></span><button class="b" data-a="struct" data-v="${d.id}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.structCost(s, d.id))}</button></div>`;
       })
       .join("");
   if (s.pieceStore.length)

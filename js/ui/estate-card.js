@@ -25,7 +25,7 @@ function cardPieces(st, k) {
         nt = E.pieceTiers(pid)[t + 1],
         ui = E.pieceUpIssue(s, st.uid, pid);
       const pz = E.isPaused(s, st.uid, pid);
-      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}${E.pieceSlots(pid) > 1 ? " · " + E.pieceSlots(pid) + " slots" : ""}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${E.pieceLine(pid, st.type)} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(nt.cost)}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
+      return `<div class="row" style="margin:3px 0;${pz ? "opacity:.55" : ""}"><span>${p.icon} ${p.name} <span class="tb">${E.tierName(pid)}${E.pieceSlots(pid) > 1 ? " · " + E.pieceSlots(pid) + " slots" : ""}</span>${rates.length ? ` <span class="tb" style="border-color:${pz ? "#c55" : "#5c5"}">${pz ? "⏸ Paused" : "▶ Running"}</span>` : ""} <span class="muted">${E.pieceLine(pid, st.type)} · ×${E.pieceMult(st, pid).toFixed(2)} effect${rates.length ? " · " + rates.map(r => r.rate + " " + r.out + "/day").join(", ") : ""}</span>${rates.length && !pz ? pbar(s.acc, "daily cycle", (1 - s.acc) * secPerDay(), "thin") : ""}</span><span>${rates.length ? `<button class="b" data-a="toggle" data-v="${st.uid}" data-w="${pid}">${pz ? "Resume" : "Pause"}</button>` : ""}${nt ? `<button class="b" data-a="uppiece" data-v="${st.uid}" data-w="${pid}" ${ui ? "disabled" : ""}>→ ${nt.name} ${costStr(E.bcost(s, nt.cost, "piece", true))}</button>` : ""}${E.isFixed(st, pid) ? '<span class="tb">built-in</span>' : `<button class="b" data-a="unpiece" data-v="${st.uid}" data-w="${pid}">Remove</button>`}</span></div>`;
     })
     .join("")}`;
 }
@@ -65,7 +65,7 @@ function cardFeatures(st, k) {
             : `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><span class="muted">Specialise (pick one):</span>${d.specs.map(sp => `<button class="b" data-a="spec" data-v="${st.uid}" data-w="${sp.id}" ${E.specIssue(s, st.uid, sp.id) ? "disabled" : ""} title="${sp.desc}">${sp.icon} ${sp.name}${E.specIssue(s, st.uid, sp.id) === "finish the upgrade line" ? "" : " " + costStr(sp.cost)}</button>`).join("")}${E.specIssue(s, st.uid, d.specs[0].id) === "finish the upgrade line" ? '<span class="muted">(after the full upgrade line)</span>' : ""}</div>`
         }`
       : ""
-  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${E.curUpgrades(st) ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${E.curUpgrades(st).map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} ${u.routes ? "+" + u.routes + " route" : "+" + u.mult * 100 + "%"}`).join(" · ")}</div>${E.curUpgrades(st)[st.up || 0] ? `<div class="row"><span class="muted">Next: ${E.curUpgrades(st)[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(E.curUpgrades(st)[st.up || 0].cost)}</button></div>` : ""}` : ""}`;
+  }${d.guildBoost ? `<div class="muted">🎓 +${Math.round(d.guildBoost.xp * (1 + E.upgMult(st)) * 100)}% XP for ${d.guildBoost.guild === "adventurers" ? "Adventurers' Guild" : E.guildDef(d.guildBoost.guild).name} members</div>` : ""}${d.skillBoost ? `<div class="muted">🩹 +${Math.round(d.skillBoost.xp * (1 + E.upgMult(st)) * 100)}% ${d.skillBoost.skills.join("/")} XP, faster injury recovery</div>` : ""}${d.classSynergy && E.classSynMult(s, st) > 1 ? `<div class="muted">✨ Hunter in the family: +${d.classSynergy.mult * 100}% output</div>` : ""}${E.curUpgrades(st) ? `<div class="muted" style="margin-top:4px">🔧 Upgrade line (no slot, +housing): ${E.curUpgrades(st).map((u, i) => `${i < (st.up || 0) ? "✅" : "▫️"} ${u.name} ${u.routes ? "+" + u.routes + " route" : "+" + u.mult * 100 + "%"}`).join(" · ")}</div>${E.curUpgrades(st)[st.up || 0] ? `<div class="row"><span class="muted">Next: ${E.curUpgrades(st)[st.up || 0].name}</span><button class="b" data-a="upspecial" data-v="${st.uid}" ${E.specialUpIssue(s, st.uid) ? "disabled" : ""}>${costStr(E.bcost(s, E.curUpgrades(st)[st.up || 0].cost, E.structTag(d), true))}</button></div>` : ""}` : ""}`;
 }
 
 function cardPlace(st, k) {
@@ -100,7 +100,7 @@ function cardFittings(st, k) {
   ${E.fittingOptions(st).length ? `<div class="muted" style="margin-top:4px">🔩 Fittings (no slot, buy once): ${E.fittingOptions(st)
     .map(f => {
       const fi = E.fittingIssue(s, st.uid, f.id);
-      return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${E.pieceLine(f.id)}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${E.pieceLine(f.id)} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(f.cost)}</button>`;
+      return fi === "owned" ? `<span class="tb" title="${f.desc}">✅ ${f.icon} ${f.name} — ${E.pieceLine(f.id)}</span>` : `<button class="b" data-a="buyfit" data-v="${st.uid}" data-w="${f.id}" ${fi ? "disabled" : ""} title="${f.desc}">${f.icon} ${f.name} — ${E.pieceLine(f.id)} · ${fi && fi !== "cannot afford" ? "🔒 " + fi : costStr(E.bcost(s, f.cost, "piece"))}</button>`;
     })
     .join(" ")}</div>` : ""}`;
 }
@@ -111,7 +111,7 @@ function cardTier(st) {
   if (!nx) return E.prodTier(st) ? `<div class="muted" style="margin-top:4px">🏛️ Top tier: ${E.prodTier(st).name}</div>` : "";
   const ti = E.tierUpIssue(s, st.uid),
     adds = [`output ×${nx.outputMult}`, nx.slots ? `+${nx.slots} slot` : "", nx.land ? `+${nx.land} land` : "", "new upgrade line; bought upgrades kept"].filter(Boolean).join(", ");
-  return `<div class="row" style="margin-top:4px"><span class="muted">🏛️ Tier ${(st.tier || 0) + 2} → ${nx.name} (${adds})</span><button class="b" data-a="tierup" data-v="${st.uid}" ${ti ? "disabled" : ""}>${ti && ti !== "cannot afford" ? "🔒 " + ti : costStr(nx.cost)}</button></div>`;
+  return `<div class="row" style="margin-top:4px"><span class="muted">🏛️ Tier ${(st.tier || 0) + 2} → ${nx.name} (${adds})</span><button class="b" data-a="tierup" data-v="${st.uid}" ${ti ? "disabled" : ""}>${ti && ti !== "cannot afford" ? "🔒 " + ti : costStr(E.tierCost(s, st))}</button></div>`;
 }
 
 function cardNav(st, k) {
@@ -122,7 +122,7 @@ function cardNav(st, k) {
   ${nxs
     .map(nx => {
       const ui = E.upgradeIssue(s, st.uid, nx.id);
-      return `<div class="row" style="margin-top:4px"><span class="muted">${nxs.length > 1 ? "Branch" : "Upgrade"} → ${nx.icon} ${nx.name} (${nx.slots} slots, ${nx.land} land)${nx.branch ? "<br>" + nx.desc : ""}</span><button class="b" data-a="upstruct" data-v="${st.uid}" data-w="${nx.id}" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(nx.cost)}</button></div>`;
+      return `<div class="row" style="margin-top:4px"><span class="muted">${nxs.length > 1 ? "Branch" : "Upgrade"} → ${nx.icon} ${nx.name} (${nx.slots} slots, ${nx.land} land)${nx.branch ? "<br>" + nx.desc : ""}</span><button class="b" data-a="upstruct" data-v="${st.uid}" data-w="${nx.id}" ${ui ? "disabled" : ""}>${ui && ui !== "cannot afford" ? "🔒 " + ui : costStr(E.upCost(s, nx))}</button></div>`;
     })
     .join("")}${
     d.branch
@@ -130,7 +130,7 @@ function cardNav(st, k) {
           .filter(o => o.id !== d.id)
           .map(o => {
             const ri = E.respecIssue(s, st.uid, o.id);
-            return `<div class="row" style="margin-top:4px"><span class="muted">Respec → ${o.icon} ${o.name} (refund half, pay full)</span><button class="b" data-a="respec" data-v="${st.uid}" data-w="${o.id}" ${ri ? "disabled" : ""}>${ri && ri !== "cannot afford" ? "🔒 " + ri : costStr(o.cost)}</button></div>`;
+            return `<div class="row" style="margin-top:4px"><span class="muted">Respec → ${o.icon} ${o.name} (refund half, pay full)</span><button class="b" data-a="respec" data-v="${st.uid}" data-w="${o.id}" ${ri ? "disabled" : ""}>${ri && ri !== "cannot afford" ? "🔒 " + ri : costStr(E.bcost(s, o.cost, E.structTag(o)))}</button></div>`;
           })
           .join("")
       : ""

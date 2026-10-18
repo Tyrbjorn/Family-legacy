@@ -28,6 +28,7 @@ export function xpMult(s, m, skillId) {
   let mult = 1;
   mult += traitSum(m, "xp");
   mult += gearFx(m.equip).xpPct || 0;
+  for (const id of Object.values(m.equip || {})) { const it = typeof id === "string" && itemDef(id); if (it && it.xpSkills && it.xpSkills.skills.includes(skillId)) mult += it.xpSkills.v; } // R47 Builder's Square
   mult += buffSum(s, "xp");
   mult += traitSkillXp(m, skillId);
   mult += leanXp(m, skillId) + inhXp(m, skillId) + (m.appr && legacyTier(s, "fa_kids") >= 2 && leanXp(m, skillId) ? 0.05 : 0); // R37 Family Tutor tier 2: lean +15% while apprenticed // R35 leans + inherited skill boost (under 18)

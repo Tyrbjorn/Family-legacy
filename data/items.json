@@ -237,7 +237,7 @@
   "metal": "iron",
   "type": "chain",
   "mat": "iron",
-  "g": 1.0
+  "g": 1
  },
  {
   "id": "ranger_cloak",
@@ -259,7 +259,7 @@
   "value": 150,
   "type": "robe",
   "mat": "wool",
-  "g": 2.0
+  "g": 2
  },
  {
   "id": "iron_scalemail",
@@ -271,7 +271,7 @@
   "metal": "iron",
   "type": "scale",
   "mat": "iron",
-  "g": 1.0
+  "g": 1
  },
  {
   "id": "shadow_leathers",
@@ -965,7 +965,7 @@
   "set": "greenwood",
   "type": "leather",
   "mat": "leather",
-  "g": 1.0
+  "g": 1
  },
  {
   "id": "green_pin",
@@ -1152,7 +1152,7 @@
   "pathItem": true,
   "type": "brigandine",
   "mat": "iron",
-  "g": 1.0
+  "g": 1
  },
  {
   "id": "oak_tower_shield",
@@ -1771,5 +1771,54 @@
   "type": "bow",
   "mat": "pine",
   "g": 0.5
+ },
+ {
+  "id": "builders_square",
+  "name": "Builder's Square",
+  "slot": "charm",
+  "rarity": "Fine",
+  "cp": 4,
+  "value": 90,
+  "xpSkills": {
+   "skills": [
+    "masonry",
+    "carpentry",
+    "drafting"
+   ],
+   "v": 0.05
+  },
+  "desc": "Architects' Guild charm: +5% masonry, carpentry and drafting XP."
+ },
+ {
+  "id": "arch_mallet",
+  "name": "Builder's Mallet",
+  "slot": "weapon",
+  "rarity": "Rare",
+  "cp": 26,
+  "value": 300,
+  "guild": "architects",
+  "rank": 1,
+  "type": "maul",
+  "mat": "iron",
+  "g": 1.758
+ },
+ {
+  "id": "arch_compass",
+  "name": "Architect's Compass",
+  "slot": "charm",
+  "rarity": "Epic",
+  "cp": 10,
+  "value": 600,
+  "guild": "architects",
+  "rank": 2,
+  "xpSkills": {
+   "skills": [
+    "masonry",
+    "carpentry",
+    "drafting"
+   ],
+   "v": 0.08
+  },
+  "desc": "Architects' Guild: +8% masonry, carpentry and drafting XP."
  }
 ]

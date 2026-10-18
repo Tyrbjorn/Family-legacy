@@ -38,7 +38,7 @@ function familyCard(btn) {
   const rows = E.FA_KEYS.map(k => {
     const u = E.LG().upgrades.find(x => x.id === "fa_" + k);
     return E.faOwned(s, k)
-      ? `<div class="row" style="gap:6px;justify-content:flex-start">${u.icon} <b>${nm[k]}</b>${btn("fam_" + k, E.faOn(s, k))}${k === "court" ? ` <span class="muted">Head:</span><button class="b ${s.faCourtHead ? "sel" : ""}" data-a="fahead">${s.faCourtHead ? "Included" : "Off"}</button>` : ""}</div>`
+      ? `<div class="row" style="gap:6px;justify-content:flex-start">${u.icon} <b>${nm[k]}</b>${btn("fam_" + k, E.faOn(s, k))}${k === "advance" && D.guilds.second ? ` <span class="muted">Second guild pick:</span>${btn("fam_second", !(s.autoOff || {}).fam_second)}` : ""}${k === "court" ? ` <span class="muted">Head:</span><button class="b ${s.faCourtHead ? "sel" : ""}" data-a="fahead">${s.faCourtHead ? "Included" : "Off"}</button>` : ""}</div>`
       : "";
   }).join("");
   const any = E.FA_KEYS.some(k => E.faOwned(s, k));

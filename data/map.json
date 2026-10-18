@@ -3,7 +3,7 @@
   "w": 1600,
   "h": 1400
  },
- "speed": 225.0,
+ "speed": 225,
  "minTravel": 0.5,
  "gatherTripDays": 5,
  "home": {
@@ -527,6 +527,22 @@
   "g_rogues_ledger": {
    "x": 875,
    "y": 420
+  },
+  "g_arch_survey": {
+   "x": 170,
+   "y": 270
+  },
+  "g_arch_granary": {
+   "x": 225,
+   "y": 250
+  },
+  "g_arch_chapel": {
+   "x": 300,
+   "y": 840
+  },
+  "g_arch_keep": {
+   "x": 1050,
+   "y": 1185
   }
  },
  "areas": [

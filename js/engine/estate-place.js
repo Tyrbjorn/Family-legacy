@@ -1,5 +1,6 @@
 // Building slots and upgrade lines, production-tier helpers, and item placement gating (re-exported by estate.js).
 import { afford, log, pay } from "./state.js";
+import { bcost, structTag } from "./builders.js";
 import { ES, baseId, classLock, famHasClass, markPerk, pieceDef, pieceLock, pieceSlots, upgradePerk } from "./estate-pieces.js";
 import { activeSynergies, structDef } from "./estate.js";
 
@@ -30,7 +31,7 @@ export function specialUpIssue(s, uid) {
   const nx = ups[st.up || 0];
   if (!nx) return "max";
   if (nx.requiresClass && !famHasClass(s, nx.requiresClass)) return classLock(s, nx.requiresClass);
-  if (!afford(s, nx.cost)) return "cannot afford";
+  if (!afford(s, bcost(s, nx.cost, structTag(structDef(st.type)), true))) return "cannot afford";
   return null;
 }
 
@@ -38,7 +39,7 @@ export function upgradeSpecial(s, uid) {
   if (specialUpIssue(s, uid)) return false;
   const st = s.structures.find(x => x.uid === uid);
   const nx = curUpgrades(st)[st.up || 0];
-  pay(s, nx.cost);
+  pay(s, bcost(s, nx.cost, structTag(structDef(st.type)), true)); // R47
   st.up = (st.up || 0) + 1;
   const pk = upgradePerk(s, st.type);
   if (pk) st.upPerk = (st.upPerk || 0) + nx.mult * pk;

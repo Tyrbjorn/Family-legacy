@@ -8,6 +8,7 @@ import { choreFx } from "./chores.js";
 import { D, afford, log, pay } from "./state.js";
 import { ES, demolishRefund, reserveOf, structDef } from "./estate.js";
 import { registerDayHook } from "./time.js";
+import { bcost, roleVal } from "./builders.js";
 
 const V = () => ES().village;
 export const isVillage = st => st.site === "village";
@@ -19,17 +20,19 @@ export const villageTypes = () => [...V().types, ...ES().structures.filter(d => 
 
 export const villageUpIssue = s => {
   const nx = s.village && V().tiers[s.village.tier + 1];
-  return !s.village ? "no village" : !nx ? "max" : !afford(s, nx.cost) ? "cannot afford" : null;
+  return !s.village ? "no village" : !nx ? "max" : !afford(s, bcost(s, nx.cost, "village", true)) ? "cannot afford" : null;
 };
 export function upgradeVillage(s) {
   if (villageUpIssue(s)) return false;
-  pay(s, V().tiers[++s.village.tier].cost);
+  pay(s, bcost(s, V().tiers[s.village.tier + 1].cost, "village", true));
+  s.village.tier++;
   log(s, `🏘️ The village grew into a ${villageTier(s).name} (${villageSlots(s)} slots).`);
   return true;
 }
 
 // village price: coinMult× the estate coin, matMult× the other materials; built straight at a tier adds that tier chain
-export function villageCost(type, tier = 0) {
+export const villageCost = (type, tier = 0, s) => bcost(s, rawVillageCost(type, tier), "village"); // R47 Town Planner / Builder
+function rawVillageCost(type, tier = 0) {
   const d = structDef(type);
   if (d.villageOnly) return { ...d.cost };
   const out = {};
@@ -43,14 +46,18 @@ export const maxTier = (s, type) => Math.max(0, ...(s.structures || []).filter(x
 
 // ---- building a village is one construction project at a time (a resource request): pick a building, then
 // deliver its coin and materials in any number of parts; it rises when everything is in. Relocation is a project too.
+// R47: a Town Planner in the family runs 2 projects at once (role.projects); deliveries count ×deliverMult
+export const projectCap = s => Math.max(1, roleVal(s, "projects"));
+export const projects = s => (s.village ? [s.village.project, s.village.project2].filter(Boolean) : []);
 export const project = s => (s.village || {}).project || null;
+const dMult = s => Math.max(1, roleVal(s, "deliverMult"));
 const left = p => Object.fromEntries(Object.entries(p.need).map(([k, v]) => [k, v - (p.paid[k] || 0)]).filter(([, v]) => v > 0));
-export const projectLeft = s => (project(s) ? left(project(s)) : {});
+export const projectLeft = (s, i = 0) => (projects(s)[i] ? left(projects(s)[i]) : {});
 
 export function villageBuildIssue(s, type, tier = 0) {
   const d = structDef(type);
   if (!s.village) return "found a village first";
-  if (project(s)) return "a project is underway";
+  if (projects(s).length >= projectCap(s)) return projectCap(s) > 1 ? "both project slots are busy" : "a project is underway";
   if (!d || !villageTypes().includes(type)) return "not a village building";
   if (tier > maxTier(s, type)) return "raise that tier on the estate first";
   if (villageUsed(s) + vSlots(d) > villageSlots(s)) return "no free village slot";
@@ -60,41 +67,43 @@ export function relocateIssue(s, uid) {
   const st = (s.structures || []).find(x => x.uid === uid);
   if (!st || isVillage(st)) return "missing";
   if (!s.village) return "found a village first";
-  if (project(s)) return "a project is underway";
+  if (projects(s).length >= projectCap(s)) return "a project is underway";
   if (!V().types.includes(st.type)) return "stays on the estate";
   if (villageUsed(s) + V().slotsPer > villageSlots(s)) return "no free village slot";
   return null;
 }
-const begin = (s, p) => ((s.village.project = { ...p, paid: {} }), log(s, `🏗️ Village project: ${projectName(p)}. Deliver ${Object.entries(p.need).map(([k, v]) => v + " " + k).join(", ")}.`), true);
+const begin = (s, p) => ((s.village[s.village.project ? "project2" : "project"] = { ...p, paid: {} }), log(s, `🏗️ Village project: ${projectName(p)}. Deliver ${Object.entries(p.need).map(([k, v]) => v + " " + k).join(", ")}.`), true);
 export const projectName = p => (p.uid ? "move the " : "build a ") + structDef(p.type).name + (p.tier ? ` (${structDef(p.type).tiers[p.tier - 1].name})` : "");
-export const buildVillage = (s, type, tier = 0) => !villageBuildIssue(s, type, tier) && begin(s, { type, tier, need: villageCost(type, tier) });
+export const buildVillage = (s, type, tier = 0) => !villageBuildIssue(s, type, tier) && begin(s, { type, tier, need: villageCost(type, tier, s) });
 export function relocate(s, uid) {
   if (relocateIssue(s, uid)) return false;
   const st = s.structures.find(x => x.uid === uid);
-  return begin(s, { type: st.type, uid, need: villageCost(st.type) });
+  return begin(s, { type: st.type, uid, need: villageCost(st.type, 0, s) });
 }
 // hand over up to n of one resource (all that is left when n is omitted); finishes the project when complete
-export function deliver(s, k, n = Infinity) {
-  const p = project(s),
+export function deliver(s, k, n = Infinity, i = 0) {
+  const p = projects(s)[i],
+    mult = dMult(s),
     need = p && (left(p)[k] || 0),
-    give = Math.floor(Math.min(need, n, s.res[k] || 0));
+    give = Math.floor(Math.min(Math.ceil(need / mult), n, s.res[k] || 0));
   if (give <= 0) return 0;
   s.res[k] -= give;
-  p.paid[k] = (p.paid[k] || 0) + give;
+  p.paid[k] = (p.paid[k] || 0) + Math.min(need, Math.round(give * mult)); // R47 Town Planner ×1.25
   if (!Object.keys(left(p)).length) finish(s, p);
   return give;
 }
-export const deliverAll = s => Object.keys(projectLeft(s)).reduce((a, k) => a + deliver(s, k), 0);
-export function cancelProject(s) {
-  const p = project(s);
+export const deliverAll = s => projects(s).reduce((t, p) => t + Object.keys(left(p)).reduce((a, k) => a + deliver(s, k, Infinity, projects(s).indexOf(p)), 0), 0);
+const dropProject = (s, p) => { if (s.village.project === p) { delete s.village.project; if (s.village.project2) (s.village.project = s.village.project2), delete s.village.project2; } else delete s.village.project2; };
+export function cancelProject(s, i = 0) {
+  const p = projects(s)[i];
   if (!p) return false;
   for (const [k, v] of Object.entries(p.paid)) s.res[k] = (s.res[k] || 0) + v;
-  delete s.village.project;
+  dropProject(s, p);
   log(s, `🏗️ Village project cancelled; deliveries returned.`);
   return true;
 }
 function finish(s, p) {
-  delete s.village.project;
+  dropProject(s, p);
   if (p.uid) {
     const st = s.structures.find(x => x.uid === p.uid);
     if (!st) return;
@@ -112,14 +121,15 @@ function finish(s, p) {
 // their reserve (the player's keep-in-reserve settings)
 export const toggleAutoDeliver = s => s.village && (s.village.auto = !s.village.auto);
 function autoDeliver(s) {
-  for (const k of Object.keys(projectLeft(s))) {
-    const keep = k === "coin" ? V().autoCoin : reserveOf(s, k);
-    deliver(s, k, (s.res[k] || 0) - keep);
-  }
+  for (const p of projects(s))
+    for (const k of Object.keys(left(p))) {
+      const keep = k === "coin" ? V().autoCoin : reserveOf(s, k);
+      deliver(s, k, (s.res[k] || 0) - keep, projects(s).indexOf(p));
+    }
 }
 
 // monthly upkeep; an unpaid building stops producing until the next paid month
-export const upkeepMult = s => Math.max(0.5, 1 + choreFx(s, "upkeep") - (s.reqPerks || []).filter(p => p.type === "upkeep").reduce((a, p) => a + p.pct, 0)); // R42 errands + Reeve
+export const upkeepMult = s => Math.max(0.5, 1 + choreFx(s, "upkeep") - (s.reqPerks || []).filter(p => p.type === "upkeep").reduce((a, p) => a + p.pct, 0) - roleVal(s, "upkeepCut")); // R47 Town Planner; R42 errands + Reeve
 export const villageUpkeep = s => (s.structures || []).filter(isVillage).reduce((a, st) => a + Math.round((st.vcost || 0) * V().upkeep * upkeepMult(s)), 0);
 export function villageDay(s) {
   if (!s.village) return;

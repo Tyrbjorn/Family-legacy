@@ -75,7 +75,7 @@ am.adv.rep=30; ok(E.advRankUp(G2,am)&&E.hasService(G2,'questBoard')&&E.questOk(a
 const sv0=E.sellValue(G2,D.items[0]); am.adv.rep=1e4; while(E.advRankUp(G2,am)); ok(am.adv.rank===6&&E.services(G2).length===4&&E.sellValue(G2,D.items[0])===Math.round(D.items[0].value*0.8)&&sv0<D.items[0].value,'rank S, all services (appraisal doubles sale)');
 ok(E.buyAdvItem(G2,am,'adv_blade'),'rank-gated adventurer items');
 // guild roster rework
-const ids=D.guilds.guilds.map(g=>g.id).sort().join(); ok(ids==='church,collegium,hearth,lodge,rogues,vanguard','six guilds: Warriors/Rangers/Magic/Healers/Rogues/Crafters');
+const ids=D.guilds.guilds.map(g=>g.id).sort().join(); ok(ids==='architects,church,collegium,hearth,lodge,rogues,vanguard','seven guilds: Warriors/Rangers/Magic/Healers/Rogues/Architects (R47)/Crafters');
 ok(D.guilds.guilds.every(g=>D.skills.some(k=>k.guild===g.id)&&D.quests.some(q=>q.guild===g.id)&&D.items.some(i=>i.guild===g.id)),'every guild has skill, quest and items');
 ok(D.classes.filter(c=>c.tier===2).every(c=>(c.guild&&D.guilds.guilds.some(g=>g.id===c.guild))||c.advRank!=null||c.crafterRank!=null),'every tier 2 class gated by guild, adventurer or crafter rank');
 ok(D.classes.find(c=>c.id==='paladin').guild==='church'&&D.classes.find(c=>c.id==='assassin').guild==='rogues','Paladin→Healers, Assassin→Rogues');

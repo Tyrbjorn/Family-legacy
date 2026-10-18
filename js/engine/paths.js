@@ -297,6 +297,8 @@ export function memberFx(m, kind, key, rc, itemDef) {
     const er = effRank(m, e);
     for (const f of p.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.flat ? f.v : Math.min(f.max ?? Infinity, f.v * (er + 1));
     for (const [sp, r] of specsOf(e)) for (const f of sp.fx) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.flat ? f.v * specMult(e) : f.v * (Math.min(r, er) + 1) * specMult(e);
+    // R47: an artisan title's own fx (e.g. Seneschal +1 route) count once the title is effective (slot cap included)
+    if (isArtisan(e) && er >= (PD().artisanAt ?? 3)) for (const f of pathSpecDef(e.id, e.spec).artisan.fx || []) if (f.kind === kind && fxMatch(f, key, rc, itemDef)) v += f.flat ? f.v : f.v * (er + 1);
   }
   return v;
 }

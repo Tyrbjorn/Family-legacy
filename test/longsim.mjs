@@ -526,6 +526,23 @@ function bot(s, m) {
     if (o !== m && E.canRankUp(s, o)) E.rankUp(s, o);
   }
 
+  // R47 what-if (ARCH=1): from year 3 one non-active adult holds a Master Builder second class (requirements skipped),
+  // to measure what the Architects' discounts are worth over the run (reported as buildSaved)
+  if (process.env.ARCH && s.day >= 3 * YD && !E.living(s).some(x => x.class2 && E.guildOfCls(x.class2) === 'architects')) { const o = E.living(s).find(x => x.id !== m.id && E.isAdult(x) && !x.guild2) || m; o.guild2 = { id: 'architects', rank: 1, rep: 0 }; o.class2 = process.env.ARCH === 'fort' ? 'b_surveyor' : 'b_masterbuilder'; }
+  // R47 second guilds (as Auto Advance would): join Auto's pick once eligible, rank it, advance its class to tier 2
+  if (!NO_TIERS && E.secondVia && !process.env.NO_SECOND) for (const o of E.living(s).filter(x => E.isAdult(x) && x.guild)) {
+    if (E.secondVia(o) && !o.guild2) {
+      const p = E.pick2(s, o);
+      if (process.env.R47DBG && !(seen.r47dbg ||= new Set()).has(o.id + ':' + Math.floor(s.day / YD)) && seen.r47dbg.add(o.id + ':' + Math.floor(s.day / YD))) console.error('R47 Y' + s.day / YD, o.name, o.cls, E.secondVia(o), p && p.gid, p && E.join2Issues(s, o, p.gid).join('|'), Math.round(s.res.coin));
+      if (p && !E.join2Issues(s, o, p.gid).length && s.res.coin - E.join2Fee(s, o, p.gid) > 300 && E.joinSecond(s, o, p.gid)) { const j = (seen.second ||= { joins: {}, via: {}, year: [] }); j.joins[p.gid] = (j.joins[p.gid] || 0) + 1; j.via[o.secondGuild.via] = (j.via[o.secondGuild.via] || 0) + 1; j.year.push(+(s.day / YD).toFixed(1)); }
+    }
+    if (o.guild2) {
+      const n = D.guilds.ranks[o.guild2.rank + 1];
+      if (n && !E.rank2Issue(s, o) && s.res.coin - n.cost > 300) E.rankUp2(s, o);
+      const c2 = E.findId(D.classes, o.class2), up = E.classMoves(s, E.view2(o)).filter(c => c.tier === (c2.tier || 0) + 1 && !E.class2Issues(s, o, c).length && s.res.coin - (c.cost || 0) > 300);
+      if (up.length && E.evolve2(s, o, up[0].id)) { const j = (seen.second ||= { joins: {}, via: {}, year: [] }); j.tier2 = (j.tier2 || 0) + 1; }
+    }
+  }
   if (m.adv !== undefined && !m.adv && m.cls) E.joinAdventurers && E.joinAdventurers(s, m);
   if (m.adv) E.advRankUp && E.advRankUp(s, m);
   // others work quests
@@ -767,6 +784,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     peakCoin: Math.round(peakCoin),
     coinEvery10y: coinAt.join(","),
     boards: JSON.stringify({ ...(s.boardStats || {}), lines: Object.entries(s.lines || {}).filter(([, v]) => v.done).map(([k, v]) => k + "@y" + Math.round((v.doneDay || 0) / YD)) }),
+    r47: JSON.stringify({ second: seen.second || null, archMembers: E.living(s).filter(o => (o.guild && o.guild.id === "architects") || (o.guild2 && o.guild2.id === "architects")).map(o => [o.cls, o.class2]), buildSaved: Math.round(s.buildSaved || 0), disc: Object.fromEntries(((D.guilds.build || {}).tags || []).map(k => [k, E.buildDisc ? +E.buildDisc(s, k).toFixed(2) : 0]).filter(([, v]) => v > 0)), roads: s.roads || null, unlocks: (s.unlocks || []).filter(u => /^(piece|structure|upgrade):|r_g_square/.test(u)) }),
     tiers: JSON.stringify({ ups: seen.tierUps || 0, firstTier: Object.fromEntries(Object.entries(seen.firstTier || {}).map(([n, o]) => [n, Object.values(o).sort((a, b) => a - b)])), classes: E.living(s).map(o => o.cls).filter(Boolean), chainUnlocks: (s.unlocks || []).filter(u => /^recipe:r_g_/.test(u)) }),
     snap, // [renown, followers, buildings] at years 0,10,20,30
     idleAdultDays: idleDays,

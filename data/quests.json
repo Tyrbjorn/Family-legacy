@@ -2052,5 +2052,74 @@
   "skill": "etiquette",
   "guild": "rogues",
   "rank": 2
+ },
+ {
+  "id": "g_arch_survey",
+  "name": "Survey the Commons",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 10,
+  "days": 5,
+  "risk": "safe",
+  "reward": {
+   "coin": 150
+  },
+  "skill": "drafting",
+  "guild": "architects",
+  "rank": 0,
+  "desc": "Pace out and chart Millbrook's commons for the guild (a masonry and reading check)."
+ },
+ {
+  "id": "g_arch_granary",
+  "name": "The Leaning Granary",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 20,
+  "days": 6,
+  "risk": "safe",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "carpentry",
+  "guild": "architects",
+  "rank": 0,
+  "deliver": {
+   "blocks": 20,
+   "planks": 20
+  },
+  "desc": "Shore up a farmer's granary before it falls: bring blocks and planks."
+ },
+ {
+  "id": "g_arch_chapel",
+  "name": "Raise the Chapel Roof",
+  "region": "outskirts",
+  "type": "guild",
+  "cp": 45,
+  "days": 8,
+  "risk": "risky",
+  "reward": {
+   "coin": 600
+  },
+  "skill": "carpentry",
+  "guild": "architects",
+  "rank": 1,
+  "desc": "Millbrook's church needs new roof beams raised before winter."
+ },
+ {
+  "id": "g_arch_keep",
+  "name": "The Old Keep Survey",
+  "region": "highlands",
+  "type": "guild",
+  "cp": 90,
+  "days": 9,
+  "risk": "risky",
+  "reward": {
+   "coin": 900,
+   "blocks": 30
+  },
+  "skill": "masonry",
+  "guild": "architects",
+  "rank": 2,
+  "desc": "Survey the ruined Vael manor in the highlands: what stands, what can be saved."
  }
 ]

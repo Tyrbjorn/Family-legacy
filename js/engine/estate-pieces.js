@@ -2,6 +2,7 @@ import { findId } from "./lookup.js";
 // Estate items: crafter class perks, item ids/tiers/scaling, bed roles, locks and item upgrades (re-exported by estate.js).
 import { guildDef, memberGuild } from "./guilds.js";
 import { D, afford, living, log, pay } from "./state.js";
+import { bcost, structSum, structTag, roleVal } from "./builders.js";
 import { inLine } from "./skills.js";
 import { pathReqName } from "./paths.js";
 import { nightShare } from "./daynight.js";
@@ -89,6 +90,7 @@ export function pieceLock(s, p) {
     return "estate tier " + u.stage;
   if (u.quest && !s.doneQuests.includes(u.quest))
     return "quest: " + ((findId(D.quests, u.quest) || {}).name || u.quest);
+  if (u.key && !(s.unlocks || []).includes(u.key)) return "Architects' Guild chain"; // R47 chain unlocks (piece:…)
   if (
     u.guild &&
     !living(s).some(m => {
@@ -108,7 +110,7 @@ export function pieceUpIssue(s, uid, pid) {
   if (!nx) return "max";
   const more = (nx.slots || 1) - pieceSlots(pid);
   if (more > 0 && freeSlots(s, st) < more) return `needs ${more} more free slot${more > 1 ? "s" : ""}`;
-  if (!afford(s, nx.cost)) return "cannot afford";
+  if (!afford(s, bcost(s, nx.cost, "piece", true))) return "cannot afford";
   return null;
 }
 
@@ -117,7 +119,7 @@ export function upgradePiece(s, uid, pid) {
   const st = s.structures.find(x => x.uid === uid);
   const t = pieceTier(pid) + 1,
     nx = pieceTiers(pid)[t];
-  pay(s, nx.cost);
+  pay(s, bcost(s, nx.cost, "piece", true)); // R47 Master Builder
   st.pieces[st.pieces.indexOf(pid)] = baseId(pid) + "@" + t;
   markPerk(s, st, pid);
   log(s, `🔧 ${pieceDef(pid).name} upgraded to ${nx.name}.`);

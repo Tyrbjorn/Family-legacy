@@ -655,6 +655,19 @@ export const STEPS = [
       migrateCraftSlots(s); // crafter slots + Scribe-Stewards onto the Clerk path
     },
   },
+  {
+    n: 43,
+    name: "R47 second guilds + Architects' Guild: empty second guild/class on everyone; a tier-3 class marks the second guild open (craft Masters from step 42 keep theirs); nobody is put in a guild; Architects' rep starts at 0 on joining; the new Drafting skill starts at 0",
+    run(s) {
+      for (const m of s.members || []) {
+        for (const sk of D.skills) if (m.skills && !m.skills[sk.id]) m.skills[sk.id] = { lvl: 0, xp: 0 }; // new Drafting skill
+        if (m.guild2 === undefined) m.guild2 = null;
+        if (m.class2 === undefined) m.class2 = null;
+        const c = m.cls && findId(D.classes, m.cls);
+        if (!m.secondGuild && c && (c.tier || 0) >= 2 && !c.retired && m.guild) m.secondGuild = { via: "tier3", cls: m.cls, day: s.day || 0 };
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

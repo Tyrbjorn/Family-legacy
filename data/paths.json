@@ -872,6 +872,7 @@
   },
   {
    "id": "clerk",
+   "manager": true,
    "name": "Clerk",
    "icon": "🧾",
    "kind": "crafting",
@@ -916,7 +917,15 @@
      ],
      "artisan": {
       "name": "Seneschal",
-      "icon": "📜"
+      "icon": "📜",
+      "fx": [
+       {
+        "kind": "route",
+        "v": 1,
+        "flat": true
+       }
+      ],
+      "desc": "Seneschal: one more trade route slot (2 in all)."
      }
     }
    ]

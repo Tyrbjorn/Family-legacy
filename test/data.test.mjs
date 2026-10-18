@@ -185,12 +185,21 @@ if (fail) process.exit(1);
   ok(PP.ranks.length === 4 && PP.ranks.every((r, i) => !i || (r.xp > PP.ranks[i - 1].xp && r.skill >= PP.ranks[i - 1].skill)), "4 ranks with rising thresholds");
   ok(PP.maxPaths >= 2 && PP.secondaryGap >= 1 && PP.specAt > 0 && PP.specAt < PP.ranks.length, "path cap / gap / specAt sane");
   const KINDS = ["craft", "yield", "gather", "find", "foodQ", "cropQ", "variety", "vault", "survival", "trainXp", "enchant", "land", "blessing", "haul", "make"];
+  const MGR_KINDS = ["quotaSlot", "storage", "trade", "route", "orderSlot"]; // each consumed via famFx (quotas/estate/inventory+trade/orders) or the Steward route rule
   const specIds = [];
   for (const P of all) {
     ok(P.skills.length && P.skills.every(k => skillIds.has(k)), `path ${P.id} skills real`);
-    ok(pieceIds.has(P.station) && skillIds.has(P.craftSkill), `path ${P.id} station/craftSkill real`);
-    ok(P.specs.length >= 2, `path ${P.id} offers 2+ specialties`);
-    for (const f of [...P.fx, ...P.specs.flatMap(x => x.fx)]) ok(KINDS.includes(f.kind) && f.v > 0, `path ${P.id} fx ${f.kind} known`);
+    const fxs = [...P.fx, ...P.specs.flatMap(x => [...x.fx, ...((x.artisan || {}).fx || [])])]; // R47: artisan titles may carry fx
+    if (P.manager) {
+      // R46 manager line (Clerk): no station or craft skill, no crafting fx, 1+ specialty, estate-management fx only
+      ok(!P.station && !P.craftSkill && !fxs.some(f => f.kind === "craft" || f.kind === "make"), `manager path ${P.id} has no station/craft fx`);
+      ok(P.specs.length >= 1, `manager path ${P.id} offers a specialty`);
+      for (const f of fxs) ok(MGR_KINDS.includes(f.kind) && f.v > 0 && (f.max === undefined || f.max >= f.v), `manager path ${P.id} fx ${f.kind} known`);
+    } else {
+      ok(pieceIds.has(P.station) && skillIds.has(P.craftSkill), `path ${P.id} station/craftSkill real`);
+      ok(P.specs.length >= 2, `path ${P.id} offers 2+ specialties`);
+      for (const f of fxs) ok(KINDS.includes(f.kind) && f.v > 0, `path ${P.id} fx ${f.kind} known`);
+    }
     for (const f of P.specs.flatMap(x => x.fx)) for (const b of f.bases || []) ok(!!E.itemDef(b), `spec base ${b} exists`);
     specIds.push(...P.specs.map(x => x.id));
   }
@@ -209,7 +218,7 @@ if (fail) process.exit(1);
   ok(!D.classes.some(c => c.id === "couturier"), "Couturier dropped");
   ok(D.classes.filter(c => c.line === "artisan").every(c => c.retired), "old crafter classes retired");
   const rcs = D.crafting.recipes;
-  for (const P of PP.paths) for (const c of PP.classLines) ok(rcs.some(r => r.path === P.id && r.forClass === c && E.itemDef(r.base)), `${P.name} has a class recipe for ${c}`);
+  for (const P of PP.paths.filter(P => !P.manager)) for (const c of PP.classLines) ok(rcs.some(r => r.path === P.id && r.forClass === c && E.itemDef(r.base)), `${P.name} has a class recipe for ${c}`);
   ok(rcs.filter(r => r.forClass).every(r => r.path && D.classes.some(c => c.id === r.forClass)), "class recipes name real path + class");
   ok(rcs.filter(r => r.path === "carpenter" && r.forClass === "hunter").length && rcs.some(r => r.path === "carpenter" && r.forClass === "apprentice" && /staff/i.test(r.name)), "Carpenter: Rangers get bows, Mages staves");
   ok(PP.paths.some(x => x.id === "woodsman") && D.estate.meals.menu.mushrooms, "Woodsman + mushrooms resource");
@@ -260,4 +269,23 @@ if (fail) process.exit(1);
   ok(EN.filter(e => e.when && e.when.road === "off").length >= 2, "off-road has its own (riskier) encounters");
   for (const k of ["gems", "clay", "peat", "salt"]) ok(D.towns.every(t => t.prices[k]), `${k} sells in towns`);
 }
+// R47 second guilds + Architects' Guild
+{
+  const G = D.guilds, BT = new Set((G.build || {}).tags || []);
+  ok(G.second && G.second.capTier === 2 && G.second.repShare > 0 && G.second.repShare <= 1 && G.second.rules.every(r => ["tier3", "craftMaster"].includes(r)), "second guild config sane");
+  ok(Object.entries(G.second.tradeGuild || {}).every(([p, g]) => D.paths.paths.some(x => x.id === p) && G.guilds.some(x => x.id === g && !x.open)), "second guild trade fits name real paths and sworn guilds");
+  const A = G.guilds.find(g => g.id === "architects");
+  ok(A && !A.open && D.towns.some(t => t.id === A.town) && D.towns.some(t => t.id === A.board) && A.path.every(id => D.classes.some(c => c.id === id)), "Architects' Guild: sworn, real seat/board towns and classes");
+  ok(G.build.cap > 0 && G.build.cap <= 0.25 && BT.has(G.build.defaultTag), "build discount cap ≤25% and default tag known");
+  for (const c of D.classes.filter(c => c.role && c.role.build)) ok(Object.entries(c.role.build).every(([k, v]) => (k === "all" || BT.has(k)) && v > 0 && v <= G.build.cap), `class ${c.id} build discounts use known tags, within the cap`);
+  for (const [sp, x] of Object.entries(G.build.specBoost || {})) ok(D.paths.paths.some(p => p.specs.some(z => z.id === sp)) && x.tags.every(k => BT.has(k)), `spec boost ${sp} real`);
+  for (const f of D.estate.structureFiles) for (const d of D["structures/" + f] || []) if (d.tag) ok(BT.has(d.tag), `structure ${d.id} tag ${d.tag} known`);
+  for (const ch of Object.values(G.chains)) for (const st of ch) for (const u of st.unlock || []) ok(E.unlockReal(u), `chain unlock ${u} real`);
+  for (const d of D.estate.structures.filter(d => d.needsUnlock)) ok(Object.values(G.chains).flat().some(st => (st.unlock || []).includes(d.needsUnlock)), `structure ${d.id} unlock is granted by a chain`);
+  for (const p of D.estate.pieces.filter(p => p.unlock && p.unlock.key)) ok(Object.values(G.chains).flat().some(st => (st.unlock || []).includes(p.unlock.key)), `piece ${p.id} unlock is granted by a chain`);
+  for (const c of D.classes.filter(c => c.comboCut)) ok(D.paths.comboPaths.some(x => x.id === c.comboCut.path) && c.comboCut.by > 0, `class ${c.id} combo cut names a real combo path`);
+  ok(D.legacy.familyAuto.tracks.architects.every(k => D.skills.some(x => x.id === k)), "Architects' track skills real");
+  const RW = D.world.roadWorks; ok(RW && ["track", "road"].every(k => RW.build[k] && RW.max[k] > 0 && RW.fx[k] > 0), "road works data complete");
+}
 console.log(pass + " data checks passed" + (fail ? `, ${fail} FAILED` : ""));
+if (fail) process.exit(1); // any failure fails the run (was first-half only)

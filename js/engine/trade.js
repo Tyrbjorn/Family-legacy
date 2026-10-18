@@ -10,7 +10,8 @@ import { fight, fighter } from "./combat.js";
 import { baseSupply, marketOf, shiftSupply, townBuyPrice, townSellPrice } from "./inventory.js";
 import { distTo, ptOf, townKnown, travelDays } from "./map.js";
 import { minionGearMult, minionLvlMult, mtype } from "./minions.js";
-import { effRank, famFx, isArtisan } from "./paths.js";
+import { famFx, memberFx } from "./paths.js";
+import { roadEdge } from "./builders.js";
 import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
@@ -35,8 +36,8 @@ export const tradeTier = s => Math.max(0, ...(s.structures || []).map(st => TRAD
 
 const bestHaggle = s => Math.max(0, ...living(s).map(m => (m.skills && m.skills.haggling ? m.skills.haggling.lvl : 0)));
 // Scribe Stewards add a route slot each; at the artisan stage (Seneschal) two
-const stewards = s =>
-  living(s).reduce((a, m) => a + (m.paths || []).filter(p => ["scribe", "clerk"].includes(p.id) && (TC().stewardSpecs || []).includes(p.spec)).reduce((x, p) => x + (isArtisan(p) && effRank(m, p) >= 3 ? 2 : 1), 0), 0); // R46: Steward lives on the Clerk path
+// R47: route slots come from the data `route` path effect (Clerk › Steward +1, Seneschal artisan fx +1), summed over the family
+const stewards = s => living(s).reduce((a, m) => a + Math.floor(memberFx(m, "route")), 0);
 const factors = s => (s.minions || []).filter(mi => (TC().slotClasses || []).includes(mi.cls)).length;
 
 export function routeSlotParts(s) {
@@ -239,7 +240,7 @@ function startTrip(s, r) {
 export const driverLvlEdge = mi => (mi ? Math.min(TC().driverLvlEdgeMax || 0, ((mi.lvl || 1) - 1) * (TC().driverLvlEdge || 0)) : 0);
 export const driverIssue = mi => (mi && (mi.loyalty ?? 100) < (TC().driverMinLoyalty || 0) ? `loyalty under ${TC().driverMinLoyalty}: won't lead` : null);
 export const driverSkim = mi => (mi && (mi.loyalty ?? 100) < (TC().skimBelow || 0) ? TC().skimCut || 0 : 0);
-const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + driverLvlEdge(minion(s, r.driver)) + famFx(s, "trade");
+const edgeOf = (s, r) => 1 + driverEdge(minion(s, r.driver)) + driverLvlEdge(minion(s, r.driver)) + famFx(s, "trade") + roadEdge(s); // R47 road works
 
 // bandits may strike a cart that is carrying goods or coin on this road
 function banditCheck(s, r, a, b) {

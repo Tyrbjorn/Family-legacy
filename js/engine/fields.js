@@ -4,6 +4,7 @@
 // with leftover hours. When a crop's storage is full, its field rests and the hours go to processing
 // (wheat → flour, barley → ale) if the right station exists. All of it is the free basic auto, settable/pausable.
 import { D, afford, pay, ageY, living, log } from "./state.js";
+import { bcost, structSum, structTag, roleVal } from "./builders.js";
 import { seasonYield } from "./seasons.js";
 import { resGain } from "./legacy.js";
 import { ES, baseId, estateStage, foodCap, matCap, structDef } from "./estate.js";
@@ -64,12 +65,13 @@ const stopOf = (s, f) => Math.min(capOf(s, cropDef(f.crop).res), f.stopAt ?? Inf
 export function buildFieldIssue(s, crop) {
   if (!cropOpen(s, crop)) return cropDef(crop) ? `needs ${structDef(cropDef(crop).needs.structure)?.name || "a building"}` : "unknown crop";
   if (fieldsState(s).list.length >= fieldSlots(s)) return fieldSlots(s) ? "no free field slot" : fieldsUnlockHint(s);
-  if (!afford(s, FLD().build)) return "cannot afford";
+  if (!afford(s, fieldCost(s))) return "cannot afford";
   return null;
 }
+export const fieldCost = s => bcost(s, FLD().build, "field"); // R47 Surveyor
 export function buildField(s, crop) {
   if (buildFieldIssue(s, crop)) return null;
-  pay(s, FLD().build);
+  pay(s, fieldCost(s));
   const f = { id: "f" + s.nextId++, crop, lvl: 1, size: 0, auto: true };
   fieldsState(s).list.push(f);
   log(s, `${cropDef(crop).icon} New field: ${cropDef(crop).name}.`);
@@ -82,23 +84,23 @@ export function setCrop(s, id, crop) {
   f.crop = crop;
   return true;
 }
-export const levelCost = f => FLD().levels.cost[(f.lvl || 1) + 1] || null;
-export const levelIssue = (s, f) => (!f ? "missing" : (f.lvl || 1) >= FLD().levels.max ? "max" : !afford(s, levelCost(f)) ? "cannot afford" : null);
+export const levelCost = (f, s) => bcost(s, FLD().levels.cost[(f.lvl || 1) + 1] || null, "field", true);
+export const levelIssue = (s, f) => (!f ? "missing" : (f.lvl || 1) >= FLD().levels.max ? "max" : !afford(s, levelCost(f, s)) ? "cannot afford" : null);
 export function levelField(s, id) {
   const f = fieldById(s, id);
   if (levelIssue(s, f)) return false;
-  pay(s, levelCost(f));
+  pay(s, levelCost(f, s));
   f.lvl = (f.lvl || 1) + 1;
   return true;
 }
-export const sizeCost = f => (FLD().sizes[(f.size || 0) + 1] || {}).cost || null;
+export const sizeCost = (f, s) => bcost(s, (FLD().sizes[(f.size || 0) + 1] || {}).cost || null, "field", true);
 // a step already paid for once (f.sizeMax) can be re-taken for free
 export const sizeIssue = (s, f) =>
-  !f ? "missing" : (f.size || 0) >= FLD().sizes.length - 1 ? "max" : (f.size || 0) < (f.sizeMax || 0) ? null : !afford(s, sizeCost(f)) ? "cannot afford" : null;
+  !f ? "missing" : (f.size || 0) >= FLD().sizes.length - 1 ? "max" : (f.size || 0) < (f.sizeMax || 0) ? null : !afford(s, sizeCost(f, s)) ? "cannot afford" : null;
 export function sizeUp(s, id) {
   const f = fieldById(s, id);
   if (sizeIssue(s, f)) return false;
-  if ((f.size || 0) >= (f.sizeMax || 0)) pay(s, sizeCost(f));
+  if ((f.size || 0) >= (f.sizeMax || 0)) pay(s, sizeCost(f, s));
   f.size = (f.size || 0) + 1;
   f.sizeMax = Math.max(f.sizeMax || 0, f.size);
   return true;
@@ -133,19 +135,19 @@ export const hubUps = kind => FLD().hub[kind === "teamster" ? "teamsterUps" : "w
 export const nextHubUp = (s, kind) => hubUps(kind).find(u => !fieldsState(s).ups[u.id]);
 export const hubUpIssue = (s, kind) => {
   const u = nextHubUp(s, kind);
-  return !u ? "max" : !fieldsState(s).list.length ? "build a field first" : !afford(s, u.cost) ? "cannot afford" : null;
+  return !u ? "max" : !fieldsState(s).list.length ? "build a field first" : !afford(s, bcost(s, u.cost, "hub", true)) ? "cannot afford" : null;
 };
 export function buyHubUp(s, kind) {
   if (hubUpIssue(s, kind)) return false;
   const u = nextHubUp(s, kind);
-  pay(s, u.cost);
+  pay(s, bcost(s, u.cost, "hub", true));
   fieldsState(s).ups[u.id] = true;
   log(s, `🌾 ${FLD().hub.name}: ${u.name} built.`);
   return true;
 }
 const bought = (s, kind, key) => hubUps(kind).filter(u => fieldsState(s).ups[u.id]).reduce((a, u) => a + (u[key] || 0), 0);
 export const farmSpotsFromHub = s => (s.fields ? bought(s, "worker", "farmSpots") : 0);
-export const teamsterCap = s => (s.fields ? (s.fields.list.length ? FLD().hub.teamsterBase || 0 : 0) + bought(s, "teamster", "teamsterSpots") : 0);
+export const teamsterCap = s => (s.fields ? (s.fields.list.length ? FLD().hub.teamsterBase || 0 : 0) + bought(s, "teamster", "teamsterSpots") + structSum(s, "teamsterSpots") : 0); // R47 Builder's Yard
 
 // ---- tools: cut tend time by metal tier (+ masterwork), only for the matching kind (grain / plot / orchard)
 export function toolCut(id, kind) {
