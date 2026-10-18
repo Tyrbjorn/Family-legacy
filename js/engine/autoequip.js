@@ -74,3 +74,19 @@ export function autoEquipDay(s) {
     if (tools && mi.job) fill(s, mi, "tool", it => it.toolFor === mi.job, id => equipMinion(s, mi.uid, id));
   }
 }
+
+// R44 Auto-craft: hand freshly crafted gear out without the Armory/Workshop unlocks.
+// toolPass (tier 1): followers with a job and no better tool take one from the vault.
+// refitPass (tier 2): family adults (weapon/armor/offhand; starting gear counts as replaceable) and guards.
+export function toolPass(s) {
+  for (const mi of s.minions || []) if (mi.job && !mi.special) fill(s, mi, "tool", it => it.toolFor === mi.job, id => equipMinion(s, mi.uid, id));
+}
+export function refitPass(s, starter = []) {
+  for (const m of living(s).filter(m => isAdult(m) && !m.noAutoEq))
+    for (const sl of ["weapon", "armor", "offhand"]) {
+      const c = (m.equip || {})[sl];
+      if (c && starter.includes(c)) (m.autoEq = m.autoEq || {})[sl] = true;
+      memberFill(s, m, sl);
+    }
+  for (const mi of s.minions || []) if (mi.job === "guard") for (const sl of ["weapon", "armor"]) fill(s, mi, sl, undefined, id => equipMinion(s, mi.uid, id));
+}

@@ -230,6 +230,7 @@ export function switchTo(s, id) {
 export function setOrder(s, id, order) {
   const m = s.members.find(x => x.id === id);
   m.order = order;
+  m.paused = false; // R44: a new order resumes a paused member
   (m.pins = m.pins || {}).order = true; // a hand-set order is pinned: Auto Orders / Courtship leave it alone (unpin on the member card)
   m.faCourt = false;
   m.action = null;

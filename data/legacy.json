@@ -351,6 +351,28 @@
    ]
   },
   {
+   "id": "autocraft",
+   "name": "Auto-craft",
+   "icon": "🤖",
+   "group": "workshop",
+   "free": 0,
+   "desc": "Crafters make gear for your own people in their spare time. Tier 1: basic tools for followers who have none. Tier 2: refits family and followers to the best gear they can make. Tier 3: keeps 1 spare of each gear type in the vault.",
+   "tiers": [
+    {
+     "cost": 50,
+     "value": 1
+    },
+    {
+     "cost": 180,
+     "value": 2
+    },
+    {
+     "cost": 500,
+     "value": 3
+    }
+   ]
+  },
+  {
    "id": "craftspd",
    "name": "Craft Speed",
    "icon": "⚒️",
@@ -420,7 +442,7 @@
   "fromParent": 0.5
  },
  "autoTend": {
-  "_note": "What each Auto Tend upgrade repeats: activity = the last activity using one of these skills (default if none); craft = the last recipe of these skills; gather = the last gathering spot.",
+  "_note": "What each Auto Tend upgrade repeats: activity = the last activity using one of these skills (default if none); craft = the last recipe of these skills; gather = the last gathering spot. R44: craft categories start on their default recipe (or the quickest craftable one) from day 1.",
   "farming": {
    "kind": "activity",
    "skills": [
@@ -432,43 +454,50 @@
    "kind": "craft",
    "skills": [
     "cooking"
-   ]
+   ],
+   "default": "r_hearty_ration_tin"
   },
   "masonry": {
    "kind": "craft",
    "skills": [
     "masonry"
-   ]
+   ],
+   "default": "r_granite_buckler"
   },
   "hunting": {
    "kind": "craft",
    "skills": [
     "hunting"
-   ]
+   ],
+   "default": "r_snare_kit"
   },
   "smithing": {
    "kind": "craft",
    "skills": [
     "smithing"
-   ]
+   ],
+   "default": "r_sickle"
   },
   "carpentry": {
    "kind": "craft",
    "skills": [
     "carpentry"
-   ]
+   ],
+   "default": "r_staff"
   },
   "tailoring": {
    "kind": "craft",
    "skills": [
     "tailoring"
-   ]
+   ],
+   "default": "r_jerkin"
   },
   "alchemy": {
    "kind": "craft",
    "skills": [
     "alchemy"
-   ]
+   ],
+   "default": "r_vigor"
   },
   "extraction": {
    "kind": "gather"
@@ -479,7 +508,8 @@
     "enchanting",
     "arcana",
     "runecraft"
-   ]
+   ],
+   "default": "r_scroll"
   }
  },
  "familyAuto": {
@@ -727,5 +757,36 @@
   "_note": "R43 Work Orders: one estate-wide queue; each order is planned with the quota planner (pulls inputs up to pullDepth steps).",
   "pullDepth": 3,
   "pullAmountMin": 5
+ },
+ "autoCraft": {
+  "_note": "R44 Auto-craft (Workshop line). Auto orders go through the Work Orders planner but use their own slots (maxOpen by tier), not the Order Queue.",
+  "basicTools": {
+   "farm": "sickle",
+   "gather": "woodaxe",
+   "craft": "smithhammer"
+  },
+  "maxOpen": [
+   0,
+   2,
+   3,
+   4
+  ],
+  "refitSlots": [
+   "weapon",
+   "armor",
+   "offhand"
+  ],
+  "refitMargin": 1.1,
+  "starterGear": [
+   "rusty_sword",
+   "apprentice_clothes"
+  ],
+  "spareSlots": [
+   "weapon",
+   "armor",
+   "offhand",
+   "tool"
+  ],
+  "perItemMax": 3
  }
 }

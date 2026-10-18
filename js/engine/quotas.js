@@ -160,14 +160,14 @@ export function quotaAtTarget(s, c, ordersOnly = false) {
   for (const q of openQuotas(s)) {
     if (ordersOnly && !q.order) continue; // R43: work orders steer free auto even without a Workshop tier
     // any category can switch to a task of its skills that yields the item (e.g. Hunting -> Hunt for meat)
-    const ac = D.activities.find(a => a.yields && a.yields[q.item] && a.skills.some(k => c.skills.includes(k)));
+    const ac = D.activities.find(a => a.yields && a.yields[q.item] && a.skills.some(k => (c.skills || []).includes(k)));
     if (ac) return { kind: "activity", id: ac.id, name: ac.name, quota: q.id };
     if (c.kind === "gather") {
-      const n = D.nodes.find(x => x.res && x.res[q.item] && (!x.skill || c.skills.includes(x.skill)) && (s.revealed || []).includes(x.id));
+      const n = D.nodes.find(x => x.res && x.res[q.item] && (!x.skill || (c.skills || []).includes(x.skill)) && (s.revealed || []).includes(x.id));
       if (n) return { kind: "gather", id: n.id, name: n.name, quota: q.id };
     } else if (c.kind === "craft") {
       const rc = recipeFor(q.item);
-      if (rc && c.skills.includes(rc.skill)) return { kind: "craft", id: rc.id, name: rc.name, quota: q.id };
+      if (rc && (c.skills || []).includes(rc.skill)) return { kind: "craft", id: rc.id, name: rc.name, quota: q.id };
     }
   }
   return null;

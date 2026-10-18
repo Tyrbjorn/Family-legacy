@@ -1,3 +1,4 @@
+import { followerPwdCheck } from "./pausedone.js";
 import { haulTier, parcelJobMult } from "./world.js";
 import { deliverLoad, gatherInto, travelDays } from "./map.js";
 import { seasonYield } from "./seasons.js";
@@ -139,7 +140,10 @@ export function minionDay(s) {
       minionLvlMult(mi);
     const rg = resGain(s);
     minionGainXp(s, mi, MLV().xpPerDay * (fed ? 1 : 0.5));
+    if (mi.paused) continue; // R44 pause when done
+    const p0 = mi.prog || 0;
     MINION_JOBS[mi.job]?.(s, mi, D.world ? a * parcelJobMult(s, mi.job) : a, rg);
+    followerPwdCheck(s, mi, p0);
   }
   for (const mi of [...s.minions])
     if (mi.loyalty <= 0) {

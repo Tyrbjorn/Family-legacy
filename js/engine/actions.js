@@ -201,6 +201,7 @@ export function standingTick(s, m) {
 export function setAction(s, a) {
   const m = active(s);
   if (!m) return false;
+  if (m.paused) { m.paused = false; if (m.action && m.action.type === "rest") m.action = null; } // R44: a new task resumes a paused member
   if (a && a.type === "train") {
     const t = themedFor(s, m, a.target);
     if (!t) return false;

@@ -20,6 +20,9 @@ export const estateActions = ({ v, b, m }) => ({
   opause: () => E.toggleOrderPause(s, v),
   opwd: () => { const o = E.orderList(s).find(x => x.id === v); E.setOrderPauseWhenDone(s, v, !(o && o.pwd)); },
   odel: () => E.removeOrder(s, v),
+  apwd: () => E.setAutoPwd(s, v, !E.autoPwd(s, v)), // R44 pause when done: automation lines
+  ppwd: () => { const p = E.living(s).find(m => String(m.id) === v) || (s.minions || []).find(mi => mi.uid === v); E.setPauseWhenDone(s, v, !(p && p.pwd)); }, // R44 people
+  presume: () => E.resumePerson(s, v),
   qoff: () => E.toggleQuotaOff(s, v), // R43 quotas: pause / pause when done
   qpwd: () => { const q = E.quotaList(s).find(x => x.id === v); E.setQuotaPauseWhenDone(s, v, !(q && q.pwd)); },
   animalup: () => E.buySpotsUp(s, v),

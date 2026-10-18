@@ -9,7 +9,7 @@ import { activityOk } from "./skills.js";
 import { gatherInto, newTrip } from "./map.js";
 import { seasonGather } from "./seasons.js";
 import { gatherMult } from "./worldevents.js";
-import { D, isAdult, living } from "./state.js";
+import { D, isAdult, living, log } from "./state.js";
 
 export const AT = () => LG().autoTend || {};
 export const atCats = () => Object.keys(AT()).filter(k => k[0] !== "_");
@@ -22,6 +22,7 @@ export function atIssue(s, k) {
   const ks = c.skills || [];
   if (ks.length && !ks.some(x => ad.some(m => ((m.skills[x] || {}).lvl || 0) >= 1))) return `needs ${c.skills.map(x => (D.skills.find(y => y.id === x) || { name: x }).name).join("/")} 1`;
   const t = atTargetRaw(s, k);
+  if (!t && c.kind === "craft" && c.default && recipeDef(c.default)) { const d = recipeDef(c.default), m = bestHand(s, d.skill); let r = "no crafter"; try { r = m ? recipeIssue(s, m, d) : r; } catch {} if (r && r !== "missing materials") return r; } // R44: e.g. "needs Larder"
   if (!t) return c.kind === "gather" ? "gather somewhere by hand once" : `do a ${(D.skills.find(y => y.id === ks[0]) || { name: k }).name} task by hand once`;
   if (t.kind === "activity") { const ac = D.activities.find(x => x.id === t.id); if (!ad.some(m => activityOk(s, m, ac))) return `${ac.name} is locked`; }
   if (t.kind === "craft") { const rc = recipeDef(t.id), m = bestHand(s, rc.skill), r = m ? recipeIssue(s, m, rc) : "no crafter"; if (r && !/need|have|missing|\d/.test(r)) return r; }
@@ -34,6 +35,7 @@ export const atRate = (s, k) => (atOn(s, k) ? legacyValue(s, "at_tend") : 0);
 // flip an automation switch (at_<cat> or eq_<gear|tools>); everything is on by default once owned
 export function toggleAuto(s, key) {
   s.autoOff = s.autoOff || {};
+  if (s.autoPwd) delete s.autoPwd[key];
   if (s.autoOff[key]) delete s.autoOff[key];
   else s.autoOff[key] = true;
 }
@@ -62,11 +64,31 @@ function atTargetRaw(s, k) {
   const id = c.skills.map(sk => L["rc:" + sk]).find(Boolean);
   const rc = id && recipeDef(id);
   if (rc) return { kind: "craft", id, name: rc.name };
+  if (c.kind === "craft" && atTier(s) < 2) return atDefault(s, c); // R44: full auto from day 1 (default recipe)
   if (c.kind === "craft" && atTier(s) >= 2) {
     const best = CR().recipes.filter(r => c.skills.includes(r.skill)).map(r => [r, bestHand(s, r.skill)]).filter(([r, m]) => m && !recipeIssue(s, m, r)).sort((a, b) => (recipeValue(b[0]) - recipeValue(a[0])))[0];
     if (best) return { kind: "craft", id: best[0].id, name: best[0].name };
   }
-  return null;
+  return atDefault(s, c);
+}
+// R44: a craft category's default recipe (data autoTend.<cat>.default), else its quickest recipe someone can make now
+function atDefault(s, c) {
+  const ok = r => { if (r.hidden || r.forClass || r.requiresClass || r.legacy) return false; const m = bestHand(s, r.skill); let i; try { i = m ? recipeIssue(s, m, r) : "no crafter"; } catch { return false; } return !i || i === "missing materials"; };
+  const d = c.default && recipeDef(c.default);
+  if (d && ok(d)) return { kind: "craft", id: d.id, name: d.name, dflt: true };
+  const r = CR().recipes.filter(r => (c.skills || []).includes(r.skill) && ok(r)).sort((a, b) => a.days - b.days)[0];
+  return r ? { kind: "craft", id: r.id, name: r.name, dflt: true } : null;
+}
+
+// R44 pause when done for automation lines (at_<cat>, ac): the line switches itself off after its current task
+export const autoPwd = (s, key) => !!(s.autoPwd || {})[key];
+export function setAutoPwd(s, key, on = true) { s.autoPwd = s.autoPwd || {}; if (on) s.autoPwd[key] = true; else delete s.autoPwd[key]; }
+export function autoPwdFire(s, key, label) {
+  if (!autoPwd(s, key)) return false;
+  delete s.autoPwd[key];
+  (s.autoOff = s.autoOff || {})[key] = true;
+  log(s, `⏸️ ${label} paused when done.`);
+  return true;
 }
 
 // Extraction pays only the gathering share of a hand trip: gathering days / (gathering + round-trip days)
@@ -102,11 +124,13 @@ export function autoTendDay(s) {
     if (t.kind === "activity") {
       const ac = D.activities.find(x => x.id === t.id);
       for (const [res, v] of Object.entries(taskYields(s, ac))) { res === "fish" && ac.id === "fishing" ? landFish(s, v * r) : (s.res[res] = (s.res[res] || 0) + v * r); quotaCredit(s, res, v * r); }
+      autoPwdFire(s, "at_" + k, `Auto ${ac.name}`);
     } else if (t.kind === "gather") {
       const n = D.nodes.find(x => x.id === t.id),
         trip = { load: {}, cap: Infinity };
       gatherInto(s, trip, n, r * gatherShare(s, n) * resGain(s) * gatherMult(s, n.region) * seasonGather(s), () => 0);
       for (const [res, v] of Object.entries(trip.load)) (s.res[res] = (s.res[res] || 0) + v), quotaCredit(s, res, v);
+      autoPwdFire(s, "at_" + k, `Auto gathering (${n.name})`);
     } else {
       const rc = recipeDef(t.id),
         m = bestHand(s, rc.skill);
@@ -115,6 +139,7 @@ export function autoTendDay(s) {
       if (s.atProg[k] >= rc.days) {
         s.atProg[k] = 0;
         craftItem(s, m, rc, null);
+        autoPwdFire(s, "at_" + k, `Auto ${rc.name}`);
       }
     }
   }
@@ -133,5 +158,5 @@ export function atCatsFor(s, st) {
 // R37 status line for the Automation page: { on, why, rate, target }
 export function atStatus(s, k) {
   const iss = atIssue(s, k), t = !iss && atTarget(s, k);
-  return { k, locked: !!iss, why: iss, on: atOn(s, k), rate: legacyValue(s, "at_tend"), manned: !iss && manned(s, k), target: t ? t.name : null };
+  return { k, locked: !!iss, why: iss, on: atOn(s, k), rate: legacyValue(s, "at_tend"), pwd: autoPwd(s, "at_" + k), dflt: !!(t && t.dflt), manned: !iss && manned(s, k), target: t ? t.name : null };
 }

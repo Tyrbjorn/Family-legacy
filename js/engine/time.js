@@ -1,3 +1,4 @@
+import { memberSnap, memberPwdCheck } from "./pausedone.js";
 import { talentDay } from "./talents.js";
 import { AP, apprDay, apprSkill, birthInherit } from "./apprentice.js";
 import { quotaDay } from "./quotas.js";
@@ -215,15 +216,19 @@ function memberDay(s, m, effActive, effIdle) {
   injuryDay(s, m);
   if (!m.alive) return;
   if (m.injured > 0) return healDay(s, m);
+  if (m.paused) return birthDay(s, m); // R44 pause when done: rests until resumed
+  const snap = memberSnap(m); // R44
   if (!isAct && established(s) && ["explore", "adventure"].includes((m.order || {}).type)) m.standing = m.order.type;
   else if (!isAct && m.standing) m.standing = null;
   if (m.standing) {
     standingTick(s, m);
     if (m.action) doAction(s, m, m.action, eff);
+    memberPwdCheck(s, m, snap);
     return;
   }
   if (isAct) doAction(s, m, m.action, eff);
   else orderDay(s, m, eff);
+  memberPwdCheck(s, m, snap, !isAct && established(s) ? (m.order || {}).type : "work");
   birthDay(s, m);
 }
 

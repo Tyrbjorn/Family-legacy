@@ -162,7 +162,7 @@ const skillSpeed = lvl => (H().skillSpeedMax || 0) * Math.min(1, lvl / (H().skil
 export function fieldWorkers(s) {
   const st = fieldsState(s);
   const out = [];
-  for (const mi of (s.minions || []).filter(x => x.job === "farm" && !x.unhoused))
+  for (const mi of (s.minions || []).filter(x => x.job === "farm" && !x.unhoused && !x.paused))
     out.push({ kind: "follower", ref: mi, name: mi.name, hours: H().follower || 8, lvl: minionSkillLvl(mi, "farm") * 5 * minionLvlMult(mi, "farm"), tools: mi.equip && mi.equip.tool ? [mi.equip.tool] : [] });
   out.sort((a, b) => b.lvl - a.lvl);
   if (st.auto.family) {
@@ -194,10 +194,10 @@ export function fieldsDay(s) {
   const last = { avail: W.reduce((a, w) => a + w.hours, 0), need: 0, used: 0, fields: {}, made: {}, processed: {}, hauled: 0, byTeamsters: 0, byFarmers: 0 };
   // auto teamster: an idle follower takes a free teamster spot when there is harvest to move
   if (st.auto.teamsters && Object.values(st.pile).some(v => v > 0.5)) {
-    const tm = (s.minions || []).filter(x => x.job === "teamster").length;
-    let idle = (s.minions || []).find(x => !x.special && (!x.job || x.job === "idle") && !x.unhoused);
+    const tm = (s.minions || []).filter(x => x.job === "teamster" && !x.paused).length;
+    let idle = (s.minions || []).find(x => !x.special && (!x.job || x.job === "idle") && !x.unhoused && !x.paused);
     // no idle hands: the least-skilled farmer moves over, as long as another farmer keeps tending
-    const farmers = (s.minions || []).filter(x => !x.special && x.job === "farm" && !x.unhoused);
+    const farmers = (s.minions || []).filter(x => !x.special && x.job === "farm" && !x.unhoused && !x.paused);
     if (!idle && farmers.length >= 2) idle = farmers.sort((a, b) => (a.skills?.farm || 0) - (b.skills?.farm || 0))[0];
     if (idle && tm < teamsterCap(s)) {
       idle.job = "teamster";
@@ -286,7 +286,7 @@ export function fieldsDay(s) {
     return cap - left;
   };
   if (st.auto.haul) {
-    const teams = (s.minions || []).filter(x => x.job === "teamster" && !x.unhoused);
+    const teams = (s.minions || []).filter(x => x.job === "teamster" && !x.unhoused && !x.paused);
     move(teams.reduce((a, mi) => a + (FLD().haul.teamsterPerDay || 60) * ((mtype(mi.type) || { apt: {} }).apt.teamster || 1) * minionLvlMult(mi, "teamster"), 0), "byTeamsters");
     let handLeft = FLD().haul.farmerDayCap ?? Infinity; // farmers carry by hand: a whole-farm daily limit
     for (const w of W) {

@@ -5,7 +5,7 @@
 // Queue size = Workshop → Order Queue (free 2). Pause when done: an order pauses after its next item is made.
 import { D, log } from "./state.js";
 import { itemDef, recipeDef, recipeIssue } from "./inventory.js";
-import { legacyValue } from "./legacy.js";
+import { legacyTier, legacyValue } from "./legacy.js";
 import { producible, quotaBlock, quotaMet, removeQuota, pullInputs, quotaStock, quotaRecipeFor, bestCrafter, setOrdersDayHook } from "./quotas.js";
 import { capOf } from "./fields.js";
 
@@ -24,11 +24,12 @@ export function orderIssue(s, item, n) {
   if (!producible(item)) return "nothing can make that";
   return null;
 }
-export function addOrder(s, item, n) {
+export function addOrder(s, item, n, opt = {}) {
   if (orderIssue(s, item, n)) return null;
   const o = { id: "o" + ++OS(s).seq, item, target: Math.floor(+n), made: 0, paused: false, pwd: null };
+  if (opt.auto) o.auto = opt.auto; // R44 Auto-craft: why it was placed; uses Auto-craft slots, not the Order Queue
   OS(s).list.push(o);
-  log(s, `📋 Order placed: ${o.target} × ${orderName(item)}.`);
+  log(s, o.auto ? `🤖 Auto-craft: ${o.target} × ${orderName(item)} (${o.auto}).` : `📋 Order placed: ${o.target} × ${orderName(item)}.`);
   return o;
 }
 const dropChain = (s, o) => { const r = root(s, o); if (r) { o.made += r.made || 0; removeQuota(s, r.id); } for (const q of chain(s, o)) removeQuota(s, q.id); clearCrafters(s, o); };
@@ -36,6 +37,7 @@ export function removeOrder(s, id) {
   const o = OS(s).list.find(x => x.id === id);
   if (!o) return false;
   dropChain(s, o);
+  if (o.auto && !orderDone(s, o)) (s.acSkip ||= {})[o.item] = (s.day || 0) + (OC().autoSkipDays || 30); // a cancelled auto order is not re-placed for a while
   OS(s).list = OS(s).list.filter(x => x.id !== id);
   return true;
 }
@@ -50,14 +52,20 @@ export function setOrderPauseWhenDone(s, id, on = true) { const o = OS(s).list.f
 export const orderMade = (s, o) => Math.min(o.target, o.made + ((root(s, o) || {}).made || 0));
 export const orderDone = (s, o) => orderMade(s, o) >= o.target;
 // the orders that work right now: the first `queueSize` that are not paused or done
-export const activeOrders = s => OS(s).list.filter(o => !o.paused && !orderDone(s, o)).slice(0, queueSize(s));
+// R44: auto-craft orders run in their own slots (Workshop → Auto-craft), so they never crowd out your orders
+export const autoSlots = s => { const m = ((D.legacy || {}).autoCraft || {}).maxOpen || [0, 2, 3, 4]; return m[legacyTier(s, "autocraft")] || 0; };
+export const activeOrders = s => {
+  const L = OS(s).list.filter(o => !o.paused && !orderDone(s, o));
+  const a = new Set([...L.filter(o => !o.auto).slice(0, queueSize(s)), ...L.filter(o => o.auto).slice(0, autoSlots(s))]);
+  return L.filter(o => a.has(o));
+};
 
 function clearCrafters(s, o) { for (const mi of s.minions || []) if (mi.orderFor === o.id) { mi.orderFor = null; mi.craftOrder = null; } }
 // followers with the craft job first; family crafters only when no follower can make it
 function assignCrafters(s, o, q) {
   const rc = !isRes(o.item) && quotaRecipeFor(o.item);
   if (!rc) return;
-  const can = (s.minions || []).filter(mi => mi.job === "craft" && !mi.unhoused && (!mi.orderFor || mi.orderFor === o.id));
+  const can = (s.minions || []).filter(mi => mi.job === "craft" && !mi.unhoused && !mi.paused && (!mi.orderFor || mi.orderFor === o.id));
   const ok = can.filter(mi => !recipeIssue(s, null, rc) || recipeIssue(s, null, rc) === "missing materials");
   if (ok.length) { for (const mi of ok.slice(0, 1)) { mi.orderFor = o.id; mi.craftOrder = rc.id; } q.queued = true; } // family queueing skipped while a follower works it
 }
@@ -89,7 +97,7 @@ const recipeNeed = q => { const rc = quotaRecipeFor(q.item); return rc ? Object.
 export function orderStatus(s, o) {
   if (orderDone(s, o)) return { k: "done", text: "done" };
   if (o.paused) return { k: "paused", text: "paused" };
-  if (!activeOrders(s).includes(o)) return { k: "wait", text: `waiting for a queue slot (${queueSize(s)} at a time)` };
+  if (!activeOrders(s).includes(o)) return { k: "wait", text: o.auto ? `waiting for an Auto-craft slot (${autoSlots(s)} at a time)` : `waiting for a queue slot (${queueSize(s)} at a time)` };
   if (isRes(o.item) && (s.res[o.item] || 0) >= capOf(s, o.item)) return { k: "blocked", text: `storage full: ${o.item}` };
   const rc = !isRes(o.item) && quotaRecipeFor(o.item);
   if (rc) {

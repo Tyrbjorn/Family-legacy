@@ -2,6 +2,18 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R44",
+   "title": "Auto-craft and Pause When Done",
+   "items": [
+    "🤖 New Workshop line in 🏛️ Legacy, Auto-craft (50 / 180 / 500 renown): crafters make gear for your own people in their spare time. Tier 1: basic tools for followers who have none. Tier 2: refits family and followers to the best gear they can make. Tier 3: keeps 1 spare of each gear type in the vault.",
+    "Auto-craft places 🤖 orders in Work Orders, so the inputs are gathered and refined for you. They use their own slots and never crowd out your orders. Cancel one and it stays away for a month.",
+    "⏹ Pause when done for people: a family member or follower finishes the item, trip or day in hand, then rests until you resume them (Automation tab).",
+    "⏹ Pause when done for automation lines: each Auto Tend skill and Auto-craft can switch itself off after the task in hand.",
+    "Full auto from day 1: every crafting skill now starts on a default recipe as soon as you have the building, with no need to make one by hand first. The status line says what is missing (\"needs Forge\").",
+    "Automation tab: new Auto-craft and People cards, \"(default)\" and \"pauses when done\" tags, and an Auto-craft line in the summary."
+   ]
+  },
+  {
    "build": "R43",
    "title": "Work Orders and the Workshop",
    "items": [
