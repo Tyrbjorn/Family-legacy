@@ -19,6 +19,7 @@ import { characterv } from "./character-tab.js";
 import { housesv, suitorCard } from "./houses-tab.js";
 import { bellPanel, dockv, toastsv } from "./progress.js";
 import { tourOverlay } from "./guide.js";
+import { legacyv } from "./legacy-tab.js";
 
 export const TABS = {
   main: ["🧝", "Main", mainv],
@@ -35,6 +36,7 @@ export const TABS = {
   auto: ["⚙️", "Automation", automationv],
   chron: ["📜", "Chronicle", chroniclev],
   houses: ["🏰", "Houses", housesv],
+  legacy: ["🏛️", "Legacy", legacyv], // R37: opened from the top bar, not in the nav groups
 };
 
 // Phone nav: 6 group buttons; groups with several tabs get a sub-tab strip under the header.

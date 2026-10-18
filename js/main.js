@@ -110,7 +110,7 @@ document.addEventListener("click", e => {
   const t = e.target.closest("[data-tab]");
   if (t) {
     U.tab = t.dataset.tab;
-    (U.groupLast ||= {})[groupOf(U.tab)] = U.tab;
+    if (U.tab !== "legacy") (U.groupLast ||= {})[groupOf(U.tab)] = U.tab; // R37: Legacy panel is outside the nav groups
     if (U.tab === "estate") E.tutNote(s, "estate");
     E.introView(s, U.tab);
     U.lastHTML = "";

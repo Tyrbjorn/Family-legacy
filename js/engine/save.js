@@ -1,3 +1,4 @@
+import { applyAutoDefaults } from "./legacy.js";
 import { DEFAULT_RESERVE } from "./production.js";
 import { startTutorial } from "./tutorial.js";
 import { newMember } from "./family.js";
@@ -12,6 +13,7 @@ export function newGame(now = Date.now()) {
   _s.structures = [];
   _s.pieceStore = [];
   normalize(_s);
+  applyAutoDefaults(_s); // R37: free automation on, except autoDefaults.off
   startTutorial(_s);
   return _s;
 }

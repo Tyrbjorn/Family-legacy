@@ -49,7 +49,8 @@
      "value": 3
     }
    ],
-   "headline": true
+   "headline": true,
+   "group": "world"
   },
   {
    "id": "life",
@@ -73,11 +74,12 @@
      "cost": 600,
      "value": 8
     }
-   ]
+   ],
+   "group": "family"
   },
   {
    "id": "tick",
-   "name": "Steady Hands",
+   "name": "Quick Hands",
    "icon": "⏳",
    "desc": "+5% tick speed per tier (stacks under the cap)",
    "tiers": [
@@ -93,7 +95,8 @@
      "cost": 500,
      "value": 0.15
     }
-   ]
+   ],
+   "group": "world"
   },
   {
    "id": "resgain",
@@ -117,7 +120,8 @@
      "cost": 800,
      "value": 0.25
     }
-   ]
+   ],
+   "group": "world"
   },
   {
    "id": "hall",
@@ -129,7 +133,8 @@
      "cost": 200,
      "value": 1
     }
-   ]
+   ],
+   "group": "family"
   },
   {
    "id": "goodblood",
@@ -149,7 +154,8 @@
      "cost": 400,
      "value": 22
     }
-   ]
+   ],
+   "group": "family"
   },
   {
    "id": "rareblood",
@@ -169,7 +175,8 @@
      "cost": 800,
      "value": 3
     }
-   ]
+   ],
+   "group": "family"
   },
   {
    "id": "bloodline",
@@ -181,177 +188,26 @@
      "cost": 350,
      "value": 1
     }
+   ],
+   "group": "family"
+  },
+  {
+   "id": "at_tend",
+   "name": "Tireless Hands",
+   "icon": "🤲",
+   "group": "auto",
+   "free": 0.35,
+   "desc": "Auto Tend works free at 35% of a hand-worked rate in every skill whose building and skill are unlocked. Tier 1: 55% and quotas come first. Tier 2: 75% and it picks the best-paying recipe when it has nothing to repeat.",
+   "tiers": [
+    {
+     "cost": 300,
+     "value": 0.55
+    },
+    {
+     "cost": 900,
+     "value": 0.75
+    }
    ]
-  },
-  {
-   "id": "at_farming",
-   "name": "Auto Tend: Farming",
-   "icon": "🌾",
-   "desc": "Farming keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 80,
-     "value": 0.5
-    },
-    {
-     "cost": 250,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "farming"
-  },
-  {
-   "id": "at_cooking",
-   "name": "Auto Tend: Cooking",
-   "icon": "🍲",
-   "desc": "Cooking keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 100,
-     "value": 0.5
-    },
-    {
-     "cost": 300,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "cooking"
-  },
-  {
-   "id": "at_masonry",
-   "name": "Auto Tend: Masonry",
-   "icon": "🧱",
-   "desc": "Masonry keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 100,
-     "value": 0.5
-    },
-    {
-     "cost": 300,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "masonry"
-  },
-  {
-   "id": "at_hunting",
-   "name": "Auto Tend: Hunting",
-   "icon": "🏹",
-   "desc": "Hunting keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 100,
-     "value": 0.5
-    },
-    {
-     "cost": 300,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "hunting"
-  },
-  {
-   "id": "at_smithing",
-   "name": "Auto Tend: Smithing",
-   "icon": "⚒️",
-   "desc": "Smithing keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 120,
-     "value": 0.5
-    },
-    {
-     "cost": 400,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "smithing"
-  },
-  {
-   "id": "at_carpentry",
-   "name": "Auto Tend: Carpentry",
-   "icon": "🪚",
-   "desc": "Carpentry keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 120,
-     "value": 0.5
-    },
-    {
-     "cost": 400,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "carpentry"
-  },
-  {
-   "id": "at_tailoring",
-   "name": "Auto Tend: Tailoring",
-   "icon": "🧵",
-   "desc": "Tailoring keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 120,
-     "value": 0.5
-    },
-    {
-     "cost": 400,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "tailoring"
-  },
-  {
-   "id": "at_alchemy",
-   "name": "Auto Tend: Alchemy",
-   "icon": "⚗️",
-   "desc": "Alchemy keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 150,
-     "value": 0.5
-    },
-    {
-     "cost": 450,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "alchemy"
-  },
-  {
-   "id": "at_extraction",
-   "name": "Auto Tend: Extraction",
-   "icon": "⛏️",
-   "desc": "Extraction keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 150,
-     "value": 0.5
-    },
-    {
-     "cost": 450,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "extraction"
-  },
-  {
-   "id": "at_arcane",
-   "name": "Auto Tend: Arcane",
-   "icon": "✨",
-   "desc": "Arcane keeps going with nobody assigned: 50% of a hand-worked rate, 75% at tier 2. Toggle in the Automation tab.",
-   "tiers": [
-    {
-     "cost": 200,
-     "value": 0.5
-    },
-    {
-     "cost": 600,
-     "value": 0.75
-    }
-   ],
-   "autoTend": "arcane"
   },
   {
    "id": "tithe",
@@ -371,71 +227,98 @@
      "cost": 900,
      "value": 0.15
     }
-   ]
+   ],
+   "group": "family"
   },
   {
    "id": "fa_orders",
    "name": "Steward",
    "icon": "🧭",
-   "desc": "Family Auto Orders: idle family adults (never the active member) get the standing order that fits them, re-checked monthly. Hand-set orders are pinned.",
+   "desc": "Family Orders are free (monthly re-check). Tier 1: weekly re-check. Tier 2: picks the region where they'll succeed (quest CP within their CP).",
    "tiers": [
     {
-     "cost": 40,
-     "value": 1
+     "cost": 150,
+     "value": 2
+    },
+    {
+     "cost": 450,
+     "value": 3
     }
-   ]
+   ],
+   "group": "auto",
+   "free": 1
   },
   {
    "id": "quotas",
    "name": "Steward's Ledger",
    "icon": "📋",
-   "desc": "Quotas: set estate-wide targets (make X once, or keep stock topped up to X). Stations, Auto Cook, Auto Tend and the craft queue work toward them first, top of the list first. Tier 1: 5 quotas. Tier 2: unlimited, blocked quotas pull their missing inputs (2 steps), standing targets become sell floors, and a follower a month moves into a job that feeds a quota.",
+   "desc": "Quotas are free with 2 slots. Tier 1: 5 slots. Tier 2: unlimited, plus tier-2 pull and sell floor.",
    "tiers": [
     {
-     "cost": 600,
+     "cost": 400,
      "value": 5
     },
     {
-     "cost": 1800,
+     "cost": 1200,
      "value": 999
     }
-   ]
+   ],
+   "group": "auto",
+   "free": 2
   },
   {
    "id": "fa_advance",
    "name": "Mentor's Ledger",
    "icon": "📜",
-   "desc": "Family Auto Advance: members join their guild, rank up and evolve classes when they qualify, keeping a 25% coin reserve; branches follow their best skills (or a preference).",
+   "desc": "Auto Advance is free (join guild, rank up, 25% coin reserve). Tier 1: also evolves classes and swaps talents by work. Tier 2: 10% coin reserve; best evolution by lean and score.",
    "tiers": [
     {
-     "cost": 60,
-     "value": 1
+     "cost": 150,
+     "value": 2
+    },
+    {
+     "cost": 450,
+     "value": 3
     }
-   ]
+   ],
+   "group": "auto",
+   "free": 1
   },
   {
    "id": "fa_kids",
    "name": "Family Tutor",
    "icon": "🧸",
-   "desc": "Family Auto Upbringing: children train toward a track from their parents' guild (martial, wilds, arcane, faith, rogue, craft) instead of random lessons.",
+   "desc": "Auto Upbringing is free (children train their track). Tier 1: places teens with masters by lean. Tier 2: lean XP +15% (was +10%) while apprenticed.",
    "tiers": [
     {
-     "cost": 40,
-     "value": 1
+     "cost": 100,
+     "value": 2
+    },
+    {
+     "cost": 300,
+     "value": 3
     }
-   ]
+   ],
+   "group": "auto",
+   "free": 1
   },
   {
    "id": "fa_court",
    "name": "Matchmaker",
    "icon": "💞",
-   "desc": "Family Auto Courtship: unmarried adults 18-35 court the best suitor and marry in (never out, never a feuding house). The Head only if you opt in.",
+   "desc": "Auto Courtship is free (off by default): courts the best suitor. Tier 1: also weighs the suitor's traits. Tier 2: also weighs dowry and house standing.",
    "tiers": [
     {
-     "cost": 50,
-     "value": 1
+     "cost": 100,
+     "value": 2
+    },
+    {
+     "cost": 300,
+     "value": 3
     }
-   ]
+   ],
+   "group": "auto",
+   "free": 1
   }
  ],
  "traits": {
@@ -639,11 +522,105 @@
    "parentOther": 1,
    "rand": 1,
    "secondGap": 1
-  }
+  },
+  "reserveT2": 0.1,
+  "ordersEveryT1": 7,
+  "tutorLeanXpT2": 0.15
  },
  "quotas": {
   "pullDepth": 2,
   "pullAmount": 20,
   "foodSafetyDays": 20
+ },
+ "v37Refund": {
+  "_note": "R37 save step: renown paid at R36 prices for automation that became free (tier costs, refunded in full to banked renown); ids not reused in R37 are removed.",
+  "costs": {
+   "at_farming": [
+    80,
+    250
+   ],
+   "at_cooking": [
+    100,
+    300
+   ],
+   "at_masonry": [
+    100,
+    300
+   ],
+   "at_hunting": [
+    100,
+    300
+   ],
+   "at_smithing": [
+    120,
+    400
+   ],
+   "at_carpentry": [
+    120,
+    400
+   ],
+   "at_tailoring": [
+    120,
+    400
+   ],
+   "at_alchemy": [
+    150,
+    450
+   ],
+   "at_extraction": [
+    150,
+    450
+   ],
+   "at_arcane": [
+    200,
+    600
+   ],
+   "fa_orders": [
+    40
+   ],
+   "quotas": [
+    600,
+    1800
+   ],
+   "fa_advance": [
+    60
+   ],
+   "fa_kids": [
+    40
+   ],
+   "fa_court": [
+    50
+   ]
+  },
+  "remove": [
+   "at_farming",
+   "at_cooking",
+   "at_masonry",
+   "at_hunting",
+   "at_smithing",
+   "at_carpentry",
+   "at_tailoring",
+   "at_alchemy",
+   "at_extraction",
+   "at_arcane"
+  ],
+  "reset": [
+   "fa_orders",
+   "quotas",
+   "fa_advance",
+   "fa_kids",
+   "fa_court"
+  ]
+ },
+ "groups": {
+  "auto": "⚙️ Automation",
+  "family": "🌳 Family",
+  "world": "🌍 World"
+ },
+ "autoDefaults": {
+  "_note": "R37: free automation is on by default except these (s.autoOff keys) for new games and for saves that never bought them.",
+  "off": [
+   "fam_court"
+  ]
  }
 }

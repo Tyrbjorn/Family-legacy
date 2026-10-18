@@ -1,7 +1,7 @@
 // Family tree: generations as rows in a pannable canvas; tap a member to open their card.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
-import { badges, cl, injuryTags, memberLine } from "./common.js";
+import { autoChip, badges, cl, injuryTags, memberLine } from "./common.js";
 import { U } from "./state.js";
 
 const rcol = id => {
@@ -55,7 +55,7 @@ ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: 
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}
 ${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${m.id}">Play as ${m.name}</button>` : ""}</div>`;
   }
-  return `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
+  return famAutoRow() + `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
 <div class="muted">Drag to pan · tap someone to open their card${s.bloodline ? ` · Bloodline trait: <b style="color:${rcol(s.bloodline)}">${E.traitDef(s.bloodline)?.name}</b>` : ""}</div>
 <div class="treewrap" id="treewrap"><div class="tree">${rows}</div></div></div>${card}`;
 }
@@ -68,4 +68,10 @@ function challengeRow(m) {
   return `<div class="row" style="flex-wrap:wrap;gap:4px"><span class="muted">Challenge (choose in the first year):</span>${[1, 2, 3, 4, 5]
     .map(l => `<button class="b${l === cur ? " on" : ""}" data-a="setchal" data-v="${m.id}" data-w="${l}">${E.chalName(l)}</button>`)
     .join("")}</div>`;
+}
+
+// R37: ⚙ Auto chips for family automation (free basics; tiers in the Legacy panel)
+function famAutoRow() {
+  const nm = { orders: "Orders", advance: "Advance", kids: "Tutor", court: "Matchmaker" };
+  return `<div class="card row" id="famauto" style="gap:4px;justify-content:flex-start;flex-wrap:wrap">${E.FA_KEYS.map(k => autoChip("fam_" + k, nm[k] + (E.faTier(s, k) ? " T" + E.faTier(s, k) : ""), E.faOn(s, k))).join("")}</div>`;
 }

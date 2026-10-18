@@ -4,7 +4,8 @@ import { quotaAtTarget, quotaCredit } from "./quotas.js";
 import { taskYields } from "./requests.js";
 import { landFish } from "./fish.js";
 import { LG, legacyTier, legacyValue, resGain } from "./legacy.js";
-import { craftItem, recipeDef, recipeIssue } from "./inventory.js";
+import { CR, craftItem, itemDef, recipeDef, recipeIssue } from "./inventory.js";
+import { activityOk } from "./skills.js";
 import { gatherInto, newTrip } from "./map.js";
 import { seasonGather } from "./seasons.js";
 import { gatherMult } from "./worldevents.js";
@@ -12,9 +13,23 @@ import { D, isAdult, living } from "./state.js";
 
 export const AT = () => LG().autoTend || {};
 export const atCats = () => Object.keys(AT()).filter(k => k[0] !== "_");
-export const atOwned = (s, k) => legacyTier(s, "at_" + k) > 0;
-export const atOn = (s, k) => atOwned(s, k) && !(s.autoOff || {})["at_" + k];
-export const atRate = (s, k) => (atOn(s, k) ? legacyValue(s, "at_" + k) : 0);
+// R37: free once unlocked (a family adult has the skill and the task/building is available); Tireless Hands (at_tend) tiers raise the rate
+export const atTier = s => legacyTier(s, "at_tend");
+export function atIssue(s, k) {
+  const c = AT()[k];
+  if (!c) return "unknown";
+  const ad = living(s).filter(isAdult);
+  const ks = c.skills || [];
+  if (ks.length && !ks.some(x => ad.some(m => ((m.skills[x] || {}).lvl || 0) >= 1))) return `needs ${c.skills.map(x => (D.skills.find(y => y.id === x) || { name: x }).name).join("/")} 1`;
+  const t = atTargetRaw(s, k);
+  if (!t) return c.kind === "gather" ? "gather somewhere by hand once" : `do a ${(D.skills.find(y => y.id === ks[0]) || { name: k }).name} task by hand once`;
+  if (t.kind === "activity") { const ac = D.activities.find(x => x.id === t.id); if (!ad.some(m => activityOk(s, m, ac))) return `${ac.name} is locked`; }
+  if (t.kind === "craft") { const rc = recipeDef(t.id), m = bestHand(s, rc.skill), r = m ? recipeIssue(s, m, rc) : "no crafter"; if (r && !/need|have|missing|\d/.test(r)) return r; }
+  return null;
+}
+export const atOwned = (s, k) => !atIssue(s, k);
+export const atOn = (s, k) => !(s.autoOff || {})["at_" + k] && atOwned(s, k);
+export const atRate = (s, k) => (atOn(s, k) ? legacyValue(s, "at_tend") : 0);
 
 // flip an automation switch (at_<cat> or eq_<gear|tools>); everything is on by default once owned
 export function toggleAuto(s, key) {
@@ -27,8 +42,14 @@ export function toggleAuto(s, key) {
 export function atTarget(s, k) {
   const c = AT()[k],
     L = s.atLast || {};
-  const qt = quotaAtTarget(s, c); // R34: an open quota this category can make comes first
+  const qt = atTier(s) >= 1 && quotaAtTarget(s, c); // R34: an open quota comes first (R37: Tireless Hands tier 1+)
   if (qt) return qt;
+  return atTargetRaw(s, k);
+}
+// last-used target (R37 tier 2: best-paying craftable recipe when there's nothing to repeat)
+function atTargetRaw(s, k) {
+  const c = AT()[k],
+    L = s.atLast || {};
   if (c.kind === "gather") {
     const n = L.gather && D.nodes.find(x => x.id === L.gather);
     return n ? { kind: "gather", id: n.id, name: n.name } : null;
@@ -40,10 +61,16 @@ export function atTarget(s, k) {
   }
   const id = c.skills.map(sk => L["rc:" + sk]).find(Boolean);
   const rc = id && recipeDef(id);
-  return rc ? { kind: "craft", id, name: rc.name } : null;
+  if (rc) return { kind: "craft", id, name: rc.name };
+  if (c.kind === "craft" && atTier(s) >= 2) {
+    const best = CR().recipes.filter(r => c.skills.includes(r.skill)).map(r => [r, bestHand(s, r.skill)]).filter(([r, m]) => m && !recipeIssue(s, m, r)).sort((a, b) => (recipeValue(b[0]) - recipeValue(a[0])))[0];
+    if (best) return { kind: "craft", id: best[0].id, name: best[0].name };
+  }
+  return null;
 }
 
 // Extraction pays only the gathering share of a hand trip: gathering days / (gathering + round-trip days)
+const recipeValue = r => (itemDef(r.base || r.out) || {}).value || 0;
 export function gatherShare(s, n) {
   const t = newTrip({ type: "gather", target: n.id }, s);
   return t.task / Math.max(t.task, t.out + t.task + t.back);
@@ -91,4 +118,20 @@ export function autoTendDay(s) {
       }
     }
   }
+}
+
+// R37: Auto Tend categories a building serves (its pieces are stations for that skill's recipes, or unlock its activity)
+export function atCatsFor(s, st) {
+  const P = st.pieces || [];
+  return atCats().filter(k => {
+    const c = AT()[k], ks = c.skills || [];
+    if (c.kind === "activity") { const t = atTargetRaw(s, k), ids = [c.default, t && t.id]; return D.activities.some(a => ids.includes(a.id) && [].concat(a.unlock || []).some(u => u && P.includes(u.piece))); } // the default or current task only
+    if (c.kind === "craft") return CR().recipes.some(r => ks.includes(r.skill) && P.includes(r.station));
+    return false;
+  });
+}
+// R37 status line for the Automation page: { on, why, rate, target }
+export function atStatus(s, k) {
+  const iss = atIssue(s, k), t = !iss && atTarget(s, k);
+  return { k, locked: !!iss, why: iss, on: atOn(s, k), rate: legacyValue(s, "at_tend"), manned: !iss && manned(s, k), target: t ? t.name : null };
 }

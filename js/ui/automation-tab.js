@@ -1,5 +1,5 @@
 // Automation tab: one place for automation options. Today: refining settings for every refining building
-// (same controls as the building card), Auto Tend upgrades from the Legacy shop and Auto Equip.
+// (same controls as the building card), R37: a status page (what runs, why something is idle or locked) plus Auto Equip; upgrades live in the Legacy panel.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { cardRefine } from "./estate-card.js";
@@ -39,7 +39,7 @@ function familyCard(btn) {
     const u = E.LG().upgrades.find(x => x.id === "fa_" + k);
     return E.faOwned(s, k)
       ? `<div class="row" style="gap:6px;justify-content:flex-start">${u.icon} <b>${nm[k]}</b>${btn("fam_" + k, E.faOn(s, k))}${k === "court" ? ` <span class="muted">Head:</span><button class="b ${s.faCourtHead ? "sel" : ""}" data-a="fahead">${s.faCourtHead ? "Included" : "Off"}</button>` : ""}</div>`
-      : `<div class="row muted" style="gap:6px;justify-content:flex-start">${u.icon} ${nm[k]} · not owned (Legacy shop: ${u.name}, ${u.tiers[0].cost} renown)</div>`;
+      : "";
   }).join("");
   const any = E.FA_KEYS.some(k => E.faOwned(s, k));
   const evoNames = m => D.classes.filter(c => c.from && c.from === m.cls);
@@ -62,13 +62,18 @@ export function automationv() {
     : '<div class="card muted">No refining buildings yet (sawmill, mason yard, smithy, kitchen…). Their settings will appear here.</div>';
   const btn = (key, on) => `<button class="b ${on ? "sel" : ""}" data-a="autotog" data-v="${key}">${on ? "On" : "Off"}</button>`;
   const at = E.atCats().map(k => {
-    const u = E.LG().upgrades.find(x => x.id === "at_" + k),
-      tier = E.legacyTier(s, u.id);
-    if (!tier) return `<div class="row muted" style="gap:6px;justify-content:flex-start">${u.icon} ${u.name.replace("Auto Tend: ", "")} · not owned (Legacy shop, ${u.tiers[0].cost} renown)</div>`;
-    const t = E.atTarget(s, k);
-    return `<div class="row" style="gap:6px;justify-content:flex-start">${u.icon} <b>${u.name.replace("Auto Tend: ", "")}</b> <span class="muted">${Math.round(E.legacyValue(s, u.id) * 100)}% rate · ${t ? "repeats " + t.name : "nothing to repeat yet (do it once by hand)"}</span>${btn("at_" + k, E.atOn(s, k))}</div>`;
+    const x = E.atStatus(s, k), nm = k[0].toUpperCase() + k.slice(1);
+    const st = x.locked ? `🔒 ${x.why}` : !x.on ? "off" : x.manned ? "paused: someone is doing it by hand" : x.target ? `running at ${Math.round(x.rate * 100)}%: ${x.target}` : "idle: nothing to repeat yet";
+    return `<div class="row" data-atstatus="${k}" style="gap:6px;justify-content:flex-start"><b>${nm}</b> <span class="muted">${st}</span>${x.locked ? "" : btn("at_" + k, x.on)}</div>`;
   }).join("");
   const eq = [["gear", "Weapons, armor, offhands", "build the Armory (Guardhouse upgrade)"], ["tools", "Follower tools", "build a Workshop"]]
     .map(([k, nm, need]) => `<div class="row" style="gap:6px;justify-content:flex-start"><b>${nm}</b>${E.autoEqUnlocked(s, k) ? btn("eq_" + k, E.autoEqOn(s, k)) : `<span class="muted">locked: ${need}</span>`}</div>`).join("");
-  return `<h3>⚙️ Automation</h3><h4>🌱 Auto Tend</h4><div class="muted">Keeps a skill working with nobody assigned (tier 1: 50%, tier 2: 75% of a hand-worked day). Repeats the last thing done by hand; pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${familyCard(btn)}${ascendCard(btn)}${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
+  return `<h3>⚙️ Automation status</h3>${statusCard()}<h4>🌱 Auto Tend <span class="muted">(free ${Math.round(E.legacyDef("at_tend").free * 100)}%; Tireless Hands in 🏛️ Legacy raises it)</span></h4><div class="muted">Status of every skill. Free once the skill and its building are unlocked; repeats the last thing done by hand and pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${familyCard(btn)}${ascendCard(btn)}${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;
+}
+
+// R37: one-glance summary of what is running
+function statusCard() {
+  const st = E.atCats().map(k => E.atStatus(s, k)), run = st.filter(x => x.on && !x.locked && x.target && !x.manned).length, lock = st.filter(x => x.locked).length;
+  const fam = E.FA_KEYS.filter(k => E.faOn(s, k)).length, q = E.quotaList(s).filter(x => !x.parent), off = (s.autoOff || {}).quotas;
+  return `<div class="card" id="autostatus"><div>🌱 Auto Tend: <b>${run}</b> running · ${st.length - run - lock} idle/off · ${lock} locked</div><div>👪 Family automation: <b>${fam}</b>/${E.FA_KEYS.length} on</div><div>📋 Quotas: ${off ? "off" : `${q.length}/${E.quotaSlots(s) > 99 ? "∞" : E.quotaSlots(s)} slots used`}</div><div>🎓 Auto Ascend: ${E.ascendOn(s) ? "on" : "off"} · Auto Recruit: ${E.recruitOn(s) ? "on" : "off"}</div><div class="muted">Toggle each where it works (⚙ chips on buildings, Family, Minions, Quotas). Upgrades live in the 🏛️ Legacy panel.</div></div>`;
 }

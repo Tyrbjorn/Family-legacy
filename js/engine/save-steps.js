@@ -1,3 +1,4 @@
+import { refundV37 } from "./legacy.js";
 import { talentMigrate } from "./talents.js";
 import { leanMigrate } from "./apprentice.js";
 import { learnDishes } from "./cooking.js";
@@ -481,7 +482,7 @@ export const STEPS = [
       // the Auto Tend "Whole Estate" buy-all bundle was removed: its tier becomes that tier of every single Auto Tend
       const U = s.legacy && s.legacy.ups, b = U && U.at_all;
       if (b) {
-        for (const u of D.legacy.upgrades) if (u.autoTend) U[u.id] = Math.max(U[u.id] || 0, Math.min(b, u.tiers.length));
+        for (const [id, c] of Object.entries((D.legacy.v37Refund || { costs: {} }).costs)) if (id.startsWith("at_")) U[id] = Math.max(U[id] || 0, Math.min(b, c.length)); // R37: old per-skill ids (refunded at v37)
         delete U.at_all;
       }
     },
@@ -579,6 +580,14 @@ export const STEPS = [
     name: "R36 talents: empty talents for all, class/guild talents from current class line and ranks, head gets quest talents from doneQuests; no shrines",
     run(s) {
       talentMigrate(s);
+    },
+  },
+  {
+    n: 37,
+    once: true,
+    name: "R37 free automation: full refund of renown spent on Auto Tend / Family Auto / Steward's Ledger to banked renown; old upgrade keys cleared; Matchmaker off unless it was bought; quotas beyond 2 slots pause",
+    run(s) {
+      refundV37(s);
     },
   },
 ];

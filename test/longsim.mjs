@@ -527,6 +527,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   const snap = [];
   for (let day = 0; day < YEARS * YD; day++) {
     if (day % 30 === 0) for (const m of s.members) { if (m.appr) (seen.appr ||= new Set()).add(seed + ':' + m.id); if ((m.apprDone || []).length) (seen.apprDone ||= new Set()).add(seed + ':' + m.id); if (m.lean) { (seen.lean ||= new Map()).set(seed + ':' + m.id, m.lean.length); } } // R35
+    if ([2, 5, 10].includes(day / YD)) ((seen.early ||= {})[seed] ||= []).push([day / YD, Math.round(s.res.coin), Math.round(s.res.food), s.structures.length, s.minions.length, Math.round(E.legacyState(s).renown)]); // R37 growth
     if (day % 30 === 0) for (const m of s.members) for (const id of (m.talents || {}).own || []) ((seen.tal ||= {})[seed] ||= new Set()).add(m.id + ':' + id); // R36
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
@@ -806,5 +807,6 @@ console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderun
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("R35 apprentices placed:", (seen.appr || new Set()).size, "finished:", (seen.apprDone || new Set()).size, "members with leans:", (seen.lean || new Map()).size, "two leans:", [...(seen.lean || new Map()).values()].filter(x => x === 2).length);
 console.log("R36 talents earned per seed:", JSON.stringify(Object.fromEntries(Object.entries(seen.tal || {}).map(([k, v]) => [k, v.size]))), "by talent:", JSON.stringify([...Object.values(seen.tal || {})].flatMap(v => [...v]).reduce((a, x) => ((a[x.split(":")[1]] = (a[x.split(":")[1]] || 0) + 1), a), {})));
+console.log("R37 early [year, coin, food, structs, minions, legacyRenown]:", JSON.stringify(seen.early || {}));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

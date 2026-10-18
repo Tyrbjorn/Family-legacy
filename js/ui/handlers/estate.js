@@ -38,6 +38,7 @@ export const estateActions = ({ v, b, m }) => ({
     if (x) E.toggleTalent(s, x, v);
   },
   enshrine: () => E.enshrine(s, v, b.dataset.w),
+  refundok: () => s.legacyRefund && (s.legacyRefund.seen = true),
   faunpin: () => E.unpin(s, +v, b.dataset.w),
   fahead: () => (s.faCourtHead = !s.faCourtHead),
   autorecruit: () => E.toggleRecruit(s),

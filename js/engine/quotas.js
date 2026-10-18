@@ -15,7 +15,7 @@ import { jobCap } from "./estate.js";
 
 export const QC = () => (D.legacy && D.legacy.quotas) || { pullDepth: 2, foodSafetyDays: 20, pullAmount: 20 };
 export const quotaTier = s => legacyTier(s, "quotas");
-export const quotaSlots = s => (hasLegacy(s, "quotas") ? legacyValue(s, "quotas") : 0);
+export const quotaSlots = s => legacyValue(s, "quotas"); // R37: 2 free, 5, unlimited
 const Qs = s => (s.quotas = s.quotas || []);
 export const quotaList = s => Qs(s);
 const isRes = item => !itemDef(item);
@@ -40,7 +40,7 @@ export const producible = item => !!(pieceMakes(item).length || recipeFor(item) 
 
 // ---- adding / editing
 export function quotaIssue(s, item, mode) {
-  if (!quotaSlots(s)) return "needs the Steward's Ledger (Legacy)";
+  if (!quotaSlots(s)) return "no quota slots";
   if (Qs(s).filter(q => !q.parent).length >= quotaSlots(s)) return "all " + quotaSlots(s) + " quota slots used";
   if (!producible(item)) return "nothing can make that";
   if (!isRes(item) && mode === "standing") return "crafted items are one-time only";
@@ -71,7 +71,13 @@ export const setQuotaMode = (s, id, mode) => { const q = Qs(s).find(x => x.id ==
 // ---- progress
 export const quotaHave = (s, q) => (q.mode === "once" ? q.made : stock(s, q.item));
 export const quotaMet = (s, q) => quotaHave(s, q) >= q.target;
-export const openQuotas = s => Qs(s).filter(q => !quotaMet(s, q));
+// R37: top-level quotas beyond the slot count (e.g. after the v37 refund) stay listed but pause, with their sub-quotas
+export function quotaPaused(s, q) {
+  if ((s.autoOff || {}).quotas) return true; // ⚙ Auto off
+  const top = Qs(s).filter(x => !x.parent), root = q.parent ? Qs(s).find(x => x.id === q.parent) || q : q;
+  return top.indexOf(root) >= quotaSlots(s);
+}
+export const openQuotas = s => Qs(s).filter(q => !quotaPaused(s, q) && !quotaMet(s, q));
 export function quotaCredit(s, item, n) {
   if (!(n > 0) || !s.quotas || !s.quotas.length) return;
   for (const q of s.quotas) if (q.mode === "once" && q.item === item) q.made += n;
@@ -79,14 +85,14 @@ export function quotaCredit(s, item, n) {
 // rank of an output among open quotas (lower = first), Infinity when no open quota wants it
 export function quotaRank(s, item) {
   const L = s.quotas || [];
-  for (let i = 0; i < L.length; i++) if (L[i].item === item && !quotaMet(s, L[i])) return i;
+  for (let i = 0; i < L.length; i++) if (L[i].item === item && !quotaPaused(s, L[i]) && !quotaMet(s, L[i])) return i;
   return Infinity;
 }
 // a standing quota at or over target idles its producers (never a food row while food is short)
 export function quotaIdle(s, pr) {
   if (!s.quotas || !s.quotas.length) return false;
   const q = s.quotas.find(x => x.item === pr.out && x.mode === "standing");
-  if (!q || !quotaMet(s, q)) return false;
+  if (!q || quotaPaused(s, q) || !quotaMet(s, q)) return false;
   if (pr.food && daysOfStock(s) < QC().foodSafetyDays) return false;
   return true;
 }
@@ -95,7 +101,7 @@ export function quotaFloor(s, k, outItem) {
   if (!s.quotas || !s.quotas.length) return 0;
   const mine = quotaRank(s, outItem);
   let f = 0;
-  s.quotas.forEach((q, i) => { if (q.item === k && q.mode === "standing" && i < mine) f = Math.max(f, q.target); });
+  s.quotas.forEach((q, i) => { if (q.item === k && q.mode === "standing" && i < mine && !quotaPaused(s, q)) f = Math.max(f, q.target); });
   return f;
 }
 // tier 2: automated selling stops at the standing target
@@ -132,6 +138,7 @@ export function quotaBlock(s, q) {
   return { why: job ? "no follower on " + job[0] : "nothing makes it here" };
 }
 export const quotaStatus = (s, q) => {
+  if (quotaPaused(s, q)) return { k: "blocked", text: "paused: needs Steward's Ledger tier 1 for more slots" };
   if (quotaMet(s, q)) return { k: "met", text: q.mode === "once" ? "done" : "met" };
   const b = quotaBlock(s, q);
   return b ? { k: "blocked", text: b.why } : { k: "on", text: "on track" };
@@ -165,6 +172,7 @@ export function quotaDay(s) {
   if (!quotaSlots(s)) return;
   for (const q of [...L]) {
     if (q.mode === "once" && !isRes(q.item)) q.made = Math.max(q.made, stock(s, q.item) - (q.from || 0));
+    if (quotaPaused(s, q)) continue;
     if (q.mode === "once" && quotaMet(s, q)) {
       log(s, `📋 Quota done: ${q.target} ${nm(q.item)}${q.parent ? " (for another quota)" : ""}.`);
       removeQuota(s, q.id);

@@ -8,7 +8,7 @@ import { household } from "./courtship.js";
 import { isFed, moraleXp, starving, stockValue, tonicXp } from "./food.js";
 import { traitSkillXp } from "./traits.js";
 import { buffSum } from "./encounters.js";
-import { LG, addMemberRenown } from "./legacy.js";
+import { LG, addMemberRenown, legacyTier } from "./legacy.js";
 import { ES, eff, hasPiece, structDef, upgMult } from "./estate.js";
 import { level, traitSum } from "./family.js";
 import { cls, guildDef, guildsOf, memberGuild } from "./guilds.js";
@@ -28,7 +28,7 @@ export function xpMult(s, m, skillId) {
   mult += gearFx(m.equip).xpPct || 0;
   mult += buffSum(s, "xp");
   mult += traitSkillXp(m, skillId);
-  mult += leanXp(m, skillId) + inhXp(m, skillId); // R35 leans + inherited skill boost (under 18)
+  mult += leanXp(m, skillId) + inhXp(m, skillId) + (m.appr && legacyTier(s, "fa_kids") >= 2 && leanXp(m, skillId) ? 0.05 : 0); // R37 Family Tutor tier 2: lean +15% while apprenticed // R35 leans + inherited skill boost (under 18)
   if (isFed(s) && s.res.food + stockValue(s) > 0) mult += eff(s, "foodQuality");
   mult += moraleXp(s) + tonicXp(s, sk.family);
   if (!isAdult(m)) mult += household(s, "childXp");

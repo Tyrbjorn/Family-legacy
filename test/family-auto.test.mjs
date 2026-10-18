@@ -9,9 +9,9 @@ const T=D.tuning, Y=T.yearDays||360;
 const mk=(s,age,o={})=>{const m=E.newMember(s,{gender:o.g||'m',age,parents:o.parents||null});m.ageDays=age*Y;s.members.push(m);return m;};
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.members[0].ageDays=30*Y;s.legacy.renown=1e4;s.res.coin=1e4;return s;};
 const day=(s,d)=>{s.day=d;E.familyAutoDay(s);};
-ok(['orders','advance','kids','court'].every(k=>{const u=D.legacy.upgrades.find(x=>x.id==='fa_'+k);return u&&u.tiers[0].cost>=40&&u.tiers[0].cost<=60;}),'four Legacy upgrades at 40-60');
+ok(['orders','advance','kids','court'].every(k=>{const u=D.legacy.upgrades.find(x=>x.id==='fa_'+k);return u&&u.free===1&&u.tiers[0].cost>=100&&u.tiers[0].cost<=150&&u.tiers[1].cost===u.tiers[0].cost*3;}),'R37: four free Family Auto upgrades, tiers 100-150 / x3');
 // not owned: nothing happens (old saves unchanged)
-{ const s=fresh(); const a=mk(s,20); a.order=null; day(s,30); ok(!a.order&&!s.log.some(l=>/🤖/.test(l.msg)),'not owned: no automation'); }
+{ const s=fresh(); const a=mk(s,20); a.order=null; day(s,30); ok(a.order&&a.order.type,'R37: free Family Orders give an order with nothing bought'); }
 // Auto Orders
 { const s=fresh(); const a=mk(s,20); a.order=null; E.buyLegacy(s,'fa_orders'); ok(E.faOn(s,'orders'),'on by default once bought');
   day(s,30); ok(a.order&&a.order.type,'idle adult gets an order'); ok(s.log.some(l=>/🤖 Auto Orders/.test(l.msg)),'choice logged');
@@ -32,7 +32,7 @@ ok(['orders','advance','kids','court'].every(k=>{const u=D.legacy.upgrades.find(
   ok(E.kidSkill(s,k)&&k.track==='collegium','child follows the parent guild track'); const xs=new Set(); for(let i=0;i<6;i++){k.ageDays++;xs.add(E.kidSkill(s,k));} ok([...xs].every(x=>D.legacy.familyAuto.tracks.collegium.includes(x)),'lessons come from the track');
   E.setTrack(s,k.id,'lodge'); ok(k.track==='lodge'&&E.pinned(k,'track'),'hand-set track pinned'); k.noAutoEq=true; ok(E.kidSkill(s,k)===null,'excluded child: random lessons'); }
 // Auto Courtship
-{ const s=fresh(); E.buyLegacy(s,'fa_court'); for(let i=0;i<4;i++)s.structures.push({uid:'bx'+i,type:'shack',pieces:['bunk','bunk'],up:0});
+{ const s=fresh(); E.buyLegacy(s,'fa_court'); delete s.autoOff.fam_court; for(let i=0;i<4;i++)s.structures.push({uid:'bx'+i,type:'shack',pieces:['bunk','bunk'],up:0});
   const a=mk(s,22); a.order=null; const su=E.makeSuitor(s,{}); su.house=null; su.affinity=0; s.suitors=[su];
   day(s,7); ok(a.order&&a.order.type==='court'&&a.order.target===su.id&&a.faCourt,'unmarried adult courts the best suitor');
   const head=s.members.find(m=>m.id===s.head); ok(!head||head.id===s.activeId||!head.faCourt,'Head off by default');
@@ -42,5 +42,5 @@ ok(['orders','advance','kids','court'].every(k=>{const u=D.legacy.upgrades.find(
   const b=mk(s,24); b.order=null; const su2=E.makeSuitor(s,{}); su2.house='hx'; s.houses={hx:{r:-100,state:'war'}}; s.suitors=[su2]; day(s,21); ok(!b.faCourt,'never a feuding house'); }
 // save step 29: old orders pinned; at_all bundle converted
 { const s=fresh(); const a=mk(s,20); a.order={type:'quest',target:'outskirts'}; s.legacy.ups={at_all:2}; s.schema=28; E.normalize(s);
-  ok(E.pinned(a,'order'),'migration pins existing orders'); ok(!s.legacy.ups.at_all&&E.legacyTier(s,'at_farming')===2&&E.legacyTier(s,'at_arcane')===2,'old buy-all bundle becomes single tiers'); }
+  ok(E.pinned(a,'order'),'migration pins existing orders'); const r0=s.legacy.renown; ok(!s.legacy.ups.at_all&&!s.legacy.ups.at_farming&&s.legacyRefund&&s.legacyRefund.amt===5090,'old buy-all bundle becomes single tiers, then refunded in full at v37 (5090)'); }
 console.log('family-auto: '+pass+' passed');

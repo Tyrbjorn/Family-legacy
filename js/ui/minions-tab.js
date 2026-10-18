@@ -1,6 +1,6 @@
 import { pbar, timerBar } from "./progress.js";
 import * as E from "../engine.js";
-import { QC, fmt, it } from "./common.js";
+import { QC, autoChip, fmt, it } from "./common.js";
 import { D, s } from "../main.js";
 import { setsCard } from "./gear-ui.js";
 
@@ -23,6 +23,7 @@ export function minionsv() {
   const M = D.minions;
   const mt = id => M.types.find(t => t.id === id);
   let h = `<div class="card"><b>🧑‍🤝‍🧑 Followers ${s.minions.filter(x => !x.special).length}/${E.minionCap(s)}${s.minions.some(x => x.special) ? " + " + s.minions.filter(x => x.special).length + " ⭐" : ""}</b><div class="muted">Wages ${E.monthlyWages(s)}🪙/month · eat ${E.minionFood(s)}🍞/day (pool ${fmt(s.res.food)}${s.res.food < E.minionFood(s) ? " ⚠️ hungry!" : ""}) · 🛌 bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}${E.housingCap(s, "bunk") ? "" : " – build a Bunk or Bunkhouse to hire"} · ${E.established(s) ? "assign them to estate work below" : "jobs unlock once a House establishes the estate"}</div><div class="muted">Gained by hiring in towns, rescues on some quests, tavern rumors, and estate reputation (every ${M.reputationEveryRenown} Renown).</div></div>`;
+  h += `<div class="row" id="minauto" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin:3px 0">${autoChip("ascend", "Ascend", E.ascendOn(s), E.established(s) ? null : "needs an established estate")}<button class="b ${E.recruitOn(s) ? "sel" : ""}" style="font-size:12px;padding:2px 8px" data-a="autorecruit">⚙ Auto Recruit ${E.recruitOn(s) ? "On" : "Off"}</button></div>`; // R37
   if (!s.minions.length) h += `<div class="muted">No followers yet.</div>`;
   if (E.pendingCount(s)) h += `<div class="card tut">🎯 ${E.pendingCount(s)} follower upgrade choice${E.pendingCount(s) > 1 ? "s" : ""} waiting (Manual mode). Followers keep working meanwhile.</div>`;
   for (const mi of s.minions) {

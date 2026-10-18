@@ -6,19 +6,20 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);s.members[0].ageDays=20*360;s.legacy.renown=1e4;return s;};
 // ---- Auto Tend
-const U=D.legacy.upgrades.filter(u=>u.autoTend);
-ok(U.length===10&&U.find(u=>u.id==='at_farming').tiers.map(t=>t.cost).join()==='80,250'&&U.find(u=>u.id==='at_arcane').tiers.map(t=>t.cost).join()==='200,600','10 Auto Tend upgrades at the original prices');
-{ const s=fresh(); s.members.forEach(m=>m.action=null); const f0=s.res.food; E.autoTendDay(s); ok(s.res.food===f0,'not owned: nothing');
-  E.buyLegacy(s,'at_farming'); ok(E.atTarget(s,'farming').id==='tendfields'&&E.atRate(s,'farming')===0.5,'farming defaults to Tend Fields at 50%');
-  let f=s.res.food; E.autoTendDay(s); const y=D.activities.find(a=>a.id==='tendfields').yields.food; ok(Math.abs(s.res.food-f-y*0.5)<1e-9,'tier 1 = half the hand yield');
-  E.buyLegacy(s,'at_farming'); f=s.res.food; E.autoTendDay(s); ok(Math.abs(s.res.food-f-y*0.75)<1e-9,'tier 2 = 75%');
-  E.toggleAuto(s,'at_farming'); f=s.res.food; E.autoTendDay(s); ok(s.res.food===f&&!E.atOn(s,'farming'),'toggle off in Automation');
+const U=D.legacy.upgrades.filter(u=>u.id==='at_tend');
+ok(U.length===1&&U[0].free===0.35&&U[0].tiers.map(t=>t.cost).join()==='300,900','R37: one Tireless Hands upgrade, free 35%, 300/900');
+{ const s=fresh(); s.members.forEach(m=>m.action=null); for(const m of s.members) m.skills.farming.lvl=0; const f0=s.res.food; E.autoTendDay(s); ok(s.res.food===f0&&/Farming 1/.test(E.atIssue(s,'farming')),'locked without the skill: shows why');
+  s.members[0].skills.farming.lvl=1; ok(/locked/.test(E.atIssue(s,'farming')),'locked without the building (Furrows): shows why'); s.structures.push({uid:'fx',type:'fields',pieces:['furrows'],up:0}); ok(E.atTarget(s,'farming').id==='tendfields'&&E.atRate(s,'farming')===0.35,'free: farming defaults to Tend Fields at 35%');
+  let f=s.res.food; E.autoTendDay(s); const y=D.activities.find(a=>a.id==='tendfields').yields.food; ok(Math.abs(s.res.food-f-y*0.35)<1e-9,'free = 35% of the hand yield');
+  s.legacy.renown=1e4; E.buyLegacy(s,'at_tend'); f=s.res.food; E.autoTendDay(s); ok(Math.abs(s.res.food-f-y*0.55)<1e-9,'tier 1 = 55%');
+  E.buyLegacy(s,'at_tend'); f=s.res.food; E.autoTendDay(s); ok(Math.abs(s.res.food-f-y*0.75)<1e-9,'tier 2 = 75%');
+  E.toggleAuto(s,'at_farming'); f=s.res.food; E.autoTendDay(s); ok(s.res.food===f&&!E.atOn(s,'farming'),'toggle off');
   E.toggleAuto(s,'at_farming'); s.members[0].action={type:'activity',target:'tendfields'}; f=s.res.food; E.autoTendDay(s); ok(s.res.food===f,'pauses while someone tends by hand'); s.members[0].action=null;
-  E.buyLegacy(s,'at_extraction'); s.atLast={gather:'berries'}; f=s.res.food; E.autoTendDay(s); ok(s.res.food>f,'extraction repeats the last gathering spot');
-  E.buyLegacy(s,'at_cooking'); ok(!E.atTarget(s,'cooking'),'craft category waits for a hand-made recipe');
+  ok(/by hand once/.test(E.atIssue(s,'extraction')),'extraction waits for a hand trip'); s.atLast={gather:'berries'}; f=s.res.food; E.autoTendDay(s); ok(s.res.food>f,'extraction repeats the last gathering spot');
+  s.legacy.ups.at_tend=1; s.members[0].skills.cooking.lvl=1; ok(!E.atTarget(s,'cooking'),'craft category waits for a hand-made recipe (below tier 2)');
   s.atLast['rc:cooking']='r_cakes'; s.structures.push({uid:'kx',type:'kitchen',pieces:['larder'],up:0}); Object.assign(s.res,{food:500,thyme:20}); const rc=E.recipeDef('r_cakes'); const v0=s.vault.length; let n=0;
   const issue=E.recipeIssue(s,s.members[0],rc);
-  if(!issue){ for(let i=0;i<Math.ceil(rc.days/0.5);i++)E.autoTendDay(s); ok(s.vault.length===v0+1,'cooking crafts one item every days/0.5 days'); } else console.log('cooking craft check skipped: '+issue);
+  if(!issue){ for(let i=0;i<Math.ceil(rc.days/0.55);i++)E.autoTendDay(s); ok(s.vault.length===v0+1,'cooking crafts one item every days/rate days'); } else console.log('cooking craft check skipped: '+issue);
 }
 // ---- Auto Equip
 { const s=fresh(); const m=s.members[0]; m.ageDays=20*360; m.equip={}; s.vault=[]; s.vault.push('rusty_sword','hunting_bow','sickle');

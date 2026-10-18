@@ -1,6 +1,6 @@
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
-import { RI, costStr, doing, fmt, memberLine } from "./common.js";
+import { RI, costStr, doing, fmt, memberLine, autoChip } from "./common.js";
 import { U } from "./state.js";
 import { D, s } from "../main.js";
 import { buildingCard } from "./estate-card.js";
@@ -119,7 +119,6 @@ export function estatev() {
       landShop()
     );
   let h = `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members below." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
-  h += legacyPanel();
   h += quotasv();
   h += estate();
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
@@ -181,7 +180,6 @@ export function legacyPanel() {
 // R34: Quotas card (Steward's Ledger). Row: item, target, one-time/standing, progress, status, priority, remove.
 const qName = k => (E.itemDef(k) || {}).name || (E.dishDef(k) || {}).name || k;
 export function quotasv() {
-  if (!E.hasLegacy(s, "quotas")) return `<div class="card" id="quotas"><b>📋 Quotas</b><div class="muted">Buy the Steward's Ledger (Legacy, 600 renown) to set production targets that stations, Auto Cook, Auto Tend and crafters work toward.</div></div>`;
   const L = E.quotaList(s), slots = E.quotaSlots(s), used = L.filter(q => !q.parent).length, t2 = E.quotaTier(s) >= 2;
   const row = (q, i) => {
     const st = E.quotaStatus(s, q), have = E.quotaHave(s, q), pct = Math.min(100, (have / q.target) * 100);
@@ -193,7 +191,7 @@ export function quotasv() {
   const opts = [...new Set([...Object.keys(s.res).filter(k => E.producible(k)), ...(D.cooking?.dishes || []).map(x => x.id)])].sort();
   const sel = U.qItem || opts[0];
   const add = used < slots ? `<div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin-top:4px"><select data-a="qitem">${opts.map(k => `<option value="${k}" ${k === sel ? "selected" : ""}>${RI[k] || ""} ${qName(k)}</option>`).join("")}</select><input type="number" min="1" value="${U.qNum || 50}" data-a="qnum" style="width:64px"><button class="b" data-a="qadd" data-v="standing">+ Keep</button><button class="b" data-a="qadd" data-v="once">+ Make once</button></div>` : `<div class="muted">All ${slots} quota slots used${t2 ? "" : " (tier 2: unlimited)"}.</div>`;
-  return `<div class="card" id="quotas"><div class="row"><b>📋 Quotas</b><span class="muted">${slots > 99 ? used + " set" : used + "/" + slots + " slots"} · tier ${E.quotaTier(s)}</span></div>
+  return `<div class="card" id="quotas"><div class="row"><b>📋 Quotas</b>${autoChip("quotas", "", !(s.autoOff || {}).quotas)}<span class="muted">${slots > 99 ? used + " set" : used + "/" + slots + " slots"} · tier ${E.quotaTier(s)}</span></div>
  <div class="muted" style="font-size:12px">Automation works toward quotas top-down; standing quotas stop at the target. Reserves are never touched; food keeps cooking while stock is under ${E.QC().foodSafetyDays} days.${t2 ? " Tier 2: blocked quotas pull their inputs, standing targets are sell floors, a follower a month moves to a job that feeds a quota." : ""}</div>
  ${L.map(row).join("") || '<div class="muted">No quotas yet.</div>'}${add}</div>`;
 }

@@ -55,5 +55,5 @@ ok(!L.talents.some(t=>t.id==='nimble')&&D.traits.find(t=>t.id==='nimble'),'Nimbl
 // migration v36
 { const s=fresh(); s.schema=35; const m=adult(s,'knight'); m.guild={id:'rogues',rank:2}; delete m.talents; s.doneQuests.push('rq_millbridge'); s.head=m.id; E.normalize(s);
   ok(m.talents.own.includes('shieldwall')&&m.talents.own.includes('haggler')&&m.talents.own.includes('bridgebuilder'),'v36: class line, guild rank, head quest talents'); ok(Array.isArray(s.shrines)&&s.shrines.length===0,'no shrines');
-  const j=JSON.stringify(m.talents); E.talentMigrate(s); ok(JSON.stringify(m.talents)===j,'idempotent'); ok(E.SCHEMA===36,'schema 36'); }
+  const j=JSON.stringify(m.talents); E.talentMigrate(s); ok(JSON.stringify(m.talents)===j,'idempotent'); ok(E.SCHEMA>=36,'schema 36+'); }
 console.log('r36 ok',pass);

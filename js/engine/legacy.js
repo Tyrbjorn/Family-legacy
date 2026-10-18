@@ -28,7 +28,7 @@ export function legacyCost(s, id) {
 export function legacyValue(s, id) {
   const u = legacyDef(id);
   const t = legacyTier(s, id);
-  return u && t ? u.tiers[t - 1].value : 0;
+  return u && t ? u.tiers[t - 1].value : u && u.free !== undefined ? u.free : 0; // R37: tier 0 = the free basic version
 }
 
 export const hasLegacy = (s, id) => legacyTier(s, id) > 0;
@@ -141,4 +141,31 @@ export function newLineage(old, now) {
   s.legacy = JSON.parse(JSON.stringify(legacyState(old)));
   s.speed = Math.min(old.speed || 1, maxSpeed(s));
   return s;
+}
+
+// ---- R37 free automation: defaults and the v37 refund (data: legacy.autoDefaults, legacy.v37Refund)
+export function applyAutoDefaults(s, owned = {}) {
+  s.autoOff = s.autoOff || {};
+  for (const k of (LG().autoDefaults || {}).off || []) if (!owned[k]) s.autoOff[k] = true;
+}
+export function refundV37(s) {
+  const R = LG().v37Refund || { costs: {}, remove: [], reset: [] }, L = legacyState(s);
+  let amt = 0, t1 = 0, t2 = 0;
+  const owned = {};
+  for (const [id, costs] of Object.entries(R.costs)) {
+    const t = Math.min(L.ups[id] || 0, costs.length);
+    if (!t) continue;
+    amt += costs.slice(0, t).reduce((a, b) => a + b, 0);
+    if (id.startsWith("at_")) t >= 2 ? t2++ : t1++;
+    if (id === "fa_court") owned.fam_court = true;
+  }
+  for (const id of R.remove) delete L.ups[id];
+  for (const id of R.reset) delete L.ups[id];
+  L.renown = (L.renown || 0) + amt;
+  applyAutoDefaults(s, owned);
+  if (amt > 0) {
+    s.legacyRefund = { amt, day: s.day || 0, suggest: t2 > 0 || t1 >= 3, seen: false };
+    log(s, `🏛️ Legacy reworked: ${amt} renown refunded for automation that is now free.`);
+  }
+  return amt;
 }

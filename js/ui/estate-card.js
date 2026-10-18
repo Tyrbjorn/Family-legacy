@@ -1,7 +1,7 @@
 // One building card on the Estate tab, split into sections (header, pieces, features, place menu, fittings, upgrade/respec/demolish).
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
-import { costStr } from "./common.js";
+import { costStr, autoChip } from "./common.js";
 import { villageRow } from "./village-panel.js";
 import { D, s } from "../main.js";
 
@@ -137,6 +137,11 @@ function cardNav(st, k) {
   }${villageRow(st)}<div class="row" style="margin-top:4px"><span class="muted">Demolish: refund ${costStr(E.demolishRefund(st))}</span>${E.demolishIssue(s, st.uid) ? `<span class="muted">🔒 ${E.demolishIssue(s, st.uid)}</span>` : `<button class="b" data-a="demolish" data-v="${st.uid}">🧨 Demolish</button>`}</div></div>`;
 }
 
+// R37: ⚙ Auto Tend chips for the skills this building serves
+const autoRow = st => {
+  const ks = E.atCatsFor(s, st);
+  return ks.length ? `<div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin:2px 0" data-autorow="${st.uid}">${ks.map(k => { const x = E.atStatus(s, k); return autoChip("at_" + k, k[0].toUpperCase() + k.slice(1), x.on, x.why); }).join("")}</div>` : "";
+};
 export const buildingCard = (st, k) =>
   cardHead(st, k) +
-  ((st.type === "warehouse" || E.structDef(st.type)?.upgradeFrom === "warehouse") ? `<div class="row" style="justify-content:flex-start"><button class="b" style="font-size:12px" data-a="quotasgo">📋 Quotas${E.hasLegacy(s, "quotas") ? " (" + E.quotaList(s).length + ")" : ""}</button></div>` : "") + cardPieces(st, k) + cardRefine(st) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);
+  ((st.type === "warehouse" || E.structDef(st.type)?.upgradeFrom === "warehouse") ? `<div class="row" style="justify-content:flex-start"><button class="b" style="font-size:12px" data-a="quotasgo">📋 Quotas (${E.quotaList(s).length})</button></div>` : "") + autoRow(st) + cardPieces(st, k) + cardRefine(st) + cardFeatures(st, k) + cardPlace(st, k) + cardFittings(st, k) + cardTier(st) + cardNav(st, k);
