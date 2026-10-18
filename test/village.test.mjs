@@ -3,7 +3,7 @@
 // cottages, upkeep, save step, estate stages.
 import fs from 'fs'; import * as E from '../js/engine.js'; import { STEPS } from '../js/engine/save-steps.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
+const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 E.setRng(()=>0.01);
@@ -26,7 +26,7 @@ const need=E.villageCost('fields'); s.res.coin=1000; ok(E.deliver(s,'coin')===10
 s.res.coin=1e5; s.res.wood=1e4; E.deliverAll(s); ok(!E.project(s)&&s.structures.some(x=>x.site==='village'&&x.type==='fields'),'complete delivery builds it');
 ok(E.villageUsed(s)===2&&E.landUsed(s)===lu0,'village building uses 2 village slots, no land');
 // output and job spots
-const vf=s.structures.find(x=>x.site==='village'), ef={uid:'ef',type:'fields',pieces:[...vf.pieces],up:0};
+const vf={uid:'vh',type:'herbgarden',site:'village',pieces:['herbbeds'],up:0}, ef={uid:'eh',type:'herbgarden',pieces:['herbbeds'],up:0}; // R40: furrows no longer have processes (fields.js)
 const pr=st=>E.scaledPiece(st,st.pieces[0]).bonus.processes[0].rate; ok(Math.abs(pr(vf)/pr(ef)-V.outMult)<1e-9,'3× output');
 const tr={uid:'t',type:'fields',pieces:['toolrack'],up:0}, vt={...tr,site:'village'}; const jg=st=>E.scaledPiece(st,'toolrack').bonus.jobs.gather; ok(jg(vt)===jg(tr)*V.jobMult,'2× follower spots');
 // cancel refunds

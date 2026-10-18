@@ -8,6 +8,7 @@ import { groupOf, render } from "./ui/render.js";
 const KEY = "familyLegacy.save.v1";
 
 const names = [
+  "fields",
   "build",
   "testers",
   "changelog",
@@ -265,6 +266,7 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "crafter") U.crafter = el.value;
   if (el.dataset.a === "speed") E.setSpeed(s, +el.value);
   if (el.dataset.a === "notecat") E.setNoteCat(s, el.dataset.v, el.checked);
+  if (el.dataset.a === "fieldcrop") E.setCrop(s, el.dataset.v, el.value); // R40
   if (el.dataset.a === "devmode") {
     if (el.checked && !confirm("Enable Dev Mode? This run will be marked as a dev run and stop earning achievements."))
       el.checked = false;

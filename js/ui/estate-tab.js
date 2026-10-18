@@ -1,3 +1,4 @@
+import { fieldsCard } from "./fields-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { RI, costStr, doing, fmt, memberLine, autoChip } from "./common.js";
@@ -119,6 +120,7 @@ export function estatev() {
       landShop()
     );
   let h = `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members below." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
+  h += fieldsCard(); // R40
   h += quotasv();
   h += estate();
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;

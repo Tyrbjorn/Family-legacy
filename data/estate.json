@@ -1585,33 +1585,12 @@
    "fixedOnly": true,
    "skill": "farming",
    "bonus": {
-    "processes": [
-     {
-      "in": {},
-      "out": "wheat",
-      "rate": 3
-     },
-     {
-      "in": {},
-      "out": "barley",
-      "rate": 1.5
-     },
-     {
-      "in": {},
-      "out": "vegetables",
-      "rate": 2
-     },
-     {
-      "in": {},
-      "out": "flax",
-      "rate": 0.8
-     }
-    ],
+    "processes": [],
     "jobs": {
      "farm": 2
     }
    },
-   "desc": "3 wheat, 1.5 barley, 2 vegetables, 0.8 flax/day (seasonal); 2 farming spots"
+   "desc": "2 farming spots; each field's crop is chosen at the Farmstead hub (R40)"
   },
   {
    "id": "fruittrees",

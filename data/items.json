@@ -607,7 +607,8 @@
   "rarity": "Common",
   "cp": 6,
   "value": 40,
-  "toolFor": "farm"
+  "toolFor": "farm",
+  "fieldTool": "grain"
  },
  {
   "id": "woodaxe",

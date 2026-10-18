@@ -83,7 +83,7 @@ function tutorialDay(s) {
 function estateDay(s) {
   const lv = s.buildings;
   s.res.food +=
-    (lv.farm * 5 + (lv.garden || 0) * 2) * seasonYield(s, "food") +
+    // R40: the old Farm/Garden plain food (farm ×5 + garden ×2) is retired; food now grows in fields (fields.js)
     furn(s).reduce((x, f) => x + (f.bonus.food || 0), 0);
   s.res.wood += lv.lumber * 3;
   s.res.stone += lv.lumber * 1;

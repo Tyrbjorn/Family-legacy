@@ -17,8 +17,10 @@ export const ADVENTURE_SHARE = 0.3; // balance: was 0.6 (then 0.5) of the quest 
 
 export const MINION_JOBS = {
   farm: (s, mi, a, rg) => {
-    s.res.food += 3 * a * rg * seasonYield(s, "food") * (1 + bl(s, "farm") * 0.2);
+    // R40: only the hours left after tending fields farm the old way (mi.fieldSpare from fields.js)
+    s.res.food += 3 * a * rg * seasonYield(s, "food") * (1 + bl(s, "farm") * 0.2) * (mi.fieldSpare ?? 1);
   },
+  teamster: () => {}, // R40: teamsters only haul field harvest into storage (fields.js); no other work
   gather: (s, mi, a, rg) => {
     s.res.wood += 2 * a * rg;
     s.res.stone += 1 * a * rg;

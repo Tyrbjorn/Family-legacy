@@ -36,7 +36,8 @@ const pieceMakes = item => (D.estate.pieces || []).filter(p => pieceRows(p).some
 const recipeFor = item => (D.crafting.recipes || []).find(r => r.base === item);
 const taskFor = item => D.activities.find(a => a.yields && a.yields[item]);
 const nodeFor = item => D.nodes.find(n => n.res && n.res[item]);
-export const producible = item => !!(pieceMakes(item).length || recipeFor(item) || taskFor(item) || nodeFor(item) || Object.values(JOB_RES).some(r => r.includes(item)));
+const cropFor = item => Object.values((D.fields || {}).crops || {}).some(c => c.res === item); // R40 fields
+export const producible = item => !!(cropFor(item) || pieceMakes(item).length || recipeFor(item) || taskFor(item) || nodeFor(item) || Object.values(JOB_RES).some(r => r.includes(item)));
 
 // ---- adding / editing
 export function quotaIssue(s, item, mode) {

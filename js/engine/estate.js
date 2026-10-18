@@ -1,3 +1,4 @@
+import { farmSpotsFromHub, teamsterCap } from "./fields.js";
 import { fittingFx } from "./estate-pieces.js";
 import { ES, baseId, pieceDef, scaledPiece } from "./estate-pieces.js";
 import { prodTier } from "./estate-place.js";
@@ -181,7 +182,8 @@ export function jobCap(s, job) {
       }, 0)
     );
   let c = placed(s).reduce((a, p) => a + ((p.bonus.jobs || {})[job] || 0), 0);
-  if (job === "farm") c += bl(s, "farm") * 2 + bl(s, "garden");
+  if (job === "farm") c += bl(s, "farm") * 2 + bl(s, "garden") + farmSpotsFromHub(s); // R40 hub bunkhouses
+  if (job === "teamster") return teamsterCap(s); // R40: Farmstead base + Cart Shed upgrades
   if (job === "gather") c += bl(s, "lumber") * 2;
   if (job === "tutor") c += bl(s, "library");
   return c;

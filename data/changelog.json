@@ -2,6 +2,19 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R40",
+   "title": "Fields with their own crops",
+   "items": [
+    "Each field now grows one crop: Kitchen Plot (food), wheat, barley, vegetables, flax or berries. Pick and switch crops on the Estate tab's 🌾 Farmstead card.",
+    "Fields need about 1 hour of tending a day. Farm followers give 8 hours, a family member on Tend Fields gives 8, and everyone else helps 1 hour. Untended fields still grow at a quarter.",
+    "Level fields up to 5, or make a Bigger Plot for more crop (it takes longer to tend).",
+    "New Sickles, Hoes and Pruning Knives in every metal cut tending time; masterwork ones cut more.",
+    "New 🛒 teamsters only haul the harvest into storage. A small farm gets by with farmers carrying by hand (about 25 a day for the whole farm, enough for 4–5 ordinary fields). Bigger farms need teamsters: they are costly (the first needs a 1,000-coin Cart Shed) but each moves 250 a day. Orchard fruit also waits at the trees for haul. Kitchen Plot food goes straight to the table, so nobody goes hungry. Bunkhouse upgrades add farm spots.",
+    "When a crop's storage is full, workers mill wheat into flour or brew barley into ale if you have the station.",
+    "Old farms were turned into fields that grow at least as much food as before."
+   ]
+  },
+  {
    "build": "R39.1",
    "title": "Tester links and What's new",
    "items": [

@@ -18,6 +18,7 @@ export * from "./engine/achievements.js";
 export * from "./engine/worldevents.js";
 export * from "./engine/market.js";
 export * from "./engine/playpass.js";
+export * from "./engine/fields.js";
 export * from "./engine/encounters.js";
 export * from "./engine/traits.js";
 export * from "./engine/seasons.js";

@@ -128,6 +128,7 @@ export function srcOk(s, m, u, ac) {
   }
   if (u.quest) return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
   if (u.building) return bl(s, u.building) > 0;
+  if (u.fields) return ((s.fields || {}).list || []).length > 0; // R40
   if (u.tut) return !!(s.tut && ((s.tut.done || []).includes(u.tut) || s.tut.skipped || !s.tut.started || (D.tutorial && s.tut.step > D.tutorial.steps.findIndex(x => x.id === u.tut))));
   return true;
 }
@@ -139,6 +140,7 @@ export function srcText(u) {
   if (u.guild) return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
   if (u.quest) return "quest “" + ((D.quests.find(q => q.id === u.quest) || {}).name || u.quest) + "”";
   if (u.tut) return "tutorial: " + ((D.tutorial?.steps.find(x => x.id === u.tut) || {}).title || u.tut);
+  if (u.fields) return "a field (Estate → Farmstead)";
   if (u.building) return "build " + ((D.buildings.find(b => b.id === u.building) || {}).name || u.building);
   return "";
 }

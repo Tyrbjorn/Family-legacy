@@ -336,6 +336,87 @@
     "hides": 2
    },
    "days": 8
+  },
+  {
+   "id": "sickle",
+   "name": "Sickle",
+   "slot": "tool",
+   "value": 30,
+   "metal": 2,
+   "mats": {
+    "wood": 2
+   },
+   "days": 2,
+   "station": "forge",
+   "skill": "smithing",
+   "metals": [
+    "copper",
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "toolCp": 6,
+   "item": {
+    "toolFor": "farm",
+    "fieldTool": "grain"
+   },
+   "_note": "R40 field tool: cuts tend time by metal tier (data/fields.json tools.cut)"
+  },
+  {
+   "id": "hoe",
+   "name": "Hoe",
+   "slot": "tool",
+   "value": 30,
+   "metal": 2,
+   "mats": {
+    "wood": 3
+   },
+   "days": 2,
+   "station": "forge",
+   "skill": "smithing",
+   "metals": [
+    "copper",
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "toolCp": 6,
+   "item": {
+    "toolFor": "farm",
+    "fieldTool": "plot"
+   },
+   "_note": "R40 field tool: cuts tend time by metal tier (data/fields.json tools.cut)"
+  },
+  {
+   "id": "pruningknife",
+   "name": "Pruning Knife",
+   "slot": "tool",
+   "value": 30,
+   "metal": 2,
+   "mats": {
+    "leather": 1
+   },
+   "days": 2,
+   "station": "forge",
+   "skill": "smithing",
+   "metals": [
+    "copper",
+    "bronze",
+    "iron",
+    "steel",
+    "mithril",
+    "adamantium"
+   ],
+   "toolCp": 6,
+   "item": {
+    "toolFor": "farm",
+    "fieldTool": "orchard"
+   },
+   "_note": "R40 field tool: cuts tend time by metal tier (data/fields.json tools.cut)"
   }
  ]
 }

@@ -275,6 +275,33 @@ function bot(s, m) {
   for (const l of D.estate.lands)
     if (s.res.coin > (l.cost.coin || 0) * 3 && !s.land.includes(l.id) && E.landUsed(s) >= E.landSlots(s) - 1)
       E.buyLand(s, l.id);
+  // R40 fields: build one per free slot (food first, then grains/veg/flax/berries), level + enlarge when rich, hub upgrades
+  if (D.fields && !process.env.NO_FIELDS) {
+    const order = ["food", "wheat", "vegetables", "barley", "flax", "berries"];
+    const have = new Set(E.fieldsState(s).list.map(f => f.crop));
+    const next = order.find(c => !have.has(c) && !E.buildFieldIssue(s, c)) || (E.fieldsState(s).list.length < E.fieldSlots(s) && !E.buildFieldIssue(s, "food") ? "food" : null);
+    if (next && E.bedrooms(s) >= 2 && s.res.coin > (E.fieldsState(s).list.length ? 1500 : 600)) E.buildField(s, next);
+    // R40.2 smarter bot: only grow a field that has idle tending hours behind it and whose crop isn't sitting at its storage limit
+    for (const f of E.fieldsState(s).list) {
+      const res = (E.cropDef(f.crop) || {}).res, st = ((E.fieldsState(s).last || {}).fields || {})[f.id] || {};
+      const useful = res && (s.res[res] || 0) + (E.fieldsState(s).pile[res] || 0) < E.capOf(s, res) * 0.7 && st.state !== "full" && st.state !== "waiting for haul";
+      if (!useful) continue;
+      const spare = E.tendAvail(s) - E.tendNeeded(s);
+      const lc = E.levelCost(f);
+      if (lc && spare > 0 && !E.levelIssue(s, f) && s.res.coin > (lc.coin || 0) * 15) E.levelField(s, f.id);
+      const sc = E.sizeCost(f);
+      if (sc && !E.sizeIssue(s, f) && s.res.coin > (sc.coin || 0) * 20 && spare >= 1) E.sizeUp(s, f.id);
+    }
+    { const pileNow = Object.values(E.fieldsState(s).pile).reduce((a, b) => a + b, 0); const waits = pileNow > 100 || Object.values((E.fieldsState(s).last || {}).fields || {}).some(x => x.state === "waiting for haul");
+      for (const k of ["teamster", "worker"]) { const u = E.nextHubUp(s, k); if (!u || E.hubUpIssue(s, k)) continue;
+        const busyT = s.minions.filter(x => x.job === "teamster").length >= E.jobCap(s, "teamster");
+        const want = k === "teamster" ? (waits && (busyT || E.jobCap(s, "teamster") === 0) ? 1.1 : 6) : 5;
+        if (s.res.coin > (u.cost.coin || 0) * want) { E.buyHubUp(s, k); if (k === "teamster") (seen.teamBuys ||= []).push(`${u.id}@y${(s.day / D.tuning.daysPerYear).toFixed(1)}`); } } }
+    (seen.fields ||= { max: 0, teamsters: 0 }).max = Math.max(seen.fields.max, E.fieldsState(s).list.length);
+    seen.fields.teamsters = Math.max(seen.fields.teamsters, s.minions.filter(x => x.job === "teamster").length);
+    const L = E.fieldsState(s).last;
+    if (L) { const F = seen.fields; F.days = (F.days || 0) + 1; F.need = (F.need || 0) + L.need; F.avail = (F.avail || 0) + L.avail; for (const x of Object.values(L.fields)) F[x.state] = (F[x.state] || 0) + 1; for (const [k, v] of Object.entries(L.made)) (F.made ||= {})[k] = Math.round(((F.made || {})[k] || 0) + v); F.hauledT = (F.hauledT || 0) + L.byTeamsters; F.hauledF = (F.hauledF || 0) + L.byFarmers; F.farmers = Math.max(F.farmers || 0, L.workers.filter(w => w.kind === "follower").length); }
+  }
   // Graveyard first (Ancestors' Tithe + death capture), then Stone Walls when affordable
   const gy = s.structures.find(x => x.type === "graveyard");
   if (!gy) {
@@ -806,11 +833,13 @@ console.log(
 );
 console.log("house quests taken:", seen.houseQuests.size, "war-days seen by bot:", seen.wars * 3);
 console.log("paths opened:", seen.pathOpens, "specialties:", seen.specs, "combos:", seen.combos, "enchant jobs started by bot:", seen.enchants, "set pieces worn:", seen.setWorn, "set crafts:", seen.setCrafts, "evolutions:", seen.evolves, "manual picks:", seen.picks);
+console.log("R401 teamster buys:", JSON.stringify(seen.teamBuys || []));
 console.log("map: animals bought", seen.animals, "noderun assigns", seen.noderuns, "parcel work", seen.parcels, "cart crafts", seen.haulCrafts, "convoy trips (max/seed)", seen.convoyTrips, "herd days", seen.herdDays, "max carry", seen.maxCarry, "fog charted", Math.round((lastS ? E.fogPct(lastS) : 0) * 100) + "%");
 console.log("encounters prompted:", seen.enc, "crafted bases:", [...seen.recipes].join(","));
 console.log("R35 apprentices placed:", (seen.appr || new Set()).size, "finished:", (seen.apprDone || new Set()).size, "members with leans:", (seen.lean || new Map()).size, "two leans:", [...(seen.lean || new Map()).values()].filter(x => x === 2).length);
 console.log("R36 talents earned per seed:", JSON.stringify(Object.fromEntries(Object.entries(seen.tal || {}).map(([k, v]) => [k, v.size]))), "by talent:", JSON.stringify([...Object.values(seen.tal || {})].flatMap(v => [...v]).reduce((a, x) => ((a[x.split(":")[1]] = (a[x.split(":")[1]] || 0) + 1), a), {})));
 console.log("R37 early [year, coin, food, structs, minions, legacyRenown]:", JSON.stringify(seen.early || {}));
 if (process.env.SAVESIZE && lastS) { const j = E.serialize(lastS), c = E.exportCode(lastS); console.log("SAVESIZE json", j.length, "exportCode", c.length, "years", (lastS.day / YD).toFixed(1), "members", lastS.members.length, "log", (lastS.log || []).length, "chron", (lastS.chron || []).length); fs.writeFileSync("/tmp/longsave.json", j); }
+console.log("R40 fields:", JSON.stringify(seen.fields || null));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

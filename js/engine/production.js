@@ -1,3 +1,4 @@
+import { hauledProducer, toPile } from "./fields.js";
 import { quotaCredit, quotaFloor, quotaIdle, quotaRank, sellFloor } from "./quotas.js";
 import { cookOrder, dishReserve, dishDef, dishIssue, fishAvail, isFishKey, learnDishes, spendFish } from "./cooking.js";
 import { veinProcesses } from "./metals.js";
@@ -146,7 +147,8 @@ export function processDay(s, mul = 1) {
         for (const [k, c] of Object.entries(pr.side || {})) s.res[k] = (s.res[k] || 0) + made * c;
         if (pr.food) (s.cooked = s.cooked || {})[pr.out] = (s.cooked[pr.out] || 0) + made;
         quotaCredit(s, pr.out, made);
-        s.res[pr.out] = (s.res[pr.out] || 0) + made;
+        if (!Object.keys(pr.in || {}).length && hauledProducer(st.type)) toPile(s, st, pr.out, made); // R40: teamsters haul it in
+        else s.res[pr.out] = (s.res[pr.out] || 0) + made;
         out[pr.out] = (out[pr.out] || 0) + made;
       }
     for (const y of syn) if (y.bonus.autoSell) autoSell(s, out, y.bonus.autoSell, mul);

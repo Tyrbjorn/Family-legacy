@@ -37,7 +37,7 @@ ok(Object.values(LG.v37Refund.costs).flat().reduce((a,b)=>a+b,0)===7680,'refund 
   E.normalize(s); const want=330+100+800+40+50+2400;
   ok(s.legacy.renown===10+want,'v37 full refund to banked renown ('+want+')'); ok(!s.legacy.ups.at_farming&&!s.legacy.ups.fa_orders&&!s.legacy.ups.quotas&&s.legacy.ups.speed===2,'old keys cleared; other upgrades kept');
   ok(s.legacyRefund&&s.legacyRefund.amt===want&&s.legacyRefund.suggest,'refund note with Tireless Hands suggestion'); ok(!(s.autoOff||{}).fam_court,'Matchmaker stays on when it had been bought'); ok(s.log.some(l=>/Legacy reworked/.test(l.msg)),'refund log line');
-  const r=s.legacy.renown; E.refundV37(s); ok(s.legacy.renown===r,'re-running refunds nothing (idempotent)'); ok(E.SCHEMA===37,'schema 37'); }
+  const r=s.legacy.renown; E.refundV37(s); ok(s.legacy.renown===r,'re-running refunds nothing (idempotent)'); ok(E.SCHEMA>=37,'schema 37+'); }
 { const s=fresh(); s.schema=36; delete s.autoOff; E.normalize(s); ok(!s.legacyRefund&&s.autoOff.fam_court,'nothing bought: no refund, Matchmaker off'); }
 // UI sources
 const src=f=>fs.readFileSync(new URL('../js/ui/'+f,import.meta.url)).toString();

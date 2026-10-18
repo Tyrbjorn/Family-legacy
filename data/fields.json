@@ -1,0 +1,265 @@
+{
+ "_note": "R40 per-crop fields (base game). Numbers are first-pass placeholders for Jeremy's tweak pass. Each field grows ONE crop; tending costs worker hours, not coin. Livestock stays in the expansion.",
+ "crops": {
+  "food": {
+   "name": "Kitchen Plot",
+   "icon": "🧺",
+   "res": "food",
+   "base": 10,
+   "tool": "plot",
+   "desc": "Mixed greens and roots picked straight for the table (no hauling)",
+   "noHaul": true
+  },
+  "wheat": {
+   "name": "Wheat Field",
+   "icon": "🌾",
+   "res": "wheat",
+   "base": 6,
+   "tool": "grain",
+   "desc": "Mill it into flour for bread"
+  },
+  "barley": {
+   "name": "Barley Field",
+   "icon": "🌾",
+   "res": "barley",
+   "base": 4,
+   "tool": "grain",
+   "desc": "Brew it into ale"
+  },
+  "vegetables": {
+   "name": "Vegetable Plot",
+   "icon": "🥕",
+   "res": "vegetables",
+   "base": 5,
+   "tool": "plot",
+   "desc": "Food and stew ingredients"
+  },
+  "flax": {
+   "name": "Flax Field",
+   "icon": "🧵",
+   "res": "flax",
+   "base": 2,
+   "tool": "plot",
+   "desc": "Spun into cloth"
+  },
+  "berries": {
+   "name": "Berry Patch",
+   "icon": "🫐",
+   "res": "berries",
+   "base": 4,
+   "tool": "orchard",
+   "needs": {
+    "structure": "orchard"
+   },
+   "desc": "Food and preserves (needs an Orchard)"
+  }
+ },
+ "build": {
+  "coin": 80,
+  "wood": 10
+ },
+ "levels": {
+  "max": 5,
+  "perLvl": 0.2,
+  "cost": [
+   null,
+   null,
+   {
+    "coin": 100,
+    "wood": 10
+   },
+   {
+    "coin": 230,
+    "planks": 10
+   },
+   {
+    "coin": 700,
+    "planks": 30,
+    "stone": 20
+   },
+   {
+    "coin": 1200,
+    "planks": 50,
+    "ingots": 5
+   }
+  ]
+ },
+ "sizes": [
+  {
+   "name": "Normal",
+   "mult": 1,
+   "hours": 1
+  },
+  {
+   "name": "Bigger Plot I",
+   "mult": 1.5,
+   "hours": 1.5,
+   "cost": {
+    "coin": 250,
+    "wood": 40
+   }
+  },
+  {
+   "name": "Bigger Plot II",
+   "mult": 2,
+   "hours": 2,
+   "cost": {
+    "coin": 600,
+    "planks": 30
+   }
+  },
+  {
+   "name": "Bigger Plot III",
+   "mult": 2.5,
+   "hours": 3,
+   "cost": {
+    "coin": 1400,
+    "planks": 60,
+    "stone": 40
+   }
+  }
+ ],
+ "slots": {
+  "stage": "Homestead",
+  "perTier": 1,
+  "perExtraLand": 1
+ },
+ "hours": {
+  "follower": 8,
+  "tendChore": 8,
+  "familyHelp": 1,
+  "minAge": 12,
+  "skillSpeedMax": 0.25,
+  "skillAtMax": 50,
+  "wild": 0.25
+ },
+ "tools": {
+  "cut": {
+   "copper": 0.1,
+   "bronze": 0.14,
+   "iron": 0.18,
+   "steel": 0.22,
+   "mithril": 0.26,
+   "adamantium": 0.3
+  },
+  "plain": 0.08,
+  "masterwork": 0.1,
+  "kinds": {
+   "grain": "Sickle",
+   "plot": "Hoe",
+   "orchard": "Pruning Knife"
+  }
+ },
+ "haul": {
+  "teamsterPerDay": 250,
+  "farmerPerHour": 5,
+  "farmerDayCap": 25,
+  "farmerCapNote": "All farmers together can only carry this much a day by hand (enough for about 4-5 ordinary fields). Past ~6-8 fields the harvest piles up until you get teamsters.",
+  "pileDays": 3,
+  "_note": "Teamsters are expensive but haul a lot: one covers several fields. Farmers haul slowly with leftover hours.",
+  "producers": {
+   "orchard": {
+    "note": "Orchard fruit trees: berries wait at the trees for haul"
+   }
+  },
+  "producersNote": "Any producer building listed here sends its raw harvest (outputs with no inputs) to the haul pile instead of straight to storage. Livestock (chicken coop, cow pen, ranch) can be added here later."
+ },
+ "processing": {
+  "wheat": {
+   "out": "flour",
+   "in": 2,
+   "perHour": 4,
+   "needs": [
+    "quern",
+    "millwheel"
+   ]
+  },
+  "barley": {
+   "out": "ale",
+   "in": 2,
+   "perHour": 3,
+   "needs": [
+    "brewvats"
+   ]
+  }
+ },
+ "hub": {
+  "name": "Farmstead",
+  "workerUps": [
+   {
+    "id": "bunk1",
+    "name": "Farmhands' Bunkhouse",
+    "cost": {
+     "coin": 400,
+     "wood": 60
+    },
+    "farmSpots": 2
+   },
+   {
+    "id": "bunk2",
+    "name": "Bigger Bunkhouse",
+    "cost": {
+     "coin": 1200,
+     "planks": 40
+    },
+    "farmSpots": 2
+   },
+   {
+    "id": "bunk3",
+    "name": "Farm Hall",
+    "cost": {
+     "coin": 3500,
+     "planks": 80,
+     "stone": 60
+    },
+    "farmSpots": 3
+   }
+  ],
+  "teamsterBase": 0,
+  "teamsterUps": [
+   {
+    "id": "cart1",
+    "name": "Cart Shed",
+    "cost": {
+     "coin": 1000,
+     "planks": 30
+    },
+    "teamsterSpots": 1
+   },
+   {
+    "id": "cart2",
+    "name": "Second Wagon",
+    "cost": {
+     "coin": 2500,
+     "planks": 60,
+     "ingots": 8
+    },
+    "teamsterSpots": 1
+   },
+   {
+    "id": "cart3",
+    "name": "Stable Yard",
+    "cost": {
+     "coin": 6000,
+     "planks": 110,
+     "ingots": 18
+    },
+    "teamsterSpots": 1
+   }
+  ]
+ },
+ "followerSpareFood": 3,
+ "migrate": {
+  "minFoodShare": 0.9,
+  "_note": "old Farm/Garden food (farm x5 + garden x2) becomes a Kitchen Plot sized to at least 90%; Farm 3+ also gets a Wheat Field; old Crop Fields become one field per crop they grew",
+  "farmFood": 5,
+  "gardenFood": 2,
+  "wheatFromFarm": 3,
+  "oldFurrows": {
+   "wheat": 3,
+   "barley": 1.5,
+   "vegetables": 2,
+   "flax": 0.8
+  }
+ }
+}

@@ -1,3 +1,4 @@
+import { fieldsLine } from "./fields-ui.js";
 import { settingsCard, tourPrompt, tutorialCard } from "./guide.js";
 import { timerBar } from "./progress.js";
 import { U } from "./state.js";
@@ -109,6 +110,7 @@ export function activities(m) {
   const onTr = m.action && m.action.type === "activity" && tr.some(ac => ac.id === m.action.target);
   return (
     `<h3>🧺 Tasks <span class="muted" style="font-size:12px">· resources for the family</span> ${tog(tAll.length - tOk.length)}</h3><div class="muted" style="font-size:12px">Tasks = resources · Jobs = coin (Work → Jobs) · Training = XP.</div>` +
+    fieldsLine() + // R40
     tasks +
     `<details ${onTr ? "open" : ""}><summary><b>🎯 Training</b> <span class="muted">· XP only · ${nOk} open</span> ${tog(trHidden)}</summary><div class="muted" style="font-size:12px">Skills grow through themed drills. Unlocks: furniture, items, guild rank or class line. ⭐ = exclusive.</div>${tr.map(ac => actRow(m, ac, false)).join("")}</details>`
   );

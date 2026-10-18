@@ -11,7 +11,7 @@ export function expandMetals(d) {
       const m = M.metals[mid],
         id = `${mid}_${t.id}`;
       if (!items.has(id))
-        d.items.push({ id, name: `${m.name} ${t.name}`, slot: t.slot, rarity: m.rarity, cp: 0, type: t.type, mat: mid, value: Math.round(t.value * m.value), metal: mid, gen: true });
+        d.items.push({ id, name: `${m.name} ${t.name}`, slot: t.slot, rarity: m.rarity, cp: t.toolCp ? Math.round(t.toolCp * (1 + (m.tier || 0) * 0.5)) : 0, type: t.type, mat: mid, value: Math.round(t.value * m.value), metal: mid, gen: true, ...(t.item || {}) }); // R40: tool templates carry item fields + cp
       if (!bases.has(id))
         d.crafting.recipes.push({
           id: `r_${id}`,

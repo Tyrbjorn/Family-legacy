@@ -29,7 +29,7 @@ export function raiseBranch(s, b) {
 export const toggleKeepJob = mi => (mi.keepJob = !mi.keepJob);
 export const titleSlots = c => (c.needs && AA().slots[c.needs.tier]) || Infinity;
 
-const pool = s => (s.minions || []).filter(mi => !mi.special && !mi.keepJob);
+const pool = s => (s.minions || []).filter(mi => !mi.special && !mi.keepJob && mi.job !== "teamster"); // R40: teamsters only haul
 // building requirement met? (a would-be follower with any level/skill)
 const buildingOk = (s, c) => !minionEvolveIssue(s, { cls: c.from, lvl: 99, skills: Object.fromEntries(keyJobs(c).map(j => [j, 1e9])) }, c.id);
 export const score = (mi, c) =>

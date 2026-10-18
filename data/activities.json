@@ -187,13 +187,16 @@
    "farming"
   ],
   "tier": "basic",
-  "desc": "Hoe, weed and harvest the crop fields",
+  "desc": "Hoe, weed and harvest: 8 h/day of field tending (others in the family help 1 h)",
   "unlock": [
    {
     "piece": "furrows"
    },
    {
     "piece": "fruittrees"
+   },
+   {
+    "fields": true
    }
   ],
   "yields": {

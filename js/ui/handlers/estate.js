@@ -5,6 +5,13 @@ import { s } from "../../main.js";
 // Click actions for the estate area. ctx = { v, w, b, m } from the clicked element.
 export const estateActions = ({ v, b, m }) => ({
   build: () => E.build(s, v),
+  fieldbuild: () => E.buildField(s, v), // R40 fields
+  fieldlvl: () => E.levelField(s, v),
+  fieldsize: () => E.sizeUp(s, v),
+  fieldsmall: () => E.sizeDown(s, v),
+  fieldtoggle: () => E.toggleField(s, v),
+  fieldsauto: () => E.setFieldsAuto(s, v),
+  hubup: () => E.buyHubUp(s, v),
   struct: () => E.buildStructure(s, v),
   upstruct: () => E.upgradeStructure(s, v, b.dataset.w),
   respec: () => E.respecStructure(s, v, b.dataset.w),

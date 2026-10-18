@@ -1,4 +1,5 @@
 import { refundV37 } from "./legacy.js";
+import { migrateFields } from "./fields.js";
 import { talentMigrate } from "./talents.js";
 import { leanMigrate } from "./apprentice.js";
 import { learnDishes } from "./cooking.js";
@@ -588,6 +589,14 @@ export const STEPS = [
     name: "R37 free automation: full refund of renown spent on Auto Tend / Family Auto / Steward's Ledger to banked renown; old upgrade keys cleared; Matchmaker off unless it was bought; quotas beyond 2 slots pause",
     run(s) {
       refundV37(s);
+    },
+  },
+  {
+    n: 38,
+    once: true,
+    name: "R40 per-crop fields: old Farm/Garden plain food becomes a Kitchen Plot (>= 90% of the old food), Farm 3+ adds a Wheat Field, old Crop Fields become one field per crop; Farm/Garden kept for follower spots and storage",
+    run(s) {
+      migrateFields(s);
     },
   },
 ];

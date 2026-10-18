@@ -10,7 +10,7 @@
    "id": "farm",
    "name": "Farming",
    "icon": "🌾",
-   "desc": "+food per day; spots from Farm (2/lv) and Garden (1/lv)"
+   "desc": "Tends your fields (8 h/day); spare hours make food; spots from Farm (2/lv), Garden (1/lv) and Farmstead bunkhouses"
   },
   {
    "id": "gather",
@@ -95,6 +95,12 @@
    "name": "Road patrol",
    "icon": "🛡️",
    "desc": "Patrolling a trade road (set in Trade)"
+  },
+  {
+   "id": "teamster",
+   "name": "Teamster",
+   "icon": "🛒",
+   "desc": "Hauls field harvest into storage, nothing else; spots from the Farmstead (1) and Cart Shed upgrades"
   }
  ],
  "types": [

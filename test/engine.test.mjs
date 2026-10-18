@@ -1,6 +1,6 @@
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
-const D={};for(const n of ['skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
+const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','phases','intros','gear','paths','world','metals'])D[n]=L(n);
 // legacy suite pins the pre-pacing tuning (pacing has its own test: test/pacing.test.mjs)
 Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,courtAge:18,xpBase:50,xpGrowth:1.12,turboCapMin:60,buildCostMult:2.2,childEvery:720,adultAge:16,teenAge:14});D.guilds.minJoinAge=16;
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
@@ -554,7 +554,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,trade,village','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,fields,trade,village','day hooks registered in order');
 }
 
 // Polish-pass bug fixes
@@ -589,8 +589,8 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  Object.assign(C.res,{wheat:40,barley:20,milk:20,meat:10,vegetables:20,thyme:10,salt:10,berries:20,honey:10,eggs:10}); C.foodQ={wheat:1.4};
  for(let i=0;i<3;i++) E.processDay(C); ok(C.foodQ.flour>0&&['bread','porridge','stew','cheese','butter','smokedmeat','preserves'].every(k=>C.res[k]>0),'mill → bake → cook chains all run');
  ok(C.foodQ.flour>1.3&&C.foodQ.bread>C.foodQ.flour,'quality flows through the chain (farmer → flour → bread)');
- const Fm=E.newGame(t0); E.normalize(Fm); estate(Fm,['furrows'],'fields'); Fm.members[0].ageDays=20*360; Fm.members[0].skills.farming.lvl=50; Fm.day=Math.floor(D.tuning.daysPerYear*0.6); E.processDay(Fm); ok(Fm.res.wheat>0&&Fm.foodQ.wheat>1.2,'fields grow crops; farming raises crop quality');
- const Fw=E.newGame(t0); E.normalize(Fw); estate(Fw,['furrows'],'fields'); Fw.day=Math.floor(D.tuning.daysPerYear*0.8); E.processDay(Fw); ok(Fw.res.wheat<Fm.res.wheat*0.5,'winter crop yields are low');
+ const Fm=E.newGame(t0); E.normalize(Fm); estate(Fm,['furrows'],'fields'); Fm.members[0].ageDays=20*360; Fm.members[0].skills.farming.lvl=50; Fm.day=Math.floor(D.tuning.daysPerYear*0.6); E.fieldsState(Fm).list.push({id:'fw',crop:'wheat',lvl:1,size:0,auto:true}); E.fieldsDay(Fm); /* R40: crops grow in fields */ ok(Fm.res.wheat>0&&Fm.foodQ.wheat>1.2,'fields grow crops; farming raises crop quality');
+ const Fw=E.newGame(t0); E.normalize(Fw); estate(Fw,['furrows'],'fields'); Fw.day=Math.floor(D.tuning.daysPerYear*0.8); Fw.members[0].ageDays=20*360; E.fieldsState(Fw).list.push({id:'fw',crop:'wheat',lvl:1,size:0,auto:true}); E.fieldsDay(Fw); Fw.res.wheat=(Fw.res.wheat||0)+(E.fieldsState(Fw).pile.wheat||0); Fm.res.wheat+=E.fieldsState(Fm).pile.wheat||0; ok(Fw.res.wheat<Fm.res.wheat*0.5,'winter crop yields are low');
  // market + migration
  const M=E.newGame(t0); M.res.coin=1000; ok(E.buyRes(M,'millbrook','salt',10)&&M.res.salt===10&&M.res.coin<1000,'towns sell salt'); ok(!E.buyRes(M,'millbrook','moonpetal',1),'only market goods can be bought');
  ok(E.townBuyPrice(M,'millbrook','salt')>E.townSellPrice(M,'millbrook','salt'),'buy price above sell price');

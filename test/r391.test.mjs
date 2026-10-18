@@ -5,7 +5,7 @@ for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]
 for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFileSync(R+'structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const store=()=>{const m=new Map();return{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(k,String(v)),removeItem:k=>m.delete(k),_m:m};};
-ok(BUILD==='R39.1','build R39.1');
+ok(/^R\d/.test(BUILD),'build set');
 ok(D.testers.tokens.length===5&&D.testers.tokens.map(t=>t.token).join()==='tester1,tester2,tester3,tester4,tester5','5 placeholder tokens');
 ok(fs.readFileSync(new URL('../js/main.js',import.meta.url),'utf8').includes('"testers"'),'testers.json loaded via names list');
 // link turns pass on, stored in its own key
@@ -29,7 +29,7 @@ ok(fs.readFileSync(new URL('../js/main.js',import.meta.url),'utf8').includes('"t
   ok(L.every(e=>e.items.every(i=>!/\b(js|json|function|undefined)\b/.test(i))),'plain language (no code words)');
   const st=store(); ok(E.whatsNewDue(st,BUILD,false),'existing player: due'); ok(E.whatsNewEntries(st).length===L.length,'unknown last build: all entries');
   E.markWhatsNewSeen(st,BUILD); ok(!E.whatsNewDue(st,BUILD,false),'shown once per update');
-  st.setItem(E.SEEN_KEY,'R38'); ok(E.whatsNewDue(st,BUILD,false)&&E.whatsNewEntries(st).map(e=>e.build).join()==='R39.1,R39','only entries since last seen');
+  st.setItem(E.SEEN_KEY,'R38'); ok(E.whatsNewDue(st,BUILD,false)&&E.whatsNewEntries(st).map(e=>e.build).join()===L.slice(0,L.findIndex(e=>e.build==='R38')).map(e=>e.build).join(),'only entries since last seen');
   ok(E.whatsNewEntries(st,true).length===L.length,'reopen shows all');
   const f=store(); ok(!E.whatsNewDue(f,BUILD,true)&&f.getItem(E.SEEN_KEY)===BUILD,'brand-new player skips it'); }
 // release channel: Dev Mode locked off, tester links still work
