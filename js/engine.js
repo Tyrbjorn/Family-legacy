@@ -29,6 +29,7 @@ export * from "./engine/food.js";
 export * from "./engine/houses.js";
 export * from "./engine/war.js";
 export * from "./engine/requests.js";
+export * from "./engine/fish.js";
 export * from "./engine/intros.js";
 export * from "./engine/gear.js";
 export * from "./engine/geartypes.js";

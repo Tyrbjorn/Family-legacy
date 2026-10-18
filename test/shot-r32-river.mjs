@@ -1,0 +1,12 @@
+const {chromium}=await import(process.env.PW_CORE||'/usr/local/lib/pnpm/5/.pnpm/playwright-core@1.59.1/node_modules/playwright-core/index.mjs');
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const p=await (await b.newContext({viewport:{width:470,height:900},deviceScaleFactor:2})).newPage();
+const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.goto('http://localhost:8080/');await p.waitForFunction(()=>window.__game);await p.evaluate(()=>localStorage.clear());await p.reload();await p.waitForTimeout(2000);
+await p.evaluate(()=>{const g=__game;g.s.tut.skipped=true;g.E.revealAt(g.s,'q_river',100);});
+await p.evaluate(()=>[...document.querySelectorAll('#tabs button')].find(x=>/Map/.test(x.textContent)).click());await p.waitForTimeout(800);
+await p.evaluate(()=>{const e=document.querySelector('#worldmap g[data-v="q:q_river"]')||[...document.querySelectorAll('#worldmap g[data-v^="g:"]')].find(x=>x.dataset.v.includes('q_river'));e.dispatchEvent(new MouseEvent('click',{bubbles:true}));});await p.waitForTimeout(800);
+await p.evaluate(()=>{const b=document.querySelector('#mapdetail [data-a=mapsel][data-v="q:q_river"]');b&&b.click();});await p.waitForTimeout(800);
+await p.evaluate(()=>{for(const q of ['#dock','#tabs','#toasts'])for(const e of document.querySelectorAll(q))e.style.display='none';document.querySelector('#mapdetail').scrollIntoView({block:'center'});});await p.waitForTimeout(300);await p.evaluate(()=>{for(const e of document.querySelectorAll('*')){const c=getComputedStyle(e);if((c.position==='fixed'||c.position==='sticky')&&!e.closest('#mapdetail'))e.style.display='none';}});
+await p.waitForTimeout(200);const buf=await p.evaluate(()=>{const r=document.querySelector('#mapdetail').getBoundingClientRect();return {x:r.x+scrollX,y:r.y+scrollY,width:r.width,height:r.height};});await p.screenshot({path:'/workspace/fl-screenshots/r32-river-card.png',clip:buf,fullPage:true});
+console.log('errors',errs);await b.close();

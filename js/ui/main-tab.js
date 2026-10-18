@@ -82,7 +82,19 @@ function actRow(m, ac, task) {
   const why = task ? E.taskLock(s, m, ac) : !E.activityOk(s, m, ac) ? (age < ac.minAge ? `age ${ac.minAge}+` : E.activityReq(ac)) : "";
   const on = a && a.type === "activity" && a.target === ac.id;
   const gains = `${Object.entries(ac.stats).map(([k, v]) => `+${k}`).join(", ")} · ${ac.skills.map(k => "+" + sk(k).name).join(", ")}`;
-  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${ac.icon} <b>${ac.name}</b>${ac.signature ? ' <span class="pill" title="Class/guild exclusive">⭐ signature</span>' : ""}<br><span class="muted">${task ? `<b>${yieldStr(ac)}</b> · ` : `<b>${{ basic: "Basic", advanced: "Advanced", master: "Master" }[ac.tier] || ""}</b> · `}${gains}${why ? " · 🔒 " + why : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="activity" data-v="${ac.id}" ${why ? "disabled" : ""}>Do</button></div>`;
+  const fishUi = task && ac.id === "fishing" && D.fish ? fishPicker() : "";
+  return `<div class="card" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${ac.icon} <b>${ac.name}</b>${ac.signature ? ' <span class="pill" title="Class/guild exclusive">⭐ signature</span>' : ""}<br><span class="muted">${task ? `<b>${yieldStr(ac)}</b> · ` : `<b>${{ basic: "Basic", advanced: "Advanced", master: "Master" }[ac.tier] || ""}</b> · `}${gains}${why ? " · 🔒 " + why : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="activity" data-v="${ac.id}" ${why ? "disabled" : ""}>Do</button></div>${fishUi}</div>`;
+}
+// R32: fishing spot picker (Auto picks the best open spot) + what is landing + species in store
+function fishPicker() {
+  const cur = E.fishSpot(s), pick = s.fishSpot || "auto";
+  const chip = (id, label, iss) => `<button class="b ${pick === id ? "sel" : ""}" style="font-size:12px;padding:3px 8px" data-a="fishspot" data-v="${id}" ${iss ? `disabled title="${iss}"` : ""}>${label}${iss ? " 🔒" : ""}</button>`;
+  const spots = E.FD().spots.filter(sp => !sp.future || true);
+  const chips = chip("auto", "✨ Auto") + spots.filter(sp => !sp.future).map(sp => chip(sp.id, `${sp.icon} ${sp.name.split(" ")[0]}`, E.spotIssue(s, sp))).join("");
+  const tbl = E.catchTable(s, cur.id).sort((a, b) => b.p - a.p).map(r => `${r.f.icon} ${r.f.name} ${Math.round(r.p * 100)}%`).join(" · ");
+  const locked = spots.map(sp => [sp, E.spotIssue(s, sp)]).filter(([, i]) => i).map(([sp, i]) => `${sp.icon} ${sp.name}: ${i}`).join(" · ");
+  const mix = E.fishMix(s).map(x => `${x.f.icon}${x.n} ${x.f.name}`).join(", ");
+  return `<div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">${chips}</div><div class="muted" style="font-size:12px;margin-top:3px">Fishing at <b>${cur.icon} ${cur.name}</b>: ${tbl}${locked ? `<br>🔒 ${locked}` : ""}${mix ? `<br>In store: ${mix} · sells ×${E.fishPriceMult(s).toFixed(2)}` : ""}</div>`;
 }
 // R31: Tasks (resources) first, then a collapsed Training list (XP). Jobs (coin) live in Work → Jobs.
 export function activities(m) {

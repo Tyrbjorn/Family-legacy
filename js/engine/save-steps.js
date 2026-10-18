@@ -533,6 +533,15 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 32,
+    once: true,
+    name: "R31.3 fishing spots: spot choice (Auto) and an empty species record; fish already in store count as Creek Fish",
+    run(s) {
+      s.fishSpot = s.fishSpot || "auto";
+      s.fishBag = s.fishBag || {};
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

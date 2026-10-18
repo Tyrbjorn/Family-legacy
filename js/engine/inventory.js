@@ -1,3 +1,4 @@
+import { fishPriceMult } from "./fish.js";
 import { isHeld } from "./holds.js";
 import { reqDiscount } from "./requests.js";
 import { inlaidDef } from "./inlay.js";
@@ -99,7 +100,7 @@ export const townSellPrice = (s, townId, res) => {
   const t = D.towns.find(x => x.id === townId);
   return (
     Math.round(
-      t.prices[res] *
+      t.prices[res] * (res === "fish" ? fishPriceMult(s) : 1) * // R31.3: the species mix sets the fish price
         sellDemand(s, townId, res) * (1 + eff(s, "tradeSell")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * 100,
     ) / 100
   );

@@ -1,3 +1,4 @@
+import { fishFoodMult } from "./fish.js";
 import { fittingFx } from "./estate-pieces.js";
 import { ES, boughtUps, scaledPiece, specDef, structDef } from "./estate.js";
 import { hasService } from "./guilds.js";
@@ -15,7 +16,7 @@ export function pantry(s, need) {
     if (s.res.food >= need) break;
     const have = s.res[k] || 0;
     if (have <= 0) continue;
-    const val = v * (fq[k] || 1);
+    const val = v * (fq[k] || 1) * (k === "fish" ? fishFoodMult(s) : 1); // R31.3: better fish feed more
     const use = Math.min(have, (need - s.res.food) / val);
     s.res[k] -= use;
     s.res.food += use * val;

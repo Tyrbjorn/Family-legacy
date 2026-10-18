@@ -353,6 +353,11 @@
    {
     "id": "giant_pearl",
     "chance": 0.03
+   },
+   {
+    "id": "handcart",
+    "chance": 0.05,
+    "shown": true
    }
   ]
  },
@@ -905,7 +910,10 @@
    "vanguard_greatsword"
   ],
   "guild": "vanguard",
-  "rank": 2
+  "rank": 2,
+  "firstGrants": {
+   "item": "wagon"
+  }
  },
  {
   "id": "b_boars",
@@ -938,7 +946,14 @@
   },
   "skill": "swordsmanship",
   "loot": [],
-  "adv": 2
+  "adv": 2,
+  "rare": [
+   {
+    "id": "smallboat",
+    "chance": 0.05,
+    "shown": true
+   }
+  ]
  },
  {
   "id": "b_wyvern",
@@ -1045,7 +1060,12 @@
   "skill": "sailing",
   "loot": [],
   "unlocks": "activity:fishing",
-  "once": true
+  "once": true,
+  "grants": {
+   "item": "smallboat"
+  },
+  "desc": "A fisherman's skiff has fouled the Millbrook weir. Clear it and he gives you the little boat. With a boat you can fish deep water for bigger catches, and trips can cut across lakes. A clear weir also means more fish (+50% from Fish).",
+  "tip": "With a boat you can fish deep water for bigger catches (pick Deep or Auto under Fish), and trips can cut across lakes. No Dock needed."
  },
  {
   "id": "q_hermit",
@@ -1573,7 +1593,14 @@
   "skill": "leadership",
   "loot": [],
   "house": "corran",
-  "desc": "Guard House Corran's ore on the road."
+  "desc": "Guard House Corran's ore on the road.",
+  "rare": [
+   {
+    "id": "handcart",
+    "chance": 0.05,
+    "shown": true
+   }
+  ]
  },
  {
   "id": "hq_corran_poach",
@@ -1607,7 +1634,14 @@
   "skill": "sailing",
   "loot": [],
   "house": "marlowe",
-  "desc": "Fish a sunken barge's cargo out of the river."
+  "desc": "Fish a sunken barge's cargo out of the river.",
+  "rare": [
+   {
+    "id": "wagon",
+    "chance": 0.05,
+    "shown": true
+   }
+  ]
  },
  {
   "id": "hq_marlowe_undercut",

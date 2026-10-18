@@ -18,6 +18,7 @@ export const mapActions = ({ v, w, b, m }) => ({
   },
   qfilter: () => (U.qFilter = v),
   deliver: () => E.deliverRequest(s, v),
+  fishspot: () => E.setFishSpot(s, v),
   hidelocked: () => (s.hideLocked = s.hideLocked === false),
   market: () => {
     U.mapSel = "t:" + E.marketTown(s, E.active(s));

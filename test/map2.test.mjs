@@ -26,7 +26,7 @@ for(const id of ['silverseam','n_gemvein','n_lake']){const n=D.nodes.find(x=>x.i
  ok(lakeIds.length>0,'with a boat some routes cross a lake and get shorter');
  E.setBoatAccess(true); ok(ids.every(id=>{const pb=E.pathBetween(M.home,E.ptOf(id));return !pb.samples.some(p=>E.terrainAt(p.x,p.y)==='mountains');}),'even with a boat, routes never cross mountains'); E.setBoatAccess(false);
  ok(!E.hasBoat(s),'no boat at start');
- s.vault.push('c|smallboat|crude'); ok(!E.hasBoat(s),'a boat without a Dock does nothing');
+ s.vault.push('c|smallboat|crude'); ok(E.hasBoat(s),'R32: a boat alone crosses lakes (no Dock)');
  s.structures.push({uid:'d1',type:'dock',pieces:['boatslip'],up:0}); ok(E.hasBoat(s),'boat + Dock = lake crossing');
  E.advanceReal(s,10); ok(E.boatAccess(),'the day tick turns boat routing on');
  const rc=E.recipeDef('r_smallboat'); ok(rc&&rc.line==='carpenter'&&rc.needsStruct==='dock'&&rc.station==='workbench','Small Boat is a Carpenter recipe that needs a Dock');

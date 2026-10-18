@@ -1,0 +1,22 @@
+{
+ "_note": "R31.3 fishing spots. The Fish task lands fish at one spot; every species counts as plain `fish` (s.res.fish holds the total, so cooking, smoking, food and requests take any fish), while s.fishBag records how many of them are which species. A better mix makes fish sell for more and feed more. Expansions add species/spots/rare rows here, no engine change.",
+ "skillPerLvl": 0.01,
+ "skillCap": 60,
+ "spots": [
+  {"id": "shore", "name": "Shore", "icon": "🏞️", "desc": "Riverbank and lake edge. Anyone can fish here.", "needs": {}},
+  {"id": "deep", "name": "Deep water", "icon": "🛶", "desc": "Out on Mirrormere and the wide pools, from your boat.", "needs": {"item": "smallboat", "text": "a Small Boat"}},
+  {"id": "seashore", "name": "Sea shore", "icon": "🌊", "desc": "The jetty and rocks at Gull's Landing.", "needs": {"location": "l_gullport", "text": "finding Gull's Landing"}},
+  {"id": "deepsea", "name": "Deep sea", "icon": "⛵", "desc": "Offshore from the Saltmere Coast (coming later).", "needs": {"item": "seaboat", "text": "a sea-going boat (later)"}, "future": true}
+ ],
+ "species": [
+  {"id": "fish", "name": "Creek Fish", "icon": "🐟", "tier": "common", "value": 2, "food": 1.5, "spots": {"shore": 60, "deep": 25, "seashore": 20}},
+  {"id": "perch", "name": "Perch", "icon": "🐟", "tier": "common", "value": 3, "food": 1.5, "spots": {"shore": 30, "deep": 15}},
+  {"id": "eel", "name": "River Eel", "icon": "🐍", "tier": "uncommon", "minLvl": 3, "value": 6, "food": 2, "spots": {"shore": 10, "deep": 20}},
+  {"id": "pike", "name": "Pike", "icon": "🐠", "tier": "uncommon", "minLvl": 5, "value": 8, "food": 2.5, "spots": {"deep": 25}},
+  {"id": "trout", "name": "Mirror Trout", "icon": "🎏", "tier": "rare", "minLvl": 10, "value": 15, "food": 3, "spots": {"deep": 10}},
+  {"id": "herring", "name": "Herring", "icon": "🐟", "tier": "common", "value": 3, "food": 1.5, "spots": {"seashore": 70}},
+  {"id": "cod", "name": "Saltmere Cod", "icon": "🐡", "tier": "uncommon", "minLvl": 5, "value": 10, "food": 3, "spots": {"deepsea": 40}},
+  {"id": "sturgeon", "name": "Sturgeon", "icon": "🦈", "tier": "veryrare", "minLvl": 25, "value": 40, "food": 4, "spots": {"deep": 1.5, "deepsea": 3}}
+ ],
+ "rare": {"deep": [{"id": "giant_pearl", "chance": 0.003}], "deepsea": [{"id": "giant_pearl", "chance": 0.006}]}
+}

@@ -21,8 +21,14 @@ export function qKind(q) {
 }
 
 export function rareLine(src) {
-  if (!src.rare) return "";
-  return `<div class="muted">🌟 Rare drops: ${src.rare.map(d => (E.dropFound(s, d.id) ? `<b>${E.dropName(d.id)}</b> (${d.chance * 100}%)` : "???")).join(", ")}</div>`;
+  // R31.3: themed vehicle drops (rare entries marked shown) and first-clear rewards are always listed by name
+  const veh = (src.rare || []).filter(d => d.shown).map(d => `<b>${E.dropName(d.id)}</b> (${Math.round(d.chance * 100)}%)`);
+  const gu = src.grants && src.grants.item ? `<b>${E.dropName(src.grants.item)}</b> (guaranteed)` : "";
+  const fg = src.firstGrants && src.firstGrants.item ? `<b>${E.dropName(src.firstGrants.item)}</b> (first clear${(s.doneQuests || []).includes(src.id) ? ", claimed" : ""})` : "";
+  const extra = [...veh, gu, fg].filter(Boolean).length ? `<div class="muted">🎁 Loot: ${[...veh, gu, fg].filter(Boolean).join(", ")}</div>` : "";
+  const rs = (src.rare || []).filter(d => !d.shown);
+  if (!rs.length) return extra;
+  return extra + `<div class="muted">🌟 Rare drops: ${rs.map(d => (E.dropFound(s, d.id) ? `<b>${E.dropName(d.id)}</b> (${d.chance * 100}%)` : "???")).join(", ")}</div>`;
 }
 
 export function routeLine(id, pt) {
@@ -61,7 +67,7 @@ export function haulCard() {
   const towns = D.towns.filter(x => E.townKnown(s, x)).map(x => x.id);
   return `<div class="card"><b>${t.icon || "🎒"} Hauling</b> <span class="muted">· ${t.name} · carry ${t.carry}/trip · haul speed ×${t.haulSpeed}</span>
  <div class="muted">Tiers: ${[H.base, ...H.tiers].map(x => `${x.icon || "🎒"} ${x.name} ${x.carry}`).join(" → ")}. Carts and wagons are made by a Cooper &amp; Wainwright (Carpenter); animals need feed and a stable stall. A wagon with no animal is pulled by hand (half cargo, ×${D.world.haul.wagonNoAnimal.haulSpeed} speed).</div>
- <div class="muted">🛶 Boats: ${E.hasBoat(s) ? "a Small Boat at your Dock: routes cross lakes" : "build a Dock, then a Carpenter can make a Small Boat; with one, routes cross lakes instead of going around. Mountains always need a detour."}</div>
+ <div class="muted">🛶 Boats: ${E.hasBoat(s) ? "you have a Small Boat: routes cross lakes and Fish can work deep water" : "a Small Boat (River quest, or a Carpenter with a Dock) lets routes cross lakes instead of going around. Mountains always need a detour."}</div>
  <div class="muted">🐴 Animals ${an}/${st} stalls${an ? (s.animalsFed === false ? " · ⚠️ unfed" : " · fed") : ""}</div>${feedLine()}
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${Object.entries(H.animals)
    .map(([id, a]) => {
@@ -122,9 +128,9 @@ export function mapDetail(m) {
   <div class="muted">CP ${q.cp} · task ${q.days}d · 🚶 ${trav} · reward ${Object.entries(q.reward)
     .map(([k, v]) => v + (RI[k] || k))
     .join(" ")}${
-    q.grants
+    q.grants && Object.keys(q.grants).some(k => k !== "item")
       ? " · 🎁 " +
-        Object.entries(q.grants)
+        Object.entries(q.grants).filter(([k]) => k !== "item") // items show as "(guaranteed)" on the Loot line
           .map(([k, v]) =>
             k === "item"
               ? E.itemDef(v).name

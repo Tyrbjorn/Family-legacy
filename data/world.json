@@ -1180,14 +1180,13 @@
   "skillLvl": 6
  },
  "routing": {
-  "_note": "Mountains and lakes are impassable. A route checks points along its line (at least `samples`, one per `step` px); each blocked stretch adds a detour point just past that zone's edge, on the shorter side, up to maxDetours. A small boat kept at a Dock lets routes cross lakes. Larger ships (Port + Shipyard, coast/sea) are a later hook: add a terrain flag `ship` and a ship item the same way.",
+  "_note": "Mountains and lakes are impassable. A route checks points along its line (at least `samples`, one per `step` px); each blocked stretch adds a detour point just past that zone's edge, on the shorter side, up to maxDetours. R32: owning a Small Boat lets routes cross lakes (no Dock needed); the Dock is where boats are built and, later, where bigger ships berth. Larger ships (Port + Shipyard, coast/sea) are a later hook: add a terrain flag `ship` and a ship item the same way.",
   "samples": 8,
   "step": 37.5,
   "margin": 27.0,
   "maxDetours": 2,
   "boat": {
    "item": "smallboat",
-   "structure": "dock",
    "speed": 1.0
   }
  },

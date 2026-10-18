@@ -52,6 +52,7 @@ export function resolveQuest(s, m, q, eff) {
   const firstDone = !s.doneQuests.includes(q.id);
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   gain.push(...grantRewards(s, m, q));
+  if (firstDone && q.tip) log(s, "💡 " + q.tip); // R31.3: teaching tip on the first clear (e.g. the River boat)
   if (firstDone && q.firstGrants) gain.push(...grantRewards(s, m, { ...q, grants: q.firstGrants })); // R31.2: first-clear rewards
   const mp = mapDrop(s, q, firstDone);
   if (mp) gain.push(itemDef(mp).name);

@@ -1,6 +1,7 @@
 // Auto Tend (Legacy upgrades at_<cat>): a skill keeps working with nobody assigned, at 50% (tier 1) / 75% (tier 2)
 // of a hand-worked day. It repeats the last activity / recipe / gathering spot the family used in that skill.
 import { taskYields } from "./requests.js";
+import { landFish } from "./fish.js";
 import { LG, legacyTier, legacyValue, resGain } from "./legacy.js";
 import { craftItem, recipeDef, recipeIssue } from "./inventory.js";
 import { gatherInto, newTrip } from "./map.js";
@@ -70,7 +71,7 @@ export function autoTendDay(s) {
     if (!t) continue;
     if (t.kind === "activity") {
       const ac = D.activities.find(x => x.id === t.id);
-      for (const [res, v] of Object.entries(taskYields(s, ac))) s.res[res] = (s.res[res] || 0) + v * r;
+      for (const [res, v] of Object.entries(taskYields(s, ac))) res === "fish" && ac.id === "fishing" ? landFish(s, v * r) : (s.res[res] = (s.res[res] || 0) + v * r);
     } else if (t.kind === "gather") {
       const n = D.nodes.find(x => x.id === t.id),
         trip = { load: {}, cap: Infinity };

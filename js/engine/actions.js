@@ -21,6 +21,7 @@ import {
 import { minionPower } from "./minions.js";
 import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
 import { refineDay, taskYields } from "./requests.js";
+import { landFish } from "./fish.js";
 import { exploreDay } from "./map.js";
 import { activityOk, canTrain, gainXp, jobOk, themedFor } from "./skills.js";
 import { D, T, active, ageY, furn, isAdult, known, log } from "./state.js";
@@ -89,7 +90,7 @@ export const ACTIONS = {
     }
     for (const [k, v] of Object.entries(ac.stats)) m.stats[k] += v * eff;
     for (const k of ac.skills) if (canTrain(m, k, s, true)) gainXp(s, m, k, T.xpPerDay * 0.6 * eff);
-    for (const [k, v] of Object.entries(taskYields(s, ac))) s.res[k] = (s.res[k] || 0) + v * eff;
+    for (const [k, v] of Object.entries(taskYields(s, ac))) k === "fish" && ac.id === "fishing" ? landFish(s, v * eff, m) : (s.res[k] = (s.res[k] || 0) + v * eff);
     if (ac.effect === "explore") exploreDay(s, m, eff);
     let did = !!(ac.yields || ac.effect);
     if (ac.refine) did = refineDay(s, ac, eff);

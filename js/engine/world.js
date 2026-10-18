@@ -291,10 +291,10 @@ export function worldDay(s, seasonStart, seasonId) {
   locationsDay(s);
 }
 
-// ---- boats: a Small Boat kept at a Dock lets routes cross lakes (routing.boat)
+// ---- boats: R32 a Small Boat alone lets routes cross lakes (routing.boat); the Dock is for building boats and later ships
 export function hasBoat(s) {
   const b = (WD().routing || {}).boat;
-  return !!b && (s.structures || []).some(st => st.type === b.structure) && ownsVehicle(s, b.item).length > 0;
+  return !!b && (!b.structure || (s.structures || []).some(st => st.type === b.structure)) && ownsVehicle(s, b.item).length > 0;
 }
 
 // ---- R30 quadrant maps (data/map.json quadrantMaps): sold by each town for its own quarter of the world
