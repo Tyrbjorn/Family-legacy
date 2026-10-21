@@ -1,4 +1,5 @@
-import { dagonDay } from "./dagon.js";
+import { addMinion } from "./minions.js";
+import { dagonDay, hatchDay } from "./dagon.js";
 import { ramsDay } from "./highlands.js";
 import { animalCount, stalls } from "./world.js";
 import { memberSnap, memberPwdCheck } from "./pausedone.js";
@@ -256,7 +257,7 @@ for (const [n, f] of [
   ["members", membersDay],
   ["generations", generationsDay],
   ["rams", s => ((s._stallsFree = stalls(s) - animalCount(s)), ramsDay(s), delete s._stallsFree)], // R51 mountain rams breed
-  ["dagon", dagonDay], // R53 the Old Bargain
+  ["dagon", s => (dagonDay(s), hatchDay(s, addMinion))], // R53 the Old Bargain; R54 Deep One eggs
 ])
   registerDayHook(n, f);
 

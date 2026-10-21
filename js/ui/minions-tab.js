@@ -109,6 +109,8 @@ export function minionsv() {
           `<div class="muted">${j.icon} ${j.name}${j.needs ? ` (needs ${E.findId(D.buildings, j.needs).name})` : ""}: ${j.desc} · assigned ${s.minions.filter(x => x.job === j.id).length}</div>`,
       )
       .join("");
+  if ((s.res.deepegg || 0) >= 1 || s.hatch) // R54 Deep One eggs: hatch (or sell one at market)
+    h += `<h3>🥚 Deep One eggs</h3><div class="card"><div class="muted">${s.hatch ? `Hatching: ${Math.max(0, s.hatch.due - s.day)} days left${s.hatch.clean ? "" : " · the Lodge may not like it"}` : `You have ${Math.floor(s.res.deepegg)}. Sell them at market, or hatch one (${E.EGG.days} days, −${E.EGG.churchCost} Healers' Guild rep) into a Young Deep One follower.${E.hatchClean(s) ? " The Lodge blesses it." : " Without the Lodge's blessing it may hatch badly, and they will be angry."}`}</div>${s.hatch ? "" : `<button class="b" data-a="hatchegg" ${E.hatchIssue(s) ? "disabled" : ""}>🥚 Hatch an egg</button>`}</div>`;
   h += `<h3>Hire</h3>`;
   for (const t of D.towns.filter(t => E.regionOpen(s, t.region) && E.townKnown(s, t)))
     h +=

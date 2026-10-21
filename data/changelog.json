@@ -2,6 +2,19 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R54",
+   "title": "Mother's Pool",
+   "items": [
+    "🚪 The Deep Door opens once you have cleared the Old Deeps and made your choice in Saltmere. Behind it, Mother's Pool: Mother Hydra.",
+    "🌊 How she meets you depends on the Lodge of the Drowned Light: peaceful if you joined or are Allied, tested if you struck a bargain or are Neutral/Friendly, violent if you exposed them, broke the bargain or are Cold. She judges you when you enter, so it can change. After an expose, trust only counts once the two-year price penalty is over.",
+    "🙏 Peaceful: an audience. Her blessing (+15% fishing, reef-gold sells for 10% more), 20 pearls, 30 renown, but she calls her children home more often (35% a year instead of 25%).",
+    "🌀 Tested: the Trial of Tides, three checks, pass two. A Tide-Pearl inlay, 600 coin, +20 Lodge trust. Fail and you come back bruised; try again in 30 days.",
+    "🐙 Violent: Mother Hydra (power 200, deadly). Win the Hydra Scale (offhand, power 60), 60 renown and Healers' Guild favour, but Saltmere shuts its market to you for a year. Lose three times and the Old Deeps flood for a season. You may try until you win.",
+    "🦪 Once per family line. Peaceful and tested families get 5 pearls from the pool every year.",
+    "🥚 Deep One eggs: a rare trade good (220 coin, 150 in Saltmere). The fight with Mother Hydra leaves 2; the Trial sometimes gives 1 (25%); the Old Deeps' lower floors sometimes hold one (8% / 15%). Sell it, or hatch it at home (90 days, −50 Healers' Guild rep) into a Young Deep One follower: a superb fisher and a fair guard. Joined or Allied families hatch it cleanly; others risk a bad hatch (30%) and the Lodge's anger (−15 trust)."
+   ]
+  },
+  {
    "build": "R53",
    "title": "The Gilded Hall",
    "items": [

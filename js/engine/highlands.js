@@ -61,7 +61,7 @@ export function openGate(s) {
   return true;
 }
 // a location is locked until its `opensWith` quest is done
-export const locLocked = (s, l) => !!l && !!l.locked && !(l.opensWith && ((s && s.doneQuests) || []).includes(l.opensWith));
+export const locLocked = (s, l) => !!l && !!l.locked && !(l.opensWith && (((s && s.doneQuests) || []).includes(l.opensWith) || (s && s.flags && s.flags[l.opensWith] != null))); // R54 or a flag (the Deep Door)
 export const locName = (s, l) => (l.openName && !locLocked(s, l) && l.locked ? l.openName : l.name);
 export const locDesc = (s, l) => (l.openDesc && !locLocked(s, l) && l.locked ? l.openDesc : l.desc);
 

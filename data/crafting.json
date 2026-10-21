@@ -2081,6 +2081,12 @@
     "res": "runestone",
     "n": 2,
     "_note": "R52: a Runemaster carves a deeper rune from 2 rune stones"
+   },
+   "tidepearl": {
+    "name": "tide-pearl",
+    "value": 0.1,
+    "needs": "jeweler",
+    "_note": "R54: from the Trial of Tides. Like pearls, +10% value"
    }
   }
  }

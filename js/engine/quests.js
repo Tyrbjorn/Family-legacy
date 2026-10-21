@@ -1,3 +1,4 @@
+import { hydraDone, hydraFail, hydraIssue } from "./dagon.js";
 import { openGate, swearOath, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
 import { findId } from "./lookup.js";
@@ -34,6 +35,7 @@ export function resolveQuest(s, m, q, eff) {
   if (!ok) {
     log(s, `❌ ${m.name} failed ${q.name}.`);
     questInjury(s, m, q, false, minionPower(s, "guard") > 0);
+    if (q.hydra) hydraFail(s, q); // R54
     return;
   }
   // resource request quests: the goods are handed over at the end (kept if they ran short meanwhile)
@@ -72,6 +74,7 @@ export function resolveQuest(s, m, q, eff) {
   usurperQuestDone(s, q); // R50 House Crane
   if (q.opensGate) openGate(s); // R51 the Rune-Sealed Gate
   if (q.oath) swearOath(s); // R52 Oath of the Thane
+  if (q.hydra) hydraDone(s, m, q, injure, () => { for (const mg of guildsOf(m).filter(g => g.id === "church")) mg.rep += 100; if (!guildsOf(m).some(g => g.id === "church")) (s.guildFavour ||= {}).church = ((s.guildFavour || {}).church || 0) + 100; }); // R54
   if (firstDone && (q.id === "reef4" || q.chain === "gildedhall")) { // R53 the investigation opens step by step, whatever the Lodge thinks of you
     const nx = D.quests.find(x => x.chain === "gildedhall" && x.step === (q.chain === "gildedhall" ? q.step + 1 : 1));
     if (nx && !(s.revealed ||= []).includes(nx.id)) s.revealed.push(nx.id), log(s, "🔎 The Gilded Hall: a new lead in Saltmere, “" + nx.name + "”.");
@@ -118,6 +121,7 @@ export function dungeonRun(s, id) {
 export function questIssue(s, m, q) {
   if (!q) return "missing";
   if (!known(s, q)) return "hear a rumor or explore";
+  if (q.hydra) { const h = hydraIssue(s, q); if (h) return h; } // R54 Mother's Pool
   if (q.once && s.doneQuests.includes(q.id)) return "done";
   if (!regionOpen(s, q.region)) return "region locked";
   if (!questOk(m, q)) return "guild rank";
@@ -175,6 +179,7 @@ export function dungeonFloor(s, m, dg, i, t = {}) {
   if (!i && t.th.elite) log(s, `💀 An elite brood stirs in ${dg.name}.`);
   if (!dungeonFloorRun(s, m, dg, i, t)) return false;
   for (const [k, v] of Object.entries(f.reward)) s.res[k] = (s.res[k] || 0) + Math.round(v * (k === "coin" ? t.th.coin : 1));
+  if (f.drop && rng() < f.drop.chance) (s.res[f.drop.res] = (s.res[f.drop.res] || 0) + (f.drop.n || 1)), log(s, `🥚 ${m.name} found a ${f.drop.res === "deepegg" ? "Deep One egg" : f.drop.res} in ${f.name}.`); // R54
   log(s, `🗝️ ${m.name} cleared ${dg.name}: ${f.name} (${i + 1}/${dg.floors.length}).`);
   return true;
 }

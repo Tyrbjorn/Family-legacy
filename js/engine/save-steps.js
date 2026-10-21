@@ -734,6 +734,18 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 50,
+    name: "R54 Mother's Pool: a save that has cleared the Old Deeps and made its Saltmere choice finds the Deep Door open; the encounter is not played, nothing is given",
+    run(s) {
+      delete s.hydra;
+      if ((s.cleared || []).includes("d_olddeeps") && (s.choices || []).some(c => c.id === "dagon" && c.pick)) {
+        (s.flags ||= {}).deepDoor = s.day || 0;
+        for (const id of ["hy_audience", "hy_trial", "hy_fight"]) if (!(s.revealed ||= []).includes(id)) s.revealed.push(id);
+        if (!(s.discovered ||= []).includes("loc:l_deepdoor")) s.discovered.push("loc:l_deepdoor");
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

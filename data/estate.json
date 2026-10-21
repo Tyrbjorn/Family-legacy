@@ -2813,7 +2813,9 @@
    "crownstone",
    "crowncrest",
    "runestone",
-   "dwarfale"
+   "dwarfale",
+   "tidepearl",
+   "deepegg"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2926,7 +2928,9 @@
     "kelpfert",
     "mead",
     "runestone",
-    "dwarfale"
+    "dwarfale",
+    "tidepearl",
+    "deepegg"
    ]
   },
   "3": {

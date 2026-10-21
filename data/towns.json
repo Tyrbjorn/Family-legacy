@@ -76,7 +76,9 @@
    "kelpfert": 7,
    "mead": 11,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "rusty_sword",
@@ -208,7 +210,9 @@
    "kelpfert": 7,
    "mead": 11,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "iron_sword",
@@ -331,7 +335,9 @@
    "kelpfert": 7,
    "mead": 11,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "hunting_bow",
@@ -441,7 +447,9 @@
    "kelpfert": 7,
    "mead": 9,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "iron_sword",
@@ -572,7 +580,9 @@
    "kelpfert": 7,
    "mead": 12,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "fishnet",
@@ -688,7 +698,9 @@
    "kelpfert": 5,
    "mead": 12,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 60.0,
+   "deepegg": 150
   },
   "shop": [
    "reefgold_circlet",
@@ -803,7 +815,9 @@
    "kelpfert": 7,
    "mead": 9,
    "runestone": 30,
-   "dwarfale": 16
+   "dwarfale": 16,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [],
   "market": [
@@ -912,7 +926,9 @@
    "kelpfert": 7,
    "mead": 9,
    "runestone": 24,
-   "dwarfale": 22
+   "dwarfale": 22,
+   "tidepearl": 82.5,
+   "deepegg": 220
   },
   "shop": [
    "ramcart"

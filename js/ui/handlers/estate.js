@@ -92,6 +92,7 @@ export const estateActions = ({ v, b, m }) => ({
   unroom: () => E.removeRoom(s, +v),
   mevolve: () => E.evolveMinion(s, v, b.dataset.w),
   hire: () => E.hire(s, v, b.dataset.w),
+  hatchegg: () => E.hatchEgg(s, E.guildsOf), // R54
   dismiss: () => E.dismiss(s, v),
   mequip: () => E.equipMinion(s, v, b.dataset.w),
   munequip: () => E.unequipMinion(s, v, b.dataset.w),

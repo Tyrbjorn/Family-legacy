@@ -8,8 +8,8 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const Y=D.tuning.daysPerYear, Q=id=>D.quests.find(q=>q.id===id);
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;return s;};
-ok(BUILD==='R53'&&E.SCHEMA===49,'R53, save step 49');
-ok(D.changelog.entries[0].build==='R53','changelog R53');
+ok(+BUILD.slice(1)>=53&&E.SCHEMA>=49,'R53+, save step 49+');
+ok(D.changelog.entries.some(e=>e.build==='R53'),'changelog R53');
 const H=D.families.list.find(h=>h.id==='dagon');
 ok(H&&H.town==='saltmere'&&/Dagon/.test(H.known)&&H.thread.quests.length===5,'the Lodge is one group: the Order underneath');
 // outsiders
@@ -32,5 +32,5 @@ const pick=(id)=>{const s=base(); s.members.push({...s.members[0],id:'x2',alive:
 // save step
 { const s=base(); delete s.houses.dagon; s.choices=[{id:'reef',pick:'keep'}]; STEPS.find(x=>x.n===49).run(s); ok(s.houses.dagon.r===0,'step 49: kept → Neutral'); }
 { const s=base(); delete s.houses.dagon; STEPS.find(x=>x.n===49).run(s); ok(s.houses.dagon.r===-25&&!s.dagonPact,'step 49: Cold, nothing given'); }
-{ const s=base(); s.dagonPact='join'; const l=E.deserialize(E.serialize(s)); ok(l.schema===49&&l.dagonPact==='join','save/load keeps the pact'); }
+{ const s=base(); s.dagonPact='join'; const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA&&l.dagonPact==='join','save/load keeps the pact'); }
 console.log('r53 ok',pass);

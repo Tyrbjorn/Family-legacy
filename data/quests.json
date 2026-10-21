@@ -4477,5 +4477,89 @@
   "region": "saltcoast",
   "town": "saltmere",
   "loot": []
+ },
+ {
+  "type": "chain",
+  "hidden": true,
+  "act": 3,
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": [],
+  "req": {
+   "town": "dwarfhold"
+  },
+  "id": "hy_audience",
+  "name": "Mother's Pool: The Audience",
+  "hydra": "peaceful",
+  "once": true,
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "skill": "faith",
+  "reward": {
+   "coin": 0,
+   "pearls": 20
+  },
+  "grants": {
+   "renown": 30
+  },
+  "desc": "Behind the Deep Door, a black pool. She does not rise; her voice comes up through the water. She knows your family, and she is pleased. Mother Hydra blesses you: +15% fishing, and reef-gold sells for 10% more everywhere. She will call her children home a little more often."
+ },
+ {
+  "type": "chain",
+  "hidden": true,
+  "act": 3,
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": [],
+  "req": {
+   "town": "dwarfhold"
+  },
+  "id": "hy_trial",
+  "name": "Mother's Pool: The Trial of Tides",
+  "hydra": "tested",
+  "cp": 0,
+  "days": 3,
+  "risk": "risky",
+  "skill": "faith",
+  "reward": {
+   "coin": 0
+  },
+  "check": {
+   "skills": [
+    "faith",
+    "focus"
+   ],
+   "lvl": 25
+  },
+  "desc": "She rises halfway and asks three things of you: faith (Faith or Focus), the sea (Sailing or Fishing) and courtesy (Etiquette or Haggling). Pass two and she gives you a Tide-Pearl. Fail and she sends you back up, bruised, to try again in a month."
+ },
+ {
+  "type": "chain",
+  "hidden": true,
+  "act": 3,
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": [],
+  "req": {
+   "town": "dwarfhold"
+  },
+  "id": "hy_fight",
+  "name": "Mother Hydra",
+  "hydra": "violent",
+  "cp": 200,
+  "days": 4,
+  "risk": "deadly",
+  "skill": "swordsmanship",
+  "reward": {
+   "coin": 800
+  },
+  "grants": {
+   "renown": 60
+  },
+  "gives": [
+   "hydrascale"
+  ],
+  "desc": "The pool boils. Mother Hydra rises, vast and many-eyed, and she remembers what you did to her children. Win, and her scale is yours. Lose three times and the sea floods the Old Deeps for a season."
  }
 ]

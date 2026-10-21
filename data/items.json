@@ -1915,5 +1915,16 @@
   "value": 900,
   "noDrop": true,
   "desc": "A small gold idol from the deep: a crowned figure rising from the water. Too heavy for its size. Worth a fortune anywhere but Saltmere."
+ },
+ {
+  "id": "hydrascale",
+  "name": "Hydra Scale",
+  "slot": "offhand",
+  "rarity": "Legendary",
+  "cp": 60,
+  "value": 2000,
+  "noDrop": true,
+  "desc": "A scale from Mother Hydra herself, wide as a shield and harder than steel. Still wet.",
+  "type": "tower"
  }
 ]

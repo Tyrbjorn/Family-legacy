@@ -827,7 +827,8 @@
    "hidden": true,
    "locked": true,
    "stub": "underdark",
-   "desc": "A round door of black stone at the bottom of the Old Deeps, older than the dwarves. Carved fish-men kneel around a crowned figure rising from the water, and the same wave-and-eye sign is cut into the door that the fisherfolk of Saltmere scratch over their lintels. Beneath it, worn letters: FATHER. Salt water seeps under the seal. Thane Ironbrow will not speak of it. The Underdark: an expansion."
+   "desc": "A round door of black stone at the bottom of the Old Deeps, older than the dwarves. Carved fish-men kneel around a crowned figure rising from the water, and the same wave-and-eye sign is cut into the door that the fisherfolk of Saltmere scratch over their lintels. Beneath it, worn letters: FATHER. Salt water seeps under the seal. Thane Ironbrow will not speak of it. The Underdark: an expansion. Once your family has cleared the Old Deeps and made its choice in Saltmere, the door opens onto Mother's Pool.",
+   "opensWith": "deepDoor"
   },
   {
    "id": "l_dagonhall",

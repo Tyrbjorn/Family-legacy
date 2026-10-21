@@ -427,6 +427,11 @@
      "coin": 550,
      "mithrilore": 2,
      "runestone": 2
+    },
+    "drop": {
+     "res": "deepegg",
+     "chance": 0.08,
+     "n": 1
     }
    },
    {
@@ -438,7 +443,12 @@
      "mithrilore": 3,
      "runestone": 3
     },
-    "desc": "At the bottom: the Deep Door, sealed."
+    "desc": "At the bottom: the Deep Door, sealed.",
+    "drop": {
+     "res": "deepegg",
+     "chance": 0.15,
+     "n": 1
+    }
    }
   ],
   "loot": [

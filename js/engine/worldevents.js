@@ -1,3 +1,4 @@
+import { hydraShut } from "./dagon.js";
 import { findId } from "./lookup.js";
 import { gameFx } from "./difficulty.js";
 import { season, seasonEvents } from "./seasons.js";
@@ -80,7 +81,7 @@ export const gatherMult = (s, region) => prod(eventsInRegion(s, region), x => x.
 export const eventMult = (s, region, key) => prod(eventsInRegion(s, region), x => x[key] || 1);
 
 // R49 (Saltmere) a closed market (Lodge procession), reef fog on the coast fishing spots (+ an odd catch)
-export const marketClosed = (s, townId) => !!s && eventsAtTown(s, townId).some(e => (eventType(e.type).effects || {}).closed);
+export const marketClosed = (s, townId) => !!s && (hydraShut(s, townId) || eventsAtTown(s, townId).some(e => (eventType(e.type).effects || {}).closed)); // R54 Saltmere mourns
 export const coastFishMult = s => activeEvents(s).reduce((a, e) => a * ((eventType(e.type).effects || {}).coastFish || 1), 1);
 export function oddCatch(s, amt) {
   const p = activeEvents(s).reduce((a, e) => a + ((eventType(e.type).effects || {}).oddCatch || 0), 0);

@@ -34,6 +34,7 @@ export function specialSource(s, t) {
 
 export function sourceLabel(t) {
   const src = t.source;
+  if (src.egg) return "Hatch a Deep One egg";
   if (src.buildings)
     return "Estate: " + src.buildings.map(g => g.map(id => structDef(id).name).join(" or ")).join(" + ");
   if (src.class) return `Class: ${findId(D.classes, src.class).name}`;
