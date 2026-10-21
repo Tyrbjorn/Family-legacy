@@ -458,6 +458,136 @@
     "coin": 220,
     "favour": 12
    }
+  ],
+  "gatepost": [
+   {
+    "id": "gp_bread",
+    "name": "The gate watch wants 15 bread",
+    "kind": "deliver",
+    "band": 1,
+    "res": "bread",
+    "n": 15,
+    "days": 1,
+    "coin": 60,
+    "favour": 5
+   },
+   {
+    "id": "gp_post",
+    "name": "Carry word to the Eyrie",
+    "kind": "escort",
+    "band": 1,
+    "to": "eyrie",
+    "days": 1,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "gp_ale",
+    "name": "The gate watch wants 20 ale",
+    "kind": "deliver",
+    "band": 2,
+    "res": "ale",
+    "n": 20,
+    "days": 1,
+    "coin": 80,
+    "favour": 8
+   },
+   {
+    "id": "gp_scree",
+    "name": "Clear the scree off the gate path",
+    "kind": "clear",
+    "band": 2,
+    "cp": 110,
+    "days": 2,
+    "coin": 70,
+    "favour": 8
+   },
+   {
+    "id": "gp_trolls",
+    "name": "Drive off a cave troll",
+    "kind": "clear",
+    "band": 3,
+    "cp": 190,
+    "days": 4,
+    "coin": 110,
+    "favour": 12
+   },
+   {
+    "id": "gp_meat",
+    "name": "The gate watch wants 25 meat",
+    "kind": "deliver",
+    "band": 3,
+    "res": "meat",
+    "n": 25,
+    "days": 1,
+    "coin": 95,
+    "favour": 12
+   }
+  ],
+  "dwarfhold": [
+   {
+    "id": "dh_bread",
+    "name": "Dwarfhold wants 20 bread",
+    "kind": "deliver",
+    "band": 1,
+    "res": "bread",
+    "n": 20,
+    "days": 1,
+    "coin": 65,
+    "favour": 5
+   },
+   {
+    "id": "dh_lamps",
+    "name": "Refill the hall lamps",
+    "kind": "clear",
+    "band": 1,
+    "cp": 30,
+    "days": 2,
+    "coin": 50,
+    "favour": 5
+   },
+   {
+    "id": "dh_ale",
+    "name": "Dwarfhold wants 30 ale",
+    "kind": "deliver",
+    "band": 2,
+    "res": "ale",
+    "n": 30,
+    "days": 1,
+    "coin": 90,
+    "favour": 8
+   },
+   {
+    "id": "dh_escort",
+    "name": "Escort an ingot train to the Eyrie",
+    "kind": "escort",
+    "band": 2,
+    "to": "eyrie",
+    "days": 1,
+    "coin": 75,
+    "favour": 8
+   },
+   {
+    "id": "dh_deep",
+    "name": "Seal a crawler nest in the old tunnels",
+    "kind": "clear",
+    "band": 3,
+    "cp": 200,
+    "days": 4,
+    "coin": 120,
+    "favour": 12
+   },
+   {
+    "id": "dh_preserves",
+    "name": "Dwarfhold wants 30 preserves",
+    "kind": "deliver",
+    "band": 3,
+    "res": "preserves",
+    "n": 30,
+    "days": 1,
+    "coin": 100,
+    "favour": 12
+   }
   ]
  },
  "lines": [

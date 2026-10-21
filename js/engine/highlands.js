@@ -15,6 +15,8 @@ export function followLead(s, e, reveal) {
   if (!s.discovered.includes("loc:" + l.id)) s.discovered.push("loc:" + l.id);
   if (!s.discovered.includes(l.region)) s.discovered.push(l.region);
   if (reveal) reveal(s, l.x, l.y, 60);
+  const tw = e.town || l.post; // R51: Thrain's gate post
+  if (tw && !s.discovered.includes(tw)) s.discovered.push(tw);
   log(s, `🗺️ ${l.name} is marked on your map.`);
   return true;
 }
@@ -42,4 +44,38 @@ export function usurperQuestDone(s, q) {
     st.gone = s.day || 0;
     log(s, `🦩 ${u.name} is disgraced and leaves the realm. House Vael has its name back.`);
   }
+}
+
+// ---- R51 the Rune-Sealed Gate: step 9 opens the gate (the location unlocks), finds Dwarfhold and lays the Rune Road
+export const RUNE_ROAD = { type: "travel", region: "highlands", mult: 1.15, from: "runeroad", text: "The Rune Road: Highlands travel ×1.15" };
+export const gateOpen = s => !!(s && s.gateOpen != null);
+export function openGate(s) {
+  if (gateOpen(s)) return false;
+  s.gateOpen = s.day || 0;
+  s.discovered ||= [];
+  for (const id of ["dwarfhold", "gatepost", "loc:l_dwarfhold"]) if (!s.discovered.includes(id)) s.discovered.push(id);
+  if (!(s.boons ||= []).some(b => b.from === "runeroad")) s.boons.push({ ...RUNE_ROAD });
+  if (!(s.unlocks ||= []).includes("recipe:r_ramcart")) s.unlocks.push("recipe:r_ramcart"); // the dwarves show you the Ram Cart
+  log(s, "👑 You set the Ironbrow Clan-Crown before the gate, and the Rune-Sealed Gate opens. The Rune Road leads down into Dwarfhold.");
+  return true;
+}
+// a location is locked until its `opensWith` quest is done
+export const locLocked = (s, l) => !!l && !!l.locked && !(l.opensWith && ((s && s.doneQuests) || []).includes(l.opensWith));
+export const locName = (s, l) => (l.openName && !locLocked(s, l) && l.locked ? l.openName : l.name);
+export const locDesc = (s, l) => (l.openDesc && !locLocked(s, l) && l.locked ? l.openDesc : l.desc);
+
+// ---- R51 mountain rams: bought at the Eyrie; two fed rams with a free stall breed a lamb every `days` once the region is known
+export function ramsDay(s) {
+  const a = D.world && D.world.haul && D.world.haul.animals && D.world.haul.animals.ram, b = a && a.breed;
+  if (!b || !s.animals) return;
+  const n = s.animals.ram || 0;
+  const stallsFree = (s._stallsFree ?? 1) > 0;
+  const fed = !((s.unfed || {}).ram > 0);
+  if (n < b.pair || !fed || !(s.discovered || []).includes(b.region)) { if (s.ramBreed) s.ramBreed = 0; return; }
+  s.ramBreed = (s.ramBreed || 0) + 1;
+  if (s.ramBreed < b.days) return;
+  s.ramBreed = 0;
+  if (!stallsFree) return log(s, "🐏 Your rams could breed, but there is no free stable stall.");
+  s.animals.ram = n + 1;
+  log(s, `🐏 A ram lamb was born (${n + 1} mountain rams).`);
 }

@@ -106,12 +106,12 @@ export function routeIssue(s, r) {
   if (!known(r.town) || !known(r.from || HOME)) return "unknown town";
   if (r.from && r.from !== HOME) {
     if (r.from === r.town) return "same town";
-    if (!marketOf(r.from).includes(r.res)) return "start town doesn't sell that";
+    if (!marketOf(r.from, s).includes(r.res)) return "start town doesn't sell that";
     if (!(findId(D.towns, r.town).prices || {})[r.res]) return "town doesn't buy that";
     return null;
   }
   if (!["sell", "buy"].includes(r.mode)) return "bad mode";
-  if (r.mode === "buy" && !marketOf(r.town).includes(r.res)) return "town doesn't sell that";
+  if (r.mode === "buy" && !marketOf(r.town, s).includes(r.res)) return "town doesn't sell that";
   if (r.mode === "sell" && !(findId(D.towns, r.town).prices || {})[r.res]) return "town doesn't buy that";
   return null;
 }

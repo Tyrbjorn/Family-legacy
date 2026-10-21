@@ -2763,7 +2763,10 @@
    "amber",
    "reefgold",
    "kelpfert",
-   "mead"
+   "mead",
+   "crownband",
+   "crownstone",
+   "crowncrest"
   ]
  },
  "minionFoodPerDay": 0.5,

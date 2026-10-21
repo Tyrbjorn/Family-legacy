@@ -771,7 +771,11 @@
    "hidden": true,
    "locked": true,
    "stub": "runecarver",
-   "desc": "A rune-sealed door in the mountain. Something waits beyond. (Not yet open.)"
+   "desc": "A rune-sealed door in the mountain. Something waits beyond. (Not yet open.)",
+   "opensWith": "gate9",
+   "openName": "The Rune Gate",
+   "openDesc": "The rune-sealed door stands open. The Rune Road runs down into Dwarfhold.",
+   "post": "gatepost"
   },
   {
    "id": "l_gullport",
@@ -872,6 +876,16 @@
     "coast": true,
     "cargoTier": 100,
     "_note": "R48: only for coast hauls (trade routes to a coast town, gather trips to a coast node)"
+   },
+   {
+    "id": "ramcart",
+    "name": "Ram Cart",
+    "icon": "🐏",
+    "carry": 220,
+    "haulSpeed": 1.2,
+    "item": "ramcart",
+    "animal": "ram",
+    "_note": "R51: dwarf-built cart pulled by Highland rams; not a wagon, so mountain routes do not slow it"
    }
   ],
   "qualityCarry": 0.08,
@@ -910,6 +924,22 @@
      "ashford",
      "eyrie"
     ]
+   },
+   "ram": {
+    "name": "Mountain ram",
+    "icon": "🐏",
+    "cost": {
+     "coin": 450
+    },
+    "towns": [
+     "eyrie"
+    ],
+    "breed": {
+     "pair": 2,
+     "days": 120,
+     "region": "highlands",
+     "_note": "R51: two fed rams with a free stall breed a lamb every 120 days once the family knows the Highlands"
+    }
    }
   },
   "stall": "stablestall",
@@ -1362,6 +1392,10 @@
     "per": 0.8,
     "name": "Pigs",
     "icon": "🐖"
+   },
+   "ram": {
+    "diet": "graze",
+    "per": 1
    }
   },
   "herds": {

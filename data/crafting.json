@@ -1710,6 +1710,23 @@
    "path": "carpenter",
    "needsStruct": "slipway",
    "hidden": true
+  },
+  {
+   "id": "r_ramcart",
+   "name": "Ram Cart",
+   "base": "ramcart",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 24,
+    "ingots": 6,
+    "leather": 4
+   },
+   "days": 8,
+   "line": "carpenter",
+   "path": "carpenter",
+   "hidden": true,
+   "_note": "R51: the dwarves show you how once the Rune-Sealed Gate opens; Dwarfhold also sells it"
   }
  ],
  "minionSlots": [

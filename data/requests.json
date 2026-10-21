@@ -1004,7 +1004,8 @@
      "extra": {
       "type": "lead",
       "loc": "l_dwarfhold",
-      "text": "Elder Tamsin tells you where the dwarves keep watch: the Sealed Dwarven Gate is marked on your map."
+      "text": "Elder Tamsin tells you where the dwarves keep watch: the Sealed Dwarven Gate and Gatewarden Thrain's post are marked on your map.",
+      "town": "gatepost"
      }
     }
    ]

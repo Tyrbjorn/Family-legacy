@@ -71,6 +71,8 @@ export function makeChoice(s, id, opt) {
     if (hs.r > cold - 10) addRapport(s, fx.cold, cold - 10 - hs.r, o.name, "set");
   }
   if (fx.renown) addRenown(s, living(s)[0], fx.renown);
+  if (fx.coin) s.res.coin = (s.res.coin || 0) + fx.coin; // R51
+  if (fx.flag) (s.flags ||= {})[fx.flag] = s.day || 0; // R51 remembered for later rounds (Clan Ironbrow)
   const msg = `${o.icon || "❓"} ${ch.title}: you chose to ${o.name.toLowerCase()}. ${o.text}`;
   log(s, msg);
   chron(s, "deed", msg);

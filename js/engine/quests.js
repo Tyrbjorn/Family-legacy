@@ -1,4 +1,4 @@
-import { usurperQuestDone } from "./highlands.js";
+import { openGate, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { talentQuest } from "./talents.js";
@@ -70,6 +70,7 @@ export function resolveQuest(s, m, q, eff) {
   questEvents(s, q); // R48 temperament events (bandits cleared, cruelty)
   threadQuestDone(s, q, m); // R48 house thread finished
   usurperQuestDone(s, q); // R50 House Crane
+  if (q.opensGate) openGate(s); // R51 the Rune-Sealed Gate
   if (firstDone && q.choice) askChoice(s, q); // R49 the reef chain's ending waits for your choice
   if (q.town) markVisited(s, q.town);
   questLineNext(s, q);

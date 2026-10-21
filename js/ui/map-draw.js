@@ -102,7 +102,7 @@ export function mapSvg(m) {
     if (E.locKnown(s, l) && E.regionKnown(s, l.region) && !l.town) {
       const ty = WD.locTypes[l.type];
       marks.push({ x: l.x - 17 * kz, y: l.y - 17 * kz, w: 34 * kz, h: 34 * kz }, { x: l.x - l.name.length * 4.2 * kz, y: l.y + 20 * kz, w: l.name.length * 8.4 * kz, h: 17 * kz });
-      g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer">${pzO(l.x, l.y)}<rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${l.locked ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${l.locked ? "🔒" : ty.icon}</text><text class="ml" x="${l.x}" y="${l.y + 32}" font-size="14" font-weight="600" text-anchor="middle" fill="#2a1808" stroke="#f6ead0" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" font-family="serif">${l.name}</text></g></g>`;
+      g += `<g data-a="mapsel" data-v="l:${l.id}" style="cursor:pointer">${pzO(l.x, l.y)}<rect x="${l.x - 16}" y="${l.y - 16}" width="32" height="32" rx="6" fill="#efe0b8" stroke="${E.locLocked(s, l) ? "#8a2a1a" : "#6b4a26"}" stroke-width="${U.mapSel === "l:" + l.id ? 4 : 2}"/><text x="${l.x}" y="${l.y + 7}" font-size="19" text-anchor="middle">${E.locLocked(s, l) ? "🔒" : ty.icon}</text><text class="ml" x="${l.x}" y="${l.y + 32}" font-size="14" font-weight="600" text-anchor="middle" fill="#2a1808" stroke="#f6ead0" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" font-family="serif">${E.locName(s, l)}</text></g></g>`;
     }
   for (const a of MP.areas.filter(a => E.regionKnown(s, a.region))) {
     const ex = E.explored(s, a.id),

@@ -47,7 +47,7 @@ export const knownTowns = s => D.towns.filter(t => regionOpen(s, t.region) && to
 // "Short of" / "Flooded with" tags for one town: goods it trades whose price is high / low now
 export function townTags(s, townId) {
   const t = town(townId),
-    goods = [...new Set([...Object.keys(t.prices || {}), ...marketOf(townId)])],
+    goods = [...new Set([...Object.keys(t.prices || {}), ...marketOf(townId, s)])],
     max = MK().tagMax || 3;
   const rows = goods.map(res => ({ res, ...priceTag(s, townId, res) })).filter(x => (t.prices || {})[x.res]);
   return {
@@ -68,9 +68,9 @@ export function marketBoard(s) {
     const best = opts.sort((a, b) => b.price - a.price)[0];
     sell.push({ res, have: s.res[res], ...best, value: best.price * s.res[res], days: travelDays(best.town), tag: priceTag(s, best.town, res) });
   }
-  const goods = [...new Set(towns.flatMap(t => marketOf(t.id)))];
+  const goods = [...new Set(towns.flatMap(t => marketOf(t.id, s)))];
   for (const res of goods) {
-    const opts = towns.filter(t => marketOf(t.id).includes(res) && (t.prices || {})[res]).map(t => ({ town: t.id, price: townBuyPrice(s, t.id, res) }));
+    const opts = towns.filter(t => marketOf(t.id, s).includes(res) && (t.prices || {})[res]).map(t => ({ town: t.id, price: townBuyPrice(s, t.id, res) }));
     if (!opts.length) continue;
     const best = opts.sort((a, b) => a.price - b.price)[0];
     buy.push({ res, ...best, days: travelDays(best.town), tag: priceTag(s, best.town, res, "buy") });

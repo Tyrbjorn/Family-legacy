@@ -12,9 +12,9 @@ const Y=D.tuning.daysPerYear, Q=id=>D.quests.find(q=>q.id===id);
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);const m=s.members[0];m.ageDays=25*Y;s.res.coin=1e5;for(const k of ['preserves','meat','cloth','honey','wood','stone'])s.res[k]=1e3;for(const k in m.stats)m.stats[k]=60;return s;};
 const findEyrie=s=>{for(const id of ['highlands','eyrie'])if(!s.discovered.includes(id))s.discovered.push(id);(s.townsVisited||=[]).push('eyrie');};
 const deliver3=(s,id)=>{for(let i=0;i<3;i++){s.day=Math.max(s.day,(s.req[id]||{}).at||0);ok(!E.deliverIssue(s,id),id+' open '+i+': '+E.deliverIssue(s,id));E.deliverRequest(s,id);}};
-ok(BUILD==='R50'&&E.SCHEMA===46,'R50, save step 46');
+ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1)>=50&&E.SCHEMA>=46,'R50+, save step 46+');
 // ---- 12 Highlands jobs
-const HJ=D.quests.filter(q=>q.region==='highlands'&&!['house','guild'].includes(q.type));
+const HJ=D.quests.filter(q=>q.region==='highlands'&&!['house','guild'].includes(q.type)&&q.chain!=='gate');
 ok(HJ.length===12,'12 Highlands jobs ('+HJ.length+')');
 const NEW=['q_hl_goats','q_hl_rams','q_hl_heather','q_hl_avalanche','q_hl_wolves','q_hl_trial','q_hl_cairn','q_hl_shrine','b_dwarvensteel'];
 ok(NEW.every(id=>Q(id)&&D.map.points[id]&&E.regionAt(D.map.points[id].x,D.map.points[id].y)==='highlands'),'new jobs exist and sit in the Highlands');
@@ -77,7 +77,7 @@ ok(Array.isArray(D.camps.sites)&&D.camps.sites.filter(c=>c.region==='highlands')
   const t=base(); delete t.usurper; t.doneQuests.push('st10'); STEPS.find(x=>x.n===46).run(t); ok(E.usurperGone(t)&&t.usurper.gone!=null,'a save past chapter 10: already disgraced');
   ok(!s.reqPerks.some(p=>/ysolde|tamsin/.test(p.from)),'nothing given'); }
 { const A=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim());
-  ok(A.schema===46&&A.usurper&&A.members.every(m=>!m.alive||m.skills.falconry),'old FL1 save migrates to step 46'); }
-{ const s=base(); findEyrie(s); deliver3(s,'ysolde'); const l=E.deserialize(E.serialize(s)); ok(l.schema===46&&E.perkDiscover(l,'forest')>=0.2&&l.usurper,'R50 state survives save/load'); }
-ok(D.changelog.entries[0].build==='R50','changelog R50');
+  ok(A.schema===E.SCHEMA&&A.usurper&&A.members.every(m=>!m.alive||m.skills.falconry),'old FL1 save migrates to step 46'); }
+{ const s=base(); findEyrie(s); deliver3(s,'ysolde'); const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA&&E.perkDiscover(l,'forest')>=0.2&&l.usurper,'R50 state survives save/load'); }
+ok(D.changelog.entries.some(e=>e.build==='R50'),'changelog R50');
 console.log(pass+' R50 checks passed');

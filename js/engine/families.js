@@ -31,7 +31,7 @@ const sumPct = (L, f) => L.filter(f).reduce((a, p) => a + (p.pct || 0), 0);
 // −x on buying these market goods
 // R49: a perk may name a town (Gilmane allied: Saltmere salt); villager deals (Hask) and choice boons count too
 export const perkBuy = (s, res, town) =>
-  Math.max(0.4, 1 - sumPct([...allPerks(s, "buy"), ...((s && s.reqPerks) || []).filter(p => p.type === "buy"), ...((s && s.boons) || []).filter(p => p.type === "buy")], p => (p.res || []).includes(res) && (!p.town || p.town === town)));
+  Math.max(0.4, 1 - sumPct([...allPerks(s, "buy"), ...((s && s.reqPerks) || []).filter(p => p.type === "buy"), ...((s && s.boons) || []).filter(p => p.type === "buy")], p => (p.res || []).includes(res) && (!p.town || p.town === town) && (!p.towns || p.towns.includes(town)))); // R51 towns list
 // +x on selling in this town
 export const perkSell = (s, town) => 1 + sumPct(allPerks(s, "sell"), p => p.town === town);
 // −x on a town's shop items
@@ -42,7 +42,7 @@ export const perkField = s => sumPct(allPerks(s, "fieldYield"), () => true);
 export const perkNode = (s, nodeId) => sumPct(allPerks(s, "node"), p => p.node === nodeId);
 export const perkRoutes = s => allPerks(s, "tradeRoute").reduce((a, p) => a + (p.n || 0), 0);
 export const perkDiscover = (s, region) => sumPct([...allPerks(s, "discover"), ...((s && s.reqPerks) || []).filter(p => p.type === "discover")], p => !p.region || p.region === region); // R50 Ysolde: everywhere
-export const perkTravel = (s, region) => allPerks(s, "travel").filter(p => p.region === region).reduce((a, p) => a * (p.mult || 1), 1);
+export const perkTravel = (s, region) => [...allPerks(s, "travel"), ...((s && s.boons) || []).filter(p => p.type === "travel")].filter(p => p.region === region).reduce((a, p) => a * (p.mult || 1), 1);
 export const perkFerry = s => sumPct(allPerks(s, "ferry"), () => true);
 export const perkCargo = (s, tier) => allPerks(s, "cargo").filter(p => p.tier === tier).reduce((a, p) => a + (p.n || 0), 0);
 export const perkXp = (s, skill) => sumPct(allPerks(s, "xp"), p => (p.skills || []).includes(skill));

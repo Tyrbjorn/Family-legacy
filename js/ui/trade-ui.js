@@ -19,12 +19,12 @@ export function routeDraft() {
   const from = T2.mode === "haul" ? others[T2.f % Math.max(1, others.length)] : null;
   const goods =
     T2.mode === "buy"
-      ? E.marketOf(town.id)
+      ? E.marketOf(town.id, s)
       : T2.mode === "haul"
         ? from
-          ? E.marketOf(from.id).filter(k => town.prices[k])
+          ? E.marketOf(from.id, s).filter(k => town.prices[k])
           : []
-        : Object.keys(town.prices).filter(k => (s.res[k] || 0) > 0 || !E.marketOf(town.id).includes(k));
+        : Object.keys(town.prices).filter(k => (s.res[k] || 0) > 0 || !E.marketOf(town.id, s).includes(k));
   const res = goods[T2.r % Math.max(1, goods.length)];
   return { T2, towns, town, from, goods, res };
 }

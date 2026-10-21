@@ -181,7 +181,7 @@ export function mapDetail(m) {
   if (k === "l") {
     const l = E.locDef(id),
       ty = D.world.locTypes[l.type];
-    h = `<div class="card"><b>${ty.icon} ${l.name}</b> <span class="tb">${ty.name}${l.locked ? " · 🔒 sealed" : ""}</span>${l.desc ? `<div class="muted">${l.desc}</div>` : ""}<div class="muted">${routeLine(null, l)}</div>${l.locked ? '<div class="muted">The gates stay shut. Perhaps one day…</div>' : ""}${l.sea ? '<div class="muted">⚓ Ships and sea trade are not open yet.</div>' : ""}</div>`;
+    h = `<div class="card"><b>${ty.icon} ${E.locName(s, l)}</b> <span class="tb">${ty.name}${E.locLocked(s, l) ? " · 🔒 sealed" : ""}</span>${E.locDesc(s, l) ? `<div class="muted">${E.locDesc(s, l)}</div>` : ""}<div class="muted">${routeLine(null, l)}</div>${E.locLocked(s, l) ? '<div class="muted">The gates stay shut. Perhaps one day…</div>' : ""}${l.sea ? '<div class="muted">⚓ Ships and sea trade are not open yet.</div>' : ""}</div>`;
   }
   if (k === "a") {
     const a = E.areaDef(id),
@@ -270,8 +270,8 @@ export function mapv() {
             `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"} title="${priceTipOf(t.id, k)}">Sell 10${RI[k] || " " + k} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙${priceTagHtml(t.id, k)}</button>`,
         )
         .join("")}</div>${
-        E.marketOf(t.id).length
-          ? `<div class="muted" style="margin-top:4px">Makes: ${(t.produces || []).map(k => (RI[k] || "") + k).join(", ") || "—"} · Wants: ${(t.wants || []).map(k => (RI[k] || "") + k).join(", ") || "—"}</div><div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${E.marketOf(t.id)
+        E.marketOf(t.id, s).length
+          ? `<div class="muted" style="margin-top:4px">Makes: ${(t.produces || []).map(k => (RI[k] || "") + k).join(", ") || "—"} · Wants: ${(t.wants || []).map(k => (RI[k] || "") + k).join(", ") || "—"}</div><div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${E.marketOf(t.id, s)
               .map(k => {
                 const p = E.townBuyPrice(s, t.id, k);
                 return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"} title="${priceTipOf(t.id, k, "buy")}">Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙${priceTagHtml(t.id, k, "buy")}</button>`;

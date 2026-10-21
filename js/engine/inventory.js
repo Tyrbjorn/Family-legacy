@@ -134,9 +134,10 @@ export function buyItem(s, townId, itemId) {
 
 // Town markets sell staple goods (salt, grain, milk...). Buying costs resBuyMarkup × the town's base price,
 // with the same event/season multipliers as selling, so resale can never profit (see data.test).
-export const marketOf = townId => {
+export const marketOf = (townId, s) => {
   const t = findId(D.towns, townId) || {};
-  return [...new Set([...(t.market || []), ...(t.produces || [])])];
+  const more = Object.entries(t.marketSteps || {}).filter(([q]) => s && (s.doneQuests || []).includes(q)).flatMap(([, g]) => g); // R51 Thrain's market grows with trust
+  return [...new Set([...(t.market || []), ...(t.produces || []), ...more])];
 };
 export const townBuyPrice = (s, townId, res) => {
   const t = findId(D.towns, townId);
@@ -155,7 +156,7 @@ export const townBuyPrice = (s, townId, res) => {
   );
 };
 export function buyRes(s, townId, res, n) {
-  if (!marketOf(townId).includes(res)) return false;
+  if (!marketOf(townId, s).includes(res)) return false;
   if (marketClosed(s, townId)) return false; // R49 Lodge procession
   const c = townBuyPrice(s, townId, res) * n;
   if (n <= 0 || s.res.coin < c) return false;

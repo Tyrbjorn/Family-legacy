@@ -353,6 +353,7 @@ export function exploreArea(s, m, ar) {
       const l = D.world && WD().locations.find(x => x.id === sc.id);
       if (!l || s.discovered.includes("loc:" + l.id)) continue;
       s.discovered.push("loc:" + l.id);
+      if (l.post && !s.discovered.includes(l.post)) s.discovered.push(l.post), found.push("🛡️ " + ((findId(D.towns, l.post) || {}).name || l.post)); // R51
       found.push(`${WD().locTypes[l.type].icon} ${l.name}`);
     } else if (sc.type === "cache") {
       for (const [k, v] of Object.entries(sc.reward)) s.res[k] = (s.res[k] || 0) + v;

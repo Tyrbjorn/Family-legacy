@@ -705,6 +705,15 @@ export const STEPS = [
       if (!s.reqPerks) s.reqPerks = [];
     },
   },
+  {
+    n: 47,
+    name: "R51 the Rune-Sealed Gate: a save that already found the Sealed Dwarven Gate (Tamsin's lead or exploring) also knows Thrain's gate post; the gate stays sealed; no trust step, Clan-Crown piece, ram or cart is given",
+    run(s) {
+      if ((s.discovered || []).includes("loc:l_dwarfhold") && !s.discovered.includes("gatepost")) s.discovered.push("gatepost");
+      if (!s.flags) s.flags = {};
+      if (!s.boons) s.boons = [];
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

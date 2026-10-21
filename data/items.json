@@ -1885,5 +1885,15 @@
   "cp": 16,
   "value": 140,
   "desc": "A smooth stone threaded on cord, smuggled out of the Grotto."
+ },
+ {
+  "id": "ramcart",
+  "name": "Ram Cart",
+  "slot": "haul",
+  "rarity": "Uncommon",
+  "cp": 0,
+  "value": 600,
+  "noDrop": true,
+  "desc": "A low dwarf cart pulled by a Highland ram: carry 220, haul ×1.2, full speed on mountain routes. Needs a mountain ram."
  }
 ]

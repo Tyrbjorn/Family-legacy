@@ -3789,5 +3789,325 @@
   "region": "highlands",
   "loot": [],
   "town": "eyrie"
+ },
+ {
+  "id": "gate1",
+  "name": "A Stranger at the Gate",
+  "type": "chain",
+  "cp": 0,
+  "days": 1,
+  "risk": "safe",
+  "reward": {
+   "coin": 20
+  },
+  "skill": "etiquette",
+  "chainName": "The Rune-Sealed Gate",
+  "desc": "“The Rune-Sealed Gate”, 1 of 9: Gatewarden Thrain Ironbrow sets his terms. Prove you are useful, and that you can keep your mouth shut.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 1,
+  "act": 3,
+  "req": {
+   "town": "gatepost"
+  }
+ },
+ {
+  "id": "gate2",
+  "name": "Bread and Barley",
+  "type": "chain",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 150
+  },
+  "skill": "haggling",
+  "deliver": {
+   "bread": 30,
+   "barley": 40
+  },
+  "desc": "2 of 9: the clans under the mountain grow little. Bring bread and barley to the post.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 2,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate1"
+   ]
+  },
+  "hidden": true,
+  "after": "gate1"
+ },
+ {
+  "id": "gate3",
+  "name": "Silver for the Seal",
+  "type": "chain",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 200,
+   "crownband": 1
+  },
+  "skill": "mining",
+  "deliver": {
+   "silverore": 15,
+   "stone": 40
+  },
+  "desc": "3 of 9: silver ore and stone to repair the gate. Thrain trusts you with the first piece of the Ironbrow Clan-Crown, lost for generations: the Crown-Band.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 3,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate2"
+   ]
+  },
+  "hidden": true,
+  "after": "gate2"
+ },
+ {
+  "id": "gate4",
+  "name": "Wolves on the Traders' Path",
+  "type": "fight",
+  "cp": 125,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 300,
+   "hides": 6
+  },
+  "skill": "archery",
+  "desc": "4 of 9: a frost-wolf pack is harrying the dwarven traders on the path to the post. Clear it.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 4,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate3"
+   ]
+  },
+  "hidden": true,
+  "after": "gate3"
+ },
+ {
+  "id": "gate5",
+  "name": "Ale for the Watch",
+  "type": "chain",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 220
+  },
+  "skill": "haggling",
+  "deliver": {
+   "ale": 40
+  },
+  "desc": "5 of 9: the gate garrison is dry. Your own Brewery's ale, or a town's, will do.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 5,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate4"
+   ]
+  },
+  "hidden": true,
+  "after": "gate4"
+ },
+ {
+  "id": "gate6",
+  "name": "Raiders in Stormhold Depths",
+  "type": "fight",
+  "cp": 145,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 450,
+   "crownstone": 1
+  },
+  "skill": "swordsmanship",
+  "desc": "6 of 9: raiders are using Stormhold Depths to slip past the gate. Drive them out, and recover the second piece of the Clan-Crown they stole: the Brow-Stone.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 6,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate5"
+   ]
+  },
+  "hidden": true,
+  "after": "gate5"
+ },
+ {
+  "id": "gate7",
+  "name": "A Matter of Discretion",
+  "type": "chain",
+  "cp": 0,
+  "days": 1,
+  "risk": "safe",
+  "reward": {
+   "coin": 20
+  },
+  "skill": "etiquette",
+  "desc": "7 of 9: you have learned where the gate's weak rune lies. House Crane's agents would pay well for it.",
+  "choice": {
+   "id": "discretion",
+   "title": "A Matter of Discretion",
+   "text": "The usurper wants dwarven steel and a way under the mountain. Thrain will know what you chose.",
+   "options": [
+    {
+     "id": "keep",
+     "name": "Keep the secret",
+     "icon": "🤐",
+     "text": "Thrain trusts you: dwarven steel and ingots cost 10% less at the gate post and in Dwarfhold.",
+     "fx": {
+      "renown": 5,
+      "boon": {
+       "type": "buy",
+       "res": [
+        "steel",
+        "ingots"
+       ],
+       "towns": [
+        "gatepost",
+        "dwarfhold"
+       ],
+       "pct": 0.1,
+       "text": "Steel and ingots −10% at the gate and Dwarfhold (you kept the secret)"
+      }
+     }
+    },
+    {
+     "id": "sell",
+     "name": "Sell it to House Crane",
+     "icon": "🦩",
+     "text": "1,200 coin. Thrain finds out; the dwarves will remember it.",
+     "fx": {
+      "coin": 1200,
+      "usurper": 0,
+      "flag": "soldGate"
+     }
+    }
+   ]
+  },
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 7,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate6"
+   ]
+  },
+  "hidden": true,
+  "after": "gate6"
+ },
+ {
+  "id": "gate8",
+  "name": "Tools and Tribute",
+  "type": "chain",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 250,
+   "crowncrest": 1
+  },
+  "skill": "smithing",
+  "deliver": {
+   "ingots": 20,
+   "coal": 30,
+   "gold": 2
+  },
+  "desc": "8 of 9: iron for tools, charcoal and a gift of gold for the Thane. In return, the last piece of the Clan-Crown: the Crest.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 8,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate7"
+   ]
+  },
+  "hidden": true,
+  "after": "gate7"
+ },
+ {
+  "id": "gate9",
+  "name": "The Rune-Sealed Gate",
+  "type": "beat",
+  "beat": true,
+  "cp": 150,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 600
+  },
+  "skill": "runecraft",
+  "deliver": {
+   "crownband": 1,
+   "crownstone": 1,
+   "crowncrest": 1
+  },
+  "grants": {
+   "renown": 25
+  },
+  "opensGate": true,
+  "band": 4,
+  "desc": "Act 3 beat (after chapter 8), 9 of 9: Thrain vouches for you. Reassemble the Ironbrow Clan-Crown (Band, Brow-Stone and Crest) before the gate, and the dwarves open it for its bearer. The Rune Road leads down into Dwarfhold.",
+  "region": "highlands",
+  "town": "gatepost",
+  "chain": "gate",
+  "loot": [],
+  "once": true,
+  "step": 9,
+  "act": 3,
+  "req": {
+   "town": "gatepost",
+   "done": [
+    "gate8"
+   ],
+   "story": 8
+  },
+  "hidden": true,
+  "after": "gate8"
  }
 ]

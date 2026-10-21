@@ -1,3 +1,5 @@
+import { ramsDay } from "./highlands.js";
+import { animalCount, stalls } from "./world.js";
 import { memberSnap, memberPwdCheck } from "./pausedone.js";
 import { houseBirthTrait } from "./saltmere.js";
 import { talentDay } from "./talents.js";
@@ -252,6 +254,7 @@ for (const [n, f] of [
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
   ["members", membersDay],
   ["generations", generationsDay],
+  ["rams", s => ((s._stallsFree = stalls(s) - animalCount(s)), ramsDay(s), delete s._stallsFree)], // R51 mountain rams breed
 ])
   registerDayHook(n, f);
 

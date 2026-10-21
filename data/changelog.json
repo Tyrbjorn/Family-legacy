@@ -2,6 +2,16 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R51",
+      "title": "The Rune-Sealed Gate",
+      "items": [
+        "🛡️ Elder Tamsin's lead (or exploring the Stormcrest Peaks) now finds the Ironbrow Gate Post, where Gatewarden Thrain Ironbrow keeps watch outside the Sealed Dwarven Gate. His small market buys bread, barley, ale and meat at a premium.",
+        "🔑 New Act 3 trust line, “The Rune-Sealed Gate”, in 9 steps: deliveries of bread, barley, silver, ale and tools, two fights (Wolves on the Traders' Path and Raiders in Stormhold Depths) and a choice: keep the dwarves' secret, or sell it to House Crane. At steps 3, 6 and 8 you recover the three pieces of an old dwarven treasure, the Ironbrow Clan-Crown: the Crown-Band, the Brow-Stone and the Crest. Thrain's market grows as he trusts you.",
+        "👑 Step 9 (after chapter 8): reassemble the Clan-Crown at the gate and the dwarves open it. The Rune Road speeds Highlands travel, and Dwarfhold is found: cheap steel, ingots, gems and a little mithril, and it pays well for bread, preserves and meat.",
+        "🐏 Mountain rams: buy them at the Eyrie (450 coin). Two fed rams with a free stall breed a lamb every 120 days once you know the Highlands. Dwarfhold sells the Ram Cart (carry 220, haul ×1.2), which keeps full speed on mountain routes."
+      ]
+    },
+    {
       "build": "R50",
       "title": "The Highlands",
       "items": [
