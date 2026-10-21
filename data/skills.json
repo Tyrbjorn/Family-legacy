@@ -373,5 +373,13 @@
   "icon": "📐",
   "guild": "architects",
   "desc": "Architects' Guild craft: plans, elevations and surveys."
+ },
+ {
+  "id": "falconry",
+  "name": "Falconry",
+  "family": "gathering",
+  "stat": "DEX",
+  "icon": "🦅",
+  "desc": "Training and flying a falcon. Taught by Falconmaster Ysolde in the Eyrie: each level adds +1% to finds when exploring."
  }
 ]

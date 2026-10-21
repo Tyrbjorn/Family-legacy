@@ -1294,7 +1294,7 @@
   "grants": {
    "minion": "bannerman"
   },
-  "desc": "The usurper's agents hunt your family. Find them through rumors."
+  "desc": "House Crane, the usurper's house, sends agents to hunt your family. Find them through rumors."
  },
  {
   "id": "st10",
@@ -1319,7 +1319,7 @@
    "item": "ancestral_blade",
    "renown": 200
   },
-  "desc": "Face the usurper and restore House Vael."
+  "desc": "Face the usurper, Lord of House Crane, and restore House Vael."
  },
  {
   "id": "s_oldwell",
@@ -3577,5 +3577,217 @@
   "desc": "Only while feuding: hit House Gilmane where it hurts.",
   "region": "saltcoast",
   "loot": []
+ },
+ {
+  "id": "q_hl_goats",
+  "name": "Goat-Path Rescue",
+  "type": "errand",
+  "cp": 100,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 220,
+   "hides": 4
+  },
+  "skill": "tracking",
+  "desc": "A goatherd's boy is stuck on a ledge above the goat-path. Get him down before the weather turns.",
+  "act": 1,
+  "band": 1,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_rams",
+  "name": "Strays on the Ridge",
+  "type": "errand",
+  "cp": 105,
+  "days": 4,
+  "risk": "safe",
+  "reward": {
+   "coin": 200,
+   "hay": 20
+  },
+  "skill": "animal",
+  "desc": "The Eyrie's mountain rams broke out of the Highland Pasture in a storm. Round them up off the ridge.",
+  "act": 1,
+  "band": 1,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_heather",
+  "name": "Heather Honey",
+  "type": "errand",
+  "cp": 95,
+  "days": 3,
+  "risk": "safe",
+  "reward": {
+   "coin": 120,
+   "honey": 10
+  },
+  "skill": "foraging",
+  "desc": "The wild hives in the high heather are full. The Eyrie's mead hall pays well for the honey.",
+  "act": 1,
+  "band": 1,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_avalanche",
+  "name": "Avalanche Pass",
+  "type": "errand",
+  "cp": 115,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 320,
+   "stone": 30
+  },
+  "skill": "masonry",
+  "desc": "Snow and rock have buried the high pass. Dig it out and shore it up before the traders give up on it.",
+  "act": 1,
+  "band": 2,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_wolves",
+  "name": "Frost Wolves",
+  "type": "fight",
+  "cp": 125,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 360,
+   "hides": 8
+  },
+  "skill": "archery",
+  "desc": "A pack of white wolves has come down from the snowline and is taking the Eyrie's goats.",
+  "act": 1,
+  "band": 2,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_trial",
+  "name": "The Eagle-Riders' Trial",
+  "type": "errand",
+  "cp": 130,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 400
+  },
+  "skill": "leadership",
+  "once": true,
+  "check": {
+   "skills": [
+    "archery",
+    "leadership"
+   ],
+   "lvl": 20
+  },
+  "req": {
+   "done": [
+    "h_eyrie"
+   ]
+  },
+  "grants": {
+   "renown": 10
+  },
+  "desc": "The eagle-riders test anyone who swore the Eyrie Oath: a climb to the nests and a shot from the cliff edge (Archery or Leadership check). Nobody rides an eagle yet, but they'll know your name.",
+  "act": 1,
+  "band": 3,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_cairn",
+  "name": "The Giant's Cairn",
+  "type": "fight",
+  "cp": 140,
+  "days": 6,
+  "risk": "deadly",
+  "reward": {
+   "coin": 520,
+   "stone": 40
+  },
+  "skill": "tactics",
+  "req": {
+   "done": [
+    "h_giants"
+   ]
+  },
+  "desc": "The hill giants pile their dead under a great cairn and guard it. Someone has been robbing it, and the giants blame the valley.",
+  "act": 1,
+  "band": 3,
+  "rare": [
+   {
+    "id": "storm_circlet",
+    "chance": 0.02
+   }
+  ],
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "q_hl_shrine",
+  "name": "Stormcrest Shrine",
+  "type": "errand",
+  "cp": 135,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 380
+  },
+  "skill": "faith",
+  "hidden": true,
+  "desc": "An old shrine on the Stormcrest, struck by lightning every spring. Relight its lamps and see who has been leaving offerings.",
+  "act": 1,
+  "band": 3,
+  "rare": [
+   {
+    "id": "stormglass_orb",
+    "chance": 0.02
+   }
+  ],
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
+ },
+ {
+  "id": "b_dwarvensteel",
+  "name": "The Usurper's Dwarven Steel",
+  "type": "beat",
+  "cp": 150,
+  "days": 6,
+  "risk": "risky",
+  "reward": {
+   "coin": 800
+  },
+  "skill": "tactics",
+  "once": true,
+  "beat": true,
+  "act": 3,
+  "band": 4,
+  "req": {
+   "town": "eyrie",
+   "story": 8
+  },
+  "grants": {
+   "renown": 25
+  },
+  "desc": "Act 3 beat (after chapter 8): House Crane has been buying dwarven blades through the Eyrie. Follow the mule trains up the mountain and learn who is selling, and why the usurper wants dwarven steel.",
+  "usurper": -10,
+  "region": "highlands",
+  "loot": [],
+  "town": "eyrie"
  }
 ]

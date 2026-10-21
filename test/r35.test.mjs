@@ -7,7 +7,7 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 const Y=T.daysPerYear, fresh=()=>{const s=E.newGame(1);E.normalize(s);s.fog=false;return s;};
 const kid=(s,age,o={})=>{const m=E.newMember(s,{gender:'m',age:0,parents:o.parents||null});m.ageDays=age*Y;s.members.push(m);return m;};
 const A=D.apprenticeships;
-ok(A.masters.length===8&&A.minAge===14&&A.maxAge===17&&A.xpMult===1.5&&A.serveDays===720,'8 masters, ages 14-17, x1.5, 720 days');
+ok(A.masters.length>=8&&A.minAge===14&&A.maxAge===17&&A.xpMult===1.5&&A.serveDays===720,'8 masters, ages 14-17, x1.5, 720 days');
 ok(A.masters.every(M=>D.towns.find(t=>t.id===M.town)&&M.skills.every(k=>D.skills.find(x=>x.id===k))&&D.legacy.familyAuto.tracks[M.track]),'masters: real towns, skills, tracks');
 // leans
 { const s=fresh(); let two=0,keen=0; for(let i=0;i<200;i++){const m=kid(s,1);m.traits=['keeneyed'];E.rollLean(s,m,[]); const z=kid(s,1);z.traits=[];E.rollLean(s,z,[]); if(z.lean.length===2)two++; if(m.lean[0]==='lodge')keen++; ok(m.lean.length>=1&&m.lean.length<=2,'1-2 leans');}

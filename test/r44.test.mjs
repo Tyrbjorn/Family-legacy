@@ -10,7 +10,7 @@ const U=id=>D.legacy.upgrades.find(u=>u.id===id);
 const base=()=>{const s=E.newGame(1);E.normalize(s);s.land=['plot'];s.members[0].ageDays=20*D.tuning.daysPerYear;s.members[0].skills.smithing.lvl=10;s.res.coin=1e4;s.minions=[];return s;};
 const forge=s=>s.structures.push({uid:'sm'+s.nextId++,type:'smithy',pieces:['forge'],up:0});
 const AC=D.legacy.autoCraft, fol=(s,job,uid)=>{const mi={uid:uid||'f'+s.nextId++,type:'laborer',job,equip:{},name:'F'+job,loyalty:100,lvl:1,skills:{}};s.minions.push(mi);return mi;};
-ok(/^R4\d/.test(BUILD)&&E.SCHEMA>=40,'R44+, save step 40+');
+ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1).split('.')[0]>=44&&E.SCHEMA>=40,'R44+, save step 40+');
 // Auto-craft line (data)
 { const u=U('autocraft'); ok(u&&u.group==='workshop'&&u.free===0&&u.tiers.map(t=>t.cost).join()==='50,180,500','Auto-craft: Workshop line, off free, 50/180/500');
   ok(AC.basicTools.farm==='sickle'&&AC.basicTools.craft==='smithhammer'&&AC.maxOpen.length===4,'basic tools + slots in data'); }

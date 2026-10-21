@@ -1,0 +1,23 @@
+{
+ "_note": "R50: set campsites, ready for the camps round (fl-estates-camps-proposal). Not loaded by the game yet.",
+ "sites": [
+  {
+   "id": "c_highpass",
+   "name": "High Pass Camp",
+   "region": "highlands",
+   "x": 640,
+   "y": 1140,
+   "safety": "exposed",
+   "bonus": "shortest way over the Stormcrest"
+  },
+  {
+   "id": "c_cairn",
+   "name": "Camp below the Giant's Cairn",
+   "region": "highlands",
+   "x": 740,
+   "y": 1240,
+   "safety": "risky",
+   "bonus": "close to the giants and the Silver Seam"
+  }
+ ]
+}

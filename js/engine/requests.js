@@ -1,3 +1,4 @@
+import { followLead } from "./highlands.js";
 import { houseEvent } from "./families.js";
 import { readChart } from "./saltmere.js";
 import { roleBonus } from "./guildtiers.js";
@@ -10,6 +11,7 @@ import { opensOk } from "./chores.js";
 import { spendFish } from "./cooking.js";
 import { addToVault, itemDef } from "./inventory.js";
 import { revealAt } from "./map.js";
+import { reveal } from "./world.js";
 import { srcOk, srcText } from "./skills.js";
 import { D, log, rng } from "./state.js";
 
@@ -121,6 +123,7 @@ export function deliverRequest(s, npcId) {
   if (e && !(s.reqPerks || []).some(p => p.from === r.id)) {
     (s.reqPerks = s.reqPerks || []).push({ ...e, from: r.id, npc: n.id });
     if (e.type === "chart") readChart(s, e); // R48/R49 Merrow's sea chart: the Saltmere Coast is found
+    if (e.type === "lead") followLead(s, e, reveal); // R50 Elder Tamsin: the Sealed Dwarven Gate is marked
     if (e.type === "recipe" && e.dish && !(s.dishes ||= []).includes(e.dish)) s.dishes.push(e.dish); // R42
     if (e.type === "questline") {
       const q0 = findId(D.quests, e.quests[0]);

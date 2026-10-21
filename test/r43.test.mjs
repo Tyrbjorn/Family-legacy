@@ -9,7 +9,7 @@ const seeded=(()=>{let a=43;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a
 const U=id=>D.legacy.upgrades.find(u=>u.id===id);
 const base=()=>{const s=E.newGame(1);E.normalize(s);s.land=['plot'];s.members[0].ageDays=20*D.tuning.daysPerYear;s.members[0].skills.smithing.lvl=10;s.res.coin=1e4;s.minions=[];return s;};
 const forge=s=>s.structures.push({uid:'sm'+s.nextId++,type:'smithy',pieces:['forge'],up:0});
-ok(/^R4\d/.test(BUILD)&&E.SCHEMA>=40,'R43+, save step 40+');
+ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1).split('.')[0]>=43&&E.SCHEMA>=40,'R43+, save step 40+');
 // Workshop lines (data)
 ok(D.legacy.groups.workshop&&['orders','quotas','craftspd','mwork','at_tend'].every(id=>U(id)&&U(id).group==='workshop'&&U(id).tiers.length===3),'Workshop: 5 lines, 3 tiers each');
 ok(['orders','quotas','craftspd','mwork','at_tend'].every(id=>U(id).tiers[0].cost<=80),'every tier 1 costs 80 or less (sims bank ~75-100 by year 10)');

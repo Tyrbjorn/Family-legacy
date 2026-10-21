@@ -1377,5 +1377,13 @@
   "runOffDays": 10,
   "regrowDays": 20
  },
- "regrowDaily": true
+ "regrowDaily": true,
+ "mountain": {
+  "_note": "R50 mountain routes: wagons haul at x0.6 to and from the Highlands (mules and horses keep their speed); winter slows Highlands trips a further x0.75 on top of the season. Passes never close.",
+  "regions": [
+   "highlands"
+  ],
+  "wagonMult": 0.6,
+  "winterMult": 0.75
+ }
 }

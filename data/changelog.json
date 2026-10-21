@@ -2,6 +2,20 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R50",
+      "title": "The Highlands",
+      "items": [
+        "🏔️ The Stormcrest Highlands fill out: 9 new jobs (12 in all). Goat-Path Rescue, Strays on the Ridge, Heather Honey, Avalanche Pass, Frost Wolves, The Eagle-Riders' Trial (Archery or Leadership; after The Eyrie Oath), The Giant's Cairn (after Hill Giant Toll) and the hidden Stormcrest Shrine.",
+        "⚔️ New Act 3 beat after chapter 8: “The Usurper's Dwarven Steel”. House Crane has been buying dwarven blades through the Eyrie.",
+        "🦩 House Crane, the usurper's house, now has a name. It is always your Rival and can't be gifted, courted or bargained with. After chapter 10 it is disgraced and leaves the realm.",
+        "🦅 Two Eyrie villagers: Falconmaster Ysolde (wants preserves; her falcons give +20% finds when exploring, and she then takes a Falconry apprentice) and Elder Tamsin (wants cloth; she tells you where the Sealed Dwarven Gate is).",
+        "🪶 New skill: Falconry. Each level gives +1% finds when exploring (up to +30%). It's learned from Ysolde and passes down the bloodline like any skill.",
+        "🐏 Two new nodes: the Highland Pasture (hay and a little sage) and the hidden Mountain Herbs (mandrake).",
+        "🍯 The Eyrie Mead Hall sells heather-honey mead, the first regional brew (6 casks a month).",
+        "🛤️ Mountain routes: wagons haul at ×0.6 to and from the Highlands, while mules and horses keep their speed. In winter Highlands trips are a further ×0.75 slower. The passes never close."
+      ]
+    },
+    {
       "build": "R49",
       "title": "The Saltmere Coast",
       "items": [

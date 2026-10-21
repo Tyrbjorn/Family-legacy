@@ -470,5 +470,33 @@
   "icon": "🟠",
   "terrain": "coast",
   "hidden": true
+ },
+ {
+  "id": "n_pasture",
+  "name": "Highland Pasture",
+  "region": "highlands",
+  "res": {
+   "hay": 3,
+   "sage": 0.3
+  },
+  "skill": "foraging",
+  "icon": "🐏",
+  "terrain": "highlands",
+  "fog": true,
+  "rare": [],
+  "desc": "The Eyrie's high grazing, where the mountain rams are bred."
+ },
+ {
+  "id": "n_mtnherbs",
+  "name": "Mountain Herbs",
+  "region": "highlands",
+  "res": {
+   "mandrake": 0.8
+  },
+  "skill": "herbalism",
+  "icon": "🌱",
+  "terrain": "highlands",
+  "hidden": true,
+  "rare": []
  }
 ]

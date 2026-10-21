@@ -166,23 +166,28 @@ export const stalls = s => {
   return n;
 };
 export const animalCount = s => Object.values(s.animals || {}).reduce((a, b) => a + b, 0);
+// R50 mountain routes (world.json mountain): wagons slow to and from the Highlands; winter slows Highlands trips further
+export const mountainFx = () => (D.world && D.world.mountain) || { regions: [], wagonMult: 1, winterMult: 1 };
+export const isMountain = region => !!region && (mountainFx().regions || []).includes(region);
 export function haulTier(s, ctx = {}) {
   let best = { ...HL().base, q: 0 };
-  for (const t of HL().tiers) {
+  for (let t of HL().tiers) {
     if (t.coast && !ctx.coast) continue; // R48: the Sea Boat only hauls on the coast
     const veh = t.item ? ownsVehicle(s, t.item) : [true];
     if (!veh.length) continue;
     if (t.animal && !animalWorks(s, t.animal)) continue;
     const q = t.item ? Math.max(...veh.map(QIDX)) : 0;
+    if (ctx.mountain && t.item === "wagon") t = { ...t, haulSpeed: t.haulSpeed * mountainFx().wagonMult }; // R50 mountain routes
     const carry = (t.carry + seaCargo(s, t)) * (1 + HL().qualityCarry * q); // R48 Corwen allied: +1 Sea Boat cargo tier
     if (carry * t.haulSpeed > best.carry * best.haulSpeed) best = { ...t, carry, q };
   }
   // a wagon with no working animal is pulled by hand: slow, less cargo
-  const nw = HL().wagonNoAnimal;
+  let nw = HL().wagonNoAnimal;
   if (nw && ownsVehicle(s, nw.item).length) {
     const q = Math.max(...ownsVehicle(s, nw.item).map(QIDX)),
       big = Math.max(...HL().tiers.filter(t => t.item === nw.item).map(t => t.carry));
     const carry = big * nw.carryMult * (1 + HL().qualityCarry * q);
+    if (ctx.mountain) nw = { ...nw, haulSpeed: nw.haulSpeed * mountainFx().wagonMult };
     if (carry * nw.haulSpeed > best.carry * best.haulSpeed) best = { ...nw, carry, q };
   }
   best.carry = Math.round(best.carry * (1 + famFx(s, "haul")));

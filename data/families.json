@@ -790,5 +790,24 @@
   "rapport": 15,
   "renown": 10,
   "_note": "finishing the last quest of a house thread: extra standing and renown"
+ },
+ "usurper": {
+  "id": "crane",
+  "name": "House Crane",
+  "icon": "🦩",
+  "known": "The usurper's house, in exile",
+  "goal": "Power",
+  "temperament": "ruthless",
+  "start": -60,
+  "thread": {
+   "name": "The Usurper's Hand",
+   "quests": [
+    "st9",
+    "st10"
+   ]
+  },
+  "disgracedAfter": "st10",
+  "text": "The house that took House Vael's name. Always Rival; no gifts, no marriage, no truce. Chapters 9 and 10 settle it.",
+  "_note": "R50: House Crane is not in `list` (no drift, troubles, suitors or gifts); it starts Rival and leaves the realm, disgraced, after chapter 10."
  }
 }

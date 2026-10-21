@@ -11,7 +11,7 @@ const meet=(m,c)=>setSk(m,E.classReq(c));
 const lvTo=(m,lv,avoid=[])=>{const ks=Object.keys(m.skills).filter(k=>!avoid.includes(k));let i=0;while(E.level(m)<lv)m.skills[ks[i++%ks.length]].lvl++;};
 const rogue=(s,rank=1)=>{const m=s.members[0];m.guild={id:'rogues',rank,rep:999};m.cls='cutpurse';return m;};
 // ---- data
-ok(/^R4[6-9]/.test(BUILD)&&E.SCHEMA>=42,'R46+, save step 42+');
+ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1).split('.')[0]>=46&&E.SCHEMA>=42,'R46+, save step 42+');
 ok(T.length===4&&T.every((t,i)=>t.n===i+1)&&T[1].lv<T[2].lv&&T[2].lv<T[3].lv,'4 tiers with rising Lv gates');
 ok(T.map(t=>t.cost).join()==='0,500,2000,5000'&&T[1].rank===1&&T[2].rank===2&&T[3].rank===3&&T[3].expansion,'coin 500/2000/5000; Journeyman/Adept/Master; tier 4 is expansion');
 ok(T[1].skillScale>0&&T[1].skillScale<=1&&T[2].skillScale>0&&T[2].skillScale<=1,'pacing scale lives in guilds.json');

@@ -109,5 +109,10 @@ export function housesv() {
   h += `<div class="card" id="famvael"><b>${ph.icon || "🛡️"} ${ph.name}</b> <span class="muted">· your family</span><div class="muted">${ph.text || ""}</div></div>`;
   const maj = E.houseList().filter(x => x.major), mnr = E.houseList().filter(x => !x.major);
   h += `<h3>⭐ Major houses (one per town)</h3>` + maj.map(houseCard).join("") + (mnr.length ? `<h3>🏠 Minor houses</h3>` + mnr.map(houseCard).join("") : "");
+  const u = E.usurperDef && E.usurperDef(); // R50 House Crane, the usurper's house (exiled; outside the house list)
+  if (u) {
+    const gone = E.usurperGone(s), t = E.usurperTier(s), td = gone ? { icon: "🪶", name: "Disgraced" } : E.tierDef(t);
+    h += `<h3>🦩 The usurper</h3><div class="card" id="famcrane"><b>${u.icon} ${u.name}</b> <span class="muted">· exiled · ${td.icon} ${td.name}</span><div class="muted">${u.known}. Goal: ${u.goal}. ${gone ? "Disgraced after chapter 10; it has left the realm." : u.text}</div></div>`;
+  }
   return h;
 }

@@ -823,6 +823,50 @@
   "hq_raid_gilmane": {
    "x": 330,
    "y": 1460
+  },
+  "q_hl_goats": {
+   "x": 1000,
+   "y": 1180
+  },
+  "q_hl_rams": {
+   "x": 1300,
+   "y": 1250
+  },
+  "q_hl_heather": {
+   "x": 1050,
+   "y": 1300
+  },
+  "q_hl_avalanche": {
+   "x": 620,
+   "y": 1120
+  },
+  "q_hl_wolves": {
+   "x": 560,
+   "y": 1260
+  },
+  "q_hl_trial": {
+   "x": 1180,
+   "y": 1290
+  },
+  "q_hl_cairn": {
+   "x": 720,
+   "y": 1220
+  },
+  "q_hl_shrine": {
+   "x": 1320,
+   "y": 1110
+  },
+  "b_dwarvensteel": {
+   "x": 900,
+   "y": 1300
+  },
+  "n_pasture": {
+   "x": 1280,
+   "y": 1210
+  },
+  "n_mtnherbs": {
+   "x": 400,
+   "y": 1180
   }
  },
  "areas": [
@@ -1048,6 +1092,16 @@
      "id": "d_dragonlair",
      "chance": 0.08,
      "needs": "d_stormhold"
+    },
+    {
+     "type": "reveal",
+     "id": "n_mtnherbs",
+     "chance": 0.5
+    },
+    {
+     "type": "reveal",
+     "id": "q_hl_shrine",
+     "chance": 0.4
     }
    ]
   },

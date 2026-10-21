@@ -15,7 +15,7 @@ const findSalt=s=>{findGull(s);for(const id of ['saltcoast','saltmere'])if(!s.di
 const story=(s,n)=>{for(let i=1;i<=n;i++)if(!s.doneQuests.includes('st'+i))s.doneQuests.push('st'+i);};
 const strong=s=>{const m=s.members[0];for(const k in m.skills)m.skills[k].lvl=40;s.vault.push('steel_sword');return m;};
 // ---- build + save
-ok(BUILD==='R49'&&E.SCHEMA===45,'R49, save step 45');
+ok(/^R\d/.test(BUILD)&&E.SCHEMA>=45,'R49+, save step 45+');
 // ---- region, map, town
 const rg=D.regions.find(r=>r.id==='saltcoast');
 ok(rg&&!rg.future&&rg.hidden&&rg.cp===80,'the Saltmere Coast is a real (hidden) region, power 80');
@@ -137,5 +137,5 @@ for(const tw of D.towns) ok(tw.id==='saltmere'?tw.prices.reefgold===85:tw.prices
   const a0=s.res.ale||0; ok(E.buyBrew(s,'gullport','ale',100)===tv.n && (s.res.ale-a0)===tv.n,'capped at stock'); ok(!E.buyBrew(s,'gullport','ale',1),'sold out this month');
   ok(E.brewLeft(s,'saltmere','ale')>0,'stock is per town'); s.day=330; ok(E.brewLeft(s,'gullport','ale')===tv.n,'restocked next month'); ok(E.brewLeft(s,'eyrie','ale')===0,'no brewery, no brews');
   for(const tw of D.towns) if(tw.brewery&&tw.brewery.brews.ale) ok(E.brewPrice(s,tw.id,'ale')>2*2.5,'family Brewery (2 barley) cheaper at '+tw.id); }
-ok(D.changelog.entries[0].build==='R49','changelog R49');
+ok(D.changelog.entries.some(e=>e.build==='R49'),'changelog R49');
 console.log(pass+' R49 checks passed');

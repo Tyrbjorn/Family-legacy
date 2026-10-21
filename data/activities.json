@@ -1920,5 +1920,24 @@
    }
   ],
   "signature": true
+ },
+ {
+  "id": "flyfalcon",
+  "name": "Fly the Falcon",
+  "icon": "🦅",
+  "minAge": 12,
+  "stats": {
+   "DEX": 0.02
+  },
+  "skills": [
+   "falconry"
+  ],
+  "tier": "basic",
+  "desc": "Fly a falcon from Ysolde's mews",
+  "unlock": [
+   {
+    "reqPerk": "ysolde3"
+   }
+  ]
  }
 ]

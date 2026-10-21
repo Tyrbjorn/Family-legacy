@@ -86,6 +86,7 @@ export function apprIssue(s, m, mid) {
   if ((m.apprDone || []).includes(mid)) return "already trained here";
   const town = findId(D.towns, M.town);
   if (town && !townKnown(s, town)) return "find " + town.name + " first";
+  if (M.after && !(s.reqPerks || []).some(p => p.from === M.after)) return "finish " + M.name + "'s requests first"; // R50 Ysolde
   if (!(m.appr && m.appr.id === mid) && apprentices(s, mid).length >= (M.slots || 1)) return "no free place";
   return null;
 }

@@ -1,6 +1,6 @@
 import { findId } from "./lookup.js";
 import { followerPwdCheck } from "./pausedone.js";
-import { haulTier, parcelJobMult } from "./world.js";
+import { haulTier, isMountain, parcelJobMult } from "./world.js";
 import { deliverLoad, gatherInto, travelDays } from "./map.js";
 import { seasonYield } from "./seasons.js";
 import { pickExplore } from "./actions.js";
@@ -99,7 +99,7 @@ export const MINION_JOBS = {
     if (!n || !known(s, n)) return;
     if (!mi.trip) {
       const out = travelDays(n.id);
-      mi.trip = { out, task: D.world.noderun.gatherDays, back: Math.round((out / haulTier(s).haulSpeed) * 10) / 10, t: 0 };
+      mi.trip = { out, task: D.world.noderun.gatherDays, back: Math.round((out / haulTier(s, { mountain: isMountain(n.region) }).haulSpeed) * 10) / 10, t: 0 }; // R50 mountain routes
     }
     const t = mi.trip;
     t.t += 1;

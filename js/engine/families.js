@@ -41,7 +41,7 @@ export const perkShopItems = (s, town) => [...new Set(allPerks(s, "shop").filter
 export const perkField = s => sumPct(allPerks(s, "fieldYield"), () => true);
 export const perkNode = (s, nodeId) => sumPct(allPerks(s, "node"), p => p.node === nodeId);
 export const perkRoutes = s => allPerks(s, "tradeRoute").reduce((a, p) => a + (p.n || 0), 0);
-export const perkDiscover = (s, region) => sumPct(allPerks(s, "discover"), p => p.region === region);
+export const perkDiscover = (s, region) => sumPct([...allPerks(s, "discover"), ...((s && s.reqPerks) || []).filter(p => p.type === "discover")], p => !p.region || p.region === region); // R50 Ysolde: everywhere
 export const perkTravel = (s, region) => allPerks(s, "travel").filter(p => p.region === region).reduce((a, p) => a * (p.mult || 1), 1);
 export const perkFerry = s => sumPct(allPerks(s, "ferry"), () => true);
 export const perkCargo = (s, tier) => allPerks(s, "cargo").filter(p => p.tier === tier).reduce((a, p) => a + (p.n || 0), 0);

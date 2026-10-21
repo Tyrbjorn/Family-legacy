@@ -695,6 +695,16 @@ export const STEPS = [
       if (!s.boons) s.boons = [];
     },
   },
+  {
+    n: 46,
+    name: "R50 the Highlands: House Crane (the usurper's house) starts Rival, or is already disgraced if chapter 10 is done; Ysolde and Tamsin wait for a visit to the Eyrie; the Falconry skill starts at 0; nothing is given",
+    run(s) {
+      const u = (D.families || {}).usurper;
+      if (u && !s.usurper) s.usurper = { r: u.start ?? -60, ...((s.doneQuests || []).includes(u.disgracedAfter) ? { gone: s.day || 0 } : {}) };
+      for (const m of s.members || []) if (m.skills && !m.skills.falconry) m.skills.falconry = { lvl: 0, xp: 0 };
+      if (!s.reqPerks) s.reqPerks = [];
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

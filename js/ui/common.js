@@ -76,6 +76,7 @@ export const RI = {
   saltedfish: "🐟",
   kelp: "🥬",
   kelpfert: "🧺",
+  mead: "🍯",
   pearls: "🦪",
   amber: "🔶",
   reefgold: "📿",

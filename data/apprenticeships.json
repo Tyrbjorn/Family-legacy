@@ -117,6 +117,21 @@
    ],
    "slots": 1,
    "wage": 1
+  },
+  {
+   "id": "m_falcon",
+   "town": "eyrie",
+   "name": "Falconmaster Ysolde",
+   "icon": "🦅",
+   "track": "lodge",
+   "skills": [
+    "falconry",
+    "tracking",
+    "hunting"
+   ],
+   "slots": 1,
+   "wage": 1,
+   "after": "ysolde3"
   }
  ]
 }

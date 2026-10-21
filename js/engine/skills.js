@@ -135,6 +135,7 @@ export function srcOk(s, m, u, ac) {
   }
   if (u.quest) return (s.unlocks || []).includes("activity:" + ac.id) || (s.doneQuests || []).includes(u.quest);
   if (u.building) return bl(s, u.building) > 0;
+  if (u.reqPerk) return (s.reqPerks || []).some(p => p.from === u.reqPerk); // R50: a villager's last request (Ysolde's falcons)
   if (u.fields) return ((s.fields || {}).list || []).length > 0; // R40
   if (u.chore === true) return choreOpen(s, ac); // R42 chore tiers
   if (u.chore) return choreActive(s, u.chore); // R42: a chore worked today boosts this task
@@ -149,6 +150,7 @@ export function srcText(u) {
   if (u.guild) return ((guildDef(u.guild) || {}).name || u.guild) + (u.rank || 0 ? " rank " + ((u.rank || 0) + 1) : "");
   if (u.quest) return "quest “" + ((findId(D.quests, u.quest) || {}).name || u.quest) + "”";
   if (u.tut) return "tutorial: " + ((D.tutorial?.steps.find(x => x.id === u.tut) || {}).title || u.tut);
+  if (u.reqPerk) return "a villager's requests (" + u.reqPerk.replace(/\d+$/, "") + ")";
   if (u.fields) return "a field (Estate → Farmstead)";
   if (u.chore === true) return "it opens as you grow";
   if (u.chore) return ((findId(D.activities, u.chore) || {}).name || u.chore) + " worked today";

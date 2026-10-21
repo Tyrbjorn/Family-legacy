@@ -5,7 +5,9 @@ import { bjobOk, bjobDays, bjobResolve } from "./boards.js";
 import { talentSum } from "./talents.js";
 import { injure } from "./injuries.js";
 import { tutNote } from "./tutorial.js";
-import { seasonGather, seasonTravel } from "./seasons.js";
+import { season, seasonGather, seasonTravel } from "./seasons.js";
+import { isMountain, mountainFx } from "./world.js";
+import { falconBonus } from "./highlands.js";
 import { chron } from "./chronicle.js";
 import { buffSum, maybeEncounter } from "./encounters.js";
 import { resGain } from "./legacy.js";
@@ -90,7 +92,7 @@ export function travelTick(s, m, a, eff) {
   if (a.trip.ferry && !a.trip.ferryPaid) payFerry(s, m, a); // R48
   const t = a.trip;
   const ph = tripPhase(a);
-  t.t += ph === "out" || ph === "back" ? eff * seasonTravel(s) : eff;
+  t.t += ph === "out" || ph === "back" ? eff * seasonTravel(s) * mountainWinter(s, targetRegion(a)) : eff; // R50 winter passes
   a.progress = t.t;
   if (ph === "out" || ph === "back") roadDay(s, m, a, eff);
   if (ph === "task") {
@@ -218,7 +220,7 @@ export function gatherInto(s, t, n, mul, bonusOf, finds = {}) {
   const tr = D.world ? terrainDef(n.terrain || terrainAt(ptOf(n.id).x, ptOf(n.id).y)) : null;
   const ym = D.world ? nodeYieldMult(s, n) : 1;
   if (!t.load) t.load = {};
-  const cap = t.cap || (D.world ? haulTier(s, { coast: isCoastal(n.id) }).carry : Infinity);
+  const cap = t.cap || (D.world ? haulTier(s, { coast: isCoastal(n.id), mountain: isMountain(n.region) }).carry : Infinity);
   t.cap = cap;
   let have = Object.values(t.load).reduce((x, y) => x + y, 0),
     took = 0;
@@ -242,6 +244,9 @@ export function deliverLoad(s, who, t) {
   t.cap = 0;
 }
 
+// R50: winter slows Highlands trips (world.json mountain.winterMult) on top of the season; passes never close
+export const mountainWinter = (s, region) => (isMountain(region) && season(s).id === "winter" ? mountainFx().winterMult || 1 : 1);
+
 export const TRAVEL_TYPES = ["quest", "gather", "explore", "dungeon", "bjob"];
 
 export function taskDays(a, s) {
@@ -256,7 +261,7 @@ export function newTrip(a, s) {
   const reg = targetRegion(a), tv = s && reg ? perkTravel(s, reg) : 1; // R48 House Skye allied: ×1.1 in the Highlands
   const walk = travelDays(a.target);
   const out = Math.round((walk / (s ? mountSpeed(s) : 1) / tv) * 10) / 10;
-  const hs = a.type === "gather" && s && D.world ? haulTier(s, { coast: isCoastal(a.target) }).haulSpeed : 1;
+  const hs = a.type === "gather" && s && D.world ? haulTier(s, { coast: isCoastal(a.target), mountain: isMountain(reg) }).haulSpeed : 1;
   const t = { out, task: taskDays(a, s), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
   // R48: by Sea Boat (or the harbour ferry, paid on the first day) to a coastal destination
   const so = s && D.world ? seaOption(s, a.target, walk) : null;
@@ -324,7 +329,7 @@ export function exploreArea(s, m, ar) {
     const once = sc.type !== "encounter";
     if (once && s.discovered.includes(key)) continue;
     if (sc.needs && !(s.cleared || []).includes(sc.needs)) continue;
-    if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01) * (1 + perkDiscover(s, ar.region))) continue; // R48 Skye: Eyrie scouts
+    if (rng() >= sc.chance * (1 + ((m.skills.tracking || {}).lvl || 0) * 0.01) * (1 + perkDiscover(s, ar.region)) * (1 + falconBonus(m))) continue; // R48 Skye: Eyrie scouts; R50 Ysolde's falcons + Falconry
     if (sc.type === "town" || sc.type === "region") {
       if (!s.discovered.includes(sc.id)) s.discovered.push(sc.id);
       if (sc.type === "town") revealAt(s, sc.id, WD().fog.town);
