@@ -498,5 +498,39 @@
   "terrain": "highlands",
   "hidden": true,
   "rare": []
+ },
+ {
+  "id": "n_deepiron",
+  "name": "Deep Iron Lode",
+  "region": "highlands",
+  "res": {
+   "ore": 4,
+   "stone": 1
+  },
+  "skill": "mining",
+  "icon": "⛏️",
+  "terrain": "highlands",
+  "hidden": true,
+  "rare": [
+   {
+    "id": "res:mithrilore",
+    "chance": 0.01,
+    "n": 1
+   }
+  ],
+  "desc": "Inside the hold. The dwarves let you work it now."
+ },
+ {
+  "id": "n_dwarfcoal",
+  "name": "Dwarven Coal",
+  "region": "highlands",
+  "res": {
+   "coal": 3
+  },
+  "skill": "mining",
+  "icon": "🪨",
+  "terrain": "highlands",
+  "hidden": true,
+  "rare": []
  }
 ]

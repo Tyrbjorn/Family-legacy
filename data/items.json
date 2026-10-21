@@ -1895,5 +1895,15 @@
   "value": 600,
   "noDrop": true,
   "desc": "A low dwarf cart pulled by a Highland ram: carry 220, haul ×1.2, full speed on mountain routes. Needs a mountain ram."
+ },
+ {
+  "id": "warchariot",
+  "name": "War-Chariot",
+  "slot": "haul",
+  "rarity": "Rare",
+  "cp": 0,
+  "value": 1400,
+  "noDrop": true,
+  "desc": "A dwarf war-chariot pulled by a Highland ram: carry 360, haul ×1.1, full speed on mountain routes. Needs a mountain ram."
  }
 ]

@@ -401,5 +401,61 @@
   "deedTier": 3,
   "tier": 3,
   "desc": "A sea cave of smugglers' loot. The last floor, the Sea Gate, needs your own Sea Boat."
+ },
+ {
+  "id": "d_olddeeps",
+  "name": "The Old Deeps",
+  "region": "highlands",
+  "icon": "🕳️",
+  "hidden": true,
+  "floors": [
+   {
+    "name": "The Old Mine Tunnels",
+    "days": 3,
+    "cp": 120,
+    "reward": {
+     "coin": 400,
+     "mithrilore": 1,
+     "runestone": 1
+    }
+   },
+   {
+    "name": "Hall of Constructs",
+    "days": 3,
+    "cp": 140,
+    "reward": {
+     "coin": 550,
+     "mithrilore": 2,
+     "runestone": 2
+    }
+   },
+   {
+    "name": "The Deep Beasts",
+    "days": 4,
+    "cp": 160,
+    "reward": {
+     "coin": 750,
+     "mithrilore": 3,
+     "runestone": 3
+    },
+    "desc": "At the bottom: the Deep Door, sealed."
+   }
+  ],
+  "loot": [
+   "steel_sword",
+   "tower_shield"
+  ],
+  "rare": [
+   {
+    "id": "res:mithril",
+    "chance": 0.05,
+    "n": 1
+   }
+  ],
+  "skill": "tactics",
+  "deedTier": 4,
+  "tier": 4,
+  "reveals": "l_deepdoor",
+  "desc": "Abandoned mine tunnels under Dwarfhold: old constructs and deep beasts. Mithril ore and rune stones. At the bottom sits the Deep Door. The lowest hall smells of the sea, though the sea is a hundred miles away. Behind the last carving, a second, smaller figure kneels beside the first: a mother, with no name cut beneath her."
  }
 ]

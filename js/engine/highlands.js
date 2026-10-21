@@ -56,6 +56,7 @@ export function openGate(s) {
   for (const id of ["dwarfhold", "gatepost", "loc:l_dwarfhold"]) if (!s.discovered.includes(id)) s.discovered.push(id);
   if (!(s.boons ||= []).some(b => b.from === "runeroad")) s.boons.push({ ...RUNE_ROAD });
   if (!(s.unlocks ||= []).includes("recipe:r_ramcart")) s.unlocks.push("recipe:r_ramcart"); // the dwarves show you the Ram Cart
+  revealDeeps(s);
   log(s, "👑 You set the Ironbrow Clan-Crown before the gate, and the Rune-Sealed Gate opens. The Rune Road leads down into Dwarfhold.");
   return true;
 }
@@ -78,4 +79,19 @@ export function ramsDay(s) {
   if (!stallsFree) return log(s, "🐏 Your rams could breed, but there is no free stable stall.");
   s.animals.ram = n + 1;
   log(s, `🐏 A ram lamb was born (${n + 1} mountain rams).`);
+}
+
+// ---- R52 Dwarfhold: inside the hold (the Old Deeps, Deep Iron Lode, Dwarven Coal) once the gate is open
+export const DEEPS = ["d_olddeeps", "n_deepiron", "n_dwarfcoal"];
+export function revealDeeps(s) {
+  for (const id of DEEPS) if (!(s.revealed ||= []).includes(id)) s.revealed.push(id);
+}
+// Oath of the Thane: +2 follower places, War-Chariot plans, +10% in chapter 10
+export function swearOath(s) {
+  if ((s.flags ||= {}).thaneOath != null) return false;
+  s.flags.thaneOath = s.day || 0;
+  if (!(s.unlocks ||= []).includes("recipe:r_warchariot")) s.unlocks.push("recipe:r_warchariot");
+  if (!(s.boons ||= []).some(b => b.from === "oath")) s.boons.push({ type: "questBonus", quest: "st10", pct: 0.1, from: "oath", text: "Clan Ironbrow stands with you: +10% in Reclaim the Name" });
+  log(s, "🛡️ The Thane swears Clan Ironbrow's oath to your family: two more dwarves may serve, the War-Chariot plans are yours, and the clan will stand with you in chapter 10.");
+  return true;
 }

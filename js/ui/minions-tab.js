@@ -116,7 +116,7 @@ export function minionsv() {
       E.hireable(s, t.id)
         .map(
           x =>
-            `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.icon} ${x.name} <span class="muted">${x.wage}🪙/mo</span></span><button class="b" data-a="hire" data-v="${t.id}" data-w="${x.id}" ${s.res.coin >= x.hire && E.minionRoom(s) ? "" : "disabled"}>${x.hire}🪙</button></div>`,
+            `<div class="card row" style="padding:5px 8px;margin:4px 0"><span>${x.icon} ${x.name} <span class="muted">${x.wage}🪙/mo</span></span><button class="b" data-a="hire" data-v="${t.id}" data-w="${x.id}" ${s.res.coin >= x.hire && E.minionRoom(s) && !E.hireLock(s, x) ? "" : "disabled"}>${x.hire}🪙</button>${E.hireLock(s, x) ? `<span class="muted"> ${E.hireLock(s, x)}</span>` : ""}</div>`,
         )
         .join("");
   return h;

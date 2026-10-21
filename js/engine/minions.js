@@ -1,3 +1,4 @@
+import { houseDef, tierOf } from "./houses.js";
 import { findId } from "./lookup.js";
 // Followers core: types, levels, evolution, hiring and jobs. Housing, the daily job loop and special minions/gear
 // live in minion-housing.js, minion-jobs.js and minion-special.js (re-exported here).
@@ -128,9 +129,12 @@ export function addMinion(s, type, why) {
 
 export const hireable = (s, townId) => (D.minions.hireAt[townId] || []).map(mtype);
 
+// R52 dwarf retainers: a type with `house` + `tier` needs that standing (Clan Ironbrow Neutral / Friendly)
+const TIER_RANK = ["feud", "rival", "cold", "neutral", "friendly", "allied"];
+export const hireLock = (s, t) => (t && t.house && t.tier && TIER_RANK.indexOf(tierOf(s, t.house)) < TIER_RANK.indexOf(t.tier) ? `needs ${(houseDef(t.house) || {}).name || t.house} ${t.tier}` : null);
 export function hire(s, townId, type) {
   const t = mtype(type);
-  if (!(D.minions.hireAt[townId] || []).includes(type) || s.res.coin < t.hire || !minionRoom(s)) return null;
+  if (!(D.minions.hireAt[townId] || []).includes(type) || s.res.coin < t.hire || !minionRoom(s) || hireLock(s, t)) return null;
   s.res.coin -= t.hire;
   return addMinion(s, type, "hired in town");
 }

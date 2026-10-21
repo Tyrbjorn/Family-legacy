@@ -2,6 +2,18 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R52",
+      "title": "Dwarfhold",
+      "items": [
+        "⚒️ Clan Ironbrow, the Thane's clan, joins the families of the realm: proud and grudge-keeping (slow to warm, quick to take offence). It starts Neutral, or Cold if you sold the gate's secret to House Crane. Friendly: Shieldbearers and Runewrights for hire. Allied: War-Chariots and marriage.",
+        "👑 Three Dwarfhold villagers: Thane Ironbrow (ale; a trade charter, −10% steel, ingots and gems there), Runesmith Hild (silver and gems; teaches the Runecarver path) and Brewmaster Ottar (barley; the Dwarven Cask for dwarven ale).",
+        "🪨 New crafting path: Runecarver → Runemaster → Runeforged Thane. Carve rune stones into weapons, armor and offhands at the Runestone Anvil (+10% power, +15% for a Runemaster); runes stack with enchantments.",
+        "🕳️ The Old Deeps: three floors (power 120, 140, 160) of mine tunnels, constructs and deep beasts, with mithril ore and rune stones. At the bottom, the Deep Door stays sealed. Its carvings of kneeling fish-men bear a sign the fisherfolk of Saltmere know well. The Underdark is an expansion.",
+        "⛏️ Dwarf retainers hired at Dwarfhold: Miners and Smiths (Neutral), Shieldbearers and Runewrights (Friendly). They join aged 30–80, serve into their 110s, and are poor farmers (×0.4).",
+        "🛡️ Act 3 beat “Oath of the Thane” (after chapter 9, ends Clan Ironbrow's thread): +2 follower places, the War-Chariot plans (carry 360), and +10% in chapter 10. Two new nodes inside the hold: Deep Iron Lode and Dwarven Coal."
+      ]
+    },
+    {
       "build": "R51",
       "title": "The Rune-Sealed Gate",
       "items": [

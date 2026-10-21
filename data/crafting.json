@@ -1727,6 +1727,125 @@
    "path": "carpenter",
    "hidden": true,
    "_note": "R51: the dwarves show you how once the Rune-Sealed Gate opens; Dwarfhold also sells it"
+  },
+  {
+   "id": "r_warchariot",
+   "name": "War-Chariot",
+   "base": "warchariot",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "planks": 30,
+    "steel": 8,
+    "leather": 6
+   },
+   "days": 12,
+   "line": "carpenter",
+   "path": "carpenter",
+   "hidden": true,
+   "_note": "R52: plans from the Oath of the Thane; Dwarfhold sells it at Allied"
+  },
+  {
+   "id": "r_rune_training_weights",
+   "name": "Rune-cut Training Weights",
+   "base": "training_weights",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "fighter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rune_hunting_knife",
+   "name": "Rune-cut Hunting Knife",
+   "base": "hunting_knife",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "hunter",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rune_copper_focus_ring",
+   "name": "Rune-cut Copper Focus Ring",
+   "base": "copper_focus_ring",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "apprentice",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rune_censer_chain",
+   "name": "Rune-cut Censer Chain",
+   "base": "censer_chain",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "acolyte",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rune_lockpick_set",
+   "name": "Rune-cut Lockpick Set",
+   "base": "lockpick_set",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "cutpurse",
+   "minSkill": 5
+  },
+  {
+   "id": "r_rune_trail_pitons",
+   "name": "Rune-cut Trail Pitons",
+   "base": "trail_pitons",
+   "skill": "runecraft",
+   "station": "runeanvil",
+   "mats": {
+    "ingots": 3,
+    "copper": 1,
+    "runestone": 1
+   },
+   "days": 5,
+   "path": "runecarver",
+   "pathRank": 1,
+   "forClass": "adventurer",
+   "minSkill": 5
   }
  ],
  "minionSlots": [
@@ -1934,6 +2053,34 @@
     "name": "amber",
     "value": 0.2,
     "needs": "goldsmith"
+   },
+   "runestone": {
+    "name": "rune",
+    "value": 0.2,
+    "cp": 0.1,
+    "needs": "runecarver",
+    "station": "runeanvil",
+    "slots": [
+     "weapon",
+     "armor",
+     "offhand"
+    ],
+    "_note": "R52 runes: carved by a Runecarver at the Runestone Anvil on weapons, armor and offhands; they stack with enchantments (carve first, enchant after)."
+   },
+   "deeprune": {
+    "name": "deep rune",
+    "value": 0.3,
+    "cp": 0.15,
+    "needs": "runemaster",
+    "station": "runeanvil",
+    "slots": [
+     "weapon",
+     "armor",
+     "offhand"
+    ],
+    "res": "runestone",
+    "n": 2,
+    "_note": "R52: a Runemaster carves a deeper rune from 2 rune stones"
    }
   }
  }

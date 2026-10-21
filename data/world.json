@@ -816,6 +816,18 @@
    "y": 1560,
    "region": "saltcoast",
    "desc": "Black rocks offshore that the tide uncovers twice a day. The fishing boats give it a wide berth, and nobody will say why."
+  },
+  {
+   "id": "l_deepdoor",
+   "type": "hidden",
+   "name": "The Deep Door",
+   "x": 790,
+   "y": 1318,
+   "region": "highlands",
+   "hidden": true,
+   "locked": true,
+   "stub": "underdark",
+   "desc": "A round door of black stone at the bottom of the Old Deeps, older than the dwarves. Carved fish-men kneel around a crowned figure rising from the water, and the same wave-and-eye sign is cut into the door that the fisherfolk of Saltmere scratch over their lintels. Beneath it, worn letters: FATHER. Salt water seeps under the seal. Thane Ironbrow will not speak of it. The Underdark: an expansion."
   }
  ],
  "nodeDefaults": {
@@ -886,6 +898,16 @@
     "item": "ramcart",
     "animal": "ram",
     "_note": "R51: dwarf-built cart pulled by Highland rams; not a wagon, so mountain routes do not slow it"
+   },
+   {
+    "id": "warchariot",
+    "name": "War-Chariot",
+    "icon": "🛡️",
+    "carry": 360,
+    "haulSpeed": 1.1,
+    "item": "warchariot",
+    "animal": "ram",
+    "_note": "R52: dwarf war-chariot pulled by Highland rams; full speed on mountain routes"
    }
   ],
   "qualityCarry": 0.08,

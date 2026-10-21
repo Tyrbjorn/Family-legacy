@@ -1,4 +1,4 @@
-import { openGate, usurperQuestDone } from "./highlands.js";
+import { openGate, swearOath, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { talentQuest } from "./talents.js";
@@ -71,6 +71,7 @@ export function resolveQuest(s, m, q, eff) {
   threadQuestDone(s, q, m); // R48 house thread finished
   usurperQuestDone(s, q); // R50 House Crane
   if (q.opensGate) openGate(s); // R51 the Rune-Sealed Gate
+  if (q.oath) swearOath(s); // R52 Oath of the Thane
   if (firstDone && q.choice) askChoice(s, q); // R49 the reef chain's ending waits for your choice
   if (q.town) markVisited(s, q.town);
   questLineNext(s, q);
@@ -174,6 +175,7 @@ export function dungeonFloor(s, m, dg, i, t = {}) {
 export function dungeonClear(s, m, dg) {
   const first = !(s.cleared || []).includes(dg.id);
   if (first) s.cleared.push(dg.id);
+  if (first && dg.reveals && !(s.discovered ||= []).includes("loc:" + dg.reveals)) s.discovered.push("loc:" + dg.reveals), log(s, "🚪 At the bottom of " + dg.name + ": " + ((D.world.locations.find(l => l.id === dg.reveals) || {}).name || dg.reveals) + "."); // R52 the Deep Door
   const R = LG().renown, full = R.dungeonTier[dg.deedTier || 1] || 20;
   addRenown(s, m, first ? full : Math.max(1, Math.round(full * R.dungeonRepeat)));
   if (first && dg.dragon) {

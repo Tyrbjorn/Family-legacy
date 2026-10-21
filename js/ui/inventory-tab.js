@@ -21,8 +21,8 @@ const holdBtns = id =>
 
 // inlays (shown once a Goldsmith exists, for accessories/charms; gems need a Jeweler)
 const inlayBtns = id =>
-  E.goldsmith(s) && D.crafting.inlays.slots.includes(it(id).slot) && !/[~#]/.test(id)
-    ? Object.entries(D.crafting.inlays.mats)
+  (E.goldsmith(s) || E.runecarver(s)) && Object.values(D.crafting.inlays.mats).some(x => (x.slots || D.crafting.inlays.slots).includes(it(id).slot)) && !/[~#]/.test(id)
+    ? Object.entries(D.crafting.inlays.mats).filter(([, x]) => (x.slots || D.crafting.inlays.slots).includes(it(id).slot))
         .map(([k, x]) => { const why = E.inlayIssue(s, id, k); return `<button class="b" data-a="inlay" data-v="${id}" data-w="${k}" ${why ? `disabled title="${why}"` : ""}>💍 ${x.name}</button>`; })
         .join("")
     : "";

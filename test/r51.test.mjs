@@ -14,7 +14,7 @@ const findEyrie=s=>{for(const id of ['highlands','eyrie'])if(!s.discovered.inclu
 const deliver3=(s,id)=>{for(let i=0;i<3;i++){s.day=Math.max(s.day,(s.req[id]||{}).at||0);E.deliverRequest(s,id);}};
 const story=(s,n)=>{for(let i=1;i<=n;i++)if(!s.doneQuests.includes('st'+i))s.doneQuests.push('st'+i);};
 const clear=(s,id)=>{const m=s.members[0];for(let i=0;i<40&&!s.doneQuests.includes(id);i++)E.resolveQuest(s,m,Q(id),1);return s.doneQuests.includes(id);};
-ok(BUILD==='R51'&&E.SCHEMA===47,'R51, save step 47');
+ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1)>=51&&E.SCHEMA>=47,'R51+, save step 47+');
 // ---- the gate post
 const GP=D.towns.find(t=>t.id==='gatepost'), DH=D.towns.find(t=>t.id==='dwarfhold');
 ok(GP&&GP.hidden&&GP.region==='highlands'&&GP.wants.includes('bread')&&GP.wants.includes('ale'),'Ironbrow Gate Post: hidden, buys food and drink');
@@ -68,7 +68,7 @@ ok(DH.shop.includes('ramcart'),'sells the Ram Cart');
 { const s=base(); s.discovered.push('loc:l_dwarfhold'); delete s.flags; s.schema=46; STEPS.find(x=>x.n===47).run(s);
   ok(s.discovered.includes('gatepost')&&!s.gateOpen&&s.flags&&!['crownband','crownstone','crowncrest'].some(k=>s.res[k]>0),'step 47: a found gate also knows the post; nothing given');
   const t=base(); STEPS.find(x=>x.n===47).run(t); ok(!t.discovered.includes('gatepost'),'no gate found, no post'); }
-{ const A=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A.schema===47,'old FL1 save migrates to step 47'); }
-{ const s=base(); s.gateOpen=5; s.boons.push({...E.RUNE_ROAD}); const l=E.deserialize(E.serialize(s)); ok(l.schema===47&&E.gateOpen(l)&&E.perkTravel(l,'highlands')>1,'R51 state survives save/load'); }
-ok(D.changelog.entries[0].build==='R51','changelog R51');
+{ const A=E.importSave(fs.readFileSync(new URL('./fixtures/old-save-fl1.txt',import.meta.url),'utf8').trim()); ok(A.schema===E.SCHEMA,'old FL1 save migrates to step 47'); }
+{ const s=base(); s.gateOpen=5; s.boons.push({...E.RUNE_ROAD}); const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA&&E.gateOpen(l)&&E.perkTravel(l,'highlands')>1,'R51 state survives save/load'); }
+ok(D.changelog.entries.some(e=>e.build==='R51'),'changelog R51');
 console.log(pass+' R51 checks passed');

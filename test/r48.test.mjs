@@ -16,7 +16,7 @@ const F=D.families, H=F.list, ids=H.map(h=>h.id);
 ok(!D.marriage.houses&&F.status&&F.tiers&&F.war&&F.feud,'house rules moved to families.json; marriage.json keeps only marriage rules');
 ok(['ashbrook','tallow','vey','marlowe','corran','skye'].every(id=>ids.includes(id))&&['corwen','dawnward','ormond','sallow'].every(id=>ids.includes(id))&&H.length>=10,'the 6 old houses keep their ids; R48 adds Corwen, Dawnward, Ormond, Sallow (10)');
 ok(!ids.includes('vael')&&F.player.id==='vael'&&!ids.some(id=>['crane','brokka'].includes(id)),"House Vael is the player's house (not a rival); Crane/Brokka wait for later rounds (Gilmane came in R49)");
-ok(H.filter(h=>h.major).map(h=>h.id).sort().join()==='ashbrook,corwen,gilmane,marlowe,skye,vey'&&H.every(h=>D.towns.some(t=>t.id===h.seat)),'major house per town (Millbrook, Thornwick, Ashford, Eyrie, Gull\'s Landing, Saltmere); every seat is a town');
+ok(H.filter(h=>h.major&&h.id!=='ironbrow').map(h=>h.id).sort().join()==='ashbrook,corwen,gilmane,marlowe,skye,vey'&&H.every(h=>D.towns.some(t=>t.id===h.seat)),'major house per town (Millbrook, Thornwick, Ashford, Eyrie, Gull\'s Landing, Saltmere); every seat is a town');
 ok(H.every(h=>h.goal&&F.temperaments[h.temperament]&&h.thread&&h.thread.quests.length===3&&h.thread.quests.every(q=>E.findId(D.quests,q)&&D.map.points[q])&&h.perks&&h.perks.friendly&&h.marriage!==undefined),'every house: goal, temperament, a 3-quest thread on the map, a Friendly perk, marriage flag');
 ok(H.filter(h=>h.major).every(h=>h.perks.allied&&h.perks.allied.length),'major houses also have an Allied perk');
 ok(['honest','scheming','pious','ruthless','idealistic','proud','secretive'].every(t=>F.temperaments[t]&&F.temperaments[t].text),'7 temperaments with rules');

@@ -36,7 +36,7 @@ import { memberFail } from "./geartypes.js";
 export function successChance(s, m, q) {
   const c = cp(s, m);
   const qc = enemyCp(s, m, q.cp);
-  const p = Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll") + checkBonus(m, q))); // R49 skill checks
+  const p = Math.max(0.1, Math.min(0.98, 0.5 + (c - qc) / (qc + 20) + Math.min(0.15, minionPower(s, "guard") * 0.03) + chalFx(m, "roll") + checkBonus(m, q) + ((s && s.boons) || []).filter(b => b.type === "questBonus" && b.quest === q.id).reduce((a, b) => a + b.pct, 0))); // R52 Oath of the Thane // R49 skill checks
   // a caster's spells can fail in armor: fights and magic-skill quests lose that share of the odds
   const f = q.cp > 0 || D.gear.kinds.spellFail.magicSkills.includes(q.skill) ? memberFail(m) : 0;
   return f ? Math.max(0.05, p * (1 - f)) : p;

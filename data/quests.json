@@ -4011,11 +4011,12 @@
      "id": "sell",
      "name": "Sell it to House Crane",
      "icon": "🦩",
-     "text": "1,200 coin. Thrain finds out; the dwarves will remember it.",
+     "text": "1,200 coin. Thrain finds out: Clan Ironbrow starts Cold.",
      "fx": {
       "coin": 1200,
       "usurper": 0,
-      "flag": "soldGate"
+      "flag": "soldGate",
+      "cold": "ironbrow"
      }
     }
    ]
@@ -4109,5 +4110,114 @@
   },
   "hidden": true,
   "after": "gate8"
+ },
+ {
+  "id": "ht_ironbrow1",
+  "name": "Bread for the Deep Halls",
+  "type": "house",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "reward": {
+   "coin": 300
+  },
+  "skill": "haggling",
+  "house": "ironbrow",
+  "thread": "ironbrow",
+  "step": 1,
+  "once": true,
+  "hidden": true,
+  "threadOpen": true,
+  "deliver": {
+   "bread": 40,
+   "preserves": 20
+  },
+  "req": {
+   "town": "dwarfhold"
+  },
+  "desc": "Clan Ironbrow's thread “Oath of the Thane”, part 1 of 3: the deep halls are hungry. Feed them.",
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": []
+ },
+ {
+  "id": "ht_ironbrow2",
+  "name": "The Ancestor Stones",
+  "type": "house",
+  "cp": 150,
+  "days": 5,
+  "risk": "risky",
+  "reward": {
+   "coin": 450,
+   "blocks": 20
+  },
+  "skill": "masonry",
+  "house": "ironbrow",
+  "thread": "ironbrow",
+  "step": 2,
+  "once": true,
+  "hidden": true,
+  "after": "ht_ironbrow1",
+  "req": {
+   "town": "dwarfhold"
+  },
+  "desc": "Part 2 of 3: raise the fallen ancestor stones in the Old Deeps' upper halls, under guard.",
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": []
+ },
+ {
+  "id": "b_oath",
+  "name": "Oath of the Thane",
+  "type": "house",
+  "beat": true,
+  "act": 3,
+  "band": 4,
+  "cp": 160,
+  "days": 4,
+  "risk": "risky",
+  "reward": {
+   "coin": 800
+  },
+  "skill": "leadership",
+  "house": "ironbrow",
+  "thread": "ironbrow",
+  "step": 3,
+  "once": true,
+  "hidden": true,
+  "after": "ht_ironbrow2",
+  "req": {
+   "town": "dwarfhold",
+   "story": 9,
+   "done": [
+    "gate9"
+   ]
+  },
+  "grants": {
+   "renown": 30
+  },
+  "oath": true,
+  "desc": "Act 3 beat (after chapter 9), part 3 of 3: the Thane pledges Clan Ironbrow to your family before the Clan-Crown. Dwarfhold favour rises, two more dwarves may serve you, the War-Chariot plans are yours, and the clan will stand with you when you reclaim your name (+10% in chapter 10).",
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": []
+ },
+ {
+  "id": "hq_raid_ironbrow",
+  "name": "Raid Clan Ironbrow's Stores",
+  "type": "house",
+  "cp": 160,
+  "days": 4,
+  "risk": "deadly",
+  "reward": {
+   "coin": 400
+  },
+  "skill": "brawling",
+  "against": "ironbrow",
+  "needsFeud": true,
+  "desc": "Only while feuding: the dwarves will not forget it.",
+  "region": "highlands",
+  "town": "dwarfhold",
+  "loot": []
  }
 ]

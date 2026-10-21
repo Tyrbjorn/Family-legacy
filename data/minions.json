@@ -501,6 +501,92 @@
    },
    "desc": "Spirit-talker drawn to shrine and wild places",
    "housing": "bunk"
+  },
+  {
+   "id": "dwarfminer",
+   "name": "Dwarf Miner",
+   "icon": "⛏️",
+   "hire": 180,
+   "wage": 12,
+   "apt": {
+    "mine": 2.0,
+    "gather": 1.3,
+    "farm": 0.4
+   },
+   "tier": "neutral",
+   "housing": "bunk",
+   "race": "dwarf",
+   "house": "ironbrow",
+   "hireAge": [
+    30,
+    80
+   ],
+   "span": 110,
+   "desc": "A dwarf of Clan Ironbrow: long-lived (serves into their 110s), strong in mines, forges and the guard post, poor in the fields (×0.4)."
+  },
+  {
+   "id": "dwarfsmith",
+   "name": "Dwarf Smith",
+   "icon": "🔨",
+   "hire": 220,
+   "wage": 12,
+   "apt": {
+    "craft": 2.0,
+    "farm": 0.4
+   },
+   "tier": "neutral",
+   "housing": "bunk",
+   "race": "dwarf",
+   "house": "ironbrow",
+   "hireAge": [
+    30,
+    80
+   ],
+   "span": 110,
+   "desc": "A dwarf of Clan Ironbrow: long-lived (serves into their 110s), strong in mines, forges and the guard post, poor in the fields (×0.4)."
+  },
+  {
+   "id": "dwarfshield",
+   "name": "Dwarf Shieldbearer",
+   "icon": "🛡️",
+   "hire": 260,
+   "wage": 12,
+   "apt": {
+    "guard": 1.8,
+    "patrol": 1.8,
+    "farm": 0.4
+   },
+   "tier": "friendly",
+   "housing": "bunk",
+   "race": "dwarf",
+   "house": "ironbrow",
+   "hireAge": [
+    30,
+    80
+   ],
+   "span": 110,
+   "desc": "A dwarf of Clan Ironbrow: long-lived (serves into their 110s), strong in mines, forges and the guard post, poor in the fields (×0.4)."
+  },
+  {
+   "id": "dwarfrune",
+   "name": "Dwarf Runewright",
+   "icon": "🪨",
+   "hire": 300,
+   "wage": 12,
+   "apt": {
+    "craft": 1.6,
+    "farm": 0.4
+   },
+   "tier": "friendly",
+   "housing": "bunk",
+   "race": "dwarf",
+   "house": "ironbrow",
+   "hireAge": [
+    30,
+    80
+   ],
+   "span": 110,
+   "desc": "A dwarf of Clan Ironbrow: long-lived (serves into their 110s), strong in mines, forges and the guard post, poor in the fields (×0.4)."
   }
  ],
  "hireAt": {
@@ -515,6 +601,12 @@
    "guard",
    "tinker",
    "tutor"
+  ],
+  "dwarfhold": [
+   "dwarfminer",
+   "dwarfsmith",
+   "dwarfshield",
+   "dwarfrune"
   ]
  },
  "rescueQuests": {
@@ -1507,5 +1599,6 @@
   ],
   "span": 55,
   "deathPerMonth": 0.02
- }
+ },
+ "oathCap": 2
 }

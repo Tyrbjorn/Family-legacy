@@ -245,7 +245,7 @@ if (fail) process.exit(1);
   ok(WW.locations.some(l => l.stub === "runecarver" && l.locked && l.hidden), "dwarven hold stub (locked, hidden)");
   ok(WW.locations.some(l => l.port && l.town && D.towns.some(t => t.id === l.town && t.port)), "R48: the port location is a real port town (Gull's Landing)");
   const secretLocs = D.map.areas.flatMap(a => a.secrets).filter(x => x.type === "location");
-  ok(WW.locations.filter(l => l.hidden && !l.town && !l.link).every(l => secretLocs.some(x => x.id === l.id)) && secretLocs.every(x => WW.locations.some(l => l.id === x.id)), "hidden locations are reachable via explore secrets");
+  ok(WW.locations.filter(l => l.hidden && !l.town && !l.link && !D.dungeons.some(d => d.reveals === l.id)).every(l => secretLocs.some(x => x.id === l.id)) && secretLocs.every(x => WW.locations.some(l => l.id === x.id)), "hidden locations are reachable via explore secrets");
   const NN = D.nodes.filter(n => n.terrainNode);
   const want = { highlands: ["ore", "gems"], forest: ["wood", "mushrooms"], plains: ["thyme"], river: ["fish"], lake: ["fish"], swamp: ["clay", "peat"], coast: ["salt"] };
   for (const [tr, rs] of Object.entries(want)) ok(rs.every(k => NN.some(n => n.terrain === tr && n.res[k])), `terrain ${tr} has nodes for ${rs.join("/")}`);

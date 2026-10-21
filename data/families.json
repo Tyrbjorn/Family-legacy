@@ -519,6 +519,52 @@
     "text": "children may be Sea-touched (+25% Fishing/Sailing XP)"
    },
    "region": "saltcoast"
+  },
+  {
+   "id": "ironbrow",
+   "start": 0,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "Clan Ironbrow",
+   "icon": "⚒️",
+   "town": "dwarfhold",
+   "seat": "dwarfhold",
+   "wealth": 3,
+   "desc": "The Thane's clan",
+   "major": true,
+   "known": "The Thane's clan, keepers of Dwarfhold",
+   "goal": "Reclaim the deep halls",
+   "temperament": "proud",
+   "thread": {
+    "name": "Oath of the Thane",
+    "quests": [
+     "ht_ironbrow1",
+     "ht_ironbrow2",
+     "b_oath"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "hire",
+      "tier": "friendly",
+      "text": "Dwarf Shieldbearers and Runewrights for hire; Ram Carts welcome"
+     }
+    ],
+    "allied": [
+     {
+      "type": "shop",
+      "town": "dwarfhold",
+      "items": [
+       "warchariot"
+      ],
+      "text": "War-Chariots sold in Dwarfhold; marriage into the clan"
+     }
+    ]
+   },
+   "marriage": "allied",
+   "region": "highlands",
+   "_note": "R52: proud = grudge-keeping (slow to rise, quick to drop). Starts Neutral; Cold if the gate's secret was sold to House Crane (A Matter of Discretion)."
   }
  ],
  "range": [

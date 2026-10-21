@@ -6,7 +6,7 @@ import { D, bl } from "./state.js";
 
 // ---- minions (followers, hired help, retainers)
 export const minionCap = s =>
-  D.minions.baseCap + (s.structures || []).length * D.minions.capPerHouse + (hasService(s, "storage") ? 2 : 0);
+  D.minions.baseCap + (s.structures || []).length * D.minions.capPerHouse + (hasService(s, "storage") ? 2 : 0) + ((s.flags || {}).thaneOath != null ? D.minions.oathCap || 0 : 0); // R52 Oath of the Thane
 
 // other foods (meat, fish, eggs, honey) top up the food pool when it runs short
 export function pantry(s, need) {

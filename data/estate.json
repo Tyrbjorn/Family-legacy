@@ -2484,6 +2484,51 @@
     }
    },
    "desc": "Boils sea brine down: 4 salt/day."
+  },
+  {
+   "id": "runeanvil",
+   "name": "Runestone Anvil",
+   "icon": "🪨",
+   "kind": "station",
+   "skill": "runecraft",
+   "cost": {
+    "coin": 400,
+    "blocks": 10,
+    "ingots": 6
+   },
+   "unlock": {
+    "reqPerk": "hild3"
+   },
+   "desc": "The station for rune carving. Runesmith Hild teaches you how.",
+   "bonus": {}
+  },
+  {
+   "id": "dwarfcask",
+   "name": "Dwarven Cask",
+   "icon": "🛢️",
+   "kind": "station",
+   "skill": "cooking",
+   "cost": {
+    "coin": 150,
+    "planks": 10,
+    "ingots": 2
+   },
+   "unlock": {
+    "reqPerk": "ottar3"
+   },
+   "bonus": {
+    "processes": [
+     {
+      "in": {
+       "ale": 2,
+       "honey": 1
+      },
+      "out": "dwarfale",
+      "rate": 1
+     }
+    ]
+   },
+   "desc": "Ale and honey → dwarven ale. Brewmaster Ottar's recipe. Dwarfhold pays well for it."
   }
  ],
  "synergies": [
@@ -2766,7 +2811,9 @@
    "mead",
    "crownband",
    "crownstone",
-   "crowncrest"
+   "crowncrest",
+   "runestone",
+   "dwarfale"
   ]
  },
  "minionFoodPerDay": 0.5,
@@ -2877,7 +2924,9 @@
     "rope",
     "kelp",
     "kelpfert",
-    "mead"
+    "mead",
+    "runestone",
+    "dwarfale"
    ]
   },
   "3": {

@@ -130,9 +130,10 @@ export function minionAgeDay(s) {
   if (!AG() || s.day % 30 !== 0) return;
   for (const mi of [...(s.minions || [])]) {
     if (mi.special) continue;
-    if (mi.age == null) mi.age = AG().hireAge[0] + rng() * (AG().hireAge[1] - AG().hireAge[0]);
+    const ty = (D.minions.types || []).find(t => t.id === mi.type) || {}, ha = ty.hireAge || AG().hireAge; // R52 dwarves: 30-80, span 110
+    if (mi.age == null) mi.age = ha[0] + rng() * (ha[1] - ha[0]);
     mi.age += 1 / 12;
-    const over = mi.age - AG().span;
+    const over = mi.age - (ty.span || AG().span);
     if (over >= 0 && rng() < AG().deathPerMonth * (over + 1)) {
       for (const id of Object.values(mi.equip || {})) s.vault.push(id);
       s.minions = s.minions.filter(x => x !== mi);

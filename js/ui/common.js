@@ -80,6 +80,8 @@ export const RI = {
   crownband: "👑",
   crownstone: "💎",
   crowncrest: "🔱",
+  runestone: "🪨",
+  dwarfale: "🍺",
   pearls: "🦪",
   amber: "🔶",
   reefgold: "📿",

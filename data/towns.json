@@ -74,7 +74,9 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 11
+   "mead": 11,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "rusty_sword",
@@ -204,7 +206,9 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 11
+   "mead": 11,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "iron_sword",
@@ -325,7 +329,9 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 11
+   "mead": 11,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "hunting_bow",
@@ -433,7 +439,9 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 9
+   "mead": 9,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "iron_sword",
@@ -562,7 +570,9 @@
    "amber": 35,
    "reefgold": 110,
    "kelpfert": 7,
-   "mead": 12
+   "mead": 12,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "fishnet",
@@ -676,7 +686,9 @@
    "amber": 25,
    "reefgold": 85,
    "kelpfert": 5,
-   "mead": 12
+   "mead": 12,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [
    "reefgold_circlet",
@@ -789,7 +801,9 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 9
+   "mead": 9,
+   "runestone": 30,
+   "dwarfale": 16
   },
   "shop": [],
   "market": [
@@ -896,14 +910,17 @@
    "amber": 35,
    "reefgold": 115,
    "kelpfert": 7,
-   "mead": 9
+   "mead": 9,
+   "runestone": 24,
+   "dwarfale": 22
   },
   "shop": [
    "ramcart"
   ],
   "market": [
    "food",
-   "coal"
+   "coal",
+   "runestone"
   ],
   "produces": [
    "steel",

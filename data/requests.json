@@ -1009,6 +1009,153 @@
      }
     }
    ]
+  },
+  {
+   "id": "thane",
+   "town": "dwarfhold",
+   "name": "Thane Ironbrow",
+   "icon": "👑",
+   "task": "cook",
+   "opens": {
+    "town": "dwarfhold"
+   },
+   "desc": "Old, broad and slow to smile. He wears the Clan-Crown you brought back.",
+   "requests": [
+    {
+     "id": "thane1",
+     "wants": {
+      "ale": 20
+     },
+     "reward": {
+      "coin": 120
+     }
+    },
+    {
+     "id": "thane2",
+     "wants": {
+      "ale": 40
+     },
+     "reward": {
+      "coin": 220,
+      "renown": 3
+     }
+    },
+    {
+     "id": "thane3",
+     "wants": {
+      "ale": 60
+     },
+     "reward": {
+      "coin": 320
+     },
+     "extra": {
+      "type": "buy",
+      "res": [
+       "steel",
+       "ingots",
+       "gems"
+      ],
+      "town": "dwarfhold",
+      "pct": 0.1,
+      "text": "The Thane's trade charter: steel, ingots and gems cost 10% less in Dwarfhold."
+     }
+    }
+   ]
+  },
+  {
+   "id": "hild",
+   "town": "dwarfhold",
+   "name": "Runesmith Hild",
+   "icon": "🔨",
+   "task": "chop",
+   "opens": {
+    "town": "dwarfhold"
+   },
+   "desc": "She carves runes with a nail and a hammer and talks to them while she works.",
+   "requests": [
+    {
+     "id": "hild1",
+     "wants": {
+      "silver": 4
+     },
+     "reward": {
+      "coin": 150
+     }
+    },
+    {
+     "id": "hild2",
+     "wants": {
+      "silver": 6,
+      "gems": 2
+     },
+     "reward": {
+      "coin": 260,
+      "renown": 3
+     }
+    },
+    {
+     "id": "hild3",
+     "wants": {
+      "silver": 8,
+      "gems": 4
+     },
+     "reward": {
+      "coin": 380,
+      "res": {
+       "runestone": 3
+      }
+     },
+     "extra": {
+      "type": "teach",
+      "text": "Hild teaches the Runecarver path and the Runestone Anvil. Runes are carved on weapons, armor and offhands and stack with enchantments."
+     }
+    }
+   ]
+  },
+  {
+   "id": "ottar",
+   "town": "dwarfhold",
+   "name": "Brewmaster Ottar",
+   "icon": "🍺",
+   "task": "cook",
+   "opens": {
+    "town": "dwarfhold"
+   },
+   "desc": "Runs the hold's brewhouse. Has opinions about surface ale.",
+   "requests": [
+    {
+     "id": "ottar1",
+     "wants": {
+      "barley": 40
+     },
+     "reward": {
+      "coin": 100
+     }
+    },
+    {
+     "id": "ottar2",
+     "wants": {
+      "barley": 60
+     },
+     "reward": {
+      "coin": 180,
+      "renown": 3
+     }
+    },
+    {
+     "id": "ottar3",
+     "wants": {
+      "barley": 80
+     },
+     "reward": {
+      "coin": 260
+     },
+     "extra": {
+      "type": "teach",
+      "text": "Ottar's recipe: build a Dwarven Cask to turn ale and honey into dwarven ale."
+     }
+    }
+   ]
   }
  ],
  "repeat": {

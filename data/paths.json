@@ -929,6 +929,74 @@
      }
     }
    ]
+  },
+  {
+   "id": "runecarver",
+   "name": "Runecarver",
+   "icon": "🪨",
+   "kind": "crafting",
+   "skills": [
+    "runecraft",
+    "smithing"
+   ],
+   "station": "runeanvil",
+   "craftSkill": "runecraft",
+   "unlock": {
+    "reqPerk": "hild3",
+    "text": "Runesmith Hild's requests (Dwarfhold)"
+   },
+   "desc": "Dwarven rune carving: runes on weapons, armor and offhands at the Runestone Anvil. They stack with enchantments.",
+   "fx": [
+    {
+     "kind": "craft",
+     "v": 0.04,
+     "slots": [
+      "weapon",
+      "armor",
+      "offhand"
+     ]
+    }
+   ],
+   "specs": [
+    {
+     "id": "runemaster",
+     "name": "Runemaster",
+     "icon": "🔷",
+     "desc": "Deeper runes: carved runes are 50% stronger.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "weapon",
+        "armor",
+        "offhand"
+       ]
+      }
+     ],
+     "artisan": {
+      "name": "Runeforged Thane",
+      "icon": "🛡️"
+     }
+    },
+    {
+     "id": "wardcutter",
+     "name": "Wardcutter",
+     "icon": "🧿",
+     "desc": "Ward-runes for tools and charms: better rune-cut tools.",
+     "fx": [
+      {
+       "kind": "craft",
+       "v": 0.06,
+       "slots": [
+        "tool",
+        "charm",
+        "accessory"
+       ]
+      }
+     ]
+    }
+   ]
   }
  ],
  "classMap": {

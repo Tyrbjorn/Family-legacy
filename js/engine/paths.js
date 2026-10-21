@@ -235,6 +235,8 @@ export function openPathIssue(s, m, id) {
   if (!m.craft) return "join the Crafters' Guild first";
   if (!memberPaths(m).length && pathDef(id).advanced) return "pick a main path first";
   if (pathOf(m, id)) return "already on this path";
+  const pu = pathDef(id).unlock; // R52 Runecarver: taught by Runesmith Hild
+  if (pu && pu.reqPerk && !(s.reqPerks || []).some(p => p.from === pu.reqPerk)) return "learn it first: " + (pu.text || pu.reqPerk);
   if (pathDef(id).advanced) {
     const miss = advancedReqs(m, id).filter(x => !x.ok);
     return miss.length ? "needs " + miss.map(x => x.text).join(" + ") : null;

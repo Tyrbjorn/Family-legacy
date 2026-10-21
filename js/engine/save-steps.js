@@ -714,6 +714,15 @@ export const STEPS = [
       if (!s.boons) s.boons = [];
     },
   },
+  {
+    n: 48,
+    name: "R52 Dwarfhold: Clan Ironbrow starts Neutral, or Cold if the gate's secret was sold to House Crane; a save with the gate open sees the Old Deeps and the hold's nodes; no thread step, retainer, rune or oath is given",
+    run(s) {
+      s.houses = s.houses || {};
+      if (!s.houses.ironbrow) s.houses.ironbrow = { r: (s.flags || {}).soldGate != null ? -25 : 0, state: "peace" };
+      if (s.gateOpen != null) for (const id of ["d_olddeeps", "n_deepiron", "n_dwarfcoal"]) if (!(s.revealed ||= []).includes(id)) s.revealed.push(id);
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",
