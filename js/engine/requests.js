@@ -1,4 +1,5 @@
 import { followLead } from "./highlands.js";
+import { dagonFavour } from "./dagon.js";
 import { houseEvent } from "./families.js";
 import { readChart } from "./saltmere.js";
 import { roleBonus } from "./guildtiers.js";
@@ -110,6 +111,7 @@ export function deliverRequest(s, npcId) {
   if (deliverIssue(s, npcId)) return null;
   const n = npcDef(npcId), r = openRequest(s, npcId), w = wantsOf(s, npcId), x = st(s, npcId);
   for (const [a, v] of Object.entries(w)) s.res[a] -= v;
+  if (n.town === "saltmere") dagonFavour(s, 5); // R53 helping Saltmere's own earns the Lodge's trust
   const rw = r.reward || {}, got = [], k = cycleMult(s, npcId) * (1 + roleBonus(s, "reqBonus")); // R46 Swindler
   if (rw.coin) (s.res.coin += Math.round(rw.coin * k)), got.push(Math.round(rw.coin * k) + " coin");
   if (rw.food) (s.res.food += Math.round(rw.food * k)), got.push(Math.round(rw.food * k) + " food");

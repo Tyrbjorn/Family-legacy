@@ -1,4 +1,5 @@
 import { perkBuy, perkShop, perkShopItems } from "./families.js";
+import { brewRefused } from "./dagon.js";
 import { marketClosed } from "./worldevents.js";
 import { hasStructType, markVisited } from "./sea.js";
 import { roleBonus } from "./guildtiers.js";
@@ -180,7 +181,7 @@ export const brewPrice = (s, townId, res) => Math.round((findId(D.towns, townId)
 export function buyBrew(s, townId, res, n) {
   n = Math.min(n, brewLeft(s, townId, res));
   const c = brewPrice(s, townId, res) * n;
-  if (n <= 0 || s.res.coin < c || marketClosed(s, townId)) return false;
+  if (n <= 0 || s.res.coin < c || marketClosed(s, townId) || brewRefused(s, townId)) return false; // R53
   s.res.coin -= c;
   s.res[res] = (s.res[res] || 0) + n;
   const mo = Math.floor((s.day || 0) / 30), tb = ((s.brewBought ||= {})[townId] ||= {});

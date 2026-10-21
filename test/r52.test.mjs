@@ -8,8 +8,8 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const Y=D.tuning.daysPerYear, Q=id=>D.quests.find(q=>q.id===id);
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);const m=s.members[0];m.ageDays=25*Y;s.res.coin=1e5;for(const k of ['ale','barley','silver','gems','bread','preserves','runestone'])s.res[k]=1e3;return s;};
-ok(BUILD==='R52'&&E.SCHEMA===48,'R52, save step 48');
-ok(D.changelog.entries[0].build==='R52','changelog R52');
+ok(+BUILD.slice(1)>=52&&E.SCHEMA>=48,'R52+, save step 48+');
+ok(D.changelog.entries.some(e=>e.build==='R52'),'changelog R52');
 // house
 const H=D.families.list.find(h=>h.id==='ironbrow');
 ok(H&&H.town==='dwarfhold'&&H.start===0,'Clan Ironbrow seated at Dwarfhold, Neutral');
@@ -38,6 +38,6 @@ ok(D.world.haul.tiers.some(t=>t.id==='warchariot'),'War-Chariot haul tier');
 // deeps
 { const s=base(); E.openGate(s); ok(['d_olddeeps','n_deepiron','n_dwarfcoal'].every(x=>s.revealed.includes(x)),'opening the gate reveals the Old Deeps and the lodes'); }
 ok(D.dungeons.find(d=>d.id==='d_olddeeps').reveals==='l_deepdoor'&&D.world.locations.find(l=>l.id==='l_deepdoor'),'the Old Deeps end at the Deep Door');
-{ const s=base(); s.gateOpen=1; const l=E.deserialize(E.serialize(s)); ok(l.schema===48,'save/load'); }
+{ const s=base(); s.gateOpen=1; const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA,'save/load'); }
 console.log('r52 ok',pass);
 ok(/FATHER/.test(D.world.locations.find(l=>l.id==='l_deepdoor').desc)&&/Saltmere/.test(D.world.locations.find(l=>l.id==='l_deepdoor').desc),'the Deep Door foreshadows Dagon and Saltmere');

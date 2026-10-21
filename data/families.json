@@ -565,6 +565,56 @@
    "marriage": "allied",
    "region": "highlands",
    "_note": "R52: proud = grudge-keeping (slow to rise, quick to drop). Starts Neutral; Cold if the gate's secret was sold to House Crane (A Matter of Discretion)."
+  },
+  {
+   "id": "dagon",
+   "start": -25,
+   "rank": "gentry",
+   "kind": "house",
+   "name": "The Lodge of the Drowned Light",
+   "icon": "🐟",
+   "town": "saltmere",
+   "seat": "saltmere",
+   "wealth": 3,
+   "desc": "Saltmere's church, as the town politely calls it",
+   "known": "Saltmere's church, as the town politely calls it. Underneath: the Esoteric Order of Dagon.",
+   "goal": "Keep the old bargain with the deep",
+   "temperament": "secretive",
+   "thread": {
+    "name": "The Gilded Hall",
+    "quests": [
+     "inv1",
+     "inv2",
+     "inv3",
+     "inv4",
+     "inv5"
+    ]
+   },
+   "perks": {
+    "friendly": [
+     {
+      "type": "buy",
+      "res": [
+       "reefgold",
+       "pearls"
+      ],
+      "town": "saltmere",
+      "pct": 0.1,
+      "text": "Reef-gold and pearls −10% in Saltmere"
+     }
+    ],
+    "allied": [
+     {
+      "type": "sell",
+      "town": "saltmere",
+      "pct": 0.05,
+      "text": "+5% selling in Saltmere"
+     }
+    ]
+   },
+   "marriage": false,
+   "region": "saltcoast",
+   "_note": "R53: one group. The town calls it the Lodge; underneath it is the Esoteric Order of Dagon. Starts Cold (−25): outsiders pay +20% and get −20% in Saltmere, and the Drowned Lamp will not serve them."
   }
  ],
  "range": [

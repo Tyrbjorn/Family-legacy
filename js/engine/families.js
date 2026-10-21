@@ -2,6 +2,7 @@
 // family events the houses react to (houseEvent), the 3-quest house threads, and the player's own House Vael.
 // houses.js keeps rapport tiers, gifts, troubles, feuds; this module only reads its state, so every rule here is data.
 import { D, living, log, rng } from "./state.js";
+import { dagonBuyMult, dagonSellMult } from "./dagon.js";
 import { houseList, houseDef, houseState, tierOf, addRapport, phaseOk } from "./houses.js";
 import { memberGuild } from "./guilds.js";
 import { addRenown } from "./legacy.js";
@@ -31,9 +32,10 @@ const sumPct = (L, f) => L.filter(f).reduce((a, p) => a + (p.pct || 0), 0);
 // −x on buying these market goods
 // R49: a perk may name a town (Gilmane allied: Saltmere salt); villager deals (Hask) and choice boons count too
 export const perkBuy = (s, res, town) =>
+  dagonBuyMult(s, town) * // R53 outsiders in Saltmere
   Math.max(0.4, 1 - sumPct([...allPerks(s, "buy"), ...((s && s.reqPerks) || []).filter(p => p.type === "buy"), ...((s && s.boons) || []).filter(p => p.type === "buy")], p => (p.res || []).includes(res) && (!p.town || p.town === town) && (!p.towns || p.towns.includes(town)))); // R51 towns list
 // +x on selling in this town
-export const perkSell = (s, town) => 1 + sumPct(allPerks(s, "sell"), p => p.town === town);
+export const perkSell = (s, town) => dagonSellMult(s, town) * (1 + sumPct(allPerks(s, "sell"), p => p.town === town)); // R53 outsiders get less in Saltmere
 // −x on a town's shop items
 export const perkShop = (s, town) => sumPct(allPerks(s, "shopDisc"), p => p.town === town);
 // extra shop items while the perk holds

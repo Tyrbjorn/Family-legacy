@@ -828,6 +828,17 @@
    "locked": true,
    "stub": "underdark",
    "desc": "A round door of black stone at the bottom of the Old Deeps, older than the dwarves. Carved fish-men kneel around a crowned figure rising from the water, and the same wave-and-eye sign is cut into the door that the fisherfolk of Saltmere scratch over their lintels. Beneath it, worn letters: FATHER. Salt water seeps under the seal. Thane Ironbrow will not speak of it. The Underdark: an expansion."
+  },
+  {
+   "id": "l_dagonhall",
+   "type": "hidden",
+   "name": "The Gilded Hall",
+   "x": 160,
+   "y": 1400,
+   "region": "saltcoast",
+   "hidden": true,
+   "revealedBy": "inv2",
+   "desc": "Saltmere's church on the hill: the Lodge of the Drowned Light. Gold leaf on every pillar, sea things carved across the walls and the altar, and over it a sign of odd angles that hurts your head if you look too long. The congregation turns, all at once, with eyes a little too large."
   }
  ],
  "nodeDefaults": {

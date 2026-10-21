@@ -3446,7 +3446,8 @@
      "text": "House Gilmane's standing rises and reef-gold gets cheaper for you.",
      "fx": {
       "rapport": {
-       "gilmane": 20
+       "gilmane": 20,
+       "dagon": 25
       },
       "boon": {
        "type": "buy",
@@ -3468,7 +3469,10 @@
        "church": 150
       },
       "cold": "gilmane",
-      "renown": 5
+      "renown": 5,
+      "rapport": {
+       "dagon": -10
+      }
      }
     }
    ]
@@ -4218,6 +4222,260 @@
   "desc": "Only while feuding: the dwarves will not forget it.",
   "region": "highlands",
   "town": "dwarfhold",
+  "loot": []
+ },
+ {
+  "type": "chain",
+  "chain": "gildedhall",
+  "once": true,
+  "hidden": true,
+  "act": 2,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "house": "dagon",
+  "thread": "dagon",
+  "id": "inv1",
+  "name": "Too Much Gold",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "skill": "haggling",
+  "step": 1,
+  "reward": {
+   "coin": 250
+  },
+  "check": {
+   "skills": [
+    "haggling",
+    "etiquette"
+   ],
+   "lvl": 15
+  },
+  "req": {
+   "town": "saltmere",
+   "done": [
+    "reef4"
+   ]
+  },
+  "desc": "“The Gilded Hall”, 1 of 5: the investigation. Count what Saltmere sells against what its pans and boats could ever bring in. The numbers do not add up: far too much gold."
+ },
+ {
+  "type": "chain",
+  "chain": "gildedhall",
+  "once": true,
+  "hidden": true,
+  "act": 2,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "house": "dagon",
+  "thread": "dagon",
+  "id": "inv2",
+  "name": "The Wide-Eyed Folk",
+  "cp": 0,
+  "days": 2,
+  "risk": "safe",
+  "skill": "etiquette",
+  "step": 2,
+  "reward": {
+   "coin": 300
+  },
+  "deliver": {
+   "ale": 10,
+   "saltedfish": 10
+  },
+  "req": {
+   "town": "saltmere",
+   "done": [
+    "inv1"
+   ]
+  },
+  "revealsLoc": "l_dagonhall",
+  "desc": "2 of 5: ale for Tobiah, fish for Widow Kelda, and quiet questions. The missing are not dead, Kelda whispers: they “went down to Father”. Father Dagon. The church on the hill has a name now."
+ },
+ {
+  "type": "chain",
+  "chain": "gildedhall",
+  "once": true,
+  "hidden": true,
+  "act": 2,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "house": "dagon",
+  "thread": "dagon",
+  "id": "inv3",
+  "name": "Inside the Gilded Hall",
+  "cp": 90,
+  "days": 2,
+  "risk": "risky",
+  "skill": "etiquette",
+  "step": 3,
+  "reward": {
+   "coin": 400
+  },
+  "check": {
+   "skills": [
+    "etiquette",
+    "thievery"
+   ],
+   "lvl": 20
+  },
+  "req": {
+   "town": "saltmere",
+   "done": [
+    "inv2"
+   ]
+  },
+  "dazes": true,
+  "desc": "3 of 5: attend a service (Etiquette) or slip in at night (Thievery). Gold on every pillar; sea things carved over the walls and altar; above it, a sign of wrong angles that hurts to look at. They sing to Father Dagon, and, softer, to Mother Hydra."
+ },
+ {
+  "type": "chain",
+  "chain": "gildedhall",
+  "once": true,
+  "hidden": true,
+  "act": 2,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "house": "dagon",
+  "thread": "dagon",
+  "id": "inv4",
+  "name": "The Gold's Mint",
+  "cp": 130,
+  "days": 4,
+  "risk": "deadly",
+  "skill": "sailing",
+  "step": 4,
+  "reward": {
+   "coin": 600,
+   "reefgold": 6
+  },
+  "check": {
+   "skills": [
+    "sailing",
+    "fishing"
+   ],
+   "lvl": 20
+  },
+  "req": {
+   "town": "saltmere",
+   "done": [
+    "inv3"
+   ],
+   "item": "seaboat"
+  },
+  "desc": "4 of 5: past the Smugglers' Grotto's Sea Gate (needs your own Sea Boat), an underwater treasury where reef-gold is worked into strange shapes. A carved map shows a tunnel running inland, under the mountains, to a round door: the Deep Door under Dwarfhold.",
+  "gives": [
+   "gildedidol"
+  ]
+ },
+ {
+  "type": "chain",
+  "chain": "gildedhall",
+  "once": true,
+  "hidden": true,
+  "act": 2,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "house": "dagon",
+  "thread": "dagon",
+  "id": "inv5",
+  "name": "The Old Bargain",
+  "cp": 0,
+  "days": 1,
+  "risk": "safe",
+  "skill": "leadership",
+  "step": 5,
+  "beat": true,
+  "reward": {
+   "coin": 500
+  },
+  "req": {
+   "town": "saltmere",
+   "done": [
+    "inv4"
+   ]
+  },
+  "choice": {
+   "id": "dagon",
+   "title": "The Old Bargain",
+   "text": "You know where the gold comes from. The Lodge knows that you know.",
+   "options": [
+    {
+     "id": "expose",
+     "name": "Expose the Order",
+     "icon": "⛪",
+     "text": "The Church and the Crown hear everything. Healers' Guild rep and renown rise; the Lodge and House Gilmane turn to feud, and Saltmere prices rise for two years.",
+     "fx": {
+      "guildRep": {
+       "church": 150
+      },
+      "renown": 30,
+      "flag": "dagonExpose",
+      "pact": "expose"
+     }
+    },
+    {
+     "id": "join",
+     "name": "Join the Order",
+     "icon": "🐟",
+     "text": "Take the oath. The Lodge becomes your ally: reef-gold −20% and +25% fishing, and children may be born Sea-touched. The Church turns away, and some years one of your family will go down to Father.",
+     "fx": {
+      "guildRep": {
+       "church": -200
+      },
+      "boon": {
+       "type": "buy",
+       "res": [
+        "reefgold"
+       ],
+       "pct": 0.2,
+       "text": "Reef-gold −20% (you joined the Order)"
+      },
+      "flag": "dagonJoin",
+      "pact": "join"
+     }
+    },
+    {
+     "id": "bargain",
+     "name": "Strike a bargain",
+     "icon": "🤝",
+     "text": "2,000 coin now and 200 every season, and the Lodge leaves you alone: Neutral standing, and a first cache of 10 reef-gold. Miss a payment and they turn Cold again.",
+     "fx": {
+      "coin": -2000,
+      "flag": "dagonBargain",
+      "pact": "bargain"
+     }
+    }
+   ]
+  },
+  "desc": "5 of 5: the choice. Expose the Order, join it, or strike a bargain. Whatever you choose, the Deep Door will remember."
+ },
+ {
+  "id": "hq_raid_dagon",
+  "name": "Raid the Lodge's Gold",
+  "type": "house",
+  "cp": 140,
+  "days": 4,
+  "risk": "deadly",
+  "reward": {
+   "coin": 500
+  },
+  "skill": "brawling",
+  "against": "dagon",
+  "needsFeud": true,
+  "desc": "Only while feuding: strip a little gold from the Gilded Hall.",
+  "region": "saltcoast",
+  "town": "saltmere",
   "loot": []
  }
 ]

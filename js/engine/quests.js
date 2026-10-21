@@ -2,7 +2,7 @@ import { openGate, swearOath, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { talentQuest } from "./talents.js";
-import { questInjury } from "./injuries.js";
+import { injure, questInjury } from "./injuries.js";
 import { tutActive } from "./tutorial.js";
 import { questLineNext } from "./requests.js";
 import { actLvl } from "./difficulty.js";
@@ -72,6 +72,13 @@ export function resolveQuest(s, m, q, eff) {
   usurperQuestDone(s, q); // R50 House Crane
   if (q.opensGate) openGate(s); // R51 the Rune-Sealed Gate
   if (q.oath) swearOath(s); // R52 Oath of the Thane
+  if (firstDone && (q.id === "reef4" || q.chain === "gildedhall")) { // R53 the investigation opens step by step, whatever the Lodge thinks of you
+    const nx = D.quests.find(x => x.chain === "gildedhall" && x.step === (q.chain === "gildedhall" ? q.step + 1 : 1));
+    if (nx && !(s.revealed ||= []).includes(nx.id)) s.revealed.push(nx.id), log(s, "🔎 The Gilded Hall: a new lead in Saltmere, “" + nx.name + "”.");
+  }
+  if (firstDone && q.revealsLoc && !(s.discovered ||= []).includes("loc:" + q.revealsLoc)) s.discovered.push("loc:" + q.revealsLoc); // R53 the Gilded Hall
+  if (firstDone && q.gives) for (const id of q.gives) addToVault(s, id), gain.push(itemDef(id).name); // R53 the Gilded Idol
+  if (firstDone && q.dazes) injure(s, m, 1, "after staring at the sign over the altar"), log(s, "🌀 " + m.name + " looked at the sign over the altar too long, and is dazed."); // R53
   if (firstDone && q.choice) askChoice(s, q); // R49 the reef chain's ending waits for your choice
   if (q.town) markVisited(s, q.town);
   questLineNext(s, q);

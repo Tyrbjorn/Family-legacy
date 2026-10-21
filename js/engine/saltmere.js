@@ -2,6 +2,7 @@
 // ending), boons (lasting perks a choice grants), the “What the Reef Keeps” chain progress, the Lodge procession and
 // kelp fertiliser. Everything is data: quests.json `check` / `choice` / `chain`, requests.json extra `chart`,
 // events.json `closed` / `coastFish` / `oddCatch`, fields.json `fertiliser`, families.json `marriageTrait`.
+import { dagonPact } from "./dagon.js";
 import { D, log, rng, living } from "./state.js";
 import { findId } from "./lookup.js";
 import { addRapport, houseDef, houseState } from "./houses.js";
@@ -72,7 +73,8 @@ export function makeChoice(s, id, opt) {
   }
   if (fx.renown) addRenown(s, living(s)[0], fx.renown);
   if (fx.coin) s.res.coin = (s.res.coin || 0) + fx.coin; // R51
-  if (fx.flag) (s.flags ||= {})[fx.flag] = s.day || 0; // R51 remembered for later rounds (Clan Ironbrow)
+  if (fx.flag) (s.flags ||= {})[fx.flag] = s.day || 0;
+  if (fx.pact) dagonPact(s, fx.pact, (h, r) => houseDef(h) && (addRapport(s, h, r - houseState(s, h).r, o.name, "set"), (houseState(s, h).r = r), r <= -75 && (houseState(s, h).state = "feud"))); // R53 the Old Bargain // R51 remembered for later rounds (Clan Ironbrow)
   const msg = `${o.icon || "❓"} ${ch.title}: you chose to ${o.name.toLowerCase()}. ${o.text}`;
   log(s, msg);
   chron(s, "deed", msg);

@@ -723,6 +723,17 @@ export const STEPS = [
       if (s.gateOpen != null) for (const id of ["d_olddeeps", "n_deepiron", "n_dwarfcoal"]) if (!(s.revealed ||= []).includes(id)) s.revealed.push(id);
     },
   },
+  {
+    n: 49,
+    name: "R53 the Gilded Hall: the Lodge of the Drowned Light (the Order) starts Cold, Neutral if you kept the reef secret, colder if you told the Church; no investigation step, idol or pact is given",
+    run(s) {
+      s.houses = s.houses || {};
+      if (!s.houses.dagon) {
+        const c = (s.choices || []).find(x => x.id === "reef" && x.pick);
+        s.houses.dagon = { r: !c ? -25 : c.pick === "keep" ? 0 : -35, state: "peace" };
+      }
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",
