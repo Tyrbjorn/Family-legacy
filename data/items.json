@@ -1926,5 +1926,40 @@
   "noDrop": true,
   "desc": "A scale from Mother Hydra herself, wide as a shield and harder than steel. Still wet.",
   "type": "tower"
+ },
+ {
+  "id": "dwarfpick",
+  "name": "Dwarf-steel Pick",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 160,
+  "toolFor": "mine",
+  "taskTool": "dig",
+  "taskYield": 0.15,
+  "desc": "Dwarf-steel from Dwarfhold: a follower mines about 15% faster than with a common tool."
+ },
+ {
+  "id": "dwarfaxe",
+  "name": "Dwarf-steel Axe",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 14,
+  "value": 160,
+  "toolFor": "gather",
+  "taskTool": "chop",
+  "taskYield": 0.25,
+  "desc": "Dwarf-steel from Dwarfhold: faster gathering and chopping."
+ },
+ {
+  "id": "dwarfsickle",
+  "name": "Dwarf-steel Sickle",
+  "slot": "tool",
+  "rarity": "Fine",
+  "cp": 12,
+  "value": 150,
+  "toolFor": "farm",
+  "fieldTool": "grain",
+  "desc": "Dwarf-steel from Dwarfhold: faster tending."
  }
 ]

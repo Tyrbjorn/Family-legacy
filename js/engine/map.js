@@ -1,3 +1,4 @@
+import { dwarfTravel } from "./dwarves.js";
 import { perkDiscover, perkNode, perkTravel } from "./families.js";
 import { isCoastal, payFerry, seaOption } from "./sea.js";
 import { findId } from "./lookup.js";
@@ -257,10 +258,10 @@ export function taskDays(a, s) {
   return MP().gatherTripDays;
 }
 
-export function newTrip(a, s) {
+export function newTrip(a, s, m) {
   const reg = targetRegion(a), tv = s && reg ? perkTravel(s, reg) : 1; // R48 House Skye allied: ×1.1 in the Highlands
   const walk = travelDays(a.target);
-  const out = Math.round((walk / (s ? mountSpeed(s) : 1) / tv) * 10) / 10;
+  const out = Math.round((walk / (s ? dwarfTravel(s, m, isMountain(reg), mountSpeed(s)) : 1) / tv) * 10) / 10; // R56 dwarves never ride
   const hs = a.type === "gather" && s && D.world ? haulTier(s, { coast: isCoastal(a.target), mountain: isMountain(reg) }).haulSpeed : 1;
   const t = { out, task: taskDays(a, s), back: Math.round((out / hs) * 10) / 10, t: 0, resolved: false };
   // R48: by Sea Boat (or the harbour ferry, paid on the first day) to a coastal destination

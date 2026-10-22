@@ -57,6 +57,7 @@ export function openGate(s) {
   if (!(s.boons ||= []).some(b => b.from === "runeroad")) s.boons.push({ ...RUNE_ROAD });
   if (!(s.unlocks ||= []).includes("recipe:r_ramcart")) s.unlocks.push("recipe:r_ramcart"); // the dwarves show you the Ram Cart
   revealDeeps(s);
+  for (const r of ["r_dwarfpick", "r_dwarfaxe", "r_dwarfsickle"]) if (!s.unlocks.includes("recipe:" + r)) s.unlocks.push("recipe:" + r); // R56 dwarf-steel tools
   log(s, "👑 You set the Ironbrow Clan-Crown before the gate, and the Rune-Sealed Gate opens. The Rune Road leads down into Dwarfhold.");
   return true;
 }

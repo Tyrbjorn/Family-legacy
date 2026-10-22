@@ -1,3 +1,4 @@
+import { isDwarfMinion } from "./dwarves.js";
 import { famFx } from "./paths.js";
 // R34 Quotas (Legacy "Steward's Ledger"): estate-wide production targets. A quota is {id,item,target,mode}:
 // "once" = make `target` more then finish; "standing" = keep stock topped up to `target`.
@@ -225,8 +226,9 @@ function moveFollower(s) {
   if (!fed.size) return;
   const want = [...fed].find(j => (s.minions || []).filter(mi => mi.job === j).length < jobCap(s, j));
   if (!want) return;
-  const mi = (s.minions || []).find(x => !x.special && (x.job === "idle" || !x.job)) || (s.minions || []).find(x => !x.special && JOB_RES[x.job] && !fed.has(x.job));
+  const cand = (s.minions || []).filter(x => !x.special && (x.job === "idle" || !x.job)).concat((s.minions || []).filter(x => !x.special && JOB_RES[x.job] && !fed.has(x.job)));
+  const mi = want === "farm" ? cand.find(x => !isDwarfMinion(x)) || cand[0] : cand[0]; // R56 dwarves farm only if no one else can
   if (!mi) return;
-  log(s, `📋 Steward's Ledger: ${mi.name || "a follower"} moves from ${mi.job || "idle"} to ${want} for a quota.`);
+  log(s, `📋 Steward's Ledger: ${mi.name || "a follower"} moves from ${mi.job || "idle"} to ${want} for a quota.${want === "farm" && isDwarfMinion(mi) ? " (dwarf on fields: 40%)" : ""}`);
   mi.job = want;
 }

@@ -1,3 +1,4 @@
+import { loyaltyCap } from "./dwarves.js";
 import { findId } from "./lookup.js";
 import { followerPwdCheck } from "./pausedone.js";
 import { haulTier, isMountain, parcelJobMult } from "./world.js";
@@ -121,7 +122,7 @@ export function minionDay(s) {
   const fed = isFed(s);
   const hm = homeMap(s);
   const mor = eff(s, "morale") + morale(s) * (ES().meals.minionLoyaltyPerMorale || 0) * (morale(s) < 0 ? 2 : 1);
-  if (mor) for (const mi of s.minions) mi.loyalty = Math.min(100, mi.loyalty + mor);
+  if (mor) for (const mi of s.minions) mi.loyalty = Math.min(loyaltyCap(s, mi), mi.loyalty + mor); // R56 old retainers
   // hunger loyalty loss below; meals are eaten in eatDay (food.js) before this runs
   for (const mi of s.minions) mi.home = hm[mi.uid] || null;
   for (const mi of s.minions) {
@@ -160,7 +161,7 @@ function minionWages(s) {
     const w = monthlyWages(s);
     if (s.res.coin >= w) {
       s.res.coin -= w;
-      for (const mi of s.minions) mi.loyalty = Math.min(100, mi.loyalty + 10);
+      for (const mi of s.minions) mi.loyalty = Math.min(loyaltyCap(s, mi), mi.loyalty + 10);
     } else {
       s.res.coin = 0;
       for (const mi of [...s.minions]) {

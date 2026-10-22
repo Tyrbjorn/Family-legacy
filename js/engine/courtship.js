@@ -1,3 +1,4 @@
+import { dwarfSpouse } from "./dwarves.js";
 import { findId } from "./lookup.js";
 // Marriage depth: suitor personalities, visible traits, houses, courtship stages and patience,
 // dowries both ways (marrying in / marrying out) and household effects of spouse personalities.
@@ -116,6 +117,7 @@ export function applyMarriage(s, m, sp, su) {
   if (su.traits && su.traits.length) sp.traits = su.traits.filter((t, i, a) => !a.slice(0, i).some(o => conflicts(o, t)));
   sp.persona = su.persona;
   sp.house = su.house;
+  dwarfSpouse(s, sp); // R56 a dwarf of Clan Ironbrow
   const d = su.dowry || { coin: 0, res: {} };
   s.res.coin += d.coin;
   for (const [k, v] of Object.entries(d.res || {})) s.res[k] = (s.res[k] || 0) + v;

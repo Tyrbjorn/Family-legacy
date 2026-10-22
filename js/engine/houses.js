@@ -1,6 +1,7 @@
 // Diplomacy with neighbouring houses: rapport tiers (feud → rival → cold → neutral → friendly → allied),
 // house quests that pick sides, ally perks, rival troubles and the feud state. War lives in war.js.
 // Kept deliberately small and data-driven (data/families.json, R48) for the later ruling-house era.
+import { grudgeCeil } from "./dwarves.js";
 import { addRenown } from "./legacy.js";
 import { era } from "./family.js";
 import { WAR, warDay, warEscalate, wars } from "./war.js";
@@ -152,7 +153,7 @@ export function housesDay(s) {
     threadOpenCheck(s, hd); // R48 house threads open month by month
     temperMonth(s, hd); // R48: pious likes Church members, scheming may betray when Cold
     const fl = driftFloor(s, hd.id),
-      target = Math.max(ties(s, hd.id) ? HC().tieFloor : 0, fl ?? -Infinity),
+      target = Math.min(Math.max(ties(s, hd.id) ? HC().tieFloor : 0, fl ?? -Infinity), grudgeCeil(s, hd.id) ?? Infinity), // R56 Clan Ironbrow's grudge
       d = HC().driftPerMonth;
     h.r = h.r > target ? Math.max(target, h.r - d) : Math.min(target, h.r + d);
     checkFeud(s, hd.id);

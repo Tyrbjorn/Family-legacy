@@ -1,3 +1,4 @@
+import { dwarfCraftMult } from "./dwarves.js";
 import { guildQuestFor } from "./guildtiers.js";
 import { findId } from "./lookup.js";
 import { boardsPick } from "./boards.js";
@@ -66,7 +67,7 @@ export const ACTIONS = {
     a.target = a.target || null;
     a.rc = rc.id;
     (s.atLast = s.atLast || {})["rc:" + rc.skill] = rc.id; // Auto Tend repeats the last recipe of each skill
-    a.progress = (a.progress || 0) + eff * (1 + legacyValue(s, "craftspd")); // R43 Workshop: Craft Speed
+    a.progress = (a.progress || 0) + eff * (1 + legacyValue(s, "craftspd")) * dwarfCraftMult(s, rc); // R43 Workshop: Craft Speed; R56 dwarf smiths / runewrights
     gainXp(s, m, rc.skill, T.xpPerDay * 0.8 * eff);
     if (a.progress >= rc.days * gameFx(s, "craft", a.diff)) {
       a.progress = 0;
@@ -206,7 +207,7 @@ export function standingTick(s, m) {
     return;
   }
   m.action = { ...a, progress: 0 };
-  m.action.trip = newTrip(m.action, s);
+  m.action.trip = newTrip(m.action, s, m);
 }
 
 // ---- player actions
@@ -249,7 +250,7 @@ export function setAction(s, a) {
   }
   m.standing = null;
   m.action = { ...a, progress: 0 };
-  if (TRAVEL_TYPES.includes(a.type)) m.action.trip = newTrip(m.action, s);
+  if (TRAVEL_TYPES.includes(a.type)) m.action.trip = newTrip(m.action, s, m);
 }
 
 export function defaultAction(s, m) {

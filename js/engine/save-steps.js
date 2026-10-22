@@ -754,6 +754,14 @@ export const STEPS = [
       if (hostile && s.dagonPact !== "join" && s.deepRaidAt == null) s.deepRaidAt = (s.day || 0) + 90;
     },
   },
+  {
+    n: 52,
+    name: "R56 the dwarf rules: dwarf spouses of Clan Ironbrow are dwarves; an open gate teaches the dwarf-steel tools; old-retainer loyalty counts from hiring day; the Oath's places become dwarf-only and no one is dismissed; nothing is given",
+    run(s) {
+      for (const m of s.members || []) if (m.house === "ironbrow" && !m.race) m.race = "dwarf";
+      if (s.gateOpen != null) for (const r of ["r_dwarfpick", "r_dwarfaxe", "r_dwarfsickle"]) if (!(s.unlocks ||= []).includes("recipe:" + r)) s.unlocks.push("recipe:" + r);
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

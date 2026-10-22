@@ -1,3 +1,4 @@
+import { chariotMult } from "./dwarves.js";
 import { houseDef, tierOf } from "./houses.js";
 import { findId } from "./lookup.js";
 // Followers core: types, levels, evolution, hiring and jobs. Housing, the daily job loop and special minions/gear
@@ -96,7 +97,7 @@ export function minionGainXp(s, mi, n) {
 
 export function minionPower(s, job) {
   return (
-    (job === "guard" ? 1 + eff(s, "guardPower") : 1) *
+    (job === "guard" ? 1 + eff(s, "guardPower") : 1) * chariotMult(s, job) * // R56 War-Chariot
     (s.minions || [])
       .filter(x => x.job === job)
       .reduce((a, x) => a + (mtype(x.type).apt[job] || 1) * minionGearMult(x, job) * minionLvlMult(x, job), 0)
@@ -104,7 +105,7 @@ export function minionPower(s, job) {
 }
 
 export function addMinion(s, type, why) {
-  if (!mtype(type).special && !minionRoom(s)) {
+  if (!mtype(type).special && !minionRoom(s, type)) {
     log(s, `🚪 No room or no bunk for a new follower (${why}).`);
     return null;
   }
@@ -134,7 +135,7 @@ const TIER_RANK = ["feud", "rival", "cold", "neutral", "friendly", "allied"];
 export const hireLock = (s, t) => (t && t.house && t.tier && TIER_RANK.indexOf(tierOf(s, t.house)) < TIER_RANK.indexOf(t.tier) ? `needs ${(houseDef(t.house) || {}).name || t.house} ${t.tier}` : null);
 export function hire(s, townId, type) {
   const t = mtype(type);
-  if (!(D.minions.hireAt[townId] || []).includes(type) || s.res.coin < t.hire || !minionRoom(s) || hireLock(s, t)) return null;
+  if (!(D.minions.hireAt[townId] || []).includes(type) || s.res.coin < t.hire || !minionRoom(s, type) || hireLock(s, t)) return null;
   s.res.coin -= t.hire;
   return addMinion(s, type, "hired in town");
 }

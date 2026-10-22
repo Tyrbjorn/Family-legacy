@@ -1,3 +1,4 @@
+import { dwarvesHired, isDwarfType, oathExtra } from "./dwarves.js";
 import { fishFoodMult } from "./fish.js";
 import { fittingFx } from "./estate-pieces.js";
 import { ES, boughtUps, scaledPiece, specDef, structDef } from "./estate.js";
@@ -6,7 +7,7 @@ import { D, bl } from "./state.js";
 
 // ---- minions (followers, hired help, retainers)
 export const minionCap = s =>
-  D.minions.baseCap + (s.structures || []).length * D.minions.capPerHouse + (hasService(s, "storage") ? 2 : 0) + ((s.flags || {}).thaneOath != null ? D.minions.oathCap || 0 : 0); // R52 Oath of the Thane
+  D.minions.baseCap + (s.structures || []).length * D.minions.capPerHouse + (hasService(s, "storage") ? 2 : 0); // R56: the Oath of the Thane's places are for dwarves only (minionRoom)
 
 // other foods (meat, fish, eggs, honey) top up the food pool when it runs short
 export function pantry(s, need) {
@@ -95,4 +96,9 @@ export const freeHousing = (s, kind = "bunk") => {
 
 export const minionFood = s => s.minions.length * ES().minionFoodPerDay;
 
-export const minionRoom = s => s.minions.filter(x => !x.special).length < minionCap(s) && freeHousing(s, "bunk") > 0;
+// R56: `type` given → a dwarf may also use the Oath's places; others count dwarves in those places as outside the cap
+export const minionRoom = (s, type) => {
+  const n = s.minions.filter(x => !x.special).length, ox = oathExtra(s);
+  const dw = typeof type === "string" && isDwarfType(D.minions.types.find(t => t.id === type));
+  return (dw ? n < minionCap(s) + ox : n - Math.min(dwarvesHired(s), ox) < minionCap(s)) && freeHousing(s, "bunk") > 0;
+};

@@ -1,3 +1,4 @@
+import { hasDwarfCart, isDwarfMinion } from "./dwarves.js";
 import { fertBonus, fertSeason } from "./saltmere.js";
 import { seasonDay } from "./seasons.js";
 import { perkField } from "./families.js";
@@ -201,9 +202,11 @@ export function fieldsDay(s) {
   // auto teamster: an idle follower takes a free teamster spot when there is harvest to move
   if (st.auto.teamsters && Object.values(st.pile).some(v => v > 0.5)) {
     const tm = (s.minions || []).filter(x => x.job === "teamster" && !x.paused).length;
-    let idle = (s.minions || []).find(x => !x.special && (!x.job || x.job === "idle") && !x.unhoused && !x.paused);
+    const cartOk = x => !isDwarfMinion(x) || hasDwarfCart(s); // R56 a dwarf teamster needs a Ram Cart or War-Chariot
+    let idle = (s.minions || []).find(x => !x.special && (!x.job || x.job === "idle") && !x.unhoused && !x.paused && cartOk(x));
+    if (!idle && (s.day || 0) % 30 === 0 && (s.minions || []).some(x => !x.special && (!x.job || x.job === "idle") && !cartOk(x))) log(s, "🛒 No teamster: a dwarf teamster needs a Ram Cart.");
     // no idle hands: the least-skilled farmer moves over, as long as another farmer keeps tending
-    const farmers = (s.minions || []).filter(x => !x.special && x.job === "farm" && !x.unhoused && !x.paused);
+    const farmers = (s.minions || []).filter(x => !x.special && x.job === "farm" && !x.unhoused && !x.paused && cartOk(x));
     if (!idle && farmers.length >= 2) idle = farmers.sort((a, b) => (a.skills?.farm || 0) - (b.skills?.farm || 0))[0];
     if (idle && tm < teamsterCap(s)) {
       idle.job = "teamster";

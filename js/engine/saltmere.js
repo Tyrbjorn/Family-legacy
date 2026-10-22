@@ -2,6 +2,7 @@
 // ending), boons (lasting perks a choice grants), the “What the Reef Keeps” chain progress, the Lodge procession and
 // kelp fertiliser. Everything is data: quests.json `check` / `choice` / `chain`, requests.json extra `chart`,
 // events.json `closed` / `coastFish` / `oddCatch`, fields.json `fertiliser`, families.json `marriageTrait`.
+import { dwarfBlood } from "./dwarves.js";
 import { dagonPact } from "./dagon.js";
 import { D, log, rng, living } from "./state.js";
 import { findId } from "./lookup.js";
@@ -99,6 +100,7 @@ export function fertSeason(s, fields, seasonDays) {
 
 // ---- House Gilmane blood: children may carry the house trait (families.json marriageTrait)
 export function houseBirthTrait(s, child, parents) {
+  if (dwarfBlood(s, child, parents, rng)) log(s, `⛏️ ${child.name} is born with Dwarf-blood: long-lived, strong, and at home in mine and forge.`); // R56
   for (const p of parents) {
     const h = p && p.house && houseDef(p.house), mt = h && h.marriageTrait;
     if (mt && !(child.traits || []).includes(mt.id) && rng() < mt.chance) {

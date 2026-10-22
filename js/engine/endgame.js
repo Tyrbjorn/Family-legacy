@@ -1,3 +1,4 @@
+import { shieldMult } from "./dwarves.js";
 import { findId } from "./lookup.js";
 // Late game (data/endgame.json): coin sinks (mounts, town patronage, stone quarries), era-scaled creatures and
 // elites, raids from the Dynasty phase and defenses (walls, Watchtower, Village Palisade) (one-time purchases, no upkeep).
@@ -107,7 +108,7 @@ export function threat(s, repeat) {
 const R = () => EG().raids;
 export const raidPower = s => Math.round((R().base + (s.res.coin || 0) / R().perCoin + estateScore(s) * R().perScore) * (wars(s).length ? R().warMult : 1));
 // the garrison (guards) already counts inside familyPower (war guardPower each)
-export const raidDefense = s => Math.round(familyPower(s) + defensePower(s));
+export const raidDefense = s => Math.round((familyPower(s) + defensePower(s)) * shieldMult(s)); // R56 Dwarf Shieldbearers
 export function raid(s) {
   const our = raidDefense(s), foe = raidPower(s);
   const win = rng() < our / Math.max(1, our + foe);

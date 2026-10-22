@@ -2,6 +2,20 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R56",
+   "title": "The Dwarf Rules",
+   "items": [
+    "⛏️ Dwarf-blood: marry into Clan Ironbrow (once Allied) and your children are born Dwarf-blood: +12 years of life, +2 STR and VIT, +20% Smithing, Mining, Masonry and Runecraft XP, −20% Farming XP. A Dwarf-blood parent passes it on half the time.",
+    "🧔 Dwarf spouses live to about 110. They never ride: no horses, ×0.8 walking off the mountains (full speed in hills), or ×1.2 anywhere in the family's Ram Cart.",
+    "🎖️ Old retainers: a dwarf follower's loyalty can climb 1 above 100 for each year of service (up to +10).",
+    "🛒 Auto keeps dwarves off the fields unless no one else can go (dwarf on fields: 40%), and a dwarf teamster needs a Ram Cart or War-Chariot.",
+    "🛡️ War-Chariot: +15% to guard and patrol. Dwarf Shieldbearers: +10% raid defence each (up to +30%, Deep One raids too). Dwarf Smiths on the craft job speed forge recipes (+10% each, up to +30%); Runewrights speed Runestone Anvil recipes (+50% each, up to ×2).",
+    "🤝 The Oath of the Thane's two extra places are now for dwarves only. No one is dismissed.",
+    "🔨 Dwarf-steel tools (pick, axe, sickle) at the forge once the gate is open.",
+    "🦅 Clan Ironbrow keeps a grudge: if you sold the gate's secret, they stay Cold until The Ancestor Stones is done."
+   ]
+  },
+  {
    "build": "R55",
    "title": "The Deep Ones Come Ashore",
    "items": [

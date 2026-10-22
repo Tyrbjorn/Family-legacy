@@ -72,7 +72,7 @@ export function takeJob(s, m, uid) {
   j.taken = m.id;
   m.standing = m.standing || null;
   m.action = { type: "bjob", target: jobDest(tid, j), job: uid, days: j.days, progress: 0 };
-  m.action.trip = newTrip(m.action, s);
+  m.action.trip = newTrip(m.action, s, m);
   log(s, `📋 ${m.name} took a board job: ${j.name}.`);
   return true;
 }
@@ -147,7 +147,7 @@ export function goStop(s, m, id) {
   const stop = L.stops[st.stop];
   if (stop.deliver) pay(s, stop.deliver);
   m.action = { type: "bjob", target: stop.at, line: id, stop: st.stop, days: stop.days, progress: 0 };
-  m.action.trip = newTrip(m.action, s);
+  m.action.trip = newTrip(m.action, s, m);
   log(s, `${L.icon} ${m.name} set out: ${L.name}, stop ${st.stop + 1}/${L.stops.length} (${stop.name}).`);
   return true;
 }

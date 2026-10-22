@@ -32,7 +32,7 @@ for(const v of ['thane','hild','ottar'])ok(D.requests.npcs.some(x=>x.id===v&&x.t
   s.houses.ironbrow.r=0; ok(!E.hireLock(s,E.mtype('dwarfminer'))&&E.hireLock(s,E.mtype('dwarfshield')),'Neutral: miners, not shieldbearers');
   s.houses.ironbrow.r=40; ok(!E.hireLock(s,E.mtype('dwarfshield')),'Friendly: shieldbearers'); }
 // oath
-{ const s=base(); const c0=E.minionCap(s); ok(E.swearOath(s)&&E.minionCap(s)===c0+2&&s.unlocks.includes('recipe:r_warchariot')&&s.boons.some(b=>b.quest==='st10'),'Oath: +2 retainers, War-Chariot, chapter 10 help'); ok(!E.swearOath(s),'once'); }
+{ const s=base(); const c0=E.minionCap(s); ok(E.swearOath(s)&&E.minionCap(s)+E.oathExtra(s)===c0+2&&s.unlocks.includes('recipe:r_warchariot')&&s.boons.some(b=>b.quest==='st10'),'Oath: +2 retainers, War-Chariot, chapter 10 help'); ok(!E.swearOath(s),'once'); }
 ok(Q('b_oath')&&Q('b_oath').oath,'Oath of the Thane quest');
 ok(D.world.haul.tiers.some(t=>t.id==='warchariot'),'War-Chariot haul tier');
 // deeps

@@ -1846,6 +1846,57 @@
    "pathRank": 1,
    "forClass": "adventurer",
    "minSkill": 5
+  },
+  {
+   "id": "r_dwarfpick",
+   "name": "Dwarf-steel Pick",
+   "base": "dwarfpick",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "steel": 4,
+    "ingots": 2,
+    "runestone": 1
+   },
+   "days": 4,
+   "line": "blacksmith",
+   "path": "smithing",
+   "hidden": true,
+   "_note": "R56: unlocked when the Rune-Sealed Gate opens"
+  },
+  {
+   "id": "r_dwarfaxe",
+   "name": "Dwarf-steel Axe",
+   "base": "dwarfaxe",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "steel": 4,
+    "ingots": 2,
+    "runestone": 1
+   },
+   "days": 4,
+   "line": "blacksmith",
+   "path": "smithing",
+   "hidden": true,
+   "_note": "R56: unlocked when the Rune-Sealed Gate opens"
+  },
+  {
+   "id": "r_dwarfsickle",
+   "name": "Dwarf-steel Sickle",
+   "base": "dwarfsickle",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "steel": 4,
+    "ingots": 2,
+    "runestone": 1
+   },
+   "days": 4,
+   "line": "blacksmith",
+   "path": "smithing",
+   "hidden": true,
+   "_note": "R56: unlocked when the Rune-Sealed Gate opens"
   }
  ],
  "minionSlots": [

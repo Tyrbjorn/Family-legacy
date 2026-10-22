@@ -55,7 +55,7 @@ export function minionsv() {
           ? " · next perk at Lv " + Object.keys(D.minions.perks[mi.job]).find(l => +l > E.minionLvl(mi))
           : ""
     }</div><div class="muted">${mi.home ? "🏠 lives in " + E.structName(s.structures.find(x => x.uid === mi.home)) + " (class home, +15%)" : E.isHoused(s, mi) ? "🏠 housed (" + t.housing + ")" : "⛺ UNHOUSED – needs " + ({ bunk: "a Bunk/Bunkhouse", kennel: "a Kennel", perch: "a Perch", brazier: "a Brazier", garden: "a Small Garden" }[t.housing] || t.housing) + "; cannot work"}${mi.hunger ? " · 🍽️ hungry " + mi.hunger + "d (output halved)" : ""}</div>
-  ${mi.special ? `<div class="muted">⭐ ${E.sourceLabel(t)}${t.source.quest ? "" : " (" + mi.source + ")"} · ${t.desc}</div>` : ""}<div class="row" style="flex-wrap:wrap;gap:4px;margin:4px 0">${E.minionSlots(mi)
+  ${E.oldRetainer(s, mi) ? `<div class="muted">🎖️ Old retainer +${E.oldRetainer(s, mi)} (loyalty up to ${E.loyaltyCap(s, mi)})</div>` : ""}${E.isDwarfMinion(mi) && mi.job === "farm" ? `<div class="muted">⚠️ dwarf on fields: 40%</div>` : ""}${mi.special ? `<div class="muted">⭐ ${E.sourceLabel(t)}${t.source.quest ? "" : " (" + mi.source + ")"} · ${t.desc}</div>` : ""}<div class="row" style="flex-wrap:wrap;gap:4px;margin:4px 0">${E.minionSlots(mi)
     .map(sl => {
       const g = (mi.equip || {})[sl];
       return g

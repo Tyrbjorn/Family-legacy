@@ -277,5 +277,25 @@
    "sailing": 0.25
   },
   "desc": "+25% Fishing/Sailing XP. They love the sea (House Gilmane blood)."
+ },
+ {
+  "id": "dwarfblood",
+  "name": "Dwarf-blood",
+  "icon": "⛏️",
+  "rarity": "good",
+  "houseOnly": true,
+  "life": 12,
+  "stats": {
+   "STR": 2,
+   "VIT": 2
+  },
+  "skillXp": {
+   "smithing": 0.2,
+   "mining": 0.2,
+   "masonry": 0.2,
+   "runecraft": 0.2,
+   "farming": -0.2
+  },
+  "desc": "+12 years lifespan, +2 STR and VIT, +20% Smithing/Mining/Masonry/Runecraft XP, −20% Farming XP (Clan Ironbrow blood)."
  }
 ]
