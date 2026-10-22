@@ -1,5 +1,6 @@
+import { seaDay } from "./seablood.js";
 import { addMinion } from "./minions.js";
-import { dagonDay, hatchDay, deepRaidDay } from "./dagon.js";
+import { dagonDay, hatchDay, deepRaidDay, goDown } from "./dagon.js";
 import { raidDefense } from "./endgame.js";
 import { addRenown } from "./legacy.js";
 import { guildsOf } from "./guilds.js";
@@ -270,7 +271,7 @@ for (const [n, f] of [
   ["members", membersDay],
   ["generations", generationsDay],
   ["rams", s => ((s._stallsFree = stalls(s) - animalCount(s)), ramsDay(s), delete s._stallsFree)], // R51 mountain rams breed
-  ["dagon", s => (dagonDay(s), hatchDay(s, addMinion), deepRaidDay(s, DEEP_DEPS))], // R53 the Old Bargain; R54 Deep One eggs
+  ["dagon", s => (dagonDay(s), hatchDay(s, addMinion), deepRaidDay(s, DEEP_DEPS), seaDay(s, { church: DEEP_DEPS.church, addMinion, goDown }))], // R53 the Old Bargain; R54 Deep One eggs
 ])
   registerDayHook(n, f);
 

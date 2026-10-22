@@ -276,7 +276,8 @@
    "fishing": 0.25,
    "sailing": 0.25
   },
-  "desc": "+25% Fishing/Sailing XP. They love the sea (House Gilmane blood)."
+  "desc": "+10 years of life, +25% Fishing/Sailing XP, +15% fish when they fish. The deep never takes them in a raid and they fight well at the shore. Late in life the sea may call them home. The Church frowns; the Lodge smiles.",
+  "life": 10
  },
  {
   "id": "dwarfblood",

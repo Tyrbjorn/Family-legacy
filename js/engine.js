@@ -78,3 +78,4 @@ export * from "./engine/saltmere.js";
 export * from "./engine/highlands.js";
 export * from "./engine/dagon.js";
 export * from "./engine/dwarves.js";
+export * from "./engine/seablood.js";

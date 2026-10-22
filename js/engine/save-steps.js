@@ -762,6 +762,13 @@ export const STEPS = [
       if (s.gateOpen != null) for (const r of ["r_dwarfpick", "r_dwarfaxe", "r_dwarfsickle"]) if (!(s.unlocks ||= []).includes("recipe:" + r)) s.unlocks.push("recipe:" + r);
     },
   },
+  {
+    n: 53,
+    name: "R57 the Deep One mix: Sea-touched members gain their +10 years once; nothing else changes and nothing is given",
+    run(s) {
+      for (const m of s.members || []) if ((m.traits || []).includes("seatouched") && !m.seaLife) (m.lifespan = (m.lifespan || 55) + 10), (m.seaLife = 1);
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

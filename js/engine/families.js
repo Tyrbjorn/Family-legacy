@@ -3,6 +3,7 @@
 // houses.js keeps rapport tiers, gifts, troubles, feuds; this module only reads its state, so every rule here is data.
 import { D, living, log, rng } from "./state.js";
 import { dagonBuyMult, dagonSellMult } from "./dagon.js";
+import { seaBuyMult } from "./seablood.js";
 import { houseList, houseDef, houseState, tierOf, addRapport, phaseOk } from "./houses.js";
 import { memberGuild } from "./guilds.js";
 import { addRenown } from "./legacy.js";
@@ -32,6 +33,7 @@ const sumPct = (L, f) => L.filter(f).reduce((a, p) => a + (p.pct || 0), 0);
 // −x on buying these market goods
 // R49: a perk may name a town (Gilmane allied: Saltmere salt); villager deals (Hask) and choice boons count too
 export const perkBuy = (s, res, town) =>
+  seaBuyMult(s, town) * // R57 a Sea-touched head, outside Saltmere
   dagonBuyMult(s, town) * // R53 outsiders in Saltmere
   Math.max(0.4, 1 - sumPct([...allPerks(s, "buy"), ...((s && s.reqPerks) || []).filter(p => p.type === "buy"), ...((s && s.boons) || []).filter(p => p.type === "buy")], p => (p.res || []).includes(res) && (!p.town || p.town === town) && (!p.towns || p.towns.includes(town)))); // R51 towns list
 // +x on selling in this town

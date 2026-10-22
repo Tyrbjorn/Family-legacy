@@ -2,6 +2,19 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R57",
+   "title": "The Deep One Mix",
+   "items": [
+    "🌊 Three kinds: human, Sea-touched, and Deep One. Sea-touched family members now live 10 years longer and catch 15% more fish, on top of +25% Fishing and Sailing XP.",
+    "👶 A Sea-touched parent passes it on half the time. Families who joined the Lodge now get the Sea-touched children it promised (25% per child). House Gilmane marriages still give their children a chance.",
+    "🌀 The Change: from age 50 a Sea-touched member may hear the tide calling (10% a year, 20% if Mother Hydra blessed you). 30 days later they go down to Father. Joined families get them back as a Young Deep One. Never the head, never the last adults.",
+    "⛪ The Church loses 2 standing a year per Sea-touched member (up to 10). The Lodge gains 1 trust a year each (up to 5).",
+    "🏘️ A Sea-touched head is a local in Saltmere (no outsider prices, new lines), but pays 5% more elsewhere.",
+    "🛡️ Deep One raiders never take a Sea-touched member, and each Sea-touched adult adds 15 to the defence against them.",
+    "🐸 Young Deep Ones stay followers: they can't marry or join the family."
+   ]
+  },
+  {
    "build": "R56",
    "title": "The Dwarf Rules",
    "items": [

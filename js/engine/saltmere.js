@@ -4,6 +4,7 @@
 // events.json `closed` / `coastFish` / `oddCatch`, fields.json `fertiliser`, families.json `marriageTrait`.
 import { dwarfBlood } from "./dwarves.js";
 import { dagonPact } from "./dagon.js";
+import { seaBirth, makeSea } from "./seablood.js";
 import { D, log, rng, living } from "./state.js";
 import { findId } from "./lookup.js";
 import { addRapport, houseDef, houseState } from "./houses.js";
@@ -101,10 +102,11 @@ export function fertSeason(s, fields, seasonDays) {
 // ---- House Gilmane blood: children may carry the house trait (families.json marriageTrait)
 export function houseBirthTrait(s, child, parents) {
   if (dwarfBlood(s, child, parents, rng)) log(s, `⛏️ ${child.name} is born with Dwarf-blood: long-lived, strong, and at home in mine and forge.`); // R56
+  if (seaBirth(s, child, parents)) return log(s, `🌊 ${child.name} is born Sea-touched: the sea is in their eyes.`), "seatouched"; // R57
   for (const p of parents) {
     const h = p && p.house && houseDef(p.house), mt = h && h.marriageTrait;
     if (mt && !(child.traits || []).includes(mt.id) && rng() < mt.chance) {
-      (child.traits ||= []).push(mt.id);
+      if (mt.id === "seatouched") { if (!makeSea(child)) continue; } else (child.traits ||= []).push(mt.id); // R57 Sea-touched: +10 years
       log(s, `🌊 ${child.name} has ${houseDef(p.house).name}'s look about them: ${(findId(D.traits, mt.id) || { name: mt.id }).name}.`);
       return mt.id;
     }

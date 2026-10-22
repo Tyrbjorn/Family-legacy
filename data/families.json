@@ -516,7 +516,7 @@
    "marriageTrait": {
     "id": "seatouched",
     "chance": 0.5,
-    "text": "children may be Sea-touched (+25% Fishing/Sailing XP)"
+    "text": "children may be Sea-touched (+10 years, +25% Fishing/Sailing XP)"
    },
    "region": "saltcoast"
   },
@@ -955,6 +955,18 @@
    "At night you hear something wet dragging itself up the road to your door, then back down to the sea.",
    "The fog smells of rot. Shapes stand in it at the end of every street, waiting.",
    "Fish heads on the doorstep, a dozen of them, all looking at the house."
+  ],
+  "seaKin": [
+   "“You've the look, you have. Welcome home.”",
+   "An old woman touches your cheek. “Father knows you.”",
+   "“No charge for you. Not for one of us.”",
+   "The fishwives nod as you pass, slow and knowing.",
+   "“Your eyes have gone the right colour. Good.”",
+   "“When the tide calls, don't be afraid. It's warm down there.”",
+   "A child stares, then smiles a too-wide smile.",
+   "“The Lodge saved you a seat, near the front.”",
+   "“Swim with us at the low tide sometime.”",
+   "The barman pours before you ask. “Yours, cousin.”"
   ]
  }
 }

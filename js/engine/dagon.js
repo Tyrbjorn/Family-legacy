@@ -7,7 +7,8 @@ import { D, T, log, rng } from "./state.js";
 export const DAGON_TOWN = "saltmere";
 const COLD = -15;
 const rOf = s => ((s && s.houses && s.houses.dagon) || { r: -25 }).r;
-export const dagonOutsider = s => !!s && s.dagonPact !== "join" && rOf(s) <= COLD;
+const seaHeadL = s => { const h = (s.members || []).find(m => m.id === s.head); return !!h && (h.traits || []).includes("seatouched"); }; // R57
+export const dagonOutsider = s => !!s && s.dagonPact !== "join" && !seaHeadL(s) && rOf(s) <= COLD;
 const exposedHot = s => s && s.flags && s.flags.dagonExpose != null && (s.day || 0) < s.flags.dagonExpose + 2 * T.daysPerYear;
 // price multipliers in Saltmere only
 export const dagonBuyMult = (s, town) => (town !== DAGON_TOWN || !s ? 1 : (dagonOutsider(s) ? 1.2 : 1) * (exposedHot(s) ? 1.3 : 1));
@@ -43,15 +44,16 @@ export function dagonDay(s) {
   openDeepDoor(s); // R54
   if (yr) hydraYear(s);
 }
-export function goDown(s) {
+export function goDown(s, who) {
   const alive = (s.members || []).filter(m => m.alive);
   const pool = alive.filter(m => m.id !== s.head && (m.ageDays || 0) >= 16 * T.daysPerYear);
   if (alive.length < 3 || !pool.length) return null;
-  const m = pool[Math.floor(rng() * pool.length)];
+  const m = who || pool[Math.floor(rng() * pool.length)]; // R57 The Change names who
   m.alive = false;
   m.wentDown = s.day;
   m.leftDay = s.day;
   m.action = null;
+  m.tideCall = null;
   for (const id of [...Object.values(m.equip || {}), ...(m.bag || [])]) s.vault.push(id);
   m.equip = {};
   m.bag = [];
@@ -182,7 +184,9 @@ export function localsMood(s) {
 }
 export function localsLine(s, salt = 0) {
   const pool = ((D.families || {}).dagonLocals || {})[localsMood(s)] || [];
-  return pool.length ? pool[(Math.floor((s.day || 0) / 3) + salt) % pool.length] : null; // a new line every 3 days
+  const h = (s.members || []).find(m => m.id === s.head), sea = ((D.families || {}).dagonLocals || {}).seaKin || [];
+  const P = h && (h.traits || []).includes("seatouched") && localsMood(s) !== "enemy" && sea.length && (Math.floor((s.day || 0) / 3) + salt) % 2 ? sea : pool; // R57 "one of us"
+  return P.length ? P[(Math.floor((s.day || 0) / 3) + salt) % P.length] : null; // a new line every 3 days
 }
 // ---- R55 Deep One raids (built like endgame raid(): our defence vs their power)
 export const DR = { gaps: { expose: [120, 200], slain: [200, 300], cold: [300, 400] }, base: 120, step: 20, cap: 260, endAfter: 5, warn: 3, kidnap: 0.1, rescueDays: 60, holed: 30, fishLoss: 0.4, treasureLoss: 0.5, deepOneGuard: 30, healersPct: 0.15, templars: 2, winRenown: 20, winChurch: 25, eggChance: 0.2, firstMin: 90 };
@@ -200,7 +204,8 @@ const adults = s => (s.members || []).filter(m => m.alive && (m.ageDays || 0) >=
 export function deepRaid(s, deps) {
   const yo = (s.minions || []).filter(x => x.type === "deepone").length;
   const healer = adults(s).some(m => deps.churchRank && deps.churchRank(m) >= 1);
-  const our = Math.round((deps.defense(s) + yo * DR.deepOneGuard) * (healer ? 1 + DR.healersPct : 1)), foe = deepRaidPower(s);
+  const sea = adults(s).filter(m => (m.traits || []).includes("seatouched")).length; // R57 they fight well at the shore
+  const our = Math.round((deps.defense(s) + yo * DR.deepOneGuard + sea * 15) * (healer ? 1 + DR.healersPct : 1)), foe = deepRaidPower(s);
   const win = rng() < our / Math.max(1, our + foe);
   if (win) {
     s.deepRaidsWon = (s.deepRaidsWon || 0) + 1;
@@ -212,7 +217,7 @@ export function deepRaid(s, deps) {
     if (deepRaidsOver(s)) log(s, "🕊️ The deep has lost too many. The raids stop.");
     return "won";
   }
-  const ad = adults(s), pool = ad.filter(m => m.id !== s.head);
+  const ad = adults(s), pool = ad.filter(m => m.id !== s.head && !(m.traits || []).includes("seatouched")); // R57 the deep never takes its own
   if (ad.length >= 2 && pool.length && rng() < DR.kidnap) {
     const m = pool[Math.floor(rng() * pool.length)];
     m.alive = false;

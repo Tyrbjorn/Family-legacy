@@ -12,7 +12,7 @@ const deps={defense:()=>0,addRenown:(s,n)=>s.renown+=n,church:(s,n)=>(s.cf=(s.cf
 ok(+BUILD.slice(1)>=55&&E.SCHEMA>=51,'R55+, save step 51+');
 ok(D.changelog.entries.some(e=>e.build==='R55'),'changelog R55');
 // locals
-const LC=D.families.dagonLocals; ok(['outsider','tolerated','kin','enemy'].every(k=>LC[k].length===10)&&new Set(Object.values(LC).filter(Array.isArray).flat()).size===40,'40 distinct lines, 10 per mood');
+const LC=D.families.dagonLocals; ok(['outsider','tolerated','kin','enemy'].every(k=>LC[k].length===10)&&new Set(['outsider','tolerated','kin','enemy'].flatMap(k=>LC[k])).size===40,'40 distinct lines, 10 per mood');
 ok(E.localsMood(base(undefined,-25))==='outsider'&&E.localsMood(base(undefined,0))==='tolerated'&&E.localsMood(base('join',0))==='kin'&&E.localsMood(base('expose',0))==='enemy','moods');
 { const s=base('join',0); ok(LC.kin.includes(E.localsLine(s)),'a kin line for a joined family'); s.day+=3; ok(E.localsLine(s)!==E.localsLine({...s,day:s.day-3}),'lines rotate'); }
 // triggers

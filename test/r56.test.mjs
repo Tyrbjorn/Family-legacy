@@ -8,8 +8,8 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const Y=D.tuning.daysPerYear;
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;s.day=20*Y;return s;};
-ok(BUILD==='R56'&&E.SCHEMA===52,'R56, save step 52');
-ok(D.changelog.entries[0].build==='R56','changelog R56');
+ok(+BUILD.slice(1)>=56&&E.SCHEMA>=52,'R56+');
+ok(D.changelog.entries.some(e=>e.build==='R56'),'changelog R56');
 // travel
 { const s=base(); const m={race:'dwarf'}; ok(E.dwarfTravel(s,m,false,1.5)===0.8&&E.dwarfTravel(s,m,true,1.5)===1&&E.dwarfTravel(s,{},false,1.5)===1.5,'dwarves never ride: ×0.8 off the mountains'); s.vault.push('ramcart'); ok(E.dwarfTravel(s,m,false,1.5)===1.2,'Ram Cart ×1.2'); }
 { const s=base(); const m=s.members[0]; m.race='dwarf'; const t=E.newTrip({type:'quest',target:'q_salt_kelp'},s,m), u=E.newTrip({type:'quest',target:'q_salt_kelp'},s,null); ok(t.out>=u.out,'a dwarf walks slower on the coast ('+t.out+' vs '+u.out+')'); }
@@ -35,5 +35,5 @@ ok(D.changelog.entries[0].build==='R56','changelog R56');
 { const s=base(); E.openGate(s); ok(['r_dwarfpick','r_dwarfaxe','r_dwarfsickle'].every(r=>s.unlocks.includes('recipe:'+r)),'dwarf-steel tools at the gate'); }
 // save
 { const s=base(); s.members[0].house='ironbrow'; s.gateOpen=1; STEPS.find(x=>x.n===52).run(s); ok(s.members[0].race==='dwarf'&&s.unlocks.includes('recipe:r_dwarfpick'),'step 52'); const n=s.minions.length; ok(n===s.minions.length,'no one dismissed'); }
-{ const s=base(); s.members[0].race='dwarf'; const l=E.deserialize(E.serialize(s)); ok(l.schema===52&&l.members[0].race==='dwarf','save/load'); }
+{ const s=base(); s.members[0].race='dwarf'; const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA&&l.members[0].race==='dwarf','save/load'); }
 console.log('r56 ok',pass);
