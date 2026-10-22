@@ -1,4 +1,4 @@
-import { hydraDone, hydraFail, hydraIssue } from "./dagon.js";
+import { boatHoled, hydraDone, hydraFail, hydraIssue, localsLine, rescueDone, takenMembers } from "./dagon.js";
 import { openGate, swearOath, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
 import { findId } from "./lookup.js";
@@ -74,6 +74,8 @@ export function resolveQuest(s, m, q, eff) {
   usurperQuestDone(s, q); // R50 House Crane
   if (q.opensGate) openGate(s); // R51 the Rune-Sealed Gate
   if (q.oath) swearOath(s); // R52 Oath of the Thane
+  if (q.rescue) rescueDone(s); // R55 Into the Surf
+  if (q.town === "saltmere" && (s.day || 0) % 4 === 0) { const ln = localsLine(s, s.day % 7); if (ln) log(s, "👁️ " + ln); } // R55 the locals
   if (q.hydra) hydraDone(s, m, q, injure, () => { for (const mg of guildsOf(m).filter(g => g.id === "church")) mg.rep += 100; if (!guildsOf(m).some(g => g.id === "church")) (s.guildFavour ||= {}).church = ((s.guildFavour || {}).church || 0) + 100; }); // R54
   if (firstDone && (q.id === "reef4" || q.chain === "gildedhall")) { // R53 the investigation opens step by step, whatever the Lodge thinks of you
     const nx = D.quests.find(x => x.chain === "gildedhall" && x.step === (q.chain === "gildedhall" ? q.step + 1 : 1));
@@ -121,7 +123,8 @@ export function dungeonRun(s, id) {
 export function questIssue(s, m, q) {
   if (!q) return "missing";
   if (!known(s, q)) return "hear a rumor or explore";
-  if (q.hydra) { const h = hydraIssue(s, q); if (h) return h; } // R54 Mother's Pool
+  if (q.hydra) { const h = hydraIssue(s, q); if (h) return h; }
+  if (q.rescue && !takenMembers(s).length) return "no one to rescue"; // R55 // R54 Mother's Pool
   if (q.once && s.doneQuests.includes(q.id)) return "done";
   if (!regionOpen(s, q.region)) return "region locked";
   if (!questOk(m, q)) return "guild rank";
@@ -131,6 +134,7 @@ export function questIssue(s, m, q) {
   if (nd) return "first: " + ((findId(D.quests, nd) || {}).name || nd); // R49 chain steps in order
   const hi = houseQuestIssue(s, q);
   if (hi) return hi;
+  if (q.req?.item === "seaboat" && boatHoled(s)) return "your Sea Boat is holed (Deep Ones)"; // R55
   if (q.req?.item && ![...(s.vault || []), ...(s.members || []).flatMap(x => [...(x.bag || []), ...Object.values(x.equip || {})])].some(x => x === q.req.item || String(x).split("#")[0].split("|")[1] === q.req.item)) return "needs a " + (findId(D.items, q.req.item) || {}).name;
   if (q.req?.land && !s.land.includes(q.req.land)) return "needs the " + (ES().lands.find(l => l.id === q.req.land) || {}).name + " deed";
   if (!q.story && q.req?.era && era(s).n < q.req.era) return "Era " + q.req.era;

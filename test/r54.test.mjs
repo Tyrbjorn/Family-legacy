@@ -8,8 +8,8 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const Y=D.tuning.daysPerYear, Q=id=>D.quests.find(q=>q.id===id);
 const base=(pact,r)=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;s.day=10*Y;s.dagonPact=pact;s.houses.dagon={r:r??-25,state:'peace'};s.cleared=[...(s.cleared||[]),'d_olddeeps'];s.choices=[{id:'dagon',pick:pact||'bargain'}];for(const id of ['highlands','dwarfhold'])s.discovered.push(id);(s.townsVisited||=[]).push('dwarfhold');const m=s.members[0];m.ageDays=25*Y;for(const k in m.stats)m.stats[k]=80;for(const k in m.skills)m.skills[k].lvl=60;return s;};
-ok(BUILD==='R54'&&E.SCHEMA===50,'R54, save step 50');
-ok(D.changelog.entries[0].build==='R54','changelog R54');
+ok(+BUILD.slice(1)>=54&&E.SCHEMA>=50,'R54+, save step 50+');
+ok(D.changelog.entries.some(e=>e.build==='R54'),'changelog R54');
 // mood
 ok(E.hydraMood(base('join',0))==='peaceful'&&E.hydraMood(base('join',-30))==='tested','join: peaceful; tested if trust fell to Cold');
 ok(E.hydraMood(base(undefined,70))==='peaceful'&&E.hydraMood(base(undefined,0))==='tested'&&E.hydraMood(base(undefined,-25))==='violent','no pact: by trust');
@@ -33,7 +33,7 @@ ok(!Q('hy_fight').once&&Q('hy_fight').gives.includes('hydrascale'),'the fight ca
 // save
 { const s=base('join',0); s.hydra={x:1}; STEPS.find(x=>x.n===50).run(s); ok(!s.hydra&&E.deepDoorOpen(s),'step 50: door found, encounter unplayed'); }
 { const s=base('join',0); s.flags={}; s.choices=[]; STEPS.find(x=>x.n===50).run(s); ok(!E.deepDoorOpen(s),'step 50: no choice, still sealed'); }
-{ const s=base('join',0); s.hydra={mood:'peaceful',result:'blessed',day:1}; const l=E.deserialize(E.serialize(s)); ok(l.schema===50&&l.hydra.result==='blessed','save/load'); }
+{ const s=base('join',0); s.hydra={mood:'peaceful',result:'blessed',day:1}; const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA&&l.hydra.result==='blessed','save/load'); }
 // Deep One eggs
 ok(D.towns.every(t=>t.prices.deepegg>=150)&&D.minions.types.find(t=>t.id==='deepone').special,'eggs: a rare trade good, hatch into a Young Deep One');
 ok(D.dungeons.find(d=>d.id==='d_olddeeps').floors.slice(1).every(f=>f.drop&&f.drop.res==='deepegg'),'lower Old Deeps floors may hold an egg');

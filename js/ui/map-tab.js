@@ -181,7 +181,7 @@ export function mapDetail(m) {
   if (k === "l") {
     const l = E.locDef(id),
       ty = D.world.locTypes[l.type];
-    h = `<div class="card"><b>${ty.icon} ${E.locName(s, l)}</b> <span class="tb">${ty.name}${E.locLocked(s, l) ? " · 🔒 sealed" : ""}</span>${E.locDesc(s, l) ? `<div class="muted">${E.locDesc(s, l)}</div>` : ""}<div class="muted">${routeLine(null, l)}</div>${E.locLocked(s, l) ? '<div class="muted">The gates stay shut. Perhaps one day…</div>' : ""}${l.sea ? '<div class="muted">⚓ Ships and sea trade are not open yet.</div>' : ""}</div>`;
+    h = `<div class="card"><b>${ty.icon} ${E.locName(s, l)}</b> <span class="tb">${ty.name}${E.locLocked(s, l) ? " · 🔒 sealed" : ""}</span>${E.locDesc(s, l) ? `<div class="muted">${E.locDesc(s, l)}</div>` : ""}${l.id === "l_dagonhall" && E.localsLine(s, 5) ? `<div class="muted" style="font-style:italic">👁️ ${E.localsLine(s, 5)}</div>` : ""}<div class="muted">${routeLine(null, l)}</div>${E.locLocked(s, l) ? '<div class="muted">The gates stay shut. Perhaps one day…</div>' : ""}${l.sea ? '<div class="muted">⚓ Ships and sea trade are not open yet.</div>' : ""}</div>`;
   }
   if (k === "a") {
     const a = E.areaDef(id),
@@ -279,6 +279,7 @@ export function mapv() {
               .join("")}</div>`
           : ""
       }
+   ${t.id === "saltmere" && E.localsLine(s) ? `<div class="muted" style="font-style:italic;margin-top:4px">👁️ ${E.localsLine(s)}</div>` : ""}
    ${E.breweryOf(t.id) ? `<div id="brewery-${t.id}" style="margin-top:4px"><span class="muted">🍺 ${E.breweryOf(t.id).name || "Brewery"} · a few casks a month (your own Brewery is cheaper):</span>${E.brewRefused(s, t.id) ? `<div class="muted">🐟 ${E.brewRefused(s, t.id)}</div>` : ""}<div class="row" style="flex-wrap:wrap">${Object.keys(E.brewsOf(t.id)).map(k => { const left = E.brewLeft(s, t.id, k), p = E.brewPrice(s, t.id, k), n = Math.min(4, left); return `<button class="b" data-a="buybrew" data-v="${t.id}" data-w="${k}" ${n > 0 && s.res.coin >= p * n && !E.brewRefused(s, t.id) ? "" : "disabled"} title="${left} left this month">Buy ${n || 4}${RI[k] || " " + k} ← ${fmt(p * (n || 4))}🪙 · ${left} left</button>`; }).join("")}</div></div>` : ""}
    ${landShop(t.id) ? '<div class="muted" style="margin-top:4px">📜 LAND FOR SALE</div>' + landShop(t.id) : ""}
    ${D.guilds.guilds

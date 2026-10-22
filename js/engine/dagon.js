@@ -172,3 +172,96 @@ export function hatchDay(s, addMinion) {
   }
   return addMinion(s, "deepone", "hatched from a Deep One egg");
 }
+
+// ---- R55 Saltmere's locals: one line pool per Lodge mood (families.json dagonLocals)
+export function localsMood(s) {
+  const r = rOf(s), p = s.dagonPact, slain = s.hydra && s.hydra.result === "slain";
+  if (p === "expose" || p === "lapsed" || slain || r <= -50) return "enemy";
+  if (p === "join" || r >= ALLIED) return "kin";
+  return r <= COLD ? "outsider" : "tolerated";
+}
+export function localsLine(s, salt = 0) {
+  const pool = ((D.families || {}).dagonLocals || {})[localsMood(s)] || [];
+  return pool.length ? pool[(Math.floor((s.day || 0) / 3) + salt) % pool.length] : null; // a new line every 3 days
+}
+// ---- R55 Deep One raids (built like endgame raid(): our defence vs their power)
+export const DR = { gaps: { expose: [120, 200], slain: [200, 300], cold: [300, 400] }, base: 120, step: 20, cap: 260, endAfter: 5, warn: 3, kidnap: 0.1, rescueDays: 60, holed: 30, fishLoss: 0.4, treasureLoss: 0.5, deepOneGuard: 30, healersPct: 0.15, templars: 2, winRenown: 20, winChurch: 25, eggChance: 0.2, firstMin: 90 };
+export const deepRaidsOver = s => !!s.hydra && s.hydra.result === "slain" && (s.deepRaidsWon || 0) >= DR.endAfter;
+export function deepRaidGap(s) {
+  if (deepRaidsOver(s) || s.dagonPact === "join" || rOf(s) >= ALLIED) return null;
+  if (s.dagonPact === "expose") return DR.gaps.expose;
+  if (s.hydra && s.hydra.result === "slain") return DR.gaps.slain;
+  if (s.dagonPact === "lapsed" || (rOf(s) <= COLD && (s.doneQuests || []).includes("inv1"))) return DR.gaps.cold; // Cold only counts once you have started prying (the investigation)
+  return null;
+}
+export const deepRaidPower = s => Math.min(DR.cap, DR.base + DR.step * (s.deepRaidsWon || 0));
+const adults = s => (s.members || []).filter(m => m.alive && (m.ageDays || 0) >= 16 * T.daysPerYear);
+// deps: { defense(s), addRenown(s, n), church(s, n), addMinion(s, type, why), hasBoat(s) }
+export function deepRaid(s, deps) {
+  const yo = (s.minions || []).filter(x => x.type === "deepone").length;
+  const healer = adults(s).some(m => deps.churchRank && deps.churchRank(m) >= 1);
+  const our = Math.round((deps.defense(s) + yo * DR.deepOneGuard) * (healer ? 1 + DR.healersPct : 1)), foe = deepRaidPower(s);
+  const win = rng() < our / Math.max(1, our + foe);
+  if (win) {
+    s.deepRaidsWon = (s.deepRaidsWon || 0) + 1;
+    deps.addRenown(s, DR.winRenown);
+    deps.church(s, DR.winChurch);
+    const egg = rng() < DR.eggChance;
+    if (egg) s.res.deepegg = (s.res.deepegg || 0) + 1;
+    log(s, `🌊 Deep Ones came up out of the sea at night and were driven back (${our} vs ${foe})${egg ? "; one left an egg behind" : ""}.`);
+    if (deepRaidsOver(s)) log(s, "🕊️ The deep has lost too many. The raids stop.");
+    return "won";
+  }
+  const ad = adults(s), pool = ad.filter(m => m.id !== s.head);
+  if (ad.length >= 2 && pool.length && rng() < DR.kidnap) {
+    const m = pool[Math.floor(rng() * pool.length)];
+    m.alive = false;
+    m.taken = s.day;
+    m.action = null;
+    if (!(s.revealed ||= []).includes("q_surf")) s.revealed.push("q_surf");
+    log(s, `🌊 Deep Ones broke through (${our} vs ${foe}) and dragged ${m.name} into the sea! Rescue them with “Into the Surf” within ${DR.rescueDays} days.`);
+    return "kidnap";
+  }
+  const opts = [];
+  if ((s.res.fish || 0) + (s.res.saltedfish || 0) > 0) opts.push("fish");
+  if (deps.hasBoat(s)) opts.push("boat");
+  if ((s.res.pearls || 0) + (s.res.reefgold || 0) + (s.res.deepegg || 0) > 0) opts.push("treasure");
+  const t = opts.length ? opts[Math.floor(rng() * opts.length)] : null;
+  if (t === "fish") for (const k of ["fish", "saltedfish"]) s.res[k] = Math.floor((s.res[k] || 0) * (1 - DR.fishLoss));
+  if (t === "boat") s.boatHoled = s.day + DR.holed;
+  if (t === "treasure") for (const k of ["pearls", "reefgold", "deepegg"]) s.res[k] = Math.floor((s.res[k] || 0) * (1 - DR.treasureLoss));
+  const txt = { fish: "they took your fish stores", boat: `they holed your Sea Boat (${DR.holed} days)`, treasure: "they took back pearls, reef-gold and eggs: what is theirs" }[t] || "they found nothing they wanted";
+  log(s, `🌊 Deep Ones broke through (${our} vs ${foe}): ${txt}.`);
+  return t || "nothing";
+}
+export const boatHoled = s => (s.boatHoled || 0) > (s.day || 0);
+export const takenMembers = s => (s.members || []).filter(m => m.taken != null && !m.alive && m.wentDown == null);
+export function rescueDone(s) {
+  const m = takenMembers(s)[0];
+  if (!m) return null;
+  m.alive = true;
+  delete m.taken;
+  log(s, `🏠 ${m.name} is home, soaked and silent. They won't say what they saw down there.`);
+  return m;
+}
+export function deepRaidDay(s, deps) {
+  const day = s.day || 0;
+  for (const m of takenMembers(s))
+    if (day - m.taken >= DR.rescueDays) (m.wentDown = day), (m.leftDay = day), log(s, `🌊 ${m.name} was never brought back. They have gone down to Father.`);
+  if (s.dagonPact === "expose" && s.templarsUntil == null && s.flags && s.flags.dagonExpose != null) {
+    s.templarsUntil = s.flags.dagonExpose + T.daysPerYear;
+    if (day < s.templarsUntil) for (let i = 0; i < DR.templars; i++) deps.addMinion(s, "templar", "sent by the Church");
+  }
+  if (s.templarsUntil != null && day >= s.templarsUntil && (s.minions || []).some(x => x.type === "templar")) {
+    s.minions = s.minions.filter(x => x.type !== "templar");
+    log(s, "⚔️ The Church's Templars ride home.");
+  }
+  const gap = deepRaidGap(s);
+  if (!gap) return void (s.deepRaidAt = null);
+  if (s.deepRaidAt == null) s.deepRaidAt = day + Math.max(DR.firstMin, gap[0] + Math.floor(rng() * (gap[1] - gap[0])));
+  if (s.deepRaidAt - day === DR.warn) log(s, "🌊 The tide comes in strange tonight, and the fish have left the shallows. The Deep Ones will come in 3 days.");
+  if (day >= s.deepRaidAt) {
+    deepRaid(s, deps);
+    s.deepRaidAt = deepRaidGap(s) ? day + gap[0] + Math.floor(rng() * (gap[1] - gap[0])) : null;
+  }
+}

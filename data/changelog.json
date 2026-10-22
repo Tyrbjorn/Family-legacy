@@ -2,6 +2,17 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R55",
+   "title": "The Deep Ones Come Ashore",
+   "items": [
+    "🌊 Deep One raids on your estate: often if you exposed the Order (every 120–200 days), sometimes if you slew Mother Hydra (200–300), now and then if you broke the bargain or the Lodge is Cold (300–400). Never if you joined or are Allied. A warning comes 3 days ahead.",
+    "🐟 Their raid power is 120 (+20 for each raid you have survived, up to 260). Lose and they take your fish, hole your Sea Boat for 30 days, or take back pearls, reef-gold and eggs. One lost raid in ten, they drag a family member into the sea (never the head or the last adult): rescue them with “Into the Surf” within 60 days, or they go down to Father.",
+    "🛡️ Defence: your usual guards and walls, Young Deep Ones (they count twice), Healers' Guild Journeymen and up (+15%), and after an expose the Church sends two Templars for a year. A win: +20 renown, +25 Healers' Guild rep, sometimes an egg.",
+    "🕊️ The raids end once Mother Hydra is slain and you have survived five.",
+    "👁️ Saltmere's locals: 40 new lines on the Saltmere card, the Gilded Hall and in the log, that change with how the Lodge sees you (outsider, tolerated, kin or enemy)."
+   ]
+  },
+  {
    "build": "R54",
    "title": "Mother's Pool",
    "items": [

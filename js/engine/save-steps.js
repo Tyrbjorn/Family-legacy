@@ -746,6 +746,14 @@ export const STEPS = [
       }
     },
   },
+  {
+    n: 51,
+    name: "R55 Deep One raids: a hostile save (exposed, Hydra slain, lapsed or Cold) gets its first raid no sooner than 90 days out; nothing is taken or given",
+    run(s) {
+      const hostile = s.dagonPact === "expose" || s.dagonPact === "lapsed" || (s.hydra && s.hydra.result === "slain") || (((s.houses || {}).dagon || { r: 0 }).r <= -15 && (s.doneQuests || []).includes("inv1"));
+      if (hostile && s.dagonPact !== "join" && s.deepRaidAt == null) s.deepRaidAt = (s.day || 0) + 90;
+    },
+  },
 ];
 const ITEM_RENAMES = {
   steel_blade: "steel_sword",

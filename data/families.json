@@ -905,5 +905,56 @@
   "disgracedAfter": "st10",
   "text": "The house that took House Vael's name. Always Rival; no gifts, no marriage, no truce. Chapters 9 and 10 settle it.",
   "_note": "R50: House Crane is not in `list` (no drift, troubles, suitors or gifts); it starts Rival and leaves the realm, disgraced, after chapter 10."
+ },
+ "dagonLocals": {
+  "_note": "R55: Saltmere's locals. One pool per Lodge mood (outsider / tolerated / kin / enemy), 10 lines each.",
+  "outsider": [
+   "A woman gutting fish stops, knife still, and watches you pass without blinking. Her eyes are far too large.",
+   "Shutters close one by one as you walk down the street. Somewhere behind them, someone is humming.",
+   "‘Market's closed,’ says the stallholder, though the stall is full. ‘For you.’",
+   "Two boys on the harbour wall stop talking when you come near, and stay stopped until you are gone.",
+   "The innkeeper wipes the same glass for as long as you stand there. He never looks up.",
+   "Every door you pass has the same mark scratched over the lintel: a wave, and an eye inside it.",
+   "An old man on a bench smells of brine and low tide. His skin is grey and loose at the neck, like wet paper.",
+   "You ask the way to the church. Three people answer at once, ‘There is no church,’ and walk off together.",
+   "The fog comes in off the sea at noon. Inside it, faces at the windows are just pale circles with dark eyes.",
+   "Someone has left a fish on your cart, gutted, its head turned to face the sea."
+  ],
+  "tolerated": [
+   "The harbourmaster nods once. It's the first time anyone has.",
+   "Nets heavy with silver fish, chests of pearls on the quay. No one here is poor. No one says why.",
+   "Above the church door the gold sign of wrong angles catches the light. You look away; your head aches for an hour.",
+   "A fishwife sells to you at last, counting the coins twice with long, damp fingers.",
+   "The church on the hill is gilded from step to spire. In this fog-grey town it shines like something drowned.",
+   "‘Good catch this season,’ a sailor says, without smiling. ‘Always is. We keep our end.’",
+   "The carvings on the church door show men kneeling to something in the water. Some of the men have no faces left.",
+   "A child offers you a pearl the size of a thumbnail for a copper. Her mother pulls her away, hissing.",
+   "At low tide the whole town comes down to the beach and stands still, looking out at the reef.",
+   "The bell in the church tower doesn't ring the hours. It rings the tides."
+  ],
+  "kin": [
+   "‘Father provides,’ the fishwife says, pressing a fish into your hand. Her fingers are cold and webbed at the knuckle.",
+   "The children sing at the tideline at dusk. You know the words now.",
+   "Inside the gilded hall the carvings seem to move when the candles flicker. Tonight it is almost comforting.",
+   "Doors open as you pass. ‘Brother,’ someone murmurs, ‘sister,’ and the door closes softly again.",
+   "The sign over the altar no longer hurts to look at. That frightens you more than the pain did.",
+   "The harbourmaster waves your cart through without a toll. ‘Family,’ he says, and his eyes are very wide.",
+   "The old ones on the benches watch the sea with you now, all of you waiting for the same thing.",
+   "A gift on your doorstep at dawn: reef-gold worked into a crown no bigger than a ring, still wet.",
+   "Someone you don't know calls you by your grandmother's name and asks after Mother.",
+   "The water in the harbour is warm tonight, and something under it is singing."
+  ],
+  "enemy": [
+   "Someone has painted the wave-and-eye sign on your cart in fish oil.",
+   "The whole street turns to watch you, all at once, and says nothing.",
+   "A wet handprint on the inn door, too wide, with too many joints.",
+   "No one will sell to you. A man spits at your boots, and the spit smells of the sea.",
+   "The church doors are open. Every face inside turns to you, and the singing stops.",
+   "Your boat's rope has been cut and tied again in a knot no sailor knows.",
+   "A child points at you and whispers ‘Father knows’. Her mother doesn't stop her.",
+   "At night you hear something wet dragging itself up the road to your door, then back down to the sea.",
+   "The fog smells of rot. Shapes stand in it at the end of every street, waiting.",
+   "Fish heads on the doorstep, a dozen of them, all looking at the house."
+  ]
  }
 }

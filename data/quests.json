@@ -4561,5 +4561,27 @@
    "hydrascale"
   ],
   "desc": "The pool boils. Mother Hydra rises, vast and many-eyed, and she remembers what you did to her children. Win, and her scale is yours. Lose three times and the sea floods the Old Deeps for a season."
+ },
+ {
+  "id": "q_surf",
+  "name": "Into the Surf",
+  "type": "chain",
+  "cp": 150,
+  "days": 3,
+  "risk": "risky",
+  "reward": {
+   "coin": 200
+  },
+  "skill": "sailing",
+  "hidden": true,
+  "region": "saltcoast",
+  "town": "saltmere",
+  "coastal": true,
+  "loot": [],
+  "req": {
+   "town": "saltmere"
+  },
+  "rescue": true,
+  "desc": "The Deep Ones took one of your family into the sea. Follow them into the surf at low tide and bring them home before they go down to Father (60 days)."
  }
 ]

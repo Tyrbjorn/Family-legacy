@@ -611,6 +611,23 @@
    ],
    "span": 300,
    "desc": "Hatched from a Deep One egg: a superb fisher and a fair guard. Eats fish, takes no wages, and may outlive your whole line."
+  },
+  {
+   "id": "templar",
+   "name": "Church Templar",
+   "icon": "⚔️",
+   "hire": 0,
+   "wage": 0,
+   "apt": {
+    "guard": 2.0,
+    "patrol": 1.6
+   },
+   "special": true,
+   "source": {
+    "church": "expose"
+   },
+   "housing": "bunk",
+   "desc": "Sent by the Church for a year after you exposed the Order. Takes no wages."
   }
  ],
  "hireAt": {

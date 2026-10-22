@@ -1,5 +1,18 @@
 import { addMinion } from "./minions.js";
-import { dagonDay, hatchDay } from "./dagon.js";
+import { dagonDay, hatchDay, deepRaidDay } from "./dagon.js";
+import { raidDefense } from "./endgame.js";
+import { addRenown } from "./legacy.js";
+import { guildsOf } from "./guilds.js";
+import { hasSeaBoat } from "./sea.js";
+// R55 Deep One raids: what the raid needs from the rest of the engine
+const DEEP_DEPS = {
+  defense: s => raidDefense(s),
+  addRenown: (s, n) => addRenown(s, (s.members || []).find(m => m.alive), n),
+  church: (s, n) => { const g = (s.members || []).filter(m => m.alive).flatMap(m => guildsOf(m).filter(x => x.id === "church")); for (const x of g) x.rep += n; if (!g.length) (s.guildFavour ||= {}).church = ((s.guildFavour || {}).church || 0) + n; },
+  churchRank: m => (guildsOf(m).find(x => x.id === "church") || { rank: -1 }).rank,
+  addMinion: (s, type, why) => addMinion(s, type, why),
+  hasBoat: s => hasSeaBoat(s),
+};
 import { ramsDay } from "./highlands.js";
 import { animalCount, stalls } from "./world.js";
 import { memberSnap, memberPwdCheck } from "./pausedone.js";
@@ -257,7 +270,7 @@ for (const [n, f] of [
   ["members", membersDay],
   ["generations", generationsDay],
   ["rams", s => ((s._stallsFree = stalls(s) - animalCount(s)), ramsDay(s), delete s._stallsFree)], // R51 mountain rams breed
-  ["dagon", s => (dagonDay(s), hatchDay(s, addMinion))], // R53 the Old Bargain; R54 Deep One eggs
+  ["dagon", s => (dagonDay(s), hatchDay(s, addMinion), deepRaidDay(s, DEEP_DEPS))], // R53 the Old Bargain; R54 Deep One eggs
 ])
   registerDayHook(n, f);
 
