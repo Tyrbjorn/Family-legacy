@@ -1,3 +1,4 @@
+import { iconHtml } from "../art.js";
 import { testerBadge } from "./playpass-ui.js";
 import { gearTags } from "./gear-ui.js";
 import { bellv } from "./progress.js";
@@ -22,7 +23,7 @@ export const yr = d => Math.floor(d / D.tuning.daysPerYear);
 export function top() {
   const t = s.turbo,
     cap = E.turboCapSec(s);
-  return `${U.saveErr ? `<div class="card" id="saveerr" style="border-color:#e77;color:#e77">⚠️ ${U.saveErr}</div>` : ""}<div class="row"><b>🏰 Family Legacy</b>${E.devOn() ? '<span class="devbadge">DEV</span>' : ""}${testerBadge()}<button class="b fbbtn" data-fb="open" title="Playtest feedback">💬 Feedback</button><button class="b" data-tab="saves" id="savesbtn" title="Save slots">📂</button><button class="b" data-tab="legacy" id="legacybtn" title="Legacy upgrades (renown)">🏛️ ${fmt(E.legacyState(s).renown)}${s.legacyRefund && !s.legacyRefund.seen ? " ❗" : ""}</button>${bellv()}<span class="muted">${E.season(s).icon} ${E.season(s).name} · ${E.todLabel(s)} · ${E.estateStage(s)} · Y${yr(s.day) + 1}, day ${(s.day % D.tuning.daysPerYear) + 1} · Renown ${fmt(s.renown)}</span></div><div class="muted" title="${E.nextEraHint(s)} Phases only add systems; questing, crafting, jobs and training stay available forever.">${E.era(s).icon} Phase ${E.era(s).n}/${E.phaseCount()}: ${E.era(s).name} <span class="hint" style="font-size:11px">· ${E.nextEraHint(s)}</span></div>
+  return `${U.saveErr ? `<div class="card" id="saveerr" style="border-color:#e77;color:#e77">⚠️ ${U.saveErr}</div>` : ""}<div class="row"><b>${iconHtml(D.art, "ui", "logo", null, { emoji: "🏰", classic: s.classicEmoji, size: 20 })} Family Legacy</b>${E.devOn() ? '<span class="devbadge">DEV</span>' : ""}${testerBadge()}<button class="b fbbtn" data-fb="open" title="Playtest feedback">💬 Feedback</button><button class="b" data-tab="saves" id="savesbtn" title="Save slots">📂</button><button class="b" data-tab="legacy" id="legacybtn" title="Legacy upgrades (renown)">🏛️ ${fmt(E.legacyState(s).renown)}${s.legacyRefund && !s.legacyRefund.seen ? " ❗" : ""}</button>${bellv()}<span class="muted">${E.season(s).icon} ${E.season(s).name} · ${E.todLabel(s)} · ${E.estateStage(s)} · Y${yr(s.day) + 1}, day ${(s.day % D.tuning.daysPerYear) + 1} · Renown ${fmt(s.renown)}</span></div><div class="muted" title="${E.nextEraHint(s)} Phases only add systems; questing, crafting, jobs and training stay available forever.">${E.era(s).icon} Phase ${E.era(s).n}/${E.phaseCount()}: ${E.era(s).name} <span class="hint" style="font-size:11px">· ${E.nextEraHint(s)}</span></div>
  <div class="res"><span>🪙 <b>${fmt(s.res.coin)}</b></span>${foodSpan()}<span>🪵 <b>${fmt(s.res.wood)}</b></span><span>🪨 <b>${fmt(s.res.stone)}</b></span><span title="Thyme (common herb)">🌿 <b>${fmt(s.res.thyme || 0)}</b></span>${s.meal ? `<span title="Contentment (food variety, rations, shortages)">${s.morale >= 0 ? "🙂" : "😟"} <b>${s.morale >= 0 ? "+" : ""}${(s.morale || 0).toFixed(1)}</b></span>` : ""}${s.res.planks ? `<span>🪚 <b>${fmt(s.res.planks)}</b></span>` : ""}${s.res.ingots ? `<span>⛓️ <b>${fmt(s.res.ingots)}</b></span>` : ""}${s.res.potions ? `<span>🧪 <b>${fmt(s.res.potions)}</b></span>` : ""}</div>
  <div class="row"><div style="flex:1"><div class="bar t"><i style="width:${(t.charge / cap) * 100}%"></i></div><span class="muted">⚡ Turbo ${mmss(t.charge)} / ${cap / 60}m<span class="hint"> · charges only while away (1h → 6m)</span></span></div>
  <label class="muted" title="Game speed (Legacy unlocks faster tiers); separate from Turbo">⏱ <select data-a="speed">${E.speedOptions(
@@ -144,6 +145,10 @@ export const RI = {
   dust: "✨",
 };
 
+// R58 ART-1: icons in lists and cards (emoji fallback; "Classic emoji" setting)
+export const resIco = (k, size) => iconHtml(D.art, "res", k, null, { emoji: RI[k] || "", classic: s.classicEmoji, size });
+export const itemIco = (id, x, size) => iconHtml(D.art, "item", id, x, { emoji: "", classic: s.classicEmoji, size });
+
 export const costStr = c =>
   Object.entries(c)
     .map(([k, v]) => `${fmt(v)} ${RI[k] || k}`)
@@ -249,7 +254,7 @@ export function itemStatsHtml(x, who, cmpOn = true) {
   return L.length || cmp ? `<div class="istats">${L.join(" · ")}${cmp}</div>` : "";
 }
 export function itemRow(x, btns, equip) { // equip: member or equip map
-  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span><span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot} · ${x.value}🪙</span>${gearTags(x)}${itemStatsHtml(x, equip)}</span><span style="text-align:right">${btns}</span></div>`;
+  return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${itemIco(x.id, x, 22)} <span style="color:${QC[x.rarity] || "#ccc"}">${x.name}</span> <span class="muted">${x.slot} · ${x.value}🪙</span>${gearTags(x)}${itemStatsHtml(x, equip)}</span><span style="text-align:right">${btns}</span></div>`;
 }
 
 export const secDay = () => D.tuning.secPerDayActive / (s.turbo.on ? D.tuning.turboMult : 1);

@@ -1,0 +1,355 @@
+{
+ "_note": "R58 ART-1: inked-storybook icons (batch1b). grey sprites are tinted per material (multiply). Emoji stay the fallback.",
+ "palettes": {
+  "copper": {
+   "base": "#c8743c",
+   "shade": "#784524",
+   "hi": "#ff964e"
+  },
+  "bronze": {
+   "base": "#b0823a",
+   "shade": "#694e22",
+   "hi": "#e4a94b"
+  },
+  "iron": {
+   "base": "#8a8f98",
+   "shade": "#52555b",
+   "hi": "#b3b9c5"
+  },
+  "steel": {
+   "base": "#b4bcc8",
+   "shade": "#6c7078",
+   "hi": "#eaf4ff"
+  },
+  "mithril": {
+   "base": "#a9d4f0",
+   "shade": "#657f90",
+   "hi": "#dbffff"
+  },
+  "adamantium": {
+   "base": "#5f7d6e",
+   "shade": "#394b42",
+   "hi": "#7ba28f"
+  },
+  "silver": {
+   "base": "#d8dce4",
+   "shade": "#818488",
+   "hi": "#ffffff"
+  },
+  "gold": {
+   "base": "#e8bf48",
+   "shade": "#8b722b",
+   "hi": "#fff85d"
+  },
+  "pine": {
+   "base": "#c49a5e",
+   "shade": "#755c38",
+   "hi": "#fec87a"
+  },
+  "oak": {
+   "base": "#9a6a3a",
+   "shade": "#5c3f22",
+   "hi": "#c8894b"
+  },
+  "ash": {
+   "base": "#cbb48a",
+   "shade": "#796c52",
+   "hi": "#ffeab3"
+  },
+  "yew": {
+   "base": "#a2502e",
+   "shade": "#61301b",
+   "hi": "#d2683b"
+  },
+  "ironwood": {
+   "base": "#5a4a44",
+   "shade": "#362c28",
+   "hi": "#756058"
+  },
+  "elderwood": {
+   "base": "#7a6a9a",
+   "shade": "#493f5c",
+   "hi": "#9e89c8"
+  },
+  "greenwood": {
+   "base": "#7aa060",
+   "shade": "#496039",
+   "hi": "#9ed07c"
+  },
+  "rowan": {
+   "base": "#b0583e",
+   "shade": "#693425",
+   "hi": "#e47250"
+  },
+  "heartwood": {
+   "base": "#8a2e2a",
+   "shade": "#521b19",
+   "hi": "#b33b36"
+  },
+  "rawhide": {
+   "base": "#d0b088",
+   "shade": "#7c6951",
+   "hi": "#ffe4b0"
+  },
+  "leather": {
+   "base": "#8a5a34",
+   "shade": "#52361f",
+   "hi": "#b37543"
+  },
+  "boiled": {
+   "base": "#6a3e22",
+   "shade": "#3f2514",
+   "hi": "#89502c"
+  },
+  "wolf": {
+   "base": "#8c8a86",
+   "shade": "#545250",
+   "hi": "#b6b3ae"
+  },
+  "drake": {
+   "base": "#9a3c2c",
+   "shade": "#5c241a",
+   "hi": "#c84e39"
+  },
+  "wyrm": {
+   "base": "#3e6a4c",
+   "shade": "#253f2d",
+   "hi": "#508962"
+  },
+  "linen": {
+   "base": "#e6dcc4",
+   "shade": "#8a8475",
+   "hi": "#fffffe"
+  },
+  "wool": {
+   "base": "#b8a88c",
+   "shade": "#6e6454",
+   "hi": "#efdab6"
+  },
+  "silk": {
+   "base": "#e8c8d8",
+   "shade": "#8b7881",
+   "hi": "#ffffff"
+  },
+  "starweave": {
+   "base": "#c8c0f0",
+   "shade": "#787390",
+   "hi": "#fff9ff"
+  },
+  "granite": {
+   "base": "#8c8880",
+   "shade": "#54514c",
+   "hi": "#b6b0a6"
+  },
+  "bone": {
+   "base": "#e8e0c8",
+   "shade": "#8b8678",
+   "hi": "#ffffff"
+  },
+  "tin": {
+   "base": "#b8bcc0",
+   "shade": "#7d8287",
+   "hi": "#e4e7ea"
+  }
+ },
+ "sprites": {
+  "log": {
+   "file": "art/icons/log.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/log.png",
+   "anchor": null
+  },
+  "plank": {
+   "file": "art/icons/plank.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/plank.png",
+   "anchor": null
+  },
+  "stone": {
+   "file": "art/icons/stone.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/stone.png",
+   "anchor": null
+  },
+  "ingot": {
+   "file": "art/icons/ingot.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/iron-ingot.png",
+   "anchor": null
+  },
+  "hide": {
+   "file": "art/icons/hide.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/hide.png",
+   "anchor": null
+  },
+  "cloth": {
+   "file": "art/icons/cloth.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/cloth-bolt.png",
+   "anchor": null
+  },
+  "herbs": {
+   "file": "art/icons/herbs.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/herb-bundle.png",
+   "anchor": null
+  },
+  "pick": {
+   "file": "art/icons/pick.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/pick.png",
+   "anchor": null
+  },
+  "sickle": {
+   "file": "art/icons/sickle.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/sickle.png",
+   "anchor": null
+  },
+  "hammer": {
+   "file": "art/icons/hammer.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/hammer.png",
+   "anchor": null
+  },
+  "ring": {
+   "file": "art/icons/ring.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/ring.png",
+   "anchor": null
+  },
+  "crest": {
+   "file": "art/icons/crest.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1b/icons/crest-shield.png",
+   "anchor": null
+  },
+  "sword": {
+   "file": "art/icons/sword.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/sword-icon256.png",
+   "anchor": null
+  },
+  "bow": {
+   "file": "art/icons/bow.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/bow-icon256.png",
+   "anchor": null
+  },
+  "staff": {
+   "file": "art/icons/staff.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/staff-icon256.png",
+   "anchor": null
+  },
+  "spear": {
+   "file": "art/icons/spear.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/spear-icon256.png",
+   "anchor": null
+  },
+  "kite": {
+   "file": "art/icons/kite.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/kite-shield-icon256.png",
+   "anchor": null
+  },
+  "axe": {
+   "file": "art/icons/axe.webp",
+   "size": 128,
+   "grey": true,
+   "from": "batch1b/weapons/axe-icon256.png",
+   "anchor": null
+  }
+ },
+ "res": {
+  "wood": "log",
+  "planks": "plank",
+  "stone": "stone",
+  "ingots": "ingot",
+  "hides": "hide",
+  "cloth": "cloth",
+  "herbs": "herbs",
+  "thyme": "herbs",
+  "ore": "ingot",
+  "copperore": "ingot",
+  "copper": "ingot",
+  "tinore": "ingot",
+  "tin": "ingot",
+  "bronze": "ingot",
+  "steel": "ingot",
+  "silverore": "ingot",
+  "silver": "ingot",
+  "goldore": "ingot",
+  "gold": "ingot",
+  "mithrilore": "ingot",
+  "mithril": "ingot",
+  "adamantore": "ingot",
+  "adamantium": "ingot"
+ },
+ "types": {
+  "sword": "sword",
+  "bow": "bow",
+  "longbow": "bow",
+  "staff": "staff",
+  "shortspear": "spear",
+  "longspear": "spear",
+  "kite": "kite"
+ },
+ "items": {
+  "pick": "pick",
+  "dwarfpick": "pick",
+  "sickle": "sickle",
+  "dwarfsickle": "sickle",
+  "smithhammer": "hammer",
+  "hearth_hammer": "hammer",
+  "copper_ring": "ring",
+  "ring_of_vigor": "ring",
+  "signet_ring": "ring",
+  "woodaxe": "axe",
+  "dwarfaxe": "axe"
+ },
+ "itemMat": {
+  "dwarfpick": "steel",
+  "dwarfaxe": "steel",
+  "woodaxe": "iron"
+ },
+ "ui": {
+  "logo": "crest"
+ },
+ "resMat": {
+  "ore": "iron",
+  "copperore": "copper",
+  "copper": "copper",
+  "tinore": "tin",
+  "tin": "tin",
+  "bronze": "bronze",
+  "steel": "steel",
+  "silverore": "silver",
+  "silver": "silver",
+  "goldore": "gold",
+  "gold": "gold",
+  "mithrilore": "mithril",
+  "mithril": "mithril",
+  "adamantore": "adamantium",
+  "adamantium": "adamantium"
+ }
+}

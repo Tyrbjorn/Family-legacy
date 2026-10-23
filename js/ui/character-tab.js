@@ -3,6 +3,7 @@ import { classCard } from "./classes-ui.js";
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { U } from "./state.js";
+import { itemIco } from "./common.js";
 import { badges, itemStatsHtml, memberLine } from "./common.js";
 import { sheet } from "./main-tab.js";
 
@@ -20,7 +21,7 @@ export function characterv() {
   // gear
   h += `<h3>🛡️ Gear</h3>` + ["weapon", "offhand", "armor", "accessory"].map(sl => {
     const id = eq[sl], x = id && E.itemDef(id);
-    return `<div class="card" style="padding:5px 8px;margin:3px 0"><div class="row"><span><span class="muted">${sl}:</span> <b>${x ? x.name : "—"}</b>${x ? ` <span class="muted">+${Math.round(E.itemCpFor(m, id))} CP</span>` : ""}</span><button class="b" data-a="chargear" title="Change in the Bag">Change</button></div>${x ? itemStatsHtml(x, m, false) : ""}</div>`;
+    return `<div class="card" style="padding:5px 8px;margin:3px 0"><div class="row"><span><span class="muted">${sl}:</span> ${x ? itemIco(id, x, 22) + " " : ""}<b>${x ? x.name : "—"}</b>${x ? ` <span class="muted">+${Math.round(E.itemCpFor(m, id))} CP</span>` : ""}</span><button class="b" data-a="chargear" title="Change in the Bag">Change</button></div>${x ? itemStatsHtml(x, m, false) : ""}</div>`;
   }).join("");
   // proficiency
   const fams = Object.entries(K.famNames).map(([f, n]) => [n, E.prof(m, f), E.profCap(m, f)]).filter(([, v, c]) => v > 0 || c > 0);

@@ -1,5 +1,5 @@
 import * as E from "../engine.js";
-import { MATS, QC, RI, fmt, it, itemRow, itemStatsHtml } from "./common.js";
+import { MATS, QC, RI, fmt, resIco, itemIco, it, itemRow, itemStatsHtml } from "./common.js";
 import { D, invF, s } from "../main.js";
 import { marketSummaryCard, priceTagHtml } from "./market-ui.js";
 import { enchantCard, gearTags, setsCard } from "./gear-ui.js";
@@ -30,12 +30,12 @@ const inlayBtns = id =>
 export function invv() {
   const m = E.active(s);
   const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
-  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `<span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> ${gearTags(it(m.equip[sl]))}${itemStatsHtml(it(m.equip[sl]), m, false)}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}${gearSheet(m)}<div class="row" style="margin-top:4px"><span class="muted">🛡️ Auto Equip for ${m.name}</span><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="noautoeq">${m.noAutoEq ? "Excluded" : "Included"}</button></div></div>` + setsCard(m.equip) + enchantCard();
+  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `${itemIco(m.equip[sl], it(m.equip[sl]), 22)} <span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> ${gearTags(it(m.equip[sl]))}${itemStatsHtml(it(m.equip[sl]), m, false)}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}${gearSheet(m)}<div class="row" style="margin-top:4px"><span class="muted">🛡️ Auto Equip for ${m.name}</span><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="noautoeq">${m.noAutoEq ? "Excluded" : "Included"}</button></div></div>` + setsCard(m.equip) + enchantCard();
   h +=
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
       k =>
-        `<div class="row" style="margin:3px 0"><span>${RI[k] || ""} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
+        `<div class="row" style="margin:3px 0"><span>${resIco(k)} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
     ).join("") +
     `<div class="muted">Sells at ${town.name}.</div></div>` + marketSummaryCard();
   h +=

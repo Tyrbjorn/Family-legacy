@@ -2,6 +2,16 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R58",
+   "title": "First art (ART-1)",
+   "items": [
+    "🎨 Inked-storybook icons for wood, planks, stone, ingots, hides, cloth and herbs, and for picks, sickles, hammers, axes and rings.",
+    "⚔️ Swords, bows, staves, spears and kite shields get drawn icons, coloured by what they're made of (iron, steel, yew, mithril…).",
+    "🛡️ A family crest replaces the castle in the title bar and browser tab.",
+    "😀 Prefer the old look? Settings → Classic emoji. Logs and buttons keep emoji."
+   ]
+  },
+  {
    "build": "R57",
    "title": "The Deep One Mix",
    "items": [

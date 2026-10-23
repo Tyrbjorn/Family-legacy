@@ -9,8 +9,8 @@ const Y=D.tuning.daysPerYear;
 const base=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;s.day=20*Y;return s;};
 ok(+BUILD.slice(1)>=56&&E.SCHEMA>=52,'R56+');
 ok(D.changelog.entries.some(e=>e.build==='R56'),'changelog R56');
-ok(BUILD==='R57'&&E.SCHEMA===53,'R57, save step 53');
-ok(D.changelog.entries[0].build==='R57','changelog R57');
+ok(+BUILD.slice(1)>=57&&E.SCHEMA>=53,'R57+');
+ok(D.changelog.entries.some(e=>e.build==='R57'),'changelog R57');
 const kid=()=>({traits:[],lifespan:55});
 { const s=base(); const c=kid(); ok(!E.seaBirth(s,c,[{},{}],()=>0)&&!c.traits.length,'humans: no roll'); }
 { const s=base(); s.dagonPact='join'; const c=kid(); ok(E.seaBirth(s,c,[{},{}],()=>0.2)&&c.lifespan===65,'joined families get Sea-touched children (+10 years)'); ok(!E.seaBirth(s,kid(),[{},{}],()=>0.3),'25% only'); }
@@ -31,5 +31,5 @@ ok(E.seaFishMult({traits:['seatouched']})===1.15&&E.seaFishMult({})===1,'Sea-tou
 { const s=base(); s.dagonPact='expose'; for(const m of s.members) m.traits=['seatouched'],m.ageDays=30*D.tuning.daysPerYear; while(s.members.length<3) s.members.push({...E.newMember(s,{age:30}),alive:true,traits:['seatouched']});
   let taken=0; for(let i=0;i<200;i++){ const r=E.deepRaid(s,{defense:()=>0,addRenown:()=>0,church:()=>0,addMinion:()=>null,hasBoat:()=>false}); if(r==='kidnap') taken++; } ok(taken===0,'the deep never takes its own'); }
 // save
-{ const s=base(); s.members[0].traits=['seatouched']; s.members[0].lifespan=55; delete s.members[0].seaLife; STEPS.find(x=>x.n===53).run(s); STEPS.find(x=>x.n===53).run(s); ok(s.members[0].lifespan===65,'step 53: +10 once'); const l=E.deserialize(E.serialize(s)); ok(l.schema===53,'save/load'); }
+{ const s=base(); s.members[0].traits=['seatouched']; s.members[0].lifespan=55; delete s.members[0].seaLife; STEPS.find(x=>x.n===53).run(s); STEPS.find(x=>x.n===53).run(s); ok(s.members[0].lifespan===65,'step 53: +10 once'); const l=E.deserialize(E.serialize(s)); ok(l.schema===E.SCHEMA,'save/load'); }
 console.log('r57 ok',pass);
