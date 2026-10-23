@@ -184,4 +184,11 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 .estroom.tier1{border-color:#b58a3a}.estroom.tier2{border-color:#d9b44a;box-shadow:0 0 0 1px #6b5220,inset 0 0 0 2px rgba(0,0,0,.25)}
 .estroom .rmroof{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,var(--rf) 0 10px,rgba(0,0,0,.35) 10px 12px),var(--rf);background-blend-mode:multiply;border-bottom:6px solid rgba(0,0,0,.4);animation:rmroofoff .7s steps(7,end) forwards}
 @keyframes rmroofoff{0%{transform:none;opacity:1}35%{transform:translateY(-8%);opacity:1}100%{transform:translateY(-110%) rotate(-3deg);opacity:0}}
+.estroom .rmscene{position:relative;aspect-ratio:256/192;width:100%;max-width:512px;margin:0 auto;background-size:100% 100%;image-rendering:pixelated;overflow:hidden}
+.estroom .rmsp{position:absolute;width:12.5%;height:16.667%;image-rendering:pixelated}
+.estroom span.rmsp.rmemo{display:flex;align-items:center;justify-content:center;font-size:min(22px,5vw)}
+.estroom .rmfree{box-sizing:border-box;border:1px dashed rgba(255,255,255,.7);background:rgba(0,0,0,.12)}
+.estroom .rmsn{position:absolute;right:auto}
+.estroom .rmfloor.legend .rmcell{min-height:34px}
+.estroom .rmfloor.legend .rmart{width:24px;height:24px}
 @media (prefers-reduced-motion:reduce){.estroom .rmroof{display:none;animation:none}}

@@ -7,7 +7,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms;
-ok(BUILD==='R66'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R66, no new save step');
+ok(['R66','R67'].includes(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R66, no new save step');
 ok(fs.readFileSync(root+'js/main.js','utf8').includes('"estaterooms"'),'main.js loads estaterooms');
 ok(Object.keys(R.rooms).length===12,'12 room families');
 const types=D.estate.structureFiles.flatMap(f=>{const d=D['structures/'+f];return (Array.isArray(d)?d:(d.structures||Object.values(d)))});

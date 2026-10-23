@@ -1,19 +1,38 @@
 // R62 ART-3: pure estate-map layout (no DOM). Positions come from data/estatemap.json plus structure order (uid),
 // stages from existing structure state. Nothing here is saved. Used by estate-map.js and test/r62.test.mjs.
 export function artStage(E, M, st) {
-  const d = E.structDef(st.type) || {}, A = M.art;
+  const d = E.structDef(st.type) || {}, A = M.art, ru = (A.reuse || {})[st.type];
+  if (ru && ru.look != null) return ru.look;
+  if (ru && ru.renameLook != null) { // Guardhouse: looks 1-2 by upgrades, look 3 once renamed Barracks
+    if (E.structStage(st) >= 2) return ru.renameLook;
+    return (st.up || 0) > 0 ? 1 : 0;
+  }
+  if (ru) return Math.min((ru.looks || 3) - 1, artStageOwn(E, d, st));
   if (A.chain[st.type]) return A.chain[st.type][1];
-  if (A.named[st.type] || d.stages) return Math.max(0, Math.min(2, E.structStage(st) - 1));
+  return artStageOwn(E, d, st, A.named[st.type]);
+}
+function artStageOwn(E, d, st, named) {
+  if (named || d.stages) return Math.max(0, Math.min(2, E.structStage(st) - 1));
   const n = st.up || 0, full = (E.curUpgrades(st) || d.upgrades || []).length || 3;
   const byUp = n <= 0 ? 0 : n >= full ? 2 : 1;
   return Math.min(2, Math.max(byUp, st.tier || 0));
 }
 export function artKey(E, M, st) {
   const A = M.art, stg = artStage(E, M, st);
+  const ru = (A.reuse || {})[st.type];
+  if (ru) return `${ru.sprite}-${stg + 1}`;
   if (A.chain[st.type]) return `${A.chain[st.type][0]}-${stg + 1}`;
   if (A.named[st.type]) return `${A.named[st.type]}-${stg + 1}`;
   if (A.ups.includes(st.type)) return `${st.type}-${stg + 1}`;
   return null; // no art yet: emoji pad
+}
+// R67 ART-3b: tint (multiply hex) + emoji door sign for a reused exterior; "vein" tints a mine by its vein's metal
+export function artTouch(E, M, st, artData) {
+  const ru = (M.art.reuse || {})[st.type];
+  if (!ru) return null;
+  let tint = ru.tint || null;
+  if (tint === "vein") { const v = String(E.veinOf ? E.veinOf(st) : "").replace(/_vein$/, ""); tint = ((artData || {}).veinPal || {})[v === "ore" ? "iron" : v] || null; }
+  return { tint, emblem: ru.emblem || "", k: M.art.tintK || 0.45 };
 }
 export const isBig = key => !!key && key.startsWith("manor");
 
@@ -83,7 +102,7 @@ export function estateLayout(s, D, E) {
     } else { const t = take(land); if (t) rect = rectOf(t.main); }
     if (!rect) return void overflow++;
     const shoreItem = M.shoreTypes.includes(st.type) && rect.y >= M.shoreRow * T;
-    items.push({ key: "b:" + st.uid, k, uid: st.uid, type: st.type, name: E.structName ? E.structName(st) : d.name, icon: d.icon || "🏠", img: key, stage: artStage(E, M, st), rect,
+    items.push({ key: "b:" + st.uid, k, uid: st.uid, type: st.type, name: E.structName ? E.structName(st) : d.name, icon: d.icon || "🏠", img: key, touch: artTouch(E, M, st, D.art), stage: artStage(E, M, st), rect,
       door: { x: rect.x + rect.w / 2, y: shoreItem ? rect.y + 10 : rect.y + rect.h - 2 } });
   });
   for (const b of D.buildings || []) {

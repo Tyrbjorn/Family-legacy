@@ -73,6 +73,17 @@ function sheetFor(w) {
   tinted.set(k, c);
   return c;
 }
+// R67: multiply-tinted copy of a reused exterior (cached per sprite+tint)
+function tintedImg(i, key, tint, k) {
+  const ck = key + "|" + tint;
+  if (tinted.has(ck)) return tinted.get(ck);
+  const c = document.createElement("canvas"); c.width = i.naturalWidth; c.height = i.naturalHeight;
+  const g = c.getContext("2d"); g.drawImage(i, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height), p = d.data, T = [1, 3, 5].map(j => parseInt(tint.slice(j, j + 2), 16) / 255);
+  for (let j = 0; j < p.length; j += 4) if (p[j + 3]) for (let q = 0; q < 3; q++) p[j + q] = Math.round(p[j + q] * (1 - k + k * T[q]));
+  g.putImageData(d, 0, 0); tinted.set(ck, c);
+  return c;
+}
 function tile(g, k, x, y, rot = 0) {
   const i = img(k);
   if (!ok(i)) return false;
@@ -101,7 +112,13 @@ function drawStatic(L) {
     if (ok(i)) {
       let w = i.naturalWidth, h = i.naturalHeight;
       if (isBig(it.img) && r.w < 96) { const f = r.w / w; w *= f; h *= f; } // a big home squeezed onto one anchor
-      g.drawImage(i, Math.round(r.x + (r.w - w) / 2), Math.round(r.y + r.h - h), Math.round(w), Math.round(h));
+      const tc = it.touch || {}, src = tc.tint ? tintedImg(i, it.img, tc.tint, tc.k) : i, x0 = Math.round(r.x + (r.w - w) / 2), y0 = Math.round(r.y + r.h - h);
+      g.drawImage(src, x0, y0, Math.round(w), Math.round(h));
+      if (tc.emblem) { // door sign: a small plaque with the emoji, bottom-right of the sprite
+        const ex = x0 + Math.round(w) - 13, ey = y0 + Math.round(h) - 15;
+        g.fillStyle = "rgba(40,28,16,.85)"; g.fillRect(ex - 1, ey - 1, 14, 14); g.fillStyle = "#e8d6a8"; g.fillRect(ex, ey, 12, 12);
+        g.font = "10px serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(tc.emblem, ex + 6, ey + 7);
+      }
     } else {
       g.fillStyle = "rgba(120,90,50,.55)"; g.fillRect(r.x + 8, r.y + 8, r.w - 16, r.h - 16);
       g.font = "28px serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(it.icon, r.x + r.w / 2, r.y + r.h / 2 + 2);
@@ -151,7 +168,7 @@ function step(L, dt, now) {
 function paint(now) {
   const cv = document.getElementById("estcanvas"), L = R.layout;
   if (!cv || !L) return false;
-  const sig = JSON.stringify([L.items.map(i => [i.key, i.img, i.rect.x, i.rect.y]), L.parcels.map(p => p.owned), L.empties.length]);
+  const sig = JSON.stringify([L.items.map(i => [i.key, i.img, i.touch && i.touch.tint, i.touch && i.touch.emblem, i.rect.x, i.rect.y]), L.parcels.map(p => p.owned), L.empties.length]);
   if (sig !== R.sig || R.dirty || !R.bg) { R.sig = sig; drawStatic(L); }
   const g = cv.getContext("2d");
   g.imageSmoothingEnabled = false;

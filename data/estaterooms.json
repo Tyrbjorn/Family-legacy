@@ -138,9 +138,396 @@
  "upIcon": "🔧",
  "tierIcon": "🏛️",
  "art": {
-  "rooms": {},
-  "pieces": {},
-  "ups": {}
+  "rooms": {
+   "home": "room-home",
+   "lodge": "room-lodge",
+   "sacred": "room-sacred",
+   "workshop": "room-workshop",
+   "arcane": "room-arcane",
+   "barn": "room-barn",
+   "yard": "room-yard",
+   "mine": "room-mine",
+   "mill": "room-mill",
+   "kitchen": "room-kitchen",
+   "store": "room-store",
+   "dock": "room-dock"
+  },
+  "pieces": {
+   "alchbench": "pieces/alchbench",
+   "altar": "pieces/altar",
+   "ancestorshrine": "pieces/ancestorshrine",
+   "arcanefocus": "pieces/arcanefocus",
+   "boatslip": "pieces/boatslip",
+   "brazier": "pieces/brazier",
+   "brewvats": "pieces/brewvats",
+   "brinecrocks": "pieces/brinecrocks",
+   "brinepans": "pieces/brinepans",
+   "carvedcase": "pieces/carvedcase",
+   "caskrack": "pieces/caskrack",
+   "charcoalkiln": "pieces/charcoalkiln",
+   "churn": "pieces/churn",
+   "clock": "pieces/clock",
+   "crucible": "pieces/crucible",
+   "distillery": "pieces/distillery",
+   "draftingroom": "pieces/draftingroom",
+   "dwarfcask": "pieces/dwarfcask",
+   "enchdesk": "pieces/enchdesk",
+   "enchtable": "pieces/enchtable",
+   "feasttable": "pieces/feasttable",
+   "fencetable": "pieces/fencetable",
+   "finecornice": "pieces/finecornice",
+   "fishrack": "pieces/fishrack",
+   "forge": "pieces/forge",
+   "fruittrees": "pieces/fruittrees",
+   "furrows": "pieces/furrows",
+   "gamerack": "pieces/gamerack",
+   "glyphlectern": "pieces/glyphlectern",
+   "granitecut": "pieces/granitecut",
+   "guardpost": "pieces/guardpost",
+   "headstones": "pieces/headstones",
+   "hearth": "pieces/hearth",
+   "herbbeds": "pieces/herbbeds",
+   "herbrack": "pieces/herbrack",
+   "hives": "pieces/hives",
+   "hourglass": "pieces/hourglass",
+   "jars": "pieces/jars",
+   "kelpvat": "pieces/kelpvat",
+   "kennel": "pieces/kennel",
+   "lanterns": "pieces/lanterns",
+   "larder": "pieces/larder",
+   "limecut": "pieces/limecut",
+   "loadingdock": "pieces/loadingdock",
+   "loom": "pieces/loom",
+   "masontable": "pieces/masontable",
+   "milkstalls": "pieces/milkstalls",
+   "millwheel": "pieces/millwheel",
+   "moonplanter": "pieces/moonplanter",
+   "nestboxes": "pieces/nestboxes",
+   "nursery": "pieces/nursery",
+   "orecart": "pieces/orecart",
+   "oven": "pieces/oven",
+   "pells": "pieces/pells",
+   "perch": "pieces/perch",
+   "quarrypit": "pieces/quarrypit",
+   "quern": "pieces/quern",
+   "questboard": "pieces/questboard",
+   "range": "pieces/range",
+   "reagentshelf": "pieces/reagentshelf",
+   "remedybench": "pieces/remedybench",
+   "rootcellar": "pieces/rootcellar",
+   "ropewalk": "pieces/ropewalk",
+   "saltingtub": "pieces/saltingtub",
+   "sawtable": "pieces/sawtable",
+   "shaftlift": "pieces/shaftlift",
+   "shrine": "pieces/shrine",
+   "slipwayways": "pieces/slipwayways",
+   "smokepit": "pieces/smokepit",
+   "smoker": "pieces/smoker",
+   "splitbench": "pieces/splitbench",
+   "stablestall": "pieces/stablestall",
+   "stall": "pieces/stall",
+   "steelfurnace": "pieces/steelfurnace",
+   "stillpot": "pieces/stillpot",
+   "storage": "pieces/storage",
+   "studycorner": "pieces/studycorner",
+   "studydesk": "pieces/studydesk",
+   "tanrack": "pieces/tanrack",
+   "tanvats": "pieces/tanvats",
+   "toolrack": "pieces/toolrack",
+   "weaponrack": "pieces/weaponrack",
+   "winepress": "pieces/winepress",
+   "workbench": "pieces/workbench",
+   "yewgrove": "pieces/yewgrove",
+   "bunk": "pieces/bed",
+   "featherbed": "pieces/bed",
+   "minionbunk": "pieces/bed",
+   "cradle": "pieces/bed",
+   "infirmary": "pieces/bed-infirmary",
+   "steelanvil": "pieces/anvil",
+   "runedanvil": "pieces/anvil-runed",
+   "runeanvil": "pieces/anvil-rune",
+   "stonehearth": "pieces/hearth-stone",
+   "coldcellar": "pieces/larder"
+  },
+  "ups": {},
+  "rects": {
+   "home": {
+    "floor": [
+     7,
+     33,
+     248,
+     165
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     32
+    ],
+    "door": [
+     111,
+     166,
+     138,
+     191
+    ]
+   },
+   "lodge": {
+    "floor": [
+     8,
+     28,
+     247,
+     171
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     27
+    ],
+    "door": [
+     100,
+     172,
+     138,
+     191
+    ]
+   },
+   "sacred": {
+    "floor": [
+     9,
+     32,
+     246,
+     159
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     31
+    ],
+    "door": [
+     112,
+     160,
+     140,
+     191
+    ]
+   },
+   "workshop": {
+    "floor": [
+     8,
+     31,
+     246,
+     165
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     30
+    ],
+    "door": [
+     93,
+     166,
+     134,
+     191
+    ],
+    "forge_chimney": [
+     104,
+     0,
+     135,
+     52
+    ],
+    "forge_piece_front": [
+     100,
+     53,
+     139,
+     80
+    ]
+   },
+   "arcane": {
+    "floor": [
+     7,
+     28,
+     248,
+     160
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     27
+    ],
+    "door": [
+     109,
+     161,
+     144,
+     191
+    ]
+   },
+   "barn": {
+    "floor": [
+     6,
+     26,
+     249,
+     165
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     25
+    ],
+    "door": [
+     115,
+     166,
+     147,
+     191
+    ]
+   },
+   "yard": {
+    "floor": [
+     6,
+     28,
+     250,
+     163
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     27
+    ],
+    "door": [
+     115,
+     164,
+     146,
+     191
+    ]
+   },
+   "mine": {
+    "floor": [
+     9,
+     53,
+     244,
+     159
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     105,
+     160,
+     142,
+     191
+    ]
+   },
+   "mill": {
+    "floor": [
+     6,
+     37,
+     249,
+     169
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     36
+    ],
+    "door": [
+     99,
+     170,
+     138,
+     191
+    ],
+    "millstone": [
+     98,
+     15,
+     147,
+     63
+    ]
+   },
+   "kitchen": {
+    "floor": [
+     10,
+     49,
+     245,
+     156
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     48
+    ],
+    "door": [
+     96,
+     157,
+     137,
+     191
+    ]
+   },
+   "store": {
+    "floor": [
+     6,
+     28,
+     249,
+     167
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     27
+    ],
+    "door": [
+     97,
+     168,
+     141,
+     191
+    ]
+   },
+   "dock": {
+    "floor": [
+     7,
+     35,
+     245,
+     121
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     34
+    ],
+    "water": [
+     0,
+     122,
+     255,
+     191
+    ],
+    "jetty": [
+     101,
+     122,
+     142,
+     171
+    ]
+   }
+  },
+  "forgeFront": [
+   "forge",
+   "steelfurnace",
+   "crucible"
+  ],
+  "onWall": [
+   "finecornice"
+  ],
+  "onJetty": [
+   "boatslip",
+   "slipwayways"
+  ]
  },
  "upKeys": [
   [
@@ -283,5 +670,6 @@
    "Kitchen",
    "🍳"
   ]
- ]
+ ],
+ "_noteR67": "R67: art.rooms = room background per family (256x192 lossless); art.rects = floor/backwall/door/blocked areas from room1b rects.json; art.pieces = piece id -> art/rooms/<file>.webp. Merged ids (featherbed, minionbunk, cradle -> bed, coldcellar -> larder) are INVENTED mappings for old saves. Classic emoji mode ignores all art."
 }
