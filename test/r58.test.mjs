@@ -5,8 +5,8 @@ const ROOT=new URL("../",import.meta.url).pathname, R=ROOT+"data/", D={};
 for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]=JSON.parse(fs.readFileSync(R+f));
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const A=D.art;
-ok(BUILD==='R58'&&E.SCHEMA===53,'R58, SCHEMA stays 53');
-ok(D.changelog.entries[0].build==='R58','changelog R58');
+ok(+BUILD.slice(1)>=58&&E.SCHEMA===53,'R58+, SCHEMA stays 53');
+ok(D.changelog.entries.some(e=>e.build==='R58'),'changelog R58');
 ok(fs.readFileSync(ROOT+'js/main.js','utf8').includes('"art"'),'art.json loaded');
 for(const [k,sp] of Object.entries(A.sprites)){ ok(fs.existsSync(ROOT+sp.file)&&sp.file.endsWith('.webp'),'file '+k); ok(sp.size===(sp.grey?128:64),'size '+k); ok(fs.statSync(ROOT+sp.file).size<20000,'small '+k); }
 const mats=Object.keys(D.gear.kinds.mats); ok(mats.length===29&&mats.every(m=>/^#[0-9a-f]{6}$/.test((A.palettes[m]||{}).base||'')),'29 material palettes');

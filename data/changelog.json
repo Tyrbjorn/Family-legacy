@@ -2,6 +2,13 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R58.1",
+   "title": "Copper shows up",
+   "items": [
+    "🟠 Copper ore and copper ingots now appear in your inventory (they were being made but never listed)."
+   ]
+  },
+  {
    "build": "R58",
    "title": "First art (ART-1)",
    "items": [

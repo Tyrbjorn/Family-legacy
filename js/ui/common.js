@@ -222,6 +222,8 @@ export const MATS = [
   "stone",
   "ore",
   "ingots",
+  "copperore",
+  "copper",
   "tinore",
   "tin",
   "bronze",
