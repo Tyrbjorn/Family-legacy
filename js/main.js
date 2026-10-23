@@ -56,6 +56,8 @@ const names = [
   "fish",
   "cooking",
   "art",
+  "creation",
+  "doll",
 ];
 
 export const D = {};
@@ -111,8 +113,34 @@ if (!s) {
 E.normalize(s);
 startWhatsNew(freshPlayer); // R39.1
 
+// R59 per-device legacy record (fl_legacy_v1): back-filled once from every slot, then updated on each save
+export let legacyRec = E.loadLegacyRec(localStorage);
+let legacyRecStr = JSON.stringify(legacyRec);
+function noteLegacy(sv) {
+  if (!sv || E.devOn()) return;
+  const r = E.recordSave(legacyRec, sv);
+  legacyRec = r.rec;
+  const j = JSON.stringify(legacyRec);
+  if (j !== legacyRecStr) { legacyRecStr = j; E.saveLegacyRec(localStorage, legacyRec); if (r.fresh.length) U.legacyNew = r.fresh; }
+}
+if (localStorage.getItem(E.CR_KEY) == null) {
+  for (const x of SL.listSlots(localStorage)) if (!x.empty) { try { noteLegacy(SL.loadSlot(localStorage, x.n || x.slot)); } catch (e) {} }
+  if (legacyKeyMode) noteLegacy(s);
+  E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec);
+  U.legacyNew = null;
+}
+export function getLegacyRec() { return legacyRec; }
+export function resetLegacy() { legacyRec = E.resetLegacyRec(localStorage); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+// creation draft for the founder of a brand-new dynasty (Quick start = close it, founder stays as rolled)
+function openCreation() {
+  const f = s.members.find(x => x.id === s.activeId) || s.members[0];
+  U.create = { name: f.name, gender: f.gender, race: "human", blood: "", traits: [], cls: "", look: Object.assign({}, E.lookOf(s, f)), house: "navy", frame: "open", forSlot: slot };
+}
+export { openCreation };
+
 const save = () => {
   if (window.__noSave) return;
+  noteLegacy(s);
   if (legacyKeyMode) {
     try { localStorage.setItem(KEY, E.serialize(s)); } catch (e) { U.saveErr = "Couldn't save: storage full. Export this game or delete a slot."; }
     return;
@@ -133,6 +161,23 @@ function playSlot(n) {
   if (report && report.elapsed < 60) report = null;
   U.tab = "main";
 }
+function creSet(v) {
+  const c = U.create; if (!c) return;
+  const [k, x] = String(v).split(":"), O = E.creationOptions(legacyRec);
+  const nm = document.querySelector("#crename"); if (nm) c.name = nm.value;
+  if (k === "gender") { c.gender = x; const st = D.creation.hairStyles[x]; c.look.hair = st[0][0]; if (x === "m") delete c.look.bun; else delete c.look.beard; }
+  else if (k === "race") { c.race = x; if (x !== "dwarf") delete c.look.beard; }
+  else if (k === "blood") c.blood = x;
+  else if (k === "cls") c.cls = c.cls === x ? "" : x;
+  else if (k === "trait") { const tr = c.traits.includes(x) ? c.traits.filter(t => t !== x) : [...c.traits, x]; const e = E.creationIssue({ traits: tr }, legacyRec); if (e) U.createErr = e; else (c.traits = tr), (U.createErr = ""); }
+  else if (k === "hair") c.look.hair = x;
+  else if (k === "hairCol" || k === "skin") c.look[k] = +x;
+  else if (k === "beard") x ? (c.look.beard = x) : delete c.look.beard;
+  else if (k === "bun") c.look.bun = !c.look.bun;
+  else if (k === "house") c.house = x;
+  else if (k === "frame") c.frame = x;
+  void O;
+}
 function newInSlot(n) {
   if (!SL.listSlots(localStorage)[n - 1].empty) return;
   save();
@@ -141,9 +186,13 @@ function newInSlot(n) {
   report = null;
   save();
   U.tab = "main";
+  openCreation(); // R59
 }
 function importIntoSlot(n, text) {
   let next;
+  const sp = E.splitLegacyRec(text); // R59
+  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+  text = sp.save;
   try { next = E.importSave(text); } catch (err) { U.slotMsg = "❌ " + err.message; return; }
   const cur = SL.listSlots(localStorage)[n - 1];
   if (!cur.empty && !confirm(`Replace "${cur.name}" in slot ${n} with this save?`)) return;
@@ -154,7 +203,7 @@ function importIntoSlot(n, text) {
 function exportSlot(n) {
   const raw = n === slot ? null : localStorage.getItem(SL.slotKey(n));
   const sv = raw ? E.deserialize(raw) : s, info = SL.listSlots(localStorage)[n - 1];
-  const code = E.exportCode(sv);
+  const code = E.withLegacyRec(E.exportCode(sv), legacyRec); // R59: legacy record rides along
   U.slotCode = code;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
@@ -230,11 +279,26 @@ document.addEventListener("click", e => {
       SL.renameSlot(localStorage, +v, nm, note === null ? undefined : note);
     },
     slotexport: () => exportSlot(+v),
+    creopen: () => openCreation(),
+    credismiss: () => { U.creDismiss = 1; },
+    crequick: () => { U.create = null; },
+    crerandom: () => { const nm = U.create && U.create.name; U.create = Object.assign(E.randomCreation(legacyRec), { name: nm || "" }); },
+    cre: () => creSet(v),
+    crestart: () => {
+      const c = U.create; if (!c) return;
+      const nm = document.querySelector("#crename"); if (nm) c.name = nm.value;
+      const err = E.applyCreation(s, c, legacyRec);
+      if (err) return void (U.createErr = err);
+      U.create = null; U.createErr = ""; s.created = 1;
+      E.log(s, `🛡️ ${(s.members.find(x => x.id === s.activeId) || s.members[0]).name} takes up the house colours.`);
+    },
+    legacyreset: () => { if (confirm("Reset the legacy unlocks on this device? Your saves are not touched.")) resetLegacy(), (U.saveMsg = "Legacy unlocks reset."); },
     slotimport: () => importIntoSlot(+v, document.querySelector("#slotcode") && document.querySelector("#slotcode").value),
     reset: () => {
       if (s.gameOver || confirm(`Abandon this lineage and start over in slot ${slot}?`)) {
         s = E.newLineage(s);
         report = null;
+        openCreation(); // R59
       }
     },
   };
@@ -441,7 +505,7 @@ render();
 }
 
 function exportSave() {
-  const code = E.exportCode(s);
+  const code = E.withLegacyRec(E.exportCode(s), legacyRec); // R59
   U.exportText = code;
   U.saveMsg = "Code shown below; a .txt file was downloaded too.";
   const a = document.createElement("a");
@@ -457,6 +521,9 @@ function importText(text) {
     return;
   }
   let next;
+  const sp = E.splitLegacyRec(text); // R59
+  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+  text = sp.save;
   try {
     next = E.importSave(text);
   } catch (err) {

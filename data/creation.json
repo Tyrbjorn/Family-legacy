@@ -1,0 +1,55 @@
+{
+ "_note": "R59 character creation + per-device legacy unlocks (fl-r59-character-creation-proposal.md). Colours, open set and unlock mapping were approved as proposed; exact hex values for hair and house colours are invented.",
+ "maxPicks": 2,
+ "bonusPickForBad": 1,
+ "elderAge": 55,
+ "skins": [
+  { "id": "fair", "name": "Fair", "col": "#F1D3B8" },
+  { "id": "lightolive", "name": "Light olive", "col": "#D9A97E" },
+  { "id": "tan", "name": "Tan", "col": "#A9734C" },
+  { "id": "deep", "name": "Deep", "col": "#6B4430" }
+ ],
+ "hairCols": [
+  { "id": "black", "name": "Black", "col": "#2b2420" },
+  { "id": "brown", "name": "Dark brown", "col": "#5a3a24" },
+  { "id": "chestnut", "name": "Chestnut", "col": "#8c5530" },
+  { "id": "red", "name": "Red", "col": "#a8442a" },
+  { "id": "blond", "name": "Blond", "col": "#d6b36e" },
+  { "id": "ash", "name": "Ash grey", "col": "#b8b2aa" }
+ ],
+ "elderHair": "#c9c5bf",
+ "houseCols": [
+  { "id": "navy", "name": "Hold blue", "col": "#194261" },
+  { "id": "crimson", "name": "Crimson", "col": "#7d2020" },
+  { "id": "forest", "name": "Forest", "col": "#2f5a30" },
+  { "id": "umber", "name": "Umber", "col": "#6e4a22" },
+  { "id": "purple", "name": "Purple", "col": "#4c2c66" },
+  { "id": "gold", "name": "Gold", "col": "#a8801c" },
+  { "id": "teal", "name": "Teal", "col": "#22686a" },
+  { "id": "sable", "name": "Sable", "col": "#333338" }
+ ],
+ "hairStyles": {
+  "m": [ ["curly-crop", "Curly crop"], ["long-loose", "Long and loose"], ["shag", "Shag"], ["undercut-knot", "Undercut knot"] ],
+  "f": [ ["long-straight", "Long straight"], ["bob", "Bob"], ["twin-braids", "Twin braids"], ["curly-halfup", "Curly half-up"] ]
+ },
+ "beards": [ ["", "None"], ["forked", "Forked"], ["ringed-plait", "Ringed plait"] ],
+ "races": [ ["human", "Human", null], ["dwarf", "Dwarf", "race_dwarf"] ],
+ "bloodlines": [ ["", "None", null], ["dwarfblood", "Dwarf-blood", "blood_dwarf"], ["seatouched", "Sea-touched", "blood_sea"] ],
+ "openTraits": ["quick", "hardy", "charming", "brave", "nimble", "lazy", "frail", "awkward", "timid", "clumsy"],
+ "frames": { "open": "common", "stone": "rare", "hydra": "hydra" },
+ "unlocks": [
+  { "id": "race_dwarf", "name": "Dwarf race", "how": "Swear the Thane's Oath in any game", "flag": "thaneOath" },
+  { "id": "blood_dwarf", "name": "Dwarf-blood bloodline", "how": "Have a dwarf-blooded child born into the family", "check": "dwarfBorn" },
+  { "id": "blood_sea", "name": "Sea-touched bloodline", "how": "Have a Sea-touched heir", "check": "seaHeir" },
+  { "id": "hydra_slain", "name": "Bulwark trait + Hydra-scale frame", "how": "Slay Mother Hydra", "hydra": "slain", "traits": ["bulwark"], "frame": "hydra" },
+  { "id": "hydra_blessed", "name": "Silvertongue trait", "how": "Be blessed by Mother Hydra", "hydra": "blessed", "traits": ["silvertongue"] },
+  { "id": "class_pick", "name": "Pick a basic starting class", "how": "Earn Three Generations", "ach": "a_gen3" },
+  { "id": "t_ironblood", "name": "Ironblood trait", "how": "Earn Delver (5 dungeons)", "ach": "a_dungeon5", "traits": ["ironblood"] },
+  { "id": "t_prodigy", "name": "Prodigy trait", "how": "Earn Masterwork", "ach": "a_master", "traits": ["prodigy"] },
+  { "id": "t_chosen", "name": "Chosen trait", "how": "Earn Name in the Songs", "ach": "a_renown1k", "traits": ["chosen"] },
+  { "id": "t_dragonblood", "name": "Dragonblood trait", "how": "Earn Friend of the Crone", "ach": "a_witch", "traits": ["dragonblood"] },
+  { "id": "t_common", "name": "The other common traits", "how": "Earn Landholder", "ach": "a_land", "traits": ["thrifty", "spendthrift", "dreamer", "curious", "stubborn", "keeneyed", "bookish", "greenthumb", "sickly"] },
+  { "id": "frame_stone", "name": "Stone portrait frame", "how": "Earn Builder of Halls", "ach": "a_build8", "frame": "stone" },
+  { "id": "third_pick", "name": "A third trait pick without a bad trait", "how": "Earn any 10 achievements", "achCount": 10 }
+ ]
+}

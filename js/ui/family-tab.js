@@ -1,7 +1,7 @@
 // Family tree: generations as rows in a pannable canvas; tap a member to open their card.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
-import { autoChip, badges, cl, injuryTags, memberLine } from "./common.js";
+import { autoChip, badges, cl, injuryTags, memberLine, portrait } from "./common.js";
 import { U } from "./state.js";
 
 const rcol = id => {
@@ -9,11 +9,12 @@ const rcol = id => {
   return (D.legacy?.traits?.colors || {})[d?.rarity || "common"] || "#aaa";
 };
 
+const mem = id => E.findId(s.members, id);
 function node(n) {
   const icon = n.gender === "f" ? "👩" : "👨";
   const t = n.best && E.traitDef(n.best);
   return `<button class="tnode ${n.alive ? "" : "dead"} ${U.treeSel === n.id ? "sel" : ""}" data-a="treesel" data-v="${n.id}">
-<span class="ticon">${n.alive ? icon : n.marriedOut ? "💍" : "🕯️"}</span><b>${n.name}</b>
+<span class="ticon">${n.alive && mem(n.id) ? portrait(mem(n.id), 32) : n.alive ? icon : n.marriedOut ? "💍" : "🕯️"}</span><b>${n.name}</b>
 <span class="muted">${n.alive ? `${n.age}y` : n.marriedOut ? `wed into ${n.marriedOut}` : `† Y${n.died}, aged ${n.age}`}</span>
 <span>${n.cls || "Commoner"} · ⭐${n.renown}</span>
 ${t ? `<span style="color:${rcol(n.best)}">${t.icon || ""} ${t.name}</span>` : ""}</button>`;
@@ -47,7 +48,7 @@ export function familyv() {
     const kids = (n?.children || []).map(id => byId[id]?.name).filter(Boolean);
     const sp = byId[n?.spouse];
     const ps = (n?.parents || []).map(id => byId[id]?.name).filter(Boolean);
-    card = `<div class="card"><div class="row">${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
+    card = `<div class="card"><div class="row">${portrait(m, 48)} ${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
 <div class="muted">${m.alive ? "Living" : n.marriedOut ? `Married into ${n.marriedOut}` : `Died Y${n.died}`}${m.persona && E.personaDef(m.persona) ? ` · ${E.personaDef(m.persona).icon} ${E.personaDef(m.persona).name}` : ""}${m.house && E.houseDef(m.house) ? ` · of ${E.houseDef(m.house).name}` : ""} · lifespan ~${m.lifespan}y</div>
 <div>${badges(m)}</div>
 ${challengeRow(m)}${injuryTags(m)}

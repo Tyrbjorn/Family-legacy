@@ -7,7 +7,7 @@ import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
 import { suitorCard } from "./houses-tab.js";
-import { badges, cl, costStr, injuryTags, doing, dur, it, itemStatsHtml, memberLine, sk, stage, yr } from "./common.js";
+import { badges, cl, costStr, injuryTags, doing, dur, it, itemStatsHtml, memberLine, portrait, sk, stage, weaponBeside, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
@@ -16,7 +16,7 @@ export function hero() {
   const m = E.active(s);
   if (!m) return "";
   const a = m.action;
-  let h = `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}<div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
+  let h = `<div class="card"><div class="mrow">${portrait(m, 96)}${weaponBeside(m)}<div style="flex:1;min-width:0">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}</div></div><div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / E.findId(D.quests, a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button><button class="b" data-a="market" title="Buy and sell at the nearest town">🏪 Market</button></div></div>`;
@@ -166,7 +166,7 @@ export function family() {
   let h = `<h3>Members (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of s.members.filter(y => y.alive)) {
     const o = x.order;
-    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(active)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"}</div>
+    h += `<div class="card"><div class="mrow">${portrait(x, 48)}<div style="flex:1;min-width:0">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(active)</b>" : ""}</div></div><div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"}</div>
   ${
     x.id !== s.activeId
       ? `<div class="row" style="margin-top:4px"><span class="muted">Order:</span>${
@@ -222,7 +222,8 @@ export function saveCard() {
 
 export function mainv() {
   const m = E.active(s);
-  let h = tourPrompt() + tutorialCard() + busyBanner(m) + hero();
+  const creCard = !s.created && !U.creDismiss && s.day < D.tuning.daysPerYear ? `<div class="card"><b>🛡️ Make your founder</b> <span class="muted">Choose looks, traits and house colours — or just play on.</span><div class="row" style="gap:6px;margin-top:6px"><button class="b sel" data-a="creopen">Open creation</button><button class="b" data-a="credismiss">Not now</button></div></div>` : "";
+  let h = creCard + tourPrompt() + tutorialCard() + busyBanner(m) + hero();
   const others = E.living(s).filter(x => x.id !== m.id);
   if (others.length)
     h =

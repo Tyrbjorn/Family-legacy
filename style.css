@@ -118,3 +118,25 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 .art img{width:100%;height:100%;object-fit:contain}
 .arttint{position:absolute;inset:0;mix-blend-mode:multiply;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;pointer-events:none}
 .art .artvein{position:absolute;inset:0;filter:grayscale(1)} /* R58.2 ore veins */
+/* R59 paper doll + portraits */
+.doll{display:inline-block;position:relative;overflow:hidden;vertical-align:middle;flex:none;line-height:0;isolation:isolate}
+.doll.port{border-radius:6px;background:radial-gradient(circle at 50% 40%,#3a3f4a,#1c1f26)}
+.dollin{position:absolute;left:0;top:0;transform-origin:0 0}
+.dollin i{position:absolute;inset:0;background-size:100% 100%;background-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.dollin i.dt{mix-blend-mode:multiply}
+.dollfr{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.dollemo{display:inline-block;line-height:1;vertical-align:middle}
+.mrow{display:flex;gap:8px;align-items:center}
+.cre{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
+.cre .pv{display:flex;flex-direction:column;align-items:center;gap:6px;position:sticky;top:8px}
+.cre .sw{display:inline-block;width:22px;height:22px;border-radius:50%;border:2px solid #0006;margin:2px;cursor:pointer;vertical-align:middle}
+.cre .sw.on{outline:3px solid #fff;outline-offset:1px}
+.cre .opt{margin:3px 0}
+.cre button.ch{margin:2px;padding:4px 8px}
+.cre button.ch.on{background:#3b6;color:#fff}
+.cre .lk{opacity:.5}
+.crehead{background-size:cover;background-position:center;border-radius:8px;padding:10px;color:#fff;text-shadow:0 1px 3px #000}
+@media (max-width:520px){.cre{grid-template-columns:1fr}.cre .pv{position:static;flex-direction:row}}
+#modal .card.cre-card{max-width:860px;max-height:92vh}.cre .pv{display:flex;flex-direction:column;align-items:center;gap:6px}.cre .opt{margin:6px 0}
+.crehead{position:relative;overflow:hidden;isolation:isolate;min-height:96px}.crehead .bd{position:absolute;inset:0;background-size:cover;background-position:center;-webkit-mask-size:cover;mask-size:cover;-webkit-mask-position:center;mask-position:center}.crehead .bdb{isolation:isolate;opacity:.85}.crehead-t{position:relative}
+@media (max-width:520px){#top .row{flex-wrap:wrap;row-gap:2px}#top .row>span{min-width:0;overflow-wrap:anywhere}}

@@ -1,6 +1,6 @@
 // Apprentice tutorial card, tab-tour overlay and the Settings card (notifications, tour, dev mode).
 import * as E from "../engine.js";
-import { D, s } from "../main.js";
+import { D, s, getLegacyRec } from "../main.js";
 import { U } from "./state.js";
 import { groupOf, tabVisible } from "./render.js";
 
@@ -91,6 +91,7 @@ export function settingsCard() {
   .map(l => `<button class="b${l === E.gameLvl(s) ? " on" : ""}" data-a="setdiff" data-v="${l}">${E.diffName(l)}</button>`)
   .join("")}</div>
 <div class="row"><label class="chip"><input type="checkbox" data-a="classicemoji" ${s.classicEmoji ? "checked" : ""}> 😀 Classic emoji (no icon art)</label></div>
+<div class="row" style="flex-wrap:wrap;gap:4px"><span class="muted">Legacy unlocks on this device: ${getLegacyRec().unlocks.length}/${D.creation.unlocks.length} (${D.creation.unlocks.filter(u => getLegacyRec().unlocks.includes(u.id)).map(u => u.name).join(", ") || "none yet"})</span><button class="b" data-a="legacyreset">Reset legacy</button></div>
 <div class="row"><button class="b" data-a="tourstart">🧭 Tab tour</button>${E.tutActive(s) ? `<button class="b" data-a="tutskip">Skip apprenticeship</button>` : ""}</div>
 ${
   !E.devLocked() && (U.devRevealed || dev)

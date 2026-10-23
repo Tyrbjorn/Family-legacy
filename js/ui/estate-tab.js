@@ -2,7 +2,7 @@ import { ordersCard } from "./orders-ui.js";
 import { fieldsCard } from "./fields-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
-import { RI, costStr, doing, fmt, memberLine, autoChip } from "./common.js";
+import { RI, costStr, doing, fmt, memberLine, autoChip, portrait } from "./common.js";
 import { U } from "./state.js";
 import { D, s } from "../main.js";
 import { buildingCard } from "./estate-card.js";
@@ -128,7 +128,7 @@ export function estatev() {
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of E.living(s)) {
     const o = x.order;
-    h += `<div class="card">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(playing)</b>" : ""}<div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"} · ${x.id === s.activeId ? "" : "Doing: " + doing(x.action || (o.type !== "quest" ? o : null))}</div>`;
+    h += `<div class="card"><div class="mrow">${portrait(x, 48)}<div style="flex:1;min-width:0">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(playing)</b>" : ""}</div></div><div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"} · ${x.id === s.activeId ? "" : "Doing: " + doing(x.action || (o.type !== "quest" ? o : null))}</div>`;
     if (x.id !== s.activeId) {
       h += `<div class="row" style="margin-top:4px">`;
       if (!E.isAdult(x)) h += `<span class="muted">growing up</span>`;

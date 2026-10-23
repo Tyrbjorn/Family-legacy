@@ -1,3 +1,4 @@
+import { houseColOf, lookOf } from "./creation.js";
 import { findId } from "./lookup.js";
 import { refundV40 } from "./legacy.js";
 import { migrateOrders } from "./orders.js";
@@ -767,6 +768,14 @@ export const STEPS = [
     name: "R57 the Deep One mix: Sea-touched members gain their +10 years once; nothing else changes and nothing is given",
     run(s) {
       for (const m of s.members || []) if ((m.traits || []).includes("seatouched") && !m.seaLife) (m.lifespan = (m.lifespan || 55) + 10), (m.seaLife = 1);
+    },
+  },
+  {
+    n: 54,
+    name: "R59 character creation: the house gets its colour (palette 22) and every member gets a look seeded from their id; gameplay unchanged",
+    run(s) {
+      if (!s.house || typeof s.house !== "object") s.house = { col: houseColOf(s) };
+      for (const m of s.members || []) lookOf(s, m);
     },
   },
 ];

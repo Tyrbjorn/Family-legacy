@@ -2,7 +2,7 @@ import { introCards } from "./guide.js";
 import { glideMarkers } from "./map-glide.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
-import { $, fmt, hm, memberLine, sk, top, yr } from "./common.js";
+import { $, fmt, hm, memberLine, portrait, sk, top, yr } from "./common.js";
 import { estatev } from "./estate-tab.js";
 import { guildsv } from "./guilds-tab.js";
 import { invv } from "./inventory-tab.js";
@@ -21,6 +21,7 @@ import { bellPanel, dockv, toastsv } from "./progress.js";
 import { tourOverlay } from "./guide.js";
 import { legacyv } from "./legacy-tab.js";
 import { savesv } from "./saves-tab.js";
+import { creationv } from "./creation-ui.js";
 
 export const TABS = {
   main: ["🧝", "Main", mainv],
@@ -87,6 +88,13 @@ export function modal() {
       .join("")}<p><button class="b" data-a="reset">Start a New Lineage</button></p></div>`;
     return;
   }
+  if (U.create) { // R59 character creation
+    el.hidden = false;
+    const h = creationv();
+    if (el._cre !== h) (el.innerHTML = h), (el._cre = h);
+    return;
+  }
+  el._cre = "";
   if (report) {
     el.hidden = false;
     el.innerHTML = `<div class="card"><h3>While you were away</h3><p>You were away ${hm(report.elapsed)}: ⚡ +${Math.round(report.turboAdded / 60)} min turbo${report.turboFull ? " (bar full)" : ""}.</p><p class="muted">Your time away is banked as ⚡ turbo (fast-forward), up to the bar's cap (each Hourglass Tower level raises it). The world itself waits: no aging, production or travel happens while you are away. Spend the turbo to catch up.</p><p><button class="b" data-a="close">Continue</button></p></div>`;
@@ -125,7 +133,7 @@ export function modal() {
     )
       .map(
         m =>
-          `<div class="card row"><span>${memberLine(m)}</span><button class="b" data-a="switch" data-v="${m.id}">Play</button></div>`,
+          `<div class="card row"><span class="mrow">${portrait(m, 48)}<span>${memberLine(m)}</span></span><button class="b" data-a="switch" data-v="${m.id}">Play</button></div>`,
       )
       .join("")}</div>`;
     return;

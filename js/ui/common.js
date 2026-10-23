@@ -1,4 +1,5 @@
-import { iconHtml } from "../art.js";
+import { iconHtml, matFor } from "../art.js";
+import { dollHtml } from "../doll.js";
 import { testerBadge } from "./playpass-ui.js";
 import { gearTags } from "./gear-ui.js";
 import { bellv } from "./progress.js";
@@ -34,6 +35,16 @@ export function top() {
  <button class="b ${t.on ? "sel" : ""}" data-a="turbo" ${!t.on && t.charge < 60 ? "disabled" : ""}>${t.on ? "⏸ Turbo 3×" : "⚡ Turbo"}</button></div>`;
 }
 
+// R59 portraits: 48px member cards, 96px character card / creation, 32px family tree
+export function dollOpts(m, size, extra = {}) {
+  const arm = m.equip && m.equip.armor && E.itemDef(m.equip.armor), A = D.art || {};
+  const mat = arm && matFor(A, m.equip.armor, arm), pal = mat && (A.palettes || {})[mat];
+  return Object.assign({ base: E.dollBase(m), look: E.lookOf(s, m), sea: (m.traits || []).includes("seatouched"), house: E.houseColOf(s), armor: E.dollArmor(arm),
+    armorCol: pal && !/leather|cloth|wool|linen|silk/.test(mat) ? pal.base : null, elder: E.ageBand(m) === "elder", emoji: m.gender === "f" ? "👩" : "👨", classic: !!s.classicEmoji,
+    size, frame: (D.creation && D.creation.frames || {})[(s.house && s.house.frame) || "open"] || "common", title: m.name }, extra);
+}
+export const portrait = (m, size = 48, extra) => dollHtml(D.doll, D.creation || {}, dollOpts(m, size, extra));
+export const withPortrait = (m, html, size = 48) => `<div class="mrow">${portrait(m, size)}<div style="flex:1;min-width:0">${html}</div></div>`;
 export function memberLine(m) {
   const c = cl(m.cls);
   return `${m.gender === "f" ? "👩" : "👨"} <b>${m.name}</b> · ${E.ageY(m)}y · ${c ? c.icon + " " + c.name : E.isAdult(m) ? "Commoner" : E.isTeen(m) ? "Teen" : "Child"}${E.mainPath(m) ? " + " + E.pathDef(E.mainPath(m).id).icon + " " + E.pathRankName(E.mainPath(m).rank) + " " + E.pathDef(E.mainPath(m).id).name : ""}${E.pendingPathChoices(m) ? " 🎯" : ""}${m.appr ? ` · 🎓 ${E.masterDef(m.appr.id)?.name || ""}` : ""} · CP ${E.cp(s, m)} · ⭐ ${fmt(m.renown || 0)}`;
@@ -305,4 +316,10 @@ export function foodSpan() {
 export function autoChip(key, label, on, why) {
   if (why) return `<span class="tb muted" data-auto="${key}" title="${why}">🔒 ${label}: ${why}</span>`;
   return `<button class="b ${on ? "sel" : ""}" style="font-size:12px;padding:2px 8px" data-a="autotog" data-v="${key}" data-auto="${key}">⚙ Auto ${label} ${on ? "On" : "Off"}</button>`;
+}
+// R59: weapons sit beside the doll (not drawn in hand)
+export function weaponBeside(m) {
+  const ids = ["weapon", "offhand"].map(k => (m.equip || {})[k]).filter(Boolean);
+  const h = ids.map(id => { const x = E.itemDef(id); return x ? itemIco(id, x, 28) || x.icon || "" : ""; }).filter(Boolean);
+  return h.length ? `<div class="wbeside" style="display:flex;flex-direction:column;gap:4px">${h.join("")}</div>` : "";
 }

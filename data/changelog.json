@@ -2,6 +2,15 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R59",
+   "title": "Found your house",
+   "items": [
+    "🛡️ New dynasties open a creation screen: name, sex, race, bloodline, traits, looks, house colour and portrait frame. Quick start keeps today's start.",
+    "🎨 Members now have painted portraits on their cards, built from layered art in your house colours (Classic emoji still shows emoji).",
+    "🏆 A legacy record on this device unlocks extra options (dwarves, bloodlines, rare traits, frames, a starting class) as you earn achievements. Reset it in Settings."
+   ]
+  },
+  {
    "build": "R58.2",
    "title": "Ore looks like ore",
    "items": [

@@ -2,7 +2,7 @@
 import fs from "fs"; import * as E from "../js/engine.js"; import { BUILD } from "../js/config.js"; import { iconHtml } from "../js/art.js";
 const ROOT=new URL("../",import.meta.url).pathname; let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const A=JSON.parse(fs.readFileSync(ROOT+'data/art.json')), C=JSON.parse(fs.readFileSync(ROOT+'data/changelog.json'));
-ok(+BUILD.slice(1)>=58.2&&E.SCHEMA===53,'R58.2+, SCHEMA 53'); ok(C.entries.some(e=>e.build==='R58.2'),'changelog');
+ok(+BUILD.slice(1)>=58.2&&E.SCHEMA>=53,'R58.2+, SCHEMA 53'); ok(C.entries.some(e=>e.build==='R58.2'),'changelog');
 const ores={ore:'iron',copperore:'copper',tinore:'tin',silverore:'silver',goldore:'gold',mithrilore:'mithril',adamantore:'adamantium'};
 for(const [k,m] of Object.entries(ores)){const h=iconHtml(A,'res',k,null,{emoji:'⛏️'});
  ok(h.includes('ore-rock.webp')&&h.includes('ore-veins.webp'),k+' two layers');

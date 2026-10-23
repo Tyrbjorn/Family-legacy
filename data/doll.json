@@ -1,0 +1,325 @@
+{
+ "w": 144.0,
+ "h": 352.0,
+ "skinRef": 216,
+ "bases": {
+  "human-male": {
+   "base": "art/doll/human-male-base.webp",
+   "skin": "art/doll/human-male-skin.webp",
+   "eyes": "art/doll/human-male-sea-touched-eyes.webp",
+   "marks": "art/doll/human-male-sea-touched-marks.webp",
+   "tabard": "art/doll/human-male-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/human-male-hair-curly-crop.webp",
+    "long-loose": "art/doll/human-male-hair-long-loose.webp",
+    "shag": "art/doll/human-male-hair-shag.webp",
+    "undercut-knot": "art/doll/human-male-hair-undercut-knot.webp"
+   },
+   "pb": [
+    12,
+    5,
+    120
+   ],
+   "armor": {
+    "clothes": "art/doll/human-male-armor-clothes.webp",
+    "leather": "art/doll/human-male-armor-leather.webp",
+    "chain": "art/doll/human-male-armor-chain.webp",
+    "plate-helm": "art/doll/human-male-armor-plate-helm.webp"
+   },
+   "coif": {
+    "chain": "art/doll/human-male-coifmask-chain.webp",
+    "plate-helm": "art/doll/human-male-coifmask-plate-helm.webp"
+   }
+  },
+  "human-male-elder": {
+   "base": "art/doll/human-male-elder-base.webp",
+   "skin": "art/doll/human-male-elder-skin.webp",
+   "eyes": "art/doll/human-male-elder-sea-touched-eyes.webp",
+   "marks": "art/doll/human-male-elder-sea-touched-marks.webp",
+   "tabard": "art/doll/human-male-elder-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/human-male-elder-hair-curly-crop.webp",
+    "long-loose": "art/doll/human-male-elder-hair-long-loose.webp",
+    "shag": "art/doll/human-male-elder-hair-shag.webp",
+    "undercut-knot": "art/doll/human-male-elder-hair-undercut-knot.webp"
+   },
+   "pb": [
+    15,
+    23,
+    113
+   ]
+  },
+  "human-male-child": {
+   "base": "art/doll/human-male-child-base.webp",
+   "skin": "art/doll/human-male-child-skin.webp",
+   "eyes": "art/doll/human-male-child-sea-touched-eyes.webp",
+   "marks": "art/doll/human-male-child-sea-touched-marks.webp",
+   "tabard": "art/doll/human-male-child-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/human-male-child-hair-curly-crop.webp",
+    "long-loose": "art/doll/human-male-child-hair-long-loose.webp",
+    "shag": "art/doll/human-male-child-hair-shag.webp",
+    "undercut-knot": "art/doll/human-male-child-hair-undercut-knot.webp"
+   },
+   "pb": [
+    28,
+    99,
+    86
+   ]
+  },
+  "human-female": {
+   "base": "art/doll/human-female-base.webp",
+   "skin": "art/doll/human-female-skin.webp",
+   "eyes": "art/doll/human-female-sea-touched-eyes.webp",
+   "marks": "art/doll/human-female-sea-touched-marks.webp",
+   "tabard": "art/doll/human-female-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/human-female-hair-long-straight.webp",
+    "bob": "art/doll/human-female-hair-bob.webp",
+    "twin-braids": "art/doll/human-female-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/human-female-hair-curly-halfup.webp"
+   },
+   "pb": [
+    15,
+    20,
+    114
+   ],
+   "bun": "art/doll/human-female-hair-bun.webp",
+   "armor": {
+    "clothes": "art/doll/human-female-armor-clothes.webp",
+    "leather": "art/doll/human-female-armor-leather.webp",
+    "chain": "art/doll/human-female-armor-chain.webp",
+    "plate-helm": "art/doll/human-female-armor-plate-helm.webp"
+   },
+   "coif": {
+    "chain": "art/doll/human-female-coifmask-chain.webp",
+    "plate-helm": "art/doll/human-female-coifmask-plate-helm.webp"
+   }
+  },
+  "human-female-elder": {
+   "base": "art/doll/human-female-elder-base.webp",
+   "skin": "art/doll/human-female-elder-skin.webp",
+   "eyes": "art/doll/human-female-elder-sea-touched-eyes.webp",
+   "marks": "art/doll/human-female-elder-sea-touched-marks.webp",
+   "tabard": "art/doll/human-female-elder-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/human-female-elder-hair-long-straight.webp",
+    "bob": "art/doll/human-female-elder-hair-bob.webp",
+    "twin-braids": "art/doll/human-female-elder-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/human-female-elder-hair-curly-halfup.webp"
+   },
+   "pb": [
+    18,
+    37,
+    108
+   ],
+   "bun": "art/doll/human-female-elder-hair-bun.webp"
+  },
+  "human-female-child": {
+   "base": "art/doll/human-female-child-base.webp",
+   "skin": "art/doll/human-female-child-skin.webp",
+   "eyes": "art/doll/human-female-child-sea-touched-eyes.webp",
+   "marks": "art/doll/human-female-child-sea-touched-marks.webp",
+   "tabard": "art/doll/human-female-child-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/human-female-child-hair-long-straight.webp",
+    "bob": "art/doll/human-female-child-hair-bob.webp",
+    "twin-braids": "art/doll/human-female-child-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/human-female-child-hair-curly-halfup.webp"
+   },
+   "pb": [
+    31,
+    117,
+    80
+   ],
+   "bun": "art/doll/human-female-child-hair-bun.webp"
+  },
+  "dwarf-male": {
+   "base": "art/doll/dwarf-male-base.webp",
+   "skin": "art/doll/dwarf-male-skin.webp",
+   "eyes": "art/doll/dwarf-male-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-male-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-male-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/dwarf-male-hair-curly-crop.webp",
+    "long-loose": "art/doll/dwarf-male-hair-long-loose.webp",
+    "shag": "art/doll/dwarf-male-hair-shag.webp",
+    "undercut-knot": "art/doll/dwarf-male-hair-undercut-knot.webp"
+   },
+   "pb": [
+    22,
+    64,
+    99
+   ],
+   "beard": {
+    "forked": "art/doll/dwarf-male-beard-forked.webp",
+    "ringed-plait": "art/doll/dwarf-male-beard-ringed-plait.webp"
+   },
+   "rings": {
+    "ringed-plait": "art/doll/dwarf-male-beard-ringed-plait-rings.webp"
+   },
+   "armor": {
+    "clothes": "art/doll/dwarf-male-armor-clothes.webp",
+    "leather": "art/doll/dwarf-male-armor-leather.webp",
+    "chain": "art/doll/dwarf-male-armor-chain.webp",
+    "plate-helm": "art/doll/dwarf-male-armor-plate-helm.webp"
+   },
+   "coif": {
+    "chain": "art/doll/dwarf-male-coifmask-chain.webp",
+    "plate-helm": "art/doll/dwarf-male-coifmask-plate-helm.webp"
+   }
+  },
+  "dwarf-male-elder": {
+   "base": "art/doll/dwarf-male-elder-base.webp",
+   "skin": "art/doll/dwarf-male-elder-skin.webp",
+   "eyes": "art/doll/dwarf-male-elder-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-male-elder-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-male-elder-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/dwarf-male-elder-hair-curly-crop.webp",
+    "long-loose": "art/doll/dwarf-male-elder-hair-long-loose.webp",
+    "shag": "art/doll/dwarf-male-elder-hair-shag.webp",
+    "undercut-knot": "art/doll/dwarf-male-elder-hair-undercut-knot.webp"
+   },
+   "pb": [
+    25,
+    81,
+    93
+   ],
+   "beard": {
+    "forked": "art/doll/dwarf-male-elder-beard-forked.webp",
+    "ringed-plait": "art/doll/dwarf-male-elder-beard-ringed-plait.webp"
+   },
+   "rings": {
+    "ringed-plait": "art/doll/dwarf-male-elder-beard-ringed-plait-rings.webp"
+   }
+  },
+  "dwarf-male-child": {
+   "base": "art/doll/dwarf-male-child-base.webp",
+   "skin": "art/doll/dwarf-male-child-skin.webp",
+   "eyes": "art/doll/dwarf-male-child-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-male-child-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-male-child-tabard.webp",
+   "hair": {
+    "curly-crop": "art/doll/dwarf-male-child-hair-curly-crop.webp",
+    "long-loose": "art/doll/dwarf-male-child-hair-long-loose.webp",
+    "shag": "art/doll/dwarf-male-child-hair-shag.webp",
+    "undercut-knot": "art/doll/dwarf-male-child-hair-undercut-knot.webp"
+   },
+   "pb": [
+    33,
+    125,
+    77
+   ]
+  },
+  "dwarf-female": {
+   "base": "art/doll/dwarf-female-base.webp",
+   "skin": "art/doll/dwarf-female-skin.webp",
+   "eyes": "art/doll/dwarf-female-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-female-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-female-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/dwarf-female-hair-long-straight.webp",
+    "bob": "art/doll/dwarf-female-hair-bob.webp",
+    "twin-braids": "art/doll/dwarf-female-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/dwarf-female-hair-curly-halfup.webp"
+   },
+   "pb": [
+    25,
+    79,
+    93
+   ],
+   "bun": "art/doll/dwarf-female-hair-bun.webp",
+   "armor": {
+    "clothes": "art/doll/dwarf-female-armor-clothes.webp",
+    "leather": "art/doll/dwarf-female-armor-leather.webp",
+    "chain": "art/doll/dwarf-female-armor-chain.webp",
+    "plate-helm": "art/doll/dwarf-female-armor-plate-helm.webp"
+   },
+   "coif": {
+    "chain": "art/doll/dwarf-female-coifmask-chain.webp",
+    "plate-helm": "art/doll/dwarf-female-coifmask-plate-helm.webp"
+   }
+  },
+  "dwarf-female-elder": {
+   "base": "art/doll/dwarf-female-elder-base.webp",
+   "skin": "art/doll/dwarf-female-elder-skin.webp",
+   "eyes": "art/doll/dwarf-female-elder-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-female-elder-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-female-elder-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/dwarf-female-elder-hair-long-straight.webp",
+    "bob": "art/doll/dwarf-female-elder-hair-bob.webp",
+    "twin-braids": "art/doll/dwarf-female-elder-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/dwarf-female-elder-hair-curly-halfup.webp"
+   },
+   "pb": [
+    27,
+    94,
+    88
+   ],
+   "bun": "art/doll/dwarf-female-elder-hair-bun.webp"
+  },
+  "dwarf-female-child": {
+   "base": "art/doll/dwarf-female-child-base.webp",
+   "skin": "art/doll/dwarf-female-child-skin.webp",
+   "eyes": "art/doll/dwarf-female-child-sea-touched-eyes.webp",
+   "marks": "art/doll/dwarf-female-child-sea-touched-marks.webp",
+   "tabard": "art/doll/dwarf-female-child-tabard.webp",
+   "hair": {
+    "long-straight": "art/doll/dwarf-female-child-hair-long-straight.webp",
+    "bob": "art/doll/dwarf-female-child-hair-bob.webp",
+    "twin-braids": "art/doll/dwarf-female-child-hair-twin-braids.webp",
+    "curly-halfup": "art/doll/dwarf-female-child-hair-curly-halfup.webp"
+   },
+   "pb": [
+    35,
+    137,
+    72
+   ],
+   "bun": "art/doll/dwarf-female-child-hair-bun.webp"
+  }
+ },
+ "sources": [
+  "/workspace/art/heirs/batch2c/doll",
+  "/workspace/art/heirs/batch2c/fixes",
+  "/workspace/art/heirs/batch2b/doll",
+  "/workspace/art/heirs/batch2/fixes",
+  "/workspace/art/heirs/batch2/doll"
+ ],
+ "frames": {
+  "common": {
+   "96": "art/frames/frame-common-96.webp",
+   "48": "art/frames/frame-common-48.webp",
+   "32": "art/frames/frame-common-32.webp"
+  },
+  "uncommon": {
+   "96": "art/frames/frame-uncommon-96.webp",
+   "48": "art/frames/frame-uncommon-48.webp",
+   "32": "art/frames/frame-uncommon-32.webp"
+  },
+  "rare": {
+   "96": "art/frames/frame-rare-96.webp",
+   "48": "art/frames/frame-rare-48.webp",
+   "32": "art/frames/frame-rare-32.webp"
+  },
+  "epic": {
+   "96": "art/frames/frame-epic-96.webp",
+   "48": "art/frames/frame-epic-48.webp",
+   "32": "art/frames/frame-epic-32.webp"
+  },
+  "legendary": {
+   "96": "art/frames/frame-legendary-96.webp",
+   "48": "art/frames/frame-legendary-48.webp",
+   "32": "art/frames/frame-legendary-32.webp"
+  },
+  "hydra": {
+   "96": "art/frames/frame-hydra-96.webp",
+   "48": "art/frames/frame-hydra-48.webp",
+   "32": "art/frames/frame-hydra-32.webp"
+  }
+ },
+ "backdrop": "art/backdrop.webp",
+ "banners": "art/backdrop-banners.webp",
+ "missing": []
+}

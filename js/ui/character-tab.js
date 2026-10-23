@@ -4,7 +4,7 @@ import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { U } from "./state.js";
 import { itemIco } from "./common.js";
-import { badges, itemStatsHtml, memberLine } from "./common.js";
+import { badges, itemStatsHtml, memberLine, portrait, weaponBeside } from "./common.js";
 import { sheet } from "./main-tab.js";
 
 const pct = v => Math.round(v * (v <= 1 ? 100 : 1)) + "%";
@@ -14,7 +14,7 @@ export function characterv() {
   if (!m) return "";
   const K = D.gear.kinds, eq = m.equip || {};
   let h = `<div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${all.map(x => `<button class="b ${x.id === m.id ? "sel" : ""}" data-a="charpick" data-v="${x.id}">${x.name} (${E.ageY(x)})</button>`).join("")}</div>`;
-  h += `<div class="card">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div><div class="muted">Lv ${E.level(m)} · CP <b>${E.cp(s, m)}</b>${m.id === s.head ? " · 👑 Head" : ""}${m.id === s.activeId ? " · ▶ playing" : ""}</div></div>`;
+  h += `<div class="card"><div class="mrow">${portrait(m, 96)}${weaponBeside(m)}<div style="flex:1;min-width:0">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div></div></div><div class="muted">Lv ${E.level(m)} · CP <b>${E.cp(s, m)}</b>${m.id === s.head ? " · 👑 Head" : ""}${m.id === s.activeId ? " · ▶ playing" : ""}</div></div>`;
   // combat
   const dodge = E.memberDodge(m, eq.armor), fail = E.memberFail(m);
   h += `<h3>⚔️ Combat</h3><div class="card"><div class="grid"><span>CP <b>${E.cp(s, m)}</b></span><span>Dodge <b>${pct(dodge)}</b> <span class="muted">(cap ${pct(K.dodge.cap)})</span></span><span>Spell failure <b>${pct(fail)}</b></span><span>Armor class <b>${(E.gstats && eq.armor && (E.gstats(eq.armor) || {}).cls) || "none"}</b></span></div></div>`;
