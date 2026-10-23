@@ -162,6 +162,8 @@ export function chooseBranch(s, id, side, how = "chose") {
   if (x.item) DEP.addToVault(s, x.item);
   if (x.minion) DEP.addMinion(s, x.minion, b.name);
   if (x.flag) (s.r60f ||= {})[x.flag] = side;
+  if (x.flag === "rowan") (s.boons ||= []).push({ type: "travel", region: "highlands", mult: 1.05, from: "rowan", text: "Clan Rowan guides: Highlands travel ×1.05" }); // R61
+  if (x.flag === "gate_sealed") s.raidFreeTo = (s.day || 0) + 360; // R61: raid immunity for a year
   for (const q of x.reveal || []) if (!(s.revealed ||= []).includes(q)) s.revealed.push(q);
   const who = x.name.replace(/^(Back|Side with|Stand with|Take) /, "");
   lockIds(s, ["side:" + id + "." + other, ...(x.lockQ || []), ...(x.lockC || []).map(c => "cls:" + c)], who);
@@ -178,7 +180,8 @@ export function r60Day(s) {
   }
   if (alignOf(s).honor >= 50) for (const q of D.quests) if (q.envoy && !(s.revealed ||= []).includes(q.id)) s.revealed.push(q.id), log(s, `🕊️ Your word is trusted: “${q.name}” is offered.`);
   const lb = s.lb;
-  if (lb && lb.remedy && (s.day || 0) % 360 === 0 && s.day) s.res.thyme = (s.res.thyme || 0) + 3 * lb.remedy;
+  const rem = ((lb && lb.remedy) || 0) + (sideIs(s, "crone_side") ? 1 : 0); // R61 Crone side: +1 remedy a year
+  if (rem && (s.day || 0) % 360 === 0 && s.day) s.res.thyme = (s.res.thyme || 0) + 3 * rem;
 }
 export function questDone60(s, q) {
   if (globalThis.R60OFF) return;
@@ -274,10 +277,24 @@ export function applyLegacyBonuses(s, rec, xpSkill) {
   if (fx.follower) DEP.addMinion(s, "laborer", "a loyal household");
   if (fx.heirloom) DEP.addToVault(s, fx.heirloom);
   if (fx.highland) s.usurper = { r: 0 };
-  if (fx.road) (s.flags ||= {}).knowsRoad = 1;
+  if (fx.road) {
+    (s.flags ||= {}).knowsRoad = 1;
+    s.discovered ||= [];
+    for (const id of ["dwarfhold", "loc:l_dwarfhold"]) if (!s.discovered.includes(id)) s.discovered.push(id); // R61: Dwarfhold is on the map (the gate still has to be opened)
+    (s.boons ||= []).push({ type: "travel", region: "highlands", mult: 1.05, from: "thaneroad", text: "The Thanes' road: Highlands travel ×1.05" });
+  }
   delete s.lb.picks;
   return list;
 }
+// R61: whole-coin bonus; the fraction is carried to the next gain (no fractional coin)
+export function lbCoin(s, base, extra = 0) {
+  const b = ((s.lb || {}).coin || 0) + extra;
+  if (!b || base <= 0) return base;
+  const x = base * b + (s.lbCarry || 0), w = Math.floor(x);
+  s.lbCarry = x - w;
+  return base + w;
+}
+export const sideIs = (s, f) => !!(s.r60f && s.r60f[f]);
 export const lbOf = (s, k) => ((s && s.lb) || {})[k] || 0;
 
 // ---- endings

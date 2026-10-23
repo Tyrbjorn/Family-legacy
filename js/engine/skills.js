@@ -65,6 +65,7 @@ export function gainXp(s, m, skillId, amt) {
   if (!skillOpen(m, skillId)) return;
   amt *= diffXp(s, m) * injuryXp(m, skillId);
   if (s.lb && s.lb.xp && s.lb.xpSkill === skillId) amt *= 1 + s.lb.xp; // R60 Seasoned
+  if (s.r60f && ((skillId === "faith" && s.r60f.church_side) || (skillId === "arcana" && s.r60f.collegium_side))) amt *= 1.05; // R61 side perks
   if (k.lvl >= softCap(m)) amt *= 0.1;
   const gained = amt * xpMult(s, m, skillId);
   k.xp += gained;

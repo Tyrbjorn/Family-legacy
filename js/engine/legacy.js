@@ -117,7 +117,7 @@ export function setSpeed(s, v) {
   return true;
 }
 
-export const tickBonus = s => estEff(s, "tick") + legacyValue(s, "tick");
+export const tickBonus = s => estEff(s, "tick") + legacyValue(s, "tick") + (((s.lb || {}).quick || 0) * 0.05); // R61 Quickened Years: +5% game speed (tick cap still applies)
 
 export const globalTick = s => {
   const v = Math.max(1, s.speed || 1);

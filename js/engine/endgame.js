@@ -153,6 +153,7 @@ export function endgameDay(s) {
   if (era(s).n >= R().phase) {
     if (e.raidAt == null) e.raidAt = s.day + nextRaidDays();
     if (hasWarning(s) && e.raidAt - s.day === R().warnDays) notify(s, "houses", `🗼 The Watchtower spots raiders gathering: an attack in ~${R().warnDays} days.`);
+    if (s.day >= e.raidAt && s.day < (s.raidFreeTo || 0)) e.raidAt = s.raidFreeTo; // R61 sealed gate: a year without raids
     if (s.day >= e.raidAt) (raid(s), (e.raidAt = s.day + nextRaidDays()));
   }
 }

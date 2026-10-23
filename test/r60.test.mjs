@@ -7,7 +7,7 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 const Y=D.tuning.daysPerYear;
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;return s;};
 const strong=s=>{const m=s.members[0];m.ageDays=30*Y;for(const k in m.stats)m.stats[k]=900;for(const k in m.skills)m.skills[k].lvl=99;return s;};
-ok(BUILD==='R60'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R60, save step 55'); ok(JSON.parse(fs.readFileSync(root+'data/changelog.json')).entries[0].build==='R60','changelog first');
+ok(+BUILD.slice(1)>=60&&E.SCHEMA>=55&&STEPS.some(x=>x.n===55),'R60+, save step 55'); ok(JSON.parse(fs.readFileSync(root+'data/changelog.json')).entries.some(e=>e.build==='R60'),'R60 changelog entry');
 // data shape
 ok(D.factions.list.length===19,'19 factions'); for(const f of D.factions.list){ok(typeof f.honorWeight==='number','honorWeight '+f.id); for(const r of [...(f.rivals||[]),...(f.allies||[])]) ok(E.factionDef(r),'rel exists '+f.id+'>'+r);}
 ok(D.r60.branches.length===6&&D.r60.endings.length===4,'6 branches, 4 endings'); ok(D.r60.branches.some(b=>b.id==='br_highland'&&/Rowan/.test(b.a.name)),'Clan Rowan branch');

@@ -2,6 +2,15 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R61",
+      "title": "Carry-over bonuses that do something",
+      "items": [
+        "🌳 The travel, Quickened Years and Dwarfhold road bonuses now work: 5% faster family trips, 5% faster game speed (within the cap), and Dwarfhold on the map with faster Highlands travel.",
+        "🔀 Every branch side now has a small perk, shown on its choice card.",
+        "🪙 The sale bonus now pays whole coins; the leftover fraction carries over to the next sale."
+      ]
+    },
+    {
       "build": "R60",
       "title": "Legacy branches",
       "items": [

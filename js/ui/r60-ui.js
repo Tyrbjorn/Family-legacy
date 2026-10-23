@@ -55,5 +55,5 @@ export function familyR60() {
 export function bonusRow() {
   const rec = getLegacyRec(), off = E.bonusesOff(rec), lb = E.legacyBonuses(rec, true);
   const names = lb.list.map(id => (D.r60.bonuses.find(b => b.id === id) || {}).name || id);
-  return `<div class="row" style="flex-wrap:wrap;gap:4px"><label class="chip"><input type="checkbox" data-a="r60bonus" ${off ? "" : "checked"}> 🌳 Legacy bonuses for new dynasties</label><span class="muted">${off ? "Off: clean run." : names.length ? names.join(", ") : "none earned yet"}${s.lb ? " · this run has " + s.lb.ids.length : ""}</span></div>`;
+  return `<div class="row" style="flex-wrap:wrap;gap:4px"><label class="chip"><input type="checkbox" data-a="r60bonus" ${off ? "" : "checked"}> 🌳 Legacy bonuses for new dynasties</label><span class="muted">${off ? "Off: clean run." : names.length ? names.length + " earned" : "none earned yet"}${s.lb ? " · this run has " + s.lb.ids.length : ""}</span></div>${!off && names.length ? `<ul class="muted" style="margin:2px 0 4px 18px;padding:0">${names.map(n => `<li>${n}</li>`).join("")}</ul>` : ""}`; // R61: one line per bonus with its effect
 }

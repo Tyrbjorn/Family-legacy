@@ -1,4 +1,5 @@
 import { perkBuy, perkShop, perkShopItems } from "./families.js";
+import { lbCoin, sideIs } from "./r60.js";
 import { brewRefused, hydraSellMult } from "./dagon.js";
 import { marketClosed } from "./worldevents.js";
 import { hasStructType, markVisited } from "./sea.js";
@@ -56,7 +57,7 @@ export function sell(s, itemId) {
   const i = s.vault.indexOf(itemId);
   if (i < 0) return;
   s.vault.splice(i, 1);
-  s.res.coin += sellValue(s, itemDef(itemId)) * (1 + ((s.lb || {}).coin || 0));
+  s.res.coin += lbCoin(s, sellValue(s, itemDef(itemId)), sideIs(s, "rogues_side") ? 0.05 : 0); // R61 whole coins; Rogues side +5% item sales
   tutNote(s, "traded");
 }
 
@@ -108,7 +109,7 @@ export const townSellPrice = (s, townId, res) => {
   const t = findId(D.towns, townId);
   return (
     Math.round(
-      t.prices[res] * (res === "fish" ? fishPriceMult(s) : 1) * // R31.3: the species mix sets the fish price
+      t.prices[res] * (res === "fish" ? fishPriceMult(s) * (sideIs(s, "fishers_side") ? 1.05 : 1) : 1) * (townId === "saltmere" && res !== "fish" && sideIs(s, "convoys_side") ? 1.03 : 1) * // R61 Saltmere side perks // R31.3: the species mix sets the fish price
         sellDemand(s, townId, res) * (1 + eff(s, "tradeSell") + choreFx(s, "tradeSell") + famFx(s, "trade")) * priceMult(s, townId, res) * sellMult(s, townId) * houseSellMult(s, townId) * patronSell(s, townId) * seasonPrice(s, res) * hydraSellMult(s, res) * 100, // R54
     ) / 100
   );
@@ -195,7 +196,7 @@ export function sellRes(s, townId, res, n) {
   n = Math.min(n, Math.floor(s.res[res]));
   if (n <= 0 || marketClosed(s, townId)) return false; // R49 Lodge procession
   s.res[res] -= n;
-  s.res.coin += n * townSellPrice(s, townId, res) * (1 + ((s.lb || {}).coin || 0));
+  s.res.coin += lbCoin(s, n * townSellPrice(s, townId, res)); // R61 whole coins
   shiftSupply(s, townId, res, n);
   markVisited(s, townId);
   tutNote(s, "traded");
