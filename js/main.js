@@ -10,6 +10,8 @@ const KEY = "familyLegacy.save.v1";
 
 const names = [
   "fields",
+  "factions",
+  "r60",
   "boards",
   "build",
   "testers",
@@ -116,10 +118,12 @@ startWhatsNew(freshPlayer); // R39.1
 // R59 per-device legacy record (fl_legacy_v1): back-filled once from every slot, then updated on each save
 export let legacyRec = E.loadLegacyRec(localStorage);
 let legacyRecStr = JSON.stringify(legacyRec);
+E.setR60Rec(legacyRec); // R60 earned class keys
 function noteLegacy(sv) {
   if (!sv || E.devOn()) return;
   const r = E.recordSave(legacyRec, sv);
   legacyRec = r.rec;
+  E.setR60Rec(legacyRec);
   const j = JSON.stringify(legacyRec);
   if (j !== legacyRecStr) { legacyRecStr = j; E.saveLegacyRec(localStorage, legacyRec); if (r.fresh.length) U.legacyNew = r.fresh; }
 }
@@ -130,7 +134,7 @@ if (localStorage.getItem(E.CR_KEY) == null) {
   U.legacyNew = null;
 }
 export function getLegacyRec() { return legacyRec; }
-export function resetLegacy() { legacyRec = E.resetLegacyRec(localStorage); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+export function resetLegacy() { legacyRec = E.resetLegacyRec(localStorage); E.setR60Rec(legacyRec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
 // creation draft for the founder of a brand-new dynasty (Quick start = close it, founder stays as rolled)
 function openCreation() {
   const f = s.members.find(x => x.id === s.activeId) || s.members[0];
@@ -191,7 +195,7 @@ function newInSlot(n) {
 function importIntoSlot(n, text) {
   let next;
   const sp = E.splitLegacyRec(text); // R59
-  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.setR60Rec(legacyRec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
   text = sp.save;
   try { next = E.importSave(text); } catch (err) { U.slotMsg = "❌ " + err.message; return; }
   const cur = SL.listSlots(localStorage)[n - 1];
@@ -280,8 +284,10 @@ document.addEventListener("click", e => {
     },
     slotexport: () => exportSlot(+v),
     creopen: () => openCreation(),
+    r60branch: () => { const [id, side] = String(v).split(":"); const e = E.chooseBranch(s, id, side); if (e) E.log(s, "⚠️ " + e); },
+    r60special: () => { const e = E.adoptSpecial(s, s.members.find(x => x.id === s.activeId), v); if (e) E.log(s, "⚠️ " + e); },
     credismiss: () => { U.creDismiss = 1; },
-    crequick: () => { U.create = null; },
+    crequick: () => { U.create = null; if (!s.lbDone && !s.created) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } }, // R60
     crerandom: () => { const nm = U.create && U.create.name; U.create = Object.assign(E.randomCreation(legacyRec), { name: nm || "" }); },
     cre: () => creSet(v),
     crestart: () => {
@@ -289,7 +295,9 @@ document.addEventListener("click", e => {
       const nm = document.querySelector("#crename"); if (nm) c.name = nm.value;
       const err = E.applyCreation(s, c, legacyRec);
       if (err) return void (U.createErr = err);
-      U.create = null; U.createErr = ""; s.created = 1;
+      U.create = null; U.createErr = "";
+      if (!s.lbDone) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } // R60
+      s.created = 1;
       E.log(s, `🛡️ ${(s.members.find(x => x.id === s.activeId) || s.members[0]).name} takes up the house colours.`);
     },
     legacyreset: () => { if (confirm("Reset the legacy unlocks on this device? Your saves are not touched.")) resetLegacy(), (U.saveMsg = "Legacy unlocks reset."); },
@@ -334,6 +342,7 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "crafter") U.crafter = el.value;
   if (el.dataset.a === "speed") E.setSpeed(s, +el.value);
   if (el.dataset.a === "classicemoji") (s.classicEmoji = el.checked), render(); // R58
+  if (el.dataset.a === "r60bonus") { (legacyRec.bonuses ||= {}).off = !el.checked; E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); render(); } // R60 clean-run toggle
   if (el.dataset.a === "notecat") E.setNoteCat(s, el.dataset.v, el.checked);
   if (el.dataset.a === "fieldcrop") E.setCrop(s, el.dataset.v, el.value); // R40
   if (el.dataset.a === "devmode") {
@@ -522,7 +531,7 @@ function importText(text) {
   }
   let next;
   const sp = E.splitLegacyRec(text); // R59
-  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
+  if (sp.rec) { legacyRec = E.mergeLegacyRecs(legacyRec, sp.rec); E.setR60Rec(legacyRec); E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); }
   text = sp.save;
   try {
     next = E.importSave(text);

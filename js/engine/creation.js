@@ -2,6 +2,7 @@
 // Pure functions: no rng is used anywhere here, so Quick start and the sim are unchanged. Looks for members without one
 // are derived from the member id (and a parent's colours for children).
 import { D, T, ageY, isAdult } from "./state.js";
+import { legacyBonuses } from "./r60.js";
 const traitDef = id => (D.traits || []).find(t => t.id === id);
 
 export const CR_KEY = "fl_legacy_v1";
@@ -56,7 +57,9 @@ export function saveMilestones(s) {
   if (ms.some(m => (m.traits || []).includes("seatouched"))) f.seaHeir = 1;
   const hr = s && s.hydra && s.hydra.result;
   if (hr) f["hydra_" + hr] = 1;
-  return { ach: Object.assign({}, (s && s.ach) || {}), flags: f };
+  if (((s && s.doneQuests) || []).includes("st10")) f.craneDisgraced = 1; // R60 the Crane brought down
+  const cu = {}; for (const id of (s && s.clsEarned) || []) cu[id] = 1; // R60 special classes earned once stay open
+  return { ach: Object.assign({}, (s && s.ach) || {}), flags: f, classUnlocks: cu };
 }
 export function unlockMet(u, rec) {
   if (u.flag) return !!rec.flags[u.flag];
@@ -72,6 +75,7 @@ export function recordSave(rec, s) {
   const m = saveMilestones(s);
   for (const [k, d] of Object.entries(m.ach)) if (rec.ach[k] == null) rec.ach[k] = d;
   Object.assign(rec.flags, m.flags);
+  Object.assign(rec.classUnlocks, m.classUnlocks || {});
   const fresh = [];
   for (const u of CRD().unlocks) if (!rec.unlocks.includes(u.id) && unlockMet(u, rec)) rec.unlocks.push(u.id), fresh.push(u.id);
   return { rec, fresh };
@@ -119,7 +123,7 @@ export function creationOptions(rec) {
     traits,
     classes: ((D.classes || []).filter(c => c.tier === 0)).map(c => ({ id: c.id, name: c.name, icon: c.icon, ok: have("class_pick"), how: howOf("class_pick") })),
     frames: frames.map(([id, ok]) => ({ id, art: C.frames[id], ok })),
-    maxPicks: (C.maxPicks || 2) + (have("third_pick") ? 1 : 0),
+    maxPicks: (C.maxPicks || 2) + (have("third_pick") ? 1 : 0) + (legacyBonuses(rec).fx.picks || 0), // R60 carry-over picks
     bonusForBad: C.bonusPickForBad || 1,
   };
 }

@@ -1,0 +1,27 @@
+{
+ "_note": "R60 factions for the Respect list. src = where the base number comes from (never written by R60). honorWeight 0..1; shown = base + respectAdj + honorWeight x Honor x 0.5. Relations are symmetric. All values [invented, approved R60 proposal].",
+ "words": [["hostile","Hostile",-50],["cold","Cold",-15],["neutral","Neutral",24],["friendly","Friendly",59],["revered","Revered",100]],
+ "guildMap": [[0,5],[50,25],[150,45],[400,60],[800,100]],
+ "tiers": {"major": {"rival": -4, "ally": 1}, "against": {"target": -15, "ally": -3, "rival": 3}},
+ "list": [
+  {"id":"church","name":"The Church","icon":"⛪","src":"guild","honorWeight":0.8,"rivals":["rogues","dagon","crone"],"allies":["vanguard","rowan","thanes"]},
+  {"id":"rogues","name":"Rogues' Guild","icon":"🗝️","src":"guild","honorWeight":0,"rivals":["church","vanguard"],"allies":["smugglers","crane"]},
+  {"id":"dagon","name":"The Lodge of the Drowned Light","icon":"🐙","src":"house","honorWeight":0.2,"rivals":["church","gilmane"],"allies":["smugglers","fishers"]},
+  {"id":"gilmane","name":"House Gilmane","icon":"🏛️","src":"house","honorWeight":0.2,"rivals":["dagon"],"allies":[]},
+  {"id":"crane","name":"House Crane","icon":"🦩","src":"usurper","honorWeight":0,"rivals":["rowan","thanes"],"allies":["rogues"]},
+  {"id":"rowan","name":"Clan Rowan","icon":"🌿","src":"none","honorWeight":0.6,"rivals":["crane"],"allies":["church","lodge"],"metFlag":"rowan"},
+  {"id":"collegium","name":"The Collegium","icon":"📚","src":"guild","honorWeight":0.3,"rivals":["crone"],"allies":["architects"]},
+  {"id":"crone","name":"The Crone","icon":"🧙‍♀️","src":"none","honorWeight":0.5,"rivals":["collegium","church"],"allies":["lodge"],"metQuest":"witch"},
+  {"id":"lodge","name":"The Lodge","icon":"🏹","src":"guild","honorWeight":0.5,"rivals":["vanguard_bounty"],"allies":["crone","rowan"]},
+  {"id":"vanguard","name":"The Vanguard","icon":"🛡️","src":"guild","honorWeight":0.5,"rivals":["rogues"],"allies":["church","adventurers"]},
+  {"id":"thanes","name":"Dwarfhold Thanes","icon":"⛰️","src":"house:ironbrow","honorWeight":1.0,"rivals":["crane","deep"],"allies":["church","hearth"]},
+  {"id":"deep","name":"Deep-trade Dwarves","icon":"⚒️","src":"none","honorWeight":0.3,"rivals":["thanes"],"allies":[],"metQuest":"gate8"},
+  {"id":"fishers","name":"Saltmere Fishers","icon":"🎣","src":"none","honorWeight":0.3,"rivals":["convoys"],"allies":["dagon"],"metTown":"saltmere"},
+  {"id":"convoys","name":"Convoy Merchants","icon":"🐪","src":"none","honorWeight":0.2,"rivals":["fishers"],"allies":[],"metTown":"saltmere"},
+  {"id":"smugglers","name":"Smugglers & Fences","icon":"🦝","src":"none","honorWeight":0,"rivals":[],"allies":["rogues","dagon"],"metGuild":"rogues"},
+  {"id":"vanguard_bounty","name":"Vanguard Bounty Hunters","icon":"🎯","src":"none","honorWeight":0.2,"rivals":["lodge"],"allies":[],"metFlag":"wolfking"},
+  {"id":"hearth","name":"The Hearth","icon":"🔥","src":"guild","honorWeight":0.3,"rivals":[],"allies":["thanes"]},
+  {"id":"architects","name":"The Architects","icon":"📐","src":"guild","honorWeight":0.3,"rivals":[],"allies":["collegium"]},
+  {"id":"adventurers","name":"Adventurers' Guild","icon":"🗺️","src":"adv","honorWeight":0.2,"rivals":[],"allies":["vanguard"]}
+ ]
+}

@@ -50,7 +50,8 @@ export const ACTIONS = {
       (4 + level(m) * 0.5 + m.skills.haggling.lvl * 0.2) *
       eff *
       (1 + traitSum(m, "coin")) *
-      (1 + furn(s).reduce((x, f) => x + (f.bonus.coin || 0), 0));
+      (1 + furn(s).reduce((x, f) => x + (f.bonus.coin || 0), 0)) *
+      (1 + ((s.lb || {}).coin || 0)); // R60 legacy coin bonus
     s.res.coin += c;
     gainXp(s, m, "haggling", T.xpPerDay * 0.3 * eff);
   },
@@ -84,7 +85,7 @@ export const ACTIONS = {
       m.action = null;
       return;
     }
-    s.res.coin += (isAdult(m) ? j.payAdult : j.payChild) * (1 + level(m) * 0.02) * eff * (1 + traitSum(m, "coin"));
+    s.res.coin += (isAdult(m) ? j.payAdult : j.payChild) * (1 + level(m) * 0.02) * eff * (1 + traitSum(m, "coin")) * (1 + ((s.lb || {}).coin || 0));
     for (const [k, v] of Object.entries(j.stats)) m.stats[k] += v * eff;
     for (const k of j.skills) gainXp(s, m, k, T.xpPerDay * 0.5 * eff);
     if (j.id === "shop") sellTick(s, eff * (1 + m.skills.haggling.lvl * 0.02));

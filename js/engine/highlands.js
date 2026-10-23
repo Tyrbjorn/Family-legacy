@@ -3,6 +3,7 @@
 // outside the house list on purpose: no drift, troubles, suitors, gifts or truce. It starts Rival and leaves the realm,
 // disgraced, once chapter 10 is done. Mountain routes live in world.js (mountainFx) and map.js (mountainWinter).
 import { D, log } from "./state.js";
+import { shiftAlign } from "./r60.js";
 
 // ---- falcons: +1% exploring finds per Falconry level (cap +30%). Ysolde's own perk is a villager `discover` perk.
 export const falconBonus = m => Math.min(0.3, (((m && m.skills && m.skills.falconry) || {}).lvl || 0) * 0.01);
@@ -91,6 +92,7 @@ export function revealDeeps(s) {
 export function swearOath(s) {
   if ((s.flags ||= {}).thaneOath != null) return false;
   s.flags.thaneOath = s.day || 0;
+  shiftAlign(s, { honor: 15 }, "swore the Thane's Oath"); // R60
   if (!(s.unlocks ||= []).includes("recipe:r_warchariot")) s.unlocks.push("recipe:r_warchariot");
   if (!(s.boons ||= []).some(b => b.from === "oath")) s.boons.push({ type: "questBonus", quest: "st10", pct: 0.1, from: "oath", text: "Clan Ironbrow stands with you: +10% in Reclaim the Name" });
   log(s, "🛡️ The Thane swears Clan Ironbrow's oath to your family: two more dwarves may serve, the War-Chariot plans are yours, and the clan will stand with you in chapter 10.");

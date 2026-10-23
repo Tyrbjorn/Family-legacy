@@ -123,7 +123,7 @@ function advanceOne(s, m) {
   // R47 second guild: pick once when eligible (pinned hand choice m.pref2; pause with fam_second), rank and advance it to tier 2
   if (second(s, m)) return true;
   // 3) evolve: preference, else the branch that fits their skills
-  const opts = faTier(s, "advance") >= 1 ? D.classes.filter(c => !c.profession && canEvolve(s, m, c) && reserveOk(s, c.cost)) : []; // R37: evolving is tier 1
+  const opts = faTier(s, "advance") >= 1 ? D.classes.filter(c => !c.profession && !c.special && canEvolve(s, m, c) && reserveOk(s, c.cost)) : []; // R37: evolving is tier 1
   if (!opts.length) return false;
   const c = findId(opts, m.prefCls) || opts.sort((a, b) => evoScore(m, b, s) - evoScore(m, a, s))[0];
   if (evolve(s, m, c.id)) return say(s, `Auto Advance: ${m.name} became a ${c.name}${opts.length > 1 ? " (best fit of " + opts.map(x => x.name).join("/") + ")" : ""}.`), true;

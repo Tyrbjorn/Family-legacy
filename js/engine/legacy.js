@@ -55,7 +55,7 @@ export function buyLegacy(s, id) {
 
 // ---- renown
 export function addRenown(s, m, n) {
-  n = Math.round(n * diffRenown(s, m));
+  n = Math.round(n * diffRenown(s, m) * (n > 0 ? (1 + ((s.lb || {}).renown || 0)) : 1)); // R60 legacy renown bonus
   s.renown += n;
   const mem = m && !m.minion;
   if (mem) m.renown = (m.renown || 0) + n;

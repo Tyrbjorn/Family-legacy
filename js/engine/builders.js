@@ -37,7 +37,7 @@ const resCut = (s, k) => Math.max(0, ...roleHolders(s).map(([, c]) => (c.role.re
 // the price actually paid: every resource × buildMult (× resCut for e.g. marble), rounded; unchanged when no discount
 export function bcost(s, cost, tag, up = false) {
   if (!cost) return cost;
-  const k = buildMult(s, tag, up);
+  const k = buildMult(s, tag, up) * (1 - ((((s && s.lb) || {}).build) || 0)); // R60 Builder of Halls
   const cuts = Object.keys(cost).map(r => resCut(s, r));
   if (k >= 1 && !cuts.some(Boolean)) return cost;
   const out = Object.fromEntries(Object.entries(cost).map(([r, v], i) => [r, Math.round(v * k * (1 - cuts[i]))]));

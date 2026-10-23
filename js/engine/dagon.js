@@ -3,6 +3,7 @@
 // and the Drowned Lamp won't serve them. The investigation ends in a choice (expose / join / bargain), kept in
 // s.dagonPact for when the Deep Door opens in a later round. Imports state.js only (families/houses import this).
 import { D, T, log, rng } from "./state.js";
+import { shiftAlign } from "./r60.js";
 
 export const DAGON_TOWN = "saltmere";
 const COLD = -15;
@@ -19,11 +20,13 @@ export function dagonFavour(s, n) {
   const h = ((s.houses ||= {}).dagon ||= { r: (D.families.list.find(x => x.id === "dagon") || {}).start ?? -25, state: "peace" });
   h.r = Math.max(-100, Math.min(100, h.r + n));
 }
-export const dagonFishMult = s => (s && s.dagonPact === "join" ? 1.25 : 1) * (hydraBlessed(s) ? 1.15 : 1); // R54 her blessing
+export const dagonFishMult = s => (s && s.dagonPact === "join" ? 1.25 : 1) * (hydraBlessed(s) ? 1.15 : 1) * (1 + ((((s && s.lb) || {}).fish) || 0)); // R60 Sea-touched heir // R54 her blessing
 export const BARGAIN = { first: 2000, season: 200, every: 90, cache: 10 };
 // the Old Bargain (makeChoice passes fx.pact here; `setR` is houses' addRapport "set" wrapper)
 export function dagonPact(s, pact, setR) {
+  const was = s.dagonPact;
   s.dagonPact = pact;
+  shiftAlign(s, pact === "expose" ? { faith: 15, honor: was === "join" || was === "bargain" ? -20 : 0 } : pact === "join" ? { faith: -20, honor: 5 } : pact === "bargain" ? { faith: -5 } : pact === "lapsed" ? { honor: -15 } : null, "the Old Bargain: " + pact); // R60
   if (pact === "expose") setR("dagon", -85), setR("gilmane", -85);
   if (pact === "join") setR("dagon", 70);
   if (pact === "bargain") setR("dagon", 0), (s.res.reefgold = (s.res.reefgold || 0) + BARGAIN.cache), (s.dagonDue = (s.day || 0) + BARGAIN.every);
@@ -124,6 +127,7 @@ export function hydraDone(s, m, q, hurt, extra) {
     log(s, "🐙 " + m.name + " has slain Mother Hydra! Saltmere mourns, and closes its market to your family for a year.");
   }
   s.hydra = { mood: md, result: md === "violent" ? "slain" : md === "tested" ? "passed" : "blessed", day };
+  shiftAlign(s, s.hydra.result === "blessed" ? { faith: -15 } : s.hydra.result === "slain" ? { faith: 5 } : null, "Mother Hydra: " + s.hydra.result); // R60
   return s.hydra;
 }
 export function hydraFail(s, q) {

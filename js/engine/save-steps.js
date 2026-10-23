@@ -1,5 +1,6 @@
 import { houseColOf, lookOf } from "./creation.js";
 import { findId } from "./lookup.js";
+import { backfillAlign } from "./r60.js";
 import { refundV40 } from "./legacy.js";
 import { migrateOrders } from "./orders.js";
 import { migrateAnimals } from "./animals.js";
@@ -776,6 +777,16 @@ export const STEPS = [
     run(s) {
       if (!s.house || typeof s.house !== "object") s.house = { col: houseColOf(s) };
       for (const m of s.members || []) lookOf(s, m);
+    },
+  },
+  {
+    n: 55,
+    name: "R60 legacy branches: Honor and faith are worked out once from what the family already did; branches, locks and Respect start empty; no bonus is given to a running game",
+    run(s) {
+      backfillAlign(s);
+      s.respectAdj ||= {};
+      s.locked ||= [];
+      s.branches ||= {};
     },
   },
 ];

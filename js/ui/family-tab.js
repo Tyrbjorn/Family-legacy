@@ -3,6 +3,7 @@ import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { autoChip, badges, cl, injuryTags, memberLine, portrait } from "./common.js";
 import { U } from "./state.js";
+import { familyR60 } from "./r60-ui.js";
 
 const rcol = id => {
   const d = E.traitDef(id);
@@ -56,7 +57,7 @@ ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: 
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}
 ${m.alive && m.id !== s.activeId ? `<button class="b" data-a="switch" data-v="${m.id}">Play as ${m.name}</button>` : ""}</div>`;
   }
-  return famAutoRow() + `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
+  return famAutoRow() + familyR60() + `<div class="card"><h3>🌳 Family Tree <span class="muted">${gens.length} generation${gens.length === 1 ? "" : "s"} · ${s.members.filter(x => !x.minion).length} members</span></h3>
 <div class="muted">Drag to pan · tap someone to open their card${s.bloodline ? ` · Bloodline trait: <b style="color:${rcol(s.bloodline)}">${E.traitDef(s.bloodline)?.name}</b>` : ""}</div>
 <div class="treewrap" id="treewrap"><div class="tree">${rows}</div></div></div>${card}`;
 }

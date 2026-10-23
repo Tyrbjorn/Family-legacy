@@ -5,7 +5,7 @@ const D={};for(const n of ['fields','skills','classes','traits','buildings','fur
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const C=D.creation, CL=L('changelog');
-ok(BUILD==='R59'&&E.SCHEMA===54,'R59, schema 54'); ok(CL.entries[0].build==='R59','changelog first');
+ok(+BUILD.slice(1)>=59&&E.SCHEMA>=54,'R59+, schema 54+'); ok(CL.entries.some(e=>e.build==='R59'),'R59 changelog entry');
 ok(C.unlocks.length===13,'13 unlocks');
 const achIds=new Set(D.achievements.list?D.achievements.list.map(a=>a.id):(Array.isArray(D.achievements)?D.achievements.map(a=>a.id):Object.keys(D.achievements)));
 const achTxt=JSON.stringify(D.achievements);

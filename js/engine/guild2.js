@@ -68,7 +68,7 @@ export const join2Fee = (s, m, gid) => (bloodline(s, m, gid) ? 0 : Math.round((g
 export const view2 = m => Object.assign(Object.create(m), { cls: m.class2, clsHist: m.cls2Hist || [], sideDay: m.side2Day });
 // bloodline start: the tier-2 class of that guild whose Lv and skills already fit (best fit first)
 const bloodStart = (m, gid) =>
-  D.classes.filter(c => c.tier === capTier() && !c.retired && !c.profession && guildOfCls(c.id) === gid && level(m) >= tierLv(c) && Object.entries(reqFor(m, c)).every(([k, v]) => (m.skills[k] || { lvl: 0 }).lvl >= v))
+  D.classes.filter(c => c.tier === capTier() && !c.retired && !c.special && !c.profession && guildOfCls(c.id) === gid && level(m) >= tierLv(c) && Object.entries(reqFor(m, c)).every(([k, v]) => (m.skills[k] || { lvl: 0 }).lvl >= v))
     .sort((a, b) => Object.keys(b.req || {}).reduce((x, k) => x + m.skills[k].lvl, 0) - Object.keys(a.req || {}).reduce((x, k) => x + m.skills[k].lvl, 0))[0];
 
 export function joinSecond(s, m, gid) {

@@ -25,6 +25,7 @@ import { addToVault, itemDef, recipeDef } from "./inventory.js";
 import { regionOpen } from "./map.js";
 import { addMinion, minionPower, mtype } from "./minions.js";
 import { gainXp } from "./skills.js";
+import { questDone60, questGate, lbOf } from "./r60.js";
 import { D, T, afford, isAdult, known, log, pay, r, rng } from "./state.js";
 
 export function resolveQuest(s, m, q, eff) {
@@ -98,6 +99,7 @@ export function resolveQuest(s, m, q, eff) {
     );
   }
   chainDone(s, q); // R46 guild chain unlocks
+  questDone60(s, q); // R60 spill-over, rival locks, alignment
   if (m.adv) m.adv.rep += Math.ceil(q.cp / 10) + 1;
   for (const mg of guildsOf(m)) {
     const g = guildDef(mg.id);
@@ -126,6 +128,8 @@ export function questIssue(s, m, q) {
   if (q.hydra) { const h = hydraIssue(s, q); if (h) return h; }
   if (q.rescue && !takenMembers(s).length) return "no one to rescue"; // R55 // R54 Mother's Pool
   if (q.once && s.doneQuests.includes(q.id)) return "done";
+  const g60 = questGate(s, q); // R60 locks, Honor and Hostile gates
+  if (g60) return g60;
   if (!regionOpen(s, q.region)) return "region locked";
   if (!questOk(m, q)) return "guild rank";
   if (q.req?.town && !townKnownId(s, q.req.town)) return "find " + ((findId(D.towns, q.req.town) || {}).name || q.req.town); // R48
@@ -208,6 +212,7 @@ export function dungeonClear(s, m, dg) {
     s.unlocks.push(dg.onClear.unlock);
     if (dg.onClear.text) log(s, `📜 ${dg.onClear.text}`);
   }
+  if (lbOf(s, "loot") && rng() < lbOf(s, "loot")) { const x = rollLoot(lq, 0, actLvl(s, m)); if (x && addToVault(s, x)) log(s, `🎁 Delver's luck: ${itemDef(x).name}.`); } // R60 legacy bonus
   rollRare(s, dg, m);
   mapDrop(s, dg, first);
   if (m.adv) m.adv.rep += 8;

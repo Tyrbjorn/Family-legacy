@@ -1,1212 +1,1667 @@
 [
- {
-  "id": "fighter",
-  "name": "Fighter",
-  "tier": 0,
-  "stats": [
-   "STR",
-   "VIT"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "shield",
-   "brawling"
-  ],
-  "icon": "🗡️"
- },
- {
-  "id": "hunter",
-  "name": "Hunter",
-  "tier": 0,
-  "stats": [
-   "AGI",
-   "VIT"
-  ],
-  "cpSkills": [
-   "hunting",
-   "archery",
-   "tracking"
-  ],
-  "icon": "🦌",
-  "gatherBonus": {
-   "meat": 0.5,
-   "hides": 0.5,
-   "food": 0.25
-  },
-  "desc": "Rangers' Guild entry class: game, meat and hides"
- },
- {
-  "id": "scout",
-  "name": "Scout",
-  "tier": 0,
-  "stats": [
-   "AGI",
-   "CHA"
-  ],
-  "cpSkills": [
-   "archery",
-   "hunting",
-   "foraging"
-  ],
-  "icon": "🏹",
-  "from": "hunter",
-  "guild": "lodge",
-  "guildRank": 0,
-  "req": {
-   "archery": 10,
-   "hunting": 8
-  },
-  "cost": 150
- },
- {
-  "id": "apprentice",
-  "name": "Apprentice",
-  "tier": 0,
-  "stats": [
-   "INT",
-   "WIL"
-  ],
-  "cpSkills": [
-   "fire",
-   "frost",
-   "arcana"
-  ],
-  "icon": "🪄"
- },
- {
-  "id": "acolyte",
-  "name": "Acolyte",
-  "tier": 0,
-  "stats": [
-   "WIL",
-   "CHA"
-  ],
-  "cpSkills": [
-   "healing",
-   "faith",
-   "etiquette"
-  ],
-  "icon": "🕯️"
- },
- {
-  "id": "cutpurse",
-  "name": "Cutpurse",
-  "tier": 0,
-  "stats": [
-   "AGI",
-   "CHA"
-  ],
-  "cpSkills": [
-   "brawling",
-   "thievery",
-   "archery"
-  ],
-  "icon": "🗝️"
- },
- {
-  "id": "knight",
-  "name": "Knight",
-  "tier": 1,
-  "from": "fighter",
-  "req": {
-   "swordsmanship": 25,
-   "shield": 25
-  },
-  "cost": 500,
-  "stats": [
-   "STR",
-   "VIT"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "shield",
-   "leadership"
-  ],
-  "cpMult": 1.6,
-  "icon": "🛡️"
- },
- {
-  "id": "duelist",
-  "name": "Duelist",
-  "tier": 1,
-  "from": "fighter",
-  "req": {
-   "swordsmanship": 30,
-   "brawling": 20
-  },
-  "cost": 500,
-  "stats": [
-   "STR",
-   "AGI"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "brawling"
-  ],
-  "cpMult": 1.6,
-  "icon": "🤺"
- },
- {
-  "id": "ranger",
-  "name": "Ranger",
-  "tier": 1,
-  "from": "scout",
-  "req": {
-   "archery": 25,
-   "hunting": 25
-  },
-  "cost": 500,
-  "stats": [
-   "AGI",
-   "VIT"
-  ],
-  "cpSkills": [
-   "archery",
-   "hunting",
-   "foraging"
-  ],
-  "cpMult": 1.6,
-  "icon": "🌲"
- },
- {
-  "id": "rogue",
-  "name": "Rogue",
-  "tier": 1,
-  "from": "cutpurse",
-  "req": {
-   "thievery": 25,
-   "brawling": 20
-  },
-  "cost": 500,
-  "stats": [
-   "AGI",
-   "CHA"
-  ],
-  "cpSkills": [
-   "archery",
-   "brawling",
-   "haggling"
-  ],
-  "cpMult": 1.6,
-  "icon": "🗝️"
- },
- {
-  "id": "elementalist",
-  "name": "Elementalist",
-  "tier": 1,
-  "from": "apprentice",
-  "req": {
-   "fire": 25,
-   "frost": 25
-  },
-  "cost": 500,
-  "stats": [
-   "INT",
-   "WIL"
-  ],
-  "cpSkills": [
-   "fire",
-   "frost"
-  ],
-  "cpMult": 1.6,
-  "icon": "🌩️"
- },
- {
-  "id": "scholar",
-  "name": "Scholar",
-  "tier": 1,
-  "from": "apprentice",
-  "req": {
-   "arcana": 25,
-   "reading": 25
-  },
-  "cost": 500,
-  "stats": [
-   "INT",
-   "INT"
-  ],
-  "cpSkills": [
-   "arcana",
-   "reading",
-   "history"
-  ],
-  "cpMult": 1.6,
-  "icon": "🎓"
- },
- {
-  "id": "paladin",
-  "name": "Paladin",
-  "tier": 2,
-  "from": "templar",
-  "req": {
-   "swordsmanship": 45,
-   "faith": 20
-  },
-  "cost": 2000,
-  "guild": "church",
-  "guildRank": 2,
-  "stats": [
-   "STR",
-   "WIL"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "shield",
-   "faith"
-  ],
-  "cpMult": 2.4,
-  "icon": "⚜️",
-  "needsBuildings": [
-   {
-    "buildings": [
-     "shrinehouse"
+  {
+    "id": "fighter",
+    "name": "Fighter",
+    "tier": 0,
+    "stats": [
+      "STR",
+      "VIT"
     ],
-    "up": 3
-   },
-   {
-    "buildings": [
-     "barracks"
+    "cpSkills": [
+      "swordsmanship",
+      "shield",
+      "brawling"
     ],
-    "up": 3
-   }
-  ]
- },
- {
-  "id": "blademaster",
-  "name": "Blademaster",
-  "tier": 2,
-  "from": "duelist",
-  "req": {
-   "swordsmanship": 50,
-   "tactics": 20
+    "icon": "🗡️"
   },
-  "cost": 2000,
-  "guild": "vanguard",
-  "guildRank": 2,
-  "stats": [
-   "STR",
-   "AGI"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "brawling",
-   "tactics"
-  ],
-  "cpMult": 2.4,
-  "icon": "🗡️"
- },
- {
-  "id": "beastmaster",
-  "name": "Beastmaster",
-  "tier": 2,
-  "from": "ranger",
-  "req": {
-   "hunting": 50,
-   "tracking": 20
-  },
-  "cost": 2000,
-  "guild": "lodge",
-  "guildRank": 2,
-  "stats": [
-   "AGI",
-   "VIT"
-  ],
-  "cpSkills": [
-   "archery",
-   "hunting",
-   "tracking"
-  ],
-  "cpMult": 2.4,
-  "icon": "🐺"
- },
- {
-  "id": "assassin",
-  "name": "Assassin",
-  "tier": 2,
-  "from": "rogue",
-  "req": {
-   "brawling": 40,
-   "thievery": 25
-  },
-  "cost": 2000,
-  "guild": "rogues",
-  "guildRank": 2,
-  "stats": [
-   "AGI",
-   "AGI"
-  ],
-  "cpSkills": [
-   "brawling",
-   "archery",
-   "thievery"
-  ],
-  "cpMult": 2.4,
-  "icon": "🥷"
- },
- {
-  "id": "pyromancer",
-  "name": "Pyromancer",
-  "tier": 2,
-  "from": "elementalist",
-  "req": {
-   "fire": 50,
-   "runecraft": 20
-  },
-  "cost": 2000,
-  "guild": "collegium",
-  "guildRank": 2,
-  "stats": [
-   "INT",
-   "WIL"
-  ],
-  "cpSkills": [
-   "fire",
-   "arcana",
-   "runecraft"
-  ],
-  "cpMult": 2.4,
-  "icon": "🔥"
- },
- {
-  "id": "archmage",
-  "name": "Archmage",
-  "tier": 2,
-  "from": "scholar",
-  "req": {
-   "arcana": 50,
-   "runecraft": 25
-  },
-  "cost": 2000,
-  "guild": "collegium",
-  "guildRank": 2,
-  "stats": [
-   "INT",
-   "WIL"
-  ],
-  "cpSkills": [
-   "arcana",
-   "reading",
-   "runecraft"
-  ],
-  "cpMult": 2.4,
-  "icon": "🧙"
- },
- {
-  "id": "battlemage",
-  "name": "Battle Mage",
-  "tier": 2,
-  "from": "scholar",
-  "req": {
-   "arcana": 40,
-   "swordsmanship": 25,
-   "shield": 15
-  },
-  "cost": 2000,
-  "guild": "collegium",
-  "guildRank": 2,
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [
-   "arcana",
-   "swordsmanship",
-   "shield"
-  ],
-  "cpMult": 2.4,
-  "noSpellFail": true,
-  "noCasterGear": true,
-  "icon": "⚔️",
-  "desc": "Archmage alternative: swords, maces, spears, shields and ALL armor with no spell failure. Combat spells at any range (Arcana wards, Fire incl. fireball, Frost, Runecraft weapon runes); magic skills count for power only up to level 75 — the very top tier (biggest area, utility, summoning) stays Archmage-only.",
-  "magicCap": 75,
-  "spells": [
-   "arcana",
-   "fire",
-   "frost",
-   "runecraft"
-  ]
- },
- {
-  "id": "warlord",
-  "name": "Warlord",
-  "tier": 2,
-  "from": "knight",
-  "req": {
-   "leadership": 40,
-   "tactics": 20
-  },
-  "cost": 2000,
-  "guild": "vanguard",
-  "guildRank": 2,
-  "stats": [
-   "STR",
-   "CHA"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "leadership",
-   "tactics"
-  ],
-  "cpMult": 2.4,
-  "icon": "🚩"
- },
- {
-  "id": "priest",
-  "name": "Priest",
-  "tier": 2,
-  "from": "cleric",
-  "req": {
-   "healing": 45,
-   "faith": 25
-  },
-  "cost": 2000,
-  "guild": "church",
-  "guildRank": 2,
-  "stats": [
-   "WIL",
-   "INT"
-  ],
-  "cpSkills": [
-   "healing",
-   "faith",
-   "arcana"
-  ],
-  "cpMult": 2.4,
-  "icon": "✝️"
- },
- {
-  "id": "thief",
-  "name": "Master Thief",
-  "tier": 2,
-  "from": "rogue",
-  "req": {
-   "thievery": 40,
-   "haggling": 30
-  },
-  "cost": 2000,
-  "guild": "rogues",
-  "guildRank": 2,
-  "stats": [
-   "AGI",
-   "CHA"
-  ],
-  "cpSkills": [
-   "archery",
-   "haggling",
-   "thievery"
-  ],
-  "cpMult": 2.4,
-  "icon": "🦝"
- },
- {
-  "id": "warden",
-  "name": "Warden",
-  "tier": 2,
-  "from": "ranger",
-  "req": {
-   "foraging": 45,
-   "tracking": 20
-  },
-  "cost": 2000,
-  "guild": "lodge",
-  "guildRank": 2,
-  "stats": [
-   "AGI",
-   "WIL"
-  ],
-  "cpSkills": [
-   "archery",
-   "foraging",
-   "tracking"
-  ],
-  "cpMult": 2.4,
-  "icon": "🌳"
- },
- {
-  "id": "trapper",
-  "name": "Trapper",
-  "tier": 1,
-  "from": "scout",
-  "req": {
-   "hunting": 25,
-   "foraging": 25
-  },
-  "cost": 500,
-  "stats": [
-   "AGI",
-   "WIL"
-  ],
-  "cpSkills": [
-   "archery",
-   "hunting",
-   "foraging"
-  ],
-  "cpMult": 1.6,
-  "icon": "🪤"
- },
- {
-  "id": "swindler",
-  "name": "Swindler",
-  "tier": 1,
-  "from": "cutpurse",
-  "req": {
-   "etiquette": 20,
-   "haggling": 25
-  },
-  "cost": 500,
-  "stats": [
-   "CHA",
-   "INT"
-  ],
-  "cpSkills": [
-   "haggling",
-   "etiquette",
-   "brawling"
-  ],
-  "cpMult": 1.6,
-  "icon": "🎭",
-  "role": {
-   "buyDisc": 0.08,
-   "reqBonus": 0.1
-  },
-  "desc": "Con artist: the family buys 8% cheaper; +10% coin on village requests"
- },
- {
-  "id": "spy",
-  "name": "Spy",
-  "tier": 2,
-  "from": "swindler",
-  "req": {
-   "etiquette": 40,
-   "thievery": 35
-  },
-  "cost": 2000,
-  "stats": [
-   "AGI",
-   "INT"
-  ],
-  "cpSkills": [
-   "thievery",
-   "etiquette",
-   "brawling"
-  ],
-  "cpMult": 2.4,
-  "icon": "🕵️",
-  "guild": "rogues",
-  "guildRank": 2,
-  "desc": "Secrets: rumours, hidden quests, rival house intel (Swindler leads into Spy)"
- },
- {
-  "id": "fence",
-  "name": "Fence",
-  "tier": 2,
-  "from": "rogue",
-  "req": {
-   "appraisal": 30,
-   "haggling": 35,
-   "thievery": 30
-  },
-  "cost": 2000,
-  "guild": "rogues",
-  "guildRank": 2,
-  "needsQuest": "g_rogues_ledger",
-  "stats": [
-   "CHA",
-   "AGI"
-  ],
-  "cpSkills": [
-   "haggling",
-   "appraisal",
-   "thievery"
-  ],
-  "cpMult": 2.4,
-  "icon": "💰",
-  "role": {
-   "sellPct": 0.9
-  },
-  "desc": "Sells loot and gear at 90% of value"
- },
- {
-  "id": "cleric",
-  "name": "Cleric",
-  "tier": 1,
-  "from": "acolyte",
-  "req": {
-   "healing": 25,
-   "faith": 25
-  },
-  "cost": 500,
-  "stats": [
-   "WIL",
-   "INT"
-  ],
-  "cpSkills": [
-   "healing",
-   "faith"
-  ],
-  "cpMult": 1.6,
-  "icon": "✝️"
- },
- {
-  "id": "templar",
-  "name": "Templar",
-  "tier": 1,
-  "from": "acolyte",
-  "req": {
-   "swordsmanship": 20,
-   "faith": 25
-  },
-  "cost": 500,
-  "stats": [
-   "STR",
-   "WIL"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "shield",
-   "faith"
-  ],
-  "cpMult": 1.6,
-  "icon": "⚔️",
-  "needsBuildings": [
-   {
-    "buildings": [
-     "shrinehouse"
+  {
+    "id": "hunter",
+    "name": "Hunter",
+    "tier": 0,
+    "stats": [
+      "AGI",
+      "VIT"
     ],
-    "up": 0
-   },
-   {
-    "buildings": [
-     "barracks"
+    "cpSkills": [
+      "hunting",
+      "archery",
+      "tracking"
     ],
-    "up": 0
-   }
-  ]
- },
- {
-  "id": "adventurer",
-  "name": "Adventurer",
-  "tier": 0,
-  "req": {},
-  "cost": 0,
-  "stats": [
-   "AGI",
-   "VIT"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "archery",
-   "monsterlore"
-  ],
-  "cpMult": 1,
-  "icon": "🧭",
-  "line": "adventurer"
- },
- {
-  "id": "wanderer",
-  "name": "Wanderer",
-  "tier": 1,
-  "from": "adventurer",
-  "req": {
-   "nature": 20,
-   "foraging": 20
+    "icon": "🦌",
+    "gatherBonus": {
+      "meat": 0.5,
+      "hides": 0.5,
+      "food": 0.25
+    },
+    "desc": "Rangers' Guild entry class: game, meat and hides"
   },
-  "cost": 500,
-  "advRank": 2,
-  "stats": [
-   "AGI",
-   "WIL"
-  ],
-  "cpSkills": [
-   "archery",
-   "nature",
-   "foraging"
-  ],
-  "cpMult": 1.6,
-  "icon": "🥾",
-  "line": "adventurer"
- },
- {
-  "id": "treasurehunter",
-  "name": "Treasure Hunter",
-  "tier": 1,
-  "from": "adventurer",
-  "req": {
-   "history": 20,
-   "archery": 15
+  {
+    "id": "scout",
+    "name": "Scout",
+    "tier": 0,
+    "stats": [
+      "AGI",
+      "CHA"
+    ],
+    "cpSkills": [
+      "archery",
+      "hunting",
+      "foraging"
+    ],
+    "icon": "🏹",
+    "from": "hunter",
+    "guild": "lodge",
+    "guildRank": 0,
+    "req": {
+      "archery": 10,
+      "hunting": 8
+    },
+    "cost": 150
   },
-  "cost": 500,
-  "advRank": 3,
-  "stats": [
-   "AGI",
-   "INT"
-  ],
-  "cpSkills": [
-   "archery",
-   "history",
-   "thievery"
-  ],
-  "cpMult": 1.6,
-  "icon": "💎",
-  "line": "adventurer",
-  "lootBonus": 0.15
- },
- {
-  "id": "monsterhunter",
-  "name": "Monster Hunter",
-  "tier": 1,
-  "from": "adventurer",
-  "req": {
-   "monsterlore": 25,
-   "swordsmanship": 20
+  {
+    "id": "apprentice",
+    "name": "Apprentice",
+    "tier": 0,
+    "stats": [
+      "INT",
+      "WIL"
+    ],
+    "cpSkills": [
+      "fire",
+      "frost",
+      "arcana"
+    ],
+    "icon": "🪄"
   },
-  "cost": 500,
-  "advRank": 3,
-  "stats": [
-   "STR",
-   "VIT"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "monsterlore",
-   "shield"
-  ],
-  "cpMult": 1.6,
-  "icon": "🐲",
-  "line": "adventurer"
- },
- {
-  "id": "explorer",
-  "name": "Explorer",
-  "tier": 2,
-  "from": "wanderer",
-  "req": {
-   "nature": 45,
-   "foraging": 40
+  {
+    "id": "acolyte",
+    "name": "Acolyte",
+    "tier": 0,
+    "stats": [
+      "WIL",
+      "CHA"
+    ],
+    "cpSkills": [
+      "healing",
+      "faith",
+      "etiquette"
+    ],
+    "icon": "🕯️"
   },
-  "cost": 2000,
-  "advRank": 4,
-  "stats": [
-   "AGI",
-   "WIL"
-  ],
-  "cpSkills": [
-   "archery",
-   "nature",
-   "foraging"
-  ],
-  "cpMult": 2.4,
-  "icon": "🗺️",
-  "line": "adventurer"
- },
- {
-  "id": "relicseeker",
-  "name": "Relic Seeker",
-  "tier": 2,
-  "from": "treasurehunter",
-  "req": {
-   "history": 45
+  {
+    "id": "cutpurse",
+    "name": "Cutpurse",
+    "tier": 0,
+    "stats": [
+      "AGI",
+      "CHA"
+    ],
+    "cpSkills": [
+      "brawling",
+      "thievery",
+      "archery"
+    ],
+    "icon": "🗝️"
   },
-  "cost": 2000,
-  "advRank": 4,
-  "stats": [
-   "AGI",
-   "INT"
-  ],
-  "cpSkills": [
-   "archery",
-   "history",
-   "thievery"
-  ],
-  "cpMult": 2.4,
-  "icon": "🏺",
-  "line": "adventurer",
-  "lootBonus": 0.3
- },
- {
-  "id": "hero",
-  "name": "Hero",
-  "tier": 2,
-  "from": "monsterhunter",
-  "req": {
-   "monsterlore": 50,
-   "swordsmanship": 45
+  {
+    "id": "knight",
+    "name": "Knight",
+    "tier": 1,
+    "from": "fighter",
+    "req": {
+      "swordsmanship": 25,
+      "shield": 25
+    },
+    "cost": 500,
+    "stats": [
+      "STR",
+      "VIT"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "shield",
+      "leadership"
+    ],
+    "cpMult": 1.6,
+    "icon": "🛡️"
   },
-  "cost": 2000,
-  "advRank": 5,
-  "stats": [
-   "STR",
-   "VIT"
-  ],
-  "cpSkills": [
-   "swordsmanship",
-   "monsterlore",
-   "shield"
-  ],
-  "cpMult": 2.4,
-  "icon": "🌟",
-  "line": "adventurer"
- },
- {
-  "id": "artisan",
-  "name": "Artisan",
-  "tier": 0,
-  "req": {},
-  "cost": 0,
-  "crafterRank": 0,
-  "line": "artisan",
-  "profession": true,
-  "spec": null,
-  "craftBonus": 0.05,
-  "icon": "🧑‍🔧",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "blacksmith",
-  "name": "Blacksmith",
-  "tier": 1,
-  "from": "artisan",
-  "req": {
-   "smithing": 20
+  {
+    "id": "duelist",
+    "name": "Duelist",
+    "tier": 1,
+    "from": "fighter",
+    "req": {
+      "swordsmanship": 30,
+      "brawling": 20
+    },
+    "cost": 500,
+    "stats": [
+      "STR",
+      "AGI"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "brawling"
+    ],
+    "cpMult": 1.6,
+    "icon": "🤺"
   },
-  "cost": 400,
-  "crafterRank": 1,
-  "line": "artisan",
-  "profession": true,
-  "spec": "blacksmith",
-  "craftBonus": 0.15,
-  "icon": "⚒️",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "carpenter",
-  "name": "Carpenter",
-  "tier": 1,
-  "from": "artisan",
-  "req": {
-   "carpentry": 20
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "tier": 1,
+    "from": "scout",
+    "req": {
+      "archery": 25,
+      "hunting": 25
+    },
+    "cost": 500,
+    "stats": [
+      "AGI",
+      "VIT"
+    ],
+    "cpSkills": [
+      "archery",
+      "hunting",
+      "foraging"
+    ],
+    "cpMult": 1.6,
+    "icon": "🌲"
   },
-  "cost": 400,
-  "crafterRank": 1,
-  "line": "artisan",
-  "profession": true,
-  "spec": "carpenter",
-  "craftBonus": 0.15,
-  "icon": "🪚",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "alchemist",
-  "name": "Alchemist",
-  "tier": 1,
-  "from": "artisan",
-  "req": {
-   "alchemy": 20
+  {
+    "id": "rogue",
+    "name": "Rogue",
+    "tier": 1,
+    "from": "cutpurse",
+    "req": {
+      "thievery": 25,
+      "brawling": 20
+    },
+    "cost": 500,
+    "stats": [
+      "AGI",
+      "CHA"
+    ],
+    "cpSkills": [
+      "archery",
+      "brawling",
+      "haggling"
+    ],
+    "cpMult": 1.6,
+    "icon": "🗝️"
   },
-  "cost": 400,
-  "crafterRank": 1,
-  "line": "artisan",
-  "profession": true,
-  "spec": "alchemist",
-  "craftBonus": 0.15,
-  "icon": "⚗️",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "tailor",
-  "name": "Tailor",
-  "tier": 1,
-  "from": "artisan",
-  "req": {
-   "tailoring": 20
+  {
+    "id": "elementalist",
+    "name": "Elementalist",
+    "tier": 1,
+    "from": "apprentice",
+    "req": {
+      "fire": 25,
+      "frost": 25
+    },
+    "cost": 500,
+    "stats": [
+      "INT",
+      "WIL"
+    ],
+    "cpSkills": [
+      "fire",
+      "frost"
+    ],
+    "cpMult": 1.6,
+    "icon": "🌩️"
   },
-  "cost": 400,
-  "crafterRank": 1,
-  "line": "artisan",
-  "profession": true,
-  "spec": "tailor",
-  "craftBonus": 0.15,
-  "icon": "🧵",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "armorer",
-  "name": "Master Armorer",
-  "tier": 2,
-  "from": "blacksmith",
-  "req": {
-   "smithing": 45
+  {
+    "id": "scholar",
+    "name": "Scholar",
+    "tier": 1,
+    "from": "apprentice",
+    "req": {
+      "arcana": 25,
+      "reading": 25
+    },
+    "cost": 500,
+    "stats": [
+      "INT",
+      "INT"
+    ],
+    "cpSkills": [
+      "arcana",
+      "reading",
+      "history"
+    ],
+    "cpMult": 1.6,
+    "icon": "🎓"
   },
-  "cost": 1600,
-  "crafterRank": 2,
-  "line": "artisan",
-  "profession": true,
-  "spec": "blacksmith",
-  "craftBonus": 0.3,
-  "icon": "🛡️",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "architect",
-  "name": "Architect",
-  "tier": 2,
-  "from": "carpenter",
-  "req": {
-   "carpentry": 45
+  {
+    "id": "paladin",
+    "name": "Paladin",
+    "tier": 2,
+    "from": "templar",
+    "req": {
+      "swordsmanship": 45,
+      "faith": 20
+    },
+    "cost": 2000,
+    "guild": "church",
+    "guildRank": 2,
+    "stats": [
+      "STR",
+      "WIL"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "shield",
+      "faith"
+    ],
+    "cpMult": 2.4,
+    "icon": "⚜️",
+    "needsBuildings": [
+      {
+        "buildings": [
+          "shrinehouse"
+        ],
+        "up": 3
+      },
+      {
+        "buildings": [
+          "barracks"
+        ],
+        "up": 3
+      }
+    ],
+    "key": {
+      "resp": [
+        "church",
+        "friendly"
+      ],
+      "text": "Church Respect Friendly",
+      "light": 1
+    }
   },
-  "cost": 1600,
-  "crafterRank": 2,
-  "line": "artisan",
-  "profession": true,
-  "spec": "carpenter",
-  "craftBonus": 0.3,
-  "icon": "📐",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "masteralchemist",
-  "name": "Master Alchemist",
-  "tier": 2,
-  "from": "alchemist",
-  "req": {
-   "alchemy": 45
+  {
+    "id": "blademaster",
+    "name": "Blademaster",
+    "tier": 2,
+    "from": "duelist",
+    "req": {
+      "swordsmanship": 50,
+      "tactics": 20
+    },
+    "cost": 2000,
+    "guild": "vanguard",
+    "guildRank": 2,
+    "stats": [
+      "STR",
+      "AGI"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "brawling",
+      "tactics"
+    ],
+    "cpMult": 2.4,
+    "icon": "🗡️"
   },
-  "cost": 1600,
-  "crafterRank": 2,
-  "line": "artisan",
-  "profession": true,
-  "spec": "alchemist",
-  "craftBonus": 0.3,
-  "icon": "🧪",
-  "stats": [
-   "INT",
-   "STR"
-  ],
-  "cpSkills": [],
-  "retired": true
- },
- {
-  "id": "builder",
-  "name": "Builder",
-  "tier": 0,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "icon": "🧱",
-  "desc": "Architects' Guild entry: −5% coin and materials on every build and upgrade.",
-  "role": {
-   "build": {
-    "all": 0.05
-   }
+  {
+    "id": "beastmaster",
+    "name": "Beastmaster",
+    "tier": 2,
+    "from": "ranger",
+    "req": {
+      "hunting": 50,
+      "tracking": 20
+    },
+    "cost": 2000,
+    "guild": "lodge",
+    "guildRank": 2,
+    "stats": [
+      "AGI",
+      "VIT"
+    ],
+    "cpSkills": [
+      "archery",
+      "hunting",
+      "tracking"
+    ],
+    "cpMult": 2.4,
+    "icon": "🐺"
+  },
+  {
+    "id": "assassin",
+    "name": "Assassin",
+    "tier": 2,
+    "from": "rogue",
+    "req": {
+      "brawling": 40,
+      "thievery": 25
+    },
+    "cost": 2000,
+    "guild": "rogues",
+    "guildRank": 2,
+    "stats": [
+      "AGI",
+      "AGI"
+    ],
+    "cpSkills": [
+      "brawling",
+      "archery",
+      "thievery"
+    ],
+    "cpMult": 2.4,
+    "icon": "🥷"
+  },
+  {
+    "id": "pyromancer",
+    "name": "Pyromancer",
+    "tier": 2,
+    "from": "elementalist",
+    "req": {
+      "fire": 50,
+      "runecraft": 20
+    },
+    "cost": 2000,
+    "guild": "collegium",
+    "guildRank": 2,
+    "stats": [
+      "INT",
+      "WIL"
+    ],
+    "cpSkills": [
+      "fire",
+      "arcana",
+      "runecraft"
+    ],
+    "cpMult": 2.4,
+    "icon": "🔥"
+  },
+  {
+    "id": "archmage",
+    "name": "Archmage",
+    "tier": 2,
+    "from": "scholar",
+    "req": {
+      "arcana": 50,
+      "runecraft": 25
+    },
+    "cost": 2000,
+    "guild": "collegium",
+    "guildRank": 2,
+    "stats": [
+      "INT",
+      "WIL"
+    ],
+    "cpSkills": [
+      "arcana",
+      "reading",
+      "runecraft"
+    ],
+    "cpMult": 2.4,
+    "icon": "🧙",
+    "key": {
+      "guildRank": [
+        "collegium",
+        2
+      ],
+      "text": "Collegium rank Adept",
+      "light": 1
+    }
+  },
+  {
+    "id": "battlemage",
+    "name": "Battle Mage",
+    "tier": 2,
+    "from": "scholar",
+    "req": {
+      "arcana": 40,
+      "swordsmanship": 25,
+      "shield": 15
+    },
+    "cost": 2000,
+    "guild": "collegium",
+    "guildRank": 2,
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [
+      "arcana",
+      "swordsmanship",
+      "shield"
+    ],
+    "cpMult": 2.4,
+    "noSpellFail": true,
+    "noCasterGear": true,
+    "icon": "⚔️",
+    "desc": "Archmage alternative: swords, maces, spears, shields and ALL armor with no spell failure. Combat spells at any range (Arcana wards, Fire incl. fireball, Frost, Runecraft weapon runes); magic skills count for power only up to level 75 — the very top tier (biggest area, utility, summoning) stays Archmage-only.",
+    "magicCap": 75,
+    "spells": [
+      "arcana",
+      "fire",
+      "frost",
+      "runecraft"
+    ]
+  },
+  {
+    "id": "warlord",
+    "name": "Warlord",
+    "tier": 2,
+    "from": "knight",
+    "req": {
+      "leadership": 40,
+      "tactics": 20
+    },
+    "cost": 2000,
+    "guild": "vanguard",
+    "guildRank": 2,
+    "stats": [
+      "STR",
+      "CHA"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "leadership",
+      "tactics"
+    ],
+    "cpMult": 2.4,
+    "icon": "🚩"
+  },
+  {
+    "id": "priest",
+    "name": "Priest",
+    "tier": 2,
+    "from": "cleric",
+    "req": {
+      "healing": 45,
+      "faith": 25
+    },
+    "cost": 2000,
+    "guild": "church",
+    "guildRank": 2,
+    "stats": [
+      "WIL",
+      "INT"
+    ],
+    "cpSkills": [
+      "healing",
+      "faith",
+      "arcana"
+    ],
+    "cpMult": 2.4,
+    "icon": "✝️"
+  },
+  {
+    "id": "thief",
+    "name": "Master Thief",
+    "tier": 2,
+    "from": "rogue",
+    "req": {
+      "thievery": 40,
+      "haggling": 30
+    },
+    "cost": 2000,
+    "guild": "rogues",
+    "guildRank": 2,
+    "stats": [
+      "AGI",
+      "CHA"
+    ],
+    "cpSkills": [
+      "archery",
+      "haggling",
+      "thievery"
+    ],
+    "cpMult": 2.4,
+    "icon": "🦝"
+  },
+  {
+    "id": "warden",
+    "name": "Warden",
+    "tier": 2,
+    "from": "ranger",
+    "req": {
+      "foraging": 45,
+      "tracking": 20
+    },
+    "cost": 2000,
+    "guild": "lodge",
+    "guildRank": 2,
+    "stats": [
+      "AGI",
+      "WIL"
+    ],
+    "cpSkills": [
+      "archery",
+      "foraging",
+      "tracking"
+    ],
+    "cpMult": 2.4,
+    "icon": "🌳"
+  },
+  {
+    "id": "trapper",
+    "name": "Trapper",
+    "tier": 1,
+    "from": "scout",
+    "req": {
+      "hunting": 25,
+      "foraging": 25
+    },
+    "cost": 500,
+    "stats": [
+      "AGI",
+      "WIL"
+    ],
+    "cpSkills": [
+      "archery",
+      "hunting",
+      "foraging"
+    ],
+    "cpMult": 1.6,
+    "icon": "🪤"
+  },
+  {
+    "id": "swindler",
+    "name": "Swindler",
+    "tier": 1,
+    "from": "cutpurse",
+    "req": {
+      "etiquette": 20,
+      "haggling": 25
+    },
+    "cost": 500,
+    "stats": [
+      "CHA",
+      "INT"
+    ],
+    "cpSkills": [
+      "haggling",
+      "etiquette",
+      "brawling"
+    ],
+    "cpMult": 1.6,
+    "icon": "🎭",
+    "role": {
+      "buyDisc": 0.08,
+      "reqBonus": 0.1
+    },
+    "desc": "Con artist: the family buys 8% cheaper; +10% coin on village requests"
+  },
+  {
+    "id": "spy",
+    "name": "Spy",
+    "tier": 2,
+    "from": "swindler",
+    "req": {
+      "etiquette": 40,
+      "thievery": 35
+    },
+    "cost": 2000,
+    "stats": [
+      "AGI",
+      "INT"
+    ],
+    "cpSkills": [
+      "thievery",
+      "etiquette",
+      "brawling"
+    ],
+    "cpMult": 2.4,
+    "icon": "🕵️",
+    "guild": "rogues",
+    "guildRank": 2,
+    "desc": "Secrets: rumours, hidden quests, rival house intel (Swindler leads into Spy)"
+  },
+  {
+    "id": "fence",
+    "name": "Fence",
+    "tier": 2,
+    "from": "rogue",
+    "req": {
+      "appraisal": 30,
+      "haggling": 35,
+      "thievery": 30
+    },
+    "cost": 2000,
+    "guild": "rogues",
+    "guildRank": 2,
+    "needsQuest": "g_rogues_ledger",
+    "stats": [
+      "CHA",
+      "AGI"
+    ],
+    "cpSkills": [
+      "haggling",
+      "appraisal",
+      "thievery"
+    ],
+    "cpMult": 2.4,
+    "icon": "💰",
+    "role": {
+      "sellPct": 0.9
+    },
+    "desc": "Sells loot and gear at 90% of value"
+  },
+  {
+    "id": "cleric",
+    "name": "Cleric",
+    "tier": 1,
+    "from": "acolyte",
+    "req": {
+      "healing": 25,
+      "faith": 25
+    },
+    "cost": 500,
+    "stats": [
+      "WIL",
+      "INT"
+    ],
+    "cpSkills": [
+      "healing",
+      "faith"
+    ],
+    "cpMult": 1.6,
+    "icon": "✝️"
+  },
+  {
+    "id": "templar",
+    "name": "Templar",
+    "tier": 1,
+    "from": "acolyte",
+    "req": {
+      "swordsmanship": 20,
+      "faith": 25
+    },
+    "cost": 500,
+    "stats": [
+      "STR",
+      "WIL"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "shield",
+      "faith"
+    ],
+    "cpMult": 1.6,
+    "icon": "⚔️",
+    "needsBuildings": [
+      {
+        "buildings": [
+          "shrinehouse"
+        ],
+        "up": 0
+      },
+      {
+        "buildings": [
+          "barracks"
+        ],
+        "up": 0
+      }
+    ]
+  },
+  {
+    "id": "adventurer",
+    "name": "Adventurer",
+    "tier": 0,
+    "req": {},
+    "cost": 0,
+    "stats": [
+      "AGI",
+      "VIT"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "archery",
+      "monsterlore"
+    ],
+    "cpMult": 1,
+    "icon": "🧭",
+    "line": "adventurer"
+  },
+  {
+    "id": "wanderer",
+    "name": "Wanderer",
+    "tier": 1,
+    "from": "adventurer",
+    "req": {
+      "nature": 20,
+      "foraging": 20
+    },
+    "cost": 500,
+    "advRank": 2,
+    "stats": [
+      "AGI",
+      "WIL"
+    ],
+    "cpSkills": [
+      "archery",
+      "nature",
+      "foraging"
+    ],
+    "cpMult": 1.6,
+    "icon": "🥾",
+    "line": "adventurer"
+  },
+  {
+    "id": "treasurehunter",
+    "name": "Treasure Hunter",
+    "tier": 1,
+    "from": "adventurer",
+    "req": {
+      "history": 20,
+      "archery": 15
+    },
+    "cost": 500,
+    "advRank": 3,
+    "stats": [
+      "AGI",
+      "INT"
+    ],
+    "cpSkills": [
+      "archery",
+      "history",
+      "thievery"
+    ],
+    "cpMult": 1.6,
+    "icon": "💎",
+    "line": "adventurer",
+    "lootBonus": 0.15
+  },
+  {
+    "id": "monsterhunter",
+    "name": "Monster Hunter",
+    "tier": 1,
+    "from": "adventurer",
+    "req": {
+      "monsterlore": 25,
+      "swordsmanship": 20
+    },
+    "cost": 500,
+    "advRank": 3,
+    "stats": [
+      "STR",
+      "VIT"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "monsterlore",
+      "shield"
+    ],
+    "cpMult": 1.6,
+    "icon": "🐲",
+    "line": "adventurer"
+  },
+  {
+    "id": "explorer",
+    "name": "Explorer",
+    "tier": 2,
+    "from": "wanderer",
+    "req": {
+      "nature": 45,
+      "foraging": 40
+    },
+    "cost": 2000,
+    "advRank": 4,
+    "stats": [
+      "AGI",
+      "WIL"
+    ],
+    "cpSkills": [
+      "archery",
+      "nature",
+      "foraging"
+    ],
+    "cpMult": 2.4,
+    "icon": "🗺️",
+    "line": "adventurer"
+  },
+  {
+    "id": "relicseeker",
+    "name": "Relic Seeker",
+    "tier": 2,
+    "from": "treasurehunter",
+    "req": {
+      "history": 45
+    },
+    "cost": 2000,
+    "advRank": 4,
+    "stats": [
+      "AGI",
+      "INT"
+    ],
+    "cpSkills": [
+      "archery",
+      "history",
+      "thievery"
+    ],
+    "cpMult": 2.4,
+    "icon": "🏺",
+    "line": "adventurer",
+    "lootBonus": 0.3
+  },
+  {
+    "id": "hero",
+    "name": "Hero",
+    "tier": 2,
+    "from": "monsterhunter",
+    "req": {
+      "monsterlore": 50,
+      "swordsmanship": 45
+    },
+    "cost": 2000,
+    "advRank": 5,
+    "stats": [
+      "STR",
+      "VIT"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "monsterlore",
+      "shield"
+    ],
+    "cpMult": 2.4,
+    "icon": "🌟",
+    "line": "adventurer",
+    "key": {
+      "dungeonTier": 3,
+      "text": "Clear any tier-3 dungeon",
+      "light": 1
+    }
+  },
+  {
+    "id": "artisan",
+    "name": "Artisan",
+    "tier": 0,
+    "req": {},
+    "cost": 0,
+    "crafterRank": 0,
+    "line": "artisan",
+    "profession": true,
+    "spec": null,
+    "craftBonus": 0.05,
+    "icon": "🧑‍🔧",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "blacksmith",
+    "name": "Blacksmith",
+    "tier": 1,
+    "from": "artisan",
+    "req": {
+      "smithing": 20
+    },
+    "cost": 400,
+    "crafterRank": 1,
+    "line": "artisan",
+    "profession": true,
+    "spec": "blacksmith",
+    "craftBonus": 0.15,
+    "icon": "⚒️",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "carpenter",
+    "name": "Carpenter",
+    "tier": 1,
+    "from": "artisan",
+    "req": {
+      "carpentry": 20
+    },
+    "cost": 400,
+    "crafterRank": 1,
+    "line": "artisan",
+    "profession": true,
+    "spec": "carpenter",
+    "craftBonus": 0.15,
+    "icon": "🪚",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "alchemist",
+    "name": "Alchemist",
+    "tier": 1,
+    "from": "artisan",
+    "req": {
+      "alchemy": 20
+    },
+    "cost": 400,
+    "crafterRank": 1,
+    "line": "artisan",
+    "profession": true,
+    "spec": "alchemist",
+    "craftBonus": 0.15,
+    "icon": "⚗️",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "tailor",
+    "name": "Tailor",
+    "tier": 1,
+    "from": "artisan",
+    "req": {
+      "tailoring": 20
+    },
+    "cost": 400,
+    "crafterRank": 1,
+    "line": "artisan",
+    "profession": true,
+    "spec": "tailor",
+    "craftBonus": 0.15,
+    "icon": "🧵",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "armorer",
+    "name": "Master Armorer",
+    "tier": 2,
+    "from": "blacksmith",
+    "req": {
+      "smithing": 45
+    },
+    "cost": 1600,
+    "crafterRank": 2,
+    "line": "artisan",
+    "profession": true,
+    "spec": "blacksmith",
+    "craftBonus": 0.3,
+    "icon": "🛡️",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "architect",
+    "name": "Architect",
+    "tier": 2,
+    "from": "carpenter",
+    "req": {
+      "carpentry": 45
+    },
+    "cost": 1600,
+    "crafterRank": 2,
+    "line": "artisan",
+    "profession": true,
+    "spec": "carpenter",
+    "craftBonus": 0.3,
+    "icon": "📐",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "masteralchemist",
+    "name": "Master Alchemist",
+    "tier": 2,
+    "from": "alchemist",
+    "req": {
+      "alchemy": 45
+    },
+    "cost": 1600,
+    "crafterRank": 2,
+    "line": "artisan",
+    "profession": true,
+    "spec": "alchemist",
+    "craftBonus": 0.3,
+    "icon": "🧪",
+    "stats": [
+      "INT",
+      "STR"
+    ],
+    "cpSkills": [],
+    "retired": true
+  },
+  {
+    "id": "builder",
+    "name": "Builder",
+    "tier": 0,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "icon": "🧱",
+    "desc": "Architects' Guild entry: −5% coin and materials on every build and upgrade.",
+    "role": {
+      "build": {
+        "all": 0.05
+      }
+    }
+  },
+  {
+    "id": "b_masterbuilder",
+    "name": "Master Builder",
+    "tier": 1,
+    "from": "builder",
+    "req": {
+      "masonry": 25,
+      "carpentry": 25
+    },
+    "cost": 500,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "cpMult": 1.6,
+    "icon": "🏠",
+    "desc": "−10% on estate buildings and upgrades; furnishing upgrades −10%.",
+    "role": {
+      "build": {
+        "all": 0.05,
+        "estate": 0.1,
+        "piece": 0.1
+      }
+    }
+  },
+  {
+    "id": "b_surveyor",
+    "name": "Surveyor",
+    "tier": 1,
+    "from": "builder",
+    "req": {
+      "masonry": 20,
+      "reading": 15,
+      "history": 10
+    },
+    "cost": 500,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "cpMult": 1.6,
+    "icon": "🧭",
+    "desc": "−15% on fields, hub upgrades, land and roads; +1 land slot at Journeyman rank; opens road works (with a Builder's Yard).",
+    "role": {
+      "build": {
+        "all": 0.05,
+        "field": 0.15,
+        "hub": 0.15,
+        "land": 0.15,
+        "road": 0.15
+      },
+      "landSlot": 1,
+      "roads": 1
+    }
+  },
+  {
+    "id": "b_architect",
+    "name": "Architect",
+    "tier": 2,
+    "from": "b_masterbuilder",
+    "req": {
+      "masonry": 45,
+      "carpentry": 35,
+      "reading": 20,
+      "leadership": 15
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "cpMult": 2.4,
+    "icon": "🏛️",
+    "desc": "−20% on estate and manor buildings; fine buildings use 15% fewer marble blocks. The Architect combo path cuts these needs by 10.",
+    "role": {
+      "build": {
+        "all": 0.05,
+        "estate": 0.2,
+        "manor": 0.2,
+        "piece": 0.1
+      },
+      "resCut": {
+        "marbleblocks": 0.15
+      }
+    },
+    "comboCut": {
+      "path": "architect",
+      "by": 10
+    },
+    "guild": "architects"
+  },
+  {
+    "id": "b_fortwright",
+    "name": "Fortwright",
+    "tier": 2,
+    "from": "b_masterbuilder",
+    "req": {
+      "masonry": 45,
+      "tactics": 25,
+      "leadership": 20
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "cpMult": 2.4,
+    "icon": "🏰",
+    "desc": "−25% on walls, towers and palisades; defence power +10%; barracks −15%.",
+    "role": {
+      "build": {
+        "all": 0.05,
+        "defense": 0.25,
+        "barracks": 0.15
+      },
+      "defPct": 0.1
+    },
+    "guild": "architects"
+  },
+  {
+    "id": "b_planner",
+    "name": "Town Planner",
+    "tier": 2,
+    "from": "b_surveyor",
+    "req": {
+      "masonry": 40,
+      "etiquette": 20,
+      "haggling": 20
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "brawling",
+      "masonry"
+    ],
+    "cpMult": 2.4,
+    "icon": "🗺️",
+    "needsVillage": true,
+    "desc": "Village: 2 construction projects at once, deliveries count ×1.25, upkeep −20%.",
+    "role": {
+      "build": {
+        "all": 0.05,
+        "village": 0.1
+      },
+      "projects": 2,
+      "deliverMult": 1.25,
+      "upkeepCut": 0.2
+    },
+    "guild": "architects"
+  },
+  {
+    "id": "thanes_shield",
+    "name": "Thane's Shield",
+    "tier": 2,
+    "special": true,
+    "icon": "🛡️",
+    "key": {
+      "flag": "thaneOath",
+      "text": "Swear the Thane's Oath"
+    },
+    "bar": {
+      "dwarf": 1,
+      "skills": {
+        "shield": 40
+      },
+      "stat": {
+        "STR": 12
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "VIT"
+    ],
+    "cpSkills": [
+      "shield",
+      "swordsmanship",
+      "brawling"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "honor": 25,
+      "resp": [
+        "thanes",
+        "friendly"
+      ]
+    },
+    "guild": "vanguard",
+    "req": {
+      "shield": 20,
+      "leadership": 15
+    },
+    "from": "knight"
+  },
+  {
+    "id": "runesmith",
+    "name": "Runesmith",
+    "tier": 2,
+    "special": true,
+    "icon": "🔨",
+    "key": {
+      "done": "gate9",
+      "text": "Open the Rune-Sealed Gate (Dwarfhold forge line)"
+    },
+    "bar": {
+      "skills": {
+        "smithing": 50,
+        "runecraft": 25
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "INT"
+    ],
+    "cpSkills": [
+      "smithing",
+      "runecraft",
+      "mining"
+    ],
+    "cpMult": 2.4,
+    "ach": "a_master",
+    "guild": "architects",
+    "req": {
+      "runecraft": 20,
+      "smithing": 15
+    },
+    "from": "b_masterbuilder"
+  },
+  {
+    "id": "deep_speaker",
+    "name": "Deep Speaker",
+    "tier": 2,
+    "special": true,
+    "icon": "🐙",
+    "key": {
+      "dagon": "join",
+      "text": "Join the Old Bargain"
+    },
+    "bar": {
+      "trait": "seatouched",
+      "skills": {
+        "faith": 30
+      },
+      "age": 30
+    },
+    "cost": 2000,
+    "stats": [
+      "WIS",
+      "CHA"
+    ],
+    "cpSkills": [
+      "faith",
+      "sailing",
+      "frost"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "faithMax": -20,
+      "resp": [
+        "dagon",
+        "friendly"
+      ]
+    },
+    "guild": "collegium",
+    "req": {
+      "arcana": 20,
+      "sailing": 15
+    },
+    "from": "elementalist"
+  },
+  {
+    "id": "lamp_bearer",
+    "name": "Lamp-Bearer",
+    "tier": 2,
+    "special": true,
+    "icon": "🏮",
+    "key": {
+      "dagon": "expose",
+      "text": "Expose the Old Bargain"
+    },
+    "bar": {
+      "skills": {
+        "faith": 40,
+        "swordsmanship": 30
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "WIS",
+      "STR"
+    ],
+    "cpSkills": [
+      "faith",
+      "swordsmanship",
+      "shield"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "faithMin": 20,
+      "resp": [
+        "church",
+        "friendly"
+      ]
+    },
+    "guild": "church",
+    "req": {
+      "faith": 20,
+      "leadership": 15
+    },
+    "from": "cleric"
+  },
+  {
+    "id": "hydra_slayer",
+    "name": "Hydra-Slayer",
+    "tier": 2,
+    "special": true,
+    "icon": "🐉",
+    "key": {
+      "hydra": "slain",
+      "text": "Slay Mother Hydra"
+    },
+    "bar": {
+      "skills": {
+        "monsterlore": 50,
+        "swordsmanship": 50
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "VIT"
+    ],
+    "cpSkills": [
+      "swordsmanship",
+      "monsterlore",
+      "shield"
+    ],
+    "cpMult": 2.4,
+    "ach": "a_dungeon5",
+    "guild": "vanguard",
+    "req": {
+      "swordsmanship": 20,
+      "monsterlore": 15
+    },
+    "from": "knight"
+  },
+  {
+    "id": "tidecaller",
+    "name": "Tidecaller",
+    "tier": 2,
+    "special": true,
+    "icon": "🌊",
+    "key": {
+      "hydra": "blessed",
+      "text": "Be blessed by Mother Hydra"
+    },
+    "bar": {
+      "trait": "seatouched",
+      "skills": {
+        "frost": 40
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "INT",
+      "WIS"
+    ],
+    "cpSkills": [
+      "frost",
+      "sailing",
+      "fishing"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "faithMax": -20
+    },
+    "guild": "collegium",
+    "req": {
+      "frost": 20,
+      "sailing": 15
+    },
+    "from": "elementalist"
+  },
+  {
+    "id": "highland_chief",
+    "name": "Highland Chief",
+    "tier": 2,
+    "special": true,
+    "icon": "🏴",
+    "key": {
+      "done": "st10",
+      "text": "Disgrace House Crane (Reclaim the Name)"
+    },
+    "bar": {
+      "skills": {
+        "leadership": 50
+      },
+      "renown": 500
+    },
+    "cost": 2000,
+    "stats": [
+      "CHA",
+      "STR"
+    ],
+    "cpSkills": [
+      "leadership",
+      "tactics",
+      "swordsmanship"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "honor": 0,
+      "resp": [
+        "rowan",
+        "revered"
+      ]
+    },
+    "guild": "vanguard",
+    "req": {
+      "leadership": 20,
+      "etiquette": 15
+    },
+    "from": "knight"
+  },
+  {
+    "id": "inquisitor",
+    "name": "Inquisitor",
+    "tier": 2,
+    "special": true,
+    "icon": "⚖️",
+    "key": {
+      "guildTop": "church",
+      "text": "Reach the Church's top rank"
+    },
+    "bar": {
+      "skills": {
+        "faith": 50,
+        "tactics": 25
+      },
+      "needsClass": "lamp_bearer"
+    },
+    "cost": 2000,
+    "stats": [
+      "WIS",
+      "INT"
+    ],
+    "cpSkills": [
+      "faith",
+      "tactics",
+      "swordsmanship"
+    ],
+    "cpMult": 2.4,
+    "gate": {
+      "faithMin": 40,
+      "resp": [
+        "church",
+        "revered"
+      ]
+    },
+    "guild": "church",
+    "req": {
+      "faith": 20,
+      "monsterlore": 15
+    },
+    "from": "cleric"
+  },
+  {
+    "id": "lodge_master",
+    "name": "Lodge Master",
+    "tier": 2,
+    "special": true,
+    "icon": "🐺",
+    "key": {
+      "guildTop": "lodge",
+      "text": "Reach the Lodge's top rank"
+    },
+    "bar": {
+      "skills": {
+        "foraging": 50,
+        "tracking": 40
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "AGI",
+      "WIS"
+    ],
+    "cpSkills": [
+      "tracking",
+      "foraging",
+      "archery"
+    ],
+    "cpMult": 2.4,
+    "ach": "a_enc5",
+    "gate": {
+      "resp": [
+        "lodge",
+        "revered"
+      ]
+    },
+    "guild": "lodge",
+    "req": {
+      "hunting": 20,
+      "falconry": 15
+    },
+    "from": "ranger"
+  },
+  {
+    "id": "crones_ward",
+    "name": "Crone's Ward",
+    "tier": 2,
+    "special": true,
+    "icon": "🧙",
+    "key": {
+      "done": "witch",
+      "text": "Befriend the Crone (The Bog Witch)"
+    },
+    "bar": {
+      "skills": {
+        "arcana": 40,
+        "healing": 30
+      }
+    },
+    "cost": 2000,
+    "stats": [
+      "INT",
+      "WIS"
+    ],
+    "cpSkills": [
+      "arcana",
+      "healing",
+      "herbalism"
+    ],
+    "cpMult": 2.4,
+    "ach": "a_witch",
+    "gate": {
+      "faithMax": -10,
+      "resp": [
+        "crone",
+        "friendly"
+      ]
+    },
+    "guild": "lodge",
+    "req": {
+      "herbalism": 20,
+      "alchemy": 15
+    },
+    "from": "ranger"
+  },
+  {
+    "id": "founder_hero",
+    "name": "Founder-Hero",
+    "tier": 2,
+    "special": true,
+    "icon": "👑",
+    "key": {
+      "gens": 3,
+      "text": "Reach a third generation"
+    },
+    "bar": {
+      "head": 1,
+      "tier2": 1,
+      "age": 40
+    },
+    "cost": 2000,
+    "stats": [
+      "STR",
+      "CHA"
+    ],
+    "cpSkills": [
+      "leadership",
+      "swordsmanship",
+      "tactics"
+    ],
+    "cpMult": 2.4,
+    "ach": "a_gen3",
+    "guild": "vanguard",
+    "req": {
+      "swordsmanship": 20,
+      "history": 15
+    },
+    "from": "knight"
   }
- },
- {
-  "id": "b_masterbuilder",
-  "name": "Master Builder",
-  "tier": 1,
-  "from": "builder",
-  "req": {
-   "masonry": 25,
-   "carpentry": 25
-  },
-  "cost": 500,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "cpMult": 1.6,
-  "icon": "🏠",
-  "desc": "−10% on estate buildings and upgrades; furnishing upgrades −10%.",
-  "role": {
-   "build": {
-    "all": 0.05,
-    "estate": 0.1,
-    "piece": 0.1
-   }
-  }
- },
- {
-  "id": "b_surveyor",
-  "name": "Surveyor",
-  "tier": 1,
-  "from": "builder",
-  "req": {
-   "masonry": 20,
-   "reading": 15,
-   "history": 10
-  },
-  "cost": 500,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "cpMult": 1.6,
-  "icon": "🧭",
-  "desc": "−15% on fields, hub upgrades, land and roads; +1 land slot at Journeyman rank; opens road works (with a Builder's Yard).",
-  "role": {
-   "build": {
-    "all": 0.05,
-    "field": 0.15,
-    "hub": 0.15,
-    "land": 0.15,
-    "road": 0.15
-   },
-   "landSlot": 1,
-   "roads": 1
-  }
- },
- {
-  "id": "b_architect",
-  "name": "Architect",
-  "tier": 2,
-  "from": "b_masterbuilder",
-  "req": {
-   "masonry": 45,
-   "carpentry": 35,
-   "reading": 20,
-   "leadership": 15
-  },
-  "cost": 2000,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "cpMult": 2.4,
-  "icon": "🏛️",
-  "desc": "−20% on estate and manor buildings; fine buildings use 15% fewer marble blocks. The Architect combo path cuts these needs by 10.",
-  "role": {
-   "build": {
-    "all": 0.05,
-    "estate": 0.2,
-    "manor": 0.2,
-    "piece": 0.1
-   },
-   "resCut": {
-    "marbleblocks": 0.15
-   }
-  },
-  "comboCut": {
-   "path": "architect",
-   "by": 10
-  },
-  "guild": "architects"
- },
- {
-  "id": "b_fortwright",
-  "name": "Fortwright",
-  "tier": 2,
-  "from": "b_masterbuilder",
-  "req": {
-   "masonry": 45,
-   "tactics": 25,
-   "leadership": 20
-  },
-  "cost": 2000,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "cpMult": 2.4,
-  "icon": "🏰",
-  "desc": "−25% on walls, towers and palisades; defence power +10%; barracks −15%.",
-  "role": {
-   "build": {
-    "all": 0.05,
-    "defense": 0.25,
-    "barracks": 0.15
-   },
-   "defPct": 0.1
-  },
-  "guild": "architects"
- },
- {
-  "id": "b_planner",
-  "name": "Town Planner",
-  "tier": 2,
-  "from": "b_surveyor",
-  "req": {
-   "masonry": 40,
-   "etiquette": 20,
-   "haggling": 20
-  },
-  "cost": 2000,
-  "stats": [
-   "STR",
-   "INT"
-  ],
-  "cpSkills": [
-   "brawling",
-   "masonry"
-  ],
-  "cpMult": 2.4,
-  "icon": "🗺️",
-  "needsVillage": true,
-  "desc": "Village: 2 construction projects at once, deliveries count ×1.25, upkeep −20%.",
-  "role": {
-   "build": {
-    "all": 0.05,
-    "village": 0.1
-   },
-   "projects": 2,
-   "deliverMult": 1.25,
-   "upkeepCut": 0.2
-  },
-  "guild": "architects"
- }
 ]

@@ -1,3 +1,4 @@
+import { r60Day } from "./r60.js";
 import { shieldMult } from "./dwarves.js";
 import { findId } from "./lookup.js";
 // Late game (data/endgame.json): coin sinks (mounts, town patronage, stone quarries), era-scaled creatures and
@@ -156,4 +157,5 @@ export function endgameDay(s) {
   }
 }
 export const endgameInit = s => owned(s);
+registerDayHook("r60", r60Day); // R60 branch races, envoy offers (runs after the fixed hooks)
 registerDayHook("endgame", s => (owned(s), endgameDay(s), roadsDay(s))); // R47 road wear

@@ -14,7 +14,7 @@ const findEyrie=s=>{for(const id of ['highlands','eyrie'])if(!s.discovered.inclu
 const deliver3=(s,id)=>{for(let i=0;i<3;i++){s.day=Math.max(s.day,(s.req[id]||{}).at||0);ok(!E.deliverIssue(s,id),id+' open '+i+': '+E.deliverIssue(s,id));E.deliverRequest(s,id);}};
 ok(/^R\d+/.test(BUILD)&&+BUILD.slice(1)>=50&&E.SCHEMA>=46,'R50+, save step 46+');
 // ---- 12 Highlands jobs
-const HJ=D.quests.filter(q=>q.region==='highlands'&&!['house','guild'].includes(q.type)&&q.chain!=='gate'&&!q.hydra);
+const HJ=D.quests.filter(q=>q.region==='highlands'&&!q.id.startsWith('r60_')&&!['house','guild'].includes(q.type)&&q.chain!=='gate'&&!q.hydra);
 ok(HJ.length===12,'12 Highlands jobs ('+HJ.length+')');
 const NEW=['q_hl_goats','q_hl_rams','q_hl_heather','q_hl_avalanche','q_hl_wolves','q_hl_trial','q_hl_cairn','q_hl_shrine','b_dwarvensteel'];
 ok(NEW.every(id=>Q(id)&&D.map.points[id]&&E.regionAt(D.map.points[id].x,D.map.points[id].y)==='highlands'),'new jobs exist and sit in the Highlands');

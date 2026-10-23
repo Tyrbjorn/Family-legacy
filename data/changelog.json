@@ -1,330 +1,339 @@
 {
- "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
- "entries": [
-  {
-   "build": "R59",
-   "title": "Found your house",
-   "items": [
-    "🛡️ New dynasties open a creation screen: name, sex, race, bloodline, traits, looks, house colour and portrait frame. Quick start keeps today's start.",
-    "🎨 Members now have painted portraits on their cards, built from layered art in your house colours (Classic emoji still shows emoji).",
-    "🏆 A legacy record on this device unlocks extra options (dwarves, bloodlines, rare traits, frames, a starting class) as you earn achievements. Reset it in Settings."
-   ]
-  },
-  {
-   "build": "R58.2",
-   "title": "Ore looks like ore",
-   "items": [
-    "🪨 Ores are now drawn as grey rock with veins in their metal's colour; ingots and smelted metals stay as bars."
-   ]
-  },
-  {
-   "build": "R58.1",
-   "title": "Copper shows up",
-   "items": [
-    "🟠 Copper ore and copper ingots now appear in your inventory (they were being made but never listed)."
-   ]
-  },
-  {
-   "build": "R58",
-   "title": "First art (ART-1)",
-   "items": [
-    "🎨 Inked-storybook icons for wood, planks, stone, ingots, hides, cloth and herbs, and for picks, sickles, hammers, axes and rings.",
-    "⚔️ Swords, bows, staves, spears and kite shields get drawn icons, coloured by what they're made of (iron, steel, yew, mithril…).",
-    "🛡️ A family crest replaces the castle in the title bar and browser tab.",
-    "😀 Prefer the old look? Settings → Classic emoji. Logs and buttons keep emoji."
-   ]
-  },
-  {
-   "build": "R57",
-   "title": "The Deep One Mix",
-   "items": [
-    "🌊 Three kinds: human, Sea-touched, and Deep One. Sea-touched family members now live 10 years longer and catch 15% more fish, on top of +25% Fishing and Sailing XP.",
-    "👶 A Sea-touched parent passes it on half the time. Families who joined the Lodge now get the Sea-touched children it promised (25% per child). House Gilmane marriages still give their children a chance.",
-    "🌀 The Change: from age 50 a Sea-touched member may hear the tide calling (10% a year, 20% if Mother Hydra blessed you). 30 days later they go down to Father. Joined families get them back as a Young Deep One. Never the head, never the last adults.",
-    "⛪ The Church loses 2 standing a year per Sea-touched member (up to 10). The Lodge gains 1 trust a year each (up to 5).",
-    "🏘️ A Sea-touched head is a local in Saltmere (no outsider prices, new lines), but pays 5% more elsewhere.",
-    "🛡️ Deep One raiders never take a Sea-touched member, and each Sea-touched adult adds 15 to the defence against them.",
-    "🐸 Young Deep Ones stay followers: they can't marry or join the family."
-   ]
-  },
-  {
-   "build": "R56",
-   "title": "The Dwarf Rules",
-   "items": [
-    "⛏️ Dwarf-blood: marry into Clan Ironbrow (once Allied) and your children are born Dwarf-blood: +12 years of life, +2 STR and VIT, +20% Smithing, Mining, Masonry and Runecraft XP, −20% Farming XP. A Dwarf-blood parent passes it on half the time.",
-    "🧔 Dwarf spouses live to about 110. They never ride: no horses, ×0.8 walking off the mountains (full speed in hills), or ×1.2 anywhere in the family's Ram Cart.",
-    "🎖️ Old retainers: a dwarf follower's loyalty can climb 1 above 100 for each year of service (up to +10).",
-    "🛒 Auto keeps dwarves off the fields unless no one else can go (dwarf on fields: 40%), and a dwarf teamster needs a Ram Cart or War-Chariot.",
-    "🛡️ War-Chariot: +15% to guard and patrol. Dwarf Shieldbearers: +10% raid defence each (up to +30%, Deep One raids too). Dwarf Smiths on the craft job speed forge recipes (+10% each, up to +30%); Runewrights speed Runestone Anvil recipes (+50% each, up to ×2).",
-    "🤝 The Oath of the Thane's two extra places are now for dwarves only. No one is dismissed.",
-    "🔨 Dwarf-steel tools (pick, axe, sickle) at the forge once the gate is open.",
-    "🦅 Clan Ironbrow keeps a grudge: if you sold the gate's secret, they stay Cold until The Ancestor Stones is done."
-   ]
-  },
-  {
-   "build": "R55",
-   "title": "The Deep Ones Come Ashore",
-   "items": [
-    "🌊 Deep One raids on your estate: often if you exposed the Order (every 120–200 days), sometimes if you slew Mother Hydra (200–300), now and then if you broke the bargain or the Lodge is Cold (300–400). Never if you joined or are Allied. A warning comes 3 days ahead.",
-    "🐟 Their raid power is 120 (+20 for each raid you have survived, up to 260). Lose and they take your fish, hole your Sea Boat for 30 days, or take back pearls, reef-gold and eggs. One lost raid in ten, they drag a family member into the sea (never the head or the last adult): rescue them with “Into the Surf” within 60 days, or they go down to Father.",
-    "🛡️ Defence: your usual guards and walls, Young Deep Ones (they count twice), Healers' Guild Journeymen and up (+15%), and after an expose the Church sends two Templars for a year. A win: +20 renown, +25 Healers' Guild rep, sometimes an egg.",
-    "🕊️ The raids end once Mother Hydra is slain and you have survived five.",
-    "👁️ Saltmere's locals: 40 new lines on the Saltmere card, the Gilded Hall and in the log, that change with how the Lodge sees you (outsider, tolerated, kin or enemy)."
-   ]
-  },
-  {
-   "build": "R54",
-   "title": "Mother's Pool",
-   "items": [
-    "🚪 The Deep Door opens once you have cleared the Old Deeps and made your choice in Saltmere. Behind it, Mother's Pool: Mother Hydra.",
-    "🌊 How she meets you depends on the Lodge of the Drowned Light: peaceful if you joined or are Allied, tested if you struck a bargain or are Neutral/Friendly, violent if you exposed them, broke the bargain or are Cold. She judges you when you enter, so it can change. After an expose, trust only counts once the two-year price penalty is over.",
-    "🙏 Peaceful: an audience. Her blessing (+15% fishing, reef-gold sells for 10% more), 20 pearls, 30 renown, but she calls her children home more often (35% a year instead of 25%).",
-    "🌀 Tested: the Trial of Tides, three checks, pass two. A Tide-Pearl inlay, 600 coin, +20 Lodge trust. Fail and you come back bruised; try again in 30 days.",
-    "🐙 Violent: Mother Hydra (power 200, deadly). Win the Hydra Scale (offhand, power 60), 60 renown and Healers' Guild favour, but Saltmere shuts its market to you for a year. Lose three times and the Old Deeps flood for a season. You may try until you win.",
-    "🦪 Once per family line. Peaceful and tested families get 5 pearls from the pool every year.",
-    "🥚 Deep One eggs: a rare trade good (220 coin, 150 in Saltmere). The fight with Mother Hydra leaves 2; the Trial sometimes gives 1 (25%); the Old Deeps' lower floors sometimes hold one (8% / 15%). Sell it, or hatch it at home (90 days, −50 Healers' Guild rep) into a Young Deep One follower: a superb fisher and a fair guard. Joined or Allied families hatch it cleanly; others risk a bad hatch (30%) and the Lodge's anger (−15 trust)."
-   ]
-  },
-  {
-   "build": "R53",
-   "title": "The Gilded Hall",
-   "items": [
-    "🐟 Saltmere's church, the Lodge of the Drowned Light, is a house now. You start as an outsider (Cold): Saltmere sells to you at +20% and pays 20% less, and the Drowned Lamp won't serve you. Keeping the reef secret earned you Neutral; telling the Church made it worse.",
-    "🤝 Earn their trust with Hask's and Kelda's requests (+5 each), gifts, and keeping quiet. Friendly: reef-gold and pearls −10% in Saltmere.",
-    "🔎 Investigation “The Gilded Hall” (after What the Reef Keeps): Too Much Gold → The Wide-Eyed Folk → Inside the Gilded Hall → The Gold's Mint → The Old Bargain. Where the gold really comes from, and a carved map to the Deep Door.",
-    "⚖️ The Old Bargain: expose the Order (Church rep, renown; feud and high prices), join it (cheap reef-gold, better fishing; some years a family member goes down to Father), or pay to be left alone (2,000 coin, then 200 a season).",
-    "🗿 The Gilded Idol, a treasure from the deep. Your choice is remembered for when the Deep Door opens."
-   ]
-  },
-  {
-   "build": "R52",
-   "title": "Dwarfhold",
-   "items": [
-    "⚒️ Clan Ironbrow, the Thane's clan, joins the families of the realm: proud and grudge-keeping (slow to warm, quick to take offence). It starts Neutral, or Cold if you sold the gate's secret to House Crane. Friendly: Shieldbearers and Runewrights for hire. Allied: War-Chariots and marriage.",
-    "👑 Three Dwarfhold villagers: Thane Ironbrow (ale; a trade charter, −10% steel, ingots and gems there), Runesmith Hild (silver and gems; teaches the Runecarver path) and Brewmaster Ottar (barley; the Dwarven Cask for dwarven ale).",
-    "🪨 New crafting path: Runecarver → Runemaster → Runeforged Thane. Carve rune stones into weapons, armor and offhands at the Runestone Anvil (+10% power, +15% for a Runemaster); runes stack with enchantments.",
-    "🕳️ The Old Deeps: three floors (power 120, 140, 160) of mine tunnels, constructs and deep beasts, with mithril ore and rune stones. At the bottom, the Deep Door stays sealed. Its carvings of kneeling fish-men bear a sign the fisherfolk of Saltmere know well. The Underdark is an expansion.",
-    "⛏️ Dwarf retainers hired at Dwarfhold: Miners and Smiths (Neutral), Shieldbearers and Runewrights (Friendly). They join aged 30–80, serve into their 110s, and are poor farmers (×0.4).",
-    "🛡️ Act 3 beat “Oath of the Thane” (after chapter 9, ends Clan Ironbrow's thread): +2 follower places, the War-Chariot plans (carry 360), and +10% in chapter 10. Two new nodes inside the hold: Deep Iron Lode and Dwarven Coal."
-   ]
-  },
-  {
-   "build": "R51",
-   "title": "The Rune-Sealed Gate",
-   "items": [
-    "🛡️ Elder Tamsin's lead (or exploring the Stormcrest Peaks) now finds the Ironbrow Gate Post, where Gatewarden Thrain Ironbrow keeps watch outside the Sealed Dwarven Gate. His small market buys bread, barley, ale and meat at a premium.",
-    "🔑 New Act 3 trust line, “The Rune-Sealed Gate”, in 9 steps: deliveries of bread, barley, silver, ale and tools, two fights (Wolves on the Traders' Path and Raiders in Stormhold Depths) and a choice: keep the dwarves' secret, or sell it to House Crane. At steps 3, 6 and 8 you recover the three pieces of an old dwarven treasure, the Ironbrow Clan-Crown: the Crown-Band, the Brow-Stone and the Crest. Thrain's market grows as he trusts you.",
-    "👑 Step 9 (after chapter 8): reassemble the Clan-Crown at the gate and the dwarves open it. The Rune Road speeds Highlands travel, and Dwarfhold is found: cheap steel, ingots, gems and a little mithril, and it pays well for bread, preserves and meat.",
-    "🐏 Mountain rams: buy them at the Eyrie (450 coin). Two fed rams with a free stall breed a lamb every 120 days once you know the Highlands. Dwarfhold sells the Ram Cart (carry 220, haul ×1.2), which keeps full speed on mountain routes."
-   ]
-  },
-  {
-   "build": "R50",
-   "title": "The Highlands",
-   "items": [
-    "🏔️ The Stormcrest Highlands fill out: 9 new jobs (12 in all). Goat-Path Rescue, Strays on the Ridge, Heather Honey, Avalanche Pass, Frost Wolves, The Eagle-Riders' Trial (Archery or Leadership; after The Eyrie Oath), The Giant's Cairn (after Hill Giant Toll) and the hidden Stormcrest Shrine.",
-    "⚔️ New Act 3 beat after chapter 8: “The Usurper's Dwarven Steel”. House Crane has been buying dwarven blades through the Eyrie.",
-    "🦩 House Crane, the usurper's house, now has a name. It is always your Rival and can't be gifted, courted or bargained with. After chapter 10 it is disgraced and leaves the realm.",
-    "🦅 Two Eyrie villagers: Falconmaster Ysolde (wants preserves; her falcons give +20% finds when exploring, and she then takes a Falconry apprentice) and Elder Tamsin (wants cloth; she tells you where the Sealed Dwarven Gate is).",
-    "🪶 New skill: Falconry. Each level gives +1% finds when exploring (up to +30%). It's learned from Ysolde and passes down the bloodline like any skill.",
-    "🐏 Two new nodes: the Highland Pasture (hay and a little sage) and the hidden Mountain Herbs (mandrake).",
-    "🍯 The Eyrie Mead Hall sells heather-honey mead, the first regional brew (6 casks a month).",
-    "🛤️ Mountain routes: wagons haul at ×0.6 to and from the Highlands, while mules and horses keep their speed. In winter Highlands trips are a further ×0.75 slower. The passes never close."
-   ]
-  },
-  {
-   "build": "R49",
-   "title": "The Saltmere Coast",
-   "items": [
-    "🌫️ The Saltmere Coast opens south of Gull's Landing: explore the Southern Strand, or earn Captain Merrow's sea chart. Walk the slow coast road, or take the harbour ferry's Saltmere route (now sailing) or your own Sea Boat.",
-    "🧂 Saltmere: a salt-works town of fog, closed shutters and locals who stare a moment too long. Cheapest salt in the realm, plus kelp, pearls, amber and reef-gold, pale gold in shapes no smith can name. Reef-gold sells for about 115 everywhere except Saltmere (about 85 there). It wants flour, timber and ale.",
-    "🕯️ The Lodge of the Drowned Light owns most of the town, and Blackwater Reef lies offshore. Nobody talks about it. Three villagers: Salt-reeve Hask (a salt deal), Widow Kelda (her kelp chowder) and Old Tobiah, the harbour drunk, whose stories lead somewhere.",
-    "🪸 New optional Act 2 chain, “What the Reef Keeps”: Tobiah's stories, the lights on the reef (Sailing or Scouting; needs your Sea Boat), the Lodge's ledger (Etiquette or Thievery) and a low-tide wade. It ends with a choice: keep the secret (House Gilmane warms, reef-gold gets cheaper) or tell the Church (Healers' Guild rep, Gilmane turns Cold). The sea-cave stays sealed.",
-    "🕳️ The Smugglers' Grotto: three floors (power 80, 95, 110) of pearls, amber and smugglers' loot, and the Sea Gate at the end for families with their own Sea Boat.",
-    "🦀 Four nodes (Great Salt Pans, Kelp Beds, Tidal Pools with a rare pearl, Amber Dunes), ten coast jobs, a Saltmere job board and two Act 2 beats: “The Drowned Bell” and “Vael's Smugglers”, which leads into chapter 7.",
-    "🏭 The Salt Works (needs a Dock) boils brine into salt. The Kelp Vat makes kelp fertiliser, which Fields' Auto spreads for +5% field yield that season. New pearl and amber inlays, and the Reef-Gold Circlet (+1 CHA, +5% fishing; it's always faintly cold).",
-    "🌊 Rare coast events: reef fog (poor coast fishing, odd catches), a wide-eyed stranger who pays double for fish, and the Lodge procession, which shuts the Saltmere market for a day.",
-    "🕯️ House Gilmane of Saltmere, secretive keepers of “the old bargain”: reef-gold −15% at Friendly, Saltmere salt −20% at Allied, the thread “The Gilmane Ledger”, and children who may be born Sea-touched (+25% Fishing and Sailing XP). They hate prying.",
-    "🍺 The family no longer eats food a villager has asked for: the ale, fish or salted fish they want is set aside until you hand it over. Goods carried to a delivery quest stay packed until they arrive.",
-    "🍺 Towns can have a brewery that sells a few casks a month at a markup: ale at The Gull & Anchor (Gull's Landing), The Drowned Lamp (Saltmere) and Millbrook Brewhouse, and bramble wine at Thornwick's Bramble Cellar. Your own Brewery is still the cheaper source. On the map, quest-pin bubbles now sit clear of place names.",
-    "💾 Save step 45: Merrow's chart, if you already earned it, now finds the Saltmere Coast. House Gilmane starts Neutral. Your map keeps all its explored ground."
-   ]
-  },
-  {
-   "build": "R48",
-   "title": "Gull's Landing, the Sea Boat and the Families of the Realm",
-   "items": [
-    "⚓ Gull's Landing is a real port town: a market (cheap fish, salt and new salted fish; it pays well for planks, flax and ale), a shop with fishing nets and the Sea Boat Plans, and a job board.",
-    "👥 Three new villagers at the port: Harbourmistress Odile (her harbour pass makes the ferry cheaper), Pell the Net-mender (a fishing boost and a net) and retired Captain Merrow (his sea chart marks the way to the Saltmere Coast, which opens in a later update). They take deliveries once your family has traded or worked there.",
-    "🌊 Six coast jobs, including Gulls in the Nets, Salvage the Skiff and Lantern Watch, plus an Act 1 side beat after chapter 2, “Lights on the Rocks”: stop the wreckers and the harbour ferry sails for you.",
-    "🧂 New recipes: the Salting Tub (fish + salt → salted fish, a long-keeping meal that sells well) and the Rope Walk (flax → rope). You learn both by finding Gull's Landing.",
-    "⛵ Upgrade the Dock to a Slipway, buy the plans, and a Carpenter can build a Sea Boat from planks, rope and cloth. It sails coast routes much faster than walking the shore, fishes the deep sea, and carries cargo on coast hauls and trade routes.",
-    "⛴️ The harbour ferry takes your family along the coast for a fare per trip until you own a boat (you can switch it off on the Map). The Saltmere route is listed and opens with the coast.",
-    "🏰 Families of the realm: every house now has a seat, a goal and a temperament (honest, scheming, pious, ruthless, idealistic, proud or secretive) that changes how standing moves, perks at Friendly and Allied, and a three-quest story thread. New houses: Corwen (Gull's Landing), Dawnward, Ormond and Sallow (helping Sallow angers Corran, and the other way round). House Vael is your own family.",
-    "📮 Villagers ask less often for the same thing: each request can be filled three times at the usual pace, then each repeat of it waits longer (+30 days, doubling, up to two years).",
-    "💾 Save step 44: a save that already found the jetty knows Gull's Landing as a town; the old houses keep their standing; the new ones start Neutral."
-   ]
-  },
-  {
-   "build": "R47.1",
-   "title": "The Architects' Teach Masonry",
-   "items": [
-    "🧱 The Architects' Guild now teaches Masonry too (the Crafters' Guild still does).",
-    "📐 Entry drill: anyone may train Masonry up to 5, the Architects' entry level, so you no longer need the Crafters' Guild first.",
-    "🤖 Auto Advance drills a guildless builder-leaning heir's entry skill and can take the Architects' as main or second guild."
-   ]
-  },
-  {
-   "build": "R47",
-   "title": "Second Guilds and the Architects' Guild",
-   "items": [
-    "🔓 Second guilds: reach a tier-3 class in your guild, or Master in a main, secondary or gathering trade, and you may join one more sworn guild for life. You start at its tier 1, it caps at tier 2, and Journeyman there needs only half the rep. Its class adds its role bonus, guild skills, quests and shop; power still comes from your main class.",
-    "🩸 Bloodline: if a parent or grandparent reached tier 2 in that guild, joining it as a second guild is free and starts you at tier 2 when your level and skills already fit.",
-    "🤖 Auto Advance picks a second guild once (a role the family lacks, then a bloodline guild, then the guild that fits the trade: Masons and Carpenters go to the Architects'), ranks it up and advances its class. Prefer for Auto on the Guilds tab pins your own pick.",
-    "📐 New Architects' Guild (Ashford, notice board in Millbrook): Builder, then Master Builder or Surveyor, then Architect, Fortwright or Town Planner. Each cuts coin and materials on its kind of building (up to 25%): estate buildings and upgrades, manor branches, fields and land, walls and towers, the village. The family's best holder counts.",
-    "🧭 Surveyor: +1 land slot at Journeyman rank and opens road works with a Builder's Yard. 🏰 Fortwright: +10% defence. 🗺️ Town Planner: two village projects at once, deliveries count ×1.25, village upkeep −20%.",
-    "📜 Architects' chain quests unlock the Builder's Square charm (+5% masonry and carpentry XP), the Drafting Room (Workshop Hall fitting, −5% on upgrades), the Builder's Yard (storage, a teamster spot, −5% builds), and road works plus the Fine Cornice.",
-    "🛤️ Road works are live: cart tracks and paved roads add trade-route earnings; they wear 5% a year and can be repaired.",
-    "📒 The Steward's extra trade route now comes from the Clerk path data (the Seneschal title adds a second)."
-   ]
-  },
-  {
-   "build": "R46",
-   "title": "Guild Tiers, Guild Quest Chains and Trade Slots",
-   "items": [
-    "🎓 Every guild now has tiers. To move up a tier you need any class from the tier below in your guild, a character level (Lv 7 for tier 2, Lv 16 for tier 3), the class's own skills, a guild rank (Journeyman for tier 2, Adept for tier 3) and coin.",
-    "🧭 The class card shows your 2 nearest next classes and only what you are still missing, with Show all for the rest.",
-    "↔️ You can switch sideways to another class on the same tier once a year for half the tier's coin. You keep all your skills.",
-    "🔁 Joining a guild with an entry class from another guild retrains you as this guild's entry class, so you can climb its tiers.",
-    "🎭 New Rogue classes: Swindler (tier 2: the family buys 8% cheaper and gets +10% coin from village requests) leads into Spy, now tier 3. Fence (tier 3) sells loot at 90% of its value and opens after the Ledger of Debts.",
-    "📜 Guild quest chains: the Warriors', Magic and Rogues' Guilds have new chain quests that unlock hidden recipes such as Thieves' Lockpicks, Banded Plate, Runed Orb and the Forged Seal. Auto-Adventure now takes your own guild's next chain quest first, and repeats guild quests while you are short of rep.",
-    "🤖 Auto Upbringing teaches the skills your guild's tier-2 classes need, and Auto Orders spends some months drilling the skill your next tier still needs.",
-    "🎚️ Trade slots: learn as many crafts as you like. Your main crafting trade ranks all the way to Grandmaster and artisan titles. Your secondary stays a rank below your main, your 2 gathering trades (Woodsman, Farmer, Mason) go up to Master, and anything else stays at Apprentice. Until you choose, your highest-ranked crafting trade is your main and the next highest your secondary. You can switch slots once a year for free.",
-    "🧾 New Clerk path: +1 quota slot per rank (up to +3), more storage and better trade prices. Steward moves here from Scribe (+1 trade route, +1 Work Orders slot), with the Seneschal title at Grandmaster.",
-    "Old saves keep every class (Spies get their new tier-3 power) and every craft rank: your highest crafting trade becomes your main, so no bonus is lost. Scribe-Stewards become Clerk-Stewards at the same rank, and recipes from chain quests below the rank you already hold are unlocked.",
-    "🎓 Reaching Master in a slotted trade opens a second guild for that person. Second guilds arrive in a coming update.",
-    "Engineering tidy pass: one test command, a shared lookup helper and the old data generator archived. Nothing changes in play."
-   ]
-  },
-  {
-   "build": "R45",
-   "title": "Town Boards, Quest Lines and Phase Bands",
-   "items": [
-    "📋 Every town you have discovered now has a quest board with 3 jobs, and a new set is posted every 7 days. Jobs fit the town: deliveries (\"Thornwick wants 20 salt\"), fights nearby (\"Clear wolves near Thornwick\") and escorts to another town. They pay coin plus town favour.",
-    "Short of goods for a delivery? Tap 📋 Order it and Work Orders gathers, refines and crafts what is missing.",
-    "🧭 Quest lines: several stops in a row with a reward at each stop and a bigger one at the end. The first three are The Miller's Contract, The Baron's Courier and The Lost Shipment. Tap 🗺️ Route to see the route drawn on the map.",
-    "Phase bands: each job and line is Beginning, Established or Dynasty. Boards show 2 jobs from your band plus 1 stretch from the band above. Rewards scale ×1 / ×2.5 / ×6.",
-    "Auto-Adventure takes board jobs from your band, orders goods it is missing, and follows a quest line once that person has started it.",
-    "Old saves start with fresh boards and no lines in progress; nothing is lost.",
-    "Time away is banked as ⚡ turbo (fast-forward), and the welcome-back screen now says so. The Hourglass Tower text is corrected: each level adds 30 min to the turbo bank.",
-    "The unfinished Titles phase is hidden for now, so phases read 1–3.",
-    "Throwing Knives and Hunting Spear can now be forged at the Smithy."
-   ]
-  },
-  {
-   "build": "R44",
-   "title": "Auto-craft and Pause When Done",
-   "items": [
-    "🤖 New Workshop line in 🏛️ Legacy, Auto-craft (50 / 180 / 500 renown): crafters make gear for your own people in their spare time. Tier 1: basic tools for followers who have none. Tier 2: refits family and followers to the best gear they can make. Tier 3: keeps 1 spare of each gear type in the vault.",
-    "Auto-craft places 🤖 orders in Work Orders, so the inputs are gathered and refined for you. They use their own slots and never crowd out your orders. Cancel one and it stays away for a month.",
-    "⏹ Pause when done for people: a family member or follower finishes the item, trip or day in hand, then rests until you resume them (Automation tab).",
-    "⏹ Pause when done for automation lines: each Auto Tend skill and Auto-craft can switch itself off after the task in hand.",
-    "Full auto from day 1: every crafting skill now starts on a default recipe as soon as you have the building, with no need to make one by hand first. The status line says what is missing (\"needs Forge\").",
-    "Automation tab: new Auto-craft and People cards, \"(default)\" and \"pauses when done\" tags, and an Auto-craft line in the summary."
-   ]
-  },
-  {
-   "build": "R43",
-   "title": "Work Orders and the Workshop",
-   "items": [
-    "New 📋 Work Orders on the Crafting tab: add what you want made (\"3 iron swords\") and your workers gather and refine the inputs, then craft, top to bottom. Each order says plainly why it's stuck (missing materials, no Forge, no one skilled enough, storage full).",
-    "Followers on the craft job take orders first; family crafters help when no follower can. You get 2 orders at a time for free.",
-    "⏹ Pause when done: an order or quota can pause after the item it's making now, instead of stopping midway.",
-    "🔁 Auto rotation: workers with spare hours move from the fields to the coop, the cow pen and then every open chore in turn, skipping anything finished, paused or full. It's shown on the Farmstead card.",
-    "New 🛠️ Workshop renown lines: Order Queue, Quotas, Craft Speed, Masterwork Chance and Gather & Refine Rate. Each has 3 tiers, and the first tier costs 80 renown or less.",
-    "The Steward's Ledger became Workshop → Quotas and Tireless Hands became Gather & Refine Rate. You keep what you had, and any renown paid above the new prices is refunded. Old craft queues became Work Orders."
-   ]
-  },
-  {
-   "build": "R42",
-   "title": "New chores as you grow",
-   "items": [
-    "11 new chores open as your estate grows: Glean the Hedgerows and Gather Kindling (Homestead); Mill Flour, Saw Planks and Mend Nets (Farmstead); Keep the Ledgers, Help at the Smithy and Cut Blocks (Manor); Work the Dock, Brew Small Ale and Run Village Errands (your village).",
-    "A 🆕 popup tells you when a chore opens. Chores run on Auto for free at a basic rate; work one by hand for the full amount. Pause any of them from the Chores line on Main.",
-    "Some chores help other work: kindling stretches cooking, mended nets improve fishing, ledgers raise trade prices and errands lower village upkeep.",
-    "At Farmstead every Millbrook villager has a second set of requests asking for flour, milk, planks, leather and ale, with better rewards.",
-    "Your own village brings two new villagers: Aldous the Reeve (planks and blocks; he can cut your upkeep) and Edda, the Miller's Wife (flour and milk; she shares a recipe)."
-   ]
-  },
-  {
-   "build": "R41",
-   "title": "Hens and cows that need looking after",
-   "items": [
-    "The 🐔 Chicken Coop and 🐄 Cow Pen now start empty: buy 6 hens for 60 coin or a cow for 90 on the Farmstead card's Animals row.",
-    "Each needs about 1 hour of tending a day, shared with your field workers. Untended animals give only a quarter of their eggs or milk.",
-    "Feed is the only cost: hens eat wheat or vegetables, cows eat hay, wheat or vegetables. No coin upkeep. Animals rest when your egg or milk storage is full.",
-    "Eggs and milk now wait at the building for teamsters or farmers to haul them in, like the orchard.",
-    "New upgrades: Bigger Henhouse (+2 hens) and Extra Stall (+1 cow). Bought animals don't breed.",
-    "Eggs can now be bought in Millbrook. Hens lay a bit less in winter.",
-    "Old saves keep the hens and cows they already have."
-   ]
-  },
-  {
-   "build": "R40",
-   "title": "Fields with their own crops",
-   "items": [
-    "Each field now grows one crop: Kitchen Plot (food), wheat, barley, vegetables, flax or berries. Pick and switch crops on the Estate tab's 🌾 Farmstead card.",
-    "Fields need about 1 hour of tending a day. Farm followers give 8 hours, a family member on Tend Fields gives 8, and everyone else helps 1 hour. Untended fields still grow at a quarter.",
-    "Level fields up to 5, or make a Bigger Plot for more crop (it takes longer to tend).",
-    "New Sickles, Hoes and Pruning Knives in every metal cut tending time; masterwork ones cut more.",
-    "New 🛒 teamsters only haul the harvest into storage. A small farm gets by with farmers carrying by hand (about 25 a day for the whole farm, enough for 4–5 ordinary fields). Bigger farms need teamsters: they are costly (the first needs a 1,000-coin Cart Shed) but each moves 250 a day. Orchard fruit also waits at the trees for haul. Kitchen Plot food goes straight to the table, so nobody goes hungry. Bunkhouse upgrades add farm spots.",
-    "When a crop's storage is full, workers mill wheat into flour or brew barley into ale if you have the station.",
-    "Old farms were turned into fields that grow at least as much food as before."
-   ]
-  },
-  {
-   "build": "R39.1",
-   "title": "Tester links and What's new",
-   "items": [
-    "This 'What's new' window: it pops up once after each update. Reopen it any time from 📂 Saves.",
-    "Playtesters can open a special tester link to get a 🧪 Tester badge and a quick Feedback button."
-   ]
-  },
-  {
-   "build": "R39",
-   "title": "Markets you can read",
-   "items": [
-    "New 📊 Market Board at the top of the Map: the best town to sell each thing you own, and the cheapest place to buy.",
-    "Prices now show ▲ (high) or ▼ (low) with a short reason, like 'they want it' or 'flooded: you sold a lot here'.",
-    "Towns show what they're Short of and Flooded with.",
-    "New town events: shortages (a good pays 1.5×) and gluts (a good pays little), lasting 10–20 days.",
-    "The Bag tab shows your best three places to sell."
-   ]
-  },
-  {
-   "build": "R38",
-   "title": "Save slots",
-   "items": [
-    "Keep up to 5 dynasties side by side from the new 📂 Saves screen. Each has its own Legacy.",
-    "Rename, delete (with undo), import and export each slot. A bar shows how much storage you're using."
-   ]
-  },
-  {
-   "build": "R37",
-   "title": "Free automation basics",
-   "items": [
-    "Basic automation is now free from the start: auto-tending, family orders, kids' tutoring, courtship and a few quotas.",
-    "Upgrades make automation faster or bigger. Legacy you already spent on the old upgrades was refunded.",
-    "Legacy upgrades moved to their own 🏛️ screen in the top bar."
-   ]
-  },
-  {
-   "build": "R36",
-   "title": "Talents",
-   "items": [
-    "Family members can earn talents by doing things, like Tracker's Eye for hunters or Haggler for traders.",
-    "Each talent gives a small bonus. They show on the Character screen."
-   ]
-  }
- ]
+  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
+  "entries": [
+    {
+      "build": "R60",
+      "title": "Legacy branches",
+      "items": [
+        "⚖️ Your family now has Honor and a place between the Old Ways and the New Faith. The Family tab shows both, your last few shifts, how every faction sees you, and which of four endings you are heading for.",
+        "🔀 Six branch points make you take a side (Clan Rowan or the Crane, Rogues or Church, Collegium or the Crone, Saltmere's fishers or convoys, the Dwarf Gate, the Wolf). Taking a side locks the other side's quests and classes.",
+        "🌟 Eleven special classes open from your family's story, and earned achievements give a new dynasty small, capped carry-over bonuses. Turn them off in Settings for a clean run."
+      ]
+    },
+    {
+      "build": "R59",
+      "title": "Found your house",
+      "items": [
+        "🛡️ New dynasties open a creation screen: name, sex, race, bloodline, traits, looks, house colour and portrait frame. Quick start keeps today's start.",
+        "🎨 Members now have painted portraits on their cards, built from layered art in your house colours (Classic emoji still shows emoji).",
+        "🏆 A legacy record on this device unlocks extra options (dwarves, bloodlines, rare traits, frames, a starting class) as you earn achievements. Reset it in Settings."
+      ]
+    },
+    {
+      "build": "R58.2",
+      "title": "Ore looks like ore",
+      "items": [
+        "🪨 Ores are now drawn as grey rock with veins in their metal's colour; ingots and smelted metals stay as bars."
+      ]
+    },
+    {
+      "build": "R58.1",
+      "title": "Copper shows up",
+      "items": [
+        "🟠 Copper ore and copper ingots now appear in your inventory (they were being made but never listed)."
+      ]
+    },
+    {
+      "build": "R58",
+      "title": "First art (ART-1)",
+      "items": [
+        "🎨 Inked-storybook icons for wood, planks, stone, ingots, hides, cloth and herbs, and for picks, sickles, hammers, axes and rings.",
+        "⚔️ Swords, bows, staves, spears and kite shields get drawn icons, coloured by what they're made of (iron, steel, yew, mithril…).",
+        "🛡️ A family crest replaces the castle in the title bar and browser tab.",
+        "😀 Prefer the old look? Settings → Classic emoji. Logs and buttons keep emoji."
+      ]
+    },
+    {
+      "build": "R57",
+      "title": "The Deep One Mix",
+      "items": [
+        "🌊 Three kinds: human, Sea-touched, and Deep One. Sea-touched family members now live 10 years longer and catch 15% more fish, on top of +25% Fishing and Sailing XP.",
+        "👶 A Sea-touched parent passes it on half the time. Families who joined the Lodge now get the Sea-touched children it promised (25% per child). House Gilmane marriages still give their children a chance.",
+        "🌀 The Change: from age 50 a Sea-touched member may hear the tide calling (10% a year, 20% if Mother Hydra blessed you). 30 days later they go down to Father. Joined families get them back as a Young Deep One. Never the head, never the last adults.",
+        "⛪ The Church loses 2 standing a year per Sea-touched member (up to 10). The Lodge gains 1 trust a year each (up to 5).",
+        "🏘️ A Sea-touched head is a local in Saltmere (no outsider prices, new lines), but pays 5% more elsewhere.",
+        "🛡️ Deep One raiders never take a Sea-touched member, and each Sea-touched adult adds 15 to the defence against them.",
+        "🐸 Young Deep Ones stay followers: they can't marry or join the family."
+      ]
+    },
+    {
+      "build": "R56",
+      "title": "The Dwarf Rules",
+      "items": [
+        "⛏️ Dwarf-blood: marry into Clan Ironbrow (once Allied) and your children are born Dwarf-blood: +12 years of life, +2 STR and VIT, +20% Smithing, Mining, Masonry and Runecraft XP, −20% Farming XP. A Dwarf-blood parent passes it on half the time.",
+        "🧔 Dwarf spouses live to about 110. They never ride: no horses, ×0.8 walking off the mountains (full speed in hills), or ×1.2 anywhere in the family's Ram Cart.",
+        "🎖️ Old retainers: a dwarf follower's loyalty can climb 1 above 100 for each year of service (up to +10).",
+        "🛒 Auto keeps dwarves off the fields unless no one else can go (dwarf on fields: 40%), and a dwarf teamster needs a Ram Cart or War-Chariot.",
+        "🛡️ War-Chariot: +15% to guard and patrol. Dwarf Shieldbearers: +10% raid defence each (up to +30%, Deep One raids too). Dwarf Smiths on the craft job speed forge recipes (+10% each, up to +30%); Runewrights speed Runestone Anvil recipes (+50% each, up to ×2).",
+        "🤝 The Oath of the Thane's two extra places are now for dwarves only. No one is dismissed.",
+        "🔨 Dwarf-steel tools (pick, axe, sickle) at the forge once the gate is open.",
+        "🦅 Clan Ironbrow keeps a grudge: if you sold the gate's secret, they stay Cold until The Ancestor Stones is done."
+      ]
+    },
+    {
+      "build": "R55",
+      "title": "The Deep Ones Come Ashore",
+      "items": [
+        "🌊 Deep One raids on your estate: often if you exposed the Order (every 120–200 days), sometimes if you slew Mother Hydra (200–300), now and then if you broke the bargain or the Lodge is Cold (300–400). Never if you joined or are Allied. A warning comes 3 days ahead.",
+        "🐟 Their raid power is 120 (+20 for each raid you have survived, up to 260). Lose and they take your fish, hole your Sea Boat for 30 days, or take back pearls, reef-gold and eggs. One lost raid in ten, they drag a family member into the sea (never the head or the last adult): rescue them with “Into the Surf” within 60 days, or they go down to Father.",
+        "🛡️ Defence: your usual guards and walls, Young Deep Ones (they count twice), Healers' Guild Journeymen and up (+15%), and after an expose the Church sends two Templars for a year. A win: +20 renown, +25 Healers' Guild rep, sometimes an egg.",
+        "🕊️ The raids end once Mother Hydra is slain and you have survived five.",
+        "👁️ Saltmere's locals: 40 new lines on the Saltmere card, the Gilded Hall and in the log, that change with how the Lodge sees you (outsider, tolerated, kin or enemy)."
+      ]
+    },
+    {
+      "build": "R54",
+      "title": "Mother's Pool",
+      "items": [
+        "🚪 The Deep Door opens once you have cleared the Old Deeps and made your choice in Saltmere. Behind it, Mother's Pool: Mother Hydra.",
+        "🌊 How she meets you depends on the Lodge of the Drowned Light: peaceful if you joined or are Allied, tested if you struck a bargain or are Neutral/Friendly, violent if you exposed them, broke the bargain or are Cold. She judges you when you enter, so it can change. After an expose, trust only counts once the two-year price penalty is over.",
+        "🙏 Peaceful: an audience. Her blessing (+15% fishing, reef-gold sells for 10% more), 20 pearls, 30 renown, but she calls her children home more often (35% a year instead of 25%).",
+        "🌀 Tested: the Trial of Tides, three checks, pass two. A Tide-Pearl inlay, 600 coin, +20 Lodge trust. Fail and you come back bruised; try again in 30 days.",
+        "🐙 Violent: Mother Hydra (power 200, deadly). Win the Hydra Scale (offhand, power 60), 60 renown and Healers' Guild favour, but Saltmere shuts its market to you for a year. Lose three times and the Old Deeps flood for a season. You may try until you win.",
+        "🦪 Once per family line. Peaceful and tested families get 5 pearls from the pool every year.",
+        "🥚 Deep One eggs: a rare trade good (220 coin, 150 in Saltmere). The fight with Mother Hydra leaves 2; the Trial sometimes gives 1 (25%); the Old Deeps' lower floors sometimes hold one (8% / 15%). Sell it, or hatch it at home (90 days, −50 Healers' Guild rep) into a Young Deep One follower: a superb fisher and a fair guard. Joined or Allied families hatch it cleanly; others risk a bad hatch (30%) and the Lodge's anger (−15 trust)."
+      ]
+    },
+    {
+      "build": "R53",
+      "title": "The Gilded Hall",
+      "items": [
+        "🐟 Saltmere's church, the Lodge of the Drowned Light, is a house now. You start as an outsider (Cold): Saltmere sells to you at +20% and pays 20% less, and the Drowned Lamp won't serve you. Keeping the reef secret earned you Neutral; telling the Church made it worse.",
+        "🤝 Earn their trust with Hask's and Kelda's requests (+5 each), gifts, and keeping quiet. Friendly: reef-gold and pearls −10% in Saltmere.",
+        "🔎 Investigation “The Gilded Hall” (after What the Reef Keeps): Too Much Gold → The Wide-Eyed Folk → Inside the Gilded Hall → The Gold's Mint → The Old Bargain. Where the gold really comes from, and a carved map to the Deep Door.",
+        "⚖️ The Old Bargain: expose the Order (Church rep, renown; feud and high prices), join it (cheap reef-gold, better fishing; some years a family member goes down to Father), or pay to be left alone (2,000 coin, then 200 a season).",
+        "🗿 The Gilded Idol, a treasure from the deep. Your choice is remembered for when the Deep Door opens."
+      ]
+    },
+    {
+      "build": "R52",
+      "title": "Dwarfhold",
+      "items": [
+        "⚒️ Clan Ironbrow, the Thane's clan, joins the families of the realm: proud and grudge-keeping (slow to warm, quick to take offence). It starts Neutral, or Cold if you sold the gate's secret to House Crane. Friendly: Shieldbearers and Runewrights for hire. Allied: War-Chariots and marriage.",
+        "👑 Three Dwarfhold villagers: Thane Ironbrow (ale; a trade charter, −10% steel, ingots and gems there), Runesmith Hild (silver and gems; teaches the Runecarver path) and Brewmaster Ottar (barley; the Dwarven Cask for dwarven ale).",
+        "🪨 New crafting path: Runecarver → Runemaster → Runeforged Thane. Carve rune stones into weapons, armor and offhands at the Runestone Anvil (+10% power, +15% for a Runemaster); runes stack with enchantments.",
+        "🕳️ The Old Deeps: three floors (power 120, 140, 160) of mine tunnels, constructs and deep beasts, with mithril ore and rune stones. At the bottom, the Deep Door stays sealed. Its carvings of kneeling fish-men bear a sign the fisherfolk of Saltmere know well. The Underdark is an expansion.",
+        "⛏️ Dwarf retainers hired at Dwarfhold: Miners and Smiths (Neutral), Shieldbearers and Runewrights (Friendly). They join aged 30–80, serve into their 110s, and are poor farmers (×0.4).",
+        "🛡️ Act 3 beat “Oath of the Thane” (after chapter 9, ends Clan Ironbrow's thread): +2 follower places, the War-Chariot plans (carry 360), and +10% in chapter 10. Two new nodes inside the hold: Deep Iron Lode and Dwarven Coal."
+      ]
+    },
+    {
+      "build": "R51",
+      "title": "The Rune-Sealed Gate",
+      "items": [
+        "🛡️ Elder Tamsin's lead (or exploring the Stormcrest Peaks) now finds the Ironbrow Gate Post, where Gatewarden Thrain Ironbrow keeps watch outside the Sealed Dwarven Gate. His small market buys bread, barley, ale and meat at a premium.",
+        "🔑 New Act 3 trust line, “The Rune-Sealed Gate”, in 9 steps: deliveries of bread, barley, silver, ale and tools, two fights (Wolves on the Traders' Path and Raiders in Stormhold Depths) and a choice: keep the dwarves' secret, or sell it to House Crane. At steps 3, 6 and 8 you recover the three pieces of an old dwarven treasure, the Ironbrow Clan-Crown: the Crown-Band, the Brow-Stone and the Crest. Thrain's market grows as he trusts you.",
+        "👑 Step 9 (after chapter 8): reassemble the Clan-Crown at the gate and the dwarves open it. The Rune Road speeds Highlands travel, and Dwarfhold is found: cheap steel, ingots, gems and a little mithril, and it pays well for bread, preserves and meat.",
+        "🐏 Mountain rams: buy them at the Eyrie (450 coin). Two fed rams with a free stall breed a lamb every 120 days once you know the Highlands. Dwarfhold sells the Ram Cart (carry 220, haul ×1.2), which keeps full speed on mountain routes."
+      ]
+    },
+    {
+      "build": "R50",
+      "title": "The Highlands",
+      "items": [
+        "🏔️ The Stormcrest Highlands fill out: 9 new jobs (12 in all). Goat-Path Rescue, Strays on the Ridge, Heather Honey, Avalanche Pass, Frost Wolves, The Eagle-Riders' Trial (Archery or Leadership; after The Eyrie Oath), The Giant's Cairn (after Hill Giant Toll) and the hidden Stormcrest Shrine.",
+        "⚔️ New Act 3 beat after chapter 8: “The Usurper's Dwarven Steel”. House Crane has been buying dwarven blades through the Eyrie.",
+        "🦩 House Crane, the usurper's house, now has a name. It is always your Rival and can't be gifted, courted or bargained with. After chapter 10 it is disgraced and leaves the realm.",
+        "🦅 Two Eyrie villagers: Falconmaster Ysolde (wants preserves; her falcons give +20% finds when exploring, and she then takes a Falconry apprentice) and Elder Tamsin (wants cloth; she tells you where the Sealed Dwarven Gate is).",
+        "🪶 New skill: Falconry. Each level gives +1% finds when exploring (up to +30%). It's learned from Ysolde and passes down the bloodline like any skill.",
+        "🐏 Two new nodes: the Highland Pasture (hay and a little sage) and the hidden Mountain Herbs (mandrake).",
+        "🍯 The Eyrie Mead Hall sells heather-honey mead, the first regional brew (6 casks a month).",
+        "🛤️ Mountain routes: wagons haul at ×0.6 to and from the Highlands, while mules and horses keep their speed. In winter Highlands trips are a further ×0.75 slower. The passes never close."
+      ]
+    },
+    {
+      "build": "R49",
+      "title": "The Saltmere Coast",
+      "items": [
+        "🌫️ The Saltmere Coast opens south of Gull's Landing: explore the Southern Strand, or earn Captain Merrow's sea chart. Walk the slow coast road, or take the harbour ferry's Saltmere route (now sailing) or your own Sea Boat.",
+        "🧂 Saltmere: a salt-works town of fog, closed shutters and locals who stare a moment too long. Cheapest salt in the realm, plus kelp, pearls, amber and reef-gold, pale gold in shapes no smith can name. Reef-gold sells for about 115 everywhere except Saltmere (about 85 there). It wants flour, timber and ale.",
+        "🕯️ The Lodge of the Drowned Light owns most of the town, and Blackwater Reef lies offshore. Nobody talks about it. Three villagers: Salt-reeve Hask (a salt deal), Widow Kelda (her kelp chowder) and Old Tobiah, the harbour drunk, whose stories lead somewhere.",
+        "🪸 New optional Act 2 chain, “What the Reef Keeps”: Tobiah's stories, the lights on the reef (Sailing or Scouting; needs your Sea Boat), the Lodge's ledger (Etiquette or Thievery) and a low-tide wade. It ends with a choice: keep the secret (House Gilmane warms, reef-gold gets cheaper) or tell the Church (Healers' Guild rep, Gilmane turns Cold). The sea-cave stays sealed.",
+        "🕳️ The Smugglers' Grotto: three floors (power 80, 95, 110) of pearls, amber and smugglers' loot, and the Sea Gate at the end for families with their own Sea Boat.",
+        "🦀 Four nodes (Great Salt Pans, Kelp Beds, Tidal Pools with a rare pearl, Amber Dunes), ten coast jobs, a Saltmere job board and two Act 2 beats: “The Drowned Bell” and “Vael's Smugglers”, which leads into chapter 7.",
+        "🏭 The Salt Works (needs a Dock) boils brine into salt. The Kelp Vat makes kelp fertiliser, which Fields' Auto spreads for +5% field yield that season. New pearl and amber inlays, and the Reef-Gold Circlet (+1 CHA, +5% fishing; it's always faintly cold).",
+        "🌊 Rare coast events: reef fog (poor coast fishing, odd catches), a wide-eyed stranger who pays double for fish, and the Lodge procession, which shuts the Saltmere market for a day.",
+        "🕯️ House Gilmane of Saltmere, secretive keepers of “the old bargain”: reef-gold −15% at Friendly, Saltmere salt −20% at Allied, the thread “The Gilmane Ledger”, and children who may be born Sea-touched (+25% Fishing and Sailing XP). They hate prying.",
+        "🍺 The family no longer eats food a villager has asked for: the ale, fish or salted fish they want is set aside until you hand it over. Goods carried to a delivery quest stay packed until they arrive.",
+        "🍺 Towns can have a brewery that sells a few casks a month at a markup: ale at The Gull & Anchor (Gull's Landing), The Drowned Lamp (Saltmere) and Millbrook Brewhouse, and bramble wine at Thornwick's Bramble Cellar. Your own Brewery is still the cheaper source. On the map, quest-pin bubbles now sit clear of place names.",
+        "💾 Save step 45: Merrow's chart, if you already earned it, now finds the Saltmere Coast. House Gilmane starts Neutral. Your map keeps all its explored ground."
+      ]
+    },
+    {
+      "build": "R48",
+      "title": "Gull's Landing, the Sea Boat and the Families of the Realm",
+      "items": [
+        "⚓ Gull's Landing is a real port town: a market (cheap fish, salt and new salted fish; it pays well for planks, flax and ale), a shop with fishing nets and the Sea Boat Plans, and a job board.",
+        "👥 Three new villagers at the port: Harbourmistress Odile (her harbour pass makes the ferry cheaper), Pell the Net-mender (a fishing boost and a net) and retired Captain Merrow (his sea chart marks the way to the Saltmere Coast, which opens in a later update). They take deliveries once your family has traded or worked there.",
+        "🌊 Six coast jobs, including Gulls in the Nets, Salvage the Skiff and Lantern Watch, plus an Act 1 side beat after chapter 2, “Lights on the Rocks”: stop the wreckers and the harbour ferry sails for you.",
+        "🧂 New recipes: the Salting Tub (fish + salt → salted fish, a long-keeping meal that sells well) and the Rope Walk (flax → rope). You learn both by finding Gull's Landing.",
+        "⛵ Upgrade the Dock to a Slipway, buy the plans, and a Carpenter can build a Sea Boat from planks, rope and cloth. It sails coast routes much faster than walking the shore, fishes the deep sea, and carries cargo on coast hauls and trade routes.",
+        "⛴️ The harbour ferry takes your family along the coast for a fare per trip until you own a boat (you can switch it off on the Map). The Saltmere route is listed and opens with the coast.",
+        "🏰 Families of the realm: every house now has a seat, a goal and a temperament (honest, scheming, pious, ruthless, idealistic, proud or secretive) that changes how standing moves, perks at Friendly and Allied, and a three-quest story thread. New houses: Corwen (Gull's Landing), Dawnward, Ormond and Sallow (helping Sallow angers Corran, and the other way round). House Vael is your own family.",
+        "📮 Villagers ask less often for the same thing: each request can be filled three times at the usual pace, then each repeat of it waits longer (+30 days, doubling, up to two years).",
+        "💾 Save step 44: a save that already found the jetty knows Gull's Landing as a town; the old houses keep their standing; the new ones start Neutral."
+      ]
+    },
+    {
+      "build": "R47.1",
+      "title": "The Architects' Teach Masonry",
+      "items": [
+        "🧱 The Architects' Guild now teaches Masonry too (the Crafters' Guild still does).",
+        "📐 Entry drill: anyone may train Masonry up to 5, the Architects' entry level, so you no longer need the Crafters' Guild first.",
+        "🤖 Auto Advance drills a guildless builder-leaning heir's entry skill and can take the Architects' as main or second guild."
+      ]
+    },
+    {
+      "build": "R47",
+      "title": "Second Guilds and the Architects' Guild",
+      "items": [
+        "🔓 Second guilds: reach a tier-3 class in your guild, or Master in a main, secondary or gathering trade, and you may join one more sworn guild for life. You start at its tier 1, it caps at tier 2, and Journeyman there needs only half the rep. Its class adds its role bonus, guild skills, quests and shop; power still comes from your main class.",
+        "🩸 Bloodline: if a parent or grandparent reached tier 2 in that guild, joining it as a second guild is free and starts you at tier 2 when your level and skills already fit.",
+        "🤖 Auto Advance picks a second guild once (a role the family lacks, then a bloodline guild, then the guild that fits the trade: Masons and Carpenters go to the Architects'), ranks it up and advances its class. Prefer for Auto on the Guilds tab pins your own pick.",
+        "📐 New Architects' Guild (Ashford, notice board in Millbrook): Builder, then Master Builder or Surveyor, then Architect, Fortwright or Town Planner. Each cuts coin and materials on its kind of building (up to 25%): estate buildings and upgrades, manor branches, fields and land, walls and towers, the village. The family's best holder counts.",
+        "🧭 Surveyor: +1 land slot at Journeyman rank and opens road works with a Builder's Yard. 🏰 Fortwright: +10% defence. 🗺️ Town Planner: two village projects at once, deliveries count ×1.25, village upkeep −20%.",
+        "📜 Architects' chain quests unlock the Builder's Square charm (+5% masonry and carpentry XP), the Drafting Room (Workshop Hall fitting, −5% on upgrades), the Builder's Yard (storage, a teamster spot, −5% builds), and road works plus the Fine Cornice.",
+        "🛤️ Road works are live: cart tracks and paved roads add trade-route earnings; they wear 5% a year and can be repaired.",
+        "📒 The Steward's extra trade route now comes from the Clerk path data (the Seneschal title adds a second)."
+      ]
+    },
+    {
+      "build": "R46",
+      "title": "Guild Tiers, Guild Quest Chains and Trade Slots",
+      "items": [
+        "🎓 Every guild now has tiers. To move up a tier you need any class from the tier below in your guild, a character level (Lv 7 for tier 2, Lv 16 for tier 3), the class's own skills, a guild rank (Journeyman for tier 2, Adept for tier 3) and coin.",
+        "🧭 The class card shows your 2 nearest next classes and only what you are still missing, with Show all for the rest.",
+        "↔️ You can switch sideways to another class on the same tier once a year for half the tier's coin. You keep all your skills.",
+        "🔁 Joining a guild with an entry class from another guild retrains you as this guild's entry class, so you can climb its tiers.",
+        "🎭 New Rogue classes: Swindler (tier 2: the family buys 8% cheaper and gets +10% coin from village requests) leads into Spy, now tier 3. Fence (tier 3) sells loot at 90% of its value and opens after the Ledger of Debts.",
+        "📜 Guild quest chains: the Warriors', Magic and Rogues' Guilds have new chain quests that unlock hidden recipes such as Thieves' Lockpicks, Banded Plate, Runed Orb and the Forged Seal. Auto-Adventure now takes your own guild's next chain quest first, and repeats guild quests while you are short of rep.",
+        "🤖 Auto Upbringing teaches the skills your guild's tier-2 classes need, and Auto Orders spends some months drilling the skill your next tier still needs.",
+        "🎚️ Trade slots: learn as many crafts as you like. Your main crafting trade ranks all the way to Grandmaster and artisan titles. Your secondary stays a rank below your main, your 2 gathering trades (Woodsman, Farmer, Mason) go up to Master, and anything else stays at Apprentice. Until you choose, your highest-ranked crafting trade is your main and the next highest your secondary. You can switch slots once a year for free.",
+        "🧾 New Clerk path: +1 quota slot per rank (up to +3), more storage and better trade prices. Steward moves here from Scribe (+1 trade route, +1 Work Orders slot), with the Seneschal title at Grandmaster.",
+        "Old saves keep every class (Spies get their new tier-3 power) and every craft rank: your highest crafting trade becomes your main, so no bonus is lost. Scribe-Stewards become Clerk-Stewards at the same rank, and recipes from chain quests below the rank you already hold are unlocked.",
+        "🎓 Reaching Master in a slotted trade opens a second guild for that person. Second guilds arrive in a coming update.",
+        "Engineering tidy pass: one test command, a shared lookup helper and the old data generator archived. Nothing changes in play."
+      ]
+    },
+    {
+      "build": "R45",
+      "title": "Town Boards, Quest Lines and Phase Bands",
+      "items": [
+        "📋 Every town you have discovered now has a quest board with 3 jobs, and a new set is posted every 7 days. Jobs fit the town: deliveries (\"Thornwick wants 20 salt\"), fights nearby (\"Clear wolves near Thornwick\") and escorts to another town. They pay coin plus town favour.",
+        "Short of goods for a delivery? Tap 📋 Order it and Work Orders gathers, refines and crafts what is missing.",
+        "🧭 Quest lines: several stops in a row with a reward at each stop and a bigger one at the end. The first three are The Miller's Contract, The Baron's Courier and The Lost Shipment. Tap 🗺️ Route to see the route drawn on the map.",
+        "Phase bands: each job and line is Beginning, Established or Dynasty. Boards show 2 jobs from your band plus 1 stretch from the band above. Rewards scale ×1 / ×2.5 / ×6.",
+        "Auto-Adventure takes board jobs from your band, orders goods it is missing, and follows a quest line once that person has started it.",
+        "Old saves start with fresh boards and no lines in progress; nothing is lost.",
+        "Time away is banked as ⚡ turbo (fast-forward), and the welcome-back screen now says so. The Hourglass Tower text is corrected: each level adds 30 min to the turbo bank.",
+        "The unfinished Titles phase is hidden for now, so phases read 1–3.",
+        "Throwing Knives and Hunting Spear can now be forged at the Smithy."
+      ]
+    },
+    {
+      "build": "R44",
+      "title": "Auto-craft and Pause When Done",
+      "items": [
+        "🤖 New Workshop line in 🏛️ Legacy, Auto-craft (50 / 180 / 500 renown): crafters make gear for your own people in their spare time. Tier 1: basic tools for followers who have none. Tier 2: refits family and followers to the best gear they can make. Tier 3: keeps 1 spare of each gear type in the vault.",
+        "Auto-craft places 🤖 orders in Work Orders, so the inputs are gathered and refined for you. They use their own slots and never crowd out your orders. Cancel one and it stays away for a month.",
+        "⏹ Pause when done for people: a family member or follower finishes the item, trip or day in hand, then rests until you resume them (Automation tab).",
+        "⏹ Pause when done for automation lines: each Auto Tend skill and Auto-craft can switch itself off after the task in hand.",
+        "Full auto from day 1: every crafting skill now starts on a default recipe as soon as you have the building, with no need to make one by hand first. The status line says what is missing (\"needs Forge\").",
+        "Automation tab: new Auto-craft and People cards, \"(default)\" and \"pauses when done\" tags, and an Auto-craft line in the summary."
+      ]
+    },
+    {
+      "build": "R43",
+      "title": "Work Orders and the Workshop",
+      "items": [
+        "New 📋 Work Orders on the Crafting tab: add what you want made (\"3 iron swords\") and your workers gather and refine the inputs, then craft, top to bottom. Each order says plainly why it's stuck (missing materials, no Forge, no one skilled enough, storage full).",
+        "Followers on the craft job take orders first; family crafters help when no follower can. You get 2 orders at a time for free.",
+        "⏹ Pause when done: an order or quota can pause after the item it's making now, instead of stopping midway.",
+        "🔁 Auto rotation: workers with spare hours move from the fields to the coop, the cow pen and then every open chore in turn, skipping anything finished, paused or full. It's shown on the Farmstead card.",
+        "New 🛠️ Workshop renown lines: Order Queue, Quotas, Craft Speed, Masterwork Chance and Gather & Refine Rate. Each has 3 tiers, and the first tier costs 80 renown or less.",
+        "The Steward's Ledger became Workshop → Quotas and Tireless Hands became Gather & Refine Rate. You keep what you had, and any renown paid above the new prices is refunded. Old craft queues became Work Orders."
+      ]
+    },
+    {
+      "build": "R42",
+      "title": "New chores as you grow",
+      "items": [
+        "11 new chores open as your estate grows: Glean the Hedgerows and Gather Kindling (Homestead); Mill Flour, Saw Planks and Mend Nets (Farmstead); Keep the Ledgers, Help at the Smithy and Cut Blocks (Manor); Work the Dock, Brew Small Ale and Run Village Errands (your village).",
+        "A 🆕 popup tells you when a chore opens. Chores run on Auto for free at a basic rate; work one by hand for the full amount. Pause any of them from the Chores line on Main.",
+        "Some chores help other work: kindling stretches cooking, mended nets improve fishing, ledgers raise trade prices and errands lower village upkeep.",
+        "At Farmstead every Millbrook villager has a second set of requests asking for flour, milk, planks, leather and ale, with better rewards.",
+        "Your own village brings two new villagers: Aldous the Reeve (planks and blocks; he can cut your upkeep) and Edda, the Miller's Wife (flour and milk; she shares a recipe)."
+      ]
+    },
+    {
+      "build": "R41",
+      "title": "Hens and cows that need looking after",
+      "items": [
+        "The 🐔 Chicken Coop and 🐄 Cow Pen now start empty: buy 6 hens for 60 coin or a cow for 90 on the Farmstead card's Animals row.",
+        "Each needs about 1 hour of tending a day, shared with your field workers. Untended animals give only a quarter of their eggs or milk.",
+        "Feed is the only cost: hens eat wheat or vegetables, cows eat hay, wheat or vegetables. No coin upkeep. Animals rest when your egg or milk storage is full.",
+        "Eggs and milk now wait at the building for teamsters or farmers to haul them in, like the orchard.",
+        "New upgrades: Bigger Henhouse (+2 hens) and Extra Stall (+1 cow). Bought animals don't breed.",
+        "Eggs can now be bought in Millbrook. Hens lay a bit less in winter.",
+        "Old saves keep the hens and cows they already have."
+      ]
+    },
+    {
+      "build": "R40",
+      "title": "Fields with their own crops",
+      "items": [
+        "Each field now grows one crop: Kitchen Plot (food), wheat, barley, vegetables, flax or berries. Pick and switch crops on the Estate tab's 🌾 Farmstead card.",
+        "Fields need about 1 hour of tending a day. Farm followers give 8 hours, a family member on Tend Fields gives 8, and everyone else helps 1 hour. Untended fields still grow at a quarter.",
+        "Level fields up to 5, or make a Bigger Plot for more crop (it takes longer to tend).",
+        "New Sickles, Hoes and Pruning Knives in every metal cut tending time; masterwork ones cut more.",
+        "New 🛒 teamsters only haul the harvest into storage. A small farm gets by with farmers carrying by hand (about 25 a day for the whole farm, enough for 4–5 ordinary fields). Bigger farms need teamsters: they are costly (the first needs a 1,000-coin Cart Shed) but each moves 250 a day. Orchard fruit also waits at the trees for haul. Kitchen Plot food goes straight to the table, so nobody goes hungry. Bunkhouse upgrades add farm spots.",
+        "When a crop's storage is full, workers mill wheat into flour or brew barley into ale if you have the station.",
+        "Old farms were turned into fields that grow at least as much food as before."
+      ]
+    },
+    {
+      "build": "R39.1",
+      "title": "Tester links and What's new",
+      "items": [
+        "This 'What's new' window: it pops up once after each update. Reopen it any time from 📂 Saves.",
+        "Playtesters can open a special tester link to get a 🧪 Tester badge and a quick Feedback button."
+      ]
+    },
+    {
+      "build": "R39",
+      "title": "Markets you can read",
+      "items": [
+        "New 📊 Market Board at the top of the Map: the best town to sell each thing you own, and the cheapest place to buy.",
+        "Prices now show ▲ (high) or ▼ (low) with a short reason, like 'they want it' or 'flooded: you sold a lot here'.",
+        "Towns show what they're Short of and Flooded with.",
+        "New town events: shortages (a good pays 1.5×) and gluts (a good pays little), lasting 10–20 days.",
+        "The Bag tab shows your best three places to sell."
+      ]
+    },
+    {
+      "build": "R38",
+      "title": "Save slots",
+      "items": [
+        "Keep up to 5 dynasties side by side from the new 📂 Saves screen. Each has its own Legacy.",
+        "Rename, delete (with undo), import and export each slot. A bar shows how much storage you're using."
+      ]
+    },
+    {
+      "build": "R37",
+      "title": "Free automation basics",
+      "items": [
+        "Basic automation is now free from the start: auto-tending, family orders, kids' tutoring, courtship and a few quotas.",
+        "Upgrades make automation faster or bigger. Legacy you already spent on the old upgrades was refunded.",
+        "Legacy upgrades moved to their own 🏛️ screen in the top bar."
+      ]
+    },
+    {
+      "build": "R36",
+      "title": "Talents",
+      "items": [
+        "Family members can earn talents by doing things, like Tracker's Eye for hunters or Haggler for traders.",
+        "Each talent gives a small bonus. They show on the Character screen."
+      ]
+    }
+  ]
 }

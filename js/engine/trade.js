@@ -18,6 +18,7 @@ import { eff, structDef, wagonSpeed } from "./estate.js";
 import { registerDayHook } from "./time.js";
 import { D, T, living, log, rng } from "./state.js";
 import { LG, addRenown } from "./legacy.js";
+import { bump } from "./r60.js";
 import { haulTier } from "./world.js";
 import { nightShare } from "./daynight.js";
 
@@ -326,6 +327,7 @@ function finish(s, r) {
   tutNote(s, "traded");
   if (tr.coin) {
     s.res.coin += tr.coin;
+    if (r.town === "saltmere" || tradePlace(r.town) === "Saltmere") bump(s, "convoy"); // R60 Fishers or Convoys race
     log(s, `🛒 Cart home (${routeLabel(r)}): sold ${tr.sold} for ${tr.coin}🪙${tr.spent ? ` (paid ${tr.spent}🪙)` : ""}.`);
   } else if (r.mode === "buy" && tr.load) {
     s.res[r.res] = (s.res[r.res] || 0) + tr.load;

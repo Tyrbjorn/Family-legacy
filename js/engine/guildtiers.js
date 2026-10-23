@@ -2,6 +2,7 @@
 // character Lv, its own skill mix, the tier's guild rank and coin (all data: guilds.json tiers, classes.json).
 // Classes keep `from` only as their lineage (talents, line bonuses); it no longer gates advancing.
 import { findId } from "./lookup.js";
+import { classKeyIssue } from "./r60.js";
 import { classGuild, cls, memberGuild, structReqOk, structReqText, rankName } from "./guilds.js";
 import { level } from "./family.js";
 import { canTrain } from "./skills.js";
@@ -36,6 +37,8 @@ export function classIssues(s, m, c, money = true) {
   if (k === "side" && m.sideDay != null && s.day - m.sideDay < Y()) out.push("sideways change once a year");
   if (c.needsClass && ![m.cls, ...(m.clsHist || [])].some(x => [].concat(c.needsClass).includes(x))) out.push("must be a " + [].concat(c.needsClass).map(x => findId(D.classes, x).name).join(" or "));
   if (level(m) < tierLv(c)) out.push(`Lv ${level(m)}/${tierLv(c)}`);
+  const k60 = classKeyIssue(s, c); // R60 light story key (hero, paladin, archmage)
+  if (k60) out.push(k60);
   if (c.advRank != null) { if (!m.adv || m.adv.rank < c.advRank) out.push(`needs Adventurers' rank ${"FEDCBAS"[c.advRank] || c.advRank}`); }
   else {
     const g = memberGuild(m, guildOfCls(c.id)), r = tierRank(c);
@@ -53,7 +56,7 @@ export function classIssues(s, m, c, money = true) {
 export function classMoves(s, m) {
   const cur = cls(m);
   if (!cur) return [];
-  return D.classes.filter(c => !c.retired && !c.profession && moveKind(m, c) && guildOfCls(c.id) === guildOfCls(cur.id));
+  return D.classes.filter(c => !c.retired && !c.special && !c.profession && moveKind(m, c) && guildOfCls(c.id) === guildOfCls(cur.id));
 }
 // "nearest" = average share met over Lv and each skill need (partial credit), other needs count 0 or 1
 const progress = (s, m, c, miss) => {

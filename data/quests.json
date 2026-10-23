@@ -4583,5 +4583,110 @@
   },
   "rescue": true,
   "desc": "The Deep Ones took one of your family into the sea. Follow them into the surf at low tide and bring them home before they go down to Father (60 days)."
+ },
+ {
+  "region": "highlands",
+  "type": "errand",
+  "risk": "moderate",
+  "skill": "leadership",
+  "loot": [],
+  "once": true,
+  "hidden": true,
+  "id": "r60_rowan1",
+  "name": "Rowan's Muster",
+  "cp": 60,
+  "days": 4,
+  "reward": {
+   "coin": 40
+  },
+  "desc": "Help Clan Rowan gather its scattered men.",
+  "chain": "rowan",
+  "step": 1,
+  "giver": "rowan",
+  "tier": 1,
+  "rivals": [
+   "side:br_highland.b"
+  ],
+  "lockAt": 3
+ },
+ {
+  "region": "highlands",
+  "type": "errand",
+  "risk": "moderate",
+  "skill": "leadership",
+  "loot": [],
+  "once": true,
+  "hidden": true,
+  "id": "r60_rowan2",
+  "name": "Beacons on the Ridge",
+  "cp": 90,
+  "days": 5,
+  "reward": {
+   "coin": 80
+  },
+  "desc": "Relight the clan beacons Crane let die.",
+  "chain": "rowan",
+  "step": 2,
+  "giver": "rowan",
+  "tier": 1,
+  "rivals": [
+   "side:br_highland.b"
+  ],
+  "lockAt": 3,
+  "req": {
+   "done": [
+    "r60_rowan1"
+   ]
+  }
+ },
+ {
+  "region": "highlands",
+  "type": "errand",
+  "risk": "moderate",
+  "skill": "leadership",
+  "loot": [],
+  "once": true,
+  "hidden": true,
+  "id": "r60_rowan3",
+  "name": "The Clan Moot",
+  "cp": 120,
+  "days": 6,
+  "reward": {
+   "coin": 120
+  },
+  "desc": "Speak for Rowan at the moot; three tasks and Crane's offer is gone for good.",
+  "chain": "rowan",
+  "step": 3,
+  "giver": "rowan",
+  "tier": 3,
+  "rivals": [
+   "side:br_highland.b"
+  ],
+  "lockAt": 3,
+  "req": {
+   "done": [
+    "r60_rowan2"
+   ]
+  }
+ },
+ {
+  "region": "highlands",
+  "type": "errand",
+  "risk": "moderate",
+  "skill": "etiquette",
+  "loot": [],
+  "once": true,
+  "hidden": true,
+  "id": "r60_envoy",
+  "name": "A Trusted Envoy",
+  "cp": 40,
+  "days": 4,
+  "reward": {
+   "coin": 120
+  },
+  "desc": "Only a family whose word is True is sent to carry the Thanes' seal.",
+  "giver": "thanes",
+  "tier": 3,
+  "envoy": true
  }
 ]

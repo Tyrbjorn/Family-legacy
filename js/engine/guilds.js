@@ -1,3 +1,4 @@
+import { specialIssues } from "./r60.js";
 import { findId } from "./lookup.js";
 import { classIssues, moveCost, moveKind } from "./guildtiers.js";
 import { apprFee, apprRep } from "./apprentice.js";
@@ -34,6 +35,7 @@ export const structReqText = reqs =>
 
 export function canEvolve(s, m, c) {
   if (c.retired) return false;
+  if (c.special) return !specialIssues(s, m, c).length; // R60
   if (!c.profession) return !classIssues(s, m, c).length; // R46: guild tiers
   if (c.needsBuildings && !structReqOk(s, c.needsBuildings)) return false;
   const mg = c.guild && memberGuild(m, c.guild);

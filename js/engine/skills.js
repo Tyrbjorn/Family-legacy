@@ -64,6 +64,7 @@ export function gainXp(s, m, skillId, amt) {
   if (!k) return;
   if (!skillOpen(m, skillId)) return;
   amt *= diffXp(s, m) * injuryXp(m, skillId);
+  if (s.lb && s.lb.xp && s.lb.xpSkill === skillId) amt *= 1 + s.lb.xp; // R60 Seasoned
   if (k.lvl >= softCap(m)) amt *= 0.1;
   const gained = amt * xpMult(s, m, skillId);
   k.xp += gained;

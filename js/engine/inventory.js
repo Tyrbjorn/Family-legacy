@@ -56,7 +56,7 @@ export function sell(s, itemId) {
   const i = s.vault.indexOf(itemId);
   if (i < 0) return;
   s.vault.splice(i, 1);
-  s.res.coin += sellValue(s, itemDef(itemId));
+  s.res.coin += sellValue(s, itemDef(itemId)) * (1 + ((s.lb || {}).coin || 0));
   tutNote(s, "traded");
 }
 
@@ -195,7 +195,7 @@ export function sellRes(s, townId, res, n) {
   n = Math.min(n, Math.floor(s.res[res]));
   if (n <= 0 || marketClosed(s, townId)) return false; // R49 Lodge procession
   s.res[res] -= n;
-  s.res.coin += n * townSellPrice(s, townId, res);
+  s.res.coin += n * townSellPrice(s, townId, res) * (1 + ((s.lb || {}).coin || 0));
   shiftSupply(s, townId, res, n);
   markVisited(s, townId);
   tutNote(s, "traded");

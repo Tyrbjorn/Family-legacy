@@ -3,6 +3,7 @@ const NO_TIERS = !!process.env.NO_TIERS; // R46: disable the bot's tier logic
 // usage: node test/longsim.mjs [seeds=3] [years=200]
 import fs from "fs";
 import * as E from "../js/engine.js";
+if (process.env.R60OFF) globalThis.R60OFF = 1; // R60: switch off branch races, locks and gates to compare with R59
 const root = new URL("..", import.meta.url).pathname;
 const D = {};
 for (const f of fs.readdirSync(root + "data").filter(f => f.endsWith(".json")))
@@ -715,6 +716,9 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
   globalThis.SIMSEED = seed;
   E.setRng(() => ((sd = (sd * 16807) % 2147483647), sd / 2147483647));
   let s = E.newGame(1e12);
+  const BREC = { ach: Object.fromEntries((Array.isArray(D.achievements) ? D.achievements : D.achievements.list).map(a => [a.id, 1])), flags: { thaneOath: 1, seaHeir: 1, hydra_slain: 1, craneDisgraced: 1 }, bonuses: {} };
+  const bonus = x => { if (process.env.BONUS) E.applyLegacyBonuses(x, BREC); return x; }; // R60: every carry-over bonus owned, applied at each run start
+  bonus(s);
   lastS = s;
   let lineages = 1,
     maxGen = 1,
@@ -732,11 +736,12 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     if (day % YD === 0 && day) for (const o of E.living(s)) if (o.cls && E.isAdult(o)) { const c = E.findId(D.classes, o.cls); const t = E.tierN(c); const k = seed + ':' + o.id; const ft = (seen.firstTier ||= {}); for (let n = 2; n <= t; n++) if (!(ft[n] ||= {})[k]) ft[n][k] = day / YD; if (process.env.TIERDBG) console.error('Y' + day / YD, o.name, o.cls, 'Lv' + E.level(o), o.guild ? o.guild.id + ' r' + o.guild.rank + ' rep' + o.guild.rep : 'noguild', 'coin' + Math.round(s.res.coin), '|', E.classStuck(s, o), '| top', Object.entries(o.skills).sort((a, b) => b[1].lvl - a[1].lvl).slice(0, 5).map(([k, v]) => k + v.lvl).join(' ')); }
     if ([2, 5, 10].includes(day / YD) || day === YEARS * YD - 1) ((seen.early ||= {})[seed] ||= []).push([Math.round(day / YD), Math.round(s.res.coin), Math.round(s.res.food), s.structures.length, s.minions.length, Math.round(E.legacyState(s).renown)]); // R37 growth
     if (day % 30 === 0) for (const m of s.members) for (const id of (m.talents || {}).own || []) ((seen.tal ||= {})[seed] ||= new Set()).add(m.id + ':' + id); // R36
+    if (process.env.BRANCH && day % 30 === 3) for (const b of E.openBranches(s)) if (b.lock !== "race") E.chooseBranch(s, b.id, seed % 2 ? "a" : "b"); // R60 branch bot: odd seeds side A
     E.advanceReal(s, T.secPerDayActive / E.globalTick(s));
     if (s.gameOver) {
       if (process.env.DBG) console.log("GAMEOVER", day, s.log.slice(0, 6).map(l => l.msg).join(" | "));
       for (const a of Object.keys(s.ach || {})) seen.ach.add(a);
-      s = E.newLineage(s, 1e12);
+      s = bonus(E.newLineage(s, 1e12));
       lineages++;
       continue;
     }
