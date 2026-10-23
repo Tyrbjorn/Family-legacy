@@ -2,6 +2,13 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R63.1",
+      "title": "Cut gems priced up",
+      "items": [
+        "💎 Cut gems now sell for 2.25× raw gems (90 where raw gems are 40)."
+      ]
+    },
+    {
       "build": "R63",
       "title": "Copper sells, small fixes",
       "items": [

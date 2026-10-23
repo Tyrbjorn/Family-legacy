@@ -8,7 +8,7 @@ ok(+BUILD.slice(1)>=63&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R63, no new save ste
 ok(JSON.parse(fs.readFileSync(root+'data/changelog.json')).entries.some(e=>e.build==='R63'),'changelog');
 const src=fs.readFileSync(root+'js/ui/common.js','utf8'), i=src.indexOf('export const MATS = ['), MATS=[...src.slice(i,src.indexOf(']',i)).matchAll(/"(\w+)"/g)].map(m=>m[1]);
 for(const k of MATS) if(k!=='food') for(const t of D.towns) ok(t.prices[k]>0,`price ${k} @ ${t.id}`);
-const p=D.towns[0].prices; ok(p.copperore<p.tinore&&p.copper<p.tin&&p.copper<p.ingots,'copper below tin and iron');
+const p=D.towns[0].prices; for(const t of D.towns) ok(Math.abs(t.prices.cutgems-t.prices.gems*2.25)<0.06,'cut gems 2.25x raw @ '+t.id); ok(p.copperore<p.tinore&&p.copper<p.tin&&p.copper<p.ingots,'copper below tin and iron');
 const s=E.newGame(1); E.normalize(s); s.res.copper=10; const c0=s.res.coin;
 E.sellRes(s,'thornwick','copper',10); ok(s.res.copper===0&&s.res.coin>c0,'copper sells');
 console.log(`PASS test/r63.test.mjs: ${pass} checks passed`);
