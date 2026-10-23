@@ -78,7 +78,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 3.0,
+   "copper": 8.4,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "rusty_sword",
@@ -212,7 +217,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 3.0,
+   "copper": 8.4,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "iron_sword",
@@ -337,7 +347,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 2.2,
+   "copper": 7.2,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "hunting_bow",
@@ -449,7 +464,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 2.2,
+   "copper": 6.0,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "iron_sword",
@@ -582,7 +602,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 3.0,
+   "copper": 8.4,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "fishnet",
@@ -700,7 +725,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 60.0,
-   "deepegg": 150
+   "deepegg": 150,
+   "copperore": 3.0,
+   "copper": 8.4,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [
    "reefgold_circlet",
@@ -817,7 +847,12 @@
    "runestone": 30,
    "dwarfale": 16,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 2.2,
+   "copper": 6.0,
+   "stew": 7,
+   "cutgems": 60.0,
+   "bandages": 6.3
   },
   "shop": [],
   "market": [
@@ -928,7 +963,12 @@
    "runestone": 24,
    "dwarfale": 22,
    "tidepearl": 82.5,
-   "deepegg": 220
+   "deepegg": 220,
+   "copperore": 2.2,
+   "copper": 4.8,
+   "stew": 7,
+   "cutgems": 51.0,
+   "bandages": 6.3
   },
   "shop": [
    "ramcart"

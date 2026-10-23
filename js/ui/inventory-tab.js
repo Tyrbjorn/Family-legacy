@@ -35,7 +35,7 @@ export function invv() {
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
       k =>
-        `<div class="row" style="margin:3px 0"><span>${resIco(k)} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${E.townSellPrice(s, town.id, k)}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
+        `<div class="row" style="margin:3px 0"><span>${resIco(k)} ${k} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${Math.round(E.townSellPrice(s, town.id, k) * 10) / 10}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
     ).join("") +
     `<div class="muted">Sells at ${town.name}.</div></div>` + marketSummaryCard();
   h +=

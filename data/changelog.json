@@ -2,6 +2,15 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R63",
+      "title": "Copper sells, small fixes",
+      "items": [
+        "🟠 Copper and copper ore now have Sell all buttons (they had no town price). Stew, cut gems and bandages got prices too.",
+        "🗺️ The Estate Map's \"+N more\" chip now opens the List view.",
+        "🔢 Sell all prices show at most one decimal (e.g. 19 instead of 19.02)."
+      ]
+    },
+    {
       "build": "R62",
       "title": "See your estate",
       "items": [

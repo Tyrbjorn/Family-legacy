@@ -59,12 +59,12 @@ ok(E.quadOf(SM.x,SM.y)===null&&E.quadOf(100,1200)==='sw','quarter maps do not ch
   ok(!E.questVisible(s,Q('reef2')),'step 2 hidden until Tobiah tells you');
   s.day=Math.max(s.day,(s.req.tobiah||{}).at||0); E.deliverRequest(s,'tobiah'); ok(s.revealed.includes('reef2'),'Tobiah\'s 1st telling reveals step 2');
   ok(/first:/.test(E.questIssue(s,m,Q('reef2'))),'steps go in order: '+E.questIssue(s,m,Q('reef2')));
-  E.resolveQuest(s,m,Q('reef1'),1); ok(s.doneQuests.includes('reef1'),'step 1 done');
+  for(let i=0;i<30&&!s.doneQuests.includes('reef1');i++) E.resolveQuest(s,m,Q('reef1'),1); ok(s.doneQuests.includes('reef1'),'step 1 done'); // R63: retry like steps 2-4 (success is a dice roll)
   ok(/Sea Boat/.test(E.questIssue(s,m,Q('reef2'))||''),'step 2 needs your own boat: '+E.questIssue(s,m,Q('reef2')));
   s.vault.push('seaboat'); ok(!E.questIssue(s,m,Q('reef2')),'with a Sea Boat it opens');
   ok(Q('reef2').check.skills.join()==='sailing,tracking'&&Q('reef3').check.skills.join()==='etiquette,thievery','Sailing or Scouting; Etiquette or Thievery');
   const lo=E.successChance(s,{...m,skills:Object.fromEntries(Object.keys(m.skills).map(k=>[k,{lvl:1,xp:0}]))},Q('reef2'));
-  m.skills.sailing.lvl=40; m.skills.tracking.lvl=5; ok(E.checkSkill(m,Q('reef2'))==='sailing'&&E.checkBonus(m,Q('reef2'))>0&&E.successChance(s,m,Q('reef2'))>lo,'the best of the two skills makes the check');
+  m.skills.sailing.lvl=40; m.skills.tracking.lvl=5; ok(E.checkSkill(m,Q('reef2'))==='sailing'&&E.checkBonus(m,Q('reef2'))>0&&(E.successChance(s,m,Q('reef2'))>lo||lo>=0.98),'the best of the two skills makes the check'); // R63: lo can already sit at the 0.98 cap
   const g0=E.houseState(s,'gilmane').r; for(let i=0;i<30&&!s.doneQuests.includes('reef2');i++) E.resolveQuest(s,m,Q('reef2'),1);
   ok(s.doneQuests.includes('reef2')&&E.houseState(s,'gilmane').r<g0,'watching the reef is prying: secretive Gilmane dislikes it');
   s.day=Math.max(s.day,(s.req.tobiah||{}).at||0); E.deliverRequest(s,'tobiah'); ok(s.revealed.includes('reef3'),'2nd telling: step 3');

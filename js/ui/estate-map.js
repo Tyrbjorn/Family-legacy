@@ -43,7 +43,7 @@ export function mapHtml() {
       const it = L.items.find(i => i.key === w.job) || L.items[0];
       h += `<button class="emwalk" style="left:${pct(it.door.x - 8 + ((n % 3) - 1) * 10, L.W)};top:${pct(it.door.y - 20, L.H)}" data-a="estsel" data-v="${w.mid != null ? "m:" + w.mid : "w"}" title="${w.name}">${w.emoji}</button>`;
     });
-  if (L.overflow) h += `<div class="emmore">+${L.overflow} more (see List)</div>`;
+  if (L.overflow) h += `<button class="emmore" data-a="estview" data-v="list" title="Show every building in the List view">+${L.overflow} more · List</button>`;
   return h + `</div>`;
 }
 
