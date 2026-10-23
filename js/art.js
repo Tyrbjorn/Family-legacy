@@ -24,6 +24,12 @@ export function iconHtml(A, kind, id, def, opts = {}) {
   // R58b: ores and smelted metals share the ingot sprite, recoloured by metal (resMat)
   const rmat = kind === "res" && (A.resMat || {})[id];
   const pal = (sp.grey || rmat) && (A.palettes || {})[rmat || matFor(A, id, def)];
+  // R58.2: ore = neutral rock + metal-tinted veins layer (same masked multiply tint as weapons)
+  if (sp.veins) {
+    const vc = ((A.veinPal || {})[rmat]) || (pal && pal.base), v = sp.veins;
+    const vt = vc ? `<span class="arttint" style="background:${vc};-webkit-mask-image:url(${v});mask-image:url(${v})"></span>` : "";
+    return `<span class="art" style="width:${px}px;height:${px}px"${t}><img src="${src}" alt="${esc(emoji)}" loading="lazy" onerror="${fb}"><img class="artvein" src="${v}" alt="" loading="lazy" onerror="this.remove()">${vt}</span>`;
+  }
   const tint = pal ? `<span class="arttint" style="background:${pal.base};-webkit-mask-image:url(${src});mask-image:url(${src})"></span>` : "";
   return `<span class="art" style="width:${px}px;height:${px}px"${t}><img src="${src}"${rmat && !sp.grey ? ' style="filter:grayscale(1) brightness(1.15)"' : ""} alt="${esc(emoji)}" loading="lazy" onerror="${fb}">${tint}</span>`;
 }

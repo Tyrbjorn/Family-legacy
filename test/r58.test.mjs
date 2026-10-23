@@ -8,7 +8,7 @@ const A=D.art;
 ok(+BUILD.slice(1)>=58&&E.SCHEMA===53,'R58+, SCHEMA stays 53');
 ok(D.changelog.entries.some(e=>e.build==='R58'),'changelog R58');
 ok(fs.readFileSync(ROOT+'js/main.js','utf8').includes('"art"'),'art.json loaded');
-for(const [k,sp] of Object.entries(A.sprites)){ ok(fs.existsSync(ROOT+sp.file)&&sp.file.endsWith('.webp'),'file '+k); ok(sp.size===(sp.grey?128:64),'size '+k); ok(fs.statSync(ROOT+sp.file).size<20000,'small '+k); }
+for(const [k,sp] of Object.entries(A.sprites)){ ok(fs.existsSync(ROOT+sp.file)&&sp.file.endsWith('.webp'),'file '+k); ok(sp.size===(sp.grey?128:64),'size '+k); if(sp.veins)ok(fs.existsSync(ROOT+sp.veins),'veins '+k); ok(fs.statSync(ROOT+sp.file).size<20000,'small '+k); }
 const mats=Object.keys(D.gear.kinds.mats); ok(mats.length===29&&mats.every(m=>/^#[0-9a-f]{6}$/.test((A.palettes[m]||{}).base||'')),'29 material palettes');
 for(const map of [A.res,A.types,A.items,A.ui]) for(const v of Object.values(map)) ok(A.sprites[v],'known sprite '+v);
 for(const t of Object.keys(A.types)) ok(D.gear.kinds.types[t],'gear type '+t);
@@ -24,6 +24,6 @@ const n=E.setData&&(()=>{const DD={...D};for(const f of D.estate.structureFiles)
 ok(n>=30,'items with art: '+n);
 const css=fs.readFileSync(ROOT+'style.css','utf8'); ok(css.includes('.art{')&&css.includes('mix-blend-mode:multiply'),'css');
 ok(fs.readFileSync(ROOT+'js/ui/guide.js','utf8').includes('classicemoji'),'setting in Settings');
-for(const [k,m] of Object.entries(A.resMat)){ok(A.res[k]==='ingot'&&A.palettes[m],'ingot art '+k);ok(iconHtml(A,'res',k,null,{emoji:'x'}).includes(A.palettes[m].base),'tinted '+k);}
+for(const [k,m] of Object.entries(A.resMat)){ok(A.res[k]===(k==='ore'||k.endsWith('ore')?'ore':'ingot')&&A.palettes[m],'ingot art '+k);ok(iconHtml(A,'res',k,null,{emoji:'x'}).includes(((k==='ore'||k.endsWith('ore'))&&(A.veinPal||{})[m])||A.palettes[m].base),'tinted '+k);}
 ok(A.resMat.copperore==='copper'&&A.resMat.copper==='copper','copper ore and ingot look copper');
 console.log('r58 ok',pass,'items with art',n);

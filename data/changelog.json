@@ -2,6 +2,13 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R58.2",
+   "title": "Ore looks like ore",
+   "items": [
+    "🪨 Ores are now drawn as grey rock with veins in their metal's colour; ingots and smelted metals stay as bars."
+   ]
+  },
+  {
    "build": "R58.1",
    "title": "Copper shows up",
    "items": [

@@ -278,6 +278,14 @@
    "grey": true,
    "from": "batch1b/weapons/axe-icon256.png",
    "anchor": null
+  },
+  "ore": {
+   "file": "art/icons/ore-rock.webp",
+   "veins": "art/icons/ore-veins.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch1d/ore-rock-256.png + ore-veins-256.png",
+   "anchor": null
   }
  },
  "res": {
@@ -289,20 +297,20 @@
   "cloth": "cloth",
   "herbs": "herbs",
   "thyme": "herbs",
-  "ore": "ingot",
-  "copperore": "ingot",
+  "ore": "ore",
+  "copperore": "ore",
   "copper": "ingot",
-  "tinore": "ingot",
+  "tinore": "ore",
   "tin": "ingot",
   "bronze": "ingot",
   "steel": "ingot",
-  "silverore": "ingot",
+  "silverore": "ore",
   "silver": "ingot",
-  "goldore": "ingot",
+  "goldore": "ore",
   "gold": "ingot",
-  "mithrilore": "ingot",
+  "mithrilore": "ore",
   "mithril": "ingot",
-  "adamantore": "ingot",
+  "adamantore": "ore",
   "adamantium": "ingot"
  },
  "types": {
@@ -351,5 +359,14 @@
   "mithril": "mithril",
   "adamantore": "adamantium",
   "adamantium": "adamantium"
+ },
+ "veinPal": {
+  "iron": "#9fc3e6",
+  "copper": "#ff7a1f",
+  "tin": "#d9d2bc",
+  "silver": "#ffffff",
+  "gold": "#ffd21a",
+  "mithril": "#2f8cff",
+  "adamantium": "#25e05a"
  }
 }
