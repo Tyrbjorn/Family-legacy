@@ -1,0 +1,287 @@
+{
+ "_note": "R66 building interiors (UI only, never in saves). Tap a building (map or List 'Inside') and the roof lifts off to show every placed furnishing, fitting, bought upgrade and tier. 12 room families; colours, grid sizes and the family of each building are invented (R66 [INV]). art: optional webp per room/piece/upgrade, filled in as Art Studio delivers (room batch list); anything missing draws its emoji.",
+ "cols": 6,
+ "minRows": 2,
+ "rooms": {
+  "home": {
+   "name": "Living quarters",
+   "floor": "#8a6a44",
+   "floor2": "#7d5f3c",
+   "wall": "#5a4030",
+   "roof": "#8c3b2e"
+  },
+  "workshop": {
+   "name": "Workshop floor",
+   "floor": "#6f6a62",
+   "floor2": "#65605a",
+   "wall": "#4a3a2c",
+   "roof": "#5b4a3a"
+  },
+  "barn": {
+   "name": "Barn",
+   "floor": "#a08a4e",
+   "floor2": "#947e46",
+   "wall": "#6b4a2e",
+   "roof": "#7a3a28"
+  },
+  "yard": {
+   "name": "Yard",
+   "floor": "#6d8a45",
+   "floor2": "#64803f",
+   "wall": "#7a5c3a",
+   "roof": "#6a7a3a"
+  },
+  "mine": {
+   "name": "Pit",
+   "floor": "#7c766c",
+   "floor2": "#716b62",
+   "wall": "#4b4640",
+   "roof": "#5d564c"
+  },
+  "mill": {
+   "name": "Mill floor",
+   "floor": "#8f7552",
+   "floor2": "#846b4a",
+   "wall": "#55402c",
+   "roof": "#6c4a30"
+  },
+  "kitchen": {
+   "name": "Kitchen",
+   "floor": "#9a7b55",
+   "floor2": "#8e714d",
+   "wall": "#5e4430",
+   "roof": "#8c3b2e"
+  },
+  "store": {
+   "name": "Storehouse",
+   "floor": "#8a7450",
+   "floor2": "#7f6a48",
+   "wall": "#4f3d2c",
+   "roof": "#3f5a6e"
+  },
+  "sacred": {
+   "name": "Hall of rites",
+   "floor": "#8d8a80",
+   "floor2": "#838076",
+   "wall": "#5c5a52",
+   "roof": "#4a4f66"
+  },
+  "arcane": {
+   "name": "Study",
+   "floor": "#5e5878",
+   "floor2": "#56506e",
+   "wall": "#3a3450",
+   "roof": "#3b3366"
+  },
+  "lodge": {
+   "name": "Common room",
+   "floor": "#7d6245",
+   "floor2": "#72593e",
+   "wall": "#4c3626",
+   "roof": "#6b2e2e"
+  },
+  "dock": {
+   "name": "Boathouse",
+   "floor": "#7a6446",
+   "floor2": "#4f7c8c",
+   "wall": "#4a3a2c",
+   "roof": "#3f5a6e"
+  }
+ },
+ "typeRoom": {
+  "shack": "home",
+  "cabin": "home",
+  "house": "home",
+  "mansion": "home",
+  "fort": "lodge",
+  "towerkeep": "home",
+  "abbey": "sacred",
+  "cottage": "home",
+  "smithy": "workshop",
+  "arcaneworkshop": "arcane",
+  "buildersyard": "workshop",
+  "chickencoop": "barn",
+  "cowpen": "barn",
+  "apiary": "yard",
+  "hunterscabin": "lodge",
+  "fields": "yard",
+  "orchard": "yard",
+  "herbgarden": "yard",
+  "quarry": "mine",
+  "mineshaft": "mine",
+  "masonyard": "mine",
+  "sawmill": "mill",
+  "gristmill": "mill",
+  "tannery": "mill",
+  "kitchen": "kitchen",
+  "brewery": "kitchen",
+  "smokehouse": "kitchen",
+  "preservery": "kitchen",
+  "saltworks": "kitchen",
+  "warehouse": "store",
+  "tradingpost": "store",
+  "countinghouse": "store",
+  "shrinehouse": "sacred",
+  "graveyard": "sacred",
+  "ancestorhall": "sacred",
+  "magestower": "arcane",
+  "herbalistshack": "arcane",
+  "barracks": "lodge",
+  "thievesden": "lodge",
+  "advlodge": "lodge",
+  "bunkhouse": "lodge",
+  "hall": "lodge",
+  "dock": "dock",
+  "slipway": "dock",
+  "fishinghut": "dock"
+ },
+ "upIcon": "🔧",
+ "tierIcon": "🏛️",
+ "art": {
+  "rooms": {},
+  "pieces": {},
+  "ups": {}
+ },
+ "upKeys": [
+  [
+   "Bellows|Chimney|Hearth|Kettle|Pots|Boiling",
+   "🔥"
+  ],
+  [
+   "Crucible|Furnace",
+   "🫕"
+  ],
+  [
+   "Wheel|Gearing|Stones|Waterwheel",
+   "⚙️"
+  ],
+  [
+   "Winch|Crane|Props|Pumps|Lift",
+   "🏗️"
+  ],
+  [
+   "Blast|Powder",
+   "🧨"
+  ],
+  [
+   "Deep|Gallery|Cut|Pans",
+   "⛏️"
+  ],
+  [
+   "Trellis|Pruning|Grafted|Seed|Rotation|Drainage|Irrigation|Ditch",
+   "🌱"
+  ],
+  [
+   "Greenhouse|Walled|Meadow|Pasture",
+   "🌿"
+  ],
+  [
+   "Blades|Saw|Chisel|Scraping|Frames|Racks",
+   "🪚"
+  ],
+  [
+   "Smoke|Smoker",
+   "💨"
+  ],
+  [
+   "Trophy|Portrait|Gallery",
+   "🖼️"
+  ],
+  [
+   "Hall|Annex|Garrison|Lodge",
+   "🏛️"
+  ],
+  [
+   "Nets|Jetty",
+   "🎣"
+  ],
+  [
+   "Hives",
+   "🐝"
+  ],
+  [
+   "Run|Roost|Flock",
+   "🐔"
+  ],
+  [
+   "Loft|Herd",
+   "🐄"
+  ],
+  [
+   "Pits|Tanner",
+   "🪣"
+  ],
+  [
+   "Store|Shelving|Shelf|Crocks|Casks|Cellar",
+   "🛢️"
+  ],
+  [
+   "Malting",
+   "🌾"
+  ],
+  [
+   "Dock|Yard|Cart",
+   "🛒"
+  ],
+  [
+   "Ledger|Office|Archive|Map|Charts",
+   "📜"
+  ],
+  [
+   "Vault|Crypt|Dome|Mausoleum",
+   "🗝️"
+  ],
+  [
+   "Masons|Guild",
+   "🧱"
+  ],
+  [
+   "Drying|Lines",
+   "🧺"
+  ],
+  [
+   "Mortar|Pestle|Apothecary",
+   "⚗️"
+  ],
+  [
+   "Scrying|Pool|Lens|Star|Spire|Runed|Inlay|Circle",
+   "🔮"
+  ],
+  [
+   "Candle|Bell|Chapel|Consecrate",
+   "🔔"
+  ],
+  [
+   "Drill|Armory",
+   "⚔️"
+  ],
+  [
+   "Fence|Hidden",
+   "🕵️"
+  ],
+  [
+   "Walls",
+   "🧱"
+  ],
+  [
+   "Spice",
+   "🧂"
+  ],
+  [
+   "Bay",
+   "🏚️"
+  ],
+  [
+   "Foreman",
+   "👷"
+  ],
+  [
+   "Footings",
+   "🧱"
+  ],
+  [
+   "Kitchen",
+   "🍳"
+  ]
+ ]
+}

@@ -150,6 +150,186 @@
    "base": "#b8bcc0",
    "shade": "#7d8287",
    "hi": "#e4e7ea"
+  },
+  "limestone": {
+   "base": "#d8cfb4",
+   "shade": "#817c6c",
+   "hi": "#ffffea"
+  },
+  "marble": {
+   "base": "#e4e0dc",
+   "shade": "#888684",
+   "hi": "#ffffff"
+  },
+  "butter": {
+   "base": "#f0d070",
+   "shade": "#907c43",
+   "hi": "#ffff91"
+  },
+  "clay": {
+   "base": "#b0603c",
+   "shade": "#693924",
+   "hi": "#e47c4e"
+  },
+  "peat": {
+   "base": "#5a4632",
+   "shade": "#362a1e",
+   "hi": "#755b41"
+  },
+  "wheat": {
+   "base": "#e0bc5c",
+   "shade": "#867037",
+   "hi": "#fff477"
+  },
+  "barley": {
+   "base": "#c8a85a",
+   "shade": "#786436",
+   "hi": "#ffda75"
+  },
+  "hay": {
+   "base": "#c8bc6a",
+   "shade": "#78703f",
+   "hi": "#fff489"
+  },
+  "flax": {
+   "base": "#a8b4c0",
+   "shade": "#646c73",
+   "hi": "#daeaf9"
+  },
+  "gem": {
+   "base": "#4aa0d0",
+   "shade": "#2c607c",
+   "hi": "#60d0ff"
+  },
+  "amber": {
+   "base": "#e09a30",
+   "shade": "#865c1c",
+   "hi": "#ffc83e"
+  },
+  "pearl": {
+   "base": "#ece4dc",
+   "shade": "#8d8884",
+   "hi": "#ffffff"
+  },
+  "tidepearl": {
+   "base": "#a8d8d0",
+   "shade": "#64817c",
+   "hi": "#daffff"
+  },
+  "ale": {
+   "base": "#c88a2c",
+   "shade": "#78521a",
+   "hi": "#ffb339"
+  },
+  "mead": {
+   "base": "#e0b040",
+   "shade": "#866926",
+   "hi": "#ffe453"
+  },
+  "dwarfale": {
+   "base": "#8a4e22",
+   "shade": "#522e14",
+   "hi": "#b3652c"
+  },
+  "wine": {
+   "base": "#8a2440",
+   "shade": "#521526",
+   "hi": "#b32e53"
+  },
+  "spirits": {
+   "base": "#d8a860",
+   "shade": "#816439",
+   "hi": "#ffda7c"
+  },
+  "honey": {
+   "base": "#e8a828",
+   "shade": "#8b6418",
+   "hi": "#ffda34"
+  },
+  "preserves": {
+   "base": "#b03848",
+   "shade": "#69212b",
+   "hi": "#e4485d"
+  },
+  "potion": {
+   "base": "#d04848",
+   "shade": "#7c2b2b",
+   "hi": "#ff5d5d"
+  },
+  "draught": {
+   "base": "#6ab04c",
+   "shade": "#3f692d",
+   "hi": "#89e462"
+  },
+  "mana": {
+   "base": "#4a70d8",
+   "shade": "#2c4381",
+   "hi": "#6091ff"
+  },
+  "remedy": {
+   "base": "#c070c0",
+   "shade": "#734373",
+   "hi": "#f991f9"
+  },
+  "flour": {
+   "base": "#ece4d0",
+   "shade": "#8d887c",
+   "hi": "#ffffff"
+  },
+  "salt": {
+   "base": "#f0f0ec",
+   "shade": "#90908d",
+   "hi": "#ffffff"
+  },
+  "kelp": {
+   "base": "#5a8040",
+   "shade": "#364c26",
+   "hi": "#75a653"
+  },
+  "stew": {
+   "base": "#a0602c",
+   "shade": "#60391a",
+   "hi": "#d07c39"
+  },
+  "porridge": {
+   "base": "#e0d0a8",
+   "shade": "#867c64",
+   "hi": "#ffffda"
+  },
+  "meat": {
+   "base": "#c85a50",
+   "shade": "#783630",
+   "hi": "#ff7568"
+  },
+  "smoked": {
+   "base": "#8a4430",
+   "shade": "#52281c",
+   "hi": "#b3583e"
+  },
+  "fish": {
+   "base": "#90a8b8",
+   "shade": "#56646e",
+   "hi": "#bbdaef"
+  },
+  "saltfish": {
+   "base": "#c8b890",
+   "shade": "#786e56",
+   "hi": "#ffefbb"
+  },
+  "egg": {
+   "base": "#f0e4cc",
+   "shade": "#90887a",
+   "hi": "#ffffff"
+  },
+  "deepegg": {
+   "base": "#6a8aa0",
+   "shade": "#3f5260",
+   "hi": "#89b3d0"
+  },
+  "hydra": {
+   "base": "#4c8a5c",
+   "shade": "#2d5237",
+   "hi": "#62b377"
   }
  },
  "sprites": {
@@ -286,6 +466,311 @@
    "grey": false,
    "from": "batch1d/ore-rock-256.png + ore-veins-256.png",
    "anchor": null
+  },
+  "block": {
+   "file": "art/icons/block.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/block.webp",
+   "anchor": null
+  },
+  "clump": {
+   "file": "art/icons/clump.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/clump.webp",
+   "anchor": null
+  },
+  "sheaf": {
+   "file": "art/icons/sheaf.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/sheaf.webp",
+   "anchor": null
+  },
+  "gem-rough": {
+   "file": "art/icons/gem-rough.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/gem-rough.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/gem-rough-shine.webp",
+     "tint": false
+    }
+   ]
+  },
+  "gem-cut": {
+   "file": "art/icons/gem-cut.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/gem-cut.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/gem-cut-shine.webp",
+     "tint": false
+    }
+   ]
+  },
+  "pearl": {
+   "file": "art/icons/pearl.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/pearl.webp",
+   "anchor": null
+  },
+  "mug": {
+   "file": "art/icons/mug.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/mug.webp",
+   "anchor": null,
+   "basePal": "oak",
+   "layer2": [
+    {
+     "file": "art/icons/mug-drink.webp",
+     "tint": true
+    }
+   ]
+  },
+  "bottle": {
+   "file": "art/icons/bottle.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/bottle.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/bottle-liquid.webp",
+     "tint": true
+    }
+   ]
+  },
+  "jar": {
+   "file": "art/icons/jar.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/jar.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/jar-fill.webp",
+     "tint": true
+    }
+   ]
+  },
+  "vial": {
+   "file": "art/icons/vial.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/vial.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/vial-liquid.webp",
+     "tint": true
+    }
+   ]
+  },
+  "sack": {
+   "file": "art/icons/sack.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/sack.webp",
+   "anchor": null
+  },
+  "bowl": {
+   "file": "art/icons/bowl.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4b/webp/bowl.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/bowl-fill.webp",
+     "tint": true
+    },
+    {
+     "file": "art/icons/bowl-steam.webp",
+     "tint": false
+    }
+   ]
+  },
+  "meat": {
+   "file": "art/icons/meat.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/meat.webp",
+   "anchor": null,
+   "layer2": [
+    {
+     "file": "art/icons/meat-bone.webp",
+     "tint": false
+    }
+   ]
+  },
+  "fish": {
+   "file": "art/icons/fish.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/fish.webp",
+   "anchor": null
+  },
+  "egg": {
+   "file": "art/icons/egg.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/egg.webp",
+   "anchor": null
+  },
+  "coin": {
+   "file": "art/icons/coin.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/coin.webp",
+   "anchor": null
+  },
+  "scale": {
+   "file": "art/icons/scale.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4/webp/scale.webp",
+   "anchor": null
+  },
+  "amulet": {
+   "file": "art/icons/amulet.webp",
+   "size": 64,
+   "grey": true,
+   "from": "batch4b/webp/amulet.webp",
+   "anchor": null
+  },
+  "bread": {
+   "file": "art/icons/bread.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/bread.webp",
+   "anchor": null
+  },
+  "cheese": {
+   "file": "art/icons/cheese.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/cheese.webp",
+   "anchor": null
+  },
+  "pie": {
+   "file": "art/icons/pie.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/pie.webp",
+   "anchor": null
+  },
+  "vegetables": {
+   "file": "art/icons/vegetables.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/vegetables.webp",
+   "anchor": null
+  },
+  "berries": {
+   "file": "art/icons/berries.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/berries.webp",
+   "anchor": null
+  },
+  "mandrake": {
+   "file": "art/icons/mandrake.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/mandrake.webp",
+   "anchor": null
+  },
+  "moonpetal": {
+   "file": "art/icons/moonpetal.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/moonpetal.webp",
+   "anchor": null
+  },
+  "mushrooms": {
+   "file": "art/icons/mushrooms.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/mushrooms.webp",
+   "anchor": null
+  },
+  "kelp": {
+   "file": "art/icons/kelp.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4b/webp/kelp.webp",
+   "anchor": null
+  },
+  "jug": {
+   "file": "art/icons/jug.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/jug.webp",
+   "anchor": null
+  },
+  "salve": {
+   "file": "art/icons/salve.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/salve.webp",
+   "anchor": null
+  },
+  "rope": {
+   "file": "art/icons/rope.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/rope.webp",
+   "anchor": null
+  },
+  "dust": {
+   "file": "art/icons/dust.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4b/webp/dust.webp",
+   "anchor": null
+  },
+  "runestone": {
+   "file": "art/icons/runestone.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/runestone.webp",
+   "anchor": null
+  },
+  "idol": {
+   "file": "art/icons/idol.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/idol.webp",
+   "anchor": null
+  },
+  "crownband": {
+   "file": "art/icons/crownband.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4b/webp/crownband.webp",
+   "anchor": null
+  },
+  "crownstone": {
+   "file": "art/icons/crownstone.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4b/webp/crownstone.webp",
+   "anchor": null
+  },
+  "crowncrest": {
+   "file": "art/icons/crowncrest.webp",
+   "size": 64,
+   "grey": false,
+   "from": "batch4/webp/crowncrest.webp",
+   "anchor": null
   }
  },
  "res": {
@@ -311,7 +796,73 @@
   "mithrilore": "ore",
   "mithril": "ingot",
   "adamantore": "ore",
-  "adamantium": "ingot"
+  "adamantium": "ingot",
+  "blocks": "block",
+  "graniteblocks": "block",
+  "limeblocks": "block",
+  "marbleblocks": "block",
+  "butter": "block",
+  "clay": "clump",
+  "peat": "clump",
+  "wheat": "sheaf",
+  "barley": "sheaf",
+  "hay": "sheaf",
+  "flax": "sheaf",
+  "gems": "gem-rough",
+  "amber": "gem-rough",
+  "cutgems": "gem-cut",
+  "pearls": "pearl",
+  "tidepearl": "pearl",
+  "ale": "mug",
+  "mead": "mug",
+  "dwarfale": "mug",
+  "wine": "bottle",
+  "spirits": "bottle",
+  "honey": "jar",
+  "preserves": "jar",
+  "potions": "vial",
+  "draught": "vial",
+  "manatonic": "vial",
+  "remedies": "vial",
+  "flour": "sack",
+  "salt": "sack",
+  "kelpfert": "sack",
+  "stew": "bowl",
+  "porridge": "bowl",
+  "meat": "meat",
+  "smokedmeat": "meat",
+  "fish": "fish",
+  "saltedfish": "fish",
+  "eggs": "egg",
+  "deepegg": "egg",
+  "coin": "coin",
+  "hydrascale": "scale",
+  "reefgold": "amulet",
+  "limestone": "stone",
+  "marble": "stone",
+  "granite": "stone",
+  "leather": "hide",
+  "bandages": "cloth",
+  "sage": "herbs",
+  "bread": "bread",
+  "food": "bread",
+  "cheese": "cheese",
+  "pie": "pie",
+  "vegetables": "vegetables",
+  "berries": "berries",
+  "mandrake": "mandrake",
+  "moonpetal": "moonpetal",
+  "mushrooms": "mushrooms",
+  "kelp": "kelp",
+  "milk": "jug",
+  "salves": "salve",
+  "rope": "rope",
+  "dust": "dust",
+  "runestone": "runestone",
+  "gildedidol": "idol",
+  "crownband": "crownband",
+  "crownstone": "crownstone",
+  "crowncrest": "crowncrest"
  },
  "types": {
   "sword": "sword",
@@ -368,5 +919,54 @@
   "gold": "#ffd21a",
   "mithril": "#2f8cff",
   "adamantium": "#25e05a"
- }
+ },
+ "resTint": {
+  "blocks": "granite",
+  "graniteblocks": "granite",
+  "limeblocks": "limestone",
+  "marbleblocks": "marble",
+  "butter": "butter",
+  "clay": "clay",
+  "peat": "peat",
+  "wheat": "wheat",
+  "barley": "barley",
+  "hay": "hay",
+  "flax": "flax",
+  "gems": "gem",
+  "amber": "amber",
+  "cutgems": "gem",
+  "pearls": "pearl",
+  "tidepearl": "tidepearl",
+  "ale": "ale",
+  "mead": "mead",
+  "dwarfale": "dwarfale",
+  "wine": "wine",
+  "spirits": "spirits",
+  "honey": "honey",
+  "preserves": "preserves",
+  "potions": "potion",
+  "draught": "draught",
+  "manatonic": "mana",
+  "remedies": "remedy",
+  "flour": "flour",
+  "salt": "salt",
+  "kelpfert": "kelp",
+  "stew": "stew",
+  "porridge": "porridge",
+  "meat": "meat",
+  "smokedmeat": "smoked",
+  "fish": "fish",
+  "saltedfish": "saltfish",
+  "eggs": "egg",
+  "deepegg": "deepegg",
+  "coin": "gold",
+  "hydrascale": "hydra",
+  "reefgold": "gold",
+  "limestone": "limestone",
+  "marble": "marble",
+  "granite": "granite",
+  "leather": "leather",
+  "bandages": "linen"
+ },
+ "_noteR65": "R65 ART-4 batch4: resTint = palette per resource (tints picked by us, INVENTED); sprite.layer2 = list of {file,tint} drawn in order over the base; basePal = fixed tint for the base (mug=oak)."
 }

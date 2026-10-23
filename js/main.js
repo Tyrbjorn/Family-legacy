@@ -62,6 +62,7 @@ const names = [
   "creation",
   "doll",
   "resnames",
+  "estaterooms",
 ];
 
 export const D = {};

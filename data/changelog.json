@@ -2,6 +2,22 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R66",
+      "title": "Lift the roof",
+      "items": [
+        "🏠 Tap a building on the estate map (or Inside in the List view) and its roof lifts off: every furnishing, fitting, upgrade and tier is shown in place, extra beds stacked. Placeholder emoji for now; room art is on its way."
+      ]
+    },
+    {
+      "build": "R65",
+      "title": "Painted pantry and treasures",
+      "items": [
+        "🎨 About 60 more materials now have painted icons: food and drink, crops, gems, pearls, blocks, potions, crown pieces and more. Coal keeps its emoji.",
+        "🍲 Stews steam, meat has a bone, potions and ales show their colour.",
+        "Classic emoji mode still shows the old emoji everywhere."
+      ]
+    },
+    {
       "build": "R64",
       "title": "Proper item names, brighter tabards",
       "items": [

@@ -22,14 +22,24 @@ export function iconHtml(A, kind, id, def, opts = {}) {
   const px = opts.size || 18, src = sp.file, t = opts.title ? ` title="${esc(opts.title)}"` : "";
   const fb = `this.parentNode.outerHTML='${String(emoji).replace(/'/g, "")}'`;
   // R58b: ores and smelted metals share the ingot sprite, recoloured by metal (resMat)
-  const rmat = kind === "res" && (A.resMat || {})[id];
-  const pal = (sp.grey || rmat) && (A.palettes || {})[rmat || matFor(A, id, def)];
+  // R65: resTint = palette per resource for batch4 sprites (same tint path as resMat)
+  const rmat = kind === "res" && ((A.resMat || {})[id] || (A.resTint || {})[id]);
+  const P = A.palettes || {}, pal = (sp.grey || rmat) && P[rmat || matFor(A, id, def)];
+  const tintSpan = (c, f) => `<span class="arttint" style="background:${c};-webkit-mask-image:url(${f});mask-image:url(${f})"></span>`;
+  const img = `<img src="${src}"${rmat && !sp.grey && !sp.layer2 ? ' style="filter:grayscale(1) brightness(1.15)"' : ""} alt="${esc(emoji)}" loading="lazy" onerror="${fb}">`;
+  const wrap = inner => `<span class="art" style="width:${px}px;height:${px}px"${t}>${inner}</span>`;
   // R58.2: ore = neutral rock + metal-tinted veins layer (same masked multiply tint as weapons)
   if (sp.veins) {
     const vc = ((A.veinPal || {})[rmat]) || (pal && pal.base), v = sp.veins;
-    const vt = vc ? `<span class="arttint" style="background:${vc};-webkit-mask-image:url(${v});mask-image:url(${v})"></span>` : "";
-    return `<span class="art" style="width:${px}px;height:${px}px"${t}><img src="${src}" alt="${esc(emoji)}" loading="lazy" onerror="${fb}"><img class="artvein" src="${v}" alt="" loading="lazy" onerror="this.remove()">${vt}</span>`;
+    return wrap(`<img src="${src}" alt="${esc(emoji)}" loading="lazy" onerror="${fb}"><img class="artvein" src="${v}" alt="" loading="lazy" onerror="this.remove()">${vc ? tintSpan(vc, v) : ""}`);
   }
-  const tint = pal ? `<span class="arttint" style="background:${pal.base};-webkit-mask-image:url(${src});mask-image:url(${src})"></span>` : "";
-  return `<span class="art" style="width:${px}px;height:${px}px"${t}><img src="${src}"${rmat && !sp.grey ? ' style="filter:grayscale(1) brightness(1.15)"' : ""} alt="${esc(emoji)}" loading="lazy" onerror="${fb}">${tint}</span>`;
+  // R65: layer2 = list of {file, tint}, drawn in order over the base. tint:true takes the resource palette, false stays as drawn.
+  if (sp.layer2) {
+    const L = [].concat(sp.layer2).map(l => (typeof l === "string" ? { file: l, tint: true } : l));
+    const bp = sp.basePal ? P[sp.basePal] : sp.grey && pal;
+    let h = img + (bp ? tintSpan(bp.base, src) : "");
+    for (const l of L) h += `<img class="artlayer" src="${l.file}" alt="" loading="lazy" onerror="this.remove()">${l.tint && pal ? tintSpan(pal.base, l.file) : ""}`;
+    return wrap(h);
+  }
+  return wrap(img + (pal ? tintSpan(pal.base, src) : ""));
 }

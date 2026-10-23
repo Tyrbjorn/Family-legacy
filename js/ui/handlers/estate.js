@@ -72,7 +72,18 @@ export const estateActions = ({ v, b, m }) => ({
   keepjob: () => E.toggleKeepJob(s.minions.find(x => x.uid === v)),
   land: () => E.buyLand(s, v),
   estview: () => { U.estView = v === "map" ? "map" : "list"; try { localStorage.setItem("fl-estview", U.estView); } catch {} },
-  estsel: () => { U.estSel = U.estSel === v ? "" : v; },
+  estsel: () => {
+    U.estSel = U.estSel === v ? "" : v;
+    // R66: tapping a building on the map lifts its roof (interior opens under the map)
+    const uid = U.estSel.startsWith("b:") ? U.estSel.slice(2) : null;
+    U.estRoom = uid == null ? null : (isNaN(+uid) ? uid : +uid);
+    U.estRoomT = Date.now();
+  },
+  estroom: () => {
+    const uid = isNaN(+v) ? v : +v;
+    U.estRoom = U.estRoom === uid ? null : uid;
+    U.estRoomT = Date.now();
+  },
   vup: () => E.upgradeVillage(s),
   egroad: () => E.buildRoad(s, v),
   egrepair: () => E.repairRoads(s),
