@@ -162,7 +162,7 @@ export const itemIco = (id, x, size) => iconHtml(D.art, "item", id, x, { emoji: 
 
 export const costStr = c =>
   Object.entries(c)
-    .map(([k, v]) => `${fmt(v)} ${RI[k] || k}`)
+    .map(([k, v]) => `${fmt(v)} ${RI[k] || E.resName(k)}`)
     .join(" ");
 
 export function logv() {

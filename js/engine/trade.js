@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { coastHaul, markVisited } from "./sea.js";
 import { perkRoutes } from "./families.js";
 import { findId } from "./lookup.js";
@@ -144,7 +145,7 @@ export function addRoute(s, town, mode, res, from = HOME) {
   return r;
 }
 export const routeLabel = r =>
-  r.mode === "haul" ? `${r.res} ${tradePlace(r.from)} → ${tradePlace(r.town)}` : `${r.mode} ${r.res} at ${tradePlace(r.town)}`;
+  r.mode === "haul" ? `${resName(r.res)} ${tradePlace(r.from)} → ${tradePlace(r.town)}` : `${r.mode} ${resName(r.res)} at ${tradePlace(r.town)}`;
 
 // pull a follower off every trade/patrol duty
 function release(s, uid, job = "idle") {
@@ -331,7 +332,7 @@ function finish(s, r) {
     log(s, `🛒 Cart home (${routeLabel(r)}): sold ${tr.sold} for ${tr.coin}🪙${tr.spent ? ` (paid ${tr.spent}🪙)` : ""}.`);
   } else if (r.mode === "buy" && tr.load) {
     s.res[r.res] = (s.res[r.res] || 0) + tr.load;
-    log(s, `🛒 Cart home from ${tradePlace(r.town)} with ${tr.load} ${r.res}.`);
+    log(s, `🛒 Cart home from ${tradePlace(r.town)} with ${tr.load} ${resName(r.res)}.`);
   }
   r.trips = (r.trips || 0) + 1;
   r.trip = null;

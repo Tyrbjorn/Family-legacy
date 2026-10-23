@@ -58,7 +58,7 @@ function feedLine() {
         un = (s.unfed || {})[g.key];
       return `${nm} ×${g.n} ${+E.feedNeed(s, g).toFixed(1)} (${F.diets[k.diet].join("→")})${un ? ` ⚠️ unfed ${un}d` : ""}`;
     })
-    .join(" · ")} · stores: ${["hay", "wheat", "vegetables"].map(r => `${RI[r] || r + " "}${fmt(s.res[r] || 0)}`).join(" ")}. Unfed animals stop working; after ${F.runOffDays} days one runs off.</div>`;
+    .join(" · ")} · stores: ${["hay", "wheat", "vegetables"].map(r => `${RI[r] || E.resName(r) + " "}${fmt(s.res[r] || 0)}`).join(" ")}. Unfed animals stop working; after ${F.runOffDays} days one runs off.</div>`;
 }
 
 // R48 the coast: Sea Boat (Dock → Slipway, plans from Gull's Landing) and the harbour ferry (Act 1 beat)
@@ -108,7 +108,7 @@ export function parcelCard(m) {
    .map(f => {
      const fd = E.featureDef(f),
        on = m.action && m.action.type === "parcel" && m.action.target === f;
-     return `<div class="row"><span>${fd.icon} ${fd.name} <span class="muted">${Object.entries(fd.res).map(([k, v]) => `+${v}${RI[k] || k}/day`).join(" ")} · ${sk(fd.skill).name}</span></span><button class="b ${on ? "sel" : ""}" data-a="parcel" data-v="${f}" ${busy && !on ? "disabled" : ""}>${on ? "Working" : "Work"}</button></div>`;
+     return `<div class="row"><span>${fd.icon} ${fd.name} <span class="muted">${Object.entries(fd.res).map(([k, v]) => `+${v}${RI[k] || E.resName(k)}/day`).join(" ")} · ${sk(fd.skill).name}</span></span><button class="b ${on ? "sel" : ""}" data-a="parcel" data-v="${f}" ${busy && !on ? "disabled" : ""}>${on ? "Working" : "Work"}</button></div>`;
    })
    .join("")}</div>`;
 }
@@ -145,7 +145,7 @@ export function mapDetail(m) {
       on = m.action && m.action.type === "quest" && m.action.target === id;
     h = `<div class="card"><b>${kd[0]} ${q.name}</b> <span class="tb" style="border-color:${kd[1]}">${kd[2]}${q.story ? " · ch. " + q.story : ""}</span> <span class="risk-${q.risk}">[${q.risk}]</span>${q.desc ? `<div class="muted">${q.desc}</div>` : ""}
   <div class="muted">CP ${q.cp} · task ${q.days}d · 🚶 ${trav} · reward ${Object.entries(q.reward)
-    .map(([k, v]) => v + (RI[k] || k))
+    .map(([k, v]) => v + (RI[k] || E.resName(k)))
     .join(" ")}${
     q.grants && Object.keys(q.grants).some(k => k !== "item")
       ? " · 🎁 " +
@@ -171,7 +171,7 @@ export function mapDetail(m) {
     h = `<div class="card"><b>${n.icon} ${n.name}</b> <span class="tb">🔁 Resource node</span>${edgeNote(n)}<div class="muted">${Object.entries(
       n.res,
     )
-      .map(([k, v]) => `+${v}${RI[k] || k}/day`)
+      .map(([k, v]) => `+${v}${RI[k] || E.resName(k)}/day`)
       .join(" ")} · ${sk(n.skill).name} · trip ${D.map.gatherTripDays}d gathering · 🚶 ${trav}</div>
   <div class="muted">${routeLine(id)} · stock ${Math.round(E.nodeStock(s, n))}/${E.nodeMax(n)}${E.nodeStock(s, n) > 0 ? "" : " 🪫 worked out (regrows day by day)"} · haul ${E.haulTier(s).carry}/trip</div>
   <div class="bar"><i style="width:${(E.nodeStock(s, n) / E.nodeMax(n)) * 100}%"></i></div>
@@ -200,7 +200,7 @@ export function mapDetail(m) {
       .map(
         (f, i) =>
           `${i + 1}. ${f.boat ? "⛵ " : ""}${f.name} (CP ${f.cp}, ${f.days}d, ${Object.entries(f.reward)
-            .map(([k, v]) => v + (RI[k] || k))
+            .map(([k, v]) => v + (RI[k] || E.resName(k)))
             .join(" ")})${f.boat ? (E.hasSeaBoat(s) ? " · your Sea Boat gets through" : " · 🔒 needs your own Sea Boat (skipped until then)") : ""}`,
       )
       .join(
@@ -267,20 +267,20 @@ export function mapv() {
       )
         .map(
           ([k, p]) =>
-            `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"} title="${priceTipOf(t.id, k)}">Sell 10${RI[k] || " " + k} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙${priceTagHtml(t.id, k)}</button>`,
+            `<button class="b" data-a="sellres" data-v="${t.id}" data-w="${k}" ${s.res[k] >= 10 ? "" : "disabled"} title="${priceTipOf(t.id, k)}">Sell 10${RI[k] || " " + E.resName(k)} → ${fmt(E.townSellPrice(s, t.id, k) * 10)}🪙${priceTagHtml(t.id, k)}</button>`,
         )
         .join("")}</div>${
         E.marketOf(t.id, s).length
           ? `<div class="muted" style="margin-top:4px">Makes: ${(t.produces || []).map(k => (RI[k] || "") + k).join(", ") || "—"} · Wants: ${(t.wants || []).map(k => (RI[k] || "") + k).join(", ") || "—"}</div><div class="row" style="flex-wrap:wrap;margin-top:4px"><span class="muted">Market:</span>${E.marketOf(t.id, s)
               .map(k => {
                 const p = E.townBuyPrice(s, t.id, k);
-                return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"} title="${priceTipOf(t.id, k, "buy")}">Buy 10${RI[k] || k} ← ${fmt(p * 10)}🪙${priceTagHtml(t.id, k, "buy")}</button>`;
+                return `<button class="b" data-a="buyres" data-v="${t.id}" data-w="${k}" ${s.res.coin >= p * 10 ? "" : "disabled"} title="${priceTipOf(t.id, k, "buy")}">Buy 10${RI[k] || E.resName(k)} ← ${fmt(p * 10)}🪙${priceTagHtml(t.id, k, "buy")}</button>`;
               })
               .join("")}</div>`
           : ""
       }
    ${t.id === "saltmere" && E.localsLine(s) ? `<div class="muted" style="font-style:italic;margin-top:4px">👁️ ${E.localsLine(s)}</div>` : ""}
-   ${E.breweryOf(t.id) ? `<div id="brewery-${t.id}" style="margin-top:4px"><span class="muted">🍺 ${E.breweryOf(t.id).name || "Brewery"} · a few casks a month (your own Brewery is cheaper):</span>${E.brewRefused(s, t.id) ? `<div class="muted">🐟 ${E.brewRefused(s, t.id)}</div>` : ""}<div class="row" style="flex-wrap:wrap">${Object.keys(E.brewsOf(t.id)).map(k => { const left = E.brewLeft(s, t.id, k), p = E.brewPrice(s, t.id, k), n = Math.min(4, left); return `<button class="b" data-a="buybrew" data-v="${t.id}" data-w="${k}" ${n > 0 && s.res.coin >= p * n && !E.brewRefused(s, t.id) ? "" : "disabled"} title="${left} left this month">Buy ${n || 4}${RI[k] || " " + k} ← ${fmt(p * (n || 4))}🪙 · ${left} left</button>`; }).join("")}</div></div>` : ""}
+   ${E.breweryOf(t.id) ? `<div id="brewery-${t.id}" style="margin-top:4px"><span class="muted">🍺 ${E.breweryOf(t.id).name || "Brewery"} · a few casks a month (your own Brewery is cheaper):</span>${E.brewRefused(s, t.id) ? `<div class="muted">🐟 ${E.brewRefused(s, t.id)}</div>` : ""}<div class="row" style="flex-wrap:wrap">${Object.keys(E.brewsOf(t.id)).map(k => { const left = E.brewLeft(s, t.id, k), p = E.brewPrice(s, t.id, k), n = Math.min(4, left); return `<button class="b" data-a="buybrew" data-v="${t.id}" data-w="${k}" ${n > 0 && s.res.coin >= p * n && !E.brewRefused(s, t.id) ? "" : "disabled"} title="${left} left this month">Buy ${n || 4}${RI[k] || " " + E.resName(k)} ← ${fmt(p * (n || 4))}🪙 · ${left} left</button>`; }).join("")}</div></div>` : ""}
    ${landShop(t.id) ? '<div class="muted" style="margin-top:4px">📜 LAND FOR SALE</div>' + landShop(t.id) : ""}
    ${D.guilds.guilds
      .filter(g => g.town === t.id)
@@ -296,7 +296,7 @@ export function mapv() {
         .map(n => {
           const on = m.action && m.action.type === "gather" && m.action.target === n.id;
           return `<div class="card row"><span>${n.icon} ${n.name}<br><span class="muted">${Object.entries(n.res)
-            .map(([k, v]) => `+${v}${RI[k] || " " + k}/day`)
+            .map(([k, v]) => `+${v}${RI[k] || " " + E.resName(k)}/day`)
             .join(
               " ",
             )} · ${sk(n.skill).name}</span><div class="bar" style="width:120px"><i style="width:${(E.nodeStock(s, n) / E.nodeMax(n)) * 100}%"></i></div></span><button class="b ${on ? "sel" : ""}" data-a="gather" data-v="${n.id}">Gather</button></div>`;
@@ -308,7 +308,7 @@ export function mapv() {
       h += `<div class="card row"><span>${qKind(q)[0]} ${q.name} <span class="muted" style="font-size:11px">${qKind(q)[2]}</span> <span class="risk-${q.risk}">[${q.risk}]</span><br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(
         q.reward,
       )
-        .map(([k, v]) => v + (RI[k] || " " + k))
+        .map(([k, v]) => v + (RI[k] || " " + E.resName(k)))
         .join(
           " ",
         )} · ${Math.round(E.successChance(s, m, q) * 100)}%${q.risk === "deadly" ? " · ☠️ death risk" : ""}${q.unlocks ? ` · 🔓 ${s.unlocks.includes(q.unlocks) ? "unlocked" : "unlocks"} ${unlockName(q.unlocks)}` : ""}</span>${on ? `<div class="bar"><i style="width:${(m.action.progress / q.days) * 100}%"></i></div>` : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q, s) ? "" : "disabled"}>Go</button></div>`;

@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { seaCargo } from "./sea.js";
 // Map round (data/world.json): terrain, roads, routes, fog of war, locations, node stock, hauling, land features.
 import { D, T, isAdult, living, log, rng } from "./state.js";
@@ -113,7 +114,7 @@ export function discoverLoc(s, l, who) {
     const bits = [];
     for (const [k, v] of Object.entries(l.reward || {}))
       if (k === "renown") s.renown = (s.renown || 0) + v, bits.push(`+${v} renown`);
-      else (s.res[k] = (s.res[k] || 0) + v), bits.push(`+${v} ${k}`);
+      else (s.res[k] = (s.res[k] || 0) + v), bits.push(`+${v} ${resName(k)}`);
     if (l.buff) addBuff(s, l.buff), bits.push("✨ " + l.buff.name);
     const msg = `🗺️ Discovered ${ty.icon} ${l.name} (${ty.name})${who ? " — " + who : ""}${bits.length ? ": " + bits.join(", ") : ""}.`;
     log(s, msg);

@@ -49,7 +49,7 @@ function recipeCard(rc, who) {
     .map(o => `${o.name} ${pct(o.p)}`)
     .join(" · ");
   const mats = E.matsStatus(s, rc)
-    .map(x => `<span style="color:${x.ok ? "#7c7" : "#e77"}">${RI[x.k] || ""}${x.k} ${fmt(x.have)}/${x.need}</span>`)
+    .map(x => `<span style="color:${x.ok ? "#7c7" : "#e77"}">${RI[x.k] || ""}${E.resName(x.k)} ${fmt(x.have)}/${x.need}</span>`)
     .join(" ");
   const act = E.active(s);
   const on = act.action && act.action.type === "craft" && act.action.target === rc.id;
@@ -98,7 +98,7 @@ function stations() {
   )
     .map(
       k =>
-        `<label class="muted">${RI[k] || ""}${k} <input type="number" min="0" step="10" style="width:56px" data-a="reserve" data-v="${k}" value="${E.reserveOf(s, k)}"></label>`,
+        `<label class="muted">${RI[k] || ""}${E.resName(k)} <input type="number" min="0" step="10" style="width:56px" data-a="reserve" data-v="${k}" value="${E.reserveOf(s, k)}"></label>`,
     )
     .join("")}</div>`;
   return h;

@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { findId } from "./lookup.js";
 // R45 Town quest boards, multi-stop quest lines and phase bands (data/boards.json).
 // Boards: each discovered town shows `show` jobs, a new set every `rotateDays` days: `fromBand` from your band
@@ -137,7 +138,7 @@ export function stopIssue(s, m, id) {
   if (isBusy(m) || (m.action && m.action.type === "bjob")) return `${m.name} is away`;
   const stop = L.stops[st ? st.stop : 0];
   if (stop.cp && cp(s, m) < stop.cp) return `needs CP ${stop.cp}`;
-  if (stop.deliver && !afford(s, stop.deliver)) return "needs " + Object.entries(stop.deliver).map(([k, v]) => `${v} ${k}`).join(", ");
+  if (stop.deliver && !afford(s, stop.deliver)) return "needs " + Object.entries(stop.deliver).map(([k, v]) => `${v} ${resName(k)}`).join(", ");
   return null;
 }
 export function goStop(s, m, id) {
@@ -155,7 +156,7 @@ function finishStop(s, m, id, i) {
   const L = lineDef(id), st = lineState(s, id);
   if (!L || !st || st.stop !== i) return;
   const mult = bandMult(L.band), stop = L.stops[i], gain = [];
-  const give = (r, mm) => { for (const [k, v] of Object.entries(r || {})) { if (k === "renown") { addRenown(s, m, v); gain.push(`+${v} renown`); } else { const n = Math.round(v * (k === "coin" ? mm : 1)); s.res[k] = (s.res[k] || 0) + n; gain.push(`+${n} ${k}`); } } };
+  const give = (r, mm) => { for (const [k, v] of Object.entries(r || {})) { if (k === "renown") { addRenown(s, m, v); gain.push(`+${v} renown`); } else { const n = Math.round(v * (k === "coin" ? mm : 1)); s.res[k] = (s.res[k] || 0) + n; gain.push(`+${n} ${resName(k)}`); } } };
   give(stop.reward, mult);
   st.stop++;
   if (st.stop >= L.stops.length) {

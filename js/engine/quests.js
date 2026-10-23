@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { boatHoled, hydraDone, hydraFail, hydraIssue, localsLine, rescueDone, takenMembers } from "./dagon.js";
 import { openGate, swearOath, usurperQuestDone } from "./highlands.js";
 import { chainDone } from "./guildtiers.js";
@@ -49,7 +50,7 @@ export function resolveQuest(s, m, q, eff) {
   for (const [k, v] of Object.entries(q.reward)) {
     const n = Math.round(v * (eff >= 1 ? 1 : Math.max(eff * 2, 0.4)) * (k === "coin" ? th.coin : 1));
     s.res[k] = (s.res[k] || 0) + n;
-    gain.push(`+${n} ${k}`);
+    gain.push(`+${n} ${resName(k)}`);
   }
   gainXp(s, m, checkSkill(m, q), T.xpPerDay * 2); // R49: a skill check trains the skill used
   const id = rollLoot(q, (cls(m) || {}).lootBonus || 0, actLvl(s, m));

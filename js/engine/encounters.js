@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { findId } from "./lookup.js";
 import { injure } from "./injuries.js";
 import { gameFx } from "./difficulty.js";
@@ -106,7 +107,7 @@ function applyOutcome(s, m, out) {
   }
   for (const [k, v] of Object.entries(out.res || {})) {
     s.res[k] = (s.res[k] || 0) + v;
-    bits.push(`+${v} ${k}`);
+    bits.push(`+${v} ${resName(k)}`);
   }
   if (out.item && addToVault(s, out.item)) bits.push(itemDef(out.item).name);
   if (out.recipe && !s.unlocks.includes("recipe:" + out.recipe)) {

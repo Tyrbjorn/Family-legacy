@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { dwarfTravel } from "./dwarves.js";
 import { perkDiscover, perkNode, perkTravel } from "./families.js";
 import { isCoastal, payFerry, seaOption } from "./sea.js";
@@ -239,7 +240,7 @@ export function gatherInto(s, t, n, mul, bonusOf, finds = {}) {
 }
 export function deliverLoad(s, who, t) {
   const bits = [];
-  for (const [k, v] of Object.entries(t.load)) if (v > 0) (s.res[k] = (s.res[k] || 0) + v), bits.push(`${Math.round(v * 10) / 10} ${k}`);
+  for (const [k, v] of Object.entries(t.load)) if (v > 0) (s.res[k] = (s.res[k] || 0) + v), bits.push(`${Math.round(v * 10) / 10} ${resName(k)}`);
   if (bits.length) log(s, `🛒 ${who} hauled home ${bits.join(", ")}.`);
   t.load = null;
   t.cap = 0;

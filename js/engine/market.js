@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { findId } from "./lookup.js";
 // R39: base-game supply & demand made visible. Read-only helpers: price tags, town Short/Flooded tags
 // and the Market Board. No state of its own (shortage/glut events live in s.wevents, see worldevents.js).
@@ -23,18 +24,18 @@ export function priceTag(s, townId, res, side = "sell") {
 export function priceTip(s, townId, res, level) {
   const t = town(townId),
     ev = eventsAtTown(s, townId).find(e => e.res === res);
-  if (level === "normal") return `${t.name}: normal price for ${res}`;
-  if (ev) return `${t.name} ${eventType(ev.type).id === "shortage" ? "is short of" : "is flooded with"} ${res} (${ev.until - s.day}d left)`;
+  if (level === "normal") return `${t.name}: normal price for ${resName(res)}`;
+  if (ev) return `${t.name} ${eventType(ev.type).id === "shortage" ? "is short of" : "is flooded with"} ${resName(res)} (${ev.until - s.day}d left)`;
   const sup = townSupply(s, townId, res),
     base = baseSupply(townId, res);
   if (level === "high") {
-    if (sup < base - 0.05) return `${t.name} is running low on ${res} (people bought it up); recovers in ~${recoverDays(sup, base)} days`;
-    if ((t.wants || []).includes(res)) return `${t.name} pays well for ${res} (they want it)`;
-    return `${t.name} pays well for ${res} right now`;
+    if (sup < base - 0.05) return `${t.name} is running low on ${resName(res)} (people bought it up); recovers in ~${recoverDays(sup, base)} days`;
+    if ((t.wants || []).includes(res)) return `${t.name} pays well for ${resName(res)} (they want it)`;
+    return `${t.name} pays well for ${resName(res)} right now`;
   }
-  if (sup > base + 0.05) return `Flooded: lots of ${res} sold here; recovers in ~${recoverDays(sup, base)} days`;
-  if ((t.produces || []).includes(res)) return `${t.name} makes ${res}, so it's cheap here`;
-  return `${t.name} pays little for ${res} right now`;
+  if (sup > base + 0.05) return `Flooded: lots of ${resName(res)} sold here; recovers in ~${recoverDays(sup, base)} days`;
+  if ((t.produces || []).includes(res)) return `${t.name} makes ${resName(res)}, so it's cheap here`;
+  return `${t.name} pays little for ${resName(res)} right now`;
 }
 // days until supply drifts back to within 0.1 of its resting level (daily recovery closes a % of the gap)
 export const recoverDays = (sup, base) => {

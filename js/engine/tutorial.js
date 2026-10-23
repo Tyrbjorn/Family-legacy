@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { findId } from "./lookup.js";
 // Apprentice prologue (rewarded, skippable tutorial) + tab-tour state. Progress lives in s.tut.
 import { chron } from "./chronicle.js";
@@ -26,7 +27,7 @@ function grant(s, g) {
   for (const [k, v] of Object.entries(g)) {
     if (k === "items") for (const id of v) addToVault(s, id) && out.push(id);
     else if (k === "unlock") !s.unlocks.includes(v) && s.unlocks.push(v) && out.push(v);
-    else ((s.res[k] = (s.res[k] || 0) + v), out.push(`+${v} ${k}`));
+    else ((s.res[k] = (s.res[k] || 0) + v), out.push(`+${v} ${resName(k)}`));
   }
   return out;
 }

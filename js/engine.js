@@ -82,3 +82,4 @@ export * from "./engine/dwarves.js";
 export * from "./engine/seablood.js";
 export * from "./engine/r60.js";
 import "./engine/r60-wire.js";
+export * from "./engine/resname.js";

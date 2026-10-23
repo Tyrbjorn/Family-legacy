@@ -11,7 +11,7 @@ export function boardCard(tid, m) {
   const J = E.boardOf(s, tid), left = Math.max(0, E.boardNext(s, tid) - (s.day || 0));
   const row = j => {
     const iss = E.jobIssue(s, m, j.uid), who = j.taken != null ? (E.findId(s.members, j.taken) || {}).name : null;
-    const what = j.kind === "deliver" ? `${j.n}${RI[j.res] || " " + j.res}` : j.kind === "clear" ? `CP ${j.cp}` : `to ${E.boardPlace(j.to)}`;
+    const what = j.kind === "deliver" ? `${j.n}${RI[j.res] || " " + E.resName(j.res)}` : j.kind === "clear" ? `CP ${j.cp}` : `to ${E.boardPlace(j.to)}`;
     const ord = j.kind === "deliver" && !who && /needs/.test(iss || "") ? `<button class="b" style="font-size:11px" data-a="bjorder" data-v="${j.uid}" title="Add a Work Order for what's missing">📋 Order it</button>` : "";
     return `<div class="card boardjob" style="padding:5px 8px;margin:3px 0"><div class="row"><span>${KIND[j.kind] || "📋"} <b>${j.name}</b> ${bandTag(j.band)}${j.stretch ? ' <span class="tb" title="One band above yours">⬆️ stretch</span>' : ""}</span></div>` +
       `<div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap"><span class="muted" style="font-size:12px">${what} · ${j.days}d at the spot · 🚶 ${E.travelDays(E.jobDest(tid, j))}d each way · <b>${fmt(j.coin)}🪙</b> +${j.favour || 0} favour</span>` +

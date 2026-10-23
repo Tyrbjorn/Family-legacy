@@ -36,7 +36,7 @@ export function foodPanelv() {
   const days = f.days === Infinity ? "∞" : f.days >= 999 ? "999+" : fmt(f.days);
   const last = f.last;
   const warn = last && last.short > 0.01 ? `<div style="color:#e77">⚠️ Shortage: ate ${Math.round(last.ratio * 100)}% of needs. Contentment and output fall.</div>` : "";
-  const emerg = last && last.emergency && last.emergency.length ? `<div class="muted">Ate off-menu as a last resort: ${last.emergency.map(k => RI[k] || k).join(" ")}</div>` : "";
+  const emerg = last && last.emergency && last.emergency.length ? `<div class="muted">Ate off-menu as a last resort: ${last.emergency.map(k => RI[k] || E.resName(k)).join(" ")}</div>` : "";
   return `<div class="card" id="foodpanel"><div class="row"><b>🍽️ Food</b><span class="muted">${f.variety} type${f.variety === 1 ? "" : "s"} · ${fmt(f.need)}🍞/day · ${days} days of stock · contentment ${f.morale >= 0 ? "+" : ""}${f.morale.toFixed(1)}</span></div>
  <div class="muted">Everyone eats evenly from every food on the menu. More types = more satiation and contentment (diminishing). Quality makes each portion go further.</div>
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start;margin:4px 0"><span class="muted">Rations:</span>${E.RATIONS()
@@ -45,13 +45,13 @@ export function foodPanelv() {
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${f.all
    .map(
      x =>
-       `<button class="chip ${x.on ? "sel" : ""}" data-a="diet" data-v="${x.k}" ${x.k === "food" ? "disabled" : ""} title="${x.on ? "On the menu" : "Kept for cooking"} · value ${x.value.toFixed(2)}">${RI[x.k] || ""} ${(E.dishDef(x.k) || {}).name || x.k} ${fmt(x.have)}</button>`,
+       `<button class="chip ${x.on ? "sel" : ""}" data-a="diet" data-v="${x.k}" ${x.k === "food" ? "disabled" : ""} title="${x.on ? "On the menu" : "Kept for cooking"} · value ${x.value.toFixed(2)}">${RI[x.k] || ""} ${(E.dishDef(x.k) || {}).name || E.resName(x.k)} ${fmt(x.have)}</button>`,
    )
    .join("")}</div>
  <div class="muted">Bonuses: ${f.bonuses.length ? f.bonuses.join(" · ") : "none"}</div>${warn}${emerg}${recipesv()}</div>`;
 }
 // R33: recipes (dishes from data/cooking.json): learned or how to learn, ingredients, food/sell, buffs; Auto Cook rules
-const inName = k => (k.startsWith("fish:") ? (E.fishDef(k.slice(5)) || {}).name || k : k === "fish" ? "any fish" : k);
+const inName = k => (k.startsWith("fish:") ? (E.fishDef(k.slice(5)) || {}).name || k : k === "fish" ? "any fish" : E.resName(k));
 export function recipesv() {
   const L = E.dishList(s);
   if (!L.length) return "";
@@ -73,7 +73,7 @@ export function estate() {
  <div class="muted">${Object.entries(D.estate.resourceTiers)
    .map(
      ([n, t]) =>
-       `<b>T${n} ${t.name}:</b> ${t.res.length ? t.res.map(k => `${RI[k] || ""}${k} ${fmt(s.res[k] || 0)}`).join(" · ") : t.planned.join(", ")}`,
+       `<b>T${n} ${t.name}:</b> ${t.res.length ? t.res.map(k => `${RI[k] || ""}${E.resName(k)} ${fmt(s.res[k] || 0)}`).join(" · ") : t.planned.join(", ")}`,
    )
    .join(
      "<br>",
@@ -163,7 +163,7 @@ export function reservesRow() {
   )
     .map(
       k =>
-        `<label class="muted">${RI[k] || ""}${k} <input type="number" min="0" step="10" style="width:56px" data-a="reserve" data-v="${k}" value="${E.reserveOf(s, k)}"></label>`,
+        `<label class="muted">${RI[k] || ""}${E.resName(k)} <input type="number" min="0" step="10" style="width:56px" data-a="reserve" data-v="${k}" value="${E.reserveOf(s, k)}"></label>`,
     )
     .join("")}</div>`;
 }
@@ -184,7 +184,7 @@ export function legacyPanel() {
 }
 
 // R34: Quotas card (Steward's Ledger). Row: item, target, one-time/standing, progress, status, priority, remove.
-const qName = k => (E.itemDef(k) || {}).name || (E.dishDef(k) || {}).name || k;
+const qName = k => (E.itemDef(k) || {}).name || (E.dishDef(k) || {}).name || E.resName(k);
 export function quotasv() {
   const L = E.quotaList(s).filter(q => !q.order), slots = E.quotaSlots(s), used = L.filter(q => !q.parent).length, t2 = E.quotaTier(s) >= 2; // R43: work-order chains show on the Orders card
   const row = (q, i) => {

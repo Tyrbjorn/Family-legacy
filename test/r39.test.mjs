@@ -30,11 +30,11 @@ ok(T.market.highAt===1.15&&T.market.lowAt===0.85,'thresholds 115% / 85%');
 // tag matches actual sell price movement
 { const s=game(); const p0=E.townSellPrice(s,'thornwick','salt'); E.startEvent(s,'shortage','thornwick',15,'salt');
   const p1=E.townSellPrice(s,'thornwick','salt'); ok(Math.abs(p1/p0-1.5)<0.02,'shortage: sell price x1.5');
-  ok(E.priceTag(s,'thornwick','salt').level==='high'&&/short of salt/.test(E.priceTag(s,'thornwick','salt').tip),'shortage tip');
+  ok(E.priceTag(s,'thornwick','salt').level==='high'&&/short of salt/i.test(E.priceTag(s,'thornwick','salt').tip),'shortage tip');
   ok(E.townTags(s,'thornwick').short[0].res==='salt','shortage good tops "Short of"');
   ok(E.eventText(s.wevents[0]).includes('salt')&&E.eventText(s.wevents[0]).includes('Thornwick'),'event text names town and good');
   const other=E.townSellPrice(s,'thornwick','ale'), oth2=E.townSellPrice(s,'ashford','salt'); s.wevents=[]; ok(other===E.townSellPrice(s,'thornwick','ale')&&oth2===E.townSellPrice(s,'ashford','salt'),'only that good in that town');
-  E.startEvent(s,'glut','ashford',12,'flour'); const g=E.priceTag(s,'ashford','flour'); ok(g.level==='low'&&/flooded with flour/.test(g.tip),'glut ▼ + tip');
+  E.startEvent(s,'glut','ashford',12,'flour'); const g=E.priceTag(s,'ashford','flour'); ok(g.level==='low'&&/flooded with flour/i.test(g.tip),'glut ▼ + tip');
   const b0=(()=>{const x=game();return E.townBuyPrice(x,'ashford','flour');})(); ok(E.townBuyPrice(s,'ashford','flour')>=b0,'glut never makes buying cheaper (no resale arbitrage)');
   s.day+=13; { const keep=seeded; E.setRng(()=>0.999); E.eventsDay(s); E.setRng(keep); } ok(!s.wevents.length&&E.priceTag(s,'ashford','flour').level==='low'&&!/flooded with/.test(E.priceTag(s,'ashford','flour').tip),'event expires');
 }

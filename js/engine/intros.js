@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { findId } from "./lookup.js";
 // Unlock intros (data/intros.json): when a system first opens (Crafting, Food, Minions, Guilds, Houses, Dynasty…)
 // a 1-3 step "do it" quest line starts with small rewards. Lines never block play and are skippable.
@@ -51,7 +52,7 @@ function reward(s, r) {
   for (const [k, v] of Object.entries(r || {})) {
     if (k === "renown") s.renown = (s.renown || 0) + v;
     else s.res[k] = (s.res[k] || 0) + v;
-    got.push(`+${v} ${k}`);
+    got.push(`+${v} ${resName(k)}`);
   }
   return got.join(", ");
 }

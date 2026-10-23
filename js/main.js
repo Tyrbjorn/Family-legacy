@@ -61,6 +61,7 @@ const names = [
   "estatemap",
   "creation",
   "doll",
+  "resnames",
 ];
 
 export const D = {};

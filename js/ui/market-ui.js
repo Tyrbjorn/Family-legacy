@@ -19,14 +19,14 @@ export function townTagsHtml(townId) {
   const { short, flooded } = E.townTags(s, townId);
   const shut = E.marketClosed(s, townId) ? `<div class="mtags" style="margin-top:4px;color:#e0a040">🕯️ Market shut today (Lodge procession): no buying or selling here.</div>` : ""; // R49
   if (!short.length && !flooded.length) return shut;
-  const list = xs => xs.map(x => `<span title="${esc(x.tip)}">${RI[x.res] || ""}${x.res}</span>`).join(", ");
+  const list = xs => xs.map(x => `<span title="${esc(x.tip)}">${RI[x.res] || ""}${E.resName(x.res)}</span>`).join(", ");
   return shut + `<div class="mtags" style="margin-top:4px">${short.length ? `<span style="color:#3fbf5f">▲ Short of:</span> ${list(short)}` : ""}${short.length && flooded.length ? " · " : ""}${flooded.length ? `<span style="color:#e0533d">▼ Flooded with:</span> ${list(flooded)}` : ""}</div>`;
 }
 
 const sellRow = (r, link) =>
-  `<div class="row mrow" style="margin:3px 0"><span style="flex:1">${RI[r.res] || ""} ${r.res} <span class="muted">×${fmt(r.have)}</span>${r.tag.arrow ? `<br><span class="muted" style="font-size:11px">${r.tag.tip}</span>` : ""}</span><span>${tName(r.town)} ${fmt(r.price)}🪙${priceTagHtml(r.town, r.res)} <span class="muted">🚶${r.days}d</span></span>${link ? `<button class="b" data-a="mapsel" data-v="t:${r.town}">📍</button>` : ""}</div>`;
+  `<div class="row mrow" style="margin:3px 0"><span style="flex:1">${RI[r.res] || ""} ${E.resName(r.res)} <span class="muted">×${fmt(r.have)}</span>${r.tag.arrow ? `<br><span class="muted" style="font-size:11px">${r.tag.tip}</span>` : ""}</span><span>${tName(r.town)} ${fmt(r.price)}🪙${priceTagHtml(r.town, r.res)} <span class="muted">🚶${r.days}d</span></span>${link ? `<button class="b" data-a="mapsel" data-v="t:${r.town}">📍</button>` : ""}</div>`;
 const buyRow = (r, link) =>
-  `<div class="row mrow" style="margin:3px 0"><span style="flex:1">${RI[r.res] || ""} ${r.res}</span><span>${tName(r.town)} ${fmt(r.price)}🪙${priceTagHtml(r.town, r.res, "buy")} <span class="muted">🚶${r.days}d</span></span>${link ? `<button class="b" data-a="mapsel" data-v="t:${r.town}">📍</button>` : ""}</div>`;
+  `<div class="row mrow" style="margin:3px 0"><span style="flex:1">${RI[r.res] || ""} ${E.resName(r.res)}</span><span>${tName(r.town)} ${fmt(r.price)}🪙${priceTagHtml(r.town, r.res, "buy")} <span class="muted">🚶${r.days}d</span></span>${link ? `<button class="b" data-a="mapsel" data-v="t:${r.town}">📍</button>` : ""}</div>`;
 
 // full board (Map tab): best sell spots for goods you hold + cheapest buys, "show all" in a <details>
 export function marketBoardCard() {

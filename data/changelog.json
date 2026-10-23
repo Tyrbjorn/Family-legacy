@@ -2,6 +2,14 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R64",
+      "title": "Proper item names, brighter tabards",
+      "items": [
+        "🏷️ Materials now show proper names everywhere (Copper ore, Cut gems, Iron ingots…) instead of internal ids: inventory, sell and trade lists, recipes, rewards, log lines and tooltips.",
+        "🛡️ Map walkers wear a brighter version of your house colour with a light top edge, so the tabard reads at normal size. Portraits keep the exact colour."
+      ]
+    },
+    {
       "build": "R63.1",
       "title": "Cut gems priced up",
       "items": [

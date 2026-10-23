@@ -58,7 +58,7 @@ ok(E.lineDef('lost_shipment').stops[0].at==='home'&&E.lineDef('lost_shipment').s
   s.discovered=['ashford']; ok(!E.lineIssue(s,L),'opens at Homestead with Ashford found');
   const c0=s.res.coin; ok(E.goStop(s,m,'millers_contract'),'start the line'); run(s,m,60);
   ok(E.lineState(s,'millers_contract').stop===1&&s.res.coin===c0+20,'stop 1 reward');
-  m.action=null; s.res.flour=0; ok(/needs 15 flour/.test(E.stopIssue(s,m,'millers_contract')),'stop 2 needs the flour');
+  m.action=null; s.res.flour=0; ok(/needs 15 flour/i.test(E.stopIssue(s,m,'millers_contract')),'stop 2 needs the flour');
   const os=E.orderForStop(s,'millers_contract'); ok(os.length===1&&os[0].item==='flour'&&os[0].target===15,'stop short of goods: Work Order for the flour'); ok(!E.orderForStop(s,'millers_contract').length,'no duplicate');
   s.res.flour=20; ok(E.goStop(s,m,'millers_contract')&&s.res.flour===5,'deliver stop takes the goods'); ok(m.action.target==='ashford','to Ashford');
   run(s,m,60); const st=E.lineState(s,'millers_contract'); ok(st.done&&s.res.coin===c0+20+40+120,'stop 2 + end reward');

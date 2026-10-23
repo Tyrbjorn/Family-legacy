@@ -16,7 +16,7 @@ export function requestsv() {
     const w = E.wantsOf(s, n.id), r = E.openRequest(s, n.id), x = (s.req || {})[n.id] || {}, iss = E.deliverIssue(s, n.id);
     const ac = E.findId(D.activities, n.task);
     if (!w) return `<div class="card" style="padding:5px 8px;margin:3px 0">${n.icon} <b>${n.name}</b> <span class="muted">· nothing needed right now (back in ${Math.max(1, (x.at || 0) - s.day)}d${Object.values(x.done || {}).some(v => v > ((D.requests.repeat || {}).free || 99)) ? ", asks less often now" : ""}) · favour ${x.fav || 0}</span></div>`;
-    const want = Object.entries(w).map(([k, v]) => `${ICO[k] || ""} ${Math.floor(s.res[k] || 0)}/${v} ${k}`).join(" · ");
+    const want = Object.entries(w).map(([k, v]) => `${ICO[k] || ""} ${Math.floor(s.res[k] || 0)}/${v} ${E.resName(k)}`).join(" · ");
     const rw = r.reward || {}, rs = [rw.coin && rw.coin + "🪙", rw.food && rw.food + " food", ...Object.entries(rw.res || {}).map(([k, v]) => v + " " + k), ...(rw.items || []).map(id => (E.findId(D.items, id) || {}).name), rw.renown && rw.renown + " renown"].filter(Boolean).join(" · ");
     const tw = n.town !== "millbrook" && n.town !== "village" ? E.findId(D.towns, n.town) : null; // R48: Gull's Landing folk
     return `<div class="card ${iss ? "" : "tut"}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${n.icon} <b>${n.name}</b>${tw ? ` <span class="muted">(${tw.icon} ${tw.name})</span>` : ""} wants ${want}<br><span class="muted">Reward: ${rs}${r.extra ? " · ✨ something special" : ""}${ac ? ` · fed by ${ac.icon} ${ac.name}` : ""} · favour ${x.fav || 0}</span></span><button class="b ${iss ? "" : "sel"}" data-a="deliver" data-v="${n.id}" ${iss ? "disabled" : ""}>Deliver</button></div>${iss ? `<div class="muted">${iss}</div>` : ""}</div>`;

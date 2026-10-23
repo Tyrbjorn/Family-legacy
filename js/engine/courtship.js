@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { dwarfSpouse } from "./dwarves.js";
 import { findId } from "./lookup.js";
 // Marriage depth: suitor personalities, visible traits, houses, courtship stages and patience,
@@ -86,7 +87,7 @@ export const giftMult = (su, id) => (likedGift(su, id) ? MC().likedGiftMult : 1)
 // food from the larder as a courting gift (ties the food chains in)
 export function foodGiftIssue(s, su, k) {
   if (!(k in (D.estate.meals || { menu: {} }).menu) || k === "food") return "not a dish";
-  if ((s.res[k] || 0) < MC().foodGift.units) return `${MC().foodGift.units} ${k}`;
+  if ((s.res[k] || 0) < MC().foodGift.units) return `${MC().foodGift.units} ${resName(k)}`;
   if (su.affinity >= 100) return "already smitten";
   return null;
 }

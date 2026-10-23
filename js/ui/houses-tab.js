@@ -11,7 +11,7 @@ const traitChip = id => {
   return d ? `<span class="tb" style="border-color:${E.rarityColor(id)};color:${E.rarityColor(id)}" title="${d.desc}">${d.icon} ${d.name}</span>` : "";
 };
 const dowryStr = d =>
-  [d.coin ? fmt(d.coin) + "🪙" : "", ...Object.entries(d.res || {}).map(([k, v]) => v + (RI[k] || k))].filter(Boolean).join(" ") || "none";
+  [d.coin ? fmt(d.coin) + "🪙" : "", ...Object.entries(d.res || {}).map(([k, v]) => v + (RI[k] || E.resName(k)))].filter(Boolean).join(" ") || "none";
 
 export function suitorCard(su) {
   const m = E.active(s);
@@ -25,12 +25,12 @@ export function suitorCard(su) {
   const foods = Object.keys(D.estate.meals.menu).filter(k => k !== "food" && (s.res[k] || 0) >= D.marriage.foodGift.units);
   const issue = E.proposeIssue(s, su.id);
   return `<div class="card suitor"><div class="row"><span><b>${su.name}</b>, ${su.age} · ${cl(su.cls)?.name || ""}${h ? ` · ${h.icon} ${h.name}` : " · commoner"}</span><span>${st.icon} ${st.name}</span></div>
-${bar(su.affinity / 100)}<div class="muted">❤️ ${Math.floor(su.affinity)}/100${p ? ` · ${p.icon} ${p.name}: ${p.desc} · likes ${p.likesStat} and ${it(p.likesGift)?.name || p.likesGift}` : ""}</div>
+${bar(su.affinity / 100)}<div class="muted">❤️ ${Math.floor(su.affinity)}/100${p ? ` · ${p.icon} ${p.name}: ${p.desc} · likes ${p.likesStat} and ${it(p.likesGift)?.name || E.resName(p.likesGift)}` : ""}</div>
 <div>${(su.traits || []).map(traitChip).join("")} <span class="muted">· dowry ${dowryStr(su.dowry || { coin: 0 })}</span></div>
 ${left !== Infinity ? `<div class="muted">Leaves in ${left}d${su.house && su.affinity >= D.marriage.jiltAt ? " (jilting sours their house)" : ""}</div>${bar(1 - left / D.marriage.stayDays, "#88a")}` : ""}
 <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><button class="b" data-a="court" data-v="${su.id}" ${canCourt ? "" : "disabled"}>Court</button>
 ${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}${E.likedGift(su, g) ? " ❤️" : ""}</button>`).join("")}
-${foods.map(k => `<button class="b" data-a="foodgift" data-v="${su.id}" data-w="${k}">${RI[k] || k} ${D.marriage.foodGift.units}${E.likedGift(su, k) ? " ❤️" : ""}</button>`).join("")}
+${foods.map(k => `<button class="b" data-a="foodgift" data-v="${su.id}" data-w="${k}">${RI[k] || E.resName(k)} ${D.marriage.foodGift.units}${E.likedGift(su, k) ? " ❤️" : ""}</button>`).join("")}
 <button class="b" data-a="propose" data-v="${su.id}" ${!issue ? "" : "disabled"}>💍 Propose (${E.PROPOSE_COST}🪙)</button></div>${su.affinity >= 100 && issue ? `<div class="muted">Needs ${issue}</div>` : ""}</div>`;
 }
 
@@ -89,7 +89,7 @@ ${famLines(hd)}
 ${bar((st.r - lo) / (hi - lo), tcol[tier])}<div class="muted">${perks.join(" · ")}</div>
 ${st.state === "feud" && st.warned != null ? `<div style="color:#e77">🔥 Mustering for war: ${Math.max(0, E.FEUD().warnDays - (s.day - st.warned))}d left to cool the feud.</div>` : ""}
 ${st.state === "war" ? warCard(hd) : ""}
-${qs.length ? `<div class="hq">${qs.map(q => { const iss = E.questIssue(s, m, q); return `<div class="row"><span>📜 ${q.name}<br><span class="muted">${q.against ? `vs ${E.houseDef(q.against).name} · ` : ""}CP ${q.cp} · ${q.days}d · ${Object.entries(q.reward).map(([k, v]) => v + (RI[k] || k)).join(" ")}</span></span><button class="b" data-a="hquest" data-v="${q.id}" ${!iss && E.actionAllowed(s, m, { type: "quest", target: q.id }) && !E.isBusy(m) ? "" : "disabled"} title="${iss || ""}">${iss ? "🔒" : "Take"}</button></div>`; }).join("")}</div>` : ""}
+${qs.length ? `<div class="hq">${qs.map(q => { const iss = E.questIssue(s, m, q); return `<div class="row"><span>📜 ${q.name}<br><span class="muted">${q.against ? `vs ${E.houseDef(q.against).name} · ` : ""}CP ${q.cp} · ${q.days}d · ${Object.entries(q.reward).map(([k, v]) => v + (RI[k] || E.resName(k))).join(" ")}</span></span><button class="b" data-a="hquest" data-v="${q.id}" ${!iss && E.actionAllowed(s, m, { type: "quest", target: q.id }) && !E.isBusy(m) ? "" : "disabled"} title="${iss || ""}">${iss ? "🔒" : "Take"}</button></div>`; }).join("")}</div>` : ""}
 <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start;margin-top:4px"><button class="b" data-a="hgift" data-v="${hd.id}" ${gi ? "disabled" : ""} title="${gi || ""}">🎁 Gift ${E.giftCost(s, hd.id)}🪙</button>
 ${st.state === "feud" ? `<button class="b" data-a="war" data-v="${hd.id}" ${wi ? "disabled" : ""}>🏴 Declare war</button>` : ""}
 ${cands.length ? `<select data-a="mosel" data-v="${hd.id}" aria-label="Marry out">${cands.map(x => `<option value="${x.id}" ${x === pick ? "selected" : ""}>${x.name} (${E.ageY(x)})</option>`).join("")}</select><button class="b" data-a="marryout" data-v="${hd.id}">💍 Marry into them</button>` : ""}</div>

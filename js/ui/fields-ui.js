@@ -4,7 +4,7 @@ import { RI, fmt } from "./common.js";
 import { D, s } from "../main.js";
 import { animalsRow } from "./animals-ui.js";
 
-const cost = c => Object.entries(c || {}).map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(" ");
+const cost = c => Object.entries(c || {}).map(([k, v]) => `${fmt(v)}${RI[k] || " " + E.resName(k)}`).join(" ");
 const r1 = x => Math.round(x * 10) / 10;
 const chip = (key, label) => {
   const on = E.fieldsState(s).auto[key];
@@ -18,7 +18,7 @@ function fieldRow(f, L) {
   const lvlI = E.levelIssue(s, f), szI = E.sizeIssue(s, f);
   const se = E.seasonYield(s, c.res), arrow = se >= 1.15 ? ' <span style="color:#3fbf5f">▲</span>' : se <= 0.85 ? ' <span style="color:#e0533d">▼</span>' : "";
   return `<div class="card fieldrow" data-field="${f.id}" style="margin:4px 0;padding:6px 8px">
-<div class="row"><span>${c.icon} ${sel} <span class="muted">Lv ${f.lvl}/${D.fields.levels.max} · ${sz.name}</span></span><span>${r1(E.fieldYield(s, f))}${RI[c.res] || " " + c.res}/day${arrow}</span></div>
+<div class="row"><span>${c.icon} ${sel} <span class="muted">Lv ${f.lvl}/${D.fields.levels.max} · ${sz.name}</span></span><span>${r1(E.fieldYield(s, f))}${RI[c.res] || " " + E.resName(c.res)}/day${arrow}</span></div>
 <div class="muted" style="font-size:12px">⏱️ ${r1(sz.hours)} h/day · ${st.state || "new"}${st.tended != null && st.state !== "full" ? ` (${Math.round(st.tended * 100)}% tended)` : ""}${f.stopAt ? ` · stop at ${fmt(f.stopAt)}` : ""}</div>
 <div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin-top:3px">
 <button class="b" data-a="fieldlvl" data-v="${f.id}" ${lvlI ? `disabled title="${lvlI}"` : ""}>⬆️ Level ${lvlI === "max" ? "max" : cost(E.levelCost(f, s))}</button>
@@ -41,7 +41,7 @@ export function fieldsCard() {
   }
   const pile = Object.entries(st.pile).filter(([, v]) => v >= 0.5);
   const tm = (s.minions || []).filter(x => x.job === "teamster").length;
-  h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + k}`).join(", ")}</div>` : ""}</div>`;
+  h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + E.resName(k)}`).join(", ")}</div>` : ""}</div>`;
   const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(E.bcost(s, u.cost, "hub", true))}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
   h += animalsRow(); // R41
   h += rotationRow(); // R43

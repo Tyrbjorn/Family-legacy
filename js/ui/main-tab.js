@@ -60,10 +60,10 @@ export function trainingv(m) {
 
 const RICO = { food: "🍞", fish: "🐟", meat: "🥩", hides: "🦊", wood: "🪵", stone: "🪨", thyme: "🌿", stew: "🍲" };
 const yieldStr = ac => {
-  if (ac.refine) return `${ac.refine.from.join("/")} → ${Object.entries(ac.refine.to).map(([k, v]) => `${RICO[k] || ""}${+(v * E.taskMult(s, ac)).toFixed(2)} ${k}`).join(", ")}/d`;
+  if (ac.refine) return `${ac.refine.from.map(E.resName).join("/")} → ${Object.entries(ac.refine.to).map(([k, v]) => `${RICO[k] || ""}${+(v * E.taskMult(s, ac)).toFixed(2)} ${E.resName(k)}`).join(", ")}/d`;
   if (ac.effect === "explore") return "clears fog near home · chance of a find";
   const y = Object.entries(E.taskYields(s, ac));
-  return y.length ? y.map(([k, v]) => `${RICO[k] || ""}+${+v.toFixed(2)} ${k}/d`).join(", ") : "XP only";
+  return y.length ? y.map(([k, v]) => `${RICO[k] || ""}+${+v.toFixed(2)} ${E.resName(k)}/d`).join(", ") : "XP only";
 };
 function actRow(m, ac, task) {
   const a = m.action, age = E.ageY(m);

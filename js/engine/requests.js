@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 import { followLead } from "./highlands.js";
 import { dagonFavour } from "./dagon.js";
 import { houseEvent } from "./families.js";
@@ -96,7 +97,7 @@ export function deliverIssue(s, npcId) {
   const w = wantsOf(s, npcId);
   if (!w) return "no open request";
   const short = Object.entries(w).filter(([k, v]) => (s.res[k] || 0) < v);
-  return short.length ? "need " + short.map(([k, v]) => `${v - Math.floor(s.res[k] || 0)} more ${k}`).join(", ") : null;
+  return short.length ? "need " + short.map(([k, v]) => `${v - Math.floor(s.res[k] || 0)} more ${resName(k)}`).join(", ") : null;
 }
 export const deliverable = s => RQ().npcs.filter(n => !deliverIssue(s, n.id)).length;
 

@@ -63,7 +63,7 @@ export function enchantCard() {
 <select data-a="enchsel" data-v="idx" aria-label="Slot">${Array.from({ length: slots }, (_, i) => opt("idx", i, cur[i] ? `slot ${i + 1}: replace ${E.enchDef(cur[i]).name}` : `slot ${i + 1}: empty`, i === idx)).join("")}</select></div>`;
   if (en) {
     const iss = item ? E.enchantIssue(s, who.key, item, en.id, idx) : "no item";
-    h += `<div class="muted">${fxText(en.fx)} · ${Object.entries(en.reagents).map(([k, v]) => `${v} ${k}`).join(", ")} · ${en.days} days base</div><button class="b" data-a="enchgo" data-v="${who.key}" data-w="${item || ""}" data-x="${en.id}" data-i="${idx}" ${iss ? "disabled" : ""}>✨ Enchant${iss ? " — " + iss : ""}</button>`;
+    h += `<div class="muted">${fxText(en.fx)} · ${Object.entries(en.reagents).map(([k, v]) => `${v} ${E.resName(k)}`).join(", ")} · ${en.days} days base</div><button class="b" data-a="enchgo" data-v="${who.key}" data-w="${item || ""}" data-x="${en.id}" data-i="${idx}" ${iss ? "disabled" : ""}>✨ Enchant${iss ? " — " + iss : ""}</button>`;
   }
   const withE = s.vault.filter(id => E.splitId(id).ench.length);
   if (withE.length)

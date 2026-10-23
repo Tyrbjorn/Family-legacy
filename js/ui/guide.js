@@ -12,7 +12,7 @@ const rew = r =>
         ? v.map(id => "🎁 " + E.itemDef(id).name).join(", ")
         : k === "unlock"
           ? "📜 recipe: " + (E.recipeDef(v.split(":")[1])?.name || v)
-          : `+${v} ${k}`,
+          : `+${v} ${E.resName(k)}`,
     )
     .join(", ");
 

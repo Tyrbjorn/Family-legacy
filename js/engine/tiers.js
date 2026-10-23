@@ -1,3 +1,4 @@
+import { resName } from "./resname.js";
 // Building tiers: upgrade options (House → manor branches), branch unlocks, respec, demolish (half refund, bed check).
 import { D, afford, isAdult, living, log, pay } from "./state.js";
 import { bcost, structTag } from "./builders.js";
@@ -72,7 +73,7 @@ const refundOf = c => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, M
 const give = (s, c) => {
   for (const [k, v] of Object.entries(c)) s.res[k] = (s.res[k] || 0) + v;
 };
-const costText = c => Object.entries(c).map(([k, v]) => `${v} ${k}`).join(", ");
+const costText = c => Object.entries(c).map(([k, v]) => `${v} ${resName(k)}`).join(", ");
 
 // Respec a manor branch: rebuild as another branch, refund half the old branch's cost, pay the new one in full.
 export function respecIssue(s, uid, to) {
