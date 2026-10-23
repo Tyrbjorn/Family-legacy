@@ -1,0 +1,40 @@
+{
+  "_note": "R62 ART-3 estate map (UI only, never in saves). 32px tiles. Parcels are 4x4-tile blocks with 1-tile lanes between; each parcel has 4 anchors (2x2 tiles). The south shore row is water-edge tiles (water y>=16) with open water below; docks snap to it top-left on the LEFT water-edge tile (batch3b). All positions, speeds and job spots are invented (R62 [INV]).",
+  "tile": 32,
+  "cols": 14,
+  "rows": 17,
+  "shoreRow": 14,
+  "lanesH": [4, 9],
+  "lanesV": [4, 9],
+  "lanesVTo": 13,
+  "parcels": {
+    "plot": [5, 5], "acre": [0, 5], "meadow": [10, 5],
+    "hillside": [0, 0], "woodlot": [5, 0], "ridge": [10, 0],
+    "valley": [0, 10], "riverbank": [5, 10], "highclaim": [10, 10]
+  },
+  "anchors": [[0, 0], [2, 0], [0, 2], [2, 2]],
+  "shoreAnchors": [[6, 14], [1, 14], [11, 14]],
+  "shoreTypes": ["dock", "slipway"],
+  "art": {
+    "chain": {
+      "shack": ["manor", 0], "cabin": ["manor", 1], "house": ["manor", 2], "mansion": ["manor", 2], "fort": ["manor", 2], "towerkeep": ["manor", 2], "abbey": ["manor", 2],
+      "warehouse": ["trade", 0], "tradingpost": ["trade", 1], "countinghouse": ["trade", 2],
+      "dock": ["dock", 0], "slipway": ["dock", 1]
+    },
+    "named": { "smithy": "workshop" },
+    "ups": ["herbgarden", "sawmill", "quarry", "graveyard", "bunkhouse", "masonyard", "fields", "chickencoop", "kitchen", "cowpen", "gristmill"]
+  },
+  "homeTypes": ["shack", "cabin", "house", "mansion", "fort", "towerkeep", "abbey", "cottage"],
+  "away": ["quest", "dungeon", "explore", "travel", "adventure", "bjob", "trade", "voyage", "sea"],
+  "jobSpots": {
+    "craft": ["smithy", "masonyard", "sawmill", "arcaneworkshop", "tannery"],
+    "gather": ["quarry", "sawmill", "herbgarden", "mineshaft", "fields"],
+    "activity": ["fields", "chickencoop", "cowpen", "kitchen", "herbgarden", "gristmill", "orchard"],
+    "cook": ["kitchen", "smokehouse", "brewery"],
+    "job": ["warehouse", "tradingpost", "countinghouse", "smithy", "kitchen"],
+    "train": ["bunkhouse", "barracks", "hall", "advlodge"],
+    "fish": ["dock", "slipway", "fishinghut"],
+    "rest": []
+  },
+  "walk": { "speed": 16, "pauseMin": 3, "pauseMax": 8, "wanderChance": 0.3, "fps": 10, "maxWalkers": 12, "maxWorkers": 3, "childScale": 0.75, "workerHair": "#5a3a24", "workerTabard": "#8a8f98" }
+}

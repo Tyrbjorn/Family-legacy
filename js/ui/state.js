@@ -1,5 +1,7 @@
 // Shared mutable UI state (written from several modules).
 export const U = {
+  estView: (() => { try { return localStorage.getItem("fl-estview") === "map" ? "map" : "list"; } catch { return "list"; } })(), // R62, not saved
+  estSel: "",
   tab: "main",
   lastHTML: "",
   mapSel: null,

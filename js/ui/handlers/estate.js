@@ -71,6 +71,8 @@ export const estateActions = ({ v, b, m }) => ({
   ascup: () => E.raiseBranch(s, v),
   keepjob: () => E.toggleKeepJob(s.minions.find(x => x.uid === v)),
   land: () => E.buyLand(s, v),
+  estview: () => { U.estView = v === "map" ? "map" : "list"; try { localStorage.setItem("fl-estview", U.estView); } catch {} },
+  estsel: () => { U.estSel = U.estSel === v ? "" : v; },
   vup: () => E.upgradeVillage(s),
   egroad: () => E.buildRoad(s, v),
   egrepair: () => E.repairRoads(s),

@@ -58,6 +58,7 @@ const names = [
   "fish",
   "cooking",
   "art",
+  "estatemap",
   "creation",
   "doll",
 ];

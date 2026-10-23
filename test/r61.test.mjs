@@ -6,7 +6,7 @@ for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFil
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const Y=D.tuning.daysPerYear;
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);E.skipTutorial&&E.skipTutorial(s);s.res.coin=1e5;return s;};
-ok(BUILD==='R61'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R61, no new save step'); ok(JSON.parse(fs.readFileSync(root+'data/changelog.json')).entries[0].build==='R61','changelog first');
+ok(+BUILD.slice(1)>=61&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R61, no new save step'); ok(JSON.parse(fs.readFileSync(root+'data/changelog.json')).entries.some(e=>e.build==='R61'),'changelog first');
 {const s=fresh(); const t0=E.tickBonus(s); s.lb={quick:1,ids:[]}; ok(Math.abs(E.tickBonus(s)-t0-0.05)<1e-9,'quick +5% tick'); s.speed=1e6; ok(E.globalTick(s)<=D.legacy.tickCap||D.legacy.tickCap==null,'tick cap holds');}
 {const s=fresh(); const rec={ach:{a_enc5:1},flags:{thaneOath:1},bonuses:{}}; E.applyLegacyBonuses(s,rec); ok(s.lb.travel===0.05,'travel fx'); ok(s.discovered.includes('dwarfhold')&&s.discovered.includes('loc:l_dwarfhold'),'road: Dwarfhold known'); ok(E.perkTravel(s,'highlands')>=1.05-1e-9,'road boon x1.05'); ok(!E.gateOpen(s),'gate still shut');}
 {const s=fresh(); s.res.coin=0; s.lb={coin:0.02,ids:[]}; let c=0; for(let i=0;i<100;i++){const g=E.lbCoin(s,7); ok(Number.isInteger(g),'whole coin'); c+=g;} ok(c===700+14,'carry adds up ('+c+')');}

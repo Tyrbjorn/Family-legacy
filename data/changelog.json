@@ -2,6 +2,15 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R62",
+      "title": "See your estate",
+      "items": [
+        "🗺️ The Estate tab has a new Map view (List is still the default): your land, buildings and docks drawn as pixel art, growing as you upgrade.",
+        "🚶 Family members and hired hands walk between their homes and jobs. They stand still with reduce-motion on and pause when the game is hidden.",
+        "👆 Tap a building, person, free plot or locked land on the map to open it below. Classic emoji mode shows the same map with emoji."
+      ]
+    },
+    {
       "build": "R61",
       "title": "Carry-over bonuses that do something",
       "items": [

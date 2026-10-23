@@ -8,6 +8,7 @@ import { D, s } from "../main.js";
 import { buildingCard } from "./estate-card.js";
 import { villagePanel } from "./village-panel.js";
 import { endgamePanel } from "./endgame-panel.js";
+import { mapHtml } from "./estate-map.js";
 
 export function landShop(where) {
   return D.estate.lands
@@ -124,7 +125,8 @@ export function estatev() {
   h += fieldsCard(); // R40
   h += quotasv();
   if (!E.craftingUnlocked(s)) h += ordersCard(); // R43: Work Orders live on the Crafting tab once it opens
-  h += estate();
+  h += `<div class="row estview"><button class="b${U.estView === "map" ? "" : " on"}" data-a="estview" data-v="list">📋 List</button><button class="b${U.estView === "map" ? " on" : ""}" data-a="estview" data-v="map">🗺️ Map</button></div>`; // R62
+  h += U.estView === "map" ? mapHtml() + estSelPanel() : estate();
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of E.living(s)) {
     const o = x.order;
@@ -198,4 +200,30 @@ export function quotasv() {
   return `<div class="card" id="quotas"><div class="row"><b>📋 Quotas</b>${autoChip("quotas", "", !(s.autoOff || {}).quotas)}<span class="muted">${slots > 99 ? used + " set" : used + "/" + slots + " slots"} · tier ${E.quotaTier(s)}</span></div>
  <div class="muted" style="font-size:12px">Automation works toward quotas top-down; standing quotas stop at the target. Reserves are never touched; food keeps cooking while stock is under ${E.QC().foodSafetyDays} days.${t2 ? " Tier 2: blocked quotas pull their inputs, standing targets are sell floors, a follower a month moves to a job that feeds a quota." : ""}</div>
  ${L.map(row).join("") || '<div class="muted">No quotas yet.</div>'}${add}</div>`;
+}
+
+// R62: what the tapped map spot opens (shown under the map)
+function estSelPanel() {
+  const k = U.estSel || "";
+  let h = "";
+  if (k.startsWith("b:")) {
+    const i = s.structures.findIndex(x => String(x.uid) === k.slice(2));
+    if (i >= 0) h = buildingCard(s.structures[i], i);
+  } else if (k.startsWith("o:")) {
+    const b = D.buildings.find(x => x.id === k.slice(2));
+    if (b) {
+      const lv = s.buildings[b.id], iss = E.buildIssue(s, b);
+      h = `<div class="card row"><span>${b.icon} ${b.name} <b>Lv${lv}</b><br><span class="muted">${b.desc}</span></span><button class="b" data-a="build" data-v="${b.id}" ${iss ? "disabled" : ""}>${lv >= b.max ? "Max" : iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.cost(s, b))}</button></div>`;
+    }
+  } else if (k.startsWith("m:")) {
+    const m = E.findId(s.members, +k.slice(2));
+    if (m) h = `<div class="card"><div class="mrow">${portrait(m, 48)}<div style="flex:1;min-width:0">${memberLine(m)}<div class="muted">Doing: ${m.id === s.activeId ? "you are playing them" : doing(m.action || null)}</div></div></div></div>`;
+  } else if (k === "w") h = `<div class="card muted">👷 Hired hand: works the estate's stations.</div>`;
+  else if (k === "slot")
+    h = `<div class="muted">Build new (${E.landSlots(s) - E.landUsed(s)} land free):</div>` +
+      D.estate.structures.filter(d => !d.upgradeFrom && !d.villageOnly).map(d => {
+        const iss = E.structIssue(s, d.id);
+        return `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${d.icon} ${d.name} <span class="muted">${d.land} land</span></span><button class="b" data-a="struct" data-v="${d.id}" ${iss ? "disabled" : ""}>${iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(E.structCost(s, d.id))}</button></div>`;
+      }).join("");
+  return `<div id="estsel">${h || '<div class="muted">Tap a building, a person, an empty plot or locked land.</div>'}</div>`;
 }
