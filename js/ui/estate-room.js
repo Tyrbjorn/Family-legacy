@@ -2,9 +2,12 @@
 // to show every placed furnishing, fitting, bought upgrade and production tier. Pure model (roomModel, no DOM, used by
 // test/r66.test.mjs) + HTML. Display only: everything is derived from the structure's existing state, nothing is saved.
 // Placeholders are the existing emoji; data/estaterooms.json `art` maps ids to webp files as room art arrives.
-export function roomModel(E, R, st, s) {
+export function roomModel(E, R, st, s, classic) {
   const d = E.structDef(st.type) || {}, fam = R.typeRoom[st.type] || "home", room = R.rooms[fam] || R.rooms.home;
-  const upIcon = n => (R.upKeys.find(([k]) => new RegExp(k).test(n)) || [0, R.upIcon])[1];
+  // R72: art.chipIcons = exact upgrade name -> its own emoji, looked up ahead of the old regexes (R.upKeys: first match wins, so many upgrades shared an icon;
+  // "Runed Circle" showed a chicken). Classic emoji mode (classic=true) keeps the old regex icons untouched.
+  const CI = classic ? {} : (R.art || {}).chipIcons || {};
+  const upIcon = n => CI[n] || (R.upKeys.find(([k]) => new RegExp(k).test(n)) || [0, R.upIcon])[1];
   // floor: placed pieces in order; stacking pieces (beds) are grouped into one cell with a ×N stack
   const floor = [];
   for (const pid of st.pieces || []) {
@@ -42,6 +45,10 @@ export function sceneLayout(R, M) {
   // wall_strip = the only area for wall pieces, paths = walk areas kept clear, workspots = where workers stand (data only)
   const F = rc.floor_large || rc.floor, out = [], block = [rc.door, rc.millstone, rc.forge_piece_front, rc.water, rc.jetty, ...Object.values(rc.paths || {})].filter(Boolean);
   out.fam = fam; out.work = rc.workspots || {};
+  // R72: rooms may be bigger than 256x192 (manor rooms 320x224): rc.w / rc.h
+  out.w = rc.w || 256; out.h = rc.h || 192;
+  // R72: rc.pins = {piece id: slot box}: tier-fixed pieces (brewery winepress/stillpot, quarry limecut/granitecut) sit in their painted 34x34 slot, which no other piece may use
+  const pins = rc.pins || {}; for (const k in pins) block.push(pins[k]);
   // R68.2: fixtures painted into the background ARE the built-ins: no sprite, a hit area at the painted box; owned
   // copies merge into it; `onto` pieces/fittings become add-ons on it; layout avoids every painted/decor box
   const PF = PT.fix || {}, onto = PT.onto || {}, PN = A.paintedNames || {}, paint = {}, addOn = [];
@@ -109,11 +116,18 @@ export function sceneLayout(R, M) {
   // overflow (past 7 distinct wall ids) falls back to the floor; upgrade pieces too
   const items = [...fixed.filter(c => !isW(c)), ...rest.filter(c => !isW(c)), ...over];
   let i = 0;
+  // R72: rc.bedFar (homes, manor rooms): beds fill floor spots from the FAR end of floor_large, everything else from the near end, so a bed never lands beside a hearth
+  const bedSet = new Set(rc.bedFar ? A.beds || [] : []), nb = items.filter(c => bedSet.has(c.id) && !pins[c.id] && !special(c)).length;
+  let jb = 0;
   for (const c of items) {
-    const sp = special(c) || (spots[i] ? { at: "floor", x: spots[i][0], y: spots[i++][1] } : null);
+    const pin = pins[c.id];
+    let sp = special(c);
+    if (!sp && pin) sp = { at: "floor", x: pin[0] + 1, y: pin[1] + 1 };
+    else if (!sp && bedSet.has(c.id)) { const q = spots.length - 1 - jb; if (q >= i) { sp = { at: "floor", x: spots[q][0], y: spots[q][1] }; jb++; } }
+    else if (!sp && i < spots.length - nb) sp = { at: "floor", x: spots[i][0], y: spots[i++][1] };
     if (sp) out.push({ ...sp, id: c.id, icon: c.icon, name: c.name, n: c.n, fixed: c.fixed, over: over.includes(c) || undefined });
   }
-  for (let k = 0; k < M.free && spots[i]; k++, i++) out.push({ at: "free", x: spots[i][0], y: spots[i][1] });
+  for (let k = 0; k < M.free && i < spots.length - nb; k++, i++) out.push({ at: "free", x: spots[i][0], y: spots[i][1] });
   // R68.1: upgrades tied to a fixture are drawn onto it (bellows on the forge side), not as loose pieces
   const used = {};
   const put = (host, side0, u, key) => { const h = out.find(o => o.id === host && o.at !== "free" && o.at !== "attach"); if (!h) return;
@@ -129,33 +143,58 @@ export function sceneLayout(R, M) {
   for (const c of addOn) { put(c.host, c.side, c, c.id); const o = out.at(-1); if (o && o.up === c.id) o.id = c.id; }
   return out;
 }
+// R72: the manor suite. Mansion / Fort / Tower Keep / Abbey show a tab strip and one painted room at a time (320x224 art, keys "manor:<room>").
+// Pure view over the building's existing state: every owned piece / fitting / starter is routed to a room by art.manor.route (+ over[type]); a room
+// that is still locked, or an id the table does not name, falls back to the Great Hall, so nothing can disappear. Nothing is saved or granted.
+// Open from the start: Great Hall, Bedchamber (not the Fort), Kitchen and the branch wing. Study / Workshop / Nursery / Cellar open while the family
+// owns one of their listed pieces or fittings (computed on every render).
+export function manorInfo(R, M, sel) {
+  const MA = (R.art || {}).manor, T = MA && MA.types && MA.types[M.type];
+  if (!T || !MA.rooms) return null;
+  const ov = ((MA.route.over || {})[M.type]) || {}, route = (kind, id) => (ov[kind] || {})[id] || (MA.route[kind] || {})[id] || "hall";
+  const drop = T.drop || [], base = ["hall", "bedchamber", "kitchen", T.wing].filter(r => !drop.includes(r)), open = new Set(base);
+  const owned = { piece: M.floor.map(c => c.id), fit: M.wall.filter(w => w.kind === "fit").map(w => w.id) };
+  for (const r in MA.unlock || {}) if (!drop.includes(r) && ["piece", "fit"].some(k => owned[k].some(id => ((MA.unlock[r] || {})[k] || []).includes(id) && route(k, id) === r))) open.add(r);
+  const where = (kind, id) => { const r = route(kind, id); return open.has(r) ? r : "hall"; };
+  const order = [...base, ...Object.keys(MA.unlock || {}).filter(r => !drop.includes(r))];
+  const cur = open.has(sel) ? sel : "hall";
+  const count = r => M.floor.filter(c => where("piece", c.id) === r).reduce((a, c) => a + c.n, 0) + M.wall.filter(w => w.kind === "fit" && where("fit", w.id) === r).length;
+  const tabs = order.map(r => ({ id: r, name: MA.rooms[r].name, icon: MA.rooms[r].icon, open: open.has(r), on: r === cur, n: open.has(r) ? count(r) : 0, hint: (MA.hint || {})[r] || "", short: (MA.short || {})[r] || "" }));
+  const key = "manor:" + cur;
+  // the view model for the selected room: only its pieces, starters and fittings (free-slot markers live in the Great Hall)
+  const V = { ...M, type: key, fam: key, floor: M.floor.filter(c => where("piece", c.id) === cur), starters: (M.starters || []).filter(c => where("piece", c.id) === cur),
+    wall: M.wall.filter(w => w.kind === "fit" && where("fit", w.id) === cur), free: cur === "hall" ? M.free : 0 };
+  return { tabs, cur, V, where, open };
+}
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
 function sceneHtml(R, M, A) {
   const L = sceneLayout(R, M);
   if (!L || !A.rooms || !A.rooms[L.fam]) return "";
+  const W = L.w, H = L.h;   // R72: room size (256x192 unless the rect says w/h, e.g. manor rooms 320x224)
   const img = (c, dx = 0, dy = 0) => {
-    const sz = c.s && c.s !== 1 ? `;width:${P(32 * c.s, 256)};height:${P(32 * c.s, 192)}` : "", tn = (A.tints || {})[c.id];
-    const st = `left:${P(c.x + dx, 256)};top:${P(c.y + dy, 192)}${sz}`;
+    const sz = c.s && c.s !== 1 ? `;width:${P(32 * c.s, W)};height:${P(32 * c.s, H)}` : "", tn = (A.tints || {})[c.id];
+    const st = `left:${P(c.x + dx, W)};top:${P(c.y + dy, H)}${sz}`;
     return A.pieces && A.pieces[c.id] ? `<img class="rmsp${c.at === "wall" ? " rmwl" : ""}${tn ? " rmt-" + tn : ""}" style="${st}" src="art/rooms/${A.pieces[c.id]}.webp" alt="">` : `<span class="rmsp rmemo" style="${st}">${c.icon}</span>`;
   };
   let h = "";
   for (const c of L) {
-    if (c.at === "attach") { const st = `left:${P(c.x, 256)};top:${P(c.y, 192)}${c.w ? `;width:${P(c.w, 256)};height:${P(c.h, 192)}` : ""}`; h += c.art ? `<img class="rmsp rmatt" style="${st}" src="art/rooms/${c.art}.webp" alt="" title="${esc(c.name)}">` : `<span class="rmsp rmatt rmemo" style="${st}${c.w ? `;display:flex;align-items:center;justify-content:center;line-height:1;font-size:${+(Math.min(c.w, c.h) * 0.8 / 2.56).toFixed(2)}cqw` : ""}" title="${esc(c.name + " (on " + c.host + ")")}">${c.icon}</span>`; continue; }
-    if (c.at === "painted") { h += `<span class="rmsp rmhit" data-fix="${c.id}" style="left:${P(c.x, 256)};top:${P(c.y, 192)};width:${P(c.w, 256)};height:${P(c.h, 192)}" title="${esc(c.name + (c.n > 1 ? " ×" + c.n : "") + " · built-in")}"></span>`; continue; }
-    if (c.at === "free") { h += `<span class="rmsp rmfree" style="left:${P(c.x, 256)};top:${P(c.y, 192)}" title="Free slot"></span>`; continue; }
+    if (c.at === "attach") { const st = `left:${P(c.x, W)};top:${P(c.y, H)}${c.w ? `;width:${P(c.w, W)};height:${P(c.h, H)}` : ""}`; h += c.art ? `<img class="rmsp rmatt" style="${st}" src="art/rooms/${c.art}.webp" alt="" title="${esc(c.name)}">` : `<span class="rmsp rmatt rmemo" style="${st}${c.w ? `;display:flex;align-items:center;justify-content:center;line-height:1;font-size:${+(Math.min(c.w, c.h) * 0.8 / (W / 100)).toFixed(2)}cqw` : ""}" title="${esc(c.name + " (on " + c.host + ")")}">${c.icon}</span>`; continue; }
+    if (c.at === "painted") { h += `<span class="rmsp rmhit" data-fix="${c.id}" style="left:${P(c.x, W)};top:${P(c.y, H)};width:${P(c.w, W)};height:${P(c.h, H)}" title="${esc(c.name + (c.n > 1 ? " ×" + c.n : "") + " · built-in")}"></span>`; continue; }
+    if (c.at === "free") { h += `<span class="rmsp rmfree" style="left:${P(c.x, W)};top:${P(c.y, H)}" title="Free slot"></span>`; continue; }
     const n = c.at === "wall" ? 1 : Math.min(c.n || 1, 4);
     h += `<span class="rmgrp" title="${esc(c.name + (c.n > 1 ? " ×" + c.n : "") + (c.fixed ? " · built-in" : ""))}">`;
     for (let k = n - 1; k >= 0; k--) h += img(c, k * 5, -k * 3);
-    if (c.n > 1) h += `<b class="rmn rmsn" style="left:${P(c.x + (c.at === "wall" ? 32 * (c.s || 1) - 10 : 22), 256)};top:${P(c.y, 192)}">×${c.n}</b>`;
+    if (c.n > 1) h += `<b class="rmn rmsn" style="left:${P(c.x + (c.at === "wall" ? 32 * (c.s || 1) - 10 : 22), W)};top:${P(c.y, H)}">×${c.n}</b>`;
     h += `</span>`;
   }
-  return `<div class="rmscene" style="background-image:url(art/rooms/${A.rooms[L.fam]}.webp)">${h}</div>`;
+  return `<div class="rmscene" style="background-image:url(art/rooms/${A.rooms[L.fam]}.webp)${W === 256 && H === 192 ? "" : `;--rw:${W};--rh:${H}`}">${h}</div>`;
 }
 
 // opened: ms timestamp the room was opened (so re-renders keep the roof animation where it was, not restart it)
-export function roomHtml(E, R, s, st, opened, classic) {
-  const M = roomModel(E, R, st, s), cols = R.cols || 6, A = classic ? {} : M.art;
+export function roomHtml(E, R, s, st, opened, classic, manorSel) {
+  const M = roomModel(E, R, st, s, classic), cols = R.cols || 6, A = classic ? {} : M.art;
   const used = M.floor.reduce((a, c) => a + c.w, 0), cells = Math.max(cols * (R.minRows || 2), Math.ceil((used + M.free) / cols) * cols);
+  const MI = classic ? null : manorInfo(R, M, manorSel);
   let h = "";
   for (const c of M.floor)
     h += `<div class="rmcell${c.fixed ? " fixed" : ""}${c.w > 1 ? " w2" : ""}" title="${esc(c.name + (c.n > 1 ? " ×" + c.n : "") + (c.tier ? " · " + c.tier : "") + (c.fixed ? " · built-in" : ""))}">` +
@@ -169,7 +208,10 @@ export function roomHtml(E, R, s, st, opened, classic) {
   return `<div class="estroom rm-${M.fam}${M.tierN ? " tier" + M.tierN : ""}" data-uid="${st.uid}" style="--fl:${r.floor};--fl2:${r.floor2};--wl:${r.wall};--rf:${r.roof}${bg}">` +
     `<div class="rmhead"><b>${M.icon} ${esc(M.title)}</b><span class="muted">${esc(r.name)}${M.tier ? " · " + R.tierIcon + " " + esc(M.tier) : ""} · ${M.floor.reduce((a, c) => a + c.n, 0)} placed${M.wall.length ? " · " + M.wall.length + " upgrades/fittings" : ""}</span><button class="b" data-a="estroom" data-v="${st.uid}" title="Close the interior">✕</button></div>` +
     `<div class="rmwall">${wall || '<span class="muted rmnone">No upgrades yet</span>'}</div>` +
-    sceneHtml(R, M, A) +
+    (MI ? `<div class="rmtabs" role="tablist">${MI.tabs.map(t => t.open
+      ? `<button class="b rmtab${t.on ? " on" : ""}" role="tab" aria-selected="${t.on}" data-a="manorroom" data-v="${st.uid}" data-w="${t.id}" title="${esc(t.name)}">${t.icon} ${esc(t.name)}${t.n ? `<i>${t.n}</i>` : ""}</button>`
+      : `<button class="b rmtab lock" role="tab" aria-disabled="true" disabled title="${esc("Locked: " + t.hint)}">🔒 ${esc(t.name)}${t.short ? `<small>${esc(t.short)}</small>` : ""}</button>`).join("")}</div>` : "") +
+    sceneHtml(R, MI ? MI.V : M, A) +
     `<div class="rmfloor${A.rooms && A.rooms[M.fam] ? " legend" : ""}" style="grid-template-columns:repeat(${cols},1fr)">${h}</div>` +
     (age < 900 ? `<div class="rmroof"${anim}></div>` : "") + `</div>`;
 }

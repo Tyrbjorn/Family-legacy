@@ -4,6 +4,7 @@ export const U = {
   estSel: "",
   estRoom: null, // R66: uid of the building whose interior is open (not saved)
   estRoomT: 0,
+  manorRoom: {}, // R72: manor suite: {building uid: open room id} (not saved)
   tab: "main",
   lastHTML: "",
   mapSel: null,

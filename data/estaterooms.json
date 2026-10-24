@@ -158,7 +158,50 @@
    "kitchenhearth": "room-kitchen-hearth",
    "sawmill": "room-sawmill",
    "tannery": "room-tannery",
-   "bunkhouse": "room-bunkhouse"
+   "bunkhouse": "room-bunkhouse",
+   "brewery": "room-brewery",
+   "smokehouse": "room-smokehouse",
+   "preservery": "room-preservery",
+   "saltworks": "room-saltworks",
+   "fishinghut": "room-fishinghut",
+   "advlodge": "room-advlodge",
+   "thievesden": "room-thievesden",
+   "hunterscabin": "room-hunterscabin",
+   "hall": "room-hall",
+   "warehouse": "room-warehouse",
+   "tradingpost": "room-tradingpost",
+   "countinghouse": "room-countinghouse",
+   "dockshed": "room-dockshed",
+   "slipwayshed": "room-slipwayshed",
+   "apiary": "room-apiary",
+   "fields": "room-fields",
+   "orchard": "room-orchard",
+   "herbgarden": "room-herbgarden",
+   "herbalistshack": "room-herbalistshack",
+   "quarry": "room-quarry",
+   "mineshaft": "room-mineshaft",
+   "masonyard": "room-masonyard",
+   "buildersyard": "room-buildersyard",
+   "shrinehouse": "room-shrinehouse",
+   "ancestorhall": "room-ancestorhall",
+   "arcaneworkshop": "room-arcaneworkshop",
+   "graveyard": "room-graveyard",
+   "magestower": "room-magestower",
+   "shack": "room-shack",
+   "cabin": "room-cabin",
+   "cottage": "room-cottage",
+   "house": "room-house",
+   "manor:hall": "room-manor-hall",
+   "manor:bedchamber": "room-manor-bedchamber",
+   "manor:kitchen": "room-manor-kitchen",
+   "manor:study": "room-manor-study",
+   "manor:workshop": "room-manor-workshop",
+   "manor:nursery": "room-manor-nursery",
+   "manor:cellar": "room-manor-cellar",
+   "manor:counting": "room-manor-counting",
+   "manor:barracks": "room-manor-barracks",
+   "manor:sanctum": "room-manor-sanctum",
+   "manor:chapel": "room-manor-chapel"
   },
   "pieces": {
    "alchbench": "pieces/alchbench",
@@ -247,15 +290,15 @@
    "workbench": "pieces/workbench",
    "yewgrove": "pieces/yewgrove",
    "bunk": "pieces/bed",
-   "featherbed": "pieces/bed",
-   "minionbunk": "pieces/bed",
-   "cradle": "pieces/bed",
+   "featherbed": "pieces/featherbed",
+   "minionbunk": "pieces/minionbunk",
+   "cradle": "pieces/cradle",
    "infirmary": "pieces/bed-infirmary",
    "steelanvil": "pieces/anvil",
    "runedanvil": "pieces/anvil-runed",
    "runeanvil": "pieces/anvil-rune",
    "stonehearth": "pieces/hearth-stone",
-   "coldcellar": "pieces/larder",
+   "coldcellar": "pieces/coldcellar",
    "trophywall": "pieces/trophywall",
    "portraits": "pieces/portraits",
    "starcharts": "pieces/starcharts",
@@ -268,7 +311,13 @@
    "armorywall": "pieces/armorywall",
    "mapwall": "pieces/mapwall",
    "trestletable": "pieces/trestletable",
-   "anvil": "pieces/anvil"
+   "anvil": "pieces/anvil",
+   "crystal": "pieces/crystal",
+   "dummy": "pieces/dummy",
+   "mirror": "pieces/mirror",
+   "pantry": "pieces/pantry",
+   "strongbox": "pieces/strongbox",
+   "trophy": "pieces/trophy"
   },
   "ups": {},
   "rects": {
@@ -606,7 +655,32 @@
      152,
      138,
      191
-    ]
+    ],
+    "anchors": {
+     "bellows_upgrade": [
+      150,
+      44,
+      167,
+      67
+     ],
+     "firebrick_hearth_upgrade": [
+      170,
+      8,
+      203,
+      24
+     ],
+     "master_crucible_upgrade": [
+      196,
+      52,
+      212,
+      73
+     ]
+    },
+    "upAnchors": {
+     "Bellows": "bellows_upgrade",
+     "Fire-brick Hearth": "firebrick_hearth_upgrade",
+     "Master Crucible": "master_crucible_upgrade"
+    }
    },
    "barracks": {
     "floor": [
@@ -1215,6 +1289,2640 @@
     },
     "upAnchors": {},
     "spotFlush": true
+   },
+   "brewery": {
+    "floor": [
+     20,
+     52,
+     234,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     50
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     56,
+     234,
+     155
+    ],
+    "wall_strip": [
+     92,
+     17,
+     188,
+     50
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      52,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      146,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "brewvats": [
+      66,
+      99
+     ]
+    },
+    "anchors": {
+     "copper_kettle_upgrade": [
+      68,
+      56,
+      91,
+      79
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Copper Kettle": "copper_kettle_upgrade"
+    },
+    "pins": {
+     "winepress": [
+      56,
+      108,
+      89,
+      141
+     ],
+     "stillpot": [
+      20,
+      108,
+      53,
+      141
+     ]
+    }
+   },
+   "smokehouse": {
+    "floor": [
+     20,
+     48,
+     234,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     45
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     54,
+     234,
+     153
+    ],
+    "wall_strip": [
+     150,
+     14,
+     236,
+     45
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      48,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      146,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "smokepit": [
+      56,
+      90
+     ]
+    },
+    "anchors": {
+     "great_chimney_upgrade": [
+      43,
+      8,
+      70,
+      37
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Great Chimney": "great_chimney_upgrade"
+    }
+   },
+   "preservery": {
+    "floor": [
+     22,
+     57,
+     234,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     58,
+     234,
+     154
+    ],
+    "wall_strip": [
+     110,
+     17,
+     182,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      80,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      146,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "brinecrocks": [
+      64,
+      90
+     ]
+    },
+    "anchors": {
+     "sealed_crocks_upgrade": [
+      84,
+      44,
+      107,
+      65
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Sealed Crocks": "sealed_crocks_upgrade"
+    }
+   },
+   "saltworks": {
+    "floor": [
+     20,
+     45,
+     234,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     43
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     48,
+     234,
+     153
+    ],
+    "wall_strip": [
+     168,
+     17,
+     235,
+     43
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      46,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      146,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "brinepans": [
+      78,
+      80
+     ],
+     "salt_sacks": [
+      78,
+      100
+     ],
+     "salt_barrels": [
+      84,
+      130
+     ]
+    },
+    "anchors": {
+     "deeper_pans_upgrade": [
+      60,
+      22,
+      87,
+      37
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Deeper Pans": "deeper_pans_upgrade"
+    }
+   },
+   "fishinghut": {
+    "floor": [
+     22,
+     42,
+     234,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     41
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     23,
+     49,
+     119,
+     145
+    ],
+    "wall_strip": [
+     88,
+     16,
+     157,
+     41
+    ],
+    "paths": {
+     "central_aisle": [
+      121,
+      46,
+      167,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "fishrack": [
+      173,
+      48
+     ],
+     "hanging_net": [
+      70,
+      46
+     ],
+     "gutting_table": [
+      173,
+      95
+     ],
+     "fish_barrel": [
+      184,
+      140
+     ]
+    },
+    "anchors": {
+     "nets_upgrade": [
+      208,
+      40,
+      231,
+      65
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Nets": "nets_upgrade"
+    }
+   },
+   "advlodge": {
+    "floor": [
+     17,
+     60,
+     240,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     50
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     60,
+     240,
+     157
+    ],
+    "wall_strip": [
+     20,
+     19,
+     96,
+     50
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      60,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "questboard": [
+      127,
+      65
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "thievesden": {
+    "floor": [
+     17,
+     52,
+     240,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     52,
+     240,
+     157
+    ],
+    "wall_strip": [
+     100,
+     17,
+     184,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      52,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "fencetable": [
+      80,
+      88
+     ]
+    },
+    "anchors": {
+     "fence_network_upgrade": [
+      68,
+      52,
+      91,
+      73
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Fence Network": "fence_network_upgrade"
+    }
+   },
+   "hunterscabin": {
+    "floor": [
+     17,
+     52,
+     240,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     54,
+     240,
+     157
+    ],
+    "wall_strip": [
+     128,
+     17,
+     192,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      52,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "gamerack": [
+      48,
+      70
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "hall": {
+    "floor": [
+     17,
+     52,
+     240,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     52,
+     240,
+     157
+    ],
+    "wall_strip": [
+     112,
+     17,
+     208,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      52,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "trestletable": [
+      75,
+      95
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "warehouse": {
+    "floor": [
+     22,
+     47,
+     234,
+     156
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     49,
+     234,
+     145
+    ],
+    "wall_strip": [
+     108,
+     19,
+     189,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      78,
+      137,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "storagecrates": [
+      66,
+      82
+     ],
+     "barrel_row": [
+      100,
+      86
+     ],
+     "sack_pile": [
+      68,
+      100
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "tradingpost": {
+    "floor": [
+     22,
+     57,
+     234,
+     156
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     22,
+     59,
+     117,
+     154
+    ],
+    "wall_strip": [
+     76,
+     19,
+     139,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      118,
+      106,
+      234,
+      156
+     ],
+     "door_approach": [
+      118,
+      147,
+      164,
+      157
+     ]
+    },
+    "workspots": {
+     "marketstall": [
+      190,
+      112
+     ],
+     "wall_shelf": [
+      48,
+      57
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "countinghouse": {
+    "floor": [
+     22,
+     57,
+     234,
+     156
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     100,
+     58,
+     195,
+     153
+    ],
+    "wall_strip": [
+     90,
+     19,
+     170,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      22,
+      90,
+      99,
+      156
+     ],
+     "door_approach": [
+      100,
+      154,
+      156,
+      157
+     ]
+    },
+    "workspots": {
+     "countingdesk": [
+      52,
+      96
+     ],
+     "scroll_shelf": [
+      215,
+      74
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "dockshed": {
+    "floor": [
+     22,
+     62,
+     234,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     22,
+     62,
+     117,
+     157
+    ],
+    "wall_strip": [
+     40,
+     19,
+     122,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      118,
+      62,
+      164,
+      157
+     ],
+     "door_approach": [
+      118,
+      147,
+      164,
+      157
+     ]
+    },
+    "workspots": {
+     "boatslip": [
+      165,
+      100
+     ],
+     "storage_crates": [
+      178,
+      112
+     ],
+     "mooring_gear": [
+      178,
+      142
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "slipwayshed": {
+    "floor": [
+     22,
+     62,
+     234,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     48
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     133,
+     62,
+     228,
+     157
+    ],
+    "wall_strip": [
+     118,
+     22,
+     200,
+     48
+    ],
+    "paths": {
+     "central_aisle": [
+      86,
+      62,
+      132,
+      157
+     ],
+     "door_approach": [
+      86,
+      147,
+      132,
+      157
+     ]
+    },
+    "workspots": {
+     "slipwayways": [
+      66,
+      85
+     ],
+     "boatslip": [
+      84,
+      135
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "apiary": {
+    "floor": [
+     17,
+     55,
+     239,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     58,
+     239,
+     157
+    ],
+    "wall_strip": [
+     112,
+     20,
+     208,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      63,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      147,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "hives": [
+      60,
+      70
+     ]
+    },
+    "anchors": {
+     "smoker_upgrade": [
+      78,
+      31,
+      95,
+      50
+     ],
+     "royal_hives_upgrade": [
+      42,
+      10,
+      69,
+      35
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Smoker": "smoker_upgrade",
+     "Royal Hives": "royal_hives_upgrade"
+    }
+   },
+   "fields": {
+    "floor": [
+     17,
+     52,
+     239,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     54,
+     239,
+     157
+    ],
+    "wall_strip": [
+     112,
+     20,
+     208,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      54,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      147,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "furrows": [
+      91,
+      82
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "orchard": {
+    "floor": [
+     17,
+     50,
+     239,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     46
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     52,
+     239,
+     157
+    ],
+    "wall_strip": [
+     112,
+     19,
+     208,
+     46
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      52,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      147,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "fruittrees": [
+      58,
+      84
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "herbgarden": {
+    "floor": [
+     17,
+     49,
+     239,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     45
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     52,
+     239,
+     157
+    ],
+    "wall_strip": [
+     112,
+     19,
+     208,
+     45
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      52,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      147,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "herbbeds": [
+      78,
+      103
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "herbalistshack": {
+    "floor": [
+     17,
+     58,
+     239,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     144,
+     61,
+     239,
+     157
+    ],
+    "wall_strip": [
+     112,
+     24,
+     208,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      97,
+      61,
+      143,
+      157
+     ],
+     "door_approach": [
+      97,
+      147,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "remedybench": [
+      80,
+      82
+     ]
+    },
+    "anchors": {
+     "mortar_pestle_upgrade": [
+      76,
+      30,
+      93,
+      47
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Mortar & Pestle": "mortar_pestle_upgrade"
+    }
+   },
+   "quarry": {
+    "floor": [
+     23,
+     55,
+     233,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     58,
+     233,
+     157
+    ],
+    "wall_strip": [
+     112,
+     24,
+     208,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      80,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      147,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "quarryface": [
+      78,
+      90
+     ]
+    },
+    "anchors": {
+     "winch_upgrade": [
+      32,
+      22,
+      59,
+      49
+     ],
+     "blasting_powder_upgrade": [
+      30,
+      53,
+      49,
+      72
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Winch": "winch_upgrade",
+     "Blasting Powder": "blasting_powder_upgrade"
+    },
+    "pins": {
+     "limecut": [
+      23,
+      123,
+      56,
+      156
+     ],
+     "granitecut": [
+      57,
+      123,
+      90,
+      156
+     ]
+    }
+   },
+   "mineshaft": {
+    "floor": [
+     23,
+     58,
+     233,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     58,
+     233,
+     157
+    ],
+    "wall_strip": [
+     112,
+     24,
+     208,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      90,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      147,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "shaftlift": [
+      80,
+      96
+     ]
+    },
+    "anchors": {
+     "timber_props_upgrade": [
+      22,
+      36,
+      41,
+      65
+     ],
+     "pumps_upgrade": [
+      71,
+      60,
+      92,
+      87
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Timber Props": "timber_props_upgrade",
+     "Pumps": "pumps_upgrade"
+    }
+   },
+   "masonyard": {
+    "floor": [
+     23,
+     60,
+     233,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     52
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     60,
+     233,
+     157
+    ],
+    "wall_strip": [
+     112,
+     24,
+     208,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      60,
+      137,
+      157
+     ],
+     "door_approach": [
+      91,
+      147,
+      137,
+      157
+     ]
+    },
+    "workspots": {
+     "masontable": [
+      60,
+      98
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "buildersyard": {
+    "floor": [
+     23,
+     50,
+     233,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     47
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     138,
+     50,
+     233,
+     155
+    ],
+    "wall_strip": [
+     120,
+     22,
+     216,
+     47
+    ],
+    "paths": {
+     "central_aisle": [
+      91,
+      63,
+      137,
+      155
+     ],
+     "door_approach": [
+      91,
+      145,
+      137,
+      155
+     ]
+    },
+    "workspots": {
+     "workbench": [
+      84,
+      68
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "shrinehouse": {
+    "floor": [
+     15,
+     47,
+     247,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     41
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     152,
+     62,
+     247,
+     157
+    ],
+    "wall_strip": [
+     20,
+     15,
+     96,
+     41
+    ],
+    "paths": {
+     "central_aisle": [
+      105,
+      62,
+      151,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "altar": [
+      128,
+      67
+     ]
+    },
+    "anchors": {
+     "consecrate_chapel_upgrade": [
+      110,
+      22,
+      143,
+      41
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Consecrate as Chapel": "consecrate_chapel_upgrade"
+    }
+   },
+   "ancestorhall": {
+    "floor": [
+     16,
+     50,
+     247,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     41
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     152,
+     62,
+     247,
+     157
+    ],
+    "wall_strip": [
+     20,
+     15,
+     96,
+     41
+    ],
+    "paths": {
+     "central_aisle": [
+      105,
+      62,
+      151,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "ancestorshrine": [
+      128,
+      67
+     ]
+    },
+    "anchors": {
+     "family_archive_upgrade": [
+      146,
+      35,
+      171,
+      60
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Family Archive": "family_archive_upgrade"
+    }
+   },
+   "arcaneworkshop": {
+    "floor": [
+     12,
+     50,
+     247,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     41
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     152,
+     62,
+     247,
+     157
+    ],
+    "wall_strip": [
+     160,
+     15,
+     236,
+     41
+    ],
+    "paths": {
+     "central_aisle": [
+      105,
+      62,
+      151,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "enchtable": [
+      76,
+      82
+     ],
+     "arcanefocus": [
+      128,
+      66
+     ]
+    },
+    "anchors": {
+     "silver_inlay_upgrade": [
+      80,
+      54,
+      101,
+      69
+     ],
+     "runed_circle_upgrade": [
+      100,
+      41,
+      131,
+      60
+     ],
+     "star_lens_upgrade": [
+      118,
+      4,
+      137,
+      31
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Silver Inlay": "silver_inlay_upgrade",
+     "Runed Circle": "runed_circle_upgrade",
+     "Star Lens": "star_lens_upgrade"
+    }
+   },
+   "graveyard": {
+    "floor": [
+     16,
+     48,
+     247,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     42
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     152,
+     62,
+     247,
+     157
+    ],
+    "wall_strip": [
+     112,
+     16,
+     208,
+     42
+    ],
+    "paths": {
+     "central_aisle": [
+      105,
+      62,
+      151,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "headstones": [
+      58,
+      92
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true
+   },
+   "magestower": {
+    "floor": [
+     40,
+     56,
+     247,
+     157
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     50
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     152,
+     62,
+     247,
+     157
+    ],
+    "wall_strip": [
+     145,
+     24,
+     225,
+     50
+    ],
+    "paths": {
+     "central_aisle": [
+      105,
+      96,
+      151,
+      157
+     ],
+     "door_approach": [
+      105,
+      147,
+      151,
+      157
+     ]
+    },
+    "workspots": {
+     "arcanefocus": [
+      80,
+      102
+     ]
+    },
+    "anchors": {
+     "scrying_pool_upgrade": [
+      108,
+      72,
+      133,
+      91
+     ]
+    },
+    "spotFlush": true,
+    "upAnchors": {
+     "Scrying Pool": "scrying_pool_upgrade"
+    }
+   },
+   "shack": {
+    "floor": [
+     21,
+     48,
+     235,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     42
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     139,
+     50,
+     235,
+     145
+    ],
+    "wall_strip": [
+     154,
+     17,
+     219,
+     42
+    ],
+    "paths": {
+     "central_aisle": [
+      92,
+      63,
+      138,
+      157
+     ],
+     "door_approach": [
+      92,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "hearthfix": [
+      70,
+      71
+     ],
+     "bunkbed": [
+      37,
+      79
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "cabin": {
+    "floor": [
+     21,
+     48,
+     235,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     42
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     139,
+     50,
+     235,
+     145
+    ],
+    "wall_strip": [
+     100,
+     17,
+     172,
+     42
+    ],
+    "paths": {
+     "central_aisle": [
+      92,
+      63,
+      138,
+      157
+     ],
+     "door_approach": [
+      92,
+      146,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "hearthfix": [
+      62,
+      72
+     ],
+     "bunkbed": [
+      40,
+      78
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "cottage": {
+    "floor": [
+     21,
+     58,
+     235,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     139,
+     59,
+     235,
+     154
+    ],
+    "wall_strip": [
+     156,
+     19,
+     230,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      92,
+      63,
+      138,
+      157
+     ],
+     "door_approach": [
+      92,
+      146,
+      138,
+      157
+     ]
+    },
+    "workspots": {
+     "hearthfix": [
+      62,
+      71
+     ],
+     "bunkbed": [
+      42,
+      78
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "house": {
+    "floor": [
+     21,
+     53,
+     235,
+     155
+    ],
+    "backwall": [
+     0,
+     0,
+     255,
+     44
+    ],
+    "door": [
+     113,
+     158,
+     143,
+     191
+    ],
+    "floor_large": [
+     108,
+     53,
+     235,
+     148
+    ],
+    "wall_strip": [
+     124,
+     19,
+     212,
+     44
+    ],
+    "paths": {
+     "central_aisle": [
+      61,
+      71,
+      107,
+      157
+     ],
+     "door_approach": [
+      92,
+      149,
+      143,
+      157
+     ]
+    },
+    "workspots": {
+     "hearthfix": [
+      56,
+      78
+     ],
+     "bunkbed": [
+      38,
+      86
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:hall": {
+    "floor": [
+     33,
+     73,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     60
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     162,
+     74,
+     289,
+     171
+    ],
+    "wall_strip": [
+     165,
+     25,
+     260,
+     60
+    ],
+    "paths": {
+     "central_aisle": [
+      98,
+      89,
+      144,
+      188
+     ],
+     "door_approach": [
+      98,
+      172,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "fireplace": [
+      121,
+      95
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:bedchamber": {
+    "floor": [
+     33,
+     80,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     60
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     155,
+     80,
+     289,
+     175
+    ],
+    "wall_strip": [
+     162,
+     25,
+     288,
+     60
+    ],
+    "paths": {
+     "central_aisle": [
+      98,
+      96,
+      152,
+      188
+     ],
+     "door_approach": [
+      98,
+      176,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "bunkbed": [
+      86,
+      102
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:kitchen": {
+    "floor": [
+     33,
+     75,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     60
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     160,
+     76,
+     289,
+     171
+    ],
+    "wall_strip": [
+     165,
+     25,
+     286,
+     60
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      89,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      172,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "hearthfix": [
+      122,
+      95
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:study": {
+    "floor": [
+     33,
+     80,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     58
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     164,
+     80,
+     289,
+     175
+    ],
+    "wall_strip": [
+     160,
+     25,
+     288,
+     58
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      116,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      176,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "big_desk": [
+      124,
+      121
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:workshop": {
+    "floor": [
+     33,
+     71,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     53
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     160,
+     72,
+     289,
+     167
+    ],
+    "wall_strip": [
+     164,
+     25,
+     288,
+     53
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      86,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      168,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "anvil_block": [
+      124,
+      92
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:nursery": {
+    "floor": [
+     33,
+     81,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     52
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     160,
+     81,
+     289,
+     176
+    ],
+    "wall_strip": [
+     150,
+     25,
+     288,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      93,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      177,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "cot": [
+      88,
+      100
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:cellar": {
+    "floor": [
+     33,
+     76,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     58
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     165,
+     76,
+     289,
+     171
+    ],
+    "wall_strip": [
+     168,
+     25,
+     288,
+     58
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      88,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      172,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "barrel_stack": [
+      60,
+      96
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:counting": {
+    "floor": [
+     33,
+     70,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     52
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     190,
+     72,
+     289,
+     171
+    ],
+    "wall_strip": [
+     196,
+     24,
+     288,
+     52
+    ],
+    "paths": {
+     "central_aisle": [
+      130,
+      70,
+      186,
+      188
+     ],
+     "door_approach": [
+      120,
+      173,
+      195,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "ledger_desk": [
+      92,
+      100
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:barracks": {
+    "floor": [
+     33,
+     64,
+     289,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     60
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     175,
+     68,
+     289,
+     172
+    ],
+    "wall_strip": [
+     206,
+     21,
+     291,
+     60
+    ],
+    "paths": {
+     "central_aisle": [
+      100,
+      76,
+      153,
+      188
+     ],
+     "door_approach": [
+      100,
+      173,
+      175,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "weaponrack": [
+      62,
+      89
+     ],
+     "bunkbed": [
+      93,
+      140
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:sanctum": {
+    "floor": [
+     33,
+     63,
+     293,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     58
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     198,
+     63,
+     293,
+     158
+    ],
+    "wall_strip": [
+     200,
+     21,
+     291,
+     58
+    ],
+    "paths": {
+     "central_aisle": [
+      128,
+      86,
+      185,
+      188
+     ],
+     "door_approach": [
+      128,
+      173,
+      192,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "enchtable": [
+      110,
+      84
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
+   },
+   "manor:chapel": {
+    "floor": [
+     25,
+     63,
+     292,
+     188
+    ],
+    "backwall": [
+     0,
+     0,
+     319,
+     60
+    ],
+    "door": [
+     145,
+     189,
+     175,
+     223
+    ],
+    "floor_large": [
+     196,
+     63,
+     292,
+     158
+    ],
+    "wall_strip": [
+     214,
+     20,
+     291,
+     60
+    ],
+    "paths": {
+     "central_aisle": [
+      136,
+      99,
+      184,
+      188
+     ],
+     "door_approach": [
+      129,
+      175,
+      191,
+      188
+     ]
+    },
+    "w": 320,
+    "h": 224,
+    "workspots": {
+     "altar": [
+      114,
+      103
+     ]
+    },
+    "anchors": {},
+    "spotFlush": true,
+    "bedFar": true
    }
   },
   "forgeFront": [
@@ -1547,7 +4255,40 @@
   },
   "attachArt": {
    "Iron Gearing": "iron-gearing",
-   "Second Stones": "second-stones"
+   "Second Stones": "second-stones",
+   "Drill Ground": "dummy-drill",
+   "Twin Blades": "twin-blades",
+   "Steam Saw": "steam-saw",
+   "Scraping Frames": "scraping-frames",
+   "Bark Pits": "bark-pits",
+   "Prize Flock": "prize-flock",
+   "Heated Roost": "heated-roost",
+   "Bigger Run": "bigger-run",
+   "Hay Loft": "hay-loft",
+   "Prize Herd": "prize-herd",
+   "Copper Pots": "copper-pots",
+   "Bellows": "bellows",
+   "Fire-brick Hearth": "firebrick-hearth",
+   "Master Crucible": "master-crucible",
+   "Mortar & Pestle": "mortar-pestle",
+   "Scrying Pool": "scrying-pool",
+   "Silver Inlay": "silver-inlay",
+   "Runed Circle": "runed-circle",
+   "Star Lens": "star-lens",
+   "Consecrate as Chapel": "consecrate-chapel",
+   "Winch": "winch",
+   "Blasting Powder": "blasting-powder",
+   "Timber Props": "timber-props",
+   "Pumps": "pumps",
+   "Smoker": "smoker",
+   "Royal Hives": "royal-hives",
+   "Nets": "nets",
+   "Copper Kettle": "copper-kettle",
+   "Sealed Crocks": "sealed-crocks",
+   "Deeper Pans": "deeper-pans",
+   "Great Chimney": "great-chimney",
+   "Fence Network": "fence-network",
+   "Family Archive": "family-archive"
   },
   "painted": {
    "smithy": {
@@ -1826,6 +4567,926 @@
       "bunklow"
      ]
     }
+   },
+   "brewery": {
+    "room": "brewery",
+    "fix": {
+     "brewvats": [
+      24,
+      22,
+      88,
+      90
+     ]
+    }
+   },
+   "smokehouse": {
+    "room": "smokehouse",
+    "fix": {
+     "smokepit": [
+      33,
+      8,
+      80,
+      79
+     ]
+    }
+   },
+   "preservery": {
+    "room": "preservery",
+    "fix": {
+     "brinecrocks": [
+      24,
+      21,
+      105,
+      79
+     ]
+    }
+   },
+   "saltworks": {
+    "room": "saltworks",
+    "fix": {
+     "brinepans": [
+      24,
+      21,
+      87,
+      71
+     ],
+     "salt_sacks": [
+      24,
+      78,
+      63,
+      113
+     ],
+     "salt_barrels": [
+      24,
+      112,
+      73,
+      156
+     ]
+    }
+   },
+   "fishinghut": {
+    "room": "fishinghut",
+    "fix": {
+     "fishrack": [
+      180,
+      21,
+      231,
+      66
+     ],
+     "hanging_net": [
+      25,
+      19,
+      63,
+      47
+     ],
+     "gutting_table": [
+      178,
+      71,
+      231,
+      118
+     ],
+     "fish_barrel": [
+      192,
+      121,
+      221,
+      155
+     ]
+    }
+   },
+   "advlodge": {
+    "room": "advlodge",
+    "fix": {
+     "questboard": [
+      111,
+      19,
+      183,
+      56
+     ]
+    }
+   },
+   "thievesden": {
+    "room": "thievesden",
+    "fix": {
+     "fencetable": [
+      18,
+      16,
+      92,
+      76
+     ]
+    }
+   },
+   "hunterscabin": {
+    "room": "hunterscabin",
+    "fix": {
+     "gamerack": [
+      23,
+      17,
+      81,
+      65
+     ]
+    }
+   },
+   "hall": {
+    "room": "hall",
+    "fix": {
+     "trestletable": [
+      19,
+      40,
+      88,
+      85
+     ]
+    }
+   },
+   "warehouse": {
+    "room": "warehouse",
+    "fix": {
+     "storagecrates": [
+      22,
+      21,
+      66,
+      73
+     ],
+     "barrel_row": [
+      70,
+      32,
+      105,
+      76
+     ],
+     "sack_pile": [
+      22,
+      66,
+      58,
+      106
+     ]
+    },
+    "starterAs": {
+     "storage": [
+      "storagecrates"
+     ]
+    }
+   },
+   "tradingpost": {
+    "room": "tradingpost",
+    "fix": {
+     "marketstall": [
+      141,
+      17,
+      232,
+      104
+     ],
+     "wall_shelf": [
+      24,
+      20,
+      72,
+      43
+     ]
+    },
+    "starterAs": {
+     "stall": [
+      "marketstall"
+     ]
+    }
+   },
+   "countinghouse": {
+    "room": "countinghouse",
+    "fix": {
+     "countingdesk": [
+      24,
+      32,
+      82,
+      88
+     ],
+     "scroll_shelf": [
+      196,
+      17,
+      234,
+      66
+     ]
+    },
+    "starterAs": {
+     "studydesk": [
+      "countingdesk"
+     ]
+    }
+   },
+   "dock": {
+    "room": "dockshed",
+    "fix": {
+     "boatslip": [
+      170,
+      36,
+      224,
+      96
+     ],
+     "storage_crates": [
+      186,
+      92,
+      234,
+      126
+     ],
+     "mooring_gear": [
+      190,
+      127,
+      234,
+      156
+     ]
+    }
+   },
+   "slipway": {
+    "room": "slipwayshed",
+    "fix": {
+     "slipwayways": [
+      24,
+      52,
+      58,
+      112
+     ],
+     "boatslip": [
+      25,
+      113,
+      76,
+      157
+     ]
+    }
+   },
+   "apiary": {
+    "room": "apiary",
+    "fix": {
+     "hives": [
+      25,
+      29,
+      96,
+      62
+     ]
+    }
+   },
+   "fields": {
+    "room": "fields",
+    "fix": {
+     "furrows": [
+      23,
+      56,
+      85,
+      105
+     ]
+    }
+   },
+   "orchard": {
+    "room": "orchard",
+    "fix": {
+     "fruittrees": [
+      21,
+      17,
+      92,
+      72
+     ]
+    }
+   },
+   "herbgarden": {
+    "room": "herbgarden",
+    "fix": {
+     "herbbeds": [
+      22,
+      50,
+      93,
+      97
+     ]
+    }
+   },
+   "herbalistshack": {
+    "room": "herbalistshack",
+    "fix": {
+     "remedybench": [
+      22,
+      31,
+      94,
+      72
+     ]
+    }
+   },
+   "quarry": {
+    "room": "quarry",
+    "fix": {
+     "quarryface": [
+      22,
+      22,
+      93,
+      78
+     ]
+    },
+    "as": {
+     "quarrypit": "quarryface"
+    },
+    "attach": {
+     "Winch": {
+      "host": "quarryface",
+      "side": "t"
+     },
+     "Blasting Powder": {
+      "host": "quarryface",
+      "side": "r"
+     }
+    }
+   },
+   "mineshaft": {
+    "room": "mineshaft",
+    "fix": {
+     "shaftlift": [
+      22,
+      24,
+      93,
+      88
+     ]
+    }
+   },
+   "masonyard": {
+    "room": "masonyard",
+    "fix": {
+     "masontable": [
+      24,
+      24,
+      90,
+      90
+     ]
+    }
+   },
+   "buildersyard": {
+    "room": "buildersyard",
+    "fix": {
+     "workbench": [
+      27,
+      28,
+      98,
+      62
+     ]
+    }
+   },
+   "shrinehouse": {
+    "room": "shrinehouse",
+    "fix": {
+     "altar": [
+      103,
+      15,
+      153,
+      60
+     ]
+    }
+   },
+   "ancestorhall": {
+    "room": "ancestorhall",
+    "fix": {
+     "ancestorshrine": [
+      101,
+      15,
+      156,
+      60
+     ]
+    }
+   },
+   "arcaneworkshop": {
+    "room": "arcaneworkshop",
+    "fix": {
+     "enchtable": [
+      16,
+      35,
+      87,
+      71
+     ],
+     "arcanefocus": [
+      110,
+      20,
+      146,
+      60
+     ]
+    }
+   },
+   "graveyard": {
+    "room": "graveyard",
+    "fix": {
+     "headstones": [
+      23,
+      40,
+      93,
+      81
+     ]
+    }
+   },
+   "magestower": {
+    "room": "magestower",
+    "fix": {
+     "arcanefocus": [
+      72,
+      26,
+      133,
+      93
+     ]
+    }
+   },
+   "shack": {
+    "room": "shack",
+    "fix": {
+     "hearthfix": [
+      25,
+      15,
+      81,
+      62
+     ],
+     "bunkbed": [
+      23,
+      89,
+      51,
+      144
+     ]
+    },
+    "decor": [
+     [
+      90,
+      19,
+      108,
+      50
+     ],
+     [
+      117,
+      20,
+      144,
+      35
+     ],
+     [
+      59,
+      101,
+      89,
+      129
+     ],
+     [
+      63,
+      124,
+      77,
+      141
+     ]
+    ],
+    "starterAs": {
+     "hearth": [
+      "hearthfix"
+     ],
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "cabin": {
+    "room": "cabin",
+    "fix": {
+     "hearthfix": [
+      32,
+      15,
+      93,
+      62
+     ],
+     "bunkbed": [
+      23,
+      90,
+      62,
+      149
+     ]
+    },
+    "decor": [
+     [
+      178,
+      19,
+      204,
+      40
+     ],
+     [
+      214,
+      22,
+      229,
+      46
+     ],
+     [
+      72,
+      97,
+      88,
+      117
+     ],
+     [
+      71,
+      126,
+      88,
+      149
+     ]
+    ],
+    "starterAs": {
+     "hearth": [
+      "hearthfix"
+     ],
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "cottage": {
+    "room": "cottage",
+    "fix": {
+     "hearthfix": [
+      26,
+      17,
+      81,
+      62
+     ],
+     "bunkbed": [
+      23,
+      90,
+      61,
+      145
+     ]
+    },
+    "decor": [
+     [
+      100,
+      19,
+      146,
+      50
+     ],
+     [
+      69,
+      98,
+      88,
+      126
+     ]
+    ],
+    "starterAs": {
+     "hearth": [
+      "hearthfix"
+     ],
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "house": {
+    "room": "house",
+    "fix": {
+     "hearthfix": [
+      27,
+      4,
+      70,
+      70
+     ],
+     "bunkbed": [
+      22,
+      97,
+      52,
+      148
+     ]
+    },
+    "decor": [
+     [
+      85,
+      20,
+      113,
+      41
+     ]
+    ],
+    "starterAs": {
+     "hearth": [
+      "hearthfix"
+     ],
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "manor:hall": {
+    "room": "manor:hall",
+    "fix": {
+     "fireplace": [
+      88,
+      21,
+      161,
+      88
+     ]
+    },
+    "decor": [
+     [
+      32,
+      58,
+      63,
+      118
+     ],
+     [
+      62,
+      27,
+      80,
+      62
+     ],
+     [
+      261,
+      27,
+      283,
+      63
+     ]
+    ]
+   },
+   "manor:bedchamber": {
+    "room": "manor:bedchamber",
+    "fix": {
+     "bunkbed": [
+      32,
+      62,
+      78,
+      139
+     ]
+    },
+    "decor": [
+     [
+      92,
+      26,
+      144,
+      95
+     ],
+     [
+      37,
+      27,
+      77,
+      60
+     ]
+    ],
+    "starterAs": {
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "manor:kitchen": {
+    "room": "manor:kitchen",
+    "fix": {
+     "hearthfix": [
+      86,
+      21,
+      159,
+      87
+     ]
+    },
+    "decor": [
+     [
+      32,
+      65,
+      63,
+      146
+     ],
+     [
+      35,
+      24,
+      82,
+      62
+     ],
+     [
+      63,
+      63,
+      82,
+      83
+     ]
+    ],
+    "starterAs": {
+     "hearth": [
+      "hearthfix"
+     ]
+    }
+   },
+   "manor:study": {
+    "room": "manor:study",
+    "fix": {
+     "big_desk": [
+      79,
+      70,
+      148,
+      115
+     ]
+    },
+    "decor": [
+     [
+      33,
+      23,
+      77,
+      95
+     ],
+     [
+      52,
+      94,
+      75,
+      127
+     ],
+     [
+      97,
+      27,
+      147,
+      62
+     ]
+    ]
+   },
+   "manor:workshop": {
+    "room": "manor:workshop",
+    "fix": {
+     "anvil_block": [
+      88,
+      21,
+      158,
+      85
+     ]
+    },
+    "decor": [
+     [
+      36,
+      25,
+      87,
+      52
+     ],
+     [
+      37,
+      61,
+      63,
+      85
+     ]
+    ]
+   },
+   "manor:nursery": {
+    "room": "manor:nursery",
+    "fix": {
+     "cot": [
+      33,
+      60,
+      76,
+      126
+     ]
+    },
+    "decor": [
+     [
+      113,
+      55,
+      145,
+      92
+     ],
+     [
+      86,
+      28,
+      113,
+      62
+     ]
+    ]
+   },
+   "manor:cellar": {
+    "room": "manor:cellar",
+    "fix": {
+     "barrel_stack": [
+      35,
+      35,
+      79,
+      87
+     ]
+    },
+    "decor": [
+     [
+      82,
+      45,
+      114,
+      83
+     ],
+     [
+      116,
+      25,
+      164,
+      84
+     ]
+    ]
+   },
+   "manor:counting": {
+    "room": "manor:counting",
+    "fix": {
+     "ledger_desk": [
+      34,
+      34,
+      116,
+      86
+     ]
+    },
+    "decor": [
+     [
+      27,
+      96,
+      62,
+      141
+     ],
+     [
+      27,
+      149,
+      57,
+      186
+     ],
+     [
+      128,
+      27,
+      192,
+      65
+     ]
+    ]
+   },
+   "manor:barracks": {
+    "room": "manor:barracks",
+    "fix": {
+     "weaponrack": [
+      32,
+      19,
+      92,
+      73
+     ],
+     "bunkbed": [
+      33,
+      105,
+      75,
+      173
+     ]
+    },
+    "decor": [
+     [
+      106,
+      25,
+      141,
+      72
+     ],
+     [
+      187,
+      29,
+      198,
+      52
+     ]
+    ],
+    "starterAs": {
+     "bunk": [
+      "bunkbed"
+     ]
+    }
+   },
+   "manor:sanctum": {
+    "room": "manor:sanctum",
+    "fix": {
+     "enchtable": [
+      130,
+      48,
+      190,
+      82
+     ]
+    },
+    "decor": [
+     [
+      28,
+      18,
+      90,
+      105
+     ],
+     [
+      101,
+      20,
+      126,
+      47
+     ],
+     [
+      141,
+      21,
+      180,
+      46
+     ]
+    ]
+   },
+   "manor:chapel": {
+    "room": "manor:chapel",
+    "fix": {
+     "altar": [
+      124,
+      44,
+      195,
+      98
+     ]
+    },
+    "decor": [
+     [
+      146,
+      12,
+      173,
+      41
+     ],
+     [
+      45,
+      160,
+      117,
+      187
+     ],
+     [
+      201,
+      160,
+      273,
+      187
+     ]
+    ]
    }
   },
   "paintedNames": {
@@ -1863,7 +5524,52 @@
    "bunkup": "Bunk",
    "bunklow": "Bunk",
    "hearth": "Hearth",
-   "trestletable": "Trestle Table & Benches"
+   "trestletable": "Trestle Table & Benches",
+   "brewvats": "Brewing Vats",
+   "smokepit": "Smoke Pit",
+   "brinecrocks": "Brine Crocks",
+   "brinepans": "Brine Pans",
+   "salt_sacks": "Salt Sacks",
+   "salt_barrels": "Salt Barrels",
+   "fishrack": "Drying Racks",
+   "hanging_net": "Hanging Net",
+   "gutting_table": "Gutting Table",
+   "fish_barrel": "Fish Barrel",
+   "questboard": "Quest Board",
+   "fencetable": "Fence's Table",
+   "gamerack": "Game Rack",
+   "storagecrates": "Storage Crates",
+   "barrel_row": "Barrel Row",
+   "sack_pile": "Sack Pile",
+   "marketstall": "Market Stall",
+   "wall_shelf": "Wall Shelf",
+   "countingdesk": "Counting Desk",
+   "scroll_shelf": "Scroll Shelf",
+   "boatslip": "Boat Slip",
+   "storage_crates": "Storage Crates",
+   "mooring_gear": "Mooring Gear",
+   "slipwayways": "Slipway",
+   "hives": "Beehives",
+   "furrows": "Furrowed Fields",
+   "fruittrees": "Fruit Trees",
+   "herbbeds": "Garden Beds",
+   "remedybench": "Remedy Bench",
+   "quarryface": "Quarry Face",
+   "shaftlift": "Shaft Lift",
+   "masontable": "Mason's Table",
+   "altar": "Altar",
+   "ancestorshrine": "Ancestor Altar",
+   "enchtable": "Enchanter's Table",
+   "arcanefocus": "Arcane Focus",
+   "headstones": "Headstones",
+   "hearthfix": "Hearth",
+   "bunkbed": "Bed",
+   "fireplace": "Great Fireplace",
+   "big_desk": "Big Desk",
+   "anvil_block": "Anvil & Forge",
+   "cot": "Cot",
+   "barrel_stack": "Barrel Stack",
+   "ledger_desk": "Ledger Desk"
   },
   "paintedFam": {
    "mill": {
@@ -1906,7 +5612,354 @@
    "Steam Saw": "♨️",
    "Scraping Frames": "🪟",
    "Armory": "🛡️"
-  }
+  },
+  "manor": {
+   "rooms": {
+    "hall": {
+     "name": "Great Hall",
+     "icon": "🏛️",
+     "key": "manor:hall"
+    },
+    "bedchamber": {
+     "name": "Bedchamber",
+     "icon": "🛏️",
+     "key": "manor:bedchamber"
+    },
+    "kitchen": {
+     "name": "Kitchen",
+     "icon": "🍳",
+     "key": "manor:kitchen"
+    },
+    "study": {
+     "name": "Study",
+     "icon": "📚",
+     "key": "manor:study"
+    },
+    "workshop": {
+     "name": "Workshop",
+     "icon": "🔨",
+     "key": "manor:workshop"
+    },
+    "nursery": {
+     "name": "Nursery",
+     "icon": "🧸",
+     "key": "manor:nursery"
+    },
+    "cellar": {
+     "name": "Cellar",
+     "icon": "🍷",
+     "key": "manor:cellar"
+    },
+    "counting": {
+     "name": "Counting Room",
+     "icon": "💰",
+     "key": "manor:counting"
+    },
+    "barracks": {
+     "name": "Barracks & Armoury",
+     "icon": "🛡️",
+     "key": "manor:barracks"
+    },
+    "sanctum": {
+     "name": "Sanctum",
+     "icon": "🔮",
+     "key": "manor:sanctum"
+    },
+    "chapel": {
+     "name": "Chapel",
+     "icon": "⛪",
+     "key": "manor:chapel"
+    }
+   },
+   "_note": "R72: manor suite = display-only tabs. route: item id -> room (anything unnamed, or routed to a locked room, shows in the Great Hall). over[type] overrides per manor type. unlock: a locked room opens when the family owns one of its listed items that routes there. Nothing is saved.",
+   "types": {
+    "mansion": {
+     "wing": "counting"
+    },
+    "fort": {
+     "wing": "barracks",
+     "drop": [
+      "bedchamber"
+     ]
+    },
+    "towerkeep": {
+     "wing": "sanctum"
+    },
+    "abbey": {
+     "wing": "chapel"
+    }
+   },
+   "route": {
+    "piece": {
+     "bunk": "bedchamber",
+     "featherbed": "bedchamber",
+     "minionbunk": "bedchamber",
+     "cradle": "nursery",
+     "hearth": "kitchen",
+     "oven": "kitchen",
+     "smoker": "kitchen",
+     "churn": "kitchen",
+     "quern": "kitchen",
+     "jars": "kitchen",
+     "saltingtub": "kitchen",
+     "kelpvat": "kitchen",
+     "studydesk": "study",
+     "enchdesk": "study",
+     "alchbench": "study",
+     "herbrack": "study",
+     "workbench": "workshop",
+     "loom": "workshop",
+     "toolrack": "workshop",
+     "tanrack": "workshop",
+     "ropewalk": "workshop",
+     "runeanvil": "workshop",
+     "runedanvil": "workshop",
+     "larder": "cellar",
+     "storage": "cellar",
+     "coldcellar": "cellar",
+     "dwarfcask": "cellar",
+     "stall": "counting",
+     "mapwall": "counting",
+     "weaponrack": "barracks",
+     "dummy": "barracks",
+     "enchtable": "sanctum",
+     "altar": "chapel"
+    },
+    "fit": {
+     "mirror": "bedchamber",
+     "nursery": "nursery",
+     "pantry": "kitchen",
+     "distillery": "kitchen",
+     "carvedcase": "study",
+     "studycorner": "study",
+     "glyphlectern": "study",
+     "reagentshelf": "study",
+     "runedanvil": "workshop",
+     "rootcellar": "cellar",
+     "strongbox": "cellar",
+     "dummy": "barracks",
+     "crystal": "sanctum",
+     "shrine": "chapel",
+     "lanterns": "chapel",
+     "brazier": "chapel"
+    },
+    "over": {
+     "fort": {
+      "piece": {
+       "bunk": "barracks",
+       "featherbed": "barracks",
+       "minionbunk": "barracks"
+      },
+      "fit": {
+       "mirror": "hall"
+      }
+     },
+     "towerkeep": {
+      "piece": {
+       "enchdesk": "sanctum"
+      }
+     },
+     "abbey": {},
+     "mansion": {}
+    }
+   },
+   "unlock": {
+    "study": {
+     "piece": [
+      "studydesk",
+      "enchdesk",
+      "alchbench"
+     ],
+     "fit": [
+      "studycorner",
+      "carvedcase",
+      "glyphlectern",
+      "reagentshelf"
+     ]
+    },
+    "workshop": {
+     "piece": [
+      "workbench",
+      "loom",
+      "toolrack",
+      "tanrack",
+      "ropewalk",
+      "runeanvil"
+     ],
+     "fit": [
+      "runedanvil"
+     ]
+    },
+    "nursery": {
+     "piece": [
+      "cradle"
+     ],
+     "fit": [
+      "nursery"
+     ]
+    },
+    "cellar": {
+     "piece": [
+      "larder",
+      "coldcellar",
+      "dwarfcask"
+     ],
+     "fit": [
+      "rootcellar"
+     ]
+    }
+   },
+   "hint": {
+    "study": "Needs a Study Desk, Rune Desk, Alchemist's Bench or a Study Corner / Carved Bookcase",
+    "workshop": "Needs a Workbench, Loom, Tool Rack, Tanning Rack, Rope Walk or Runestone Anvil",
+    "nursery": "Needs the Nursery fitting or a Cradle",
+    "cellar": "Needs a Root Cellar, Larder, Cold Cellar or Dwarven Cask"
+   },
+   "short": {
+    "study": "Study Desk or Study Corner",
+    "workshop": "Workbench or Loom",
+    "nursery": "Nursery or Cradle",
+    "cellar": "Root Cellar or Larder"
+   }
+  },
+  "chipIcons": {
+   "Chisel Racks": "🔨",
+   "Crane": "🏗️",
+   "Guild Masons": "🗿",
+   "Drying Lines": "🧵",
+   "Mortar & Pestle": "🥣",
+   "Apothecary": "⚗️",
+   "Star Charts": "🌠",
+   "Scrying Pool": "🔮",
+   "Spire": "🗼",
+   "Candle Niche": "🕯️",
+   "Bell Tower": "🔔",
+   "Consecrate as Chapel": "⛪",
+   "Drill Ground": "🎯",
+   "Armory": "🛡️",
+   "Garrison Hall": "🏰",
+   "Hidden Cellar": "🕳️",
+   "Fence Network": "🕸️",
+   "Guildmaster's Vault": "🗝️",
+   "Map Room": "🗺️",
+   "Trophy Hall": "🏆",
+   "Guild Annex": "🏢",
+   "Stone Walls": "🧱",
+   "Crypt Vaults": "⚰️",
+   "Mausoleum Dome": "🕌",
+   "Portrait Gallery": "🖼️",
+   "Family Archive": "📜",
+   "Treasure Vault": "💰",
+   "Spice Shelf": "🌶️",
+   "Copper Pots": "🍲",
+   "Great Kitchen": "🍳",
+   "Silver Inlay": "🪙",
+   "Runed Circle": "⭕",
+   "Star Lens": "🔭",
+   "Winch": "⛓️",
+   "Blasting Powder": "💥",
+   "Deep Cut": "⛏️",
+   "Timber Props": "🪵",
+   "Pumps": "🚰",
+   "Deep Gallery": "🔦",
+   "Trellises": "🌿",
+   "Irrigation": "💧",
+   "Greenhouse": "🪴",
+   "Bellows": "💨",
+   "Fire-brick Hearth": "🔥",
+   "Master Crucible": "⚱️",
+   "Water Wheel": "🎡",
+   "Twin Blades": "⚔️",
+   "Steam Saw": "♨️",
+   "Smokehouse": "🥓",
+   "Trophy Wall": "🦌",
+   "Lodge Hall": "🛖",
+   "Nets": "🥅",
+   "Jetty": "🌉",
+   "Smoke Shed": "🐟",
+   "Smoker": "🌫️",
+   "Wildflower Meadow": "🌼",
+   "Royal Hives": "👑",
+   "Bigger Run": "🚧",
+   "Heated Roost": "🌡️",
+   "Prize Flock": "🐓",
+   "Scraping Frames": "🪟",
+   "Bark Pits": "🌳",
+   "Master Tanner": "🥾",
+   "Drainage Ditches": "🌊",
+   "Crop Rotation": "🔄",
+   "Seed Drill": "🚜",
+   "Pruning": "✂️",
+   "Grafted Stock": "🍐",
+   "Walled Orchard": "🍎",
+   "Hay Loft": "🏚️",
+   "Good Pasture": "🍀",
+   "Prize Herd": "🐄",
+   "Iron Gearing": "⚙️",
+   "Second Stones": "🥌",
+   "Waterwheel": "🌀",
+   "Oak Racks": "🌰",
+   "Salt Store": "🧂",
+   "Great Chimney": "🏭",
+   "Malting Floor": "🌾",
+   "Copper Kettle": "☕",
+   "Cellar Casks": "🛢️",
+   "Shelving": "📚",
+   "Cool Cellar": "🧊",
+   "Sealed Crocks": "🏺",
+   "Deeper Pans": "🥘",
+   "Boiling House": "♨️",
+   "Loading Dock": "📦",
+   "Ledger Office": "📒",
+   "Cart Yard": "🚚",
+   "Sturdier Frames": "🪜",
+   "Second Bay": "🚪",
+   "Skilled Foreman": "👷",
+   "Stone Footings": "🪨",
+   "Great Bay": "🏬",
+   "Guild Charter": "📃",
+   "Deep Quarry": "🏔️",
+   "Quarry Works": "🛤️",
+   "Deep Mine": "⛰️",
+   "Ore Gallery": "💎",
+   "Physic Garden": "⚕️",
+   "Herbarium": "📗",
+   "Forge Hall": "⚒️",
+   "Foundry": "🧲",
+   "Timber Yard": "🌲",
+   "Lumber Works": "🪓",
+   "Hunting Lodge": "🏹",
+   "Game Reserve": "🦅",
+   "Fishery": "🎣",
+   "Fish Market": "🐠",
+   "Bee Yard": "🐝",
+   "Honey House": "🍯",
+   "Hen House": "🐔",
+   "Poultry Yard": "🥚",
+   "Leather Works": "👜",
+   "Tanner's Hall": "🧤",
+   "Farmstead": "🏡",
+   "Great Fields": "🌻",
+   "Fruit Garden": "🍓",
+   "Great Orchard": "🍑",
+   "Dairy Barn": "🥛",
+   "Dairy": "🧀",
+   "Watermill": "🏞️",
+   "Great Mill": "🍞",
+   "Curing House": "🥩",
+   "Provisioner": "🧺",
+   "Vintners": "🍷",
+   "Distillery": "🥃",
+   "Pantry House": "🥫",
+   "Provision Hall": "🍽️"
+  },
+  "beds": [
+   "bunk",
+   "featherbed",
+   "minionbunk",
+   "cradle",
+   "infirmary"
+  ]
  },
  "upKeys": [
   [
@@ -2056,5 +6109,6 @@
  "_noteR68_2": "R68.2 painted built-ins (display only, INVENTED boxes measured on the art): art.painted[type].fix = fixtures painted into the room background at pixel boxes [x0,y0,x1,y1]; no sprite is drawn for them, a hit area is, upgrades attach to the box, and floor/wall layout avoids the boxes (plus decor). room = alternate background for that type (smithy -> guildhall interior from Art batch1 workshop-interior). onto = pieces/fittings drawn as add-ons on a painted fixture instead of their own sprite.",
  "_noteR69": "R69: mill background replaced by Art room-mill-b (lossless 256x192). art.paintedFam[family] = painted fixtures shared by every building type on that room background (mill: hopper, millstones [id millwheel], drive shaft, flour bin, grain sacks; sawmill/tannery show the same generic machinery, INVENTED). General room-rect zone fields for painted rooms (all optional, default to floor/backwall): floor_large [x0,y0,x1,y1] = only area for floor furniture/storage; wall_strip = only area for wall pieces and the 32px wall slots (y = wall_strip[3]+1-25); paths = named walk areas (service-aisle, door-approach) kept clear; workspots = {fixture:[x,y]} where a worker stands (data for later worker movement, not used yet); anchors = {art id:[x0,y0,x1,y1]} exact spot for an attach add-on (attachArt maps the upgrade to its art id). Display only, nothing saved.",
  "_noteR70": "R70 (bunkhouse from rooms-batch-a-c, boxes.json of the repaint): the bunkhouse's two starter bunks are the two painted bunks (painted.starterAs), bought bunks are floor sprites on floor_large; hearth and trestle table are painted in. R70: barracks, chickencoop, cowpen, kitchen (building only), sawmill and tannery have their own painted rooms (art.painted[type].room; a type with its own room does NOT inherit art.paintedFam, so the sawmill/tannery no longer show the mill fixtures). The brewery, smokehouse, preservery and saltworks keep room-kitchen; hall, fort, hunterscabin, advlodge and thievesden keep room-lodge; the gristmill keeps room-mill. Rects carry the boxes.json zones (floor_large, wall_strip, paths, workspots keyed by painted fixture id, anchors keyed by the boxes.json anchor name). upAnchors = {upgrade name: anchor name} pins an add-on at its exact anchor box (no add-on art exists yet, so they are emoji placeholders). painted.as = {piece id: painted fixture id} merges a piece into a fixture (kitchen hearth piece -> the painted hearth). Display only, nothing saved.",
- "_noteR71": "R71: art.upPlaceholder = {upgrade: emoji} (Twin Blades, Steam Saw, Scraping Frames, plus Armory so it differs from Drill Ground) replaces the generic upKeys icon for add-ons without art, in the painted room scene and its chips only (Classic keeps upKeys). rects.<room>.spotFlush starts the floor_large spot search on the zone's top-left (96px zone = 3 columns). rects.kitchenhearth.wallPx = 23: the 47px wall_strip holds 2 wall slots of 23px (art's own wall piece size is 24px, 1 slot). painted.<type>.attach = per-type {upgrade: {host, side}} that overrides art.attach for that painted room, and the upgrade is then not also a wall piece: barracks Armory -> weaponrack2 at rack_upgrade, kitchen Spice Shelf -> larder at larder_upgrade. Still unmapped (no obvious host): chickencoop grain_bin_upgrade, cowpen stall_lower_upgrade, kitchen table_upgrade (Great Kitchen?), bunkhouse bedding/hearth/table anchors (bunkhouse has no upgrades), Good Pasture, Great Kitchen, Master Tanner. Display only, nothing saved."
+ "_noteR71": "R71: art.upPlaceholder = {upgrade: emoji} (Twin Blades, Steam Saw, Scraping Frames, plus Armory so it differs from Drill Ground) replaces the generic upKeys icon for add-ons without art, in the painted room scene and its chips only (Classic keeps upKeys). rects.<room>.spotFlush starts the floor_large spot search on the zone's top-left (96px zone = 3 columns). rects.kitchenhearth.wallPx = 23: the 47px wall_strip holds 2 wall slots of 23px (art's own wall piece size is 24px, 1 slot). painted.<type>.attach = per-type {upgrade: {host, side}} that overrides art.attach for that painted room, and the upgrade is then not also a wall piece: barracks Armory -> weaponrack2 at rack_upgrade, kitchen Spice Shelf -> larder at larder_upgrade. Still unmapped (no obvious host): chickencoop grain_bin_upgrade, cowpen stall_lower_upgrade, kitchen table_upgrade (Great Kitchen?), bunkhouse bedding/hearth/table anchors (bunkhouse has no upgrades), Good Pasture, Great Kitchen, Master Tanner. Display only, nothing saved.",
+ "_noteR72": "R72: 32 buildings get their own painted rooms (batches C D E F G H I) + a 11-room manor suite at 320x224 (art.manor tabs, display only) + 33 add-on overlays + 10 furniture sprites + art.chipIcons (exact upgrade name -> emoji, ahead of upKeys; Classic keeps upKeys) + rc.pins (tier-fixed pieces pinned to painted slot boxes) + rc.bedFar (beds fill the far end of floor_large). Display only: sim and save (55) unchanged."
 }

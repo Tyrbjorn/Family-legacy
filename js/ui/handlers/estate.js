@@ -84,6 +84,8 @@ export const estateActions = ({ v, b, m }) => ({
     U.estRoom = U.estRoom === uid ? null : uid;
     U.estRoomT = Date.now();
   },
+  // R72: manor suite tab (UI-only, not saved): which painted room of this manor is shown
+  manorroom: () => { (U.manorRoom ||= {})[isNaN(+v) ? v : +v] = b.dataset.w; },
   vup: () => E.upgradeVillage(s),
   egroad: () => E.buildRoad(s, v),
   egrepair: () => E.repairRoads(s),

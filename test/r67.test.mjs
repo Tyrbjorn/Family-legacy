@@ -34,7 +34,7 @@ for(const d of types){
     const Mo=roomModel(E,R,st,s), L=sceneLayout(R,Mo), rc=A.rects[L.fam];
     ok(L,'scene '+d.id);
     const placed=L.filter(c=>c.at!=='free');
-    ok(Mo.floor.every(c=>placed.some(o=>o.id===c.id)),'all pieces drawn '+d.id+' '+fill); // R68: + starters, wall layer
+    ok(Mo.floor.every(c=>placed.some(o=>o.id===(((A.painted[d.id]||{}).as||{})[c.id]||c.id))),'all pieces drawn '+d.id+' '+fill); // R68: + starters, wall layer
     ok(L.filter(c=>c.at==='free').length===Mo.free,'free slots drawn '+d.id);
     for(const c of L){ const b=[c.x+2,c.y+4,c.x+30,c.y+31];
       if((c.at==='floor'||c.at==='free')&&!(c.fixed&&(A.beside||{})[c.id])){ ok(inside([c.x,c.y],rc.floor),'in floor '+d.id+' '+c.id); for(const k of ['door','millstone','forge_piece_front','water','jetty']) if(rc[k]) ok(!hit(b,rc[k]),k+' kept clear '+d.id+' '+c.id); }
@@ -43,14 +43,14 @@ for(const d of types){
     // valid only: nothing drawn that the type cannot hold
     for(const c of placed) ok((d.fixed||[]).includes(c.id)||allow.includes(c.id)||Mo.starters.some(x=>x.id===c.id)||c.at==='painted','allowed '+c.id+' in '+d.id);
     const h=roomHtml(E,R,s,st,0,false), hc=roomHtml(E,R,s,st,0,true);
-    ok(h.includes('rmscene')&&h.includes('art/rooms/'+A.rooms[L.fam]+'.webp'),'scene html '+d.id);
+    ok(h.includes('rmscene')&&h.includes('art/rooms/'+(A.manor&&A.manor.types[d.id]?A.rooms['manor:hall']:A.rooms[L.fam])+'.webp'),'scene html '+d.id); // R72: manors open on their Great Hall
     ok(!hc.includes('art/')&&!hc.includes('rmscene'),'classic ignores art '+d.id);
     if(!['bunkhouse','barracks','advlodge','shack','cabin','house','mansion','fort','towerkeep','abbey','cottage'].includes(d.id)) ok(!h.includes('pieces/bed.webp'),'no beds in '+d.id);
   }
 }
 // house with beds stacks; smithy forge in the forge front
 const hs={uid:'stH',type:'house',pieces:['bunk','bunk','bunk','larder'],up:0}; s.structures.push(hs);
-const LH=sceneLayout(R,roomModel(E,R,hs,s)); ok(LH.find(c=>c.id==='bunk').n===4&&roomHtml(E,R,s,hs,0,false).split('pieces/bed.webp').length-1>=4,'3 beds stacked');
+const LH=sceneLayout(R,roomModel(E,R,hs,s)); ok(LH.find(c=>c.id==='bunk').n===3&&LH.find(c=>c.id==='bunkbed'&&c.at==='painted').n===1&&roomHtml(E,R,s,hs,0,false).split('pieces/bed.webp').length-1>=3,'3 beds stacked (bought beds drawn as sprites, the starter bed is the painted one, R72)');
 const sm={uid:'stS',type:'smithy',pieces:['forge','workbench'],up:0}; s.structures.push(sm);
 ok(sceneLayout(R,roomModel(E,R,sm,s)).find(c=>c.id==='forge').at==='painted','forge painted (R68.2)');
 // emoji fallback when a piece has no art

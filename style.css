@@ -184,8 +184,8 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 .estroom.tier1{border-color:#b58a3a}.estroom.tier2{border-color:#d9b44a;box-shadow:0 0 0 1px #6b5220,inset 0 0 0 2px rgba(0,0,0,.25)}
 .estroom .rmroof{position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,var(--rf) 0 10px,rgba(0,0,0,.35) 10px 12px),var(--rf);background-blend-mode:multiply;border-bottom:6px solid rgba(0,0,0,.4);animation:rmroofoff .7s steps(7,end) forwards}
 @keyframes rmroofoff{0%{transform:none;opacity:1}35%{transform:translateY(-8%);opacity:1}100%{transform:translateY(-110%) rotate(-3deg);opacity:0}}
-.estroom .rmscene{position:relative;aspect-ratio:256/192;width:100%;max-width:512px;margin:0 auto;background-size:100% 100%;image-rendering:pixelated;overflow:hidden}
-.estroom .rmsp{position:absolute;width:12.5%;height:16.667%;image-rendering:pixelated}
+.estroom .rmscene{position:relative;aspect-ratio:256/192;aspect-ratio:var(--rw,256)/var(--rh,192);width:100%;max-width:512px;max-width:calc(var(--rw,256)*2px);margin:0 auto;background-size:100% 100%;image-rendering:pixelated;overflow:hidden}
+.estroom .rmsp{position:absolute;width:12.5%;height:16.667%;width:calc(3200%/var(--rw,256));height:calc(3200%/var(--rh,192));image-rendering:pixelated}
 .estroom span.rmsp.rmemo{display:flex;align-items:center;justify-content:center;font-size:min(22px,5vw)}
 .estroom .rmfree{box-sizing:border-box;border:1px dashed rgba(255,255,255,.7);background:rgba(0,0,0,.12)}
 .estroom .rmsn{position:absolute;right:auto}
@@ -195,7 +195,15 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 /* R68: wall layer + steel tint */
 .estroom .rmsp.rmt-steel{filter:saturate(.55) sepia(.2) hue-rotate(170deg) saturate(1.6) brightness(1.18)}
 /* R68.1: upgrade attached to its fixture */
-.estroom .rmsp.rmatt{width:6.25%;height:8.333%;z-index:2}
+.estroom .rmsp.rmatt{width:6.25%;height:8.333%;width:calc(1600%/var(--rw,256));height:calc(1600%/var(--rh,192));z-index:2}
 .estroom span.rmsp.rmatt.rmemo{font-size:min(11px,2.6vw);filter:drop-shadow(0 0 1px #000)}
 .estroom .rmsp.rmhit{background:none;border-radius:3px;z-index:1}
 .estroom .rmsp.rmhit:hover{outline:1px dashed rgba(255,230,160,.7)}
+
+/* R72: manor suite tabs (under the roof-off header) + 320x224 rooms */
+.estroom .rmtabs{display:flex;flex-wrap:wrap;gap:3px;padding:3px 4px;background:rgba(0,0,0,.28);border-bottom:2px solid rgba(0,0,0,.35)}
+.estroom .rmtab{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;padding:2px 8px;font-size:12px;white-space:nowrap;color:#f3e6c8;background:rgba(255,240,200,.12);border:1px solid rgba(255,230,170,.35)}
+.estroom .rmtab.on{background:rgba(217,180,74,.35);border-color:#d9b44a;color:#fff;font-weight:700}
+.estroom .rmtab i{font-style:normal;font-size:10px;background:#000a;padding:0 4px;border-radius:6px}
+.estroom .rmtab.lock{opacity:.5;cursor:default;flex-direction:column;gap:0;line-height:1.15}
+.estroom .rmtab.lock small{font-size:9px;opacity:.85}

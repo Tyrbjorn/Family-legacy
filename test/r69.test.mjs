@@ -9,7 +9,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art, rc=A.rects.mill;
-ok(/^R(69|70|71)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R69, save stays 55');
+ok(/^R(69|70|71|72)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R69, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R69'),'changelog');
 const hit=(a,b)=>a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3];
 // art files: lossless webp with the sizes Art delivered
@@ -60,5 +60,5 @@ ok(!/rmatt rmemo/.test(gh),'no emoji placeholders on the mill');
 const g1={uid:'g1',type:'gristmill',pieces:['millwheel'],up:1}; s.structures.push(g1);
 ok(sceneLayout(R,roomModel(E,R,g1,s)).filter(c=>c.at==='attach').length===1,'only bought upgrades attach');
 // other rooms keep their rules (no zone fields -> floor/backwall as before)
-ok(!A.rects.home.floor_large&&!A.rects.home.wall_strip&&sceneLayout(R,roomModel(E,R,{uid:'h',type:'house',pieces:['hearth','bunk'],up:0},s)).fam==='home','other rooms unchanged');
+ok(!A.rects.home.floor_large&&!A.rects.home.wall_strip&&sceneLayout(R,roomModel(E,R,{uid:'h',type:'house',pieces:['hearth','bunk'],up:0},s)).fam==='house','house has its own room (R72); home rect kept');
 console.log('r69 ok',pass,'checks');

@@ -2,6 +2,15 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R72",
+      "title": "Every building has its painted room",
+      "items": [
+        "🏠 Roof-off interiors are painted for nearly every building now: brewery, smokehouse, preservery, saltworks, fishing hut, adventurers' lodge, thieves' den, hunter's cabin, great hall, warehouse, trading post, counting house, dock and slipway sheds, apiary, fields, orchard, herb garden, herbalist, quarry, mine shaft, mason yard, builder's yard, shrine, ancestor hall, arcane workshop, graveyard, mage's tower and the four homes.",
+        "🏰 Manors show one room at a time: the Mansion, Fort, Tower Keep and Abbey get tabs under the header (Great Hall, Bedchamber, Kitchen and their wing; the Fort has no bedchamber). Study, Workshop, Nursery and Cellar open once you own the matching furnishings. Looks only.",
+        "🔧 Every upgrade chip has its own icon (no more chicken on the Runed Circle), 33 upgrades are drawn on their buildings, and new furniture art for beds, cellars, dummies, mirrors and more. Beds sit well away from the fireplaces. Classic emoji mode is unchanged."
+      ]
+    },
+    {
       "build": "R71",
       "title": "Room rough spots",
       "items": [
