@@ -8,7 +8,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art;
-ok(BUILD.startsWith('R68')&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
+ok(/^R(68|69|70)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R68'),'changelog');
 const webp=f=>{const b=fs.readFileSync(f);return b.slice(0,4).toString()==='RIFF'&&b.slice(8,12).toString()==='WEBP'&&b.slice(12,16).toString()==='VP8L';};
 for(const k of ['herbrack','toolrack','reagentshelf','lanterns','tanrack']) ok(A.pieces[k]==='pieces/'+k+'-wall'&&A.onWall.includes(k),'wall redraw '+k);
@@ -20,13 +20,14 @@ const types=D.estate.structureFiles.flatMap(f=>D['structures/'+f]); const T=Obje
 for(const [up,p] of Object.entries(A.upPieces)) ok(types.some(d=>(d.upgrades||[]).some(u=>u.name===up)),'upgrade exists '+up);
 for(const t of Object.keys(A.starters)) ok(T[t],'starter type '+t);
 const s=E.newGame(1); E.normalize(s); const snap=JSON.stringify(s);
-const lay=st=>{s.structures.push(st);const M=roomModel(E,R,st,s);return {M,L:sceneLayout(R,M),rc:A.rects[M.fam]};};
+const lay=st=>{s.structures.push(st);const M=roomModel(E,R,st,s);return {M,L:sceneLayout(R,M),rc:A.rects[(A.painted[st.type]||{}).room||M.fam]};};
 const hit=(a,b)=>a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3];
 // bunkhouse: 2 bunks (bed drawing) + trestle table; bought bunks stack on
 let {M,L}=lay({uid:'b1',type:'bunkhouse',pieces:[],up:0});
-ok(L.find(c=>c.id==='bunk').n===2&&L.find(c=>c.id==='trestletable').fixed,'bunkhouse starters');
+ok(L.filter(c=>c.at==='painted'&&c.id.startsWith('bunk')).length===2&&L.find(c=>c.id==='trestletable').fixed,'bunkhouse starters');
 ok(M.floor.length===0,'starters not in the model floor (no stats/slots)');
-({L}=lay({uid:'b2',type:'bunkhouse',pieces:['bunk','bunk'],up:0})); ok(L.filter(c=>c.id==='bunk').length===1&&L.find(c=>c.id==='bunk').n===4,'bought bunks stack on starters');
+// R70: bunkhouse is painted: the 2 starter bunks are the painted bunks; bought bunks are floor sprites that stack
+({L}=lay({uid:'b2',type:'bunkhouse',pieces:['bunk','bunk'],up:0})); ok(L.filter(c=>c.id==='bunk'&&c.at==='floor').length===1&&L.find(c=>c.id==='bunk'&&c.at==='floor').n===2,'bought bunks stack');
 // smithy (R68.2): forge + anvil are painted into the guildhall background; steel anvil is an add-on on the anvil
 let r=lay({uid:'s1',type:'smithy',pieces:['forge','steelanvil'],up:0});
 ok(r.L.find(c=>c.id==='forge').at==='painted'&&r.L.find(c=>c.id==='anvil').at==='painted','painted forge+anvil');
@@ -43,7 +44,9 @@ for(const d of types){
   const h=roomHtml(E,R,s,st,0,true); ok(!h.includes('art/')&&!h.includes('rmscene'),'classic ignores '+d.id);
 }
 // big walls scaled + spread; normal walls 32px slots
-r=lay({uid:'k1',type:'kitchen',pieces:['range'],up:1}); let w=r.L.filter(c=>c.at==='wall'); ok(w.length===1&&w[0].id==='spiceshelf'&&w[0].s>1,'kitchen spice shelf, big wall scale');
+// R70: the Kitchen is painted (32px wall slot); the old tall kitchen room (brewery etc.) keeps the big wall scale
+r=lay({uid:'k1',type:'kitchen',pieces:['range'],up:1}); let w=r.L.filter(c=>c.at==='wall'); ok(w.length===1&&w[0].id==='spiceshelf'&&!(w[0].s>1),'kitchen spice shelf in the painted kitchen');
+w=sceneLayout(R,{fam:'kitchen',type:'brewery',starters:[],free:0,floor:[],wall:[{kind:'up',id:'Spice Shelf',icon:'x',name:'Spice Shelf'}]}).filter(c=>c.at==='wall'); ok(w.length===1&&w[0].id==='spiceshelf'&&w[0].s>1,'old kitchen room: spice shelf, big wall scale');
 r=lay({uid:'l1',type:'advlodge',pieces:['questboard'],up:2}); w=r.L.filter(c=>c.at==='wall'); ok(w.map(c=>c.id).join()==='mapwall,trophywall'&&w[0].s===1&&w[1].x-w[0].x===32,'lodge map + trophy in order');
 // order: built-in, upgrade, furnishing; overflow past 7 -> floor
 const fake={fam:'home',type:'house',starters:[],free:0,floor:[{id:'tanrack',n:1,fixed:true},{id:'herbrack',n:2,fixed:false},...['toolrack','reagentshelf','lanterns','shelving','oakracks','chiselrack','candleniche'].map(id=>({id,n:1,fixed:false}))],wall:[{kind:'up',id:'Map Room'}]};

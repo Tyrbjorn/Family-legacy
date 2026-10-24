@@ -14,7 +14,7 @@ const webp=f=>{const b=fs.readFileSync(f);return b.slice(0,4).toString()==='RIFF
 // 1. rooms
 ok(Object.keys(A.rooms).length>=12,'12 room backgrounds');
 for(const [fam,f] of Object.entries(A.rooms)){ ok(R.rooms[fam]||Object.values(A.painted||{}).some(p=>p.room===fam),'family '+fam); ok(webp(root+'art/rooms/'+f+'.webp'),'lossless '+f); const r=A.rects[fam]; ok(r&&r.floor&&r.backwall,'rects '+fam); }
-ok(JSON.stringify(A.rects.mill.millstone)==='[98,15,147,63]','updated millstone rect');
+ok(JSON.stringify(A.rects.mill.floor_large)==='[15,40,130,135]'&&A.paintedFam.mill.fix.millwheel,'R69: mill millstone is a painted fixture now (was rect [98,15,147,63])');
 ok(JSON.stringify(A.rects.workshop.forge_piece_front)==='[100,53,139,80]','forge front rect');
 // 2. pieces: every piece id has art, files exist and are lossless
 for(const p of D.estate.pieces){ ok(A.pieces[p.id],'art for '+p.id); ok(webp(root+'art/rooms/'+A.pieces[p.id]+'.webp'),'file '+p.id); }

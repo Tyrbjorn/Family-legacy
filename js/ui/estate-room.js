@@ -36,21 +36,25 @@ const tok = (A, key, icon, cls) => (A && A[key] ? `<img class="rmart${cls ? " " 
 // wall; boat slips on the dock jetty. Items that do not fit are left to the list below (n/a for current slot counts).
 const hit = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
 export function sceneLayout(R, M) {
-  const A = R.art || {}, PT = (A.painted || {})[M.type] || {}, fam = PT.room || M.fam, rc = (A.rects || {})[fam];
+  const A = R.art || {}, PT0 = (A.painted || {})[M.type] || {}, PT = PT0.room ? PT0 : { ...((A.paintedFam || {})[M.fam] || {}), ...PT0 }, fam = PT.room || M.fam, rc = (A.rects || {})[fam];
   if (!rc) return null;
-  const F = rc.floor, out = [], block = [rc.door, rc.millstone, rc.forge_piece_front, rc.water, rc.jetty].filter(Boolean);
-  out.fam = fam;
+  // R69: optional zone fields on a room rect (painted rooms): floor_large = the only area for floor furniture and storage upgrades,
+  // wall_strip = the only area for wall pieces, paths = walk areas kept clear, workspots = where workers stand (data only)
+  const F = rc.floor_large || rc.floor, out = [], block = [rc.door, rc.millstone, rc.forge_piece_front, rc.water, rc.jetty, ...Object.values(rc.paths || {})].filter(Boolean);
+  out.fam = fam; out.work = rc.workspots || {};
   // R68.2: fixtures painted into the background ARE the built-ins: no sprite, a hit area at the painted box; owned
   // copies merge into it; `onto` pieces/fittings become add-ons on it; layout avoids every painted/decor box
   const PF = PT.fix || {}, onto = PT.onto || {}, PN = A.paintedNames || {}, paint = {}, addOn = [];
   for (const id in PF) { block.push(PF[id]); paint[id] = { id, icon: (A.starterNames || {})[id]?.[0] || "", name: PN[id] || id, n: 0, fixed: true }; }
   for (const b of PT.decor || []) block.push(b);
-  const take = c => { if (paint[c.id]) { const p = paint[c.id]; p.n += c.n || 1; p.name = c.name || p.name; p.icon = c.icon || p.icon; return false; }
+  // R70: PT.as = {piece id: painted fixture id}: that piece IS the painted fixture (kitchen hearth piece -> the painted hearth), no second sprite
+  const take = c => { const al = (PT.as || {})[c.id]; if (al && paint[al]) { paint[al].n += c.n || 1; return false; }
+    if (paint[c.id]) { const p = paint[c.id]; p.n += c.n || 1; p.name = c.name || p.name; p.icon = c.icon || p.icon; return false; }
     if (onto[c.id] && paint[onto[c.id][0]]) { addOn.push({ ...c, host: onto[c.id][0], side: onto[c.id][1] }); return false; } return true; };
   const onWall = new Set(A.onWall || []), upP = A.upPieces || {}, beside = A.beside || {};
   // starters merge into the matching placed entry (bought bunks stack onto the starting bunks)
   const fl = M.floor.map(c => ({ ...c })), st = [];
-  for (const s of M.starters || []) { const m = fl.find(c => c.id === s.id); if (m) { m.n += s.n; m.fixed = true; } else st.push({ ...s }); }
+  for (const s of M.starters || []) { const sa = (PT.starterAs || {})[s.id]; if (sa && sa.every(id => PF[id])) { sa.forEach(id => paint[id].n++); continue; } /* R70: starters that ARE painted fixtures (bunkhouse bunks) */ const m = fl.find(c => c.id === s.id); if (m) { m.n += s.n; m.fixed = true; } else st.push({ ...s }); }
   if (Object.keys(PF).length) { const k1 = fl.filter(take), k2 = st.filter(take); fl.length = 0; fl.push(...k1); st.length = 0; st.push(...k2);
     for (const w of M.wall || []) if (w.kind === "fit" && onto[w.id] && paint[onto[w.id][0]]) addOn.push({ ...w, n: 1, host: onto[w.id][0], side: onto[w.id][1] });
     for (const id in paint) { const b = PF[id], p = paint[id]; out.push({ at: "painted", id, x: b[0], y: b[1], w: b[2] - b[0], h: b[3] - b[1], box: b, name: p.name, n: Math.max(1, p.n), fixed: true }); } }
@@ -77,7 +81,7 @@ export function sceneLayout(R, M) {
   }
   // R68.2: rooms with painted fixtures: wall slots are the 32px positions that miss every painted box
   let pSlots = null;
-  if (rc.backwall && Object.keys(PF).length) { const W = rc.backwall, [x0, x1] = PT.wallX || A.wallX || [16, 240], y = Math.max(0, W[3] + 1 - 25);
+  if (rc.backwall && (Object.keys(PF).length || rc.wall_strip)) { const W = rc.wall_strip || rc.backwall, [x0, x1] = rc.wall_strip ? [W[0], W[2] + 1] : PT.wallX || A.wallX || [16, 240], y = Math.max(0, W[3] + 1 - 25);
     pSlots = []; for (let x = x0; x + 32 <= x1; x += 32) if (!Object.values(PF).some(b => hit([x, y, x + 32, y + 25], b))) pSlots.push([x, y]); }
   const N = pSlots ? pSlots.length : A.wallSlots || 7, onW = wallC.slice(0, N), over = wallC.slice(N);
   const isW = c => rc.backwall && onWall.has(c.id) && c.id !== "finecornice";
@@ -92,7 +96,7 @@ export function sceneLayout(R, M) {
   }
   const special = c => {
     if ((A.forgeFront || []).includes(c.id) && rc.forge_piece_front && !out.some(o => o.at === "forge")) return { at: "forge", x: rc.forge_piece_front[0] + 4, y: rc.forge_piece_front[1] };
-    if (c.id === "finecornice" && rc.backwall) return { at: "cornice", x: Math.round((rc.backwall[0] + rc.backwall[2]) / 2) - 16, y: rc.backwall[1] };
+    if (c.id === "finecornice" && rc.backwall) { const z = rc.wall_strip || rc.backwall; return { at: "cornice", x: Math.round((z[0] + z[2]) / 2) - 16, y: z[1] }; }
     if ((A.onJetty || []).includes(c.id) && rc.jetty && !out.some(o => o.at === "jetty")) return { at: "jetty", x: rc.jetty[0], y: Math.max(rc.jetty[1], rc.jetty[3] - 32) };
     return null;
   };
@@ -110,7 +114,11 @@ export function sceneLayout(R, M) {
     let side = side0; if (used[host + side]) side = ["t", "r", "l", "b"].find(q => !used[host + q]) || side0; used[host + side] = 1;
     // painted hosts: offsets from the painted box (INVENTED); sprites: the R68.1 offsets on a 32px piece
     const d = h.box ? { l: [-6, h.h / 2 - 8], r: [h.w - 10, h.h / 2 - 8], t: [h.w / 2 - 8, -6], b: [h.w / 2 - 8, h.h - 10] }[side] : { l: [-6, 14], r: [22, 14], t: [8, -6], b: [8, 22] }[side];
-    out.push({ at: "attach", host, side, up: key, x: Math.round(h.x + d[0]), y: Math.round(h.y + d[1]), icon: u.icon, name: u.name, art: (A.attachArt || {})[key] }); };
+    // R69: a room rect can pin an add-on's art to an exact anchor box (rc.anchors[art id]), size included
+    // R70: rc.upAnchors = {upgrade name: anchor name} pins an add-on that has no art yet at the same kind of box (emoji placeholder)
+    const art = (A.attachArt || {})[key], an = (art && (rc.anchors || {})[art]) || (rc.anchors || {})[(rc.upAnchors || {})[key]];
+    out.push(an ? { at: "attach", host, side, up: key, x: an[0], y: an[1], w: an[2] - an[0] + 1, h: an[3] - an[1] + 1, icon: u.icon, name: u.name, art }
+      : { at: "attach", host, side, up: key, x: Math.round(h.x + d[0]), y: Math.round(h.y + d[1]), icon: u.icon, name: u.name, art }); };
   for (const u of M.wall || []) { const a = u.kind === "up" && AT[u.id]; if (a) put(a.host, a.side, u, u.id); }
   for (const c of addOn) { put(c.host, c.side, c, c.id); const o = out.at(-1); if (o && o.up === c.id) o.id = c.id; }
   return out;
@@ -126,7 +134,7 @@ function sceneHtml(R, M, A) {
   };
   let h = "";
   for (const c of L) {
-    if (c.at === "attach") { const st = `left:${P(c.x, 256)};top:${P(c.y, 192)}`; h += c.art ? `<img class="rmsp rmatt" style="${st}" src="art/rooms/${c.art}.webp" alt="" title="${esc(c.name)}">` : `<span class="rmsp rmatt rmemo" style="${st}" title="${esc(c.name + " (on " + c.host + ")")}">${c.icon}</span>`; continue; }
+    if (c.at === "attach") { const st = `left:${P(c.x, 256)};top:${P(c.y, 192)}${c.w ? `;width:${P(c.w, 256)};height:${P(c.h, 192)}` : ""}`; h += c.art ? `<img class="rmsp rmatt" style="${st}" src="art/rooms/${c.art}.webp" alt="" title="${esc(c.name)}">` : `<span class="rmsp rmatt rmemo" style="${st}${c.w ? `;display:flex;align-items:center;justify-content:center;line-height:1;font-size:${+(Math.min(c.w, c.h) * 0.8 / 2.56).toFixed(2)}cqw` : ""}" title="${esc(c.name + " (on " + c.host + ")")}">${c.icon}</span>`; continue; }
     if (c.at === "painted") { h += `<span class="rmsp rmhit" data-fix="${c.id}" style="left:${P(c.x, 256)};top:${P(c.y, 192)};width:${P(c.w, 256)};height:${P(c.h, 192)}" title="${esc(c.name + (c.n > 1 ? " ×" + c.n : "") + " · built-in")}"></span>`; continue; }
     if (c.at === "free") { h += `<span class="rmsp rmfree" style="left:${P(c.x, 256)};top:${P(c.y, 192)}" title="Free slot"></span>`; continue; }
     const n = c.at === "wall" ? 1 : Math.min(c.n || 1, 4);

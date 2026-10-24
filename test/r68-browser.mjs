@@ -36,7 +36,7 @@ for(const [uid,nm] of ROOMS){
  ok(r,'room '+uid);if(!r)continue;
  ok(r.right<=w+1&&r.sw<=w+1,`fits ${uid} ${w}`);
  if(classic) ok(!r.scene&&!r.imgs&&!r.wall,'classic no scene '+uid);
- else{ok(r.scene&&(r.imgs>0||r.hit>0)&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st912')ok(r.bed&&r.trestle,'bunkhouse bunks+table');if(uid==='st900')ok(r.hit>=4&&r.att>=2&&!r.bed,'smithy painted forge/anvil/bench/rack + add-ons (R68.2)');if(uid==='st913'||uid==='st914')ok(r.wall>=2,'wall pieces '+uid);if(uid==='st903')ok(!r.bed,'no bed in mine');}
+ else{ok(r.scene&&(r.imgs>0||r.hit>0)&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st912')ok(r.bed&&r.trestle,'bunkhouse bunks+table');if(uid==='st900')ok(r.hit>=4&&r.att>=2&&!r.bed,'smithy painted forge/anvil/bench/rack + add-ons (R68.2)');if(uid==='st913')ok(r.wall>=1,'wall pieces (R70 painted kitchen has 1 wall slot) '+uid);if(uid==='st914')ok(r.wall>=2,'wall pieces '+uid);if(uid==='st903')ok(!r.bed,'no bed in mine');}
  if(shots&&!classic){const e=await p.$('.estroom');if(w===390)await e.screenshot({path:SD+`r68-room-${nm}.png`});if(w===360&&uid==='st912')await e.screenshot({path:SD+'r68-room-360.png'});}
  await p.evaluate(()=>document.querySelector('.estroom [data-a=estroom]')?.click());await p.waitForTimeout(200);
 }

@@ -36,7 +36,7 @@ for(const [uid,nm] of ROOMS){
  ok(r,'room '+uid);if(!r)continue;
  ok(r.right<=w+1&&r.sw<=w+1,`fits ${uid} ${w}`);
  if(classic) ok(!r.scene&&!r.imgs&&!r.wall,'classic no scene '+uid);
- else{ok(r.scene&&(r.imgs>0||r.hit>0)&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st912')ok(r.bed&&r.trestle,'bunkhouse bunks+table');if(uid==='st900')ok(r.hit>=4&&r.att>=2&&!r.bed,'smithy painted forge/anvil/bench/rack + add-ons (R68.2)');if(uid==='st913')ok(r.wall>=2&&r.att>=1,'kitchen wall+attach');if(uid==='st915'||uid==='st904')ok(r.att>=1,'attach '+uid);if(uid==='st903')ok(!r.bed,'no bed in mine');}
+ else{ok(r.scene&&(r.imgs>0||r.hit>0)&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st912')ok(r.bed&&r.trestle,'bunkhouse bunks+table');if(uid==='st900')ok(r.hit>=4&&r.att>=2&&!r.bed,'smithy painted forge/anvil/bench/rack + add-ons (R68.2)');if(uid==='st913')ok(r.wall>=1&&r.att>=1,'kitchen wall+attach (R70: 1 wall slot)');if(uid==='st915'||uid==='st904')ok(r.att>=1,'attach '+uid);if(uid==='st903')ok(!r.bed,'no bed in mine');}
  if(shots&&!classic){const e=await p.$('.estroom');if(w===390)await e.screenshot({path:SD+`r68_1-${nm}.png`});if(w===360&&uid==='st915')await e.screenshot({path:SD+'r68_1-360.png'});}
  await p.evaluate(()=>document.querySelector('.estroom [data-a=estroom]')?.click());await p.waitForTimeout(200);
 }

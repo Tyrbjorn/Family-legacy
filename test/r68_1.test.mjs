@@ -8,7 +8,7 @@ E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);proces
 const R=D.estaterooms, A=R.art; ok(E.SCHEMA===55&&STEPS.at(-1).n===55,'save 55');
 const types=D.estate.structureFiles.flatMap(f=>D['structures/'+f]);
 for(const [up,a] of Object.entries(A.attach)){ const ts=types.filter(d=>(d.upgrades||[]).some(u=>u.name===up)||(d.tiers||[]).some(t=>(t.upgrades||[]).some(u=>u.name===up)));
-  ok(ts.length,'upgrade exists '+up); ok(ts.some(d=>(d.fixed||[]).includes(a.host)||((A.starters||{})[d.id]||[]).some(x=>x[0]===a.host)),'host is a fixture of '+up); ok(!A.upPieces[up],'not also a wall piece '+up); }
+  ok(ts.length,'upgrade exists '+up); ok(ts.some(d=>(d.fixed||[]).includes(a.host)||((A.painted||{})[d.id]?.fix||{})[a.host]||((A.starters||{})[d.id]||[]).some(x=>x[0]===a.host)),'host is a fixture of '+up); ok(!A.upPieces[up],'not also a wall piece '+up); }
 const s=E.newGame(1); E.normalize(s);
 const L=st=>{s.structures.push(st);return sceneLayout(R,roomModel(E,R,st,s));};
 const sm=L({uid:'a1',type:'smithy',pieces:['forge'],up:3}); const fg=sm.find(c=>c.id==='forge'), at=sm.filter(c=>c.at==='attach');

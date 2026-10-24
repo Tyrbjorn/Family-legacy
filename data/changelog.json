@@ -2,6 +2,24 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R70",
+      "title": "New rooms: barracks, farm, kitchen, sawmill, tannery, bunkhouse",
+      "items": [
+        "🏠 The barracks, chicken coop, cow pen, kitchen, sawmill, tannery and bunkhouse each have their own painted roof-off interior now, with the racks, nest boxes, stalls, hearth, saw table and tan vats built right into the room.",
+        "🔧 Upgrades sit where they belong: Twin Blades and Steam Saw at the saw table, Scraping Frames and Bark Pits at the tan vats, plus Copper Pots, Heated Roost, Prize Flock, Bigger Run, Hay Loft, Prize Herd and Drill Ground. Some use a simple icon until their art arrives.",
+        "🍳 The painted kitchen is for the Kitchen only; the brewery, smokehouse, preservery and saltworks keep their old room for now. Looks only, nothing about the game changed."
+      ]
+    },
+    {
+      "build": "R69",
+      "title": "New mill interior",
+      "items": [
+        "⚙️ The mill has new roof-off art: the hopper, millstones, drive shaft, flour bin and grain sacks are painted into the room.",
+        "🪓 Iron Gearing now sits on the drive shaft and Second Stones beside the millstones, drawn with their own art.",
+        "🧰 Furniture goes on the big open floor and shelves on the back wall; the aisle and the door stay clear. The sawmill and tannery share this room. Looks only, nothing about the game changed."
+      ]
+    },
+    {
       "build": "R68.2",
       "title": "Built-in workshop",
       "items": [
