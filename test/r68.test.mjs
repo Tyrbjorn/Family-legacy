@@ -8,7 +8,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art;
-ok(/^R(68|69|70)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
+ok(/^R(68|69|70|71)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R68'),'changelog');
 const webp=f=>{const b=fs.readFileSync(f);return b.slice(0,4).toString()==='RIFF'&&b.slice(8,12).toString()==='WEBP'&&b.slice(12,16).toString()==='VP8L';};
 for(const k of ['herbrack','toolrack','reagentshelf','lanterns','tanrack']) ok(A.pieces[k]==='pieces/'+k+'-wall'&&A.onWall.includes(k),'wall redraw '+k);
@@ -45,7 +45,7 @@ for(const d of types){
 }
 // big walls scaled + spread; normal walls 32px slots
 // R70: the Kitchen is painted (32px wall slot); the old tall kitchen room (brewery etc.) keeps the big wall scale
-r=lay({uid:'k1',type:'kitchen',pieces:['range'],up:1}); let w=r.L.filter(c=>c.at==='wall'); ok(w.length===1&&w[0].id==='spiceshelf'&&!(w[0].s>1),'kitchen spice shelf in the painted kitchen');
+r=lay({uid:'k1',type:'kitchen',pieces:['range'],up:1}); let w=r.L.filter(c=>c.at==='wall'); ok(w.length===0&&r.L.some(c=>c.at==='attach'&&c.up==='Spice Shelf'&&c.host==='larder'),'kitchen spice shelf on the larder shelves in the painted kitchen (R71)');
 w=sceneLayout(R,{fam:'kitchen',type:'brewery',starters:[],free:0,floor:[],wall:[{kind:'up',id:'Spice Shelf',icon:'x',name:'Spice Shelf'}]}).filter(c=>c.at==='wall'); ok(w.length===1&&w[0].id==='spiceshelf'&&w[0].s>1,'old kitchen room: spice shelf, big wall scale');
 r=lay({uid:'l1',type:'advlodge',pieces:['questboard'],up:2}); w=r.L.filter(c=>c.at==='wall'); ok(w.map(c=>c.id).join()==='mapwall,trophywall'&&w[0].s===1&&w[1].x-w[0].x===32,'lodge map + trophy in order');
 // order: built-in, upgrade, furnishing; overflow past 7 -> floor

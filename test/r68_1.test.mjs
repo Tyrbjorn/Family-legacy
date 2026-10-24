@@ -17,6 +17,6 @@ const bl=at.find(c=>c.up==='Bellows'); ok(bl.side==='l'&&bl.x<fg.x&&Math.abs(bl.
 ok(new Set(at.map(c=>c.side)).size===3,'distinct sides');
 ok(!sm.some(c=>c.at==='floor'&&/Bellows/.test(c.name||'')),'no loose bellows');
 const h=roomHtml(E,R,s,s.structures.at(-1),0,false); ok(h.includes('rmatt'),'attach html'); ok(!roomHtml(E,R,s,s.structures.at(-1),0,true).includes('rmatt'),'classic ignores');
-const k=L({uid:'a2',type:'kitchen',pieces:['range'],up:2}); ok(k.find(c=>c.at==='attach'&&c.host==='range')&&k.find(c=>c.at==='wall'&&c.id==='spiceshelf'),'kitchen pots on range, spice shelf on wall');
+const k=L({uid:'a2',type:'kitchen',pieces:['range'],up:2}); ok(k.find(c=>c.at==='attach'&&c.host==='range')&&k.find(c=>c.at==='attach'&&c.host==='larder'&&c.up==='Spice Shelf'),'kitchen pots on range, spice shelf on larder (R71)');
 const sh=L({uid:'a3',type:'shrinehouse',pieces:['altar'],up:3}); ok(sh.find(c=>c.at==='attach'&&c.host==='altar')&&sh.find(c=>c.at==='wall'&&c.id==='candleniche'),'shrine');
 console.log('r68.1 ok',pass,'checks');

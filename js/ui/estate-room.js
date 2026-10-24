@@ -52,6 +52,8 @@ export function sceneLayout(R, M) {
     if (paint[c.id]) { const p = paint[c.id]; p.n += c.n || 1; p.name = c.name || p.name; p.icon = c.icon || p.icon; return false; }
     if (onto[c.id] && paint[onto[c.id][0]]) { addOn.push({ ...c, host: onto[c.id][0], side: onto[c.id][1] }); return false; } return true; };
   const onWall = new Set(A.onWall || []), upP = A.upPieces || {}, beside = A.beside || {};
+  // R71: PT.attach = {upgrade name: {host, side}} for this painted type only (overrides art.attach, and the upgrade is then NOT also a wall piece)
+  const AT = { ...(A.attach || {}), ...(PT.attach || {}) }, ownAt = PT.attach || {};
   // starters merge into the matching placed entry (bought bunks stack onto the starting bunks)
   const fl = M.floor.map(c => ({ ...c })), st = [];
   for (const s of M.starters || []) { const sa = (PT.starterAs || {})[s.id]; if (sa && sa.every(id => PF[id])) { sa.forEach(id => paint[id].n++); continue; } /* R70: starters that ARE painted fixtures (bunkhouse bunks) */ const m = fl.find(c => c.id === s.id); if (m) { m.n += s.n; m.fixed = true; } else st.push({ ...s }); }
@@ -67,7 +69,9 @@ export function sceneLayout(R, M) {
   }
   // R68.2: painted rooms are crowded, so search the open floor on an 8px grid instead of the 34x30 grid (INVENTED)
   if (Object.keys(PF).length) { spots.length = 0; const taken = [];
-    for (let y = F[1] + 1; y + 32 <= F[3] + 1; y += 8) for (let x = F[0] + 1; x + 32 <= F[2] + 1; x += 8) {
+    // R71: rc.spotFlush starts the search ON the zone's top-left (x0,y0) instead of 1px in, so a 96px-wide floor_large holds 3 columns, not 2 (INVENTED)
+    const o = rc.spotFlush ? 0 : 1;
+    for (let y = F[1] + o; y + 32 <= F[3] + 1; y += 8) for (let x = F[0] + o; x + 32 <= F[2] + 1; x += 8) {
       const b = [x + 2, y + 4, x + 30, y + 31];
       if (!block.some(k => hit(b, k)) && !taken.some(k => hit(b, k))) { spots.push([x, y]); taken.push(b); } } }
   const fixed = [...fl.filter(c => c.fixed && !c.starter), ...st.filter(c => !c.at)], rest = fl.filter(c => !c.fixed);
@@ -76,16 +80,18 @@ export function sceneLayout(R, M) {
   const addW = c => { const m = wallC.find(w => w.id === c.id); if (m) m.n += c.n; else wallC.push({ ...c }); };
   if (rc.backwall) {
     for (const c of fixed) if (onWall.has(c.id) && c.id !== "finecornice") addW(c);
-    for (const u of M.wall || []) if (u.kind === "up" && upP[u.id]) { const p = upP[u.id]; addW({ id: p, icon: u.icon, name: u.name, n: 1, fixed: false }); }
+    for (const u of M.wall || []) if (u.kind === "up" && upP[u.id] && !ownAt[u.id]) { const p = upP[u.id]; addW({ id: p, icon: u.icon, name: u.name, n: 1, fixed: false }); }
     for (const c of rest) if (onWall.has(c.id) && c.id !== "finecornice") addW(c);
   }
   // R68.2: rooms with painted fixtures: wall slots are the 32px positions that miss every painted box
   let pSlots = null;
   if (rc.backwall && (Object.keys(PF).length || rc.wall_strip)) { const W = rc.wall_strip || rc.backwall, [x0, x1] = rc.wall_strip ? [W[0], W[2] + 1] : PT.wallX || A.wallX || [16, 240], y = Math.max(0, W[3] + 1 - 25);
-    pSlots = []; for (let x = x0; x + 32 <= x1; x += 32) if (!Object.values(PF).some(b => hit([x, y, x + 32, y + 25], b))) pSlots.push([x, y]); }
+    // R71: rc.wallPx = smaller wall-piece size for a narrow strip (kitchen 47px wide: 2 x 23px instead of 1 x 32px); the art's own piece size is 24px (INVENTED 23)
+    const wpx = rc.wallPx || 32, wy = rc.wallPx ? Math.max(0, W[3] - wpx) : y, wh = rc.wallPx ? wpx : 25;
+    pSlots = []; for (let x = x0; x + wpx <= x1; x += wpx) if (!Object.values(PF).some(b => hit([x, wy, x + wpx, wy + wh], b))) pSlots.push([x, wy]); }
   const N = pSlots ? pSlots.length : A.wallSlots || 7, onW = wallC.slice(0, N), over = wallC.slice(N);
   const isW = c => rc.backwall && onWall.has(c.id) && c.id !== "finecornice";
-  if (onW.length && pSlots) onW.forEach((c, k) => out.push({ at: "wall", slot: k, x: pSlots[k][0], y: pSlots[k][1], s: 1, id: c.id, icon: c.icon, name: c.name, n: c.n, fixed: c.fixed }));
+  if (onW.length && pSlots) onW.forEach((c, k) => out.push({ at: "wall", slot: k, x: pSlots[k][0], y: pSlots[k][1], s: rc.wallPx ? rc.wallPx / 32 : 1, id: c.id, icon: c.icon, name: c.name, n: c.n, fixed: c.fixed }));
   else if (onW.length) {
     const W = rc.backwall, [x0, x1] = A.wallX || [16, 240], big = A.bigWall && W[3] - W[1] + 1 >= A.bigWall.minH;
     const sc = big ? A.bigWall.scale : 1, sz = Math.round(32 * sc);
@@ -109,7 +115,7 @@ export function sceneLayout(R, M) {
   }
   for (let k = 0; k < M.free && spots[i]; k++, i++) out.push({ at: "free", x: spots[i][0], y: spots[i][1] });
   // R68.1: upgrades tied to a fixture are drawn onto it (bellows on the forge side), not as loose pieces
-  const AT = A.attach || {}, used = {};
+  const used = {};
   const put = (host, side0, u, key) => { const h = out.find(o => o.id === host && o.at !== "free" && o.at !== "attach"); if (!h) return;
     let side = side0; if (used[host + side]) side = ["t", "r", "l", "b"].find(q => !used[host + q]) || side0; used[host + side] = 1;
     // painted hosts: offsets from the painted box (INVENTED); sprites: the R68.1 offsets on a 32px piece
@@ -117,8 +123,8 @@ export function sceneLayout(R, M) {
     // R69: a room rect can pin an add-on's art to an exact anchor box (rc.anchors[art id]), size included
     // R70: rc.upAnchors = {upgrade name: anchor name} pins an add-on that has no art yet at the same kind of box (emoji placeholder)
     const art = (A.attachArt || {})[key], an = (art && (rc.anchors || {})[art]) || (rc.anchors || {})[(rc.upAnchors || {})[key]];
-    out.push(an ? { at: "attach", host, side, up: key, x: an[0], y: an[1], w: an[2] - an[0] + 1, h: an[3] - an[1] + 1, icon: u.icon, name: u.name, art }
-      : { at: "attach", host, side, up: key, x: Math.round(h.x + d[0]), y: Math.round(h.y + d[1]), icon: u.icon, name: u.name, art }); };
+    out.push(an ? { at: "attach", host, side, up: key, x: an[0], y: an[1], w: an[2] - an[0] + 1, h: an[3] - an[1] + 1, icon: (A.upPlaceholder || {})[key] || u.icon, name: u.name, art }
+      : { at: "attach", host, side, up: key, x: Math.round(h.x + d[0]), y: Math.round(h.y + d[1]), icon: (A.upPlaceholder || {})[key] || u.icon, name: u.name, art }); };
   for (const u of M.wall || []) { const a = u.kind === "up" && AT[u.id]; if (a) put(a.host, a.side, u, u.id); }
   for (const c of addOn) { put(c.host, c.side, c, c.id); const o = out.at(-1); if (o && o.up === c.id) o.id = c.id; }
   return out;
@@ -157,7 +163,7 @@ export function roomHtml(E, R, s, st, opened, classic) {
       `<small>${esc(c.name)}</small></div>`;
   for (let i = 0; i < M.free; i++) h += `<div class="rmcell empty" title="Free slot"><small>free</small></div>`;
   for (let i = used + M.free; i < cells; i++) h += `<div class="rmcell pad"></div>`;
-  const wall = M.wall.map(w => `<span class="rmfix ${w.kind}" title="${esc((w.kind === "up" ? "Upgrade: " : "Fitting: ") + w.name)}">${tok(w.kind === "up" ? A.ups : A.pieces, w.id, w.icon)}<small>${esc(w.name)}</small></span>`).join("");
+  const wall = M.wall.map(w => `<span class="rmfix ${w.kind}" title="${esc((w.kind === "up" ? "Upgrade: " : "Fitting: ") + w.name)}">${tok(w.kind === "up" ? A.ups : A.pieces, w.id, (w.kind === "up" && (A.upPlaceholder || {})[w.id]) || w.icon)}<small>${esc(w.name)}</small></span>`).join("");
   const age = Math.max(0, Date.now() - (opened || 0)), anim = age < 900 ? ` style="animation-delay:-${age}ms"` : "";
   const r = M.room, bg = "";
   return `<div class="estroom rm-${M.fam}${M.tierN ? " tier" + M.tierN : ""}" data-uid="${st.uid}" style="--fl:${r.floor};--fl2:${r.floor2};--wl:${r.wall};--rf:${r.roof}${bg}">` +

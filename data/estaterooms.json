@@ -682,8 +682,10 @@
      ]
     },
     "upAnchors": {
-     "Drill Ground": "dummy_upgrade"
-    }
+     "Drill Ground": "dummy_upgrade",
+     "Armory": "rack_upgrade"
+    },
+    "spotFlush": true
    },
    "chickencoop": {
     "floor": [
@@ -778,7 +780,8 @@
      "Prize Flock": "nest_box_upgrade",
      "Heated Roost": "roost_upgrade",
      "Bigger Run": "gate_upgrade"
-    }
+    },
+    "spotFlush": true
    },
    "cowpen": {
     "floor": [
@@ -866,7 +869,8 @@
     "upAnchors": {
      "Prize Herd": "stall_upper_upgrade",
      "Hay Loft": "hay_rack_upgrade"
-    }
+    },
+    "spotFlush": true
    },
    "kitchenhearth": {
     "floor": [
@@ -952,8 +956,11 @@
      ]
     },
     "upAnchors": {
-     "Copper Pots": "hearth_upgrade"
-    }
+     "Copper Pots": "hearth_upgrade",
+     "Spice Shelf": "larder_upgrade"
+    },
+    "spotFlush": true,
+    "wallPx": 23
    },
    "sawmill": {
     "floor": [
@@ -1031,7 +1038,8 @@
     "upAnchors": {
      "Twin Blades": "twin_blades_upgrade",
      "Steam Saw": "steam_saw_upgrade"
-    }
+    },
+    "spotFlush": true
    },
    "tannery": {
     "floor": [
@@ -1113,7 +1121,8 @@
     "upAnchors": {
      "Scraping Frames": "scraping_frames_upgrade",
      "Bark Pits": "bark_pits_upgrade"
-    }
+    },
+    "spotFlush": true
    },
    "bunkhouse": {
     "floor": [
@@ -1204,7 +1213,8 @@
       105
      ]
     },
-    "upAnchors": {}
+    "upAnchors": {},
+    "spotFlush": true
    }
   },
   "forgeFront": [
@@ -1626,6 +1636,12 @@
       82,
       115
      ]
+    },
+    "attach": {
+     "Armory": {
+      "host": "weaponrack2",
+      "side": "t"
+     }
     }
    },
    "chickencoop": {
@@ -1716,6 +1732,12 @@
     },
     "as": {
      "hearth": "range"
+    },
+    "attach": {
+     "Spice Shelf": {
+      "host": "larder",
+      "side": "t"
+     }
     }
    },
    "sawmill": {
@@ -1878,6 +1900,12 @@
      ]
     }
    }
+  },
+  "upPlaceholder": {
+   "Twin Blades": "⚔️",
+   "Steam Saw": "♨️",
+   "Scraping Frames": "🪟",
+   "Armory": "🛡️"
   }
  },
  "upKeys": [
@@ -2027,5 +2055,6 @@
  "_noteR68_1": "R68.1: built-ins = building structure at fixed spots (may take floor; furniture routes around). art.attach: upgrade name -> host fixture + side (l/r/t); drawn ON the host (emoji placeholder until art.attachArt has a drawing). Mapping INVENTED.",
  "_noteR68_2": "R68.2 painted built-ins (display only, INVENTED boxes measured on the art): art.painted[type].fix = fixtures painted into the room background at pixel boxes [x0,y0,x1,y1]; no sprite is drawn for them, a hit area is, upgrades attach to the box, and floor/wall layout avoids the boxes (plus decor). room = alternate background for that type (smithy -> guildhall interior from Art batch1 workshop-interior). onto = pieces/fittings drawn as add-ons on a painted fixture instead of their own sprite.",
  "_noteR69": "R69: mill background replaced by Art room-mill-b (lossless 256x192). art.paintedFam[family] = painted fixtures shared by every building type on that room background (mill: hopper, millstones [id millwheel], drive shaft, flour bin, grain sacks; sawmill/tannery show the same generic machinery, INVENTED). General room-rect zone fields for painted rooms (all optional, default to floor/backwall): floor_large [x0,y0,x1,y1] = only area for floor furniture/storage; wall_strip = only area for wall pieces and the 32px wall slots (y = wall_strip[3]+1-25); paths = named walk areas (service-aisle, door-approach) kept clear; workspots = {fixture:[x,y]} where a worker stands (data for later worker movement, not used yet); anchors = {art id:[x0,y0,x1,y1]} exact spot for an attach add-on (attachArt maps the upgrade to its art id). Display only, nothing saved.",
- "_noteR70": "R70 (bunkhouse from rooms-batch-a-c, boxes.json of the repaint): the bunkhouse's two starter bunks are the two painted bunks (painted.starterAs), bought bunks are floor sprites on floor_large; hearth and trestle table are painted in. R70: barracks, chickencoop, cowpen, kitchen (building only), sawmill and tannery have their own painted rooms (art.painted[type].room; a type with its own room does NOT inherit art.paintedFam, so the sawmill/tannery no longer show the mill fixtures). The brewery, smokehouse, preservery and saltworks keep room-kitchen; hall, fort, hunterscabin, advlodge and thievesden keep room-lodge; the gristmill keeps room-mill. Rects carry the boxes.json zones (floor_large, wall_strip, paths, workspots keyed by painted fixture id, anchors keyed by the boxes.json anchor name). upAnchors = {upgrade name: anchor name} pins an add-on at its exact anchor box (no add-on art exists yet, so they are emoji placeholders). painted.as = {piece id: painted fixture id} merges a piece into a fixture (kitchen hearth piece -> the painted hearth). Display only, nothing saved."
+ "_noteR70": "R70 (bunkhouse from rooms-batch-a-c, boxes.json of the repaint): the bunkhouse's two starter bunks are the two painted bunks (painted.starterAs), bought bunks are floor sprites on floor_large; hearth and trestle table are painted in. R70: barracks, chickencoop, cowpen, kitchen (building only), sawmill and tannery have their own painted rooms (art.painted[type].room; a type with its own room does NOT inherit art.paintedFam, so the sawmill/tannery no longer show the mill fixtures). The brewery, smokehouse, preservery and saltworks keep room-kitchen; hall, fort, hunterscabin, advlodge and thievesden keep room-lodge; the gristmill keeps room-mill. Rects carry the boxes.json zones (floor_large, wall_strip, paths, workspots keyed by painted fixture id, anchors keyed by the boxes.json anchor name). upAnchors = {upgrade name: anchor name} pins an add-on at its exact anchor box (no add-on art exists yet, so they are emoji placeholders). painted.as = {piece id: painted fixture id} merges a piece into a fixture (kitchen hearth piece -> the painted hearth). Display only, nothing saved.",
+ "_noteR71": "R71: art.upPlaceholder = {upgrade: emoji} (Twin Blades, Steam Saw, Scraping Frames, plus Armory so it differs from Drill Ground) replaces the generic upKeys icon for add-ons without art, in the painted room scene and its chips only (Classic keeps upKeys). rects.<room>.spotFlush starts the floor_large spot search on the zone's top-left (96px zone = 3 columns). rects.kitchenhearth.wallPx = 23: the 47px wall_strip holds 2 wall slots of 23px (art's own wall piece size is 24px, 1 slot). painted.<type>.attach = per-type {upgrade: {host, side}} that overrides art.attach for that painted room, and the upgrade is then not also a wall piece: barracks Armory -> weaponrack2 at rack_upgrade, kitchen Spice Shelf -> larder at larder_upgrade. Still unmapped (no obvious host): chickencoop grain_bin_upgrade, cowpen stall_lower_upgrade, kitchen table_upgrade (Great Kitchen?), bunkhouse bedding/hearth/table anchors (bunkhouse has no upgrades), Good Pasture, Great Kitchen, Master Tanner. Display only, nothing saved."
 }

@@ -2,6 +2,15 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R71",
+      "title": "Room rough spots",
+      "items": [
+        "🔧 Upgrade icons are easier to tell apart in the painted rooms: Twin Blades ⚔️, Steam Saw ♨️, Scraping Frames 🪟, Armory 🛡️ (simple icons until their art arrives).",
+        "🏠 Roomier floors: the barracks, cow pen, sawmill and tannery floor areas now hold 3×3 pieces, the chicken coop and bunkhouse 3×2, so a fully built-up building shows every piece. The kitchen wall strip now shows two small wall pieces.",
+        "🔨 Armory now sits on the barracks weapon rack and the Spice Shelf on the kitchen larder shelves."
+      ]
+    },
+    {
       "build": "R70",
       "title": "New rooms: barracks, farm, kitchen, sawmill, tannery, bunkhouse",
       "items": [
