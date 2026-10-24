@@ -8,12 +8,12 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art, M=D.estatemap;
-ok(BUILD==='R67'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R67, no new save step');
-ok(D.changelog.entries[0].build==='R67','changelog');
+ok(+BUILD.slice(1)>=67&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R67, no new save step');
+ok(D.changelog.entries.some(e=>e.build==='R67'),'changelog');
 const webp=f=>{const b=fs.readFileSync(f);return b.slice(0,4).toString()==='RIFF'&&b.slice(8,12).toString()==='WEBP'&&b.slice(12,16).toString()==='VP8L';};
 // 1. rooms
-ok(Object.keys(A.rooms).length===12,'12 room backgrounds');
-for(const [fam,f] of Object.entries(A.rooms)){ ok(R.rooms[fam],'family '+fam); ok(webp(root+'art/rooms/'+f+'.webp'),'lossless '+f); const r=A.rects[fam]; ok(r&&r.floor&&r.backwall,'rects '+fam); }
+ok(Object.keys(A.rooms).length>=12,'12 room backgrounds');
+for(const [fam,f] of Object.entries(A.rooms)){ ok(R.rooms[fam]||Object.values(A.painted||{}).some(p=>p.room===fam),'family '+fam); ok(webp(root+'art/rooms/'+f+'.webp'),'lossless '+f); const r=A.rects[fam]; ok(r&&r.floor&&r.backwall,'rects '+fam); }
 ok(JSON.stringify(A.rects.mill.millstone)==='[98,15,147,63]','updated millstone rect');
 ok(JSON.stringify(A.rects.workshop.forge_piece_front)==='[100,53,139,80]','forge front rect');
 // 2. pieces: every piece id has art, files exist and are lossless
@@ -31,30 +31,30 @@ for(const d of types){
   for(const fill of [0,1]){
     const st={uid:'st'+(uid++),type:d.id,pieces:[...(d.fixed||[]),...(fill?allow.slice(0,d.slots):[])],up:0,fittings:[]};
     s.structures.push(st);
-    const Mo=roomModel(E,R,st,s), L=sceneLayout(R,Mo), rc=A.rects[Mo.fam];
+    const Mo=roomModel(E,R,st,s), L=sceneLayout(R,Mo), rc=A.rects[L.fam];
     ok(L,'scene '+d.id);
     const placed=L.filter(c=>c.at!=='free');
-    ok(placed.length===Mo.floor.length,'all pieces drawn '+d.id+' '+fill);
+    ok(Mo.floor.every(c=>placed.some(o=>o.id===c.id)),'all pieces drawn '+d.id+' '+fill); // R68: + starters, wall layer
     ok(L.filter(c=>c.at==='free').length===Mo.free,'free slots drawn '+d.id);
     for(const c of L){ const b=[c.x+2,c.y+4,c.x+30,c.y+31];
-      if(c.at==='floor'||c.at==='free'){ ok(inside([c.x,c.y],rc.floor),'in floor '+d.id+' '+c.id); for(const k of ['door','millstone','forge_piece_front','water','jetty']) if(rc[k]) ok(!hit(b,rc[k]),k+' kept clear '+d.id+' '+c.id); }
+      if((c.at==='floor'||c.at==='free')&&!(c.fixed&&(A.beside||{})[c.id])){ ok(inside([c.x,c.y],rc.floor),'in floor '+d.id+' '+c.id); for(const k of ['door','millstone','forge_piece_front','water','jetty']) if(rc[k]) ok(!hit(b,rc[k]),k+' kept clear '+d.id+' '+c.id); }
       if(c.at==='forge') ok(Mo.fam==='workshop'&&['forge','steelfurnace','crucible'].includes(c.id)&&c.x>=100&&c.y===53&&c.x+32<=141,'forge front '+d.id);
     }
     // valid only: nothing drawn that the type cannot hold
-    for(const c of placed) ok((d.fixed||[]).includes(c.id)||allow.includes(c.id),'allowed '+c.id+' in '+d.id);
+    for(const c of placed) ok((d.fixed||[]).includes(c.id)||allow.includes(c.id)||Mo.starters.some(x=>x.id===c.id)||c.at==='painted','allowed '+c.id+' in '+d.id);
     const h=roomHtml(E,R,s,st,0,false), hc=roomHtml(E,R,s,st,0,true);
-    ok(h.includes('rmscene')&&h.includes('art/rooms/'+A.rooms[Mo.fam]+'.webp'),'scene html '+d.id);
+    ok(h.includes('rmscene')&&h.includes('art/rooms/'+A.rooms[L.fam]+'.webp'),'scene html '+d.id);
     ok(!hc.includes('art/')&&!hc.includes('rmscene'),'classic ignores art '+d.id);
-    if(!['bunkhouse','barracks','advlodge','shack','cabin','house','mansion','fort','towerkeep','abbey'].includes(d.id)) ok(!h.includes('pieces/bed.webp'),'no beds in '+d.id);
+    if(!['bunkhouse','barracks','advlodge','shack','cabin','house','mansion','fort','towerkeep','abbey','cottage'].includes(d.id)) ok(!h.includes('pieces/bed.webp'),'no beds in '+d.id);
   }
 }
 // house with beds stacks; smithy forge in the forge front
 const hs={uid:'stH',type:'house',pieces:['bunk','bunk','bunk','larder'],up:0}; s.structures.push(hs);
-const LH=sceneLayout(R,roomModel(E,R,hs,s)); ok(LH.find(c=>c.id==='bunk').n===3&&roomHtml(E,R,s,hs,0,false).split('pieces/bed.webp').length-1>=4,'3 beds stacked');
+const LH=sceneLayout(R,roomModel(E,R,hs,s)); ok(LH.find(c=>c.id==='bunk').n===4&&roomHtml(E,R,s,hs,0,false).split('pieces/bed.webp').length-1>=4,'3 beds stacked');
 const sm={uid:'stS',type:'smithy',pieces:['forge','workbench'],up:0}; s.structures.push(sm);
-ok(sceneLayout(R,roomModel(E,R,sm,s)).find(c=>c.id==='forge').at==='forge','forge in front of chimney');
+ok(sceneLayout(R,roomModel(E,R,sm,s)).find(c=>c.id==='forge').at==='painted','forge painted (R68.2)');
 // emoji fallback when a piece has no art
-const keep=A.pieces.workbench; delete A.pieces.workbench; ok(roomHtml(E,R,s,sm,0,false).includes('rmsp rmemo'),'emoji fallback'); A.pieces.workbench=keep;
+const keep=A.pieces.larder; delete A.pieces.larder; ok(roomHtml(E,R,s,hs,0,false).includes('rmsp rmemo'),'emoji fallback'); A.pieces.larder=keep;
 // 3. ART-3b map exteriors
 const ru=M.art.reuse; ok(Object.keys(ru).length===26,'26 reuse entries (+dock kept on chain)');
 const spr=new Set(fs.readdirSync(root+'art/estate').map(f=>f.replace('.webp','')));

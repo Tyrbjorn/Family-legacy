@@ -32,11 +32,11 @@ for(const [uid,nm] of ROOMS){
  const r=await p.evaluate(async()=>{const e=document.querySelector('.estroom');if(!e)return null;e.scrollIntoView({block:'center'});
   const im=[...e.querySelectorAll('.rmscene img')];await Promise.all(im.map(i=>i.decode().catch(()=>0)));
   const sc=e.querySelector('.rmscene'),bx=e.getBoundingClientRect(),sb=sc&&sc.getBoundingClientRect();
-  return {scene:!!sc,imgs:im.length,broken:im.filter(i=>!i.naturalWidth).length,emo:e.querySelectorAll('.rmscene .rmemo').length,free:e.querySelectorAll('.rmfree').length,right:bx.right,sr:sb?sb.right:0,sw:document.documentElement.scrollWidth,bed:e.innerHTML.includes('pieces/bed.webp'),forge:e.innerHTML.includes('pieces/forge.webp')}});
+  return {hit:e.querySelectorAll('.rmscene .rmhit').length,scene:!!sc,imgs:im.length,broken:im.filter(i=>!i.naturalWidth).length,emo:e.querySelectorAll('.rmscene .rmemo:not(.rmatt)').length,att:e.querySelectorAll('.rmscene .rmatt').length,free:e.querySelectorAll('.rmfree').length,right:bx.right,sr:sb?sb.right:0,sw:document.documentElement.scrollWidth,bed:e.innerHTML.includes('pieces/bed.webp'),forge:e.innerHTML.includes('pieces/forge.webp')}});
  ok(r,'room '+uid);if(!r)continue;
  ok(r.right<=w+1&&r.sw<=w+1,`fits ${uid} ${w}`);
  if(classic) ok(!r.scene&&!r.imgs,'classic no scene '+uid);
- else{ok(r.scene&&r.imgs>0&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st901')ok(r.bed,'beds drawn');if(uid==='st900')ok(r.forge&&!r.bed,'forge, no bed');if(uid==='st903')ok(!r.bed,'no bed in mine');}
+ else{ok(r.scene&&(r.imgs>0||r.hit>0)&&!r.broken&&!r.emo,`scene ${uid} ${JSON.stringify(r)}`);if(uid==='st901')ok(r.bed,'beds drawn');if(uid==='st900')ok(r.hit>=4&&!r.bed,'painted forge, no bed (R68.2)');if(uid==='st903')ok(!r.bed,'no bed in mine');}
  if(shots&&!classic){const e=await p.$('.estroom');if(w===390)await e.screenshot({path:SD+`r67-room-${nm}.png`});if(w===360&&uid==='st901')await e.screenshot({path:SD+'r67-room-house-360.png'});}
  await p.evaluate(()=>document.querySelector('.estroom [data-a=estroom]')?.click());await p.waitForTimeout(200);
 }

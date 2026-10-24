@@ -150,7 +150,8 @@
    "mill": "room-mill",
    "kitchen": "room-kitchen",
    "store": "room-store",
-   "dock": "room-dock"
+   "dock": "room-dock",
+   "guildhall": "room-guildhall"
   },
   "pieces": {
    "alchbench": "pieces/alchbench",
@@ -187,13 +188,13 @@
    "headstones": "pieces/headstones",
    "hearth": "pieces/hearth",
    "herbbeds": "pieces/herbbeds",
-   "herbrack": "pieces/herbrack",
+   "herbrack": "pieces/herbrack-wall",
    "hives": "pieces/hives",
    "hourglass": "pieces/hourglass",
    "jars": "pieces/jars",
    "kelpvat": "pieces/kelpvat",
    "kennel": "pieces/kennel",
-   "lanterns": "pieces/lanterns",
+   "lanterns": "pieces/lanterns-wall",
    "larder": "pieces/larder",
    "limecut": "pieces/limecut",
    "loadingdock": "pieces/loadingdock",
@@ -212,7 +213,7 @@
    "quern": "pieces/quern",
    "questboard": "pieces/questboard",
    "range": "pieces/range",
-   "reagentshelf": "pieces/reagentshelf",
+   "reagentshelf": "pieces/reagentshelf-wall",
    "remedybench": "pieces/remedybench",
    "rootcellar": "pieces/rootcellar",
    "ropewalk": "pieces/ropewalk",
@@ -231,9 +232,9 @@
    "storage": "pieces/storage",
    "studycorner": "pieces/studycorner",
    "studydesk": "pieces/studydesk",
-   "tanrack": "pieces/tanrack",
+   "tanrack": "pieces/tanrack-wall",
    "tanvats": "pieces/tanvats",
-   "toolrack": "pieces/toolrack",
+   "toolrack": "pieces/toolrack-wall",
    "weaponrack": "pieces/weaponrack",
    "winepress": "pieces/winepress",
    "workbench": "pieces/workbench",
@@ -247,7 +248,20 @@
    "runedanvil": "pieces/anvil-runed",
    "runeanvil": "pieces/anvil-rune",
    "stonehearth": "pieces/hearth-stone",
-   "coldcellar": "pieces/larder"
+   "coldcellar": "pieces/larder",
+   "trophywall": "pieces/trophywall",
+   "portraits": "pieces/portraits",
+   "starcharts": "pieces/starcharts",
+   "candleniche": "pieces/candleniche",
+   "spiceshelf": "pieces/spiceshelf",
+   "shelving": "pieces/shelving",
+   "oakracks": "pieces/oakracks",
+   "dryinglines": "pieces/dryinglines",
+   "chiselrack": "pieces/chiselrack",
+   "armorywall": "pieces/armorywall",
+   "mapwall": "pieces/mapwall",
+   "trestletable": "pieces/trestletable",
+   "anvil": "pieces/anvil"
   },
   "ups": {},
   "rects": {
@@ -514,6 +528,26 @@
      142,
      171
     ]
+   },
+   "guildhall": {
+    "floor": [
+     36,
+     30,
+     218,
+     150
+    ],
+    "backwall": [
+     36,
+     8,
+     218,
+     29
+    ],
+    "door": [
+     106,
+     152,
+     138,
+     191
+    ]
    }
   },
   "forgeFront": [
@@ -522,12 +556,397 @@
    "crucible"
   ],
   "onWall": [
-   "finecornice"
+   "finecornice",
+   "herbrack",
+   "toolrack",
+   "reagentshelf",
+   "lanterns",
+   "tanrack",
+   "trophywall",
+   "portraits",
+   "starcharts",
+   "candleniche",
+   "spiceshelf",
+   "shelving",
+   "oakracks",
+   "dryinglines",
+   "chiselrack",
+   "armorywall",
+   "mapwall"
   ],
   "onJetty": [
    "boatslip",
    "slipwayways"
-  ]
+  ],
+  "wallSlots": 7,
+  "wallX": [
+   16,
+   240
+  ],
+  "bigWall": {
+   "minH": 40,
+   "scale": 1.25
+  },
+  "upPieces": {
+   "Trophy Wall": "trophywall",
+   "Trophy Hall": "trophywall",
+   "Portrait Gallery": "portraits",
+   "Star Charts": "starcharts",
+   "Candle Niche": "candleniche",
+   "Spice Shelf": "spiceshelf",
+   "Shelving": "shelving",
+   "Oak Racks": "oakracks",
+   "Drying Lines": "dryinglines",
+   "Chisel Racks": "chiselrack",
+   "Armory": "armorywall",
+   "Map Room": "mapwall"
+  },
+  "starters": {
+   "bunkhouse": [
+    [
+     "bunk",
+     2
+    ],
+    [
+     "trestletable",
+     1
+    ]
+   ],
+   "smithy": [],
+   "shack": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "cabin": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "cottage": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "house": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "mansion": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "towerkeep": [
+    [
+     "hearth",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "fort": [
+    [
+     "weaponrack",
+     1
+    ],
+    [
+     "bunk",
+     1
+    ]
+   ],
+   "abbey": [
+    [
+     "altar",
+     1
+    ]
+   ],
+   "hall": [
+    [
+     "trestletable",
+     1
+    ]
+   ],
+   "buildersyard": [
+    [
+     "workbench",
+     1
+    ]
+   ],
+   "warehouse": [
+    [
+     "storage",
+     1
+    ]
+   ],
+   "tradingpost": [
+    [
+     "stall",
+     1
+    ]
+   ],
+   "countinghouse": [
+    [
+     "studydesk",
+     1
+    ]
+   ]
+  },
+  "starterNames": {
+   "trestletable": [
+    "🍽️",
+    "Trestle table & benches"
+   ],
+   "anvil": [
+    "🔨",
+    "Anvil"
+   ]
+  },
+  "beside": {
+   "anvil": "forge_piece_front"
+  },
+  "tints": {
+   "steelanvil": "steel"
+  },
+  "attach": {
+   "Bellows": {
+    "host": "forge",
+    "side": "l"
+   },
+   "Fire-brick Hearth": {
+    "host": "forge",
+    "side": "t"
+   },
+   "Master Crucible": {
+    "host": "forge",
+    "side": "r"
+   },
+   "Copper Pots": {
+    "host": "range",
+    "side": "r"
+   },
+   "Scrying Pool": {
+    "host": "arcanefocus",
+    "side": "r"
+   },
+   "Silver Inlay": {
+    "host": "enchtable",
+    "side": "r"
+   },
+   "Runed Circle": {
+    "host": "arcanefocus",
+    "side": "l"
+   },
+   "Star Lens": {
+    "host": "arcanefocus",
+    "side": "t"
+   },
+   "Mortar & Pestle": {
+    "host": "remedybench",
+    "side": "r"
+   },
+   "Consecrate as Chapel": {
+    "host": "altar",
+    "side": "t"
+   },
+   "Twin Blades": {
+    "host": "sawtable",
+    "side": "r"
+   },
+   "Steam Saw": {
+    "host": "sawtable",
+    "side": "l"
+   },
+   "Iron Gearing": {
+    "host": "millwheel",
+    "side": "r"
+   },
+   "Second Stones": {
+    "host": "millwheel",
+    "side": "l"
+   },
+   "Winch": {
+    "host": "quarrypit",
+    "side": "t"
+   },
+   "Blasting Powder": {
+    "host": "quarrypit",
+    "side": "r"
+   },
+   "Timber Props": {
+    "host": "shaftlift",
+    "side": "l"
+   },
+   "Pumps": {
+    "host": "shaftlift",
+    "side": "r"
+   },
+   "Smoker": {
+    "host": "hives",
+    "side": "r"
+   },
+   "Royal Hives": {
+    "host": "hives",
+    "side": "t"
+   },
+   "Heated Roost": {
+    "host": "nestboxes",
+    "side": "r"
+   },
+   "Scraping Frames": {
+    "host": "tanvats",
+    "side": "l"
+   },
+   "Bark Pits": {
+    "host": "tanvats",
+    "side": "r"
+   },
+   "Copper Kettle": {
+    "host": "brewvats",
+    "side": "r"
+   },
+   "Sealed Crocks": {
+    "host": "brinecrocks",
+    "side": "r"
+   },
+   "Deeper Pans": {
+    "host": "brinepans",
+    "side": "r"
+   },
+   "Great Chimney": {
+    "host": "smokepit",
+    "side": "t"
+   },
+   "Fence Network": {
+    "host": "fencetable",
+    "side": "r"
+   },
+   "Family Archive": {
+    "host": "ancestorshrine",
+    "side": "r"
+   },
+   "Nets": {
+    "host": "fishrack",
+    "side": "r"
+   },
+   "Drill Ground": {
+    "host": "weaponrack",
+    "side": "r"
+   }
+  },
+  "attachArt": {},
+  "painted": {
+   "smithy": {
+    "room": "guildhall",
+    "wallX": [
+     40,
+     216
+    ],
+    "fix": {
+     "forge": [
+      161,
+      22,
+      212,
+      73
+     ],
+     "anvil": [
+      43,
+      48,
+      93,
+      80
+     ],
+     "workbench": [
+      43,
+      93,
+      122,
+      143
+     ],
+     "toolrack": [
+      100,
+      32,
+      148,
+      70
+     ]
+    },
+    "decor": [
+     [
+      150,
+      105,
+      177,
+      136
+     ],
+     [
+      189,
+      80,
+      218,
+      152
+     ]
+    ],
+    "onto": {
+     "steelanvil": [
+      "anvil",
+      "r"
+     ],
+     "runedanvil": [
+      "anvil",
+      "t"
+     ],
+     "steelfurnace": [
+      "forge",
+      "b"
+     ],
+     "crucible": [
+      "forge",
+      "b"
+     ]
+    }
+   },
+   "gristmill": {
+    "fix": {
+     "millwheel": [
+      98,
+      12,
+      147,
+      63
+     ]
+    }
+   }
+  },
+  "paintedNames": {
+   "forge": "Forge",
+   "anvil": "Anvil",
+   "workbench": "Workbench",
+   "toolrack": "Tool Rack",
+   "millwheel": "Millstones"
+  }
  },
  "upKeys": [
   [
@@ -671,5 +1090,8 @@
    "🍳"
   ]
  ],
- "_noteR67": "R67: art.rooms = room background per family (256x192 lossless); art.rects = floor/backwall/door/blocked areas from room1b rects.json; art.pieces = piece id -> art/rooms/<file>.webp. Merged ids (featherbed, minionbunk, cradle -> bed, coldcellar -> larder) are INVENTED mappings for old saves. Classic emoji mode ignores all art."
+ "_noteR67": "R67: art.rooms = room background per family (256x192 lossless); art.rects = floor/backwall/door/blocked areas from room1b rects.json; art.pieces = piece id -> art/rooms/<file>.webp. Merged ids (featherbed, minionbunk, cradle -> bed, coldcellar -> larder) are INVENTED mappings for old saves. Classic emoji mode ignores all art.",
+ "_noteR68": "R68: wall layer. art.onWall pieces hang in art.wallSlots slots on the backwall rect (x wallX, y = backwall bottom+1-25, min 0); copies = one sprite + xN; past 7 distinct ids -> floor. Order built-ins, upgrades (art.upPieces, upgrade name -> piece, INVENTED mapping), furnishings. art.starters = display-only starter kit per building type (no stats, no save); art.beside = starter placed right of a rect; art.tints = CSS tint class. bigWall: walls >= minH tall (mine, kitchen) draw wall pieces at scale and spread evenly (INVENTED). Classic emoji ignores all of it.",
+ "_noteR68_1": "R68.1: built-ins = building structure at fixed spots (may take floor; furniture routes around). art.attach: upgrade name -> host fixture + side (l/r/t); drawn ON the host (emoji placeholder until art.attachArt has a drawing). Mapping INVENTED.",
+ "_noteR68_2": "R68.2 painted built-ins (display only, INVENTED boxes measured on the art): art.painted[type].fix = fixtures painted into the room background at pixel boxes [x0,y0,x1,y1]; no sprite is drawn for them, a hit area is, upgrades attach to the box, and floor/wall layout avoids the boxes (plus decor). room = alternate background for that type (smithy -> guildhall interior from Art batch1 workshop-interior). onto = pieces/fittings drawn as add-ons on a painted fixture instead of their own sprite."
 }

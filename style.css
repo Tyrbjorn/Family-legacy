@@ -192,3 +192,10 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 .estroom .rmfloor.legend .rmcell{min-height:34px}
 .estroom .rmfloor.legend .rmart{width:24px;height:24px}
 @media (prefers-reduced-motion:reduce){.estroom .rmroof{display:none;animation:none}}
+/* R68: wall layer + steel tint */
+.estroom .rmsp.rmt-steel{filter:saturate(.55) sepia(.2) hue-rotate(170deg) saturate(1.6) brightness(1.18)}
+/* R68.1: upgrade attached to its fixture */
+.estroom .rmsp.rmatt{width:6.25%;height:8.333%;z-index:2}
+.estroom span.rmsp.rmatt.rmemo{font-size:min(11px,2.6vw);filter:drop-shadow(0 0 1px #000)}
+.estroom .rmsp.rmhit{background:none;border-radius:3px;z-index:1}
+.estroom .rmsp.rmhit:hover{outline:1px dashed rgba(255,230,160,.7)}

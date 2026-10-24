@@ -2,6 +2,24 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R68.2",
+      "title": "Built-in workshop",
+      "items": [
+        "⚒️ The Workshop now has its own interior with the forge, anvil, workbench and tool rack built right into the room.",
+        "🔥 Upgrades now sit on the fixture they improve: bellows and crucible on the forge, a steel anvil on the anvil, gearing on the millstones.",
+        "⚙️ The mill's millstones are part of the building now instead of a second copy on the floor. Looks only, nothing about the game changed."
+      ]
+    },
+    {
+      "build": "R68",
+      "title": "Walls and starter kits",
+      "items": [
+        "🖼️ Shelves, racks, lanterns, trophies, portraits, maps and star charts now hang on the back wall of each room.",
+        "🛏️ Buildings start furnished: the bunkhouse has bunks and a trestle table, the smithy an anvil beside the forge, homes a hearth and a bed.",
+        "Starter pieces are for looks only. Classic emoji mode is unchanged."
+      ]
+    },
+    {
       "build": "R67",
       "title": "Furnished rooms",
       "items": [
