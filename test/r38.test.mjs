@@ -15,7 +15,7 @@ ok(S.SLOTS===5,'5 slots');
   const L=S.listSlots(st); ok(!L[0].empty&&L[0].name==='The Rowan line'&&L[0].card.year===2&&L[0].card.legacy===777&&S.lastSlot(st)===1,'slot 1 card: name, year, Legacy');
   st.setItem(S.slotKey(1),'changed'); S.migrateSlots(st); ok(st.getItem(S.slotKey(1))==='changed','migration runs once'); }
 { const st=store(); ok(!S.migrateSlots(st).moved&&S.listSlots(st).every(x=>x.empty),'no old save: all slots empty'); }
-{ const st=store(); st.setItem(S.OLD_KEY,'{broken'); const r=S.migrateSlots(st); ok(r.error&&r.fallback&&st.getItem(S.OLD_KEY)==='{broken','failed copy keeps the old save and falls back'); }
+{ const st=store(); st.setItem(S.OLD_KEY,'{broken'); const r=S.migrateSlots(st); ok(!r.error&&r.bad&&st.getItem(S.OLD_KEY)==='{broken'&&S.listSlots(st)[0].bad&&S.listSlots(st)[0].bad.reason==='corrupt','R76: an unreadable old save is kept as a quarantined slot 1 (never replaced), old key untouched'); }
 // save / load / per-slot Legacy
 { const st=store(); S.migrateSlots(st); const a=game('Ada',10), b=game('Bran',2000); a.legacy.renown=5; b.legacy.renown=900;
   ok(S.saveSlot(st,1,a,1000).ok&&S.saveSlot(st,3,b,2000).ok,'save two slots'); ok(S.lastSlot(st)===3,'last played tracked');
@@ -33,7 +33,7 @@ ok(S.SLOTS===5,'5 slots');
   s1.log=Array.from({length:4000},(_,i)=>({day:i,msg:'x'.repeat(20)})); const r=S.saveSlot(cap,1,s1); ok(!r.ok&&r.err==='storage full','full storage reported'); ok(cap.getItem(S.slotKey(1))===before,'old save untouched when full'); }
 // game wiring (source)
 const src=f=>fs.readFileSync(new URL('../js/'+f,import.meta.url)).toString();
-ok(src('main.js').includes('SL.migrateSlots(localStorage)')&&src('main.js').includes('SL.lastSlot(localStorage)'),'launch: migrate, open last played slot');
-ok(src('main.js').includes('U.delArm !== +v'),'delete needs a second press'); ok(src('ui/common.js').includes('data-tab="saves"'),'📂 Saves in the top bar');
-ok(src('ui/saves-tab.js').includes('storageBar()')&&src('ui/common.js').includes('U.saveErr'),'storage bar + save-failed banner');
+ok(src('main.js').includes('SL.migrateSlots(localStorage)')&&src('main.js').includes('SL.bootPick(localStorage)'),'launch: migrate, open last played slot (R76: bootPick quarantines an unreadable one)');
+ok(src('main.js').includes('U.delArm !== +v'),'delete needs a second press'); ok((src('ui/common.js').includes('data-a="m_open"')||src('ui/nav-ui.js').includes('data-a="m_open"'))&&!src('ui/common.js').includes('data-tab="saves"')&&!src('ui/nav-ui.js').includes('data-tab="saves"'),'R76: ☰ Menu replaces the 📂 Saves tab');
+ok(src('ui/menu-load.js').includes('storageBar()')&&src('ui/common.js').includes('U.saveErr'),'storage bar + save-failed banner');
 console.log('r38 ok',pass);

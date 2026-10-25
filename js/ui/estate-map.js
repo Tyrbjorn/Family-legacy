@@ -19,7 +19,7 @@ const img = k => {
 const ok = i => i && i.complete && i.naturalWidth > 0;
 const R = { sig: "", bg: null, dirty: true, walkers: new Map(), raf: 0, last: 0, frames: 0, running: false, layout: null };
 if (typeof window !== "undefined") window.__estmap = R;
-const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+import { reduced } from "./motion.js"; // R76: profile setting (Auto follows the device)
 const pct = (v, t) => ((v / t) * 100).toFixed(3) + "%";
 
 export function mapHtml() {
@@ -202,7 +202,7 @@ function paint(now) {
 }
 function frame(now) {
   R.raf = 0;
-  if (document.hidden || reduced() || U.tab !== "estate") return void (R.running = false);
+  if (document.hidden || reduced() || U.tab !== "land") return void (R.running = false);
   const dt = Math.min(0.5, (now - (R.last || now)) / 1000);
   if (now - R.last >= 1000 / D.estatemap.walk.fps || !R.last) {
     R.last = now;

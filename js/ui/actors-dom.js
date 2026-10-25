@@ -2,7 +2,7 @@
 // screen; stops when the tab is hidden or prefers-reduced-motion is on (then they stand still on frame 0).
 import { penPositions, avoidPoints, spread, KIND_OPTS } from "./actors.js";
 import { paintWorkers } from "./workers-dom.js";
-const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+import { reduced } from "./motion.js"; // R76: profile setting (Auto follows the device)
 const R = { raf: 0, last: 0 };
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
 const WALK_FPS = 5; // walk-strip frames per second (4 frames)

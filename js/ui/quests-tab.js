@@ -53,19 +53,25 @@ export function chainsv() {
   }).join("");
 }
 
-export function questsv() {
+// R77: Quests is split into named parts (the Quests tab composes them as collapsible sections; Story has its own sub-tab).
+export function questParts() {
   const m = E.active(s);
+  const P = {};
   let h = "";
   const rats = E.findId(D.quests, "rats");
   if (ratsOpen()) h += row(m, rats, true);
   h += choicesv();
-  h += requestsv();
-  h += chainsv();
+  P.top = h;
+  P.requests = requestsv();
+  P.chains = chainsv();
+  h = "";
   const act = E.living(s).filter(x => x.action && x.action.type === "quest");
   h += `<h3>⚔️ Active (${act.length})</h3>` + (act.length ? act.map(x => {
     const q = E.findId(D.quests, x.action.target);
     return `<div class="card" style="padding:5px 8px;margin:3px 0"><b>${x.name}</b> · ${q ? q.name : x.action.target}<div class="bar"><i style="width:${q ? Math.min(100, ((x.action.progress || 0) / q.days) * 100) : 0}%"></i></div></div>`;
   }).join("") : '<div class="muted">Nobody is on a quest.</div>');
+  P.active = h;
+  h = "";
   const f = U.qFilter || "all";
   const vis = D.quests.filter(q => !q.story && E.questVisible(s, q) && !(q.once && s.doneQuests.includes(q.id)) && !(ratsOpen() && q.id === "rats"));
   const can = q => E.regionOpen(s, q.region) && !E.questIssue(s, m, q) && !E.questAgeIssue(m, q, s);
@@ -76,10 +82,14 @@ export function questsv() {
     if (qs.length) h += `<div class="muted" style="margin-top:6px">${rg.icon || ""} ${rg.name}${E.regionOpen(s, rg.id) ? "" : " 🔒"}</div>` + qs.map(q => row(m, q)).join("");
   }
   if (!list.length) h += '<div class="muted">Nothing here yet: walk, gather or explore to find more.</div>';
-  h += storyv(m);
+  P.available = h;
+  P.story = storyv(m);
+  h = "";
   const done = D.quests.filter(q => s.doneQuests.includes(q.id));
   h += `<details style="margin-top:8px"><summary><b>✅ Completed (${done.length})</b></summary>${done.map(q => `<div class="muted">${q.name}</div>`).join("") || '<div class="muted">None yet.</div>'}</details>`;
   const rum = D.quests.filter(q => q.hidden && !s.revealed.includes(q.id) && E.regionKnown(s, q.region)).length;
   h += `<div class="card muted" style="margin-top:6px">❔ Rumoured: ${rum ? rum + " hidden quests in known lands. Explore, pay for tavern rumors, or find special maps." : "nothing more is whispered about."}</div>`;
-  return h;
+  P.done = h;
+  return P;
 }
+export const questsv = () => { const P = questParts(); return P.top + P.requests + P.chains + P.active + P.available + P.story + P.done; };

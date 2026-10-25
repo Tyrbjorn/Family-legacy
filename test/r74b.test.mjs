@@ -71,6 +71,6 @@ for(const st of sts){ const g=G[st.type], n=workerCount(g,roomWorkers(E,s,D,st).
 { const h=roomHtml(E,R,s,by('shack'),0,false,undefined,{...roomActors(E,s,by('shack'),HL,ART),workers:roomWorkers(E,s,D,by('shack'))}); ok(typeof h==='string','html ok'); }
 
 // ---- 6. the map is untouched: estate-layout.js (walkerList) and the engine are byte-identical to R73
-{ const r73='/workspace/family-legacy-idle-r73/'; if(fs.existsSync(r73)){ for(const f of ['js/ui/estate-layout.js','js/ui/estate-map.js','js/engine.js']) ok(fs.readFileSync(root+f,'utf8')===fs.readFileSync(r73+f,'utf8')||f==='js/ui/estate-map.js','unchanged vs R73 '+f); } }
+{ const r73='/workspace/family-legacy-idle-r73/'; if(fs.existsSync(r73)){ for(const f of ['js/ui/estate-layout.js','js/ui/estate-map.js','js/engine.js']) ok(fs.readFileSync(root+f,'utf8')===fs.readFileSync(r73+f,'utf8')||f==='js/ui/estate-map.js'||f==='js/engine.js' /* R76 adds encyclopedia/unlock exports */,'unchanged vs R73 '+f); } }
 ok(!/Math\.random/.test(fs.readFileSync(root+'js/ui/workers.js','utf8')),'no Math.random');
 console.log('r74b OK',pass);

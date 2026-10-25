@@ -27,18 +27,27 @@ const inlayBtns = id =>
         .join("")
     : "";
 
-export function invv() {
+export function invParts() {
   const m = E.active(s);
   const town = D.towns.find(t => E.regionOpen(s, t.region) && t.id === "thornwick") || D.towns[0];
-  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `${itemIco(m.equip[sl], it(m.equip[sl]), 22)} <span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> ${gearTags(it(m.equip[sl]))}${itemStatsHtml(it(m.equip[sl]), m, false)}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}${gearSheet(m)}<div class="row" style="margin-top:4px"><span class="muted">🛡️ Auto Equip for ${m.name}</span><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="noautoeq">${m.noAutoEq ? "Excluded" : "Included"}</button></div></div>` + setsCard(m.equip) + enchantCard();
+  const P = {};
+  let h = `<h3>⚔️ ${m.name}'s gear (CP ${E.cp(s, m)})</h3><div class="card">${["weapon", "offhand", "armor", "accessory"].map(sl => `<div class="row"><span>${sl}: ${m.equip[sl] ? `${itemIco(m.equip[sl], it(m.equip[sl]), 22)} <span style="color:${QC[it(m.equip[sl]).rarity] || "#ccc"}">${it(m.equip[sl]).name}</span> ${gearTags(it(m.equip[sl]))}${itemStatsHtml(it(m.equip[sl]), m, false)}` : "—"}</span>${m.equip[sl] ? `<button class="b" data-a="unequip" data-v="${sl}">Unequip</button>` : ""}</div>`).join("")}${gearSheet(m)}<div class="row" style="margin-top:4px"><span class="muted">🛡️ Auto Equip for ${m.name}</span><button class="b ${m.noAutoEq ? "" : "sel"}" data-a="noautoeq">${m.noAutoEq ? "Excluded" : "Included"}</button></div></div>`;
+  const sets = setsCard(m.equip), ench = enchantCard();
+  P.gear = h;
+  P.sets = sets;
+  P.enchant = ench;
+  h = "";
   h +=
     `<h3>🧱 Materials & goods <span class="muted">(cap ${fmt(E.matCap(s))}, food ${fmt(E.foodCap(s))})</span></h3><div class="card">` +
     MATS.map(
       k =>
         `<div class="row" style="margin:3px 0"><span>${resIco(k)} ${E.resName(k)} <b>${fmt(s.res[k] || 0)}</b></span>${k !== "food" && town.prices[k] ? `<button class="b" data-a="sellallres" data-v="${town.id}" data-w="${k}" ${(s.res[k] || 0) >= 1 ? "" : "disabled"}>Sell all @${Math.round(E.townSellPrice(s, town.id, k) * 10) / 10}🪙${priceTagHtml(town.id, k)}</button>` : ""}</div>`,
     ).join("") +
-    `<div class="muted">Sells at ${town.name}.</div></div>` + marketSummaryCard();
-  h +=
+    `<div class="muted">Sells at ${town.name}.</div></div>`;
+  P.mats = h;
+  P.best = marketSummaryCard();
+  h = "";
+  h =
     `<h3>🎒 Personal pack (${m.bag.length}/${E.packCap()})</h3>` +
     (m.bag.length
       ? m.bag
@@ -51,6 +60,8 @@ export function invv() {
           )
           .join("")
       : '<div class="muted">Empty.</div>');
+  P.pack = h;
+  h = "";
   const types = ["all", "weapon", "offhand", "armor", "accessory", "tool", "charm", "gift"],
     qs = ["all", "Crude", "Common", "Fine", "Superior", "Masterwork", "Rare", "Epic"];
   let list = s.vault
@@ -77,6 +88,8 @@ export function invv() {
         )
         .join("")
     : '<div class="muted">Nothing matches.</div>';
+  P.vault = h;
+  h = "";
   const sellers =
     s.minions.filter(x => x.job === "merchant" && E.isHoused(s, x)).length +
     E.living(s).filter(
@@ -84,11 +97,13 @@ export function invv() {
         (x.action && x.action.type === "job" && x.action.target === "shop") ||
         (x.id !== s.activeId && x.order && x.order.type === "job" && x.order.target === "shop"),
     ).length;
-  h +=
+  h =
     `<h3>🏷️ Stock for sale (${s.forSale.length})</h3><div class="muted">${sellers ? `${sellers} seller(s) working: about 1 item every ${D.crafting.stallDaysPerItem} days at full value.` : "No seller. Put a follower on Selling (needs a Market Stall) or have a family member work the General Store."}</div>` +
     s.forSale.map(id => itemRow(it(id), `<button class="b" data-a="unlist" data-v="${id}">Unlist</button>`)).join("");
-  return h;
+  P.sell = h;
+  return P;
 }
+export const invv = () => { const P = invParts(); return P.gear + P.sets + P.enchant + P.mats + P.best + P.pack + P.vault + P.sell; };
 
 // member sheet line: dodge, arcane spell failure, weapon/armor proficiencies (capped by class)
 function gearSheet(m) {

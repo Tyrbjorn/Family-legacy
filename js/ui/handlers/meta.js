@@ -2,6 +2,7 @@ import * as E from "../../engine.js";
 import { s } from "../../main.js";
 import { U } from "../state.js";
 import { tourList } from "../guide.js";
+import { groupOf, introTabOf } from "../render.js";
 import { toggleDock } from "../progress.js";
 
 // Click actions for the meta area. ctx = { v, w, b, m } from the clicked element.
@@ -11,8 +12,9 @@ export const metaActions = ({ v, b, m }) => ({
   dock: () => toggleDock(),
   gotab: () => {
     U.tab = v;
-    if (v === "estate") E.tutNote(s, "estate");
-    E.introView(s, v);
+    (U.groupLast ||= {})[groupOf(v)] = v;
+    if (groupOf(v) === "home") E.tutNote(s, "estate");
+    E.introView(s, introTabOf(v));
     scrollTo(0, 0);
   },
   bell: () => {
@@ -28,6 +30,7 @@ export const metaActions = ({ v, b, m }) => ({
   disench: () => E.disenchant(s, v, +b.dataset.w),
   tutskip: () => confirm("Skip the apprenticeship? You keep what you've earned so far.") && E.skipTutorial(s),
   tourstart: () => {
+    U.screen = null;
     U.tour = 0;
     U.tab = "main";
   },

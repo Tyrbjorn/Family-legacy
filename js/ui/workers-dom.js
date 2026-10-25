@@ -3,7 +3,7 @@
 // data URL once per (sheet, tabard, hair) and cached. Until it is ready the worker stays invisible; if the sheet never loads it shows untinted.
 import { workerPositions, SHEET } from "./workers.js";
 import { tintSheet } from "./walker-tint.js";
-const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+import { reduced } from "./motion.js"; // R76: profile setting (Auto follows the device)
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
 const urls = new Map();   // key -> data URL | "bad" | "wait"
 function sheetUrl(el) {

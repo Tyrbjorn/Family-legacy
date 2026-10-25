@@ -2,6 +2,33 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R77",
+   "title": "Easier to find your way: five groups, a finder and Master Orrin",
+   "items": [
+    "🧭 The bottom bar now has five groups (Play, World, Estate, Family, Bag) with a strip of pages under the header. ▾ All lists every page, and 🔎 Go to… finds a page or a card by name.",
+    "☰ Menu now holds Settings, save tools and New Lineage. Cards fold up, and the game remembers which ones you left open.",
+    "🟡 A small dot marks something new or waiting. It clears the moment you open it.",
+    "📒 New games open with four short intro cards, an apprenticeship question, and Master Orrin's optional tours. How to play, in ☰ Menu, replays any of it.",
+    "🧔 Orrin may drop a short note when a new part of the estate opens. Mute Orrin in Settings, or keep his notes in ☰ Menu → Orrin's notes.",
+    "🗺️ The map and the way the game plays are unchanged."
+   ]
+  },
+  {
+   "build": "R76",
+   "title": "Heirs of the Hold: a main menu, five slots and an Encyclopedia",
+   "items": [
+    "🏰 The game is now called Heirs of the Hold. Your saves, settings and progress carry over as they were.",
+    "📜 New title screen on every launch. Continue picks up your last save. Load game, New game, Settings, Encyclopedia, Unlocks and Credits are all one tap away, and ☰ Menu is always at the top of the game.",
+    "💾 Five save slots. The old 📂 Saves tab is now the Load screen: rename, export, import, restore and delete in one place. Each slot keeps one rolling compressed backup that is dropped first if your browser runs short of space.",
+    "🛟 A save that cannot be read is now kept safe and flagged instead of being replaced by a new game. You can restore its backup, export the raw data, or import over it.",
+    "📖 Encyclopedia: items, buildings, classes, factions, places, quests, creatures and lore appear once you meet them, and are remembered across all your saves. Switch between all your saves and this save.",
+    "🔓 Unlocks screen: what is open across your lineages, what is still locked, and how to unlock it.",
+    "⚙️ Classic emoji and reduced motion are now device-wide settings (Menu › Settings). Reduced motion can follow your device, or be forced on or off. A new Skip title setting jumps straight into your last save.",
+    "ℹ️ Credits page with a note on how AI tools were used for the art. Wording is a draft.",
+    "☕ The web demo has a tip jar link (a placeholder for now)."
+   ]
+  },
+  {
    "build": "R75",
    "title": "The Union Hall",
    "items": [

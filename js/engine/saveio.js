@@ -27,7 +27,7 @@ export function decodeSave(text) {
   } catch {
     throw new Error("not a valid save code");
   }
-  if (!o || typeof o !== "object" || !Array.isArray(o.members)) throw new Error("not a Family Legacy save");
+  if (!o || typeof o !== "object" || !Array.isArray(o.members)) throw new Error("not an Heirs of the Hold save");
   if (o.v !== SAVE_VERSION) throw new Error(`unsupported save version ${o.v} (expected ${SAVE_VERSION})`);
   return o;
 }

@@ -96,23 +96,32 @@ ${cands.length ? `<select data-a="mosel" data-v="${hd.id}" aria-label="Marry out
 ${pick ? `<div class="muted">Dowry ${E.marryOutDowry(pick)}🪙 · ${pick.name} leaves home; rapport +${D.marriage.marryOut.rapport}${E.marryOutIssue(s, pick.id, hd.id) ? ` · needs: ${E.marryOutIssue(s, pick.id, hd.id)}` : ""}</div>` : ""}</div>`;
 }
 
-export function housesv() {
+export function housesParts() {
   const m = E.active(s);
+  const P = {};
   let h = `<h3>💌 Courtship</h3>`;
   if (E.ageY(m) < D.tuning.courtAge) h += `<div class="muted">The active member must be ${D.tuning.courtAge}+ to court.</div>`;
   h += s.suitors.length ? s.suitors.map(suitorCard).join("") : `<div class="muted">No suitors yet. They arrive every ~45 days (only from neutral or friendlier houses, plus commoners).</div>`;
   h += householdCard();
+  P.courtship = h;
+  h = "";
   const ws = E.wars(s);
   h += `<h3>🏰 Families of the realm</h3><div class="muted">Each house has a seat, a goal and a temperament that changes how standing moves. Quests for a house build rapport; quests against a house lower it. Below Rival a house feuds; feuds can escalate to war (you are warned first). Rapport drifts back toward neutral over time.${!E.phaseOk(s, "againstQuests") ? " <b>Rivalry quests and trouble events unlock in the Established phase; feuds and war in the Dynasty phase.</b>" : !E.phaseOk(s, "feud") ? ` <b>Feuds and war unlock in the Dynasty phase (${E.nextEraHint(s)})</b>` : ""}${s.weary ? ` War weariness: contentment ${E.wearyMorale(s).toFixed(1)}.` : ""}</div>`;
   if (ws.length) h += `<div class="card" style="border-color:#c55">🏴 At war with ${ws.map(x => x.name).join(", ")}</div>`;
   const ph = E.playerHouse();
   h += `<div class="card" id="famvael"><b>${ph.icon || "🛡️"} ${ph.name}</b> <span class="muted">· your family</span><div class="muted">${ph.text || ""}</div></div>`;
+  P.realm = h;
+  h = "";
   const maj = E.houseList().filter(x => x.major), mnr = E.houseList().filter(x => !x.major);
-  h += `<h3>⭐ Major houses (one per town)</h3>` + maj.map(houseCard).join("") + (mnr.length ? `<h3>🏠 Minor houses</h3>` + mnr.map(houseCard).join("") : "");
+  P.major = `<h3>⭐ Major houses (one per town)</h3>` + maj.map(houseCard).join("");
+  P.minor = mnr.length ? `<h3>🏠 Minor houses</h3>` + mnr.map(houseCard).join("") : "";
+  h = "";
   const u = E.usurperDef && E.usurperDef(); // R50 House Crane, the usurper's house (exiled; outside the house list)
   if (u) {
     const gone = E.usurperGone(s), t = E.usurperTier(s), td = gone ? { icon: "🪶", name: "Disgraced" } : E.tierDef(t);
     h += `<h3>🦩 The usurper</h3><div class="card" id="famcrane"><b>${u.icon} ${u.name}</b> <span class="muted">· exiled · ${td.icon} ${td.name}</span><div class="muted">${u.known}. Goal: ${u.goal}. ${gone ? "Disgraced after chapter 10; it has left the realm." : u.text}</div></div>`;
   }
-  return h;
+  P.usurper = h;
+  return P;
 }
+export const housesv = () => { const P = housesParts(); return P.courtship + P.realm + P.major + P.minor + P.usurper; };

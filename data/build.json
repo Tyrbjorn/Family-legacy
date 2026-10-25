@@ -1,4 +1,7 @@
 {
- "_note": "R39.1 build channel. dev = Dev Mode available (?dev=1). release = Dev Mode locked off. Leave this on dev in source; tools/make-release.mjs writes release into the release copy.",
- "channel": "dev"
+ "_note": "R39.1 build channel. dev = Dev Mode available (?dev=1). release = Dev Mode locked off. Leave this on dev in source; tools/make-release.mjs writes release into the release copy. R76: target = web | android | steam, edition = demo | full. The tip jar link shows only on target web + edition demo; make-release strips the tip link field from every other build. The tip link is a PLACEHOLDER until Jeremy has a real tip page.",
+ "channel": "dev",
+ "edition": "demo",
+ "target": "web",
+ "tipUrl": "https://example.com/tip-jar-placeholder"
 }

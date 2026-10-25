@@ -2,27 +2,29 @@ import { classCard } from "./classes-ui.js";
 import { fieldsLine } from "./fields-ui.js";
 import { choresLine } from "./chores-ui.js";
 import { ordersLine } from "./orders-ui.js";
-import { settingsCard, tourPrompt, tutorialCard } from "./guide.js";
+import { tutorialCard } from "./guide.js";
+import { offerCard } from "./coach-ui.js";
 import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
-import { suitorCard } from "./houses-tab.js";
 import { badges, cl, costStr, vehIco, injuryTags, doing, dur, it, itemStatsHtml, memberLine, portrait, sk, stage, weaponBeside, yr } from "./common.js";
-import { landShop } from "./estate-tab.js";
 import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
 
-export function hero() {
+export function heroCard() {
   const m = E.active(s);
   if (!m) return "";
   const a = m.action;
-  let h = `<div class="card"><div class="mrow">${portrait(m, 96)}${weaponBeside(m)}<div style="flex:1;min-width:0">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}</div></div><div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
+  let h = `<div class="card" data-tour="hero"><div class="mrow">${portrait(m, 96)}${weaponBeside(m)}<div style="flex:1;min-width:0">${memberLine(m)}<div style="margin:4px 0">${badges(m)}</div>${injuryTags(m)}</div></div><div class="muted">${stage(m)} · Lv ${E.level(m)} · ⏱ personal tick ×${E.memberTick(m).toFixed(2)} (Focus, WIL)${m.injured ? " · 🤕 injured" : ""}${E.ageY(m) >= m.lifespan - 3 ? " · ⚠️ nearing end of life" : ""}</div>
  <div class="muted">Doing: ${doing(a)}</div>${timerBar(E.memberTimer(s, m))}
  ${a && a.type === "quest" ? `<div class="bar"><i style="width:${(a.progress / E.findId(D.quests, a.target).days) * 100}%"></i></div>` : ""}
  <div class="row" style="margin-top:6px"><button class="b" data-a="opentab" data-v="char">📋 Full sheet</button><button class="b" data-a="rest">🛌 Rest</button><button class="b" data-a="market" title="Buy and sell at the nearest town">🏪 Market</button></div></div>`;
-  h += trainingv(m) + activities(m) + pathsCard(s, m);
-  h += classCard(m); // R46 guild tiers
   return h;
+}
+// R77: the old one-piece hero (hero card + tasks + training + craft paths + guild tiers); Today now draws these as separate sections
+export function hero() {
+  const m = E.active(s);
+  return m ? heroCard() + trainingv(m) + activities(m) + pathsCard(s, m) + classCard(m) : "";
 }
 
 const pct = x => (x > 0 ? "+" : "") + Math.round(x * 100) + "%";
@@ -86,7 +88,7 @@ function fishPicker() {
   return `<div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">${chips}</div><div class="muted" style="font-size:12px;margin-top:3px">Fishing at <b>${cur.icon} ${cur.name}</b>: ${tbl}${locked ? `<br>🔒 ${locked}` : ""}${mix ? `<br>In store: ${mix} · sells ×${E.fishPriceMult(s).toFixed(2)}` : ""}</div>`;
 }
 // R31: Tasks (resources) first, then a collapsed Training list (XP). Jobs (coin) live in Work → Jobs.
-export function activities(m) {
+export function activityParts(m) {
   const hide = s.hideLocked !== false; // R31: default on, saved with the game
   const tAll = D.activities.filter(ac => ac.task && !(ac.maxAge && E.ageY(m) > ac.maxAge)), tOk = tAll.filter(ac => !E.taskLock(s, m, ac));
   const tasks = (hide ? tOk : tAll).map(ac => actRow(m, ac, true)).join("");
@@ -96,14 +98,19 @@ export function activities(m) {
   const tog = n => `<label class="chip" style="font-size:12px"><input type="checkbox" data-a="hidelocked" ${hide ? "checked" : ""}> Hide unavailable${hide && n ? ` (${n} hidden)` : ""}</label>`;
   const nOk = tr.filter(ac => E.activityOk(s, m, ac)).length;
   const onTr = m.action && m.action.type === "activity" && tr.some(ac => ac.id === m.action.target);
-  return (
-    `<h3>🧺 Tasks <span class="muted" style="font-size:12px">· resources for the family</span> ${tog(tAll.length - tOk.length)}</h3><div class="muted" style="font-size:12px">Tasks = resources · Jobs = coin (Work → Jobs) · Training = XP.</div>` +
+  const tasksHtml =
+    `<h3>🧺 Tasks <span class="muted" style="font-size:12px">· resources for the family</span> ${tog(tAll.length - tOk.length)}</h3><div class="muted" style="font-size:12px">Tasks = resources · Jobs = coin (Play → Jobs & training) · Training = XP.</div>` +
     fieldsLine() + // R40
     choresLine() + // R42
     ordersLine() + // R43
-    tasks +
-    `<details ${onTr ? "open" : ""}><summary><b>🎯 Training</b> <span class="muted">· XP only · ${nOk} open</span> ${tog(trHidden)}</summary><div class="muted" style="font-size:12px">Skills grow through themed drills. Unlocks: furniture, items, guild rank or class line. ⭐ = exclusive.</div>${tr.map(ac => actRow(m, ac, false)).join("")}</details>`
-  );
+    tasks;
+  const trainHtml = `<h3>🎯 Training <span class="muted">· XP only · ${nOk} open</span> ${tog(trHidden)}</h3><div class="muted" style="font-size:12px">Skills grow through themed drills. Unlocks: furniture, items, guild rank or class line. ⭐ = exclusive.</div>${tr.map(ac => actRow(m, ac, false)).join("")}`;
+  return { tasks: tasksHtml, training: trainHtml, trainingOn: !!onTr };
+}
+// the old one-piece card, kept for callers that still want everything together
+export function activities(m) {
+  const a = activityParts(m);
+  return a.tasks + a.training;
 }
 
 export function craftv(m) {
@@ -161,36 +168,6 @@ export function quests() {
   return h;
 }
 
-export function family() {
-  const m = E.active(s);
-  let h = `<h3>Members (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
-  for (const x of s.members.filter(y => y.alive)) {
-    const o = x.order;
-    h += `<div class="card"><div class="mrow">${portrait(x, 48)}<div style="flex:1;min-width:0">${memberLine(x)} ${x.id === s.head ? "👑" : ""} ${x.id === s.activeId ? "<b>(active)</b>" : ""}</div></div><div class="muted">${x.spouse ? "Married to " + (E.findId(s.members, x.spouse) || {}).name : "Single"}</div>
-  ${
-    x.id !== s.activeId
-      ? `<div class="row" style="margin-top:4px"><span class="muted">Order:</span>${
-          E.isAdult(x)
-            ? `<select data-a="order" data-v="${x.id}">
-  ${["train", "quest", "work", "rest"].map(t => `<option ${o.type === t ? "selected" : ""}>${t}</option>`).join("")}</select>
-  ${o.type === "train" ? `<select data-a="ordt" data-v="${x.id}">${D.skills.map(k => `<option value="${k.id}" ${o.target === k.id ? "selected" : ""}>${k.name}</option>`).join("")}</select>` : ""}
-  ${o.type === "quest" ? `<select data-a="ordt" data-v="${x.id}">${D.regions.map(k => `<option value="${k.id}" ${o.target === k.id ? "selected" : ""}>${k.name}</option>`).join("")}</select>` : ""}`
-            : '<span class="muted">growing up</span>'
-        }
-  <button class="b" data-a="switch" data-v="${x.id}">Play</button></div>`
-      : ""
-  }</div>`;
-  }
-  h += `<h3>💌 Suitors ${E.ageY(m) < D.tuning.courtAge ? "(active member must be ${D.tuning.courtAge}+)" : ""}</h3>`;
-  if (!s.suitors.length) h += `<div class="muted">None yet. They appear in town every ~45 days.</div>`;
-  h += s.suitors.map(suitorCard).join("");
-  if (s.suitors.length) h += `<div class="muted">More on suitors, houses and alliances in Family → 🏰 Houses.</div>`;
-  const dead = s.members.filter(x => !x.alive && !x.marriedOut);
-  if (dead.length)
-    h += `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
-  return h;
-}
-
 export function guildCard(m) {
   return (
     advLine(m) +
@@ -220,10 +197,12 @@ export function saveCard() {
  <textarea id="savecode" rows="3" style="width:100%" placeholder="Paste a save code here to import, or press Export">${U.exportText || ""}</textarea>${U.saveMsg ? `<div class="muted">${U.saveMsg}</div>` : ""}</div>`;
 }
 
-export function mainv() {
+// R77: Play → Today. The old one-page Main is split: Market, Land, Courtship and Settings/Save moved (see views.js, menu.js).
+export function mainParts() {
   const m = E.active(s);
   const creCard = !s.created && !U.creDismiss && s.day < D.tuning.daysPerYear ? `<div class="card"><b>🛡️ Make your founder</b> <span class="muted">Choose looks, traits and house colours — or just play on.</span><div class="row" style="gap:6px;margin-top:6px"><button class="b sel" data-a="creopen">Open creation</button><button class="b" data-a="credismiss">Not now</button></div></div>` : "";
-  let h = creCard + tourPrompt() + tutorialCard() + busyBanner(m) + hero();
+  const a = activityParts(m);
+  let h = creCard + offerCard() + tutorialCard() + busyBanner(m) + heroCard();
   const others = E.living(s).filter(x => x.id !== m.id);
   if (others.length)
     h =
@@ -233,10 +212,23 @@ export function mainv() {
             `<button class="b ${x.id === m.id ? "sel" : ""}" data-a="switch" data-v="${x.id}">${x.name} (${E.ageY(x)})</button>`,
         )
         .join("")}</div>` + h;
-  h += courtship();
+  return { head: h, tasks: a.tasks, training: a.training, trainingOn: a.trainingOn, paths: pathsCard(s, m), cls: classCard(m), recent: recentPart() };
+}
+
+export function recentPart() {
+  return (
+    `<h3>📜 Recent</h3>` +
+    s.log
+      .slice(0, 8)
+      .map(l => `<div class="muted">Y${yr(l.d) + 1} D${(l.d % D.tuning.daysPerYear) + 1} · ${l.msg}</div>`)
+      .join("")
+  );
+}
+
+export function buyItemsPart() {
+  const m = E.active(s);
   const towns = D.towns.filter(t => E.regionOpen(s, t.region) && E.townKnown(s, t));
-  h += `<h3>📜 Land for sale</h3>` + (landShop() || '<div class="muted">You own every parcel.</div>');
-  h +=
+  return (
     `<h3>${vehIco("wagoncart", "🛒", 20)} Buy items</h3>` +
     towns
       .map(
@@ -249,21 +241,8 @@ export function mainv() {
             })
             .join(""),
       )
-      .join("");
-  h +=
-    `<h3>📜 Recent</h3>` +
-    s.log
-      .slice(0, 8)
-      .map(l => `<div class="muted">Y${yr(l.d) + 1} D${(l.d % D.tuning.daysPerYear) + 1} · ${l.msg}</div>`)
-      .join("") +
-    saveCard() +
-    settingsCard() +
-    `<div class="row"><button class="b" data-a="reset">New Lineage</button></div>`;
-  return h;
-}
-
-export function courtship() {
-  return family().split("<h3>💌")[1]?.split("<h3>🕯️")[0].replace(/^/, "<h3>💌") || "";
+      .join("")
+  );
 }
 
 export function busyBanner(m) {

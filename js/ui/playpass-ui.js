@@ -9,10 +9,10 @@ const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 export function testerBadge() {
   if (!E.badgeShown(localStorage)) return "";
   const p = E.playPass();
-  return `<span class="testerbadge" id="testerbadge" title="Play pass active (${esc(p.name)}): all content unlocked">🧪 Tester</span><button class="b" data-fb="open" title="Send feedback">💬</button><button class="b" data-pp="hidebadge" title="Hide the tester badge (show it again from 📂 Saves)">✕</button>`;
+  return `<span class="testerbadge" id="testerbadge" title="Play pass active (${esc(p.name)}): all content unlocked">🧪 Tester</span><button class="b" data-fb="open" title="Send feedback">💬</button><button class="b" data-pp="hidebadge" title="Hide the tester badge (show it again from ☰ Menu › Settings)">✕</button>`;
 }
 
-// Saves-screen card: What's new link (everyone) + play pass status (testers)
+// Settings-screen card (was the Saves tab): What's new link (everyone) + play pass status (testers)
 export function savesExtras() {
   const p = E.playPass();
   return `<div class="card" id="savesextras"><div class="row"><span>📰 <b>What's new</b> <span class="muted">· ${BUILD}</span></span><button class="b" data-pp="whatsnew">Show</button></div>${
@@ -31,7 +31,7 @@ export function openWhatsNew(all = false) {
   el.hidden = false;
   el.innerHTML = `<div class="card wncard" role="dialog" aria-label="What's new"><div class="row"><h3>📰 What's new</h3><button class="b" data-pp="closewn" aria-label="Close">✕</button></div>${L.map(
     e => `<div class="wnentry"><b>${esc(e.build)} · ${esc(e.title)}</b><ul>${e.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul></div>`,
-  ).join("")}${all ? "" : '<div class="muted">Reopen this any time from 📂 Saves.</div>'}<div class="row" style="justify-content:flex-end"><button class="b sel" data-pp="closewn">Got it</button></div></div>`;
+  ).join("")}${all ? "" : '<div class="muted">Reopen this any time from ☰ Menu › Settings.</div>'}<div class="row" style="justify-content:flex-end"><button class="b sel" data-pp="closewn">Got it</button></div></div>`;
 }
 export const closeWhatsNew = () => el && (el.hidden = true);
 

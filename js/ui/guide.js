@@ -4,6 +4,7 @@ import { D, s, getLegacyRec } from "../main.js";
 import { U } from "./state.js";
 import { bonusRow } from "./r60-ui.js";
 import { groupOf, tabVisible } from "./render.js";
+import { orrinOverlay, stepExtra, orrinSettings } from "./coach-ui.js";
 
 const rew = r =>
   Object.entries(r || {})
@@ -33,7 +34,7 @@ export function tutorialCard() {
   return `<div class="card tut"><div class="row"><b>${mt.icon} ${mt.name}</b><span class="muted">${mt.title || ""}</span><span style="flex:1"></span><button class="b" data-a="tutskip" title="Skip the apprenticeship">Skip</button></div>
 ${n === 0 ? `<p class="muted">${D.tutorial.intro}</p>${D.tutorial.howToPlay ? `<p class="muted"><b>${D.tutorial.howToPlay.replace(/^How to play:\s*/, "How to play:</b> ")}</p>` : ""}` : ""}
 <div class="pb"><i style="width:${(n / steps.length) * 100}%"></i><span>Prologue: The Apprentice · ${n}/${steps.length}</span></div>
-<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div>${st.tip ? `<div class="tip">💡 ${st.tip}</div>` : ""}<div class="row">${ratsBtn}${craftBtn}${goBtns(st)}</div></div>`;
+<p><b>${st.icon} ${st.title}</b>: ${st.text}</p><div class="muted">Reward: ${rew(st.reward)}</div>${st.tip ? `<div class="tip">💡 ${st.tip}</div>` : ""}${stepExtra(st.id)}<div class="row">${ratsBtn}${craftBtn}${goBtns(st)}</div></div>`;
 }
 
 // Unlock intro lines (data/intros.json): same card look as the prologue; never blocking, one Skip each.
@@ -51,6 +52,7 @@ export function introCards(tab) {
 
 // ---- tab tour overlay
 export function tourOverlay() {
+  if (U.tourCh || U.noteCard) return orrinOverlay(); // R77: Orrin's chapters and note cards
   if (U.tour == null) return "";
   const steps = tourList();
   const st = steps[U.tour];
@@ -71,7 +73,7 @@ export const tourList = () => E.tourSteps().filter(t => tabVisible(t.tab));
 
 export function tourPrompt() {
   if (s.tut?.tourSeen || U.tour != null) return "";
-  return `<div class="card"><b>👋 Welcome to Family Legacy!</b> Want a quick tour of the tabs? <div class="row"><button class="b sel" data-a="tourstart">Show me around</button><button class="b" data-a="tourend">No thanks</button></div></div>`;
+  return `<div class="card"><b>👋 Welcome to Heirs of the Hold!</b> Want a quick tour of the tabs? <div class="row"><button class="b sel" data-a="tourstart">Show me around</button><button class="b" data-a="tourend">No thanks</button></div></div>`;
 }
 
 // ---- settings
@@ -79,7 +81,7 @@ export function settingsCard() {
   const cats = E.noteCats();
   const off = s.noteOff || {};
   const dev = E.devOn();
-  return `<h3>⚙️ Settings</h3>
+  return `<h3>⚙️ Game settings</h3>
 <div class="muted">Notifications (in-game only):</div><div class="row" style="flex-wrap:wrap;gap:4px">${Object.entries(
     cats,
   )
@@ -94,7 +96,8 @@ export function settingsCard() {
 <div class="row"><label class="chip"><input type="checkbox" data-a="classicemoji" ${s.classicEmoji ? "checked" : ""}> 😀 Classic emoji (no icon art)</label></div>
 <div class="row" style="flex-wrap:wrap;gap:4px"><span class="muted">Legacy unlocks on this device: ${getLegacyRec().unlocks.length}/${D.creation.unlocks.length} (${D.creation.unlocks.filter(u => getLegacyRec().unlocks.includes(u.id)).map(u => u.name).join(", ") || "none yet"})</span><button class="b" data-a="legacyreset">Reset legacy</button></div>
 ${bonusRow()}
-<div class="row"><button class="b" data-a="tourstart">🧭 Tab tour</button>${E.tutActive(s) ? `<button class="b" data-a="tutskip">Skip apprenticeship</button>` : ""}</div>
+${orrinSettings()}
+<div class="row">${E.tutActive(s) ? `<button class="b" data-a="tutskip">Skip apprenticeship</button>` : ""}</div>
 ${
   !E.devLocked() && (U.devRevealed || dev)
     ? `<div class="row"><label class="chip"><input type="checkbox" data-a="devmode" ${dev ? "checked" : ""}> 🛠️ Dev Mode</label><span class="muted">Dev runs earn no achievements.</span></div>${
@@ -104,7 +107,7 @@ ${
       }`
     : ""
 }
-<div class="muted" style="margin-top:6px"><a data-a="ver" class="ver">Family Legacy ${VERSION}</a></div>`;
+<div class="muted" style="margin-top:6px"><a data-a="ver" class="ver">Heirs of the Hold ${VERSION}</a></div>`;
 }
 export const VERSION = "v1.7";
 

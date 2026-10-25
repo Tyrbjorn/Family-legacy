@@ -1,4 +1,4 @@
-# Family Legacy — Roadmap
+# Heirs of the Hold — Roadmap
 
 The game grows from one adventurer into a dynasty in three eras. The header shows the current era and what reaches the next one.
 
@@ -191,6 +191,6 @@ Everything from Eras 1–2 keeps working alongside these.
 - Cosmetics 99¢–$2: flags, banners, crests, sprites, estate skins, portrait frames, decorative doodads for the estate/village, and a flag/crest maker. No gameplay edge.
 - **Graphics upgrade (v1.5 bundle):** a full art refresh shipped as a v1.5 bundle, released well after the DLCs.
 
-## Future game ideas (separate games, not Family Legacy)
+## Future game ideas (separate games, not Heirs of the Hold)
 - **BattleCry-style army battler (no name yet):** a separate game about raising and commanding armies in fast real-time battles, inspired by BattleCry.
 - **Majesty-style city simulator / deep life sim (no name yet):** the player has no character and oversees the whole settlement; residents act autonomously (live, learn and inherit on their own), but the overseer can command that things get done. Alternative mode: play a royal line from the start. Main inspiration: Majesty (classic): the player only orders buildings and places bounty flags to motivate action; everything else is fully automated (simple yet complex). Everyone grows and learns month by month; villages upgrade themselves from their residents' prosperity; life gets better or worse (harvests, illness, raids, wages, contentment); strong inheritance of traits and skills shaped by parents' wealth, skill and discipline; visible routines, likes and inherited traits. Family Legacy keeps only a light on-paper slice (a modest inheritance boost for kids of skilled or wealthy parents; no per-follower life sim). Retainer families (sworn retainers who marry, have kids and hold office) stay in Family Legacy's base game.

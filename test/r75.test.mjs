@@ -11,7 +11,7 @@ const withFields=s=>{E.fieldsState(s).list.push({id:'f1',crop:'wheat',lvl:1,size
 const carts=s=>{const f=E.fieldsState(s);f.ups.cart1=true;f.ups.cart2=true;};
 
 // ---- data + build
-ok(/^R75$/.test(BUILD)&&D.changelog.entries[0].build==='R75'&&D.changelog.entries[0].items.length>=5,'R75 build and changelog first');
+ok(/^R(75|76|77)$/.test(BUILD)&&D.changelog.entries.some(e=>e.build==='R75'&&e.items.length>=5),'R75 changelog kept'); 
 ok(E.SCHEMA===55&&STEPS.at(-1).n===55,'no schema step: save schema stays 55');
 ok(U&&U.name==='Union Hall'&&U.tiers.length===3&&U.quarter==='nw','union config in fields.json, home quarter');
 ok(U.tiers[0].cost.coin===4000&&U.tiers[0].cost.planks===80&&U.tiers[0].wagons===1,'T1 4000c + 80 planks + 1 Wagon (as simulated)');
@@ -85,5 +85,5 @@ const bunks=s=>{E.buildStructure(s,'bunkhouse');};
 // ---- wiring
 { const h=fs.readFileSync(new URL('../js/ui/handlers/estate.js',import.meta.url),'utf8'), u=fs.readFileSync(new URL('../js/ui/union-ui.js',import.meta.url),'utf8'), t=fs.readFileSync(new URL('../js/ui/estate-tab.js',import.meta.url),'utf8');
   for(const a of [...u.matchAll(/data-a="(\w+)"/g)].map(x=>x[1])) ok(new RegExp('\\b'+a+':').test(h),'handler for '+a);
-  ok(/unionCard\(\)/.test(t),'card is in the Estate tab'); ok(!/(png|webp|jpe?g)/i.test(u),'union card uses no new art files'); }
+  ok(/unionCard\(\)/.test(t+fs.readFileSync(new URL('../js/ui/views.js',import.meta.url),'utf8')),'card is in the Estate tab'); ok(!/(png|webp|jpe?g)/i.test(u),'union card uses no new art files'); }
 console.log('r75: all '+pass+' assertions passed');

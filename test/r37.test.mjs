@@ -42,6 +42,6 @@ ok(Object.values(LG.v37Refund.costs).flat().reduce((a,b)=>a+b,0)===7680,'refund 
 // UI sources
 const src=f=>fs.readFileSync(new URL('../js/ui/'+f,import.meta.url)).toString();
 ok(!src('estate-tab.js').includes('h += legacyPanel()'),'Legacy list left the Estate tab'); ok(!/renown\)|Legacy shop/.test(src('automation-tab.js')),'Automation tab shows no prices');
-ok(src('render.js').includes('legacy: ["🏛️"')&&src('common.js').includes('data-tab="legacy"'),'Legacy panel opened from the top bar');
+ok(src('nav-data.js').includes('legacy: ["🏛️"')&&src('common.js').includes('data-tab="legacy"'),'Legacy panel opened from the top bar');
 ok(['estate-card.js','family-tab.js','minions-tab.js','estate-tab.js'].every(f=>src(f).includes('autoChip(')),'⚙ Auto chips on stations, Family, Minions, Quotas');
 console.log('r37 ok',pass);

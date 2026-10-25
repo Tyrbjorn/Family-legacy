@@ -5,80 +5,23 @@ import { actorsAfter } from "./actors-dom.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { $, fmt, hm, memberLine, portrait, sk, top, yr } from "./common.js";
-import { estatev } from "./estate-tab.js";
-import { guildsv } from "./guilds-tab.js";
-import { invv } from "./inventory-tab.js";
 import { D, report, s } from "../main.js";
-import { jobsv, mainv } from "./main-tab.js";
-import { mapv } from "./map-tab.js";
-import { automationv } from "./automation-tab.js";
-import { minionsv } from "./minions-tab.js";
-import { craftingv } from "./crafting-tab.js";
-import { chroniclev } from "./chronicle-tab.js";
-import { familyv } from "./family-tab.js";
-import { questBadge, questsv } from "./quests-tab.js";
-import { characterv } from "./character-tab.js";
-import { housesv, suitorCard } from "./houses-tab.js";
 import { bellPanel, dockv, toastsv } from "./progress.js";
 import { tourOverlay } from "./guide.js";
-import { legacyv } from "./legacy-tab.js";
-import { savesv } from "./saves-tab.js";
+import { coachTick, orrinStrip } from "./coach-ui.js";
+import { menuSync } from "./menu.js";
+import { tipLink } from "./tip.js";
 import { creationv } from "./creation-ui.js";
+import { VIEWS, GROUPS } from "./nav-data.js";
+import { VIEW_FN } from "./views.js";
+import { navv, subtabsv, tabVisible, groupOf, groupTarget, syncNav } from "./nav-ui.js";
 
-export const TABS = {
-  main: ["🧝", "Main", mainv],
-  family: ["🌳", "Family", familyv],
-  quests: ["📜", "Quests", questsv],
-  char: ["🧑", "Character", characterv],
-  jobs: ["💼", "Jobs", jobsv],
-  inv: ["🎒", "Inventory", invv],
-  estate: ["🏰", "Estate", estatev],
-  map: ["🗺️", "Map", mapv],
-  minions: ["🧑‍🤝‍🧑", "Minions", minionsv],
-  guilds: ["🏛️", "Guilds", guildsv],
-  craft: ["🔨", "Crafting", craftingv],
-  auto: ["⚙️", "Automation", automationv],
-  chron: ["📜", "Chronicle", chroniclev],
-  houses: ["🏰", "Houses", housesv],
-  legacy: ["🏛️", "Legacy", legacyv],
-  saves: ["📂", "Saves", savesv], // R38 slot picker (top bar) // R37: opened from the top bar, not in the nav groups
-};
-
-// Phone nav: 6 group buttons; groups with several tabs get a sub-tab strip under the header.
-// A group button opens its last-used visible tab. Unlock rules still come from tabVisible().
-export const GROUPS = [
-  ["main", "🧝", "Main", ["main"]],
-  ["work", "💼", "Work", ["quests", "jobs", "guilds"]],
-  ["map", "🗺️", "Map", ["map"]],
-  ["inv", "🎒", "Bag", ["inv"]],
-  ["home", "🏰", "Estate", ["estate", "minions", "craft", "auto"]],
-  ["kin", "🌳", "Family", ["char", "family", "houses", "chron"]],
-];
-export const groupOf = t => (GROUPS.find(g => g[3].includes(t)) || GROUPS[0])[0];
+// R77: the 28 sub-tab views live in views.js (VIEW_FN) and nav-data.js (VIEWS / GROUPS); the bar, strip, sheet and Go to… are nav-ui.js.
+export const TABS = Object.fromEntries(Object.entries(VIEWS).map(([k, v]) => [k, [v[0], v[1], VIEW_FN[k]]]));
+export { GROUPS, groupOf, tabVisible, groupTarget };
 window.__tabGroup = groupOf;
-const groupTabs = g => GROUPS.find(x => x[0] === g)[3].filter(tabVisible);
-export function groupTarget(g) {
-  const ts = groupTabs(g);
-  if (ts.includes(U.tab)) return U.tab;
-  const last = (U.groupLast || {})[g];
-  return ts.includes(last) ? last : ts[0];
-}
-function navv() {
-  const cur = groupOf(U.tab);
-  return GROUPS.filter(([g]) => groupTabs(g).length)
-    .map(
-      ([g, i, n]) =>
-        `<button class="${g === cur ? "on" : ""}" data-group="${g}" data-tab="${groupTarget(g)}">${i}${g === "home" && E.pendingCount(s) ? '<sup class="nbadge">🎯</sup>' : ""}${g === "work" && questBadge() ? `<sup class="nbadge qbadge">${questBadge()}</sup>` : ""}<br>${n}</button>`,
-    )
-    .join("");
-}
-function subtabsv() {
-  const ts = groupTabs(groupOf(U.tab));
-  if (ts.length < 2) return "";
-  return ts
-    .map(k => `<button class="${k === U.tab ? "on" : ""}" data-tab="${k}">${TABS[k][0]} ${TABS[k][1]}${k === "minions" && E.pendingCount(s) ? " 🎯" + E.pendingCount(s) : ""}</button>`)
-    .join("");
-}
+// intros.json lines are keyed by the old tab ids (main, estate, craft, minions, inv, guilds, houses): map the new sub-tabs onto them
+export const introTabOf = v => (groupOf(v) === "home" && v !== "minions" ? "estate" : groupOf(v) === "inv" ? "inv" : v);
 
 export function modal() {
   const el = $("#modal");
@@ -87,7 +30,7 @@ export function modal() {
     el.innerHTML = `<div class="card"><h3>⚰️ The ${s.members[0].name} line has ended</h3><p>Renown: <b>${fmt(s.renown)}</b> · Generations of members: ${s.members.length} · Years: ${yr(s.day)}</p><h3>Family tree</h3>${s.members.map(m => `<div>${m.name} (${E.ageY(m)}y)${m.parents ? " – child of " + m.parents.map(p => E.findId(s.members, p).name).join(" & ") : ""}</div>`).join("")}<h3>Deeds</h3>${s.deeds
       .slice(-15)
       .map(d => `<div class="muted">${d}</div>`)
-      .join("")}<p><button class="b" data-a="reset">Start a New Lineage</button></p></div>`;
+      .join("")}<p><button class="b" data-a="reset">Start a New Lineage</button></p>${tipLink(D.build) ? `<p class="muted">Enjoying the demo? ${tipLink(D.build)}</p>` : ""}</div>`;
     return;
   }
   if (U.create) { // R59 character creation
@@ -144,10 +87,9 @@ export function modal() {
   el.innerHTML = "";
 }
 
-export const tabVisible = k => !!TABS[k] && (k !== "craft" || E.craftingUnlocked(s));
-
 // every tab always visible; age only gates actions inside them
 export function render() {
+  if (menuSync()) return; // R76: a menu screen (title / load / settings / ...) owns the page
   if (!tabVisible(U.tab)) U.tab = "main";
   if (window._mapDrag) {
     $("#top").innerHTML = top();
@@ -160,7 +102,8 @@ export function render() {
   }
   render.force = false;
   $("#top").innerHTML = top();
-  const h = introCards(U.tab) + TABS[U.tab][2]();
+  syncNav(U.tab);
+  const h = introCards(introTabOf(U.tab)) + TABS[U.tab][2]();
   if (h !== U.lastHTML) {
     const y = scrollY;
     const tw = $("#treewrap"),
@@ -170,8 +113,8 @@ export function render() {
     U.lastHTML = h;
     scrollTo(0, y);
   }
-  if (U.tab === "estate" && U.estView === "map") estateMapAfter(); // R62
-  if (U.tab === "estate") actorsAfter(); // R73 pen animals / bees in the room scenes
+  if (U.tab === "land" && U.estView === "map") estateMapAfter(); // R62
+  if (groupOf(U.tab) === "home") actorsAfter(); // R73 pen animals / bees in the room scenes
   if (U.tab === "map") glideMarkers(!!(s.turbo && s.turbo.on));
   setIf("#tabs", navv());
   setIf("#subtabs", subtabsv());
@@ -179,6 +122,9 @@ export function render() {
   setIf("#toasts", toastsv());
   setIf("#overlay", tourOverlay() + bellPanel());
   modal();
+  setIf("#orrin", orrinStrip()); // R77 chime-in strip
+  placeStrip();
+  coachTick();
 }
 
 const _html = {};
@@ -186,4 +132,12 @@ function setIf(sel, h) {
   if (_html[sel] === h) return;
   _html[sel] = h;
   $(sel).innerHTML = h;
+}
+
+// the Orrin strip sits just above the dock (the dock's height changes with its content)
+function placeStrip() {
+  const o = $("#orrin"), d = $("#dock");
+  if (!o) return;
+  o.hidden = !o.innerHTML;
+  if (!o.hidden) { const r = d.getBoundingClientRect(); o.style.bottom = Math.max(0, Math.round(innerHeight - r.top)) + "px"; }
 }

@@ -75,5 +75,5 @@ const mine=tch('mineshaft'); ok(mine.tint===D.art.veinPal.iron,'mine tinted by v
 // layout carries touch
 const s2=E.newGame(2); E.normalize(s2); s2.land=Object.keys(M.parcels).slice(0,3); s2.structures.push({uid:'h1',type:'fishinghut',pieces:['fishrack'],up:0});
 const L2=estateLayout(s2,D,E); const it=L2.items.find(i=>i.uid==='h1'); ok(it&&it.img==='hut-1'&&it.touch.emblem==='🐟','layout touch');
-const css=fs.readFileSync(root+'style.css','utf8'); ok(css.includes('.rmscene')&&css.includes('prefers-reduced-motion'),'css');
+const css=fs.readFileSync(root+'style.css','utf8'); ok(css.includes('.rmscene')&&(css.includes('prefers-reduced-motion')||css.includes('html.rm')),'css');
 console.log('r67 ok',pass,'checks');

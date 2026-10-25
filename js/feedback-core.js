@@ -31,7 +31,7 @@ export function feedbackContext(s, { build, schema, yearDays, ua }) {
 export const contextText = c => `Build ${c.build} · save ${c.save} · year ${c.year} · generation ${c.generation} · play time ${c.playTime} · ${c.device}`;
 export function feedbackText(a, c) {
   return [
-    `Family Legacy playtest feedback (${c.build})`,
+    `Heirs of the Hold playtest feedback (${c.build})`,
     `Fun: ${a.fun || "-"}/5`,
     ...FB_FIELDS.map(([k, q]) => `${q}\n${(a[k] || "").trim() || "-"}`),
     `Keep playing tomorrow? ${a.tomorrow || "-"}`,

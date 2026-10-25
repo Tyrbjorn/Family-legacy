@@ -30,5 +30,5 @@ R.art.pieces.bunk='bed'; ok(roomHtml(E,R,s,st2,0,false).includes('art/rooms/bed.
 // every real structure renders
 for(const d of types){const x={uid:'t'+d.id,type:d.id,pieces:[...(d.fixed||[])],up:(d.upgrades||[]).length};ok(roomHtml(E,R,s,x,0,false).includes('estroom'),'renders '+d.id);}
 ok(!JSON.stringify(s).includes('estRoom'),'nothing saved');
-const css=fs.readFileSync(root+'style.css','utf8'); ok(/prefers-reduced-motion:reduce\)\{\.estroom \.rmroof\{display:none/.test(css),'reduced motion');
+const css=fs.readFileSync(root+'style.css','utf8'); ok(/(prefers-reduced-motion:reduce\)\{|html\.rm )\.estroom \.rmroof\{display:none/.test(css),'reduced motion'); // R76: the media query became the profile class html.rm
 console.log('r66 ok',pass);

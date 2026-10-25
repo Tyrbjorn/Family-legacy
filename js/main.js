@@ -3,8 +3,14 @@ import "./ui/feedback.js";
 import { startWhatsNew } from "./ui/playpass-ui.js";
 import * as E from "./engine.js";
 import { U } from "./ui/state.js";
-import { groupOf, render } from "./ui/render.js";
+import { groupOf, render, introTabOf } from "./ui/render.js";
+import { uiResetSlot } from "./ui/ui-live.js";
+import { secToggle } from "./ui/sect.js";
+import { openSheet, closeSheet, openGoto, closeGoto, gotoPick, revealSection } from "./ui/nav-ui.js";
 import { choreNewsCheck } from "./ui/chores-ui.js";
+import { BUILD } from "./config.js";
+import { setMotion } from "./ui/motion.js";
+import { coachAct, coachNote, coachCreated, setMaster } from "./ui/coach-ui.js";
 
 const KEY = "familyLegacy.save.v1";
 
@@ -87,39 +93,55 @@ export let s,
   report = null;
 
 // R38 save slots: copy the old single save into slot 1 once (original kept), then open the last played slot.
+// R76: the game opens on a title screen. Nothing is written and no time passes until the player presses Continue / picks a slot / starts
+// a new game (`entered`). An unreadable slot is quarantined, never replaced by a fresh game; `slot` is 0 while no save is open.
 const SL = E.Slots;
-export let slot = 1;
+export let slot = 0,
+  entered = false,
+  bootSkipped = [];
+let persistOff = false;
 const mig = SL.migrateSlots(localStorage);
 let legacyKeyMode = !!(mig.error && mig.fallback); // copy failed: keep playing the old save in place
 try {
   if (legacyKeyMode) {
     const raw = localStorage.getItem(KEY);
-    if (raw) s = E.deserialize(raw);
+    if (raw) {
+      try { s = E.deserialize(raw); slot = 1; } catch (e) { persistOff = true; } // unreadable old save: never written over
+    }
   } else {
-    slot = SL.lastSlot(localStorage);
-    s = SL.loadSlot(localStorage, slot);
-  }
-  if (s) {
-    report = E.applyOffline(s);
-    if (report && report.elapsed < 60) report = null;
+    const b = SL.bootPick(localStorage);
+    bootSkipped = b.skipped;
+    for (const h of SL.scanAll(localStorage)) if (!bootSkipped.some(x => x.n === h.n)) bootSkipped = [...bootSkipped, h]; // other unreadable slots are flagged too
+    if (b.s) { s = b.s; slot = b.n; }
   }
 } catch (e) {
   console.warn(e);
 }
 
-export const freshPlayer = !s && SL.listSlots(localStorage).every(x => x.empty);
-if (!s) {
-  if (!legacyKeyMode && SL.listSlots(localStorage).every(x => x.empty)) U.tab = "saves"; // nothing saved yet: show the picker
-  s = E.newGame();
-  E.normalize(s);
-  if (!legacyKeyMode && !window.__noSave) SL.saveSlot(localStorage, slot, s); // the new dynasty takes its slot right away
-}
-
+export const freshPlayer = !s && !persistOff && SL.listSlots(localStorage).every(x => x.empty);
+const hadSave = !!s;
+if (!s) { s = E.newGame(); slot = 0; } // in memory only; it takes a slot when the player starts a New Game
 E.normalize(s);
-startWhatsNew(freshPlayer); // R39.1
+
+// R76 profile settings (per device): classic emoji, reduced motion, skip title. s.classicEmoji mirrors the profile into the save.
+export let prefs = E.loadSettings(localStorage, hadSave && s.classicEmoji).settings;
+export function syncPrefs() {
+  if (!!s.classicEmoji !== prefs.classic) s.classicEmoji = prefs.classic;
+}
+function setPref(k, v) { prefs = { ...prefs, [k]: v }; E.saveSettings(localStorage, prefs); if (k === "motion") setMotion(v); syncPrefs(); }
+setMotion(prefs.motion);
+syncPrefs();
+U.screen = "title";
 
 // R59 per-device legacy record (fl_legacy_v1): back-filled once from every slot, then updated on each save
 export let legacyRec = E.loadLegacyRec(localStorage);
+// R76 encyclopedia memory (fl_enc_v1): a profile-wide set of ids ever encountered + one set per slot ("this save"). Read-only on the game state.
+export let enc = E.encLoad(localStorage);
+export function encScan() {
+  if (slot < 1 || !s || !s.members) return;
+  try { if (E.encRecord(enc, slot, E.encObserve(D, s))) E.encSave(localStorage, enc); } catch (e) { /* never let the book break the game */ }
+}
+const encReset = n => { if (E.encResetSlot(enc, n)) E.encSave(localStorage, enc); uiResetSlot(n); }; // R77: fl_ui_v1 per-slot entries (seen / intro / ledger / Orrin) go with the save
 let legacyRecStr = JSON.stringify(legacyRec);
 E.setR60Rec(legacyRec); // R60 earned class keys
 function noteLegacy(sv) {
@@ -131,7 +153,7 @@ function noteLegacy(sv) {
   if (j !== legacyRecStr) { legacyRecStr = j; E.saveLegacyRec(localStorage, legacyRec); if (r.fresh.length) U.legacyNew = r.fresh; }
 }
 if (localStorage.getItem(E.CR_KEY) == null) {
-  for (const x of SL.listSlots(localStorage)) if (!x.empty) { try { noteLegacy(SL.loadSlot(localStorage, x.n || x.slot)); } catch (e) {} }
+  for (const x of SL.listSlots(localStorage)) if (!x.empty) { try { noteLegacy(SL.readSlot(localStorage, x.n || x.slot)); } catch (e) {} }
   if (legacyKeyMode) noteLegacy(s);
   E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec);
   U.legacyNew = null;
@@ -145,34 +167,80 @@ function openCreation() {
 }
 export { openCreation };
 
+let backing = false,
+  playAcc = 0; // play seconds since the last successful save (slot meta)
 const save = () => {
   if (window.__noSave) return;
+  if (!entered || persistOff) return; // title screen: nothing is written (a stale write would also eat the offline time)
+  syncPrefs();
   noteLegacy(s);
   if (legacyKeyMode) {
     try { localStorage.setItem(KEY, E.serialize(s)); } catch (e) { U.saveErr = "Couldn't save: storage full. Export this game or delete a slot."; }
     return;
   }
-  const r = SL.saveSlot(localStorage, slot, s);
+  if (slot < 1) return;
+  const add = Math.floor(playAcc);
+  const r = SL.saveSlot(localStorage, slot, s, Date.now(), { build: BUILD, addSec: add });
   U.saveErr = r.ok ? "" : r.err === "storage full" ? "Couldn't save: storage full. Export this slot or delete another. Retrying at the next autosave." : "Couldn't save: " + r.err;
+  if (r.ok) {
+    encScan();
+    playAcc -= add;
+    if (r.prev && !backing) { // rolling gzip backup of the save this one replaced (one per slot, dropped first when storage is short)
+      backing = true;
+      SL.makeBackup(localStorage, slot, r.prev).then(() => (backing = false), () => (backing = false));
+    }
+  }
 };
-// switch / new / import into a slot (the current slot is saved first)
+// the player has opened a game: time passes from here. Offline progress since the last save is credited now (not at page load).
+function enter(offline = true) {
+  const first = !entered;
+  entered = true;
+  U.screen = null;
+  U.tab = "main";
+  if (offline && (slot > 0 || legacyKeyMode)) {
+    report = E.applyOffline(s);
+    if (report && report.elapsed < 60) report = null;
+  } else report = null;
+  last = performance.now();
+  U.lastHTML = "";
+  render.force = true;
+  encScan();
+  if (first) startWhatsNew(freshPlayer); // R39.1
+}
+function continueGame() {
+  if (entered) return void (U.screen = null);
+  if (slot > 0 || legacyKeyMode) enter(true);
+}
+// the ☰ button / title: Esc or Back from a sub screen goes to the title; the title itself closes only when a game is running
+function menuBack() {
+  if (U.screen && U.screen !== "title") U.screen = "title";
+  else if (U.screen === "title" && entered) U.screen = null;
+}
+function openMenu() {
+  if (entered) save();
+  U.screen = "title";
+}
+// switch to a saved slot (the open one is saved first). An unreadable slot stays untouched and says why.
 function playSlot(n) {
-  if (n === slot) return void (U.tab = "main");
-  save();
-  const next = SL.loadSlot(localStorage, n);
+  if (n === slot) return void (entered ? ((U.screen = null), (U.tab = "main")) : continueGame());
+  if (entered) save();
+  let next;
+  try { next = SL.loadSlot(localStorage, n); } catch (e) {
+    U.slotMsg = `❌ Slot ${n} can't be opened (${e.slotBad === "version" ? "it comes from a different save version" : "its data is damaged"}). It is kept as it is; restore its backup, export the raw data or delete it below.`;
+    return;
+  }
   if (!next) return;
   s = next;
   E.normalize(s);
   slot = n;
-  report = E.applyOffline(s);
-  if (report && report.elapsed < 60) report = null;
-  U.tab = "main";
+  entered = false;
+  enter(true);
 }
 function creSet(v) {
   const c = U.create; if (!c) return;
   const [k, x] = String(v).split(":"), O = E.creationOptions(legacyRec);
   const nm = document.querySelector("#crename"); if (nm) c.name = nm.value;
-  if (k === "gender") { c.gender = x; const st = D.creation.hairStyles[x]; c.look.hair = st[0][0]; if (x === "m") delete c.look.bun; else delete c.look.beard; }
+  if (k === "gender") { c.gender = x; const st = D.creation.hairStyles[x]; c.look.hair = st[0][0]; if (x === "m") delete c.look.beard; else delete c.look.bun; }
   else if (k === "race") { c.race = x; if (x !== "dwarf") delete c.look.beard; }
   else if (k === "blood") c.blood = x;
   else if (k === "cls") c.cls = c.cls === x ? "" : x;
@@ -183,18 +251,23 @@ function creSet(v) {
   else if (k === "bun") c.look.bun = !c.look.bun;
   else if (k === "house") c.house = x;
   else if (k === "frame") c.frame = x;
+  else if (k === "master") setMaster(c, x); // R77 flavor only: stored in fl_ui_v1, never in the save
   void O;
 }
 function newInSlot(n) {
   if (!SL.listSlots(localStorage)[n - 1].empty) return;
-  save();
+  if (entered) save();
   s = E.newGame();
+  E.normalize(s);
   slot = n;
-  report = null;
+  encReset(n);
+  entered = false;
+  enter(false);
   save();
   U.tab = "main";
   openCreation(); // R59
 }
+// the player chose to put a save into this slot (import / restore): an unreadable slot may be replaced, after the confirm
 function importIntoSlot(n, text) {
   let next;
   const sp = E.splitLegacyRec(text); // R59
@@ -203,20 +276,51 @@ function importIntoSlot(n, text) {
   try { next = E.importSave(text); } catch (err) { U.slotMsg = "❌ " + err.message; return; }
   const cur = SL.listSlots(localStorage)[n - 1];
   if (!cur.empty && !confirm(`Replace "${cur.name}" in slot ${n} with this save?`)) return;
-  if (n === slot) { s = next; report = null; save(); }
-  else { const r = SL.saveSlot(localStorage, n, next); if (!r.ok) return void (U.slotMsg = "❌ " + r.err); SL.loadSlot(localStorage, slot) && SL.saveSlot(localStorage, slot, s); }
+  encReset(n);
+  if (n === slot && entered) { s = next; report = null; save(); }
+  else {
+    if (n === slot) { s = next; E.normalize(s); } // title screen: the loaded slot is replaced before Continue
+    const r = SL.saveSlot(localStorage, n, next, Date.now(), { force: true, build: BUILD });
+    if (!r.ok) return void (U.slotMsg = "❌ " + r.err);
+    SL.undo[n] && delete SL.undo[n];
+    if (slot > 0 && slot !== n) SL.setLast(localStorage, slot);
+  }
   U.slotMsg = `✅ Imported into slot ${n}.`;
 }
-function exportSlot(n) {
-  const raw = n === slot ? null : localStorage.getItem(SL.slotKey(n));
-  const sv = raw ? E.deserialize(raw) : s, info = SL.listSlots(localStorage)[n - 1];
-  const code = E.withLegacyRec(E.exportCode(sv), legacyRec); // R59: legacy record rides along
-  U.slotCode = code;
+function download(name, text) {
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
-  a.download = `family-legacy-${(info.name || "slot" + n).replace(/[^a-z0-9]+/gi, "-")}-Y${Math.floor(sv.day / D.tuning.daysPerYear) + 1}.txt`;
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+  a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function exportSlot(n) {
+  const raw = n === slot && entered ? null : localStorage.getItem(SL.slotKey(n)), info = SL.listSlots(localStorage)[n - 1];
+  let sv;
+  try { sv = raw ? E.deserialize(raw) : s; } catch (e) { return void exportRaw(n); } // unreadable: hand over the raw data instead
+  const code = E.withLegacyRec(E.exportCode(sv), legacyRec); // R59: legacy record rides along
+  U.slotCode = code;
+  download(`heirs-of-the-hold-${(info.name || "slot" + n).replace(/[^a-z0-9]+/gi, "-")}-Y${Math.floor(sv.day / D.tuning.daysPerYear) + 1}.txt`, code);
+}
+// an unreadable slot: the stored text exactly as it is, for support / manual repair
+function exportRaw(n) {
+  const raw = localStorage.getItem(SL.corruptKey(n)) || localStorage.getItem(SL.slotKey(n));
+  if (!raw) return void (U.slotMsg = "Nothing stored in that slot.");
+  download(`heirs-of-the-hold-slot${n}-raw.txt`, raw);
+  U.slotMsg = `Raw data of slot ${n} downloaded as it is stored.`;
+}
+async function restoreSlot(n) {
+  const cur = SL.listSlots(localStorage)[n - 1];
+  if (!cur.bak) return void (U.slotMsg = "No backup for that slot yet.");
+  if (!cur.bad && !confirm(`Replace slot ${n} (${cur.name}) with its backup from ${new Date(cur.bakAt).toLocaleString()}? The current save is kept as a raw copy.`)) return;
+  const r = await SL.restoreBackup(localStorage, n);
+  if (r.ok) encReset(n);
+  U.slotMsg = r.ok ? `✅ Slot ${n} restored from its backup.` : "❌ " + r.err;
+  if (r.ok && n === slot) { const b = SL.readSlot(localStorage, n); if (b) { s = b; E.normalize(s); } }
+  if (r.ok && !entered && slot === 0) { const b = SL.readSlot(localStorage, n); if (b) { s = b; E.normalize(s); slot = n; } }
+  U.lastHTML = "";
+  render.force = true;
+  render();
 }
 
 window.__game = {
@@ -228,6 +332,22 @@ window.__game = {
   D,
 };
 
+// R77: the one way to move to a sub-tab (bar, strip, sheet, Go to…, buttons inside cards). `sec` = a card to open and scroll to.
+export function navGo(tab, sec) {
+  U.tab = tab;
+  if (U.tab !== "legacy") (U.groupLast ||= {})[groupOf(U.tab)] = U.tab; // R37: Legacy panel is outside the nav groups
+  if (groupOf(U.tab) === "home") E.tutNote(s, "estate");
+  E.introView(s, introTabOf(U.tab));
+  closeSheet(true);
+  closeGoto(true);
+  U.lastHTML = "";
+  document.activeElement && document.activeElement.blur && document.activeElement.blur();
+  render.force = true;
+  render();
+  if (sec) revealSection(sec); else scrollTo(0, 0);
+}
+window.__navGo = navGo;
+
 document.addEventListener("click", e => {
   if (window._mapSuppress) {
     window._mapSuppress = false;
@@ -237,19 +357,10 @@ document.addEventListener("click", e => {
     window._treeDragged = false;
     if (e.target.closest("#treewrap")) return;
   }
+  const sm = e.target.closest("summary");
+  if (sm && sm.parentElement.matches("details[data-sec]")) secToggle(sm.parentElement); // R77: remember the open / closed state
   const t = e.target.closest("[data-tab]");
-  if (t) {
-    U.tab = t.dataset.tab;
-    if (U.tab !== "legacy" && U.tab !== "saves") (U.groupLast ||= {})[groupOf(U.tab)] = U.tab; // R37: Legacy panel is outside the nav groups
-    if (U.tab === "estate") E.tutNote(s, "estate");
-    E.introView(s, U.tab);
-    U.lastHTML = "";
-    document.activeElement && document.activeElement.blur && document.activeElement.blur();
-    render.force = true;
-    render();
-    scrollTo(0, 0);
-    return;
-  }
+  if (t) return void navGo(t.dataset.tab);
   const b = e.target.closest("button[data-a],a[data-a],g[data-a]");
   if (!b) return;
   const a = b.dataset.a,
@@ -272,12 +383,41 @@ document.addEventListener("click", e => {
     slotplay: () => playSlot(+v),
     slotnew: () => newInSlot(+v),
     slotdel: () => {
-      if (+v === slot) return void (U.slotMsg = "Switch to another slot before deleting this one.");
+      if (+v === slot && entered) return void (U.slotMsg = "Switch to another slot before deleting this one.");
       if (U.delArm !== +v) return void (U.delArm = +v); // first press arms (button turns red: "Press again to delete")
       U.delArm = 0;
-      if (SL.deleteSlot(localStorage, +v)) U.slotMsg = `Deleted slot ${v}.`, (U.undoSlot = +v);
+      if (SL.deleteSlot(localStorage, +v)) {
+        encReset(+v);
+        U.slotMsg = `Deleted slot ${v}.`; U.undoSlot = +v;
+        if (+v === slot) { s = E.newGame(); E.normalize(s); slot = 0; syncPrefs(); } // title screen: the loaded slot is gone, Continue goes away
+      }
     },
-    slotundo: () => { if (SL.undoDelete(localStorage, +v)) (U.slotMsg = `Restored slot ${v}.`), (U.undoSlot = 0); },
+    slotundo: () => {
+      if (SL.undoDelete(localStorage, +v)) {
+        U.slotMsg = `Restored slot ${v}.`; U.undoSlot = 0;
+        if (!entered && slot === 0) { const b = SL.readSlot(localStorage, +v); if (b) { s = b; E.normalize(s); slot = +v; SL.setLast(localStorage, slot); } }
+      }
+    },
+    slotrestore: () => { restoreSlot(+v); },
+    slotraw: () => exportRaw(+v),
+    m_open: () => { closeSheet(true); closeGoto(true); openMenu(); },
+    sheet_open: () => openSheet(),
+    sheet_close: () => closeSheet(),
+    goto_open: () => openGoto(),
+    goto_close: () => closeGoto(),
+    goto_pick: () => gotoPick(v, navGo, id => { U.screen = id === "encyclopedia" ? "enc" : "set"; U.slotMsg = ""; U.delArm = 0; if (id === "encyclopedia") encScan(); }),
+    m_back: () => menuBack(),
+    m_continue: () => continueGame(),
+    m_go: () => { U.screen = v; U.slotMsg = ""; U.delArm = 0; if (v === "enc") encScan(); },
+    enc_sec: () => { U.encSec = v; U.encQ = ""; },
+    enc_scope: () => { U.encScope = v; },
+    unl_scope: () => { U.unlScope = v; },
+    m_new: () => {
+      const L = SL.listSlots(localStorage);
+      if (L.every(x => x.empty)) newInSlot(1); // nothing saved yet: straight to the first slot
+      else { U.screen = "new"; U.slotMsg = ""; }
+    },
+    m_newat: () => newInSlot(+v),
     slotrename: () => {
       const cur = SL.listSlots(localStorage)[+v - 1];
       const nm = prompt("Name for this dynasty", cur.name || "");
@@ -290,8 +430,8 @@ document.addEventListener("click", e => {
     r60branch: () => { const [id, side] = String(v).split(":"); const e = E.chooseBranch(s, id, side); if (e) E.log(s, "⚠️ " + e); },
     r60special: () => { const e = E.adoptSpecial(s, s.members.find(x => x.id === s.activeId), v); if (e) E.log(s, "⚠️ " + e); },
     credismiss: () => { U.creDismiss = 1; },
-    crequick: () => { U.create = null; if (!s.lbDone && !s.created) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } }, // R60
-    crerandom: () => { const nm = U.create && U.create.name; U.create = Object.assign(E.randomCreation(legacyRec), { name: nm || "" }); },
+    crequick: () => { const cm = U.create && U.create.master; U.create = null; coachCreated(cm); if (!s.lbDone && !s.created) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } }, // R60
+    crerandom: () => { const nm = U.create && U.create.name, ms = U.create && U.create.master; U.create = Object.assign(E.randomCreation(legacyRec), { name: nm || "", master: ms || "orrin" }); },
     cre: () => creSet(v),
     crestart: () => {
       const c = U.create; if (!c) return;
@@ -299,6 +439,7 @@ document.addEventListener("click", e => {
       const err = E.applyCreation(s, c, legacyRec);
       if (err) return void (U.createErr = err);
       U.create = null; U.createErr = "";
+      coachCreated(c.master);
       if (!s.lbDone) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } // R60
       s.created = 1;
       E.log(s, `🛡️ ${(s.members.find(x => x.id === s.activeId) || s.members[0]).name} takes up the house colours.`);
@@ -308,12 +449,16 @@ document.addEventListener("click", e => {
     reset: () => {
       if (s.gameOver || confirm(`Abandon this lineage and start over in slot ${slot}?`)) {
         s = E.newLineage(s);
+        U.screen = null; // R77: New Lineage can now be pressed from the ☰ Settings screen
+        encReset(slot);
         report = null;
         openCreation(); // R59
       }
     },
   };
-  if (local[a]) local[a]();
+  coachNote(a); // R77: UI-only "firsts" for the Ledger
+  if (coachAct(a, v)) void 0;
+  else if (local[a]) local[a]();
   else runAction(a, { v, b, m });
   save();
   U.lastHTML = "";
@@ -344,7 +489,9 @@ document.addEventListener("change", e => {
   if (el.dataset.a === "craftf") U.craftF[el.dataset.v] = el.value;
   if (el.dataset.a === "crafter") U.crafter = el.value;
   if (el.dataset.a === "speed") E.setSpeed(s, +el.value);
-  if (el.dataset.a === "classicemoji") (s.classicEmoji = el.checked), render(); // R58
+  if (el.dataset.a === "classicemoji" || el.dataset.a === "set_classic") setPref("classic", el.checked); // R58 -> R76 profile-wide
+  if (el.dataset.a === "set_motion") setPref("motion", el.value);
+  if (el.dataset.a === "set_skip") setPref("skipTitle", el.checked);
   if (el.dataset.a === "r60bonus") { (legacyRec.bonuses ||= {}).off = !el.checked; E.saveLegacyRec(localStorage, legacyRec); legacyRecStr = JSON.stringify(legacyRec); render(); } // R60 clean-run toggle
   if (el.dataset.a === "notecat") E.setNoteCat(s, el.dataset.v, el.checked);
   if (el.dataset.a === "fieldcrop") E.setCrop(s, el.dataset.v, el.value); // R40
@@ -408,6 +555,8 @@ function loop() {
   let dt = (now - last) / 1000;
   last = now;
   if (dt > 5) dt = 5; // big gaps handled by offline calc
+  if (!entered || U.screen) return void render(); // title / menu screens: the world waits (R76)
+  playAcc += dt;
   if (!report) E.advanceReal(s, dt);
   choreNewsCheck(); // R42
   saveT += dt;
@@ -422,7 +571,7 @@ setInterval(loop, 500);
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) save();
-  else {
+  else if (entered && !U.screen) {
     const r = E.applyOffline(s);
     if (r && r.elapsed > 60) report = r;
     last = performance.now();
@@ -431,6 +580,8 @@ document.addEventListener("visibilitychange", () => {
 
 addEventListener("pagehide", save);
 
+// Skip title (profile setting, off by default): open the game straight away, unless a slot had to be quarantined (the title explains)
+if (prefs.skipTitle && !window.__noSave && (slot > 0 || legacyKeyMode) && !bootSkipped.length) enter(true);
 render();
 
 // map pan / zoom (pointer + wheel); rendering pauses while dragging
@@ -522,7 +673,7 @@ function exportSave() {
   U.saveMsg = "Code shown below; a .txt file was downloaded too.";
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
-  a.download = `family-legacy-Y${Math.floor(s.day / D.tuning.daysPerYear) + 1}.txt`;
+  a.download = `heirs-of-the-hold-Y${Math.floor(s.day / D.tuning.daysPerYear) + 1}.txt`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }

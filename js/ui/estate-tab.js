@@ -69,8 +69,14 @@ export function recipesv() {
  ${L.map(card).join("")}</details>`;
 }
 
-export function estate() {
-  let h = foodPanelv() + `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => E.findId(D.estate.lands, id).name).join(", ")}</div></div>${landShop()}${villagePanel()}${endgamePanel()}`;
+export function estateParts() {
+  const P = {};
+  P.food = foodPanelv();
+  P.land = `<div class="card"><div class="row"><b>🗺️ Land</b><span>${E.landUsed(s)}/${E.landSlots(s)} land slots used</span></div><div class="muted">${s.land.map(id => E.findId(D.estate.lands, id).name).join(", ")}</div></div>`;
+  P.shop = landShop();
+  P.village = villagePanel();
+  P.endgame = endgamePanel();
+  let h = "";
   h += `<div class="card"><b>📦 Capacity</b><div class="muted">🍞 ${fmt(s.res.food)}/${fmt(E.foodCap(s))} food · materials cap ${fmt(E.matCap(s))} each</div>
  <div class="muted">${Object.entries(D.estate.resourceTiers)
    .map(
@@ -80,6 +86,8 @@ export function estate() {
    .join(
      "<br>",
    )}</div>${E.craftingUnlocked(s) ? '<div class="muted">📦 Reserves and station overview moved to the <a data-tab="craft" href="#">🔨 Crafting tab</a>.</div>' : reservesRow()}<div class="muted">Family eats ${E.living(s).length}🍞/day · followers eat ${E.minionFood(s)}🍞/day (× rations) · beds ${E.living(s).length}/${E.bedrooms(s)} · follower bunks ${E.housingUsed(s, "bunk")}/${E.housingCap(s, "bunk")}</div></div>`;
+  P.capacity = h;
+  h = "";
   const syn = E.allSynergies(s);
   h +=
     `<h3>✨ Active synergies (${syn.length})</h3>` +
@@ -93,6 +101,8 @@ export function estate() {
       : '<div class="muted">Place related pieces in the same building: ' +
         D.estate.synergies.map(y => y.pieces.map(p => E.pieceDef(p).name).join(" + ")).join(" · ") +
         "</div>");
+  P.synergies = h;
+  h = "";
   h += `<h3>🛖 Buildings & stations</h3>`;
   s.structures.forEach((st, k) => (h += buildingCard(st, k)));
   h +=
@@ -106,6 +116,8 @@ export function estate() {
       .join("");
   if (s.pieceStore.length)
     h += `<div class="muted">📦 In storage: ${s.pieceStore.map(p => E.pieceDef(p).name).join(", ")}</div>`;
+  P.rooms = h;
+  h = "";
   h += `<h3>🌾 Outdoor buildings</h3>`;
   for (const b of D.buildings) {
     const lv = s.buildings[b.id];
@@ -114,22 +126,27 @@ export function estate() {
     h += `<div class="card row"><span>${b.icon} ${b.name} <b>Lv${lv}</b><br><span class="muted">${b.land} land slot · ${b.desc}</span></span><button class="b" data-a="build" data-v="${b.id}" ${iss ? "disabled" : ""}>${lv >= b.max ? "Max" : iss && iss !== "cannot afford" ? "🔒 " + iss : costStr(c)}</button></div>`;
   }
   h += `<div class="muted">Upkeep: ${Object.values(s.buildings).reduce((a, b) => a + b, 0) * D.tuning.upkeepPerBuildingMonth}🪙 per month.</div>`;
-  return h;
+  P.outdoor = h;
+  return P;
+}
+// the old one-page list (kept for callers/tests that want everything)
+export function estate() {
+  const P = estateParts();
+  return P.food + P.land + P.shop + P.village + P.endgame + P.capacity + P.synergies + P.rooms + P.outdoor;
 }
 
-export function estatev() {
-  if (!E.hasLand(s))
-    return (
-      `<div class="card"><b>🔒 Landless</b><div class="muted">The family has no land yet. Buy the Starting Plot (2 land slots) here, in Millbrook on the Map, or in the Main shop. Then raise a Shack (1 land slot, 2 station slots) and a Small Garden.</div></div>` +
-      landShop()
-    );
-  let h = `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members below." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
-  h += fieldsCard(); // R40
-  h += unionCard(); // R75
-  h += quotasv();
-  if (!E.craftingUnlocked(s)) h += ordersCard(); // R43: Work Orders live on the Crafting tab once it opens
-  h += `<div class="row estview"><button class="b${U.estView === "map" ? "" : " on"}" data-a="estview" data-v="list">📋 List</button><button class="b${U.estView === "map" ? " on" : ""}" data-a="estview" data-v="map">🗺️ Map</button></div>`; // R62
-  h += U.estView === "map" ? mapHtml() + estSelPanel() : estate();
+
+// R77: the old one-page Estate tab is now seven sub-tabs (Overview, Buildings, Land & map, Fields & animals, Union Hall, Workers, Production).
+// The pieces live here; views.js composes them.
+export const landlessCard = () =>
+  `<div class="card"><b>🔒 Landless</b><div class="muted">The family has no land yet. Buy the Starting Plot (2 land slots) under Estate → Land & map, in Millbrook on the Map, or in the shop. Then raise a Shack (1 land slot, 2 station slots) and a Small Garden.</div></div>`;
+export const stageCard = () =>
+  `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members under Family → Members & orders." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
+export const estViewToggle = () =>
+  `<div class="row estview"><button class="b${U.estView === "map" ? "" : " on"}" data-a="estview" data-v="list">📋 List</button><button class="b${U.estView === "map" ? " on" : ""}" data-a="estview" data-v="map">🗺️ Map</button></div>`; // R62
+export const estMapPart = () => mapHtml() + estSelPanel();
+export function membersOrdersParts() {
+  let h = "";
   h += `<h3>👪 Family & Standing Orders (${E.living(s).length}/${E.bedrooms(s)} beds)</h3>`;
   for (const x of E.living(s)) {
     const o = x.order;
@@ -155,9 +172,7 @@ export function estatev() {
   if (E.established(s))
     h += `<div class="muted">Craft: uses ${costStr(D.tuning.craftCost)} per item every ${D.tuning.craftDays} days.</div>`;
   const dead = s.members.filter(x => !x.alive);
-  if (dead.length)
-    h += `<h3>🕯️ Ancestors</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("");
-  return h;
+  return { members: h, ancestors: dead.length ? `<h3>🕯️ Ancestors (${dead.length})</h3>` + dead.map(x => `<div class="muted">${x.name} (${E.ageY(x)}y)</div>`).join("") : "" };
 }
 
 export function reservesRow() {

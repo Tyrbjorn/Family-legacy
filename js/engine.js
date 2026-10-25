@@ -18,6 +18,7 @@ export * from "./engine/achievements.js";
 export * from "./engine/worldevents.js";
 export * from "./engine/market.js";
 export * from "./engine/playpass.js";
+export * from "./engine/profile-store.js"; // R76 profile settings (fl_settings_v1)
 export * from "./engine/fields.js";
 export * from "./engine/encounters.js";
 export * from "./engine/traits.js";
@@ -83,3 +84,5 @@ export * from "./engine/seablood.js";
 export * from "./engine/r60.js";
 import "./engine/r60-wire.js";
 export * from "./engine/resname.js";
+export * from "./engine/encyclopedia.js";
+export * from "./engine/unlockview.js";

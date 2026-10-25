@@ -252,14 +252,26 @@ export function standingv(m) {
  <div class="muted" style="font-size:11px">🤝 Parties (family + minions adventuring together) unlock later – see the roadmap.</div></div>`;
 }
 
-export function mapv() {
+// R77: World → Map keeps the map exactly as it was (banner, market board, map, detail, parcels, standing orders, then the regions);
+// hauling / sea / trade / world events / lines moved to World → Events & hauling, and the per-region quest lists live on World → Quests.
+export const questsKnownCount = () => D.quests.filter(q => !q.story && E.questVisible(s, q) && !(q.once && s.doneQuests.includes(q.id))).length;
+export const questChip = () => {
+  const n = questsKnownCount();
+  return `<div class="row" style="justify-content:flex-start;gap:8px"><span class="chip" id="mapquests">📜 ${n} quest${n === 1 ? "" : "s"} known</span><button class="b" data-tab="quests">Open Quests</button></div>`;
+};
+export function mapParts() {
   const m = E.active(s);
-  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + haulCard() + seaCard() + tradeCard() + worldEventsCard() + standingv(m) + linesCard(m); // R30: story quests moved to the Quests tab
+  const P = { events: { haul: haulCard() + seaCard(), trade: tradeCard(), world: worldEventsCard(), lines: linesCard(m) }, regions: [] };
+  let h = busyBanner(m) + marketBoardCard() + mapSvg(m) + `<div id="mapdetail">` + mapDetail(m) + `</div>` + parcelCard(m) + standingv(m) + questChip();
+  P.head = h;
+  h = "";
   h += E.isAdult(m) ? "" : (E.isTeen(m) ? `<div class="card muted">Teens can run safe errands, hunt, and take low-risk fights. Exploring waits for adulthood.</div>` : `<div class="card muted">Children can gather but not quest or explore.</div>`);
+  P.note = h;
   for (const rg of D.regions.filter(r => E.regionKnown(s, r.id))) {
+    h = "";
     const open = E.regionOpen(s, rg.id);
     h += `<h3>${rg.icon} ${rg.name} ${open ? "" : `🔒 (needs CP ${rg.cp})`}</h3>`;
-    if (!open) continue;
+    if (!open) { P.regions.push([rg.id, h]); continue; }
     const hidden = [...D.quests, ...D.nodes].filter(x => x.region === rg.id && !E.known(s, x)).length;
     for (const t of D.towns.filter(t => t.region === rg.id && E.townKnown(s, t)))
       h += `<div class="card"><b>${t.icon} ${t.name}</b> <span class="muted">· trade</span>${townTagsHtml(t.id)}<div class="row" style="flex-wrap:wrap;margin-top:4px">${Object.entries(
@@ -302,20 +314,11 @@ export function mapv() {
             )} · ${sk(n.skill).name}</span><div class="bar" style="width:120px"><i style="width:${(E.nodeStock(s, n) / E.nodeMax(n)) * 100}%"></i></div></span><button class="b ${on ? "sel" : ""}" data-a="gather" data-v="${n.id}">Gather</button></div>`;
         })
         .join("");
-    h += `<div class="muted">QUESTS</div>`;
-    for (const q of D.quests.filter(x => x.region === rg.id && E.known(s, x) && !x.story)) {
-      const on = m.action && m.action.type === "quest" && m.action.target === q.id;
-      h += `<div class="card row"><span>${qKind(q)[0]} ${q.name} <span class="muted" style="font-size:11px">${qKind(q)[2]}</span> <span class="risk-${q.risk}">[${q.risk}]</span><br><span class="muted">CP ${q.cp} · ${q.days}d · ${Object.entries(
-        q.reward,
-      )
-        .map(([k, v]) => v + (RI[k] || " " + E.resName(k)))
-        .join(
-          " ",
-        )} · ${Math.round(E.successChance(s, m, q) * 100)}%${q.risk === "deadly" ? " · ☠️ death risk" : ""}${q.unlocks ? ` · 🔓 ${s.unlocks.includes(q.unlocks) ? "unlocked" : "unlocks"} ${unlockName(q.unlocks)}` : ""}</span>${on ? `<div class="bar"><i style="width:${(m.action.progress / q.days) * 100}%"></i></div>` : ""}</span><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${E.canQuest(m, q, s) ? "" : "disabled"}>Go</button></div>`;
-    }
+    P.regions.push([rg.id, h]);
   }
-  return h;
+  return P;
 }
+
 
 export function worldEventsCard() {
   const ev = E.activeEvents(s);

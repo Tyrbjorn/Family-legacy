@@ -3,6 +3,7 @@ import * as E from "../engine.js";
 import { D, s, getLegacyRec } from "../main.js";
 import { U } from "./state.js";
 import { dollHtml } from "../doll.js";
+import { MASTERS, CREATION_HEAD, CREATION_HINT } from "./coach-data.js";
 
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const ch = (k, id, label, on, ok = true, how = "") =>
@@ -30,6 +31,7 @@ export function creationv() {
   const sty = C.hairStyles[c.gender];
   const form = [
     row("Name", `<input id="crename" maxlength="24" value="${esc(c.name)}" style="width:100%;max-width:260px">`),
+    row(`<b>${esc(CREATION_HEAD)}</b> <span class="muted">${esc(CREATION_HINT)} (flavor only)</span>`, MASTERS.map(m => ch("master", m.id, `${esc(m.name)} <span class="muted">· ${esc(m.trade)}</span>`, (c.master || "orrin") === m.id)).join("")),
     row("Sex", O.sexes.map(x => ch("gender", x.id, x.name, c.gender === x.id)).join("")),
     row("Race", O.races.map(x => ch("race", x.id, x.name, c.race === x.id, x.ok, x.how)).join("")),
     row("Bloodline", O.bloodlines.map(x => ch("blood", x.id, x.name, (c.blood || "") === x.id, x.ok, x.how)).join("")),
