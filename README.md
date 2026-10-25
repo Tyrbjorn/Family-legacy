@@ -176,8 +176,9 @@ Family members rank craft paths from `data/paths.json`: Apprentice → Journeyma
 
 ## Long-sim baselines (test/baseline.mjs)
 `node test/baseline.mjs 10 40 8` runs 10 seeds for 40 years and prints medians (30+ minutes; run it detached and redirect to a file).
-- **R75 baseline (current):** `test/baseline-r75.txt`. The bot buys the Union Hall tiers (when coin > 2.5x the tier cost), so the output has an extra "R75 Union Hall" line.
-- **R67 baseline (hall off):** `test/baseline-r67.txt`. `NO_HALL=1 node test/baseline.mjs 10 40 8` must still be byte-identical to it (`cmp`). Checked at R75: identical.
+- **R78 baseline (current):** `test/baseline-r78.txt` (hall on, R78 journeyman stage on). Hall-off counterpart: `test/baseline-r78-nohall.txt` (`NO_HALL=1`). R78's journeyman bonus (`data/apprenticeships.json` jwage/jxpMult) moves the sim from about year 20 on; with `jwage: 0, jxpMult: 1.5` the hall-on run is byte-identical to `test/baseline-r75.txt` (checked at R78), so the teen jobs alone do not change the sim (the bot never picks job actions).
+- **R75 baseline (pre-R78):** `test/baseline-r75.txt`. The bot buys the Union Hall tiers (when coin > 2.5x the tier cost), so the output has an extra "R75 Union Hall" line.
+- **R67 baseline (hall off, pre-R78):** `test/baseline-r67.txt`. Up to R77, `NO_HALL=1 node test/baseline.mjs 10 40 8` was byte-identical to it; from R78 compare with `test/baseline-r78-nohall.txt` instead.
 - **Paired hall check:** run both with `METRICS=<file>` (and `NO_HALL=1` for the off run), then `node test/baseline-r75-paired.mjs` (reads `test/r75-m-nohall.txt` and `test/r75-m-hall.txt`, committed from the R75 run). The hall is a convenience, not income: the median gross coin per year stays within about 2% of hall-off in every decade (y1-10 -0.2%, y11-20 -0.4%, y21-30 -1.3%, y31-40 -2.1%). Individual seeds diverge by up to about 14% because the bot's later choices differ (chaotic), which is why medians are the check.
 
 ## Union Hall (R75)

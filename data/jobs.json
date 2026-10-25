@@ -129,5 +129,303 @@
    "fishing"
   ],
   "desc": "Haul cargo and mend nets"
+ },
+ {
+  "id": "jm_forge_hand",
+  "name": "Forge Hand",
+  "icon": "🔥",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_smith",
+  "stage": 1,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "smithing",
+   "mining"
+  ],
+  "desc": "Pump the bellows and carry ore for Brann"
+ },
+ {
+  "id": "jm_journeyman_smith",
+  "name": "Journeyman Smith",
+  "icon": "⚒️",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_smith",
+  "stage": 2,
+  "payChild": 3,
+  "payAdult": 3,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "smithing"
+  ],
+  "desc": "Hammer plain work at the anvil"
+ },
+ {
+  "id": "jm_beater_skinner",
+  "name": "Beater and Skinner",
+  "icon": "🐗",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_hunter",
+  "stage": 1,
+  "payChild": 2,
+  "payAdult": 2,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "hunting",
+   "tracking"
+  ],
+  "desc": "Drive game and skin the catch for Wenna"
+ },
+ {
+  "id": "jm_trapline_runner",
+  "name": "Trapline Runner",
+  "icon": "🪤",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_hunter",
+  "stage": 2,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "archery",
+   "hunting"
+  ],
+  "desc": "Walk the snares and bring back the take"
+ },
+ {
+  "id": "jm_gate_watch_runner",
+  "name": "Gate Watch Runner",
+  "icon": "🛡️",
+  "minAge": 15,
+  "maxAge": 17,
+  "journeyman": "m_drill",
+  "stage": 1,
+  "payChild": 2,
+  "payAdult": 2,
+  "stats": {
+   "STR": 0.01
+  },
+  "skills": [
+   "swordsmanship",
+   "shield"
+  ],
+  "desc": "Carry messages along the wall and drill (no fighting)"
+ },
+ {
+  "id": "jm_herb_gatherer",
+  "name": "Herb Gatherer",
+  "icon": "🌿",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_herbal",
+  "stage": 1,
+  "payChild": 2,
+  "payAdult": 2,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "herbalism"
+  ],
+  "desc": "Gather and dry herbs for Sister Maren"
+ },
+ {
+  "id": "jm_infirmary_aide",
+  "name": "Infirmary Aide",
+  "icon": "⛑️",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_herbal",
+  "stage": 2,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "WIL": 0.02
+  },
+  "skills": [
+   "healing",
+   "faith"
+  ],
+  "desc": "Change bandages and sit with the sick"
+ },
+ {
+  "id": "jm_joiners_hand",
+  "name": "Joiner's Hand",
+  "icon": "🪚",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_carpenter",
+  "stage": 1,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "STR": 0.01
+  },
+  "skills": [
+   "carpentry"
+  ],
+  "desc": "Plane boards and cut joints for Joss"
+ },
+ {
+  "id": "jm_masons_mate",
+  "name": "Mason's Mate",
+  "icon": "🧱",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_carpenter",
+  "stage": 2,
+  "payChild": 3,
+  "payAdult": 3,
+  "stats": {
+   "STR": 0.02
+  },
+  "skills": [
+   "masonry",
+   "carpentry"
+  ],
+  "desc": "Mix mortar and lay courses"
+ },
+ {
+  "id": "jm_counter_clerk",
+  "name": "Counter Clerk",
+  "icon": "🧾",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_merchant",
+  "stage": 1,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "CHA": 0.02
+  },
+  "skills": [
+   "haggling",
+   "etiquette"
+  ],
+  "desc": "Mind the counter for Mistress Pell"
+ },
+ {
+  "id": "jm_price_reckoner",
+  "name": "Price Reckoner",
+  "icon": "⚖️",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_merchant",
+  "stage": 2,
+  "payChild": 3,
+  "payAdult": 3,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "appraisal"
+  ],
+  "desc": "Weigh goods and reckon their worth"
+ },
+ {
+  "id": "jm_copyist",
+  "name": "Copyist",
+  "icon": "🪶",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_scribe",
+  "stage": 1,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "reading",
+   "history"
+  ],
+  "desc": "Copy ledgers and old chronicles for Quill"
+ },
+ {
+  "id": "jm_rune_cataloguer",
+  "name": "Rune Cataloguer",
+  "icon": "🔣",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_scribe",
+  "stage": 2,
+  "payChild": 3,
+  "payAdult": 3,
+  "stats": {
+   "INT": 0.02
+  },
+  "skills": [
+   "arcana"
+  ],
+  "desc": "Sort and label the archive's rune slips"
+ },
+ {
+  "id": "jm_hide_scraper",
+  "name": "Hide Scraper",
+  "icon": "🐄",
+  "minAge": 14,
+  "maxAge": 17,
+  "journeyman": "m_tanner",
+  "stage": 1,
+  "payChild": 2,
+  "payAdult": 2,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "tailoring"
+  ],
+  "desc": "Scrape and soak hides for Garrick"
+ },
+ {
+  "id": "jm_journeyman_tanner",
+  "name": "Journeyman Tanner",
+  "icon": "🧤",
+  "minAge": 16,
+  "maxAge": 17,
+  "journeyman": "m_tanner",
+  "stage": 2,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "VIT": 0.02
+  },
+  "skills": [
+   "tailoring",
+   "hunting"
+  ],
+  "desc": "Cure leather and cut simple pieces"
+ },
+ {
+  "id": "jm_mews_hand",
+  "name": "Mews Hand",
+  "icon": "🦅",
+  "minAge": 15,
+  "maxAge": 17,
+  "journeyman": "m_falcon",
+  "stage": 1,
+  "payChild": 2.5,
+  "payAdult": 2.5,
+  "stats": {
+   "AGI": 0.02
+  },
+  "skills": [
+   "falconry",
+   "tracking"
+  ],
+  "desc": "Clean the mews and carry the hoods for Ysolde"
  }
 ]

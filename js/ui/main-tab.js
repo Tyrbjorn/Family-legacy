@@ -131,16 +131,27 @@ export function craftv(m) {
   return h;
 }
 
+const jobRow = (m, a, j, iss) => {
+  const on = a && a.type === "job" && a.target === j.id, jm = !!j.journeyman;
+  return `<div class="card row"><span>${j.icon} <b>${j.name}</b><br><span class="muted">${j.desc}<br>${Object.keys(j.stats).join("/")} · ${j.skills.map(k => sk(k).name).join(", ")} · ${jm ? `teen pay ${j.payChild}🪙/day · ages ${j.minAge}-${j.maxAge}${(j.stage || 1) >= 2 ? " · after half the apprenticeship" : ""}` : `youth pay ${j.payChild}🪙/day · adult ${j.payAdult}🪙/day · age ${j.minAge}+`}${iss ? " · 🔒 " + iss : ""}</span></span><button class="b ${on ? "sel" : ""}" data-a="job" data-v="${j.id}" ${iss ? "disabled" : ""}>${iss ? "🔒" : on ? "Working" : "Work"}</button></div>`;
+};
 export function jobsv() {
   const m = E.active(s),
     a = m.action,
     ad = E.isAdult(m);
   let h = `<div class="card muted">${m.name} (${E.ageY(m)}) ${ad ? "works as a journeyman for full pay." : "can work for youth pay plus stat and skill growth. Adult pay is higher."}</div>`;
-  for (const j of D.jobs) {
-    const ok = E.jobOk(m, j),
-      on = a && a.type === "job" && a.target === j.id;
-    h += `<div class="card row"><span>${j.icon} <b>${j.name}</b><br><span class="muted">${j.desc}<br>${Object.keys(j.stats).join("/")} · ${j.skills.map(k => sk(k).name).join(", ")} · youth pay ${j.payChild}🪙/day · adult ${j.payAdult}🪙/day · age ${j.minAge}+</span></span><button class="b ${on ? "sel" : ""}" data-a="job" data-v="${j.id}" ${ok ? "" : "disabled"}>${ok ? (on ? "Working" : "Work") : "🔒"}</button></div>`;
-  }
+  for (const j of D.jobs) if (!j.journeyman) h += jobRow(m, a, j, E.teenJobIssue(s, m, j));
+  return h;
+}
+// R78: teen journeyman jobs (one or two per town master); the teen's own master first, the rest listed locked with the reason
+export function jmjobsv() {
+  const m = E.active(s), a = m.action, age = E.ageY(m), A = D.apprenticeships;
+  if (!A || E.isAdult(m)) return "";
+  let h = `<h3>🎓 Journeyman jobs</h3><div class="card muted">Teens (14-17) placed with a town master (Character → Leans & upbringing), or who finished there, can take that master's jobs: modest pay, real lessons. The second job opens half-way through the apprenticeship. Idle teens placed with a master become journeyman half-way too: +${A.jwage || 0}🪙/day and ×${A.jxpMult ?? A.xpMult} lessons.</div>`;
+  const mine = x => (m.appr && m.appr.id === x.journeyman) || (m.apprDone || []).includes(x.journeyman);
+  const js = D.jobs.filter(j => j.journeyman).sort((x, y) => (mine(y) ? 1 : 0) - (mine(x) ? 1 : 0));
+  if (age < A.minAge) return h + `<div class="card muted">Journeyman jobs open at ${A.minAge}.</div>`;
+  for (const j of js) h += jobRow(m, a, j, E.teenJobIssue(s, m, j));
   return h;
 }
 

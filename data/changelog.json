@@ -2,6 +2,16 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R78",
+   "title": "Teens learn a trade: journeyman jobs",
+   "items": [
+    "🎓 Teens (14-17) placed with a town master, or who finished there, can take that master's jobs: 16 modest-pay jobs from Forge Hand to Mews Hand. The second job opens half-way through the apprenticeship.",
+    "🪙 Idle teens placed with a master become journeyman half-way through: a little extra pay each day and faster lessons.",
+    "🧔 Orrin's note about heirs now mentions journeyman work (Mute Orrin in Settings if you prefer quiet).",
+    "⚖️ Job names, pay and numbers are a first draft and may change. Adults and the map are unchanged."
+   ]
+  },
+  {
    "build": "R77",
    "title": "Easier to find your way: five groups, a finder and Master Orrin",
    "items": [

@@ -5,7 +5,7 @@ import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { U } from "./state.js";
 import { sect } from "./sect.js";
-import { mainParts, jobsv, buyItemsPart } from "./main-tab.js";
+import { mainParts, jobsv, jmjobsv, buyItemsPart } from "./main-tab.js";
 import { mapParts } from "./map-tab.js";
 import { questParts } from "./quests-tab.js";
 import { housesParts } from "./houses-tab.js";
@@ -33,7 +33,7 @@ const suitorPointer = () => (s.suitors.length ? `<div class="card row" style="pa
 export const VIEW_FN = {
   // ---- Play
   main: () => { const P = mainParts(); return P.head + ledgerCard() + groundCard() + suitorPointer() + sect("main.tasks", P.tasks) + sect("main.paths", P.paths) + sect("main.class", P.cls) + sect("main.recent", P.recent); },
-  jobs: () => { const P = mainParts(); return sect("jobs.jobs", jobsv()) + sect("jobs.training", P.training, { open: P.trainingOn }); },
+  jobs: () => { const P = mainParts(); return sect("jobs.jobs", jobsv()) + sect("jobs.journeyman", jmjobsv()) + sect("jobs.training", P.training, { open: P.trainingOn }); },
   craft: () => craftingv(),
   market: () => sect("market.buy", buyItemsPart()) + sect("market.best", marketSummaryCard()),
   // ---- World

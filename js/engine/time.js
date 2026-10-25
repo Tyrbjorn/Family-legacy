@@ -19,7 +19,7 @@ import { animalCount, stalls } from "./world.js";
 import { memberSnap, memberPwdCheck } from "./pausedone.js";
 import { houseBirthTrait } from "./saltmere.js";
 import { talentDay } from "./talents.js";
-import { AP, apprDay, apprSkill, birthInherit } from "./apprentice.js";
+import { AP, apprDay, apprSkill, apprXpMult, birthInherit } from "./apprentice.js";
 import { quotaDay } from "./quotas.js";
 import { injuryDay, injurySpeed, treat } from "./injuries.js";
 import { enchantDay } from "./gear.js";
@@ -234,7 +234,7 @@ function memberDay(s, m, effActive, effIdle) {
   if (ageY(m) < T.adultAge && !(m.id === s.activeId && actionAllowed(s, m, m.action))) {
     const f = 1 + furn(s).reduce((x, f) => x + (f.bonus.childxp || 0), 0);
     if (m.appr) {
-      gainXp(s, m, apprSkill(m), T.xpPerDay * 0.15 * f * AP().xpMult); // R35 apprenticeship lessons
+      gainXp(s, m, apprSkill(m), T.xpPerDay * 0.15 * f * apprXpMult(s, m)); // R35 apprenticeship lessons
       apprDay(s, m);
     } else gainXp(s, m, kidSkill(s, m) || r(D.skills).id, T.xpPerDay * 0.15 * f); // Auto Upbringing: the child's track
     return;

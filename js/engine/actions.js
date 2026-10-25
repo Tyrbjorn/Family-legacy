@@ -81,7 +81,7 @@ export const ACTIONS = {
   },
   job(s, m, a, eff) {
     const j = findId(D.jobs, a.target);
-    if (!j || !jobOk(m, j)) {
+    if (!j || !jobOk(m, j, s)) {
       m.action = null;
       return;
     }
@@ -269,7 +269,7 @@ export function actionAllowed(s, m, a) {
   if (!a) return false;
   const t = a.type;
   if (t === "train") return !!themedFor(s, m, a.target);
-  if (t === "job") return jobOk(m, findId(D.jobs, a.target) || { minAge: 99 });
+  if (t === "job") return jobOk(m, findId(D.jobs, a.target) || { minAge: 99 }, s);
   if (t === "activity") {
     const ac = findId(D.activities, a.target);
     return !!ac && activityOk(s, m, ac);

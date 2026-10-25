@@ -52,6 +52,7 @@ export const SECTIONS = {
   "main.class": ["main", "🎖️", "Guild tiers", "class guild tier", true],
   "main.recent": ["main", "📜", "Recent", "log recent news", true],
   "jobs.jobs": ["jobs", "💼", "Jobs", "jobs pay work", true],
+  "jobs.journeyman": ["jobs", "🎓", "Journeyman jobs", "journeyman teen apprentice master jobs wage", true],
   "jobs.training": ["jobs", "🎯", "Training", "training xp drills skills", true],
   "market.buy": ["market", "🛒", "Buy items", "buy shop gear", true],
   "market.best": ["market", "💱", "Best places to sell", "sell prices market summary", true],

@@ -51,7 +51,7 @@ function apprv(m) {
   else if (age <= A.maxAge) {
     if (m.appr) {
       const M = E.masterDef(m.appr.id), p = E.apprProgress(s, m);
-      h += `<div>🎓 Apprentice to <b>${M.icon} ${M.name}</b> · ${M.skills.map(k => (E.findId(D.skills, k) || { name: k }).name).join(", ")} ×${A.xpMult} · ${M.wage}🪙/day</div><div class="bar"><i style="width:${Math.round(p * 100)}%"></i></div><div class="muted">${Math.round(p * A.serveDays)}/${A.serveDays} days · finishing: ${E.guildDef(M.track)?.name || M.track} fee ½, +${A.reward.rep} rep</div><button class="b" data-a="apprset" data-v="" data-w="${m.id}">Leave</button>`;
+      h += `<div>🎓 Apprentice to <b>${M.icon} ${M.name}</b> · ${M.skills.map(k => (E.findId(D.skills, k) || { name: k }).name).join(", ")} ×${E.apprXpMult(s, m)} · ${M.wage + (E.isJourneyman(s, m) ? A.jwage || 0 : 0)}🪙/day${E.isJourneyman(s, m) ? " · 🎓 journeyman" : ""}</div><div class="bar"><i style="width:${Math.round(p * 100)}%"></i></div><div class="muted">${Math.round(p * A.serveDays)}/${A.serveDays} days · finishing: ${E.guildDef(M.track)?.name || M.track} fee ½, +${A.reward.rep} rep</div><button class="b" data-a="apprset" data-v="" data-w="${m.id}">Leave</button>`;
     }
     h += `<div class="muted" style="margin-top:4px">Masters (one place each; switching restarts):</div>`;
     for (const M of A.masters) {

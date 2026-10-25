@@ -9,7 +9,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art, rc=A.rects.mill;
-ok(/^R(?:77|76|69|70|71|72|73|74|75)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R69, save stays 55');
+ok(/^R(?:78|77|76|69|70|71|72|73|74|75)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R69, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R69'),'changelog');
 const hit=(a,b)=>a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3];
 // art files: lossless webp with the sizes Art delivered

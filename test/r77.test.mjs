@@ -9,7 +9,7 @@ const src=f=>fs.readFileSync(new URL('../js/'+f,import.meta.url),'utf8');
 const mem=()=>{const m={};return {getItem:k=>(k in m?m[k]:null),setItem:(k,v)=>{m[k]=String(v);},removeItem:k=>{delete m[k];},m};};
 
 // ---- build + save format unchanged
-ok(BUILD==='R77'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R77 build, save stays 55'); ok(D.changelog.entries[0].build==='R77'&&D.changelog.entries.some(e=>e.build==='R76'),'changelog has R77 and keeps R76');
+ok(/^R7[78]$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R77 build, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R77')&&D.changelog.entries.some(e=>e.build==='R76'),'changelog has R77 and keeps R76');
 
 // ---- nav: five groups, every view in exactly one group, all old tab ids kept
 ok(N.GROUPS.map(g=>g[0]).join()==='play,world,home,kin,inv','five groups: Play, World, Estate, Family, Bag');

@@ -1,7 +1,7 @@
 import { perkXp } from "./families.js";
 import { findId } from "./lookup.js";
 import { choreOpen, choreActive } from "./chores.js";
-import { apprOpens, inhXp, leanXp } from "./apprentice.js";
+import { apprOpens, inhXp, teenJobIssue, leanXp } from "./apprentice.js";
 import { injuryXp } from "./injuries.js";
 import { toolIssue } from "./requests.js";
 import { diffXp } from "./difficulty.js";
@@ -109,7 +109,7 @@ export function canTrain(m, skillId, s, ignoreAge) {
   return !i || (ignoreAge && i.startsWith("age"));
 }
 
-export const jobOk = (m, j) => ageY(m) >= j.minAge;
+export const jobOk = (m, j, s) => !teenJobIssue(s, m, j); // R78: maxAge and journeyman jobs (apprentice.js)
 
 export const clsLine = id => {
   const out = [];

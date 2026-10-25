@@ -10,6 +10,32 @@ import { classGuild, guildDef } from "./guilds.js";
 import { townKnown } from "./map.js";
 
 export const AP = () => D.apprenticeships || { masters: [], minAge: 14, maxAge: 17, xpMult: 1.5, serveDays: 720, leanXp: 0.1, reward: {} };
+// R78 journeyman stage (computed from m.appr.since, no save field): from jFrom days of service a placed teen earns jwage extra coin/day
+// and lessons use jxpMult. Journeyman jobs (data/jobs.json rows with `journeyman: <master id>`) are for teens placed with that master
+// (stage 2 needs jFrom days served) or who finished there.
+export const apprServed = (s, m) => (m.appr ? (s.day || 0) - m.appr.since : 0);
+export const isJourneyman = (s, m) => !!(m.appr && masterDef(m.appr.id) && apprServed(s, m) >= (AP().jFrom ?? 360));
+export const apprXpMult = (s, m) => (isJourneyman(s, m) ? AP().jxpMult ?? AP().xpMult : AP().xpMult);
+// why a teen can't take job j (null = can); s is optional (without it a journeyman job reads as locked)
+export function teenJobIssue(s, m, j) {
+  const a = ageY(m);
+  if (a < j.minAge) return "age " + j.minAge + "+";
+  if (j.maxAge != null && a > j.maxAge) return "ages " + j.minAge + "-" + j.maxAge + " only";
+  if (!j.journeyman) return null;
+  const M = masterDef(j.journeyman);
+  if (!M) return "unknown master";
+  if ((m.apprDone || []).includes(M.id)) return null;
+  if (!m.appr || m.appr.id !== M.id) return "needs " + M.name + "'s apprenticeship";
+  if ((j.stage || 1) >= 2 && (!s || apprServed(s, m) < (AP().jFrom ?? 360))) return "half-way through " + M.name + "'s apprenticeship";
+  return null;
+}
+// a journeyman job opens the master's skills while it is the teen's action (the exclusive ones too)
+export const jobOpens = (m, skillId) => {
+  const a = m.action;
+  if (!a || a.type !== "job") return false;
+  const j = (D.jobs || []).find(x => x.id === a.target);
+  return !!(j && j.journeyman && j.skills.includes(skillId) && ageY(m) < T.adultAge);
+};
 const AF = () => (D.legacy.familyAuto || {}).affinity || { traits: {}, names: {} };
 const TRACKS = () => (D.legacy.familyAuto || {}).tracks || {};
 export const masterDef = id => AP().masters.find(x => x.id === id);
@@ -105,7 +131,7 @@ export function setAppr(s, m, mid, auto) {
   return true;
 }
 // the master's skills are open while placed (incl. guild-exclusive ones)
-export const apprOpens = (m, skillId) => !!(m.appr && (masterDef(m.appr.id)?.skills || []).includes(skillId));
+export const apprOpens = (m, skillId) => !!(m.appr && (masterDef(m.appr.id)?.skills || []).includes(skillId)) || jobOpens(m, skillId);
 export const apprSkill = m => { const M = m.appr && masterDef(m.appr.id); return M ? M.skills[(m.ageDays || 0) % M.skills.length] : null; };
 // daily (time.js, idle teens): wage, finish, come of age
 export function apprDay(s, m) {
@@ -116,7 +142,9 @@ export function apprDay(s, m) {
     m.appr = null;
     return;
   }
-  s.res.coin = (s.res.coin || 0) + (M.wage || 0);
+  const jr = isJourneyman(s, m);
+  s.res.coin = (s.res.coin || 0) + (M.wage || 0) + (jr ? AP().jwage || 0 : 0);
+  if (jr && (s.day || 0) - m.appr.since === (AP().jFrom ?? 360)) log(s, `🎓 ${m.name} is now a journeyman under ${M.name}: a little more pay and faster lessons.`);
   if ((s.day || 0) - m.appr.since >= AP().serveDays) {
     (m.apprDone = m.apprDone || []).push(M.id);
     log(s, `🎓 ${m.name} finished their apprenticeship under ${M.name}. The ${guildDef(M.track)?.name || M.track} will take them at half fee, with +${AP().reward.rep || 0} rep.`);
