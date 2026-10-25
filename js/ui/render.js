@@ -1,6 +1,7 @@
 import { introCards } from "./guide.js";
 import { glideMarkers } from "./map-glide.js";
 import { estateMapAfter } from "./estate-map.js";
+import { actorsAfter } from "./actors-dom.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
 import { $, fmt, hm, memberLine, portrait, sk, top, yr } from "./common.js";
@@ -170,6 +171,7 @@ export function render() {
     scrollTo(0, y);
   }
   if (U.tab === "estate" && U.estView === "map") estateMapAfter(); // R62
+  if (U.tab === "estate") actorsAfter(); // R73 pen animals / bees in the room scenes
   if (U.tab === "map") glideMarkers(!!(s.turbo && s.turbo.on));
   setIf("#tabs", navv());
   setIf("#subtabs", subtabsv());

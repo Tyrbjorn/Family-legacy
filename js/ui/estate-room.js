@@ -2,6 +2,7 @@
 // to show every placed furnishing, fitting, bought upgrade and production tier. Pure model (roomModel, no DOM, used by
 // test/r66.test.mjs) + HTML. Display only: everything is derived from the structure's existing state, nothing is saved.
 // Placeholders are the existing emoji; data/estaterooms.json `art` maps ids to webp files as room art arrives.
+import { wander, penPositions, KIND_OPTS } from "./actors.js";
 export function roomModel(E, R, st, s, classic) {
   const d = E.structDef(st.type) || {}, fam = R.typeRoom[st.type] || "home", room = R.rooms[fam] || R.rooms.home;
   // R72: art.chipIcons = exact upgrade name -> its own emoji, looked up ahead of the old regexes (R.upKeys: first match wins, so many upgrades shared an icon;
@@ -47,6 +48,9 @@ export function sceneLayout(R, M) {
   out.fam = fam; out.work = rc.workspots || {};
   // R72: rooms may be bigger than 256x192 (manor rooms 320x224): rc.w / rc.h
   out.w = rc.w || 256; out.h = rc.h || 192;
+  // R73: rc.pen = the aisle where pen animals walk, rc.bees = the box the swarm flies in, F = the floor box (stall animals); display only
+  // R73b: rc.pen is now the whole open floor (not just the aisle), rc.penStops / rc.beeStops = optional trough / hive visits, out.floor + out.hard = what stall animals must stand clear of
+  out.pen = rc.pen || null; out.bees = rc.bees || null; out.F = F; out.penStops = rc.penStops || []; out.beeStops = rc.beeStops || []; out.floor = rc.floor || F;
   // R72: rc.pins = {piece id: slot box}: tier-fixed pieces (brewery winepress/stillpot, quarry limecut/granitecut) sit in their painted 34x34 slot, which no other piece may use
   const pins = rc.pins || {}; for (const k in pins) block.push(pins[k]);
   // R68.2: fixtures painted into the background ARE the built-ins: no sprite, a hit area at the painted box; owned
@@ -141,6 +145,8 @@ export function sceneLayout(R, M) {
       : { at: "attach", host, side, up: key, x: Math.round(h.x + d[0]), y: Math.round(h.y + d[1]), icon: (A.upPlaceholder || {})[key] || u.icon, name: u.name, art }); };
   for (const u of M.wall || []) { const a = u.kind === "up" && AT[u.id]; if (a) put(a.host, a.side, u, u.id); }
   for (const c of addOn) { put(c.host, c.side, c, c.id); const o = out.at(-1); if (o && o.up === c.id) o.id = c.id; }
+  const walk = Object.values(rc.paths || {});
+  out.hard = block.filter(b => !walk.includes(b));   // R73b: everything solid (door, fixtures, pins...), the walk paths excluded
   return out;
 }
 // R72: the manor suite. Mansion / Fort / Tower Keep / Abbey show a tab strip and one painted room at a time (320x224 art, keys "manor:<room>").
@@ -167,7 +173,64 @@ export function manorInfo(R, M, sel) {
   return { tabs, cur, V, where, open };
 }
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
-function sceneHtml(R, M, A) {
+// R73: animals in the roof-off picture, computed from what the player owns (act = actors.js roomActors). The sprites sit at their
+// time-0 spot in the HTML (so the markup is static and a re-render never replaces it); actors-dom.js moves them with wander(seed, t).
+function actorsHtml(L, W, H, A, act) {
+  if (!act) return "";
+  let h = "";
+  // one animated sprite: idle sheet (name) and/or walk strip (walk); ox = px offset from the shared path (a pair of hens), fo = frame offset;
+  // p = its time-0 spot, grp/gi/md = the pen it belongs to, its place in it and the distance the pen keeps between its animals
+  const sp = (k, name, seed, fb, o, walk, ox, fo, p, grp, gi, md, stops) => {
+    const I = name && act.sheets[name], Wk = walk && act.sheets[walk], S = I || Wk; if (!S) return "";
+    return `<span class="rmact rm-${k}" data-sp="${name || walk}" data-k="${k}" data-seed="${seed}" data-grp="${grp}" data-gi="${gi}" data-md="${md}" data-box="${fb.map(v => +v.toFixed(2)).join(",")}" data-fw="${S.fw}" data-fh="${S.fh}" data-cols="${S.cols}" data-w="${W}" data-h="${H}"` +
+      (stops && stops.length ? ` data-stops="${stops.map(s => s.join(",")).join(";")}"` : "") +
+      (I ? ` data-iu="${I.file}" data-ic="${I.cols}"` : "") + (Wk ? ` data-wu="${Wk.file}" data-wc="${Wk.cols}"` : "") + (ox ? ` data-ox="${ox}"` : "") + (fo ? ` data-fo="${fo}"` : "") +
+      `${o.still ? ' data-still="1"' : ""} style="left:${P(p.x + ox - S.fw / 2, W)};top:${P(p.y - S.fh, H)};width:${P(S.fw, W)};height:${P(S.fh, H)};background-image:url(${S.file});background-size:${S.cols * 100}% 100%"></span>`;
+  };
+  // a pen group: n units (a unit = one animal, or a pair of hens side by side), all in the same feet box, kept >= a unit width + 8px apart (bees 4)
+  const group = (k, name, walk, n, per, box, o, stops) => {
+    const S = (name && act.sheets[name]) || (walk && act.sheets[walk]); if (!S || !n) return "";
+    const gap = S.fw + 2, m = (per - 1) / 2 * gap, fb = [box[0] + S.fw / 2 + m, Math.min(box[1] + S.fh, box[3]), box[2] - S.fw / 2 - m, box[3]], md = +(S.fw + (per - 1) * gap + (k === "bees" ? 4 : 8)).toFixed(2);
+    const seeds = Array.from({ length: n }, (_, i) => `${act.seed}:${k}:${i}`), ps = penPositions(seeds, 0, fb, { ...(KIND_OPTS[k] || {}), still: true, stops }, md);
+    let s = "";
+    for (let i = 0; i < n; i++) for (let j = 0; j < per; j++) s += sp(k, name, seeds[i], fb, o, walk, per > 1 ? +((j - (per - 1) / 2) * gap).toFixed(2) : 0, j, ps[i], `${act.seed}:${k}`, i, md, stops);
+    return s;
+  };
+  if (act.pen && L.pen) h += group("pen", act.pen.sheet, act.pen.walk, act.pen.n, act.pen.per || 1, [L.pen[0], L.pen[1], L.pen[2], Math.min(L.pen[3], 150)], act.pen, L.penStops);
+  if (act.bees && L.bees) h += group("bees", "bees-swarm", null, act.bees, 1, L.bees, {}, L.beeStops);
+  if (act.draft && act.draft.length) {
+    // R73b: stall animals stand on clear floor: the first spot next to the stall piece that misses the stall, every other fixture / piece /
+    // free slot and the animals already placed (2px gap), searched on a 4px grid inside the room floor, nearest to the stall first
+    const c = L.find(o => o.id === "stablestall" && o.at === "floor"), Fl = L.floor || L.F || [16, 46, 240, 157], dims = act.draft.map(a => { const S = a.sheet && act.sheets[a.sheet]; return S ? [S.fw, S.fh] : [24, 24]; });
+    const solid = [...(L.hard || [])], soft = [];
+    for (const o of L) {
+      if (o.at === "painted") solid.push([o.x, o.y, o.x + o.w, o.y + o.h]);
+      else if (o.at === "attach") solid.push([o.x, o.y, o.x + (o.w || 16), o.y + (o.h || 16)]);
+      else if (o.at === "free") soft.push([o.x, o.y + 4, o.x + 32, o.y + 31]);
+      else if (o.at === "floor" || o.at === "forge" || o.at === "jetty") for (let q = 0, n = Math.min(o.n || 1, 4); q < n; q++) solid.push([o.x + 2 + q * 5, o.y + 4 - q * 3, o.x + 30 + q * 5, o.y + 31 - q * 3]);
+    }
+    const ax = c ? c.x + 34 : Fl[0] + 4, ay = c ? c.y + 31 : Fl[3] - 2, placed = [];
+    const spot = (w, hh, useSoft) => {
+      let best = null, bd = 1e9;
+      for (let y = Fl[1] + hh; y <= Fl[3] - 1; y += 2) for (let x = Fl[0] + 1; x + w <= Fl[2]; x += 2) {
+        const b = [x, y - hh, x + w, y], g = [x - 2, y - hh - 2, x + w + 2, y + 2];
+        if (solid.some(k => hit(b, k)) || placed.some(k => hit(g, k)) || (useSoft && soft.some(k => hit(b, k)))) continue;
+        const d = Math.abs(x - ax) + 1.5 * Math.abs(y - ay);
+        if (d < bd) { bd = d; best = [x, y]; }
+      }
+      return best;
+    };
+    act.draft.forEach((a, k) => {
+      const S = a.sheet && act.sheets[a.sheet], [w, hh] = dims[k], q = spot(w, hh, true) || spot(w, hh, false) || [ax, ay];
+      placed.push([q[0], q[1] - hh, q[0] + w, q[1]]);
+      const px = q[0], py = q[1] - 24, mir = c && px + w / 2 < c.x + 16;
+      if (S) h += `<span class="rmact rmdraft" data-stand="1" data-sp="${a.sheet}" data-seed="${act.seed}:draft:${k}" data-ph="${k * 0.37}" data-cols="${S.cols}" data-iu="${S.file}" data-ic="${S.cols}" title="${esc(a.name)}" style="left:${P(px, W)};top:${P(py + 24 - S.fh, H)};width:${P(S.fw, W)};height:${P(S.fh, H)};background-image:url(${S.file});background-size:${S.cols * 100}% 100%${mir ? ";transform:scaleX(-1)" : ""}"></span>`;
+      else h += `<img class="rmact rmdraft" src="${a.file}" alt="" title="${esc(a.name)}" style="left:${P(px, W)};top:${P(py, H)};width:${P(24, W)};height:${P(24, H)}">`;
+    });
+  }
+  return h;
+}
+function sceneHtml(R, M, A, act) {
   const L = sceneLayout(R, M);
   if (!L || !A.rooms || !A.rooms[L.fam]) return "";
   const W = L.w, H = L.h;   // R72: room size (256x192 unless the rect says w/h, e.g. manor rooms 320x224)
@@ -187,11 +250,12 @@ function sceneHtml(R, M, A) {
     if (c.n > 1) h += `<b class="rmn rmsn" style="left:${P(c.x + (c.at === "wall" ? 32 * (c.s || 1) - 10 : 22), W)};top:${P(c.y, H)}">×${c.n}</b>`;
     h += `</span>`;
   }
+  h += actorsHtml(L, W, H, A, act);
   return `<div class="rmscene" style="background-image:url(art/rooms/${A.rooms[L.fam]}.webp)${W === 256 && H === 192 ? "" : `;--rw:${W};--rh:${H}`}">${h}</div>`;
 }
 
 // opened: ms timestamp the room was opened (so re-renders keep the roof animation where it was, not restart it)
-export function roomHtml(E, R, s, st, opened, classic, manorSel) {
+export function roomHtml(E, R, s, st, opened, classic, manorSel, act) {
   const M = roomModel(E, R, st, s, classic), cols = R.cols || 6, A = classic ? {} : M.art;
   const used = M.floor.reduce((a, c) => a + c.w, 0), cells = Math.max(cols * (R.minRows || 2), Math.ceil((used + M.free) / cols) * cols);
   const MI = classic ? null : manorInfo(R, M, manorSel);
@@ -211,7 +275,7 @@ export function roomHtml(E, R, s, st, opened, classic, manorSel) {
     (MI ? `<div class="rmtabs" role="tablist">${MI.tabs.map(t => t.open
       ? `<button class="b rmtab${t.on ? " on" : ""}" role="tab" aria-selected="${t.on}" data-a="manorroom" data-v="${st.uid}" data-w="${t.id}" title="${esc(t.name)}">${t.icon} ${esc(t.name)}${t.n ? `<i>${t.n}</i>` : ""}</button>`
       : `<button class="b rmtab lock" role="tab" aria-disabled="true" disabled title="${esc("Locked: " + t.hint)}">🔒 ${esc(t.name)}${t.short ? `<small>${esc(t.short)}</small>` : ""}</button>`).join("")}</div>` : "") +
-    sceneHtml(R, MI ? MI.V : M, A) +
+    sceneHtml(R, MI ? MI.V : M, A, classic || !act ? null : MI ? { ...act, stable: false, pen: null, bees: 0 } : act) +
     `<div class="rmfloor${A.rooms && A.rooms[M.fam] ? " legend" : ""}" style="grid-template-columns:repeat(${cols},1fr)">${h}</div>` +
     (age < 900 ? `<div class="rmroof"${anim}></div>` : "") + `</div>`;
 }

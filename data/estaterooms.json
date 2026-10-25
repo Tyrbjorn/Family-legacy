@@ -855,7 +855,27 @@
      "Heated Roost": "roost_upgrade",
      "Bigger Run": "gate_upgrade"
     },
-    "spotFlush": true
+    "spotFlush": true,
+    "pen": [
+     22,
+     60,
+     200,
+     150
+    ],
+    "penStops": [
+     [
+      196,
+      128
+     ],
+     [
+      92,
+      76
+     ],
+     [
+      170,
+      76
+     ]
+    ]
    },
    "cowpen": {
     "floor": [
@@ -944,7 +964,27 @@
      "Prize Herd": "stall_upper_upgrade",
      "Hay Loft": "hay_rack_upgrade"
     },
-    "spotFlush": true
+    "spotFlush": true,
+    "pen": [
+     72,
+     58,
+     236,
+     150
+    ],
+    "penStops": [
+     [
+      128,
+      78
+     ],
+     [
+      84,
+      84
+     ],
+     [
+      84,
+      124
+     ]
+    ]
    },
    "kitchenhearth": {
     "floor": [
@@ -2237,7 +2277,27 @@
     "upAnchors": {
      "Smoker": "smoker_upgrade",
      "Royal Hives": "royal_hives_upgrade"
-    }
+    },
+    "bees": [
+     25,
+     29,
+     236,
+     130
+    ],
+    "beeStops": [
+     [
+      40,
+      56
+     ],
+     [
+      62,
+      56
+     ],
+     [
+      84,
+      56
+     ]
+    ]
    },
    "fields": {
     "floor": [
@@ -5959,7 +6019,8 @@
    "minionbunk",
    "cradle",
    "infirmary"
-  ]
+  ],
+  "_noteR73": "R73: art.rects pen = the whole open floor where pen livestock roam (chickencoop/cowpen, feet clamped to y<=150), penStops = a few trough/feeder spots they may visit now and then (one stop among many), bees = the air over the hives and yard where the swarms fly, beeStops = the hives. Display only."
  },
  "upKeys": [
   [
@@ -6110,5 +6171,6 @@
  "_noteR69": "R69: mill background replaced by Art room-mill-b (lossless 256x192). art.paintedFam[family] = painted fixtures shared by every building type on that room background (mill: hopper, millstones [id millwheel], drive shaft, flour bin, grain sacks; sawmill/tannery show the same generic machinery, INVENTED). General room-rect zone fields for painted rooms (all optional, default to floor/backwall): floor_large [x0,y0,x1,y1] = only area for floor furniture/storage; wall_strip = only area for wall pieces and the 32px wall slots (y = wall_strip[3]+1-25); paths = named walk areas (service-aisle, door-approach) kept clear; workspots = {fixture:[x,y]} where a worker stands (data for later worker movement, not used yet); anchors = {art id:[x0,y0,x1,y1]} exact spot for an attach add-on (attachArt maps the upgrade to its art id). Display only, nothing saved.",
  "_noteR70": "R70 (bunkhouse from rooms-batch-a-c, boxes.json of the repaint): the bunkhouse's two starter bunks are the two painted bunks (painted.starterAs), bought bunks are floor sprites on floor_large; hearth and trestle table are painted in. R70: barracks, chickencoop, cowpen, kitchen (building only), sawmill and tannery have their own painted rooms (art.painted[type].room; a type with its own room does NOT inherit art.paintedFam, so the sawmill/tannery no longer show the mill fixtures). The brewery, smokehouse, preservery and saltworks keep room-kitchen; hall, fort, hunterscabin, advlodge and thievesden keep room-lodge; the gristmill keeps room-mill. Rects carry the boxes.json zones (floor_large, wall_strip, paths, workspots keyed by painted fixture id, anchors keyed by the boxes.json anchor name). upAnchors = {upgrade name: anchor name} pins an add-on at its exact anchor box (no add-on art exists yet, so they are emoji placeholders). painted.as = {piece id: painted fixture id} merges a piece into a fixture (kitchen hearth piece -> the painted hearth). Display only, nothing saved.",
  "_noteR71": "R71: art.upPlaceholder = {upgrade: emoji} (Twin Blades, Steam Saw, Scraping Frames, plus Armory so it differs from Drill Ground) replaces the generic upKeys icon for add-ons without art, in the painted room scene and its chips only (Classic keeps upKeys). rects.<room>.spotFlush starts the floor_large spot search on the zone's top-left (96px zone = 3 columns). rects.kitchenhearth.wallPx = 23: the 47px wall_strip holds 2 wall slots of 23px (art's own wall piece size is 24px, 1 slot). painted.<type>.attach = per-type {upgrade: {host, side}} that overrides art.attach for that painted room, and the upgrade is then not also a wall piece: barracks Armory -> weaponrack2 at rack_upgrade, kitchen Spice Shelf -> larder at larder_upgrade. Still unmapped (no obvious host): chickencoop grain_bin_upgrade, cowpen stall_lower_upgrade, kitchen table_upgrade (Great Kitchen?), bunkhouse bedding/hearth/table anchors (bunkhouse has no upgrades), Good Pasture, Great Kitchen, Master Tanner. Display only, nothing saved.",
- "_noteR72": "R72: 32 buildings get their own painted rooms (batches C D E F G H I) + a 11-room manor suite at 320x224 (art.manor tabs, display only) + 33 add-on overlays + 10 furniture sprites + art.chipIcons (exact upgrade name -> emoji, ahead of upKeys; Classic keeps upKeys) + rc.pins (tier-fixed pieces pinned to painted slot boxes) + rc.bedFar (beds fill the far end of floor_large). Display only: sim and save (55) unchanged."
+ "_noteR72": "R72: 32 buildings get their own painted rooms (batches C D E F G H I) + a 11-room manor suite at 320x224 (art.manor tabs, display only) + 33 add-on overlays + 10 furniture sprites + art.chipIcons (exact upgrade name -> emoji, ahead of upKeys; Classic keeps upKeys) + rc.pins (tier-fixed pieces pinned to painted slot boxes) + rc.bedFar (beds fill the far end of floor_large). Display only: sim and save (55) unchanged.",
+ "_noteR73": "R73: art.rects pen (aisle where pen animals walk, feet clamped to y<=150) for chickencoop/cowpen and bees (hive box the swarm flies in) for apiary. Display only."
 }

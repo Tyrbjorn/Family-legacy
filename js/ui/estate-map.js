@@ -6,14 +6,14 @@ import * as E from "../engine.js";
 import { D, s } from "../main.js";
 import { U } from "./state.js";
 import { walkerTabard } from "./walker-tint.js";
-import { estateLayout, pathTile, route, walkerList, isBig } from "./estate-layout.js";
+import { estateLayout, pathTile, route, walkerList, vehicleList, isBig } from "./estate-layout.js";
 import { render } from "./render.js";
 import { costStr } from "./common.js";
 
 const ART = "art/estate/";
 const IMG = new Map();
 const img = k => {
-  if (!IMG.has(k)) { const i = new Image(); i.onload = () => { R.dirty = true; kick(); }; i.onerror = () => (i.bad = true); i.src = ART + k + ".webp"; IMG.set(k, i); }
+  if (!IMG.has(k)) { const i = new Image(); i.onload = () => { R.dirty = true; kick(); }; i.onerror = () => (i.bad = true); i.src = k.startsWith("art/") ? k : ART + k + ".webp"; /* R73: animal sheets live under art/animals/ */ IMG.set(k, i); }
   return IMG.get(k);
 };
 const ok = i => i && i.complete && i.naturalWidth > 0;
@@ -130,13 +130,22 @@ function drawStatic(L) {
 // ---------- walkers (cosmetic state, rebuilt on load)
 const rnd = (a, b) => a + Math.random() * (b - a);
 function syncWalkers(L, now) {
-  const want = walkerList(s, D, E, L), seen = new Set(), W = D.estatemap.walk;
+  const want = [...walkerList(s, D, E, L), ...(s.classicEmoji ? [] : vehicleList(s, D, E, L))], seen = new Set(), W = D.estatemap.walk;
   for (const w of want) {
     seen.add(w.id);
     const it = L.items.find(i => i.key === w.job) || L.items[0];
     let st = R.walkers.get(w.id);
-    if (!st) { st = { x: it.door.x + ((R.walkers.size % 3) - 1) * 10, y: it.door.y, path: [], wait: now + rnd(0, 2000), dir: 0, goal: w.job }; R.walkers.set(w.id, st); }
+    if (!st) {
+      st = { x: it.door.x + ((R.walkers.size % 3) - 1) * 10, y: it.door.y, path: [], wait: now + rnd(0, 2000), dir: 0, goal: w.job };
+      if (w.veh) st.dir = 0;
+      R.walkers.set(w.id, st);
+    }
     st.w = w;
+    if (w.dock) { // R73: the sea boat is moored beside the Dock, on the right if it fits, else the left; it never walks
+      const dk = L.items.find(i => i.key === w.dock) || it, r = dk.rect, bx = r.x + r.w + 18 + 16 <= L.W ? r.x + r.w + 18 : r.x - 18;
+      st.x = bx; st.y = r.y + r.h - 2; st.path = []; st.moving = false; st.wait = Infinity; st.goal = w.job; continue;
+    }
+    if (w.still) { st.path = []; st.moving = false; st.wait = Infinity; st.goal = w.job; continue; }
     if (st.goal !== w.job && !st.away) { st.goal = w.job; st.path = route(L.M, st, it.door); }
   }
   for (const k of [...R.walkers.keys()]) if (!seen.has(k)) R.walkers.delete(k);
@@ -144,6 +153,7 @@ function syncWalkers(L, now) {
 function step(L, dt, now) {
   const W = D.estatemap.walk;
   for (const st of R.walkers.values()) {
+    if (st.w.still) continue;
     if (st.path.length) {
       const t = st.path[0], dx = t.x - st.x, dy = t.y - st.y, d = Math.hypot(dx, dy), mv = W.speed * dt;
       st.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 1 : 2) : dy < 0 ? 3 : 0;
@@ -165,6 +175,27 @@ function step(L, dt, now) {
     }
   }
 }
+// R73: vehicles. Walk sheets are 4 columns x 3 rows (down, right, up; left = right mirrored); the moored boat is a 2-frame sheet (32x24, the hull
+// drops 1px and the pennant flutters, one frame per 0.7 s; frame 0 only with reduced motion). Sizes are the sheet's own frame size.
+// Vehicles are never tinted: #194261 is the rider tabard key, but also baked into the chariot car and the boat pennant.
+const VSHEET = (k) => ((D.art || {}).sheets || {})[k];
+export const vehSize = w => { const v = w.veh; const S = VSHEET(v.sheet); return S ? { fw: S.fw, fh: S.fh } : { fw: 32, fh: 32 }; };
+function drawVeh(g, st, now) {
+  const v = st.w.veh;
+  if (v.kind === "boat") {
+    const S = VSHEET(v.sheet), i = S && img(S.file);
+    if (!ok(i)) return;
+    const f = reduced() ? 0 : Math.floor(now / 700) % S.cols;
+    g.drawImage(i, f * S.fw, 0, S.fw, S.fh, Math.round(st.x - S.fw / 2), Math.round(st.y - S.fh), S.fw, S.fh);
+    return;
+  }
+  const S = VSHEET(v.sheet), i = S && img(S.file);
+  if (!ok(i)) return;
+  const row = st.dir === 3 ? 2 : st.dir === 0 ? 0 : 1, f = st.moving ? Math.floor(now / 200) % S.cols : 0, flip = st.dir === 1;
+  const x = Math.round(st.x - S.fw / 2), y = Math.round(st.y - S.fh);
+  if (flip) { g.save(); g.translate(x + S.fw, y); g.scale(-1, 1); g.drawImage(i, f * S.fw, row * S.fh, S.fw, S.fh, 0, 0, S.fw, S.fh); g.restore(); }
+  else g.drawImage(i, f * S.fw, row * S.fh, S.fw, S.fh, x, y, S.fw, S.fh);
+}
 function paint(now) {
   const cv = document.getElementById("estcanvas"), L = R.layout;
   if (!cv || !L) return false;
@@ -175,6 +206,7 @@ function paint(now) {
   g.drawImage(R.bg, 0, 0);
   const sorted = [...R.walkers.values()].sort((a, b) => a.y - b.y);
   for (const st of sorted) {
+    if (st.w.veh) { drawVeh(g, st, now); continue; }
     const sh = sheetFor(st.w);
     if (!sh) continue;
     const f = st.moving ? Math.floor(now / 250) % 2 : 0, sc = st.w.scale || 1, w = 16 * sc, h = 24 * sc;
@@ -206,7 +238,11 @@ export function estateMapAfter() {
     cv._wired = true;
     cv.addEventListener("click", e => {
       const r = cv.getBoundingClientRect(), x = ((e.clientX - r.left) / r.width) * R.layout.W, y = ((e.clientY - r.top) / r.height) * R.layout.H;
-      for (const st of R.walkers.values()) if (Math.abs(st.x - x) < 10 && y > st.y - 26 && y < st.y + 2) {
+      for (const st of R.walkers.values()) if (st.w.veh) { // R73: tap a wagon / rider / boat
+        const z = vehSize(st.w);
+        if (Math.abs(st.x - x) < z.fw / 2 && y > st.y - z.fh && y < st.y + 2) { U.estSel = "v:" + st.w.id; render.force = true; U.lastHTML = ""; return void render(); }
+      }
+      for (const st of R.walkers.values()) if (!st.w.veh && Math.abs(st.x - x) < 10 && y > st.y - 26 && y < st.y + 2) {
         U.estSel = st.w.mid != null ? "m:" + st.w.mid : "w";
         render.force = true; U.lastHTML = ""; return void render();
       }

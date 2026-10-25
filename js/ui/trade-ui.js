@@ -1,7 +1,7 @@
 // Trade card (Map tab): routes, carts, crew, auto-trade rules, road patrols.
 import * as E from "../engine.js";
 import { U } from "./state.js";
-import { RI } from "./common.js";
+import { RI, vehIco } from "./common.js";
 import { priceTagHtml } from "./market-ui.js";
 import { D, s } from "../main.js";
 
@@ -72,12 +72,12 @@ function patrolsv(pool) {
 
 export function tradeCard() {
   if (!E.tradeTier(s))
-    return `<div class="card"><b>🛒 Trade routes</b><div class="muted">Build a Warehouse (Estate) to send carts to town markets. It upgrades to a Trading Post, then a Counting House.</div></div>`;
+    return `<div class="card"><b>${vehIco("wagoncart", "🛒", 18)} Trade routes</b><div class="muted">Build a Warehouse (Estate) to send carts to town markets. It upgrades to a Trading Post, then a Counting House.</div></div>`;
   const tr = E.tradeInit(s),
     sp = E.routeSlotParts(s),
     dr = routeDraft();
   const pool = (s.minions || []).filter(x => x.job !== "trade" && x.job !== "patrol");
-  let h = `<div class="card"><b>🛒 Trade routes</b> <span class="muted">· ${tr.routes.length}/${sp.total} slots (building ${sp.building}${sp.upgrades ? ", upgrades " + sp.upgrades : ""}${sp.haggling ? ", haggling " + sp.haggling : ""}${sp.steward ? ", steward " + sp.steward : ""}${sp.merchants ? ", trade factors " + sp.merchants : ""}) · cart carries ${E.cartCarry(s)}</span>
+  let h = `<div class="card"><b>${vehIco("wagoncart", "🛒", 18)} Trade routes</b> <span class="muted">· ${tr.routes.length}/${sp.total} slots (building ${sp.building}${sp.upgrades ? ", upgrades " + sp.upgrades : ""}${sp.haggling ? ", haggling " + sp.haggling : ""}${sp.steward ? ", steward " + sp.steward : ""}${sp.merchants ? ", trade factors " + sp.merchants : ""}) · cart carries ${E.cartCarry(s)}</span>
  <div class="muted">Each cart needs a driver; a guard and up to ${D.tuning.trade.maxEscorts} Horseman escorts fight off bandits. Peddler → Travelling Merchant → Trade Factor drivers get better deals. Haul routes buy in one town and sell in another.</div>`;
   for (const r of tr.routes) h += routeRow(r, pool);
   if (tr.routes.length < sp.total && dr) {

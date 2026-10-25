@@ -771,6 +771,363 @@
    "grey": false,
    "from": "batch4/webp/crowncrest.webp",
    "anchor": null
+  },
+  "bee-skep": {
+   "file": "art/animals/bee-skep.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "boar": {
+   "file": "art/animals/boar.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "cavebear": {
+   "file": "art/animals/cavebear.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "chariot-sm": {
+   "file": "art/animals/chariot-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "chariot": {
+   "file": "art/animals/chariot.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "cow": {
+   "file": "art/animals/cow.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "drafthorse": {
+   "file": "art/animals/drafthorse.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "drake": {
+   "file": "art/animals/drake.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "falcon": {
+   "file": "art/animals/falcon.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "feather": {
+   "file": "art/animals/feather.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "goat": {
+   "file": "art/animals/goat.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "handcart-sm": {
+   "file": "art/animals/handcart-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "handcart": {
+   "file": "art/animals/handcart.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "hen": {
+   "file": "art/animals/hen.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "honey": {
+   "file": "art/animals/honey.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "horsewagon-sm": {
+   "file": "art/animals/horsewagon-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "horsewagon": {
+   "file": "art/animals/horsewagon.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "milkpail": {
+   "file": "art/animals/milkpail.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "mule": {
+   "file": "art/animals/mule.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "owl": {
+   "file": "art/animals/owl.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "owlbear": {
+   "file": "art/animals/owlbear.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "ox": {
+   "file": "art/animals/ox.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "oxwagon-sm": {
+   "file": "art/animals/oxwagon-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "oxwagon": {
+   "file": "art/animals/oxwagon.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "pig": {
+   "file": "art/animals/pig.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "pony": {
+   "file": "art/animals/pony.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "ram": {
+   "file": "art/animals/ram.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "ramcart-sm": {
+   "file": "art/animals/ramcart-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "ramcart": {
+   "file": "art/animals/ramcart.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "rat": {
+   "file": "art/animals/rat.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "seaboat": {
+   "file": "art/animals/seaboat.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "sheep": {
+   "file": "art/animals/sheep.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "spider": {
+   "file": "art/animals/spider.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "stag": {
+   "file": "art/animals/stag.webp",
+   "size": 64,
+   "grey": true,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "troll": {
+   "file": "art/animals/troll.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wagoncart-sm": {
+   "file": "art/animals/wagoncart-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "wagoncart": {
+   "file": "art/animals/wagoncart.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals-b",
+   "anchor": null
+  },
+  "warhorse": {
+   "file": "art/animals/warhorse.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wolf-companion": {
+   "file": "art/animals/wolf-companion.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wolf-crown": {
+   "file": "art/animals/wolf-crown.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wolf": {
+   "file": "art/animals/wolf.webp",
+   "size": 64,
+   "grey": true,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wool": {
+   "file": "art/animals/wool.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "wyvern": {
+   "file": "art/animals/wyvern.webp",
+   "size": 64,
+   "grey": false,
+   "from": "art-studio batch-animals",
+   "anchor": null
+  },
+  "seaboat-sm": {
+   "file": "art/animals/seaboat-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "ox-sm": {
+   "file": "art/animals/ox-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "drafthorse-sm": {
+   "file": "art/animals/drafthorse-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "mule-sm": {
+   "file": "art/animals/mule-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "ram-sm": {
+   "file": "art/animals/ram-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "pony-sm": {
+   "file": "art/animals/pony-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "cow-sm": {
+   "file": "art/animals/cow-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
+  },
+  "hen-sm": {
+   "file": "art/animals/hen-sm.webp",
+   "size": 24,
+   "grey": false,
+   "from": "art-studio batch-animals-c",
+   "anchor": null
   }
  },
  "res": {
@@ -884,7 +1241,12 @@
   "ring_of_vigor": "ring",
   "signet_ring": "ring",
   "woodaxe": "axe",
-  "dwarfaxe": "axe"
+  "dwarfaxe": "axe",
+  "handcart": "handcart",
+  "wagon": "wagoncart",
+  "seaboat": "seaboat",
+  "ramcart": "ramcart",
+  "warchariot": "chariot"
  },
  "itemMat": {
   "dwarfpick": "steel",
@@ -968,5 +1330,291 @@
   "leather": "leather",
   "bandages": "linen"
  },
- "_noteR65": "R65 ART-4 batch4: resTint = palette per resource (tints picked by us, INVENTED); sprite.layer2 = list of {file,tint} drawn in order over the base; basePal = fixed tint for the base (mug=oak)."
+ "_noteR65": "R65 ART-4 batch4: resTint = palette per resource (tints picked by us, INVENTED); sprite.layer2 = list of {file,tint} drawn in order over the base; basePal = fixed tint for the base (mug=oak).",
+ "sheets": {
+  "cow-idle": {
+   "file": "art/animals/sheets/cow-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "hens-idle": {
+   "file": "art/animals/sheets/hens-idle.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "sheep-idle": {
+   "file": "art/animals/sheets/sheep-idle.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "goat-idle": {
+   "file": "art/animals/sheets/goat-idle.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "pig-idle": {
+   "file": "art/animals/sheets/pig-idle.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "bees-swarm": {
+   "file": "art/animals/sheets/bees-swarm.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "orecart-track": {
+   "file": "art/animals/sheets/orecart-track.webp",
+   "fw": 32,
+   "fh": 16,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "handcart-walk": {
+   "file": "art/animals/sheets/handcart-walk.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "mule-pack": {
+   "file": "art/animals/sheets/mule-pack.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "oxwagon-walk": {
+   "file": "art/animals/sheets/oxwagon-walk.webp",
+   "fw": 64,
+   "fh": 48,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "horsewagon-walk": {
+   "file": "art/animals/sheets/horsewagon-walk.webp",
+   "fw": 64,
+   "fh": 48,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "ramcart-walk": {
+   "file": "art/animals/sheets/ramcart-walk.webp",
+   "fw": 48,
+   "fh": 40,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "rider-horseman": {
+   "file": "art/animals/sheets/rider-horseman.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "rider-noble-pony": {
+   "file": "art/animals/sheets/rider-noble-pony.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "ox-idle": {
+   "file": "art/animals/sheets/ox-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "drafthorse-idle": {
+   "file": "art/animals/sheets/drafthorse-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "mule-idle": {
+   "file": "art/animals/sheets/mule-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "ram-idle": {
+   "file": "art/animals/sheets/ram-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "pony-idle": {
+   "file": "art/animals/sheets/pony-idle.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "seaboat-moored": {
+   "file": "art/animals/sheets/seaboat-moored.webp",
+   "fw": 32,
+   "fh": 24,
+   "cols": 2,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "idle"
+  },
+  "chariot-walk": {
+   "file": "art/animals/sheets/chariot-walk.webp",
+   "fw": 64,
+   "fh": 48,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "rider-courser": {
+   "file": "art/animals/sheets/rider-courser.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "rider-warhorse": {
+   "file": "art/animals/sheets/rider-warhorse.webp",
+   "fw": 32,
+   "fh": 32,
+   "cols": 4,
+   "rows": 3,
+   "flip": "left=mirror of right",
+   "kind": "walk"
+  },
+  "cow-walk": {
+   "file": "art/animals/sheets/cow-walk.webp",
+   "fw": 24,
+   "fh": 20,
+   "cols": 4,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "strip"
+  },
+  "hen-walk": {
+   "file": "art/animals/sheets/hen-walk.webp",
+   "fw": 16,
+   "fh": 16,
+   "cols": 4,
+   "rows": 1,
+   "flip": "left=mirror of right",
+   "kind": "strip"
+  }
+ },
+ "sheetsNote": "R73: walk sheets are 4 columns x 3 rows, rows = down, right, up (left = the right row mirrored); columns are walk frames. Idle sheets are one row of frames. 'strip' sheets (cow-walk, hen-walk) are one row of 4 walk frames. All sprites face right; left is a mirror. #194261 is the rider tabard key (walkers only) and is also baked into the chariot car and boat pennant: vehicles are never tinted. Display only.",
+ "an": {
+  "chickencoop": "hen",
+  "fowl": "hen",
+  "cowpen": "cow",
+  "cattle": "cow",
+  "sheep": "sheep",
+  "goat": "goat",
+  "pig": "pig",
+  "mule": "mule",
+  "ox": "ox",
+  "horse": "drafthorse",
+  "ram": "ram",
+  "pony": "pony",
+  "courser": "drafthorse",
+  "warhorse": "warhorse",
+  "wolf": "wolf-companion",
+  "familiar": "owl",
+  "falconer": "falcon",
+  "falcon": "falcon"
+ },
+ "veh": {
+  "handcart": "handcart",
+  "wagoncart": "wagoncart",
+  "mule": "mule",
+  "oxwagon": "oxwagon",
+  "horsewagon": "horsewagon",
+  "ramcart": "ramcart",
+  "warchariot": "chariot",
+  "seaboat": "seaboat"
+ },
+ "vehSm": {
+  "handcart": "handcart-sm",
+  "wagoncart": "wagoncart-sm",
+  "oxwagon": "oxwagon-sm",
+  "horsewagon": "horsewagon-sm",
+  "ramcart": "ramcart-sm",
+  "warchariot": "chariot-sm",
+  "seaboat": "seaboat-sm"
+ },
+ "_noteR73": "R73: art/animals/ holds the Art Studio animals batches (a, b, c). art.an / art.veh map game ids to sprites (spriteFor kinds 'an' and 'veh'), art.anSm / art.vehSm = 24px list icons (used at 24px and below, fall back to the 64px icon), art.draftSheet = idle sheets for stall animals, art.sheets = frame math for the map and room actors. INVENTED: courser has no icon of its own and reuses the drafthorse (no courser or warhorse -sm either: they fall back to the 64px icon); res.milk stays on the jug (milkpail is not wired). Nothing of batch c falls back to an older stand-in. Display only, nothing saved.",
+ "anSm": {
+  "chickencoop": "hen-sm",
+  "fowl": "hen-sm",
+  "cowpen": "cow-sm",
+  "cattle": "cow-sm",
+  "mule": "mule-sm",
+  "ox": "ox-sm",
+  "horse": "drafthorse-sm",
+  "ram": "ram-sm",
+  "pony": "pony-sm"
+ },
+ "draftSheet": {
+  "mule": "mule-idle",
+  "ox": "ox-idle",
+  "horse": "drafthorse-idle",
+  "ram": "ram-idle",
+  "pony": "pony-idle"
+ }
 }

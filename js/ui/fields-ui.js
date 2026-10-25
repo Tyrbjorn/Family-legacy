@@ -1,6 +1,6 @@
 // R40: 🌾 Farmstead hub card (Estate tab): fields, tending hours, teamsters, hub upgrades and Auto settings.
 import * as E from "../engine.js";
-import { RI, fmt } from "./common.js";
+import { RI, fmt, vehIco } from "./common.js";
 import { D, s } from "../main.js";
 import { animalsRow } from "./animals-ui.js";
 
@@ -41,8 +41,8 @@ export function fieldsCard() {
   }
   const pile = Object.entries(st.pile).filter(([, v]) => v >= 0.5);
   const tm = (s.minions || []).filter(x => x.job === "teamster").length;
-  h += `<div style="margin-top:6px">🛒 <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + E.resName(k)}`).join(", ")}</div>` : ""}</div>`;
-  const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : "🛒"} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(E.bcost(s, u.cost, "hub", true))}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
+  h += `<div style="margin-top:6px">${vehIco("handcart", "🛒", 18)} <b>Teamsters</b> ${tm}/${E.teamsterCap(s)} <span class="muted">· only haul the harvest into storage${L ? ` · hauled today ${fmt(L.byTeamsters)} (farmers ${fmt(L.byFarmers)})` : ""} · farmers carry at most ${fmt(D.fields.haul.farmerDayCap ?? 0)}/day by hand; a teamster ${fmt(D.fields.haul.teamsterPerDay)}/day</span>${pile.length ? `<div class="muted">Waiting at the fields: ${pile.map(([k, v]) => `${fmt(v)}${RI[k] || " " + E.resName(k)}`).join(", ")}</div>` : ""}</div>`;
+  const up = k => { const u = E.nextHubUp(s, k), why = E.hubUpIssue(s, k); return u ? `<button class="b" data-a="hubup" data-v="${k}" ${why ? `disabled title="${why}"` : ""}>${k === "worker" ? "🛏️" : vehIco(({ cart1: "handcart", cart2: "oxwagon", cart3: "horsewagon" })[u.id], "🛒", 16)} ${u.name} (+${u.farmSpots || u.teamsterSpots} ${k === "worker" ? "farm" : "teamster"} spot${(u.farmSpots || u.teamsterSpots) > 1 ? "s" : ""}) ${cost(E.bcost(s, u.cost, "hub", true))}</button>` : `<span class="muted">${k === "worker" ? "Farm" : "Teamster"} spots maxed</span>`; };
   h += animalsRow(); // R41
   h += rotationRow(); // R43
   h += `<div style="margin-top:6px"><b>Upgrades</b> <span class="muted">· farm spots ${E.jobCap(s, "farm")}</span><div class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-start">${up("worker")}${up("teamster")}</div></div>`;

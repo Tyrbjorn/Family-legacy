@@ -7,7 +7,7 @@ import { timerBar } from "./progress.js";
 import { U } from "./state.js";
 import * as E from "../engine.js";
 import { suitorCard } from "./houses-tab.js";
-import { badges, cl, costStr, injuryTags, doing, dur, it, itemStatsHtml, memberLine, portrait, sk, stage, weaponBeside, yr } from "./common.js";
+import { badges, cl, costStr, vehIco, injuryTags, doing, dur, it, itemStatsHtml, memberLine, portrait, sk, stage, weaponBeside, yr } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { pathsCard } from "./paths-ui.js";
 import { D, s, sheetOpen } from "../main.js";
@@ -237,7 +237,7 @@ export function mainv() {
   const towns = D.towns.filter(t => E.regionOpen(s, t.region) && E.townKnown(s, t));
   h += `<h3>📜 Land for sale</h3>` + (landShop() || '<div class="muted">You own every parcel.</div>');
   h +=
-    `<h3>🛒 Buy items</h3>` +
+    `<h3>${vehIco("wagoncart", "🛒", 20)} Buy items</h3>` +
     towns
       .map(
         t =>

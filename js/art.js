@@ -6,6 +6,11 @@ export function spriteFor(A, kind, id, def) {
   if (!A || !id) return null;
   if (kind === "res") return (A.res || {})[id] || null;
   if (kind === "ui") return (A.ui || {})[id] || null;
+  // R73: animals / mounts / companions (an), vehicles (veh) and their 24px list icons (vehsm, falls back to the 64px one)
+  if (kind === "an") return (A.an || {})[id] || null;
+  if (kind === "ansm") return (A.anSm || {})[id] || (A.an || {})[id] || null;
+  if (kind === "veh") return (A.veh || {})[id] || null;
+  if (kind === "vehsm") return (A.vehSm || {})[id] || (A.veh || {})[id] || null;
   const base = String(id).split("+")[0].split("#")[0];
   return (def && def.sprite) || (A.items || {})[base] || (def && (A.types || {})[def.type]) || null;
 }

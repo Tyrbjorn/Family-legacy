@@ -2,7 +2,7 @@ import { boardCard, linesCard } from "./boards-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { U } from "./state.js";
-import { RI, dur, fmt, sk, unlockName } from "./common.js";
+import { RI, anIco, dur, fmt, sk, unlockName, vehIco } from "./common.js";
 import { landShop } from "./estate-tab.js";
 import { guildHall } from "./guilds-tab.js";
 import { D, s } from "../main.js";
@@ -54,7 +54,7 @@ function feedLine() {
   return `<div class="muted">🌾 Feed/day: ${gs
     .map(g => {
       const k = F.kinds[g.kind],
-        nm = g.herd ? `${k.icon} ${k.name}` : `${D.world.haul.animals[g.key].icon} ${D.world.haul.animals[g.key].name}`,
+        nm = g.herd ? `${anIco(g.key, k.icon, 16)} ${k.name}` : `${anIco(g.key, D.world.haul.animals[g.key].icon, 16)} ${D.world.haul.animals[g.key].name}`, // R73: animal icons
         un = (s.unfed || {})[g.key];
       return `${nm} ×${g.n} ${+E.feedNeed(s, g).toFixed(1)} (${F.diets[k.diet].join("→")})${un ? ` ⚠️ unfed ${un}d` : ""}`;
     })
@@ -72,7 +72,7 @@ export function seaCard() {
   const eo = ex && E.seaOption(s, ex.id);
   const routes = E.ferryRoutes(s).map(r => `${r.name}${r.open ? "" : ` 🔒 <span class="muted">(${r.opens || "later"})</span>`}`).join(" · ");
   return `<div class="card" id="seacard"><b>⛵ The coast</b> <span class="muted">· ${port ? port.icon + " " + port.name : ""}${known ? "" : " (not found yet: follow the Salt Track west)"}</span>
- <div class="muted">${tier.icon || "⛵"} Sea Boat: ${boat ? `yours. Sails coast routes (×${SEA.speed} vs walking the shore), fishes the deep sea, and hauls ${tier.carry}${E.perkCargo(s, tier.id) ? "+" + tier.cargoTier * E.perkCargo(s, tier.id) : ""} on coast hauls.` : `${plans ? "✅ plans learned" : "📜 buy the Sea Boat Plans at Gull's Landing"} · ${slip ? "✅ Slipway built" : "🏗️ upgrade a Dock to a Slipway"} · then a Carpenter builds it (planks, rope, cloth).`}</div>
+ <div class="muted">${vehIco("seaboat", tier.icon || "⛵", 18)} Sea Boat: ${boat ? `yours. Sails coast routes (×${SEA.speed} vs walking the shore), fishes the deep sea, and hauls ${tier.carry}${E.perkCargo(s, tier.id) ? "+" + tier.cargoTier * E.perkCargo(s, tier.id) : ""} on coast hauls.` : `${plans ? "✅ plans learned" : "📜 buy the Sea Boat Plans at Gull's Landing"} · ${slip ? "✅ Slipway built" : "🏗️ upgrade a Dock to a Slipway"} · then a Carpenter builds it (planks, rope, cloth).`}</div>
  <div class="muted">${F.icon || "⛴️"} ${F.name || "Ferry"}: ${fo ? `open · fare ${E.ferryFare(s, 1)}🪙 a short hop (+${Math.round(F.farePerDay * (1 - E.ferryDisc(s)))}🪙 per sea day)${E.ferryDisc(s) ? ` · −${Math.round(E.ferryDisc(s) * 100)}% (harbour pass / House Corwen)` : ""}` : "closed: the harbour needs the wreckers stopped (Act 1 beat “Lights on the Rocks”, after chapter 2)"} · routes: ${routes}</div>
  ${eo ? `<div class="muted">e.g. ${ex.name}: ${eo.mode === "boat" ? "⛵ by boat" : `⛴️ by ferry (${eo.fare}🪙 each way)`} ${eo.days}d instead of ${E.travelDays(ex.id)}d walking</div>` : ""}
  ${fo && !boat ? `<div class="row" style="justify-content:flex-start;gap:6px"><span class="muted">Use the ferry automatically for coast trips:</span><button class="b ${s.ferryAuto === false ? "" : "sel"}" data-a="ferryauto">${s.ferryAuto === false ? "Off" : "On"}</button></div>` : ""}</div>`;
@@ -84,15 +84,15 @@ export function haulCard() {
     st = E.stalls(s),
     an = E.animalCount(s);
   const towns = D.towns.filter(x => E.townKnown(s, x)).map(x => x.id);
-  return `<div class="card"><b>${t.icon || "🎒"} Hauling</b> <span class="muted">· ${t.name} · carry ${t.carry}/trip · haul speed ×${t.haulSpeed}</span>
- <div class="muted">Tiers: ${[H.base, ...H.tiers].map(x => `${x.icon || "🎒"} ${x.name} ${x.carry}`).join(" → ")}. Carts and wagons are made by a Cooper &amp; Wainwright (Carpenter); animals need feed and a stable stall. A wagon with no animal is pulled by hand (half cargo, ×${D.world.haul.wagonNoAnimal.haulSpeed} speed).</div>
+  return `<div class="card"><b>${vehIco(t.id, t.icon || "🎒", 18)} Hauling</b> <span class="muted">· ${t.name} · carry ${t.carry}/trip · haul speed ×${t.haulSpeed}</span>
+ <div class="muted">Tiers: ${[H.base, ...H.tiers].map(x => `${vehIco(x.id, x.icon || "🎒", 16)} ${x.name} ${x.carry}`).join(" → ")}. Carts and wagons are made by a Cooper &amp; Wainwright (Carpenter); animals need feed and a stable stall. A wagon with no animal is pulled by hand (half cargo, ×${D.world.haul.wagonNoAnimal.haulSpeed} speed).</div>
  <div class="muted">🛶 Boats: ${E.hasBoat(s) ? "you have a Small Boat: routes cross lakes and Fish can work deep water" : "a Small Boat (River quest, or a Carpenter with a Dock) lets routes cross lakes instead of going around. Mountains always need a detour."}</div>
  <div class="muted">🐴 Animals ${an}/${st} stalls${an ? (s.animalsFed === false ? " · ⚠️ unfed" : " · fed") : ""}</div>${feedLine()}
  <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start">${Object.entries(H.animals)
    .map(([id, a]) => {
      const town = a.towns.find(x => towns.includes(x)),
        iss = town ? E.buyAnimalIssue(s, id, town) : "no known market";
-     return `<button class="b" data-a="buyanimal" data-v="${id}" data-w="${town || ""}" ${iss ? "disabled" : ""} title="${iss || ""}">${a.icon} ${a.name} ${a.cost.coin}🪙 (${(s.animals || {})[id] || 0})${iss ? " · " + iss : ""}</button>`;
+     return `<button class="b" data-a="buyanimal" data-v="${id}" data-w="${town || ""}" ${iss ? "disabled" : ""} title="${iss || ""}">${anIco(id, a.icon, 16)} ${a.name} ${a.cost.coin}🪙 (${(s.animals || {})[id] || 0})${iss ? " · " + iss : ""}</button>`;
    })
    .join("")}</div></div>`;
 }

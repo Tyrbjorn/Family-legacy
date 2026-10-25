@@ -1,5 +1,6 @@
 // R62 ART-3: pure estate-map layout (no DOM). Positions come from data/estatemap.json plus structure order (uid),
 // stages from existing structure state. Nothing here is saved. Used by estate-map.js and test/r62.test.mjs.
+import { vehicleSlots } from "./actors.js";
 export function artStage(E, M, st) {
   const d = E.structDef(st.type) || {}, A = M.art, ru = (A.reuse || {})[st.type];
   if (ru && ru.look != null) return ru.look;
@@ -151,5 +152,23 @@ export function walkerList(s, D, E, L) {
     const job = prod.length ? prod[i % prod.length] : home;
     out.push({ id: "w" + i, name: "Follower", sheet: "walker-human-male-hairkey", hair: W.workerHair, house: W.workerTabard, scale: 1, emoji: "🧑", job: job.key, home: home.key, worker: true });
   }
+  return out;
+}
+
+// R73: up to maxVehicles wagons / riders / the sea boat, drawn on the map (display only, computed from owned items; never saved).
+// Shaped like walkers so the map's walker loop moves them: wagons drive between the hub (Warehouse / Trading Post / Counting House,
+// else the home) and other doors, a parked wagon (no teamsters) stands at the hub, a rider starts at home, the boat is moored beside the Dock.
+export function vehicleList(s, D, E, L) {
+  const M = D.estatemap, cap = (M.walk && M.walk.maxVehicles) || 3, out = [];
+  if (!D.world || !D.world.haul) return out;
+  const home = L.items.find(i => M.homeTypes.includes(i.type)) || L.items[0];
+  if (!home) return out;
+  const hub = L.items.find(i => (M.vehicleHubs || ["warehouse", "tradingpost", "countinghouse"]).includes(i.type)) || home;
+  const dock = L.items.find(i => i.type === "dock" || i.type === "slipway");
+  vehicleSlots(E, s, D.world.haul, cap).forEach((v, i) => {
+    if (v.kind === "boat" && !dock) return;
+    const base = v.kind === "wagon" ? hub : v.kind === "escort" ? hub : home;
+    out.push({ id: "v" + i + v.id, veh: v, name: v.name, job: base.key, home: base.key, dock: v.kind === "boat" ? dock.key : null, still: v.kind === "boat" || !!v.parked });
+  });
   return out;
 }

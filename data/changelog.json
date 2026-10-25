@@ -2,6 +2,17 @@
   "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
   "entries": [
     {
+      "build": "R73",
+      "title": "Animals, mounts and wagons come to life",
+      "items": [
+        "🐄 Cow Pen and Chicken Coop rooms show your herd wandering about: up to 3 animals per pen (a pair of hens counts as one sprite), and an unfed herd stands still.",
+        "🐝 Bees buzz over the hives in the Apiary room, and draft animals stand beside the stall in your stable.",
+        "🛒 The estate map shows your wagons and teamsters, a noble rider once you own a mount, a horseman escort on a trade route, and your sea boat beside a Dock (3 vehicles at most). Tap one to see what it is.",
+        "🖼️ Animal, mount, wagon and boat icons replace the emoji on the Map, Animals, Fields, Minions, Endgame, Trade and Buy tabs.",
+        "👀 Display only: nothing changes in the game itself, your save is untouched, and Classic emoji mode and reduced motion draw none of the movement."
+      ]
+    },
+    {
       "build": "R72",
       "title": "Every building has its painted room",
       "items": [

@@ -207,3 +207,8 @@ button.chip{border:1px solid #444;color:#ddd;cursor:pointer;font:inherit;font-si
 .estroom .rmtab i{font-style:normal;font-size:10px;background:#000a;padding:0 4px;border-radius:6px}
 .estroom .rmtab.lock{opacity:.5;cursor:default;flex-direction:column;gap:0;line-height:1.15}
 .estroom .rmtab.lock small{font-size:9px;opacity:.85}
+
+/* R73: animals in the room scenes (pen animals, bees, draft animals at the stall); sprites sit above the pieces, never take clicks */
+.estroom .rmact{position:absolute;image-rendering:pixelated;z-index:3;pointer-events:none;background-repeat:no-repeat;background-size:200% 100%}
+.estroom .rmdraft{pointer-events:auto}.estroom img.rmdraft{background:none}
+.estroom .rmact.rm-bees{opacity:.95}

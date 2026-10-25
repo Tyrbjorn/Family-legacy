@@ -1,6 +1,6 @@
 // Estate tab: late-game coin sinks and defense (stable, stone quarries, town patronage, walls/watchtower/palisade, raids).
 import * as E from "../engine.js";
-import { costStr, fmt } from "./common.js";
+import { anIco, costStr, fmt } from "./common.js";
 import { D, s } from "../main.js";
 
 const btn = (a, v, iss, cost) => `<button class="b" data-a="${a}" data-v="${v}" ${iss ? "disabled" : ""}>${iss && !/^needs \d/.test(iss) ? "🔒 " + iss : costStr(cost)}</button>`;
@@ -27,7 +27,7 @@ export function endgamePanel() {
   if (!G) return "";
   const mt = E.mountTier(s), nm = G.mounts[mt];
   let h = `<div class="card" id="holdings"><div class="row"><b>🏰 Holdings & defense</b><span class="muted">one-time purchases</span></div>`;
-  h += row(`🐴 Stable`, mt ? `${G.mounts[mt - 1].name}: travel ×${E.mountSpeed(s)}` : "no mounts yet", nm ? btn("egmount", 0, E.mountIssue(s), nm.cost) : "");
+  h += row(`${anIco(["", "pony", "courser", "warhorse"][mt] || "pony", "🐴", 18)} Stable`, mt ? `${G.mounts[mt - 1].name}: travel ×${E.mountSpeed(s)}` : "no mounts yet", nm ? btn("egmount", 0, E.mountIssue(s), nm.cost) : "");
   for (const q of G.quarries) {
     const t = E.quarryTier(s, q.id), nx = q.tiers[t];
     h += row(`${q.icon} ${q.name}`, t ? `tier ${t}: ${q.tiers[t - 1].rate} ${q.res}/day` : `at the ${E.findId(D.nodes, q.node).name}`, nx ? btn("egquarry", q.id, E.quarryIssue(s, q.id), E.bcost(s, nx.cost, "quarry", t > 0)) : "");

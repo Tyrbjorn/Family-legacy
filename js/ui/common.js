@@ -159,6 +159,9 @@ export const RI = {
 // R58 ART-1: icons in lists and cards (emoji fallback; "Classic emoji" setting)
 export const resIco = (k, size) => iconHtml(D.art, "res", k, null, { emoji: RI[k] || "", classic: s.classicEmoji, size });
 export const itemIco = (id, x, size) => iconHtml(D.art, "item", id, x, { emoji: "", classic: s.classicEmoji, size });
+// R73: animal / mount / companion icons and haul vehicles (haulTier ids). Classic emoji mode and missing art return the emoji.
+export const anIco = (id, emoji, size) => iconHtml(D.art, size && size <= 24 ? "ansm" : "an", id, null, { emoji: emoji || "", classic: s.classicEmoji, size });
+export const vehIco = (id, emoji, size) => iconHtml(D.art, size && size <= 24 ? "vehsm" : "veh", id, null, { emoji: emoji || "", classic: s.classicEmoji, size });
 
 export const costStr = c =>
   Object.entries(c)

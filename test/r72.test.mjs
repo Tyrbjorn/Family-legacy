@@ -10,7 +10,7 @@ const R=D.estaterooms, A=R.art, hit=(a,b)=>a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]
 const T={}; for(const f of D.estate.structureFiles){const d=D['structures/'+f]; for(const x of (Array.isArray(d)?d:(d.structures||Object.values(d)))) T[x.id]=x;}
 const size=p=>{const b=fs.readFileSync(p); if(b.toString('ascii',0,4)!=='RIFF') return null; const k=b.toString('ascii',12,16);
   if(k==='VP8X') return [1+b.readUIntLE(24,3),1+b.readUIntLE(27,3)]; if(k==='VP8L'){const v=b.readUInt32LE(21);return [1+(v&0x3fff),1+((v>>14)&0x3fff)];} const o=b.indexOf(Buffer.from([0x9d,0x01,0x2a])); return [b.readUInt16LE(o+3)&0x3fff,b.readUInt16LE(o+5)&0x3fff];};
-ok(BUILD==='R72'&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R72, save stays 55'); ok(D.changelog.entries[0].build==='R72'&&D.changelog.entries[1].build==='R71','changelog');
+ok(/^R7[23]$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R72, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R72')&&D.changelog.entries.some(e=>e.build==='R71'),'changelog');
 const s=E.newGame(1); E.normalize(s); let uid=5000;
 const mk=(t,o={})=>{const d=T[t]; const st={uid:'r72-'+(uid++),type:t,pieces:[...(d.fixed||[]),...(o.pieces||[])],up:o.up||0,tier:o.tier||0,fittings:o.fittings||[]}; s.structures.push(st); return st;};
 // ---- 1. the 32 single rooms

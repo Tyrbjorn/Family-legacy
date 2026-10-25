@@ -347,6 +347,13 @@
   "maxWorkers": 3,
   "childScale": 0.75,
   "workerHair": "#5a3a24",
-  "workerTabard": "#8a8f98"
- }
+  "workerTabard": "#8a8f98",
+  "maxVehicles": 3
+ },
+ "vehicleHubs": [
+  "warehouse",
+  "tradingpost",
+  "countinghouse"
+ ],
+ "_noteR73": "R73: walk.maxVehicles (3, not counted in maxWalkers) = wagons / riders / the sea boat drawn on the map from owned items (display only). vehicleHubs (INVENTED): the building whose door wagons start from, first match, else the home."
 }

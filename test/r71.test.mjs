@@ -9,7 +9,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art, hit=(a,b)=>a[0]<b[2]&&b[0]<a[2]&&a[1]<b[3]&&b[1]<a[3];
-ok(/^R7[12]$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R71, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R71')&&D.changelog.entries.some(e=>e.build==='R70'),'changelog');
+ok(/^R7[123]$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R71, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R71')&&D.changelog.entries.some(e=>e.build==='R70'),'changelog');
 const T=Object.fromEntries(D.estate.structureFiles.flatMap(f=>D['structures/'+f]).map(d=>[d.id,d]));
 const s=E.newGame(1); E.normalize(s); let uid=0;
 const mk=(t,up,extra={})=>{const st={uid:'q'+t+(uid++),type:t,pieces:[...(T[t].fixed||[])],up,tier:0,fittings:[],...extra}; s.structures.push(st); return st;};

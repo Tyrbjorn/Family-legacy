@@ -2,7 +2,8 @@ import { ordersCard } from "./orders-ui.js";
 import { fieldsCard } from "./fields-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
-import { RI, costStr, doing, fmt, memberLine, autoChip, portrait } from "./common.js";
+import { RI, costStr, doing, fmt, memberLine, autoChip, portrait, vehIco, anIco } from "./common.js";
+import { vehicleList, estateLayout } from "./estate-layout.js";
 import { U } from "./state.js";
 import { D, s } from "../main.js";
 import { buildingCard } from "./estate-card.js";
@@ -202,6 +203,7 @@ export function quotasv() {
  ${L.map(row).join("") || '<div class="muted">No quotas yet.</div>'}${add}</div>`;
 }
 
+const estateLayoutNow = () => estateLayout(s, D, E);
 // R62: what the tapped map spot opens (shown under the map)
 function estSelPanel() {
   const k = U.estSel || "";
@@ -218,6 +220,15 @@ function estSelPanel() {
   } else if (k.startsWith("m:")) {
     const m = E.findId(s.members, +k.slice(2));
     if (m) h = `<div class="card"><div class="mrow">${portrait(m, 48)}<div style="flex:1;min-width:0">${memberLine(m)}<div class="muted">Doing: ${m.id === s.activeId ? "you are playing them" : doing(m.action || null)}</div></div></div></div>`;
+  } else if (k.startsWith("v:")) { // R73: a wagon / rider / boat on the map
+    const L = estateLayoutNow(), v = (L ? vehicleList(s, D, E, L) : []).find(x => "v:" + x.id === k);
+    if (v) {
+      const z = v.veh, ico = z.kind === "rider" || z.kind === "escort" ? anIco(z.kind === "escort" ? "horse" : z.id.slice(6), "🐎", 32) : vehIco(z.id, "🛒", 32);
+      const line = z.kind === "boat" ? "Moored beside your Dock: sea trips take less time while you own it."
+        : z.kind === "wagon" ? `${z.carry ? "Carries " + fmt(z.carry) + " per haul. " : "Pulled by hand. "}${z.n ? z.n + " teamster" + (z.n === 1 ? "" : "s") + " driving." : "Parked: no teamsters assigned."}`
+        : z.kind === "escort" ? "A Horseman guarding a trade route." : `Your mount (tier ${z.tier}): travel x${E.mountSpeed(s)}.`;
+      h = `<div class="card row"><span>${ico} <b>${z.name}</b><br><span class="muted">${line}</span></span></div>`;
+    }
   } else if (k === "w") h = `<div class="card muted">👷 Hired hand: works the estate's stations.</div>`;
   else if (k === "slot")
     h = `<div class="muted">Build new (${E.landSlots(s) - E.landUsed(s)} land free):</div>` +
