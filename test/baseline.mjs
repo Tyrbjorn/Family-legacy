@@ -26,6 +26,7 @@ for (const k of ["stage_Homestead", "stage_Farmstead", "stage_Manor", "stage_Pro
   const v = rows.map(r => r.timing[k]), got = v.filter(x => x != null);
   console.log(`  ${k}: ${got.length ? med(got) : "-"} (${got.length}/${N}) · ${v.map(x => x ?? "-").join(",")}`);
 }
+if (rows.some(r => r.timing.hall1 != null)) console.log(`R75 Union Hall: T1 ${tm("hall1")} · T2 ${tm("hall2")} · T3 ${tm("hall3")} (years; seeds that never bought it show >${Y})`);
 console.log(`max estate score (Prosperous at 20): median ${med(rows.map(r => r.maxScore || 0))} · ${rows.map(r => r.maxScore).join(",")}`);
 console.log(`village buildings at end: ${rows.map(r => r.vb).join(",")} · coin every 10y (median): ${[0,1,2,3,4,5,6].map(i => med(rows.map(r => +(String(r.coin).split(",")[i] || 0)))).join(", ")}`);
 console.log(`base wages/month at end: ${rows.map(r => r.wagesNow).join(",")} · extra scaled wages paid: ${rows.map(r => r.wageX).join(",")}`);

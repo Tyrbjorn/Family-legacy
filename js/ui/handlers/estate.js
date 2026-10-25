@@ -12,6 +12,8 @@ export const estateActions = ({ v, b, m }) => ({
   fieldtoggle: () => E.toggleField(s, v),
   fieldsauto: () => E.setFieldsAuto(s, v),
   hubup: () => E.buyHubUp(s, v),
+  unionbuy: () => E.unionBuy(s), // R75 Union Hall
+  hallhire: () => E.hireAtHall(s, v),
   animalbuy: () => E.buyAnimals(s, v), // R41
   choretoggle: () => E.toggleChore(s, v), // R42
   oadd: () => { const it = U.oItem || document.querySelector("[data-a=oitem]")?.value, n = U.oNum || +(document.querySelector("[data-a=onum]")?.value || 3); E.addOrder(s, it, n); }, // R43 orders

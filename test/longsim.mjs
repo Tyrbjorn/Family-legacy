@@ -323,6 +323,8 @@ function bot(s, m) {
     // R41: stock the coop / pen when there's room (feed + tending are the running cost)
     for (const t of E.animalTypes()) { if (!E.buyAnimalsIssue(s, t) && s.res.coin > 400) { E.buyAnimals(s, t); (seen.animalBuys ||= {})[t] = (seen.animalBuys[t] || 0) + 1; }
       if (!E.spotsUpIssue(s, t) && s.res.coin > (E.animalDef(t).spotsUp.cost.coin || 0) * 15) E.buySpotsUp(s, t); }
+    // R75 Union Hall: buy the next tier once coin is 2.5x its full price (NO_HALL=1 keeps the pre-R75 bot, byte-identical to the R67 baseline)
+    if (!process.env.NO_HALL) { const q = E.unionQuote(s); if (q && s.res.coin > q.total.coin * 2.5 && E.unionBuy(s)) (seen.hall ||= []).push(`T${E.unionTier(s)}@y${(s.day / D.tuning.daysPerYear).toFixed(1)}`); }
     (seen.fields ||= { max: 0, teamsters: 0 }).max = Math.max(seen.fields.max, E.fieldsState(s).list.length);
     seen.fields.teamsters = Math.max(seen.fields.teamsters, s.minions.filter(x => x.job === "teamster").length);
     const L = E.fieldsState(s).last;
@@ -761,6 +763,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     {
       const y = +(day / YD).toFixed(1), at = k => timing[k] == null && (timing[k] = y);
       if (s.structures.length) at("firstBuilding");
+      if (s.union) for (let i = 1; i <= (s.union.tier | 0); i++) at("hall" + i);
       { const st = E.estateStage(s), order = D.estate.stages.map(x => x[1]); for (const n of order.slice(1, order.indexOf(st) + 1)) at("stage_" + n); at("phase_" + E.era(s).name);
         const sc = Object.values(s.buildings).reduce((x, b) => x + b, 0) + s.structures.reduce((x, q) => x + E.structDef(q.type).slots / 2 + q.pieces.length, 0); maxScore = Math.max(maxScore, sc); for (const n of [10, 20, 30, 45, 60, 80, 100, 130]) if (sc >= n) at("score" + n); }
       for (const t of ["cabin", "house", "hall", "smithy", "warehouse"]) if (s.structures.some(x => x.type === t || E.structDef(x.type).upgradeFrom === t)) at(t);
@@ -836,6 +839,7 @@ for (let seed = SEED0; seed < SEED0 + SEEDS; seed++) {
     for (const e of s.wevents) seen.events.add(e.type);
     for (const id of s.vault) if (id.startsWith("c|")) seen.recipes.add(id.split("|")[1]);
     peakCoin = Math.max(peakCoin, s.res.coin);
+    if (process.env.METRICS) { const yy = Math.floor(day / YD), c0 = globalThis.__pc ?? s.res.coin, d = s.res.coin - c0; globalThis.__pc = s.res.coin; const I = (globalThis.__inc ||= []); if (d > 0) I[yy] = (I[yy] || 0) + d; } // R75 paired-sim metric: gross daily coin gain per year (only when METRICS=<file>)
     if (process.env.DBGS && day % (YD * 5) === 0) console.log("DBG", day / YD, Math.round(s.res.coin), E.daysOfStock(s), s.minions.map(x => x.job).join(","), E.stalls(s), s.structures.map(x => E.placeIssue(s, x.uid, "stablestall")).join("|"));
     if (day % (YD * 10) === 0) coinAt.push(Math.round(s.res.coin));
     if (day % (YD * 10) === 0) snap.push([Math.round(s.renown), (s.minions || []).length, (s.structures || []).length]);
@@ -1025,4 +1029,5 @@ console.log("R37 early [year, coin, food, structs, minions, legacyRenown]:", JSO
 if (process.env.SAVESIZE && lastS) { const j = E.serialize(lastS), c = E.exportCode(lastS); console.log("SAVESIZE json", j.length, "exportCode", c.length, "years", (lastS.day / YD).toFixed(1), "members", lastS.members.length, "log", (lastS.log || []).length, "chron", (lastS.chron || []).length); fs.writeFileSync("/tmp/longsave.json", j); }
 console.log("R40 fields:", JSON.stringify(seen.fields || null));
 console.log("ISSUES", issues.length, JSON.stringify(issues, null, 1));
+if (process.env.METRICS) fs.appendFileSync(process.env.METRICS, JSON.stringify({ seed: process.env.SEED, hall: seen.hall || [], inc: (globalThis.__inc || []).map(x => Math.round(x || 0)), renown: lastS ? Math.round(lastS.renown) : null, followers: lastS ? lastS.minions.length : null, coin: lastS ? Math.round(lastS.res.coin) : null, pile: lastS ? Object.values(E.fieldsState(lastS).pile).reduce((a, v) => a + v, 0) : null, union: lastS ? lastS.union || null : null }) + "\n");
 fs.writeFileSync("/tmp/longsim.json", JSON.stringify({ report, issues }, null, 1));

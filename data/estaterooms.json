@@ -680,6 +680,38 @@
      "Bellows": "bellows_upgrade",
      "Fire-brick Hearth": "firebrick_hearth_upgrade",
      "Master Crucible": "master_crucible_upgrade"
+    },
+    "workspots": {
+     "anvil": [
+      99,
+      82
+     ],
+     "toolrack": [
+      124,
+      78
+     ],
+     "forge": [
+      180,
+      80
+     ],
+     "workbench": [
+      132,
+      118
+     ]
+    },
+    "workpaths": {
+     "top_lane": [
+      96,
+      74,
+      188,
+      104
+     ],
+     "mid_lane": [
+      124,
+      74,
+      148,
+      150
+     ]
     }
    },
    "barracks": {
@@ -6020,7 +6052,24 @@
    "cradle",
    "infirmary"
   ],
-  "_noteR73": "R73: art.rects pen = the whole open floor where pen livestock roam (chickencoop/cowpen, feet clamped to y<=150), penStops = a few trough/feeder spots they may visit now and then (one stop among many), bees = the air over the hives and yard where the swarms fly, beeStops = the hives. Display only."
+  "_noteR73": "R73: art.rects pen = the whole open floor where pen livestock roam (chickencoop/cowpen, feet clamped to y<=150), penStops = a few trough/feeder spots they may visit now and then (one stop among many), bees = the air over the hives and yard where the swarms fly, beeStops = the hives. Display only.",
+  "workers": {
+   "_note": "R74: room workers (display only). cap = most workers in a room, speed px/s, sep = min centre distance, style = station ids per work pose (default tend); styles = 2-frame bob rate / 1px dip / seconds at a station. Stations = rects.<room>.workspots, aisle = rects.<room>.paths (guildhall: workpaths). A station further than `reach` px from the aisle is skipped (wall shelves, upper bunks). No work-pose art yet: the walk frames bob.",
+   "cap": 3,
+   "speed": 14,
+   "sep": 20,
+   "merge": 14,
+   "post": [
+    1.4,
+    3
+   ],
+   "postChance": 0.5,
+   "reach": 60,
+   "capLarge": 4,
+   "largeArea": 6000,
+   "staffPer": 3,
+   "_noteR74b": "Room view only: staffing = 1 + floor((placed pieces + fittings + bought upgrades + tier) / staffPer) hired hands (0 when the building is empty), shown up to cap (small room) / capLarge (aisle area >= largeArea); the map's walkers are not changed."
+  }
  },
  "upKeys": [
   [

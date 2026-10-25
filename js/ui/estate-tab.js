@@ -1,5 +1,6 @@
 import { ordersCard } from "./orders-ui.js";
 import { fieldsCard } from "./fields-ui.js";
+import { unionCard } from "./union-ui.js";
 import { pbar, secPerDay } from "./progress.js";
 import * as E from "../engine.js";
 import { RI, costStr, doing, fmt, memberLine, autoChip, portrait, vehIco, anIco } from "./common.js";
@@ -124,6 +125,7 @@ export function estatev() {
     );
   let h = `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members below." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
   h += fieldsCard(); // R40
+  h += unionCard(); // R75
   h += quotasv();
   if (!E.craftingUnlocked(s)) h += ordersCard(); // R43: Work Orders live on the Crafting tab once it opens
   h += `<div class="row estview"><button class="b${U.estView === "map" ? "" : " on"}" data-a="estview" data-v="list">📋 List</button><button class="b${U.estView === "map" ? " on" : ""}" data-a="estview" data-v="map">🗺️ Map</button></div>`; // R62

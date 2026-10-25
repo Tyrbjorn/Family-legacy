@@ -3,6 +3,7 @@
 // test/r66.test.mjs) + HTML. Display only: everything is derived from the structure's existing state, nothing is saved.
 // Placeholders are the existing emoji; data/estaterooms.json `art` maps ids to webp files as room art arrives.
 import { wander, penPositions, KIND_OPTS } from "./actors.js";
+import { workGeo, workerCount, workerPositions, SHEET } from "./workers.js";
 export function roomModel(E, R, st, s, classic) {
   const d = E.structDef(st.type) || {}, fam = R.typeRoom[st.type] || "home", room = R.rooms[fam] || R.rooms.home;
   // R72: art.chipIcons = exact upgrade name -> its own emoji, looked up ahead of the old regexes (R.upKeys: first match wins, so many upgrades shared an icon;
@@ -46,6 +47,8 @@ export function sceneLayout(R, M) {
   // wall_strip = the only area for wall pieces, paths = walk areas kept clear, workspots = where workers stand (data only)
   const F = rc.floor_large || rc.floor, out = [], block = [rc.door, rc.millstone, rc.forge_piece_front, rc.water, rc.jetty, ...Object.values(rc.paths || {})].filter(Boolean);
   out.fam = fam; out.work = rc.workspots || {};
+  // R74: the aisle rects the room workers walk on (rc.workpaths for a room whose layout has no `paths`) and the painted fixture boxes they face (display only)
+  out.paths = rc.paths || rc.workpaths || {}; out.fix = (PT.fix) || {};
   // R72: rooms may be bigger than 256x192 (manor rooms 320x224): rc.w / rc.h
   out.w = rc.w || 256; out.h = rc.h || 192;
   // R73: rc.pen = the aisle where pen animals walk, rc.bees = the box the swarm flies in, F = the floor box (stall animals); display only
@@ -175,9 +178,24 @@ export function manorInfo(R, M, sel) {
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
 // R73: animals in the roof-off picture, computed from what the player owns (act = actors.js roomActors). The sprites sit at their
 // time-0 spot in the HTML (so the markup is static and a re-render never replaces it); actors-dom.js moves them with wander(seed, t).
+// R74: the people who work in this building, standing at their time-0 station (workers.js plans the cycle, actors-dom.js moves them).
+// The carrier element holds the room geometry as JSON; each worker is a span whose tinted sheet actors-dom.js fills in once it is ready.
+// Manor rooms: only the Hall tab (the family at home).
+function workersHtml(L, W, H, A, act) {
+  if (!act.workers || !act.workers.length || (String(L.fam).startsWith("manor:") && L.fam !== "manor:hall")) return "";
+  const geo = workGeo(L, A, act.seed), n = workerCount(geo, act.workers.length);
+  if (!n) return "";
+  const pos = workerPositions(geo, n, 0, { still: true });
+  let h = `<i class="rmwg" hidden data-geo="${esc(JSON.stringify(geo))}"></i>`;
+  for (let i = 0; i < n; i++) {
+    const w = act.workers[i], p = pos[i], sc = w.scale || 1, fw = SHEET.fw * sc, fh = SHEET.fh * sc;
+    h += `<span class="rmwk" data-wk="${i}" data-sheet="${esc(w.sheet)}" data-house="${esc(w.house)}" data-hair="${esc(w.hair)}" data-sc="${sc}" title="${esc(w.name || "Worker")}" style="left:${P(p.x - fw / 2, W)};top:${P(p.y - fh, H)};width:${P(fw, W)};height:${P(fh, H)}"></span>`;
+  }
+  return h;
+}
 function actorsHtml(L, W, H, A, act) {
   if (!act) return "";
-  let h = "";
+  let h = workersHtml(L, W, H, A, act);
   // one animated sprite: idle sheet (name) and/or walk strip (walk); ox = px offset from the shared path (a pair of hens), fo = frame offset;
   // p = its time-0 spot, grp/gi/md = the pen it belongs to, its place in it and the distance the pen keeps between its animals
   const sp = (k, name, seed, fb, o, walk, ox, fo, p, grp, gi, md, stops) => {

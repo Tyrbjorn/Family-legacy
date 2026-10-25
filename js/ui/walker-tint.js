@@ -21,3 +21,24 @@ export function walkerTabard(hex) {
   const L = Math.min(0.6, Math.max(0.42, l * 1.5));
   return { base: hsl2rgb([h, s, L]), hi: hsl2rgb([h, s, Math.min(0.8, L + 0.14)]), orig: hex2rgb(hex) };
 }
+
+// R74: the tinted copy of a loaded walker sheet (tabard key #194261 -> the lifted house colour, hair keys #AAACB2 / #84868C -> hair colour).
+// Moved here from estate-map.js so the roof-off room workers use the very same pixels as the map walkers. Needs a DOM canvas.
+export function tintSheet(src, house, hair) {
+  const c = document.createElement("canvas"); c.width = src.naturalWidth; c.height = src.naturalHeight;
+  const g = c.getContext("2d"); g.drawImage(src, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height), p = d.data;
+  const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const T = walkerTabard(house), HC = rgb(hair), RW = c.width * 4;
+  const isTab = j => j >= 0 && p[j + 3] && p[j] === 25 && p[j + 1] === 66 && p[j + 2] === 97;
+  const top = new Set(); // R64: tabard pixels with no tabard above get the 1px highlight
+  for (let i = 0; i < p.length; i += 4) if (isTab(i) && !isTab(i - RW)) top.add(i);
+  for (let i = 0; i < p.length; i += 4) {
+    if (!p[i + 3]) continue;
+    const r = p[i], gg = p[i + 1], b = p[i + 2];
+    if (r === 25 && gg === 66 && b === 97) { const H = top.has(i) ? T.hi : T.base; (p[i] = H[0]), (p[i + 1] = H[1]), (p[i + 2] = H[2]); } // tabard key #194261 idx 22, lifted for walkers (R64)
+    else if ((r === 170 && gg === 172 && b === 178) || (r === 132 && gg === 134 && b === 140)) { const f = r / 216; p[i] = Math.min(255, HC[0] * f); p[i + 1] = Math.min(255, HC[1] * f); p[i + 2] = Math.min(255, HC[2] * f); } // hair keys
+  }
+  g.putImageData(d, 0, 0);
+  return c;
+}

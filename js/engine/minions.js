@@ -8,6 +8,7 @@ import { eff, established, jobCap, structDef } from "./estate.js";
 import { structReqOk, structReqText } from "./guilds.js";
 import { D, known, log, r } from "./state.js";
 import { isHoused, minionRoom } from "./minion-housing.js";
+import { unionHireFee, unionHireTypes } from "./union.js";
 import { minionGearMult } from "./minion-special.js";
 
 export const mtype = id => findId(D.minions.types, id);
@@ -138,6 +139,19 @@ export function hire(s, townId, type) {
   if (!(D.minions.hireAt[townId] || []).includes(type) || s.res.coin < t.hire || !minionRoom(s, type) || hireLock(s, t)) return null;
   s.res.coin -= t.hire;
   return addMinion(s, type, "hired in town");
+}
+
+// R75 Union Hall: easy hiring, no trip to town, at a discount (hall owned, types from data/fields.json union.hire)
+export const hallHireFee = type => unionHireFee(mtype(type).hire);
+export const hallHireIssue = (s, type) => {
+  if (!unionHireTypes(s).includes(type)) return unionHireTypes(s).length ? "not hired here" : "needs a Union Hall";
+  const t = mtype(type);
+  return s.res.coin < hallHireFee(type) ? "cannot afford" : !minionRoom(s, type) ? "no room" : hireLock(s, t);
+};
+export function hireAtHall(s, type) {
+  if (hallHireIssue(s, type)) return null;
+  s.res.coin -= hallHireFee(type);
+  return addMinion(s, type, "hired at the Union Hall");
 }
 
 export function jobOpen(s, jobId) {

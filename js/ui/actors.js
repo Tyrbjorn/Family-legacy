@@ -3,8 +3,8 @@
 // so a re-render or a reload draws the same picture. See fl-animals-wiring-proposal.md (R73).
 
 // ---------- seeded, time-based wander (stateless: position = f(seed, t))
-const hash = str => { let h = 2166136261; for (const c of String(str)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
-const prng = a => () => { a = (a + 0x6d2b79f5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+export const hash = str => { let h = 2166136261; for (const c of String(str)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
+export const prng = a => () => { a = (a + 0x6d2b79f5) >>> 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 export const WANDER = { speed: 10, pauseMin: 3, pauseMax: 8, wanderChance: 0.3, moveFps: 3, idleSec: 2, legs: 10, stopChance: 0 };
 // per-kind overrides (bees dart about, pen animals roam the whole open floor: shorter stays, and about every other animal makes one visit
 // to a trough/feeder stop per cycle, so the fixtures are one stop among many and never every animal at once)
@@ -72,6 +72,14 @@ export function spread(ps, minD, box, passes = 24) {
     if (!moved) break;
   }
   return out;
+}
+// R74: nudge units (pen animals) off fixed points (the room workers): each point inside minD pushes the unit straight out to minD, clamped to the box
+export function avoidPoints(ps, pts, minD, box) {
+  if (!pts || !pts.length) return ps;
+  const [x0, y0, x1, y1] = box, cl = (v, a, b) => Math.max(a, Math.min(b, v));
+  return ps.map(p => { let { x, y } = p;
+    for (let it = 0; it < 3; it++) for (const q of pts) { let dx = x - q.x, dy = y - q.y, d = Math.hypot(dx, dy); if (d >= minD) continue; if (d < 1e-6) { dx = 1; dy = 0; d = 1; } x = cl(q.x + dx / d * minD, x0, x1); y = cl(q.y + dy / d * minD, y0, y1); }
+    return { ...p, x, y }; });
 }
 // all the animals of one pen: seeds[i] = the wander seed of unit i; box = shared feet box; minD = centre distance to keep
 // o.keepFree (pens): the last unit of a pen of 2+ never plans a trough visit, so the troughs are never visited by every animal on purpose

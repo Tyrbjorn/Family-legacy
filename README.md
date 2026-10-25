@@ -173,3 +173,12 @@ Family members rank craft paths from `data/paths.json`: Apprentice → Journeyma
 - **Effects** are data-driven `fx` kinds: craft, yield, gather, find, foodQ, cropQ, variety, vault, survival, trainXp, enchant, land, blessing. They hook into the food chain (cook/crop quality, process yields, variety morale), gathering, the vault, war, training and enchanting.
 - **Old crafter classes** migrate (save step 11) through `migrate`/`classMap`, so `requiresClass` and `classPerks` keep working. Couturier is dropped and becomes Master Tailor (Leatherworker). Architect becomes Carpenter, Mason and Scribe plus the Architect combo.
 - Add a path or combo by appending to the lists. The engine and UI read them.
+
+## Long-sim baselines (test/baseline.mjs)
+`node test/baseline.mjs 10 40 8` runs 10 seeds for 40 years and prints medians (30+ minutes; run it detached and redirect to a file).
+- **R75 baseline (current):** `test/baseline-r75.txt`. The bot buys the Union Hall tiers (when coin > 2.5x the tier cost), so the output has an extra "R75 Union Hall" line.
+- **R67 baseline (hall off):** `test/baseline-r67.txt`. `NO_HALL=1 node test/baseline.mjs 10 40 8` must still be byte-identical to it (`cmp`). Checked at R75: identical.
+- **Paired hall check:** run both with `METRICS=<file>` (and `NO_HALL=1` for the off run), then `node test/baseline-r75-paired.mjs` (reads `test/r75-m-nohall.txt` and `test/r75-m-hall.txt`, committed from the R75 run). The hall is a convenience, not income: the median gross coin per year stays within about 2% of hall-off in every decade (y1-10 -0.2%, y11-20 -0.4%, y21-30 -1.3%, y31-40 -2.1%). Individual seeds diverge by up to about 14% because the bot's later choices differ (chaotic), which is why medians are the check.
+
+## Union Hall (R75)
+`data/fields.json` -> `union`, engine in `js/engine/union.js` (leaf module, re-exported through fields.js), UI card `js/ui/union-ui.js` on the Estate tab under the Farmstead. Saved state is only `s.union = { tier }` after the first purchase; the save schema stays 55 and old saves read as tier 0. Gate: Cart Shed + Second Wagon + a teamster. T1 Warehouse (producers skip the haul pile, one teamster on hall duty), T2 Hauler's Guild (+2 teamster spots, haul x1.5, one teamster becomes foreman), T3 Freight Exchange (reach for other quarters is a placeholder; two more teamsters on hall duty). Wagons are paid from vault Wagon items first, then at their coin value. Easy hiring: laborers at 75% of the fee with no trip to town. The anvil/rack/reagent-shelf/trestle effects are not built.

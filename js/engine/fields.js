@@ -19,6 +19,8 @@ import { minionSkillLvl, minionLvlMult, mtype } from "./minions.js";
 import { registerDayHook } from "./time.js";
 import { animalsTend, animalTypes } from "./animals.js";
 import { rotationChores } from "./chores.js";
+import { unionActive, unionHaulMult, unionSpots, unionTied, unionTier } from "./union.js";
+export * from "./union.js";
 
 export const FLD = () => D.fields || { crops: {}, sizes: [{ mult: 1, hours: 1 }], levels: { max: 1, perLvl: 0, cost: [] }, hours: {}, tools: { cut: {}, kinds: {} }, haul: {}, processing: {}, hub: { workerUps: [], teamsterUps: [] }, slots: {} };
 const H = () => FLD().hours;
@@ -151,7 +153,7 @@ export function buyHubUp(s, kind) {
 }
 const bought = (s, kind, key) => hubUps(kind).filter(u => fieldsState(s).ups[u.id]).reduce((a, u) => a + (u[key] || 0), 0);
 export const farmSpotsFromHub = s => (s.fields ? bought(s, "worker", "farmSpots") : 0);
-export const teamsterCap = s => (s.fields ? (s.fields.list.length ? FLD().hub.teamsterBase || 0 : 0) + bought(s, "teamster", "teamsterSpots") + structSum(s, "teamsterSpots") : 0); // R47 Builder's Yard
+export const teamsterCap = s => (s.fields ? (s.fields.list.length ? FLD().hub.teamsterBase || 0 : 0) + bought(s, "teamster", "teamsterSpots") + structSum(s, "teamsterSpots") + unionSpots(s) : 0); // R47 Builder's Yard, R75 Union Hall T2
 
 // ---- tools: cut tend time by metal tier (+ masterwork), only for the matching kind (grain / plot / orchard)
 export function toolCut(id, kind) {
@@ -296,7 +298,10 @@ export function fieldsDay(s) {
   };
   if (st.auto.haul) {
     const teams = (s.minions || []).filter(x => x.job === "teamster" && !x.unhoused && !x.paused);
-    move(teams.reduce((a, mi) => a + (FLD().haul.teamsterPerDay || 60) * ((mtype(mi.type) || { apt: {} }).apt.teamster || 1) * minionLvlMult(mi, "teamster"), 0), "byTeamsters");
+    // R75 Union Hall: T2 hauls x1.5; the teamsters on hall duty (1, or 3 at T3) are taken out of the haul rate
+    const per = mi => (FLD().haul.teamsterPerDay || 60) * ((mtype(mi.type) || { apt: {} }).apt.teamster || 1) * minionLvlMult(mi, "teamster") * unionHaulMult(s);
+    const tot = teams.reduce((a, mi) => a + per(mi), 0), tied = unionActive(s) ? unionTied(s) : 0;
+    move(tied ? Math.max(0, tot - tied * (teams.length ? tot / teams.length : 0)) : tot, "byTeamsters");
     let handLeft = FLD().haul.farmerDayCap ?? Infinity; // farmers carry by hand: a whole-farm daily limit
     for (const w of W) {
       if (handLeft <= 1e-9) break;
@@ -354,6 +359,7 @@ registerDayHook("fields", fieldsDay);
 // ---- generic producers: any building listed in fields.haul.producers sends its raw harvest to the haul pile
 export const hauledProducer = type => !!((FLD().haul || {}).producers || {})[type];
 export function toPile(s, st, res, made) {
+  if (unionTier(s) && unionActive(s)) { s.res[res] = (s.res[res] || 0) + made; return made; } // R75 Union Hall T1: auto collect, no pile
   const f = fieldsState(s), cap = made * (FLD().haul.pileDays || 3) + ((f.prodCap || {})[res] || 0);
   const room = Math.max(0, cap - (f.pile[res] || 0)), n = Math.min(made, room);
   f.pile[res] = (f.pile[res] || 0) + n;

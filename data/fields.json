@@ -335,5 +335,77 @@
   "res": "kelpfert",
   "perField": 1,
   "bonus": 0.05
+ },
+ "union": {
+  "_note": "R75 Union Hall (Jeremy approved Oct 24 2026, numbers as simulated in handoffs/fl-unionhall-effects-sim.md). Convenience, not income: sims show about +/-4% coin. One hall for the home quarter (NW); more quarters are an expansion. Gate = Cart Shed + Second Wagon + a teamster (Builder's Yard dropped). Wagons are paid with Wagon items from the vault, else at their coin value. The War-wagon has no item, so it is a coin fee.",
+  "name": "Union Hall",
+  "icon": "🏛️",
+  "quarter": "nw",
+  "gate": {
+   "ups": [
+    "cart1",
+    "cart2"
+   ],
+   "teamster": true
+  },
+  "wagonItem": "wagon",
+  "tiers": [
+   {
+    "id": "warehouse",
+    "name": "Warehouse",
+    "icon": "📦",
+    "cost": {
+     "coin": 4000,
+     "planks": 80
+    },
+    "wagons": 1,
+    "desc": "Auto collect: producers (orchard, coop, pen) skip the haul pile, so nothing is lost at the pile. One teamster stays on hall duty."
+   },
+   {
+    "id": "haulers",
+    "name": "Hauler's Guild",
+    "icon": "🛒",
+    "cost": {
+     "coin": 3000
+    },
+    "wagons": 2,
+    "foreman": 1,
+    "teamsterSpots": 2,
+    "haulMult": 1.5,
+    "desc": "+2 teamster spots and teamsters haul x1.5. One of your teamsters retires into the hall as its foreman."
+   },
+   {
+    "id": "freight",
+    "name": "Freight Exchange",
+    "icon": "🚚",
+    "cost": {
+     "coin": 8000,
+     "ingots": 40
+    },
+    "fees": {
+     "War-wagon": 1000
+    },
+    "tied": 2,
+    "desc": "Extends the hall's reach to estates in other quarters (expansion) and keeps two more teamsters on hall duty. Convenience only."
+   }
+  ],
+  "tiedBase": 1,
+  "hire": {
+   "types": [
+    "laborer"
+   ],
+   "feeMult": 0.75
+  },
+  "stockReadout": [
+   "wheat",
+   "flour",
+   "eggs",
+   "milk",
+   "berries",
+   "wood",
+   "planks",
+   "stone",
+   "ingots"
+  ]
  }
 }

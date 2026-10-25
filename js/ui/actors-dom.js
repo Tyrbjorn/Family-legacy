@@ -1,13 +1,14 @@
 // R73: moves the .rmact pen animals and bees in the room scene (display only). One rAF loop at ~10 fps, only while such sprites are on
 // screen; stops when the tab is hidden or prefers-reduced-motion is on (then they stand still on frame 0).
-import { penPositions, KIND_OPTS } from "./actors.js";
+import { penPositions, avoidPoints, spread, KIND_OPTS } from "./actors.js";
+import { paintWorkers } from "./workers-dom.js";
 const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const R = { raf: 0, last: 0 };
 const P = (v, d) => +((v / d) * 100).toFixed(2) + "%";
 const WALK_FPS = 5; // walk-strip frames per second (4 frames)
 const num = s => s.split(",").map(Number);
 export function paintActors(t) {
-  const groups = new Map(), els = [];
+  const wk = paintWorkers(t), groups = new Map(), els = [];   // R74: room workers first, so the pen animals can steer around them
   for (const el of document.querySelectorAll(".rmact[data-seed]")) {
     const d = el.dataset;
     if (d.stand) { // a stall animal: stands in place, breathes (2 idle frames, one change every ~1.4 s)
@@ -24,7 +25,9 @@ export function paintActors(t) {
   // R73b: one pen at a time: every unit wanders on its own seeded path over the whole open floor, then the pen keeps its units a unit width apart
   for (const g of groups.values()) {
     const seeds = [...g.seeds.keys()].sort((a, b) => g.seeds.get(a) - g.seeds.get(b));
-    g.pos = new Map(penPositions(seeds, t, g.box, { ...(KIND_OPTS[g.k] || {}), still: g.still, bob: g.bob, stops: g.stops }, g.md).map((p, i) => [seeds[i], p]));
+    let ps = penPositions(seeds, t, g.box, { ...(KIND_OPTS[g.k] || {}), still: g.still, bob: g.bob, stops: g.stops }, g.md);
+    if (wk && wk.length && g.k === "pen") for (let i = 0; i < 2; i++) ps = spread(avoidPoints(ps, wk, g.md + 6, g.box), g.md, g.box);   // R74: an animal never stands on a worker
+    g.pos = new Map(ps.map((p, i) => [seeds[i], p]));
   }
   for (const el of els) {
     const d = el.dataset, W = +d.w, H = +d.h, fw = +d.fw, fh = +d.fh, ox = +d.ox || 0, p = groups.get(d.grp || d.seed).pos.get(d.seed);
@@ -39,13 +42,13 @@ export function paintActors(t) {
 }
 function frame(now) {
   R.raf = 0;
-  if (document.hidden || reduced() || !document.querySelector(".rmact[data-seed]")) return;
+  if (document.hidden || reduced() || !document.querySelector(".rmact[data-seed], .rmwk")) return;
   if (now - R.last >= 100) { R.last = now; paintActors(Date.now() / 1000); }
   R.raf = requestAnimationFrame(frame);
 }
 // call after every render of the Estate tab: re-applies the current positions (a re-render resets them to the HTML's time-0 spot) and starts the loop
 export function actorsAfter() {
-  if (!document.querySelector(".rmact[data-seed]")) return;
+  if (!document.querySelector(".rmact[data-seed], .rmwk")) return;
   paintActors(reduced() ? 0 : Date.now() / 1000);
   if (!R.raf && !document.hidden && !reduced()) { R.last = 0; R.raf = requestAnimationFrame(frame); }
 }
