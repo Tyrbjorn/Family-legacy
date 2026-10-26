@@ -2,6 +2,25 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R80",
+   "title": "Seven new courtship gifts",
+   "items": [
+    "🎁 Seven new gifts for courting, sold in shops: Ribbon-tied Herbs, Whetstone and Oil and a Fletched Arrow Set in Millbrook; an Inked Quire and a Wedding Cloth Bolt in Thornwick; a Silvered Thimble in Ashford; an Amber Brooch in the Eyrie.",
+    "❤️ They work like Wildflowers and Honey Cakes: buy one, then give it to a suitor from the Houses page. Pricier gifts warm a suitor faster.",
+    "⚖️ Names, prices and values are a first draft and may change. These are shop-only: no recipes, no loot drops. The map is unchanged."
+   ]
+  },
+  {
+   "build": "R79",
+   "title": "Bigger ground needs a name",
+   "items": [
+    "📜 Bigger land parcels now need renown as well as coin: Cleared Acre 25, Riverbank 60, Meadow 130, Woodlot 200, Hillside 400, Ridge 600, Highland Claim 900, Greenvale 1,200. The Starting Plot is still 150 coin and no renown.",
+    "🔒 A parcel you can't buy yet says why: \"Needs renown 130 (you have 90)\" on the Land page, the town land-for-sale list and the estate map. Quest rewards that give the Plot or the Acre still work.",
+    "📖 New Encyclopedia entry \"Land and renown\" and a note from Orrin the first time renown is what holds you back.",
+    "⚖️ Numbers and wording are a first draft and may change. The map is unchanged."
+   ]
+  },
+  {
    "build": "R78",
    "title": "Teens learn a trade: journeyman jobs",
    "items": [

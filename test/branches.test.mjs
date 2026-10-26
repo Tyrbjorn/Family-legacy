@@ -1,3 +1,4 @@
+const RN=x=>(x.renown=Math.max(x.renown||0,1e5),x); // R79: parcels need renown; these tests are about what the land does
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
@@ -6,7 +7,7 @@ E.setData(D); let seed=11; E.setRng(()=>{seed=(seed*16807)%2147483647;return see
 let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const s=E.newGame(1_700_000_000_000); const f=E.active(s); f.ageDays=20*D.tuning.daysPerYear; E.normalize(s);
 const rich=()=>{const ks=new Set(['coin']);for(const d of D.estate.structures){for(const k in d.cost||{})ks.add(k);for(const u of d.upgrades||[])for(const k in u.cost)ks.add(k);}for(const k of ks) s.res[k]=(s.res[k]||0)+1e5;}; rich();
-['plot','acre','meadow'].forEach(l=>E.buyLand(s,l)); for(const l of D.estate.lands) E.buyLand(s,l.id);
+['plot','acre','meadow'].forEach(l=>E.buyLand(RN(s),l)); for(const l of D.estate.lands) E.buyLand(RN(s),l.id);
 const B=['mansion','fort','towerkeep','abbey'];
 ok(B.every(id=>{const d=E.structDef(id);return d.upgradeFrom==='house'&&d.land===3&&d.slots===8&&d.level===4&&d.branch;}),'four tier-4 branches after House, 3 land, 8 slots');
 ok(E.upgradeOptions('house').length===4&&E.upgradeOptions('cabin').length===1,'House has 4 options, Cabin 1');

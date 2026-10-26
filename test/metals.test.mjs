@@ -1,3 +1,4 @@
+const RN=x=>(x.renown=Math.max(x.renown||0,1e5),x); // R79: parcels need renown; these tests are about what the land does
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
@@ -7,7 +8,7 @@ let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pas
 const ES=D.estate;
 const s=E.newGame(1_700_000_000_000); E.active(s).ageDays=20*360; E.normalize(s);
 for(const d of ES.structures){for(const k in d.cost||{})s.res[k]=(s.res[k]||0)+1e6;for(const u of d.upgrades||[])for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;for(const t of d.tiers||[]){for(const k in t.cost)s.res[k]=(s.res[k]||0)+1e6;for(const u of t.upgrades)for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;}}
-s.res.coin=1e8; for(const l of ES.lands) E.buyLand(s,l.id);
+s.res.coin=1e8; for(const l of ES.lands) E.buyLand(RN(s),l.id);
 const it=id=>D.items.find(i=>i.id===id), rc=id=>D.crafting.recipes.find(r=>r.id===id);
 // metals + generated variants
 const M=D.metals.metals, ladder=['bronze','iron','steel','mithril','adamantium'];

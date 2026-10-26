@@ -27,6 +27,7 @@
    "cost": {
     "coin": 500
    },
+   "renown": 25,
    "towns": [
     "millbrook",
     "thornwick",
@@ -48,6 +49,7 @@
     "coin": 1500,
     "stone": 50
    },
+   "renown": 130,
    "towns": [
     "millbrook",
     "thornwick",
@@ -69,6 +71,7 @@
     "coin": 4000,
     "stone": 150
    },
+   "renown": 400,
    "towns": [
     "millbrook",
     "thornwick",
@@ -90,6 +93,7 @@
    "cost": {
     "coin": 900
    },
+   "renown": 60,
    "requires": "plot",
    "desc": "Narrow strip by the creek",
    "towns": [
@@ -112,6 +116,7 @@
     "coin": 2500,
     "wood": 100
    },
+   "renown": 200,
    "requires": "acre",
    "desc": "Timbered land at the forest edge",
    "towns": [
@@ -134,6 +139,7 @@
     "coin": 9000,
     "stone": 300
    },
+   "renown": 600,
    "requires": "hillside",
    "towns": [
     "millbrook",
@@ -158,6 +164,7 @@
     "stone": 500,
     "blocks": 100
    },
+   "renown": 1200,
    "requires": "ridge",
    "desc": "A whole valley: room for a village (Era 3)",
    "towns": [
@@ -181,6 +188,7 @@
     "coin": 14000,
     "blocks": 80
    },
+   "renown": 900,
    "requires": "hillside",
    "desc": "Requires the Stormcrest Highlands discovered",
    "region": "highlands",
@@ -3196,5 +3204,6 @@
    "3": "Manor",
    "4": "Your village"
   }
- }
+ },
+ "_landRenownNote": "R79: parcels with a renown field need that much household renown (s.renown, now) to BUY. The Starting Plot has none. Quest grants (st3 plot, st8 acre) bypass it. Remove or zero a field to turn that gate off."
 }

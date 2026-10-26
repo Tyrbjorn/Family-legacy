@@ -12,12 +12,18 @@ import { villagePanel } from "./village-panel.js";
 import { endgamePanel } from "./endgame-panel.js";
 import { mapHtml } from "./estate-map.js";
 
+// R79: the renown gate on bigger parcels, as a second muted line. Nothing is shown once renown is met (or for the ungated Starting Plot).
+export function renownLine(id) {
+  const r = E.landRenown(s, id);
+  return r && !r.ok ? `<div class="muted land-renown">🔒 Needs renown ${r.need.toLocaleString("en-US")} (you have ${r.have.toLocaleString("en-US")})</div>` : "";
+}
+
 export function landShop(where) {
   return D.estate.lands
     .filter(l => !s.land.includes(l.id) && (!where || l.towns.includes(where)))
     .map(
       l =>
-        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span></span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(E.bcost(s, l.cost, "land"))}</button></div>`,
+        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span>${renownLine(l.id)}</span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(E.bcost(s, l.cost, "land"))}</button></div>`,
     )
     .join("");
 }
@@ -139,7 +145,7 @@ export function estate() {
 // R77: the old one-page Estate tab is now seven sub-tabs (Overview, Buildings, Land & map, Fields & animals, Union Hall, Workers, Production).
 // The pieces live here; views.js composes them.
 export const landlessCard = () =>
-  `<div class="card"><b>🔒 Landless</b><div class="muted">The family has no land yet. Buy the Starting Plot (2 land slots) under Estate → Land & map, in Millbrook on the Map, or in the shop. Then raise a Shack (1 land slot, 2 station slots) and a Small Garden.</div></div>`;
+  `<div class="card"><b>🔒 Landless</b><div class="muted">The family has no land yet. Buy the Starting Plot (2 land slots) under Estate → Land & map, in Millbrook on the Map, or in the shop. Then raise a Shack (1 land slot, 2 station slots) and a Small Garden. The Starting Plot is yours for the asking: 150 coin and a name on the roll. Bigger ground costs more than coin; the reeve wants to know your family is known. Renown comes from quests, jobs, guild rank, and honest work.</div></div>`;
 export const stageCard = () =>
   `<div class="card"><b>🏞️ ${E.estateStage(s)}</b><div class="muted">${E.established(s) ? "Your holdings are established. Direct idle family members under Family → Members & orders." : "Scrub land. Build a Shack and fill its 2 slots with stations (Bed + Larder = home; Saw Table + Storage = sawmill; Workbench = crafting)."}</div></div>`;
 export const estViewToggle = () =>

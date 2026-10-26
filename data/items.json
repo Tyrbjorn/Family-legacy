@@ -419,6 +419,69 @@
   "value": 30
  },
  {
+  "id": "ribbon_herbs",
+  "name": "Ribbon-tied Herbs",
+  "slot": "gift",
+  "rarity": "Common",
+  "affinity": 10,
+  "value": 15,
+  "noDrop": true
+ },
+ {
+  "id": "whetstone_oil",
+  "name": "Whetstone and Oil",
+  "slot": "gift",
+  "rarity": "Common",
+  "affinity": 12,
+  "value": 25,
+  "noDrop": true
+ },
+ {
+  "id": "arrow_set",
+  "name": "Fletched Arrow Set",
+  "slot": "gift",
+  "rarity": "Common",
+  "affinity": 12,
+  "value": 25,
+  "noDrop": true
+ },
+ {
+  "id": "inked_quire",
+  "name": "Inked Quire",
+  "slot": "gift",
+  "rarity": "Fine",
+  "affinity": 14,
+  "value": 35,
+  "noDrop": true
+ },
+ {
+  "id": "silver_thimble",
+  "name": "Silvered Thimble",
+  "slot": "gift",
+  "rarity": "Fine",
+  "affinity": 14,
+  "value": 40,
+  "noDrop": true
+ },
+ {
+  "id": "amber_brooch",
+  "name": "Amber Brooch",
+  "slot": "gift",
+  "rarity": "Rare",
+  "affinity": 25,
+  "value": 120,
+  "noDrop": true
+ },
+ {
+  "id": "wedding_cloth",
+  "name": "Wedding Cloth Bolt",
+  "slot": "gift",
+  "rarity": "Fine",
+  "affinity": 20,
+  "value": 80,
+  "noDrop": true
+ },
+ {
   "id": "vanguard_tabard",
   "name": "Vanguard Tabard",
   "slot": "armor",

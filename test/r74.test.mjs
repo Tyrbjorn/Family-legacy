@@ -10,7 +10,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, ART=D.art, HL=D.world.haul, A=R.art;
-ok(/^R(?:78|77|76|7[45])/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R74, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R74'&&e.items.length>=3),'changelog has R74');
+ok(/^R(?:80|79|78|77|76|7[45])/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R74, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R74'&&e.items.length>=3),'changelog has R74');
 
 const s=E.newGame(1); E.normalize(s); for(const k of Object.keys(s.res)) s.res[k]=1e6; s.land=Object.keys(D.estatemap.parcels);
 for(const t of ['shack','smithy','sawmill','gristmill','cowpen','chickencoop','tannery','quarry','barracks','kitchen','warehouse']){ try{E.buildStructure(s,t);}catch(e){} }

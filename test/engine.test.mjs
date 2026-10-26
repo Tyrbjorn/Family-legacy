@@ -1,3 +1,4 @@
+const RN=x=>(x.renown=Math.max(x.renown||0,1e5),x); // R79
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
@@ -6,7 +7,7 @@ Object.assign(D.tuning,{secPerDayActive:10,secPerDayOffline:20,founderAge:15,cou
 for(const f of D.estate.structureFiles)D['structures/'+f]=L('structures/'+f);
 E.setData(D); let seed=42; E.setRng(()=>{seed=(seed*16807)%2147483647;return seed/2147483647;});
 const asProf=(m,c)=>{m.paths=null;m.prof=c||undefined;if(c)m.craft=m.craft||{id:'hearth',rank:0,rep:0};if(c)E.migratePaths({members:[m]});else m.paths=[];};
-let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(g,l));const st=E.buildStructure(g,'shack');st.type=type;const fb=pieces.filter(x=>x==='minionbunk');st.pieces=pieces.filter(x=>x!=='minionbunk');if(fb.length)g.structures.push({uid:'stb'+g.nextId++,type:'bunkhouse',pieces:fb.map(()=>'bunk'),up:0});return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
+let pass=0; const estate=(g,pieces=['bunk'],type='house')=>{g.res.coin+=5000;g.res.wood+=500;g.res.stone+=500;g.res.planks=(g.res.planks||0)+100;g.res.blocks=(g.res.blocks||0)+200;['plot','acre','meadow'].forEach(l=>E.buyLand(RN(g),l));const st=E.buildStructure(g,'shack');st.type=type;const fb=pieces.filter(x=>x==='minionbunk');st.pieces=pieces.filter(x=>x!=='minionbunk');if(fb.length)g.structures.push({uid:'stb'+g.nextId++,type:'bunkhouse',pieces:fb.map(()=>'bunk'),up:0});return st;}; const setRngOK=()=>{};const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;console.log('ok',m);};
 ok(D.skills.length>=20&&D.quests.length>=25&&D.items.length>=40&&D.furniture.length===10&&D.buildings.length===6,'content counts');
 const t0=1_700_000_000_000; let s=E.newGame(t0);
 const f=E.active(s); E.advanceReal(s,10*120); ok(s.day===120,'active ticks: 120 days in 1200s');
@@ -35,7 +36,7 @@ ok(E.switchTo(s,kid.id)&&E.active(s)===kid,'switch members');
 E.kill(s,kid,'test'); ok(s.activeId!==kid.id&&s.needSuccession,'succession on active death');
 for(const m of E.living(s)) E.kill(s,m,'test'); ok(s.gameOver,'game over when all die (no safety net)');
 const g=E.newGame(t0); ok(E.estateStage(g)==='Landless'&&!E.established(g)&&!E.buildStructure(g,'shack'),'estate locked until land is bought');
-g.res.coin=500;g.res.wood=50; ok(E.buyLand(g,'plot')&&E.landSlots(g)===2&&E.estateStage(g)==='Scrub Plot','buy starting plot: 2 land slots');
+g.res.coin=500;g.res.wood=50; ok(E.buyLand(RN(g),'plot')&&E.landSlots(g)===2&&E.estateStage(g)==='Scrub Plot','buy starting plot: 2 land slots');
 g.res.stone=(g.res.stone||0)+50; g.res.blocks=200; const sh=E.buildStructure(g,'shack'); ok(sh&&E.established(g)&&E.landUsed(g)===1&&E.freeSlots(g,sh)===2&&E.estateStage(g)==='Scrub Plot','Shack: 1 land slot, 2 slots');
 g.res.coin+=200;g.res.wood+=100; E.placePiece(g,sh.uid,'bunk'); g.res.coin+=200;g.res.wood+=50;g.res.stone+=20; E.buildStructure(g,'bunkhouse');
 const gm=E.active(g); E.setAction(g,{type:'gather',target:'creek'}); E.advanceReal(g,100); ok(g.res.stone>0,'gather from resource node');
@@ -44,7 +45,7 @@ ok(E.moveItem(g,gm,'buckler',true)&&E.equip(g,gm,'buckler','bag')&&gm.equip.offh
 g.res.coin=1000; let rv=0; for(let i=0;i<20;i++) if(E.rumor(g,'outskirts')?.id) rv++; ok(rv>0&&g.revealed.length===rv,'rumors reveal hidden content'); ok(g.minions.length>0,'rumors can bring recruits');
 const h=E.newGame(t0); h.res.coin=1000; h.res.wood=100; h.res.stone=50;
 ok(!E.hire(h,'millbrook','laborer'),'cannot hire without housing');
-E.buyLand(h,'plot'); const hs=E.buildStructure(h,'shack'); h.structures.push({uid:'stb'+h.nextId++,type:'bunkhouse',pieces:[],up:0}); const hc=h.res.coin;
+E.buyLand(RN(h),'plot'); const hs=E.buildStructure(h,'shack'); h.structures.push({uid:'stb'+h.nextId++,type:'bunkhouse',pieces:[],up:0}); const hc=h.res.coin;
 ok(E.hire(h,'millbrook','laborer')&&h.minions.length===1&&h.res.coin===hc-40,'hire minion once a Bunk exists');
 ok(!E.assignMinion(h,h.minions[0].uid,'farm'),'jobs need spots (no farm yet)'); h.res.coin+=500; h.res.wood+=100; h.land.push('acre'); E.build(h,'farm'); ok(E.assignMinion(h,h.minions[0].uid,'farm'),'assign minion to farm');
 const f0=h.res.food; E.advanceReal(h,10*10); ok(h.res.food>f0,'farming minion adds food');
@@ -111,9 +112,9 @@ sm.guild={id:'lodge',rank:1,rep:0}; E.advanceReal(SP,10); ok(SP.minions.some(x=>
 SP.doneQuests.push('q_hermit'); E.advanceReal(SP,10); ok(SP.minions.some(x=>x.type==='hermitpupil'&&/Hermit/.test(x.source)),'quest grants recruited NPC');
 while(E.minionRoom(SP)) E.addMinion(SP,'refugee','t'); sm.cls='archmage'; E.advanceReal(SP,10); ok(SP.minions.some(x=>x.type==='familiar'),'specials bypass the follower cap');
 // land, buildings & stations
-const LS=E.newGame(t0); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.stone=1e4; E.buyLand(LS,'plot'); const s1x=E.buildStructure(LS,'shack');
+const LS=E.newGame(t0); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.stone=1e4; E.buyLand(RN(LS),'plot'); const s1x=E.buildStructure(LS,'shack');
 ok(E.build(LS,'garden')&&E.landUsed(LS)===2&&!E.buildStructure(LS,'shack')&&E.structIssue(LS,'shack')==='no free land slot','Shack + Small Garden fill the starting plot');
-ok(!E.buyLand(LS,'meadow')&&E.buyLand(LS,'acre')&&E.landSlots(LS)===4,'land purchases are sequential and add slots');
+ok(!E.buyLand(RN(LS),'meadow')&&E.buyLand(RN(LS),'acre')&&E.landSlots(LS)===4,'land purchases are sequential and add slots');
 ok(E.placePiece(LS,s1x.uid,'bunk')&&E.placePiece(LS,s1x.uid,'larder')&&!E.placePiece(LS,s1x.uid,'storage')&&E.placeIssue(LS,s1x.uid,'storage')==='building full','Shack holds 2 pieces (Bed + Larder home)');
 ok(E.bedrooms(LS)===3&&E.foodCap(LS)===D.estate.caps.foodBase+300,'Bed adds beds, Larder adds food capacity');
 ok(E.activeSynergies(s1x).some(y=>y.id==='cozy')&&E.eff(LS,'rest')>=0.3,'Bed+Larder synergy: Cozy Home');
@@ -127,7 +128,7 @@ ok(E.activeSynergies(s3w).some(y=>y.id==='smithy')&&E.craftQuality(LS)>=0.3,'Wor
 const s3x=E.buildStructure(LS,'shack'); E.placePiece(LS,s3x.uid,'studydesk'); const lore0=E.eff(LS,'xp'); E.buyFitting(LS,s3x.uid,'studycorner'); ok(E.activeSynergies(s3x).some(y=>y.id==='nook'),'Study Desk+Study Corner synergy: Scholar\'s Nook');
 ok(E.removePiece(LS,s3x.uid,'studydesk')&&LS.pieceStore.includes('studydesk')&&!E.activeSynergies(s3x).length&&E.placePiece(LS,s3x.uid,'studydesk',true),'remove to storage and re-place');
 // minion housing & food
-ok(!E.addMinion(LS,'laborer','t'),'no bunk → follower cannot join'); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.planks=100; E.buyLand(LS,'meadow'); const bh=E.buildStructure(LS,'bunkhouse');
+ok(!E.addMinion(LS,'laborer','t'),'no bunk → follower cannot join'); LS.res.coin=1e5; LS.res.wood=1e4; LS.res.planks=100; E.buyLand(RN(LS),'meadow'); const bh=E.buildStructure(LS,'bunkhouse');
 ok(bh&&E.housingCap(LS,'bunk')===4,'Bunkhouse houses 4');
 E.addMinion(LS,'laborer','t'); E.addMinion(LS,'woodsman','t'); E.addMinion(LS,'woodsman','t'); LS.land.push('meadow'); const trh=E.buildStructure(LS,'shack'); E.placePiece(LS,trh.uid,'toolrack');
 ok(E.assignMinion(LS,LS.minions[1].uid,'gather')&&E.assignMinion(LS,LS.minions[2].uid,'gather')&&!E.assignMinion(LS,LS.minions[0].uid,'gather'),'minion job spots come from stations (Tool Rack: 2)');
@@ -153,7 +154,7 @@ ok(D.classes.filter(c=>c.tier>0&&!c.retired).every(c=>{const g=E.classGuild(c.id
 const MG=JSON.parse(E.serialize(G,t0)); delete MG.schema; MG.members[0].guild=null; MG.members[0].cls='ranger'; MG._norm=false; E.normalize(MG); ok(MG.members[0].guild.id==='lodge'&&MG.members[0].cls==='ranger','old classed members auto-join matching guild');
 // crafting, inventory, professions, minion gear
 const K=E.newGame(t0); const km2=K.members[0]; km2.ageDays=20*360; K.res.coin=1e5; K.res.wood=300; K.res.planks=100; K.res.ingots=100; K.res.hides=50; K.res.cloth=50; K.res.potions=20; K.res.ore=30; K.res.stone=300;
-['plot','acre','meadow'].forEach(l=>E.buyLand(K,l)); K.res.blocks=100; const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p)); K.land.push('meadow'); E.buildStructure(K,'smithy');
+['plot','acre','meadow'].forEach(l=>E.buyLand(RN(K),l)); K.res.blocks=100; const ks=E.buildStructure(K,'shack'); E.upgradeStructure(K,ks.uid); ['workbench','storage','stall'].forEach(p=>E.placePiece(K,ks.uid,p)); K.land.push('meadow'); E.buildStructure(K,'smithy');
 ok(E.itemDef('c|iron_sword|masterwork').cp>E.itemDef('c|iron_sword|crude').cp&&E.itemDef('c|iron_sword|fine').value>E.itemDef('iron_sword').value,'crafted quality tiers scale stats and value');
 ok(E.rollQuality(-1)==='crude'&&E.rollQuality(2)==='masterwork','quality roll spans Crude→Masterwork');
 const low=E.qualityScore(K,km2,E.recipeDef('r_sword')); km2.skills.smithing.lvl=50; const hi=E.qualityScore(K,km2,E.recipeDef('r_sword')); ok(hi>low,'skill raises craft quality');
@@ -180,7 +181,7 @@ av.skills.monsterlore.lvl=30; av.skills.swordsmanship.lvl=30; ok(!E.evolve(AV,av
 const AV2=E.newGame(t0); const a2=AV2.members[0]; a2.ageDays=20*360; AV2.res.coin=1e5; a2.stats.STR=10; a2.skills.swordsmanship.lvl=6; E.joinAdventurers(AV2,a2); ok(E.joinGuild(AV2,a2,'vanguard')&&a2.cls==='fighter'&&a2.adv,'class guild replaces Adventurer as primary; rank track kept');
 // crafter playstyle without questing: idle crafter on standing order + merchant
 const CP=E.newGame(t0); const cz=CP.members[0]; cz.ageDays=25*360; cz.skills.smithing.lvl=30; asProf(cz,'blacksmith'); CP.res.coin=2000; CP.res.wood=200; CP.res.planks=200; CP.res.ingots=200; CP.res.stone=200; CP.res.food=400;
-['plot','acre'].forEach(l=>E.buyLand(CP,l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p)); {const c0=CP.res.coin; CP.res.coin+=5000; CP.land.push('meadow'); E.buildStructure(CP,'smithy'); CP.res.coin=c0;}
+['plot','acre'].forEach(l=>E.buyLand(RN(CP),l)); const cs1=E.buildStructure(CP,'shack'); E.upgradeStructure(CP,cs1.uid); ['workbench','storage','larder'].forEach(p=>E.placePiece(CP,cs1.uid,p)); {const c0=CP.res.coin; CP.res.coin+=5000; CP.land.push('meadow'); E.buildStructure(CP,'smithy'); CP.res.coin=c0;}
 CP.members.push({...JSON.parse(JSON.stringify(cz)),id:99,name:'Kip'}); CP.activeId=99; E.setOrder(CP,cz.id,{type:'craft'});
 E.advanceReal(CP,10*40); ok(CP.vault.filter(x=>x.startsWith('c|')).length>=3,'idle family member crafts on standing order');
 const crafted=CP.vault.filter(x=>x.startsWith('c|')); const worth=crafted.reduce((a,id)=>a+E.stallValue(CP,E.itemDef(id)),0); ok(worth>=600,'crafted gear is worth real money ('+worth+'🪙 from ~40 idle days)');
@@ -294,14 +295,14 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
 { const N=E.newGame(t0); estate(N,['minionbunk','minionbunk'],'shack'); N.res.food=1e4; const a=E.addMinion(N,'laborer','t'), b=E.addMinion(N,'guard','t');
  ok(a.cls==='n_peasant'&&b.cls==='n_peasant','all followers start as Peasant');
  ok([...new Set(E.evolveOptions(a).map(c=>c.branch))].sort().join()==='divine,economic,magic,military','Peasant branches into Military/Economic/Magic/Divine');
- ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.minionEvolveIssue(N,a,'n_militia').startsWith('needs Guardhouse'),'tier 1 needs the class building'); N.res.coin+=1e4; N.res.wood+=500; N.res.stone+=500; E.buyLand(N,'hillside'); N.structures.push({uid:'stB',type:'barracks',pieces:['weaponrack'],up:0}); ok(/guard skill 2/.test(E.minionEvolveIssue(N,a,'n_militia')||''),'title needs key-job skill'); a.skills={guard:16}; ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
+ ok(E.minionEvolveIssue(N,a,'n_militia')==='Lv 5','evolution needs a level threshold'); a.lvl=5; ok(E.minionEvolveIssue(N,a,'n_militia').startsWith('needs Guardhouse'),'tier 1 needs the class building'); N.res.coin+=1e4; N.res.wood+=500; N.res.stone+=500; E.buyLand(RN(N),'hillside'); N.structures.push({uid:'stB',type:'barracks',pieces:['weaponrack'],up:0}); ok(/guard skill 2/.test(E.minionEvolveIssue(N,a,'n_militia')||''),'title needs key-job skill'); a.skills={guard:16}; ok(E.evolveMinion(N,a.uid,'n_militia')&&a.cls==='n_militia','player picks the path');
  ok(!E.evolveMinion(N,a.uid,'n_adept'),'cannot jump branches'); a.lvl=10; ok(E.evolveOptions(a).length>=2,'branches split again (choice)');
  a.job='guard'; const m0=E.minionLvlMult(a); a.cls='n_soldier'; ok(E.minionLvlMult(a)>m0,'NPC class boosts its jobs'); ok(D.minions.npcClasses.every(c=>Object.values(c.bonus).every(v=>v<=0.7)),'NPC classes stay weaker than PC classes');
  a.job='farm'; E.advanceReal(N,10*20); ok(E.minionSkillLvl(a,'farm')>=1,'minions build job skills');
  const sp={...a,uid:'x',special:true,cls:undefined}; ok(E.evolveOptions(sp).length===0,'special companions keep their own path');
  const O=JSON.parse(JSON.stringify(N)); O.minions.forEach(m=>delete m.cls); E.normalize(O); ok(O.minions.every(m=>m.cls==='n_peasant'),'old followers migrate to Peasant'); }
 { const L=E.newGame(t0); ok(D.estate.lands.length>=8,'8+ land parcels with rising cost'); ok(D.estate.lands.every(l=>l.towns.length>=2),'land sold in several towns');
- L.res.coin=1e6; L.res.stone=1e4; L.res.wood=1e4; L.res.blocks=1e3; for(const id of ['plot','acre','meadow','hillside','ridge','valley','riverbank','woodlot']) E.buyLand(L,id); ok(L.land.length===8&&E.landSlots(L)>=19,'chain of purchases up to Greenvale');
+ L.res.coin=1e6; L.res.stone=1e4; L.res.wood=1e4; L.res.blocks=1e3; for(const id of ['plot','acre','meadow','hillside','ridge','valley','riverbank','woodlot']) E.buyLand(RN(L),id); ok(L.land.length===8&&E.landSlots(L)>=19,'chain of purchases up to Greenvale');
  ok(!E.canBuyLand(L,'highclaim'),'highland claim needs the region discovered'); L.discovered.push('highlands'); ok(E.canBuyLand(L,'highclaim'),'discovered region opens its land');
  L.res.planks=1e3; L.res.ingots=1e3; L.res.copper=1e3;
  const q=E.buildStructure(L,'quarry'); ok(q&&E.structDef('quarry').land===1&&q.pieces[0]==='quarrypit'&&!E.removePiece(L,q.uid,'quarrypit'),'special 1-slot Quarry with built-in, non-removable pit');
@@ -319,7 +320,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const m1=H.members[0]; E.setAction(H,{type:'gather',target:'gameTrail'}); E.advanceReal(H,10*20); const meatH=H.res.meat||0;
  const m2=H2.members[0]; m2.cls=null; m2.guild=null; E.setAction(H2,{type:'gather',target:'gameTrail'}); E.advanceReal(H2,10*20); ok(meatH>(H2.res.meat||0),'Hunter gathers more meat and hides');
  const F=E.newGame(t0); estate(F,[],'shack'); F.res.coin=1e5; F.res.wood=1e3; F.res.stone=1e3; F.res.planks=500; F.res.blocks=500; F.res.ingots=200; F.res.copper=200; F.res.hides=200; F.res.cloth=50; F.res.leather=50;
- E.buyLand(F,'hillside'); E.buyLand(F,'riverbank'); const ids=['hunterscabin','herbalistshack','fishinghut','apiary','chickencoop','tannery']; const built=ids.map(id=>E.buildStructure(F,id)); ok(built.every(Boolean)&&ids.every(id=>E.structDef(id).land===1&&E.structDef(id).upgrades.length===3&&E.structDef(id).slots===1),'six new 1-land special buildings with a slot and an upgrade line');
+ E.buyLand(RN(F),'hillside'); E.buyLand(RN(F),'riverbank'); const ids=['hunterscabin','herbalistshack','fishinghut','apiary','chickencoop','tannery']; const built=ids.map(id=>E.buildStructure(F,id)); ok(built.every(Boolean)&&ids.every(id=>E.structDef(id).land===1&&E.structDef(id).upgrades.length===3&&E.structDef(id).slots===1),'six new 1-land special buildings with a slot and an upgrade line');
  ok(E.structDef('herbgarden').name==='Garden'&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='food')&&E.pieceDef('herbbeds').bonus.processes.some(p=>p.out==='thyme'),'Garden makes herbs (thyme) and food');
  F.res.meat=0;F.res.fish=0;F.res.honey=0;F.res.eggs=0;F.res.remedies=0;F.res.leather=0; F.res.thyme=100; F.res.wheat=50; F.reserve.thyme=0; E.buyAnimals(F,'chickencoop'); E.advanceReal(F,10*5); F.res.eggs+=(F.fields?.pile?.eggs||0);
  ok(['meat','fish','honey','eggs','remedies','leather'].every(k=>F.res[k]>0),'new resources: meat, fish, honey, eggs, remedies, leather');
@@ -339,7 +340,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  for(const id of ['magestower','shrinehouse','barracks','thievesden','advlodge']){ const d=by(id); ok(d.land===1&&d.slots===1&&d.upgrades.length===3&&d.houses.cap===2&&d.upgrades.every(u=>u.cap===1),id+': 1 land, 1 slot, 3 no-slot upgrades, 2+1/upgrade beds'); }
  const npcIds=D.minions.npcClasses.filter(c=>c.id!=='n_peasant').map(c=>c.id), housed=new Set(ES.flatMap(d=>[...(d.houses?.classes||[]),...(d.specs||[]).flatMap(sp=>sp.houses)])); ok(npcIds.every(id=>housed.has(id)),'every NPC class has a class building: '+npcIds.filter(id=>!housed.has(id)).join());
  const boosted=new Set(ES.map(d=>d.guildBoost?.guild).filter(Boolean)); ok([...D.guilds.guilds.map(g=>g.id),'adventurers'].every(g=>boosted.has(g)),'every PC guild line has a class building');
- const B=E.newGame(t0); estate(B,[],'shack'); Object.assign(B.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50}); E.buyLand(B,'hillside');
+ const B=E.newGame(t0); estate(B,[],'shack'); Object.assign(B.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50}); E.buyLand(RN(B),'hillside');
  const sh=E.buildStructure(B,'shrinehouse'); ok(E.structName(sh)==='Wayside Shrine','starts as a Shrine'); E.upgradeSpecial(B,sh.uid); E.upgradeSpecial(B,sh.uid); E.upgradeSpecial(B,sh.uid); ok(E.structName(sh)==='Chapel'&&E.classHomeCap(sh)===5,'Shrine upgrades into a Chapel (5 beds)');
  const m=B.members[0]; m.ageDays=20*360; m.guild={id:'church',rank:0,rep:0}; const mid=B.members.length; const tw=E.buildStructure(B,'magestower'); ok(tw&&E.hasPiece(B,'arcanefocus'),"Mage's Tower built");
  B.res.dust=0; E.advanceReal(B,10*3); ok(B.res.dust>0,'tower makes arcane dust'); B.res.dust=10; B.res.cloth=5; ok(!E.recipeIssue(B,m,E.recipeDef('r_scroll')),'scroll crafting at the Arcane Focus');
@@ -351,7 +352,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const X2=JSON.parse(JSON.stringify(X1)); estate(X2,[],'shack'); Object.assign(X2.res,{coin:1e5,stone:500,planks:50}); E.buildStructure(X2,'magestower'); E.advanceReal(X1,10*20); E.advanceReal(X2,10*20);
  const tot=m=>m.skills.arcana.lvl*1e4+m.skills.arcana.xp; ok(tot(X2.members[0])>tot(xm),"Mage's Tower boosts Magic guild members' XP"); }
 // multi-building special minions, building-gated evolution
-{ const W=E.newGame(t0); estate(W,['minionbunk'],'shack'); Object.assign(W.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50,food:1e4}); E.buyLand(W,'hillside'); E.buyLand(W,'riverbank');
+{ const W=E.newGame(t0); estate(W,['minionbunk'],'shack'); Object.assign(W.res,{coin:1e5,wood:1e3,stone:1e3,planks:500,blocks:500,ingots:200,copper:200,cloth:50,dust:50,food:1e4}); E.buyLand(RN(W),'hillside'); E.buyLand(RN(W),'riverbank');
  const wt=D.minions.types.find(t=>t.id==='witch'), sm=D.minions.types.find(t=>t.id==='shaman'); ok(wt.source.buildings.length>=2&&sm.source.buildings.length>=2,'Witch and Shaman need multiple buildings');
  ok(E.sourceLabel(wt).includes("Herbalist's Shack")&&E.sourceLabel(wt).includes(' or '),'requirements labelled (with alternatives)');
  E.buildStructure(W,'herbalistshack'); E.advanceReal(W,10); ok(!W.minions.some(x=>x.type==='witch'),'one building is not enough');
@@ -364,7 +365,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const mi2=W.minions.find(x=>!x.special&&x!==mi)||E.addMinion(W,'laborer','t'); if(mi2){ mi2.cls='n_militia'; mi2.lvl=10; ok(E.minionEvolveIssue(W,mi2,'n_huntsman').includes("Hunter's Cabin"),'specialties need their specific building'); }
  const O=JSON.parse(JSON.stringify(W)); O.minions.push({...O.minions[0],uid:'old',cls:'n_herbwife',special:false}); E.normalize(O); ok(O.minions.find(x=>x.uid==='old').cls==='n_herbalist','old healer-path followers migrate to Herbalist'); }
 // 3-stage building chains, specialties, crossover Paladin
-{ const K=E.newGame(t0); estate(K,['minionbunk'],'shack'); Object.assign(K.res,{coin:1e6,wood:5e3,stone:5e3,planks:2e3,blocks:2e3,ingots:1e3,copper:500,cloth:200,dust:200,food:1e4}); E.buyLand(K,'hillside'); E.buyLand(K,'riverbank');
+{ const K=E.newGame(t0); estate(K,['minionbunk'],'shack'); Object.assign(K.res,{coin:1e6,wood:5e3,stone:5e3,planks:2e3,blocks:2e3,ingots:1e3,copper:500,cloth:200,dust:200,food:1e4}); E.buyLand(RN(K),'hillside'); E.buyLand(RN(K),'riverbank');
  for(const id of ['barracks','magestower','shrinehouse','smithy']){ const d=E.structDef(id); ok(d.stages.length===3&&d.specs.length===3,id+': 3-stage chain with 3 specialties'); }
  const g=E.buildStructure(K,'barracks'); ok(E.structName(g)==='Guardhouse'&&E.structStage(g)===1,'starts as Guardhouse (stage 1)');
  E.upgradeSpecial(K,g.uid); E.upgradeSpecial(K,g.uid); ok(E.structName(g)==='Barracks'&&E.structStage(g)===2,'upgrades into Barracks (stage 2)');
@@ -425,7 +426,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  ok(D.activities.some(a=>a.skills.includes('focus')),'Focus has a themed activity'); }
 { const G=E.newGame(t0); E.normalize(G); const m=G.members[0]; m.renown=0; E.addRenown(G,m,40); ok(m.renown===40&&G.renown>=40,'renown credited to member and family');
  const sp=E.newMember(G,{age:30}); G.members.push(sp); sp.renown=100; E.kill(G,sp,'died'); ok(G.legacy.renown===0,'no graveyard: renown not banked');
- estate(G,[],'shack'); Object.assign(G.res,{coin:1e5,stone:500,blocks:500,ingots:200}); E.buyLand(G,'hillside'); const gy=E.buildStructure(G,'graveyard'); ok(gy&&E.captureRate(G)===0.25,'Graveyard captures 25%');
+ estate(G,[],'shack'); Object.assign(G.res,{coin:1e5,stone:500,blocks:500,ingots:200}); E.buyLand(RN(G),'hillside'); const gy=E.buildStructure(G,'graveyard'); ok(gy&&E.captureRate(G)===0.25,'Graveyard captures 25%');
  const b=E.newMember(G,{age:30}); G.members.push(b); b.renown=100; E.kill(G,b,'died'); ok(G.legacy.renown===25,'banked 25 Legacy Renown');
  E.upgradeSpecial(G,gy.uid); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Crypt'&&E.captureRate(G)===0.5,'Crypt captures 50%'); E.upgradeSpecial(G,gy.uid); ok(E.structName(gy)==='Mausoleum'&&E.captureRate(G)===0.75,'Mausoleum 75%');
  G.legacy.renown=1000; const ls=m.lifespan; ok(E.buyLegacy(G,'life')&&E.lifeBonus(G)===2,'Long-Lived Blood +2 years');
@@ -445,7 +446,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const sz=E.serialize(H).length; ok(sz<200000,'save stays small with a full chronicle ('+sz+' bytes)'); }
 { const A=E.newGame(t0); E.normalize(A); ok(D.achievements.length>=12&&D.achievements.some(a=>a.hidden),'data-driven achievements incl. hidden');
  const a=D.achievements.find(x=>x.id==='a_land'); ok(E.achProgress(A,a).have===0&&!E.achProgress(A,a).done,'progress tracked');
- A.res.coin=1e5; Object.assign(A.res,{wood:1e4,stone:1e4,planks:1e3,blocks:1e3}); for(let k=0;k<3;k++) for(const l of D.estate.lands) E.buyLand(A,l.id); A.land=A.land.length>=3?A.land:['plot','acre','meadow']; A.ach={}; const c0=A.res.coin; E.checkAchievements(A); ok(A.ach.a_land!=null&&A.res.coin===c0+a.reward.coin,'achievement unlocks with reward');
+ A.res.coin=1e5; Object.assign(A.res,{wood:1e4,stone:1e4,planks:1e3,blocks:1e3}); for(let k=0;k<3;k++) for(const l of D.estate.lands) E.buyLand(RN(A),l.id); A.land=A.land.length>=3?A.land:['plot','acre','meadow']; A.ach={}; const c0=A.res.coin; E.checkAchievements(A); ok(A.ach.a_land!=null&&A.res.coin===c0+a.reward.coin,'achievement unlocks with reward');
  ok(A.chronicle.some(e=>e.c==='achievement'&&e.t.includes('Landholder')),'achievement logged to chronicle'); E.checkAchievements(A); ok(A.chronicle.filter(e=>e.t.includes('Landholder')).length===1,'achievements fire once');
  const p=E.newMember(A,{age:20}); const k=E.newMember(A,{age:0,parents:[p.id]}); const g=E.newMember(A,{age:0,parents:[k.id]}); A.members.push(p,k,g); ok(E.metric(A,'generations')===3,'generations counted'); }
 { const W=E.newGame(t0); E.normalize(W); ok(D.events.types.length>=6,'6+ world event types');
@@ -887,7 +888,7 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
   const H=E.newGame(t0); const t0c=E.haulTier(H); ok(t0c.id==='foot','on foot by default');
   H.vault.push('c|handcart|fine'); ok(E.haulTier(H).id==='handcart'&&E.haulTier(H).carry>t0c.carry,'handcart raises carry');
   ok(/stall/.test(E.buyAnimalIssue(H,'ox','millbrook')||''),'animals need a stable stall');
-  H.res.coin=1e5;H.res.wood=1e3;H.res.planks=1e3;H.res.stone=1e3; E.buyLand(H,'plot'); const st=E.buildStructure(H,'shack'); ok(E.placePiece(H,st.uid,'stablestall')&&E.stalls(H)===2,'Stable Stalls give 2 stalls');
+  H.res.coin=1e5;H.res.wood=1e3;H.res.planks=1e3;H.res.stone=1e3; E.buyLand(RN(H),'plot'); const st=E.buildStructure(H,'shack'); ok(E.placePiece(H,st.uid,'stablestall')&&E.stalls(H)===2,'Stable Stalls give 2 stalls');
   ok(E.buyAnimal(H,'ox','millbrook')&&!E.buyAnimal(H,'horse','millbrook'),'animals bought only where sold');
   H.vault.push('c|wagon|crude'); H.res.hay=100; E.feedAnimals(H); ok(E.haulTier(H).id==='oxwagon'&&H.res.hay<100,'ox + wagon: wagon tier; feed eaten');
   H.res.hay=0; H.res.wheat=0; H.res.vegetables=0; E.feedAnimals(H); ok(H.animalsFed===false&&E.haulTier(H).id==='handcart','unfed animals do not haul');
@@ -896,8 +897,8 @@ const est=g=>{estate(g,['bunk']);g.buildings.farm=(g.buildings.farm||0)+60;kids(
   ok(D.crafting.recipes.find(r=>r.id==='r_wagon').path==='carpenter'&&/Journeyman Carpenter/.test(E.recipeIssue(H,H.members[0],E.recipeDef('r_wagon'))||'')||true,'wagon is a Carpenter recipe');
   // parcels
   const P=E.newGame(t0); P.res.coin=1e5; P.res.stone=1e3; P.res.wood=1e3; const pm=P.members[0]; pm.ageDays=20*360;
-  E.buyLand(P,'plot'); ok(/stone outcrop/.test(E.structIssue(P,'quarry')||''),'Quarry needs land with a stone outcrop');
-  E.buyLand(P,'acre'); ok(!E.structIssue(P,'quarry')&&E.ownedFeatures(P).includes('stone_outcrop'),'Cleared Acre has an outcrop');
+  E.buyLand(RN(P),'plot'); ok(/stone outcrop/.test(E.structIssue(P,'quarry')||''),'Quarry needs land with a stone outcrop');
+  E.buyLand(RN(P),'acre'); ok(!E.structIssue(P,'quarry')&&E.ownedFeatures(P).includes('stone_outcrop'),'Cleared Acre has an outcrop');
   ok(E.structFeatureMult(P,'quarry')>1,'quarry on a suitable parcel gets a steady-output bonus');
   ok(E.actionAllowed(P,pm,{type:'parcel',target:'stone_outcrop'})&&!E.actionAllowed(P,pm,{type:'parcel',target:'ore_vein'}),'work only parcels you own');
   P.res.stone=0; const s0=0; E.setAction(P,{type:'parcel',target:'stone_outcrop'}); E.advanceReal(P,30); ok(P.res.stone>s0&&!E.isBusy(pm),'parcel work: resources with no travel');

@@ -24,6 +24,7 @@ export function coachHelpers(E, D) {
     introText: id => { const l = ((D.intros && D.intros.lines) || []).find(x => x.id === id); return l ? l.intro : ""; },
     level: m => E.level(m),
     era: s => ((E.era && E.era(s)) || {}).n | 0,
+    landGated: s => (D.estate.lands || []).some(l => !arr(s.land).includes(l.id) && (!l.requires || arr(s.land).includes(l.requires)) && (!l.region || E.regionKnown(s, l.region)) && !!E.landRenown(s, l.id) && !E.landRenown(s, l.id).ok), // R79: the next parcel is held back only by renown
   };
 }
 
@@ -114,6 +115,7 @@ const TRIG = {
   farmstead: (s, h) => hasLand(s) && h.estateScore(s) >= h.farmScore,
   union: s => !!(s.fields && s.fields.ups && s.fields.ups.cart1 && s.fields.ups.cart2) && arr(s.minions).some(m => m.job === "teamster") && !(s.union && s.union.tier),
   automation: s => arr(s.minions).length > 0 && arr(s.structures).length > 0,
+  landgate: (s, h) => hasLand(s) && h.landGated(s),
   heirs: (s, h) => living(s).some(m => { const y = Math.floor((m.ageDays | 0) / h.Y); return y >= h.teen && y < h.adult; }),
   legacy: s => !!(s.legacy && s.legacy.earned > 0),
   sea: s => visited(s, "saltmere") && done(s).includes("st4"),

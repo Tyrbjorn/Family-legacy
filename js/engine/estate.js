@@ -121,16 +121,26 @@ export const craftQuality = s => eff(s, "craftQuality");
 
 export const buildingLevelName = (b, lv) => b.name;
 
-export function canBuyLand(s, id) {
-  const l = ES().lands.find(x => x.id === id);
-  return (
-    !!l &&
-    (!l.region || regionKnown(s, l.region)) &&
-    !(s.land || []).includes(id) &&
-    (!l.requires || s.land.includes(l.requires)) &&
-    afford(s, bcost(s, l.cost, "land"))
-  );
+// R79: bigger parcels also need household renown (data/estate.json `renown`; no field = no gate; the Starting Plot has none). Gate is on CURRENT s.renown.
+export function landRenown(s, id) {
+  const l = ES().lands.find(x => x.id === id), need = (l && l.renown) || 0;
+  return need > 0 ? { need, have: Math.floor(s.renown || 0), ok: (s.renown || 0) >= need } : null;
 }
+
+// why a parcel cannot be bought right now (null = it can). Same tests, in the same order, as the old canBuyLand; renown is the one new test.
+export function landIssue(s, id) {
+  const l = ES().lands.find(x => x.id === id);
+  if (!l) return "no such parcel";
+  if ((s.land || []).includes(id)) return "owned";
+  if (l.region && !regionKnown(s, l.region)) return "needs the region discovered";
+  if (l.requires && !(s.land || []).includes(l.requires)) return "needs " + (ES().lands.find(x => x.id === l.requires) || {}).name;
+  const r = landRenown(s, id);
+  if (r && !r.ok) return `Needs renown ${r.need.toLocaleString("en-US")} (you have ${r.have.toLocaleString("en-US")})`;
+  if (!afford(s, bcost(s, l.cost, "land"))) return "cannot afford";
+  return null;
+}
+
+export const canBuyLand = (s, id) => !landIssue(s, id);
 
 export function buyLand(s, id) {
   if (!canBuyLand(s, id)) return false;

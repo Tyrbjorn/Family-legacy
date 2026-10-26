@@ -1,3 +1,4 @@
+const RN=x=>(x.renown=Math.max(x.renown||0,1e5),x); // R79: parcels need renown; these tests are about what the land does
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
@@ -13,7 +14,7 @@ ok(new Set(tiered.flatMap(d=>d.tiers.map(t=>t.name))).size===34,'34 distinct tie
 ok(ES.structureFiles.length===4&&ES.structures.length>=40,'buildings load from data/structures/*.json');
 const s=E.newGame(1_700_000_000_000); E.active(s).ageDays=20*360; E.normalize(s);
 for(const d of ES.structures){for(const k in d.cost||{})s.res[k]=(s.res[k]||0)+1e6;for(const u of d.upgrades||[])for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;for(const t of d.tiers||[]){for(const k in t.cost)s.res[k]=(s.res[k]||0)+1e6;for(const u of t.upgrades)for(const k in u.cost)s.res[k]=(s.res[k]||0)+1e6;}}
-s.res.coin=1e8; for(const l of ES.lands) E.buyLand(s,l.id);
+s.res.coin=1e8; for(const l of ES.lands) E.buyLand(RN(s),l.id);
 const st=E.buildStructure(s,'sawmill'); ok(st&&!st.tier,'sawmill starts at tier 1');
 ok(/finish the upgrade line/.test(E.tierUpIssue(s,st.uid)||''),'tier-up needs the upgrade line finished');
 for(let i=0;i<3;i++) E.upgradeSpecial(s,st.uid);

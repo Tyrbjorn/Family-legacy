@@ -23,6 +23,16 @@ const rewardTxt = r => Object.entries(r || {}).map(([k, v]) => `${num(v)} ${k}`)
 // every structure definition in D (data/structures/*.json, keyed "structures/<file>")
 const structDefs = D => Object.keys(D).filter(k => k.startsWith("structures/")).flatMap(k => arr(D[k]));
 
+// R79: "Land and renown", built from D.estate.lands (placeholder lore text: Jeremy's OK)
+function landRenownEntry(D) {
+  const rows = arr((D.estate || {}).lands).map(l => `${l.name}: ${l.slots} land slots, ${costTxt(l.cost) || "free"}${l.renown ? `, needs renown ${num(l.renown)}` : ", no renown needed"}${l.requires ? `, after ${(arr(D.estate.lands).find(x => x.id === l.requires) || {}).name}` : ""}.`);
+  return E("land:renown", "Land and renown", "📜", "Why bigger ground needs a name", [
+    "Renown is what others say of you. It is earned in quests, board jobs, guild ranks, dungeons, marriages and deeds. It is not spent buying land; you only need to have it.",
+    "The Starting Plot is for the asking. Bigger parcels need your household's renown to have reached a mark. A quest reward can still hand you the Plot or the Acre.",
+    ...rows,
+  ].join(" "));
+}
+
 export function encCatalog(D) {
   const C = {};
   C.items = arr(D.items).map(i => E(i.id, i.name, "", `${i.rarity || ""} ${i.slot || ""}`.trim(), [i.type && cap(i.type) + (i.mat ? ` (${i.mat})` : ""), i.cp ? `Power ${i.cp}` : "", i.value ? `Worth ${num(i.value)} coin` : "", i.desc || ""].filter(Boolean).join(" · ")));
@@ -58,6 +68,7 @@ export function encCatalog(D) {
     ...arr(R.endings).map(e => E("e:" + e.id, e.name, "", "How a line is remembered", e.text)),
     ...arr(R.branches).map(b => E("br:" + b.id, b.name, b.icon, "A choice that split the realm", b.text)),
     ...arr(Object.values((D.intros || {}).lines || {})).map(l => E("i:" + l.id, l.name, l.icon, "A story begins", l.intro)),
+    landRenownEntry(D), // R79
   ];
   return C;
 }
@@ -110,6 +121,7 @@ export function encObserve(D, s) {
     const e = arr((D.r60 || {}).endings).find(x => x.honor === hi && x.faith === fa);
     if (e) add("lore", "e:" + e.id);
   }
+  if (arr(s.land).length) add("lore", "land:renown"); // R79: once the family holds land
   for (const b of arr((D.r60 || {}).branches)) if ((s.branches || {})[b.id]) add("lore", "br:" + b.id);
   for (const l of Object.values((D.intros || {}).lines || {})) if (((s.intros || {}).lines || {})[l.id]) add("lore", "i:" + l.id);
   return F;

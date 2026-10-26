@@ -104,7 +104,10 @@
    "collar",
    "hatchet",
    "pick",
-   "short_bow"
+   "short_bow",
+   "ribbon_herbs",
+   "whetstone_oil",
+   "arrow_set"
   ],
   "market": [
    "food",
@@ -238,7 +241,9 @@
    "smithhammer",
    "scales",
    "primer",
-   "luckcharm"
+   "luckcharm",
+   "inked_quire",
+   "wedding_cloth"
   ],
   "market": [
    "food",
@@ -364,7 +369,8 @@
    "wolf_tooth",
    "sickle",
    "woodaxe",
-   "collar"
+   "collar",
+   "silver_thimble"
   ],
   "hidden": true,
   "market": [
@@ -488,7 +494,8 @@
    "luckcharm",
    "steel_sword",
    "tower_shield",
-   "signet_ring"
+   "signet_ring",
+   "amber_brooch"
   ],
   "hidden": true,
   "market": [

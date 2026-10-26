@@ -1,3 +1,4 @@
+const RN=x=>(x.renown=Math.max(x.renown||0,1e5),x); // R79: parcels need renown; these tests are about what the land does
 import fs from 'fs'; import * as E from '../js/engine.js';
 const L=n=>JSON.parse(fs.readFileSync(new URL('../data/'+n+'.json',import.meta.url)));
 const D={};for(const n of ['fields','skills','classes','traits','buildings','furniture','items','quests','regions','tuning','nodes','towns','minions','guilds','jobs','activities','estate','crafting','map','dungeons','legacy','chronicle','achievements','events','encounters','seasons','tutorial','notify','marriage','families','phases','intros','gear','paths','world','metals'])D[n]=L(n);
@@ -14,7 +15,7 @@ ok(['cradle','featherbed','minionbunk'].every(id=>E.pieceDef(id).id==='bunk')&&E
 ok(home.every(id=>E.structDef(id).fittings.includes('studycorner')),'Study Corner placeable in every home');
 // bed by placement
 const s=E.newGame(1_700_000_000_000); E.active(s).ageDays=20*360; E.normalize(s); Object.assign(s.res,{coin:1e6,wood:1e5,stone:1e5,planks:1e4,blocks:1e4,ingots:1e4});
-for(const l of ES.lands) E.buyLand(s,l.id);
+for(const l of ES.lands) E.buyLand(RN(s),l.id);
 const h=E.buildStructure(s,'shack'); const b0=E.bedrooms(s), f0=E.housingCap(s,'bunk');
 ok(E.placePiece(s,h.uid,'bunk')&&E.bedrooms(s)>b0&&E.housingCap(s,'bunk')===f0,'Bed in a home = family bed');
 ok(E.placePiece(s,h.uid,'bunk'),'Beds stack');
@@ -50,7 +51,7 @@ const spec=ES.structures.filter(d=>d.special&&d.allowed&&!home.includes(d.id)&&d
 ok(spec.every(d=>d.picks&&d.allowed.every(a=>d.picks[a]&&d.picks[a].length>10)&&new Set(Object.values(d.picks)).size===d.allowed.length&&new Set(d.allowed).size===d.allowed.length&&d.allowed.length<=4),'specialty picks: distinct options, each with a tradeoff line');
 ok(spec.every(d=>!(d.fixed||[]).some(f=>d.allowed.includes(f))),'no pick duplicates the building\'s built-in');
 // Root Cellar & Nursery fittings
-const q=E.newGame(1_700_000_000_000); E.normalize(q); Object.assign(q.res,{coin:1e5,wood:1e4,stone:1e4,planks:1e3}); for(const l of ES.lands) E.buyLand(q,l.id);
+const q=E.newGame(1_700_000_000_000); E.normalize(q); Object.assign(q.res,{coin:1e5,wood:1e4,stone:1e4,planks:1e3}); for(const l of ES.lands) E.buyLand(RN(q),l.id);
 const qh=E.buildStructure(q,'shack'); ok(/quest|Glowcap|mushroom/i.test(E.fittingIssue(q,qh.uid,'rootcellar')||''),'Root Cellar locked until the mushroom quest ('+E.fittingIssue(q,qh.uid,'rootcellar')+')');
 q.doneQuests.push('mushrooms'); const fc=E.foodCap(q); ok(E.buyFitting(q,qh.uid,'rootcellar')&&E.foodCap(q)===fc+800,'Root Cellar: +800 food storage, slot-free');
 const cx=E.eff(q,'childxp'); ok(E.buyFitting(q,qh.uid,'nursery')&&E.eff(q,'childxp')>cx,'Nursery fitting restores childhood XP');
@@ -64,7 +65,7 @@ ok(/Combo/.test(E.pieceLine('bunk'))&&/Nursery/.test(E.pieceLine('bunk'))&&/Comb
   ok(raw.structures[0].fittings.includes('nursery')&&raw.structures[0].fittings.includes('rootcellar'),'old Cradle → Nursery fitting, old Cold Cellar → Root Cellar fitting'); }
 
 // thin buildings: new items, combos, slot-free small things
-{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures)for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5; Object.assign(g.res,{coin:1e6,wood:1e5,stone:1e5,planks:1e4,blocks:1e4,ingots:1e4,barley:1e3}); for(const l of ES.lands) E.buyLand(g,l.id);
+{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures)for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5; Object.assign(g.res,{coin:1e6,wood:1e5,stone:1e5,planks:1e4,blocks:1e4,ingots:1e4,barley:1e3}); for(const l of ES.lands) E.buyLand(RN(g),l.id);
   const hs0=E.haulTier(g).haulSpeed, bc0=E.eff(g,'banditCut');
   const w=E.buildStructure(g,'warehouse'); w.up=3; ok(w&&E.placePiece(g,w.uid,'loadingdock')&&E.haulTier(g).haulSpeed>hs0*1.14,'Loading Dock: wagons 15% faster');
   const ws0=E.wagonSpeed(g); ok(E.buyFitting(g,w.uid,'lanterns')&&E.eff(g,'nightBanditCut')>=0.3&&Math.abs(E.wagonSpeed(g)-ws0-E.nightShare()*0.3)<1e-9,'Lanterns: slot-free, faster at night + safer at night');
@@ -84,7 +85,7 @@ ok(/Combo/.test(E.pieceLine('bunk'))&&/Nursery/.test(E.pieceLine('bunk'))&&/Comb
   ok(raw.structures[0].fittings.includes('shrine')&&raw.structures[0].fittings.includes('perch')&&!raw.structures[0].pieces.length,'old placed Shrine/Perch become fittings'); }
 
 // rank gating: upgrades add slots and unlock better items
-{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures){for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5;for(const u of d.upgrades||[])for(const k in u.cost)g.res[k]=(g.res[k]||0)+1e5;} g.res.coin=1e7; for(const l of ES.lands) E.buyLand(g,l.id);
+{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures){for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5;for(const u of d.upgrades||[])for(const k in u.cost)g.res[k]=(g.res[k]||0)+1e5;} g.res.coin=1e7; for(const l of ES.lands) E.buyLand(RN(g),l.id);
   const br=E.buildStructure(g,'brewery'); ok(/needs upgrade 1/.test(E.placeIssue(g,br.uid,'caskrack')||''),'Cask Rack locked until upgrade 1');
   const f0=E.freeSlots(g,br); E.upgradeSpecial(g,br.uid); ok(!E.placeIssue(g,br.uid,'caskrack'),'upgrade 1 unlocks it');
   E.upgradeSpecial(g,br.uid); ok(E.freeSlots(g,br)===f0+1,'upgrade 2 adds a slot');
@@ -94,7 +95,7 @@ ok(/Combo/.test(E.pieceLine('bunk'))&&/Nursery/.test(E.pieceLine('bunk'))&&/Comb
 // day/night
 { const z=E.newGame(1_700_000_000_000); z.acc=0.5; ok(!E.isNight(z)&&/Day/.test(E.todLabel(z)),'midday is day'); z.acc=0.9; ok(E.isNight(z)&&/Night/.test(E.todLabel(z)),'late is night'); z.acc=0.1; ok(E.isNight(z),'night wraps past midnight'); ok(E.nightShare()>0.4&&E.nightShare()<0.5,'night share from tuning'); }
 // five thin buildings + Shopfront auto-sell
-{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures){for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5;for(const u of d.upgrades||[])for(const k in u.cost)g.res[k]=(g.res[k]||0)+1e5;} Object.assign(g.res,{coin:1e7,dust:100,cloth:100}); for(const l of ES.lands) E.buyLand(g,l.id);
+{ const g=E.newGame(1_700_000_000_000); E.active(g).ageDays=20*360; E.normalize(g); for(const d of ES.structures){for(const k in d.cost||{})g.res[k]=(g.res[k]||0)+1e5;for(const u of d.upgrades||[])for(const k in u.cost)g.res[k]=(g.res[k]||0)+1e5;} Object.assign(g.res,{coin:1e7,dust:100,cloth:100}); for(const l of ES.lands) E.buyLand(RN(g),l.id);
   ok(['herbalistshack','magestower','shrinehouse','graveyard','ancestorhall'].every(id=>{const a=E.structDef(id).allowed.length;return a>=3&&a<=4;}),'five thin buildings now have 3-4 slot choices');
   ok(E.structDef('ancestorhall').upgrades.map(u=>u.name).join()==='Portrait Gallery,Family Archive,Treasure Vault','Hall of Ancestors upgrade line');
   g.structures.push({uid:'ahx',type:'ancestorhall',pieces:['ancestorshrine'],up:0}); const ah=g.structures.find(x=>x.uid==='ahx'); ok(ah&&/needs upgrade 1/.test(E.placeIssue(g,ah.uid,'feasttable')||''),'Feast Table locked at L0');

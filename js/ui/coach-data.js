@@ -125,7 +125,7 @@ export const LEDGER_REACT = "Well done.";
 export const GROUND_NOTE = "One more thing before I let you go. Ground first, then walls, then hands to work them. I've written it in the Ground Ledger. Start where you like.";
 export const GROUND_TITLE = "📒 Ground Ledger";
 export const GROUND = [
-  { id: "plot", label: "Pay the reeve and take the plot", note: "The Starting Plot, from the Land page.", go: "land", ch: "t4", quest: "st3" },
+  { id: "plot", label: "Pay the reeve and take the plot", note: "The Starting Plot, from the Land page: 150 coin and a name on the roll. No renown needed.", go: "land", ch: "t4", quest: "st3" },
   { id: "bounds", label: "Walk the bounds", note: "Scout the land around home.", go: "map", ch: "t7" },
   { id: "bram", label: "Lend a hand to Bram", note: "A hauling errand. You keep his handcart.", go: "quests", quest: "haul_bram" },
   { id: "raise", label: "Raise something", note: "Your first building or field.", go: "buildings", ch: "t4" },
@@ -133,7 +133,7 @@ export const GROUND = [
   { id: "granary", label: "Shore up a granary", note: "A rank-0 guild job: the Leaning Granary or the Mill Bridge.", go: "guilds", quest: ["g_arch_granary", "g_hearth_bridge"] },
   { id: "market", label: "Make a first run to market", note: "A merchant's errand. You keep the wagon.", go: "quests", quest: "merchant_run" },
   { id: "hall", label: "A hall for the carters", note: "The Union Hall needs a Cart Shed, a second wagon and a teamster.", go: "union" },
-  { id: "village", label: "A village of your own (far off)", note: "The Treant's Oath and the Baron's Charter.", go: "quests", quest: ["st8", "q_charter"], later: true },
+  { id: "village", label: "A village of your own (far off)", note: "The Treant's Oath and the Baron's Charter. Greenvale needs renown 1,200.", go: "quests", quest: ["st8", "q_charter"], later: true },
 ];
 
 // Orrin chimes in: one note per newly opened part. `kind:"intro"` rows are voiced over the existing unlock-intro lines (data/intros.json, read only).
@@ -149,6 +149,7 @@ export const CHIMES = [
   { id: "farmstead", icon: "🌾", title: "Farmstead", line: "That's a farmstead now. Fields, a granary, a second pair of hands.", go: "fields", steps: ["Open Fields", "Shore up a granary"], quests: ["g_arch_granary"] },
   { id: "union", icon: "🤝", title: "Union Hall", line: "Carters keep a hall in towns this size. Yours could too.", go: "union", steps: ["Haul for Bram", "Make a first run to market", "Buy the Warehouse tier"], quests: ["haul_bram", "merchant_run"] },
   { id: "automation", icon: "⚙️", title: "Automation", line: "Once the work's steady, let the hands run it. Set orders; watch the dock.", go: "auto", steps: ["Open Automation", "Set one order or quota", "Check the dock"], ch: "t2" },
+  { id: "landgate", icon: "📜", title: "Land and renown", line: "The reeve asks for a name first. Bigger ground costs more than coin; it wants renown too.", go: "quests", steps: ["Open Quests", "Finish a quest or a board job", "Come back to the Land page"] }, // R79 placeholder text (Jeremy's OK)
   { id: "heirs", icon: "🎓", title: "Heirs and journeyman work", line: "At 14 an heir can take a master. At the half-way mark they are a journeyman and earn a little.", go: "members", steps: ["Open Family", "Place your heir with a master", "Later: a journeyman job on the Jobs tab"] }, // R78: line is a placeholder for Jeremy's OK
   { id: "legacy", icon: "🪦", title: "Legacy", line: "The Graveyard remembers. What the dead earned, the living can spend.", go: "legacy", steps: ["Open Legacy", "Buy a first permanent upgrade"] },
   { id: "sea", icon: "🌊", title: "The sea", line: "Salt air. Old Tobiah knows the reef; go and listen.", go: "quests", steps: ["Follow the reef chain"], quests: ["reef1", "reef2", "reef3", "reef4"] },
