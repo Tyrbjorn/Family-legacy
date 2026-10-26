@@ -153,8 +153,8 @@ export function apprDay(s, m) {
 }
 export const apprProgress = (s, m) => (m.appr ? Math.min(1, ((s.day || 0) - m.appr.since) / AP().serveDays) : 0);
 // finishing reward: halved join fee and starting rep for that track guild
-export const apprFee = (m, gid) => ((m.apprDone || []).some(id => masterDef(id)?.track === gid) ? AP().reward.guildFee ?? 0.5 : 1);
-export const apprRep = (m, gid) => ((m.apprDone || []).some(id => masterDef(id)?.track === gid) ? AP().reward.rep || 0 : 0);
+export const apprFee = (m, gid) => ((m.apprDone || []).some(id => masterDef(id)?.track === gid) || m.apprTrack === gid ? AP().reward.guildFee ?? 0.5 : 1);
+export const apprRep = (m, gid) => ((m.apprDone || []).some(id => masterDef(id)?.track === gid) || m.apprTrack === gid ? AP().reward.rep || 0 : 0);
 // Family Tutor: unplaced, unpinned teens go to a free master on lean[0], else lean[1]
 export function tutorPlace(s, m) {
   if (m.appr || (m.pins && m.pins.appr) || m.noAutoEq) return false;

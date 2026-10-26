@@ -1,0 +1,15 @@
+{
+ "_note": "R84 (D9, D10, D37): small one-time rewards on the Ledger of Firsts, the Ground Ledger's 'Walk the bounds' row and finishing the Ground Ledger. ALL AMOUNTS ARE PLACEHOLDERS awaiting approval. Only the Ledger rows that can be read from the save are paid (larder, refine, sell, ground, build, heirs, guild); train, tools and save are UI-flag-only rows and pay nothing. A save that is already past day 2 when this first runs has everything already true marked done quietly, so old saves get no windfall. Skipping the tutorial marks its rows done without paying.",
+ "ledger": [
+  { "id": "larder", "label": "Fill the larder", "coin": 10 },
+  { "id": "refine", "label": "Turn raw into worth", "coin": 10 },
+  { "id": "sell", "label": "Sell a little", "coin": 10 },
+  { "id": "ground", "label": "Ground of your own", "coin": 20 },
+  { "id": "build", "label": "Build something", "coin": 20 },
+  { "id": "heirs", "label": "A name needs heirs", "coin": 25 },
+  { "id": "guild", "label": "Put your name on a guild roll", "coin": 30 }
+ ],
+ "bounds": { "label": "Walk the bounds", "renown": 10 },
+ "ground": { "label": "Ground Ledger finished", "coin": 150 },
+ "quietAfterDay": 2
+}

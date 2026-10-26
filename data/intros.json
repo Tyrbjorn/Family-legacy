@@ -222,6 +222,98 @@
      }
     }
    ]
+  },
+  {
+   "id": "farmstead",
+   "name": "A Working Farmstead",
+   "icon": "🌾",
+   "tab": "estate",
+   "when": "farmstead",
+   "intro": "The plot has grown into a Farmstead. Fields, pens and a granary turn it from a camp into a living.",
+   "finale": "The farmstead feeds the family.",
+   "steps": [
+    {
+     "id": "fm_field",
+     "title": "Put a field under the plough (Estate → Fields & animals)",
+     "check": "fieldOwned",
+     "reward": {
+      "coin": 60
+     }
+    },
+    {
+     "id": "fm_granary",
+     "title": "Shore up a granary (a rank-0 Architects' or Crafters' job)",
+     "check": "granaryDone",
+     "reward": {
+      "coin": 100
+     }
+    }
+   ]
+  },
+  {
+   "id": "union",
+   "name": "A Hall for the Carters",
+   "icon": "🤝",
+   "tab": "estate",
+   "when": "unionReady",
+   "intro": "Two wagons and a teamster: the carters can form a Union Hall. It speeds hauling and adds teamster places.",
+   "finale": "The carters have a hall of their own.",
+   "steps": [
+    {
+     "id": "un_tier",
+     "title": "Buy the first Union Hall tier (Estate → Union Hall)",
+     "check": "unionHall",
+     "reward": {
+      "coin": 150
+     }
+    }
+   ]
+  },
+  {
+   "id": "legacy",
+   "name": "What the Dead Earned",
+   "icon": "🏛️",
+   "tab": "legacy",
+   "when": "legacyEarned",
+   "intro": "The Graveyard has banked renown. What the dead earned, the living can spend on permanent upgrades.",
+   "finale": "The family's past now works for its future.",
+   "steps": [
+    {
+     "id": "lg_view",
+     "title": "Open the Legacy view (Family → Legacy)",
+     "check": "view:legacy",
+     "reward": {
+      "coin": 40
+     }
+    },
+    {
+     "id": "lg_buy",
+     "title": "Buy a first permanent upgrade",
+     "check": "legacyBought",
+     "reward": {
+      "coin": 100
+     }
+    }
+   ]
+  },
+  {
+   "id": "automation",
+   "name": "Hands That Work Alone",
+   "icon": "⚙️",
+   "tab": "estate",
+   "when": "automation",
+   "intro": "With hired hands and a workshop standing, a quota or work order lets them run without you.",
+   "finale": "The estate runs itself a little.",
+   "steps": [
+    {
+     "id": "au_quota",
+     "title": "Set a quota (Estate → Production)",
+     "check": "quotaSet",
+     "reward": {
+      "coin": 80
+     }
+    }
+   ]
   }
  ],
  "expireDays": 90

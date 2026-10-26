@@ -111,13 +111,13 @@ export function ledgerCard() {
   const t = todayCoach(s, UI, slot, H(), uiOk() && slot >= 1);
   if (!t.ledger) return "";
   const rows = t.rows, nxt = ledgerNext(rows), nDone = rows.filter(r => r.done).length;
-  const body = `<h3>${LEDGER_TITLE}</h3>${masterLine()}<div class="lrows">${rows.map(r => `<div class="lrow${r.done ? " dn" : ""}${nxt && nxt.id === r.id ? " nx" : ""}"><span>${r.done ? "✅" : "⬜"} ${esc(r.label)}</span>${nxt && nxt.id === r.id ? `<div class="muted">${esc(r.line)}</div><div class="row">${rowBtns(r)}</div>` : ""}</div>`).join("")}</div><div class="row"><button class="b" data-a="ledger_hide">Hide this</button></div>`;
+  const body = `<h3>${LEDGER_TITLE}</h3>${masterLine()}<div class="lrows">${rows.map(r => `<div class="lrow${r.done ? " dn" : ""}${nxt && nxt.id === r.id ? " nx" : ""}"><span>${r.done ? "✅" : "⬜"} ${esc(r.label)}${!r.done && E.firstReward(r.id) ? ` <span class="muted">· ${E.firstReward(r.id)}</span>` : ""}</span>${nxt && nxt.id === r.id ? `<div class="muted">${esc(r.line)}</div><div class="row">${rowBtns(r)}</div>` : ""}</div>`).join("")}</div><div class="row"><button class="b" data-a="ledger_hide">Hide this</button></div>`;
   return sect("main.ledger", body, { chip: `${nDone}/${rows.length}` });
 }
 export function groundBody(full) {
   const rows = groundRows(s, H()), n = rows.filter(r => r.status === "done").length, tot = rows.filter(r => !r.later).length;
   const note = tutComplete(s, H()) ? `<div class="orrinq">🧔 “${esc(GROUND_NOTE)}”</div>` : "";
-  return { n, tot, html: `<h3>${GROUND_TITLE}</h3>${note}<div class="lrows">${rows.map(r => `<div class="lrow ${r.status}"><span>${r.status === "done" ? "✅" : r.status === "later" ? "⏳" : r.lock ? "🔒" : "⬜"} ${esc(r.label)}</span>${r.status !== "done" ? `<div class="muted">${esc(r.note)}${r.lock ? ` · ${esc(r.lock)}` : ""}</div><div class="row">${r.status === "open" && !r.lock ? rowBtns(r) : ""}</div>` : ""}</div>`).join("")}</div>` };
+  return { n, tot, html: `<h3>${GROUND_TITLE}</h3>${note}${E.firstReward("ground_all") ? `<div class="muted">Finish every row for ${E.firstReward("ground_all")}.</div>` : ""}<div class="lrows">${rows.map(r => `<div class="lrow ${r.status}"><span>${r.status === "done" ? "✅" : r.status === "later" ? "⏳" : r.lock ? "🔒" : "⬜"} ${esc(r.label)}${r.status !== "done" && E.firstReward(r.id) ? ` <span class="muted">· ${E.firstReward(r.id)}</span>` : ""}</span>${r.status !== "done" ? `<div class="muted">${esc(r.note)}${r.lock ? ` · ${esc(r.lock)}` : ""}</div><div class="row">${r.status === "open" && !r.lock ? rowBtns(r) : ""}</div>` : ""}</div>`).join("")}</div>` };
 }
 export function groundCard() {
   const t = todayCoach(s, UI, slot, H(), uiOk() && slot >= 1);

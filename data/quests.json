@@ -42,7 +42,8 @@
   },
   "skill": "foraging",
   "loot": [
-   "flowers"
+   "flowers",
+   "ribbon_herbs"
   ]
  },
  {
@@ -113,7 +114,9 @@
    "silver_locket",
    "owl_feather",
    "ring_of_vigor",
-   "amulet_of_wit"
+   "amulet_of_wit",
+   "whetstone_oil",
+   "arrow_set"
   ],
   "rare": [
    {
@@ -184,7 +187,9 @@
    "silver_locket",
    "owl_feather",
    "ring_of_vigor",
-   "amulet_of_wit"
+   "amulet_of_wit",
+   "whetstone_oil",
+   "silver_thimble"
   ]
  },
  {
@@ -201,7 +206,8 @@
   },
   "skill": "haggling",
   "loot": [
-   "chocolate"
+   "chocolate",
+   "wedding_cloth"
   ]
  },
  {
@@ -255,7 +261,8 @@
    "silver_locket",
    "owl_feather",
    "ring_of_vigor",
-   "amulet_of_wit"
+   "amulet_of_wit",
+   "whetstone_oil"
   ],
   "rare": [
    {
@@ -346,7 +353,8 @@
    "silver_locket",
    "owl_feather",
    "ring_of_vigor",
-   "amulet_of_wit"
+   "amulet_of_wit",
+   "wedding_cloth"
   ],
   "hidden": true,
   "rare": [
@@ -375,7 +383,8 @@
   },
   "skill": "alchemy",
   "loot": [
-   "flowers"
+   "flowers",
+   "ribbon_herbs"
   ],
   "unlocks": "skill:alchemy"
  },
@@ -433,7 +442,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "amber_brooch"
   ],
   "rare": [
    {
@@ -514,7 +524,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "arrow_set"
   ],
   "rare": [
    {
@@ -568,7 +579,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "inked_quire"
   ],
   "rare": [
    {
@@ -624,7 +636,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "amber_brooch"
   ],
   "hidden": true
  },
@@ -741,7 +754,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "arrow_set"
   ]
  },
  {
@@ -801,7 +815,8 @@
    "moonstone",
    "dragon_scale",
    "phoenix_plume",
-   "heart_locket"
+   "heart_locket",
+   "amber_brooch"
   ],
   "hidden": true,
   "rare": [
@@ -870,7 +885,8 @@
   },
   "skill": "runecraft",
   "loot": [
-   "collegium_focus"
+   "collegium_focus",
+   "inked_quire"
   ],
   "guild": "collegium",
   "rank": 1
@@ -999,7 +1015,8 @@
   },
   "skill": "thievery",
   "loot": [
-   "rogue_lockpicks"
+   "rogue_lockpicks",
+   "silver_thimble"
   ],
   "guild": "rogues",
   "rank": 0,
@@ -1022,7 +1039,8 @@
   },
   "skill": "faith",
   "loot": [
-   "church_symbol"
+   "church_symbol",
+   "ribbon_herbs"
   ],
   "guild": "church",
   "rank": 0

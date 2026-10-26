@@ -121,7 +121,7 @@ export const LEDGER = [
 export const LEDGER_TITLE = "📒 Ledger of Firsts";
 export const LEDGER_REACT = "Well done.";
 
-// Ground Ledger (Orrin's hand-off): rows built from existing quests and state. No new quest, reward or gate.
+// Ground Ledger (Orrin's hand-off): rows built from existing quests and state. No new quest or gate. R84: small one-time rewards for some rows and for finishing it live in data/firsts.json / engine/firsts.js (the UI only shows them).
 export const GROUND_NOTE = "One more thing before I let you go. Ground first, then walls, then hands to work them. I've written it in the Ground Ledger. Start where you like.";
 export const GROUND_TITLE = "📒 Ground Ledger";
 export const GROUND = [

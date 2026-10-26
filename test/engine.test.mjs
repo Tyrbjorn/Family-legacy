@@ -555,7 +555,7 @@ for(const ac of D.activities){ const n=E.ACT_TIERS[ac.tier]; ok(n&&Object.keys(a
  const B=E.deserialize(E.serialize(A,1)); E.normalize(B); ok(strip(B)===strip(A),'normalize is idempotent on migrated saves');
  const C=E.deserialize(E.serialize(A,1)); delete C.schema; E.normalize(C); ok(strip(C)===strip(A),'re-running every step (schema 0) changes nothing');
  ok(E.migrationSteps().length>=10&&E.migrationSteps().every(x=>x.name),'migration steps are named');
- ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,boards,fields,chores,trade,village,autocraft,rams,dagon,r60','day hooks registered in order');
+ ok(E.DAY_HOOKS.map(h=>h.name).join()==='world,milestones,tutorial,estate,automation,suitors,houses,members,generations,endgame,boards,fields,chores,trade,village,autocraft,firsts,rams,dagon,r60','day hooks registered in order');
 }
 
 // Polish-pass bug fixes

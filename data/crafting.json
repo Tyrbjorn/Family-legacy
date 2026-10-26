@@ -209,6 +209,64 @@
    "path": "cook"
   },
   {
+   "id": "r_whetstone",
+   "name": "Whetstone and Oil",
+   "base": "whetstone_oil",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "stone": 2,
+    "copper": 1
+   },
+   "days": 2,
+   "minSkill": 3,
+   "line": "blacksmith",
+   "path": "smithing"
+  },
+  {
+   "id": "r_arrow_set",
+   "name": "Fletched Arrow Set",
+   "base": "arrow_set",
+   "skill": "carpentry",
+   "station": "workbench",
+   "mats": {
+    "wood": 3
+   },
+   "days": 2,
+   "minSkill": 3,
+   "line": "carpenter",
+   "path": "carpenter"
+  },
+  {
+   "id": "r_wedding_cloth",
+   "name": "Wedding Cloth Bolt",
+   "base": "wedding_cloth",
+   "skill": "tailoring",
+   "station": "loom",
+   "mats": {
+    "cloth": 6
+   },
+   "days": 5,
+   "minSkill": 8,
+   "line": "tailor",
+   "path": "tailor"
+  },
+  {
+   "id": "r_amber_brooch",
+   "name": "Amber Brooch",
+   "base": "amber_brooch",
+   "skill": "smithing",
+   "station": "forge",
+   "mats": {
+    "amber": 2,
+    "copper": 2
+   },
+   "days": 4,
+   "minSkill": 10,
+   "line": "blacksmith",
+   "path": "smithing"
+  },
+  {
    "id": "r_sickle",
    "name": "Sickle",
    "base": "sickle",

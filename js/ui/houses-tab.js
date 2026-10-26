@@ -28,10 +28,11 @@ export function suitorCard(su) {
   const issue = E.proposeIssue(s, su.id);
   return `<div class="card suitor"><div class="row"><span><b>${su.name}</b>, ${su.age} · ${cl(su.cls)?.name || ""}${h ? ` · ${h.icon} ${h.name}` : " · commoner"}</span><span>${st.icon} ${st.name}</span></div>
 ${bar(su.affinity / 100)}<div class="muted">❤️ ${Math.floor(su.affinity)}/100${p ? ` · ${p.icon} ${p.name}: ${p.desc} · likes ${p.likesStat} and ${it(p.likesGift)?.name || E.resName(p.likesGift)}` : ""}</div>
+${(D.marriage.classGifts || {})[su.cls] ? `<div class="muted">⭐ ${cl(su.cls)?.name || su.cls}s like ${it(D.marriage.classGifts[su.cls])?.name || D.marriage.classGifts[su.cls]} (x${D.marriage.classGiftMult})</div>` : ""}
 <div>${(su.traits || []).map(traitChip).join("")} <span class="muted">· dowry ${dowryStr(su.dowry || { coin: 0 })}</span></div>
 ${bloodLine(m, su)}${left !== Infinity ? `<div class="muted">Leaves in ${left}d${su.house && su.affinity >= D.marriage.jiltAt ? " (jilting sours their house)" : ""}</div>${bar(1 - left / D.marriage.stayDays, "#88a")}` : ""}
 <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><button class="b" data-a="court" data-v="${su.id}" ${canCourt ? "" : "disabled"}>Court</button>
-${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}${E.likedGift(su, g) ? " ❤️" : ""}</button>`).join("")}
+${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}${E.likedGift(su, g) ? " ❤️" : ""}${E.classLiked(su, g) ? " ⭐" : ""}</button>`).join("")}
 ${foods.map(k => `<button class="b" data-a="foodgift" data-v="${su.id}" data-w="${k}">${RI[k] || E.resName(k)} ${D.marriage.foodGift.units}${E.likedGift(su, k) ? " ❤️" : ""}</button>`).join("")}
 <button class="b" data-a="propose" data-v="${su.id}" ${!issue ? "" : "disabled"}>💍 Propose (${E.PROPOSE_COST}🪙)</button></div>${su.affinity >= 100 && issue ? `<div class="muted">Needs ${issue}</div>` : ""}</div>`;
 }

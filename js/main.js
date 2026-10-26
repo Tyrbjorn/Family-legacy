@@ -53,6 +53,7 @@ const names = [
   "families",
   "phases",
   "intros",
+  "firsts",
   "gear",
   "paths",
   "world",
@@ -430,7 +431,7 @@ document.addEventListener("click", e => {
     r60branch: () => { const [id, side] = String(v).split(":"); const e = E.chooseBranch(s, id, side); if (e) E.log(s, "⚠️ " + e); },
     r60special: () => { const e = E.adoptSpecial(s, s.members.find(x => x.id === s.activeId), v); if (e) E.log(s, "⚠️ " + e); },
     credismiss: () => { U.creDismiss = 1; },
-    crequick: () => { const cm = U.create && U.create.master; U.create = null; coachCreated(cm); if (!s.lbDone && !s.created) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } }, // R60
+    crequick: () => { const cm = U.create && U.create.master; U.create = null; coachCreated(cm); if (!s.created) E.applyMaster(s, cm || "orrin"); /* R84 */ if (!s.lbDone && !s.created) { s.lbDone = 1; const got = E.applyLegacyBonuses(s, legacyRec); if (got.length) E.log(s, `🌳 ${got.length} legacy bonus${got.length > 1 ? "es" : ""} carried over from your family's past.`); } }, // R60
     crerandom: () => { const nm = U.create && U.create.name, ms = U.create && U.create.master; U.create = Object.assign(E.randomCreation(legacyRec), { name: nm || "", master: ms || "orrin" }); },
     cre: () => creSet(v),
     crestart: () => {

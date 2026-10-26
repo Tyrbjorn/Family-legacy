@@ -67,5 +67,34 @@
   { "id": "t_common", "name": "The other common traits", "how": "Earn Landholder", "ach": "a_land", "traits": ["thrifty", "spendthrift", "dreamer", "curious", "stubborn", "keeneyed", "bookish", "greenthumb", "sickly"] },
   { "id": "frame_stone", "name": "Stone portrait frame", "how": "Earn Builder of Halls", "ach": "a_build8", "frame": "stone" },
   { "id": "third_pick", "name": "A third trait pick without a bad trait", "how": "Earn any 10 achievements", "achCount": 10 }
- ]
+ ],
+ "masters": {
+  "orrin": {
+   "name": "Master Orrin",
+   "track": "hearth",
+   "skill": "carpentry"
+  },
+  "brann": {
+   "name": "Brann the Smith",
+   "track": "hearth",
+   "skill": "smithing"
+  },
+  "wenna": {
+   "name": "Old Wenna the Huntress",
+   "track": "lodge",
+   "skill": "hunting"
+  },
+  "holt": {
+   "name": "Sergeant Holt",
+   "track": "vanguard",
+   "skill": "swordsmanship"
+  },
+  "maren": {
+   "name": "Sister Maren",
+   "track": "church",
+   "skill": "herbalism"
+  }
+ },
+ "masterXp": 30,
+ "masterNote": "R84 'Apprenticed to' perk, NEW SAVES ONLY (applied by applyMaster from the creation screen, never on load): the founder counts as a finished apprentice of the master's track guild (join fee x0.5 and +20 starting rep: the numbers in data/apprenticeships.json reward) and starts with masterXp skill XP in the master's trade (30 = exactly one early skill level). Placeholder numbers."
 }

@@ -7,6 +7,7 @@ import { chron } from "./chronicle.js";
 import { craftingUnlocked } from "./crafting.js";
 import { enchanters, stationFx } from "./gear.js";
 import { era } from "./family.js";
+import { estateScore } from "./estate.js";
 import { houseList, tierOf } from "./houses.js";
 import { tutActive } from "./tutorial.js";
 import { D, isAdult, living, log } from "./state.js";
@@ -37,6 +38,16 @@ const PRED = {
   courted: s => (s.suitors || []).some(x => x.affinity > 0) || living(s).some(m => m.spouse),
   friendly: s => houseList().some(h => ["friendly", "allied"].includes(tierOf(s, h.id))),
   houseQuest: s => (s.doneQuests || []).some(id => (findId(D.quests, id) || {}).house),
+  // R84 (D48): Farmstead, Union Hall, Legacy and Automation intro lines (the same triggers Orrin's chimes already use, js/ui/coach-logic.js)
+  farmstead: s => (s.land || []).length > 0 && estateScore(s) >= ((((D.estate || {}).stages || []).find(x => x[1] === "Farmstead")) || [30])[0],
+  fieldOwned: s => !!(s.fields && s.fields.list && s.fields.list.length),
+  granaryDone: s => (s.doneQuests || []).some(id => id === "g_arch_granary" || id === "g_hearth_bridge"),
+  unionReady: s => !!(s.fields && s.fields.ups && s.fields.ups.cart1 && s.fields.ups.cart2) && (s.minions || []).some(m => m.job === "teamster") && !(s.union && s.union.tier),
+  unionHall: s => ((s.union && s.union.tier) | 0) > 0,
+  legacyEarned: s => !!(s.legacy && s.legacy.earned > 0),
+  legacyBought: s => !!(s.legacy && s.legacy.ups && Object.values(s.legacy.ups).some(v => v > 0)),
+  automation: s => (s.minions || []).length > 0 && (s.structures || []).length > 0,
+  quotaSet: s => (s.quotas || []).length > 0,
 };
 export const INTRO_PREDS = Object.keys(PRED);
 export function introTest(s, c) {

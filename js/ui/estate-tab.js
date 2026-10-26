@@ -23,7 +23,7 @@ export function landShop(where) {
     .filter(l => !s.land.includes(l.id) && (!where || l.towns.includes(where)))
     .map(
       l =>
-        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land slots${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span>${renownLine(l.id)}</span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(E.bcost(s, l.cost, "land"))}</button></div>`,
+        `<div class="card row" style="padding:6px 8px;margin:4px 0"><span>${l.icon} ${l.name} <span class="muted">+${l.slots} land ${l.slots === 1 ? "slot" : "slots"}${l.requires && !s.land.includes(l.requires) ? " · needs " + E.findId(D.estate.lands, l.requires).name : ""}${l.desc ? " · " + l.desc : ""}</span>${renownLine(l.id)}</span><button class="b" data-a="land" data-v="${l.id}" ${E.canBuyLand(s, l.id) ? "" : "disabled"}>${costStr(E.bcost(s, l.cost, "land"))}</button></div>`,
     )
     .join("");
 }

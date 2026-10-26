@@ -60,6 +60,7 @@ function apprv(m) {
     }
     if ((m.apprDone || []).length) h += `<div class="muted">Trained: ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
   } else if ((m.apprDone || []).length) h += `<div class="muted">🎓 Trained under ${m.apprDone.map(id => E.masterDef(id)?.name).join(", ")}</div>`;
+  if (m.apprFrom && E.masterInfo(m.apprFrom)) h += `<div class="muted">🎓 Apprenticed to ${E.masterInfo(m.apprFrom).name}: the ${m.apprTrack} guild takes them at half the fee</div>`; // R84
   return h + `</div>`;
 }
 

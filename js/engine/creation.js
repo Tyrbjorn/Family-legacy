@@ -1,7 +1,7 @@
 // R59: character creation, looks (doll appearance) and the per-device legacy record (fl-r59-character-creation-proposal.md).
 // Pure functions: no rng is used anywhere here, so Quick start and the sim are unchanged. Looks for members without one
 // are derived from the member id (and a parent's colours for children).
-import { D, T, ageY, isAdult } from "./state.js";
+import { D, T, ageY, isAdult, xpNeed, log } from "./state.js";
 import { legacyBonuses } from "./r60.js";
 const traitDef = id => (D.traits || []).find(t => t.id === id);
 
@@ -144,7 +144,21 @@ export function creationIssue(choice, rec) {
   if (c.gender && !["m", "f"].includes(c.gender)) return "Bad sex";
   return null;
 }
-// apply to the founder of a fresh newGame(); returns an error string or null. Quick start = never call this.
+// R84 (D5/D6) "Apprenticed to <master>": NEW SAVES ONLY. Called from the creation screen (Begin and Quick start) on the fresh
+// founder, never on load, so old saves and children are untouched. The founder counts as a finished apprentice of the master's
+// track guild (apprFee x0.5 and +20 starting rep, the numbers in data/apprenticeships.json reward: nothing new) and starts with
+// masterXp skill XP in the master's trade (30 = one early skill level). No rng. Idempotent (the marker is the guard).
+export const masterInfo = mid => (CRD().masters || {})[mid] || null;
+export function applyMaster(s, mid) {
+  const M = masterInfo(mid), f = s.members.find(x => x.id === s.activeId) || s.members[0];
+  if (!M || !f || s.created || f.apprTrack) return false;
+  f.apprTrack = M.track; f.apprFrom = mid;
+  const k = f.skills && f.skills[M.skill];
+  if (k) { k.xp += CRD().masterXp || 0; while (k.xp >= xpNeed(k.lvl)) { k.xp -= xpNeed(k.lvl); k.lvl++; } }
+  log(s, `🎓 ${f.name} was apprenticed to ${M.name}: a head start in ${M.skill}, and the ${M.track} guild will take them at half the fee.`);
+  return true;
+}
+// apply to the founder of a fresh newGame(); returns an error string or null. Quick start = applyMaster only.
 export function applyCreation(s, choice, rec) {
   const err = creationIssue(choice, rec);
   if (err) return err;
@@ -167,6 +181,7 @@ export function applyCreation(s, choice, rec) {
   const hc = C.houseCols.find(h => h.id === c.house || h.col === c.house);
   s.house = { col: hc ? hc.col : houseColOf(s) };
   if (c.frame && c.frame !== "open") s.house.frame = c.frame;
+  applyMaster(s, c.master || "orrin"); // R84
   return null;
 }
 // Random button: a legal random choice from the unlocked options (UI randomness, not the game rng)

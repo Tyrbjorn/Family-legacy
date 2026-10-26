@@ -34,7 +34,7 @@ export function mapHtml() {
   for (const p of L.parcels)
     if (!p.owned) {
       const l = D.estate.lands.find(x => x.id === p.id), can = l && E.canBuyLand(s, p.id), rn = l && E.landRenown(s, p.id);
-      h += `<button class="emlock" style="${box({ x: p.x + 8, y: p.y + p.h / 2 - 14, w: p.w - 16, h: 28 })}" data-a="land" data-v="${p.id}" ${can ? "" : "disabled"} title="${p.name}: +${p.slots} land slots${rn && !rn.ok ? ` · Needs renown ${rn.need} (you have ${rn.have})` : ""}">🔒 ${p.icon} ${l ? costStr(E.bcost(s, l.cost, "land")) : ""}${rn && !rn.ok ? ` · renown ${rn.need}` : ""}</button>`;
+      h += `<button class="emlock" style="${box({ x: p.x + 8, y: p.y + p.h / 2 - 14, w: p.w - 16, h: 28 })}" data-a="land" data-v="${p.id}" ${can ? "" : "disabled"} title="${p.name}: +${p.slots} land ${p.slots === 1 ? "slot" : "slots"}${rn && !rn.ok ? ` · Needs renown ${rn.need} (you have ${rn.have})` : ""}">🔒 ${p.icon} ${l ? costStr(E.bcost(s, l.cost, "land")) : ""}${rn && !rn.ok ? ` · renown ${rn.need}` : ""}</button>`;
     }
   for (const it of L.items)
     h += `<button class="embld${classic || !it.img ? " emoji" : ""}${U.estSel === it.key ? " sel" : ""}" style="${box(it.rect)}" data-a="estsel" data-v="${it.key}" title="${it.name}">${classic || !it.img ? `<span>${it.icon}</span>` : ""}</button>`;

@@ -147,7 +147,7 @@ export function buyLand(s, id) {
   const l = ES().lands.find(x => x.id === id);
   pay(s, bcost(s, l.cost, "land")); // R47 Surveyor
   s.land.push(id);
-  log(s, `📜 Bought ${l.name} (+${l.slots} land slots).`);
+  log(s, `📜 Bought ${l.name} (+${l.slots} land ${l.slots === 1 ? "slot" : "slots"}).`);
   s.deeds.push(`Bought ${l.name}.`);
   return true;
 }

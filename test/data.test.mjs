@@ -111,7 +111,7 @@ const STG = D.estate.stages.map(x => x[1]);
 for (const p of D.phases.list.filter(p => p.need && !p.need.homeAndFamily)) ok(STG.includes(p.need.stage) && p.need.adults > 0, `phase ${p.id} stage exists`);
 for (const [k, v] of Object.entries(D.families.gates)) if (k[0] !== "_") ok(v >= 1 && v <= 3, `gate ${k} is a built phase`);
 ok(D.families.gates.feud === 3 && D.families.gates.war === 3, "feud & war are Dynasty-phase");
-const TABSET = new Set(["main","family","jobs","inv","estate","map","minions","guilds","craft","chron","houses"]), IDS = new Set();
+const TABSET = new Set(["main","family","jobs","inv","estate","map","minions","guilds","craft","chron","houses","legacy"]), IDS = new Set();
 for (const l of D.intros.lines) {
   ok(!IDS.has(l.id), `intro ${l.id} unique`); IDS.add(l.id);
   ok(TABSET.has(l.tab), `intro ${l.id} tab`); ok(E.INTRO_PREDS.includes(l.when), `intro ${l.id} when`);

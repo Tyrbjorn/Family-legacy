@@ -2,6 +2,25 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R84",
+   "title": "Apprentice perks, gifts and first rewards",
+   "items": [
+    "🎓 New families only: the master you pick at the start now matters. Your founder starts with a small head start in that master's trade and counts as a finished apprentice: the matching guild takes them at half the fee and with +20 standing. Existing saves and your children are not changed.",
+    "🎁 Courtship: a suitor's class likes one craft gift (herbs for healers, whetstone for warriors, arrows for rangers, a quire for mages, a thimble for rogues) and takes it 1.5 times as well, on top of their own favourite gift (2.25 times when both match). To make that double match possible, three favourites changed: Pious suitors now like Ribbon-tied Herbs (was Flowers), Stern ones Whetstone and Oil (was Smoked meat) and Scholarly ones an Inked Quire (was Chocolate). Matching gifts show a ⭐. The Amber Brooch and Wedding Cloth Bolt match no class.",
+    "🛠️ You can now craft Whetstone and Oil, Fletched Arrow Sets, Wedding Cloth Bolts and Amber Brooches. All seven courting gifts can also drop from some quests.",
+    "📒 Small one-time rewards for the Ledger of Firsts rows you can see ticked (coin), a bonus of 10 renown for the Ground Ledger's \"Walk the bounds\", and 150 coin for finishing the whole Ground Ledger. Saves that are already under way get no back-pay for what they have done.",
+    "📘 Four new short intro lines: Farmstead, Union Hall, Legacy and Automation, each with a little coin.",
+    "⚠️ These amounts are placeholders and may change. Nothing else is touched, and your save carries over."
+   ]
+  },
+  {
+   "build": "R83",
+   "title": "Small text cleanups",
+   "items": [
+    "✏️ Removed the \"first draft\" notes from the R78 to R81 entries, and a single land slot now reads \"+1 land slot\" in the Estate tab, the map and the purchase log. Text only; nothing in play changes."
+   ]
+  },
+  {
    "build": "R82",
    "title": "Small fixes",
    "items": [
@@ -16,7 +35,7 @@
     "⛏️ Only the first generation is Half-dwarf. After that the blood is Dwarf-blooded: permanent, never half again, and half as strong (small STR and VIT, a little craft XP, +6 years).",
     "🧬 A dwarf and a human always have a Half-dwarf child. Half-dwarf with human or Dwarf-blooded with human gives Dwarf-blooded. When both parents carry dwarf blood the result is by chance, and a full Dwarf child of a mixed line carries a lineage mark.",
     "💍 The Houses page shows how a suitor's blood may pass to your heirs (hover for the odds). The Family tab shows each person's heritage, and the Encyclopedia has a new \"Heritage and bloodlines\" entry.",
-    "📦 Older saves are updated once on load: Half-dwarf members whose parents are not full dwarves become Dwarf-blooded. Dwarf-only for now; wording and numbers are a first draft. The map is unchanged."
+    "📦 Older saves are updated once on load: Half-dwarf members whose parents are not full dwarves become Dwarf-blooded. Dwarf-only for now. The map is unchanged."
    ]
   },
   {
@@ -25,7 +44,7 @@
    "items": [
     "🎁 Seven new gifts for courting, sold in shops: Ribbon-tied Herbs, Whetstone and Oil and a Fletched Arrow Set in Millbrook; an Inked Quire and a Wedding Cloth Bolt in Thornwick; a Silvered Thimble in Ashford; an Amber Brooch in the Eyrie.",
     "❤️ They work like Wildflowers and Honey Cakes: buy one, then give it to a suitor from the Houses page. Pricier gifts warm a suitor faster.",
-    "⚖️ Names, prices and values are a first draft and may change. These are shop-only: no recipes, no loot drops. The map is unchanged."
+    "⚖️ These are shop-only: no recipes, no loot drops. The map is unchanged."
    ]
   },
   {
@@ -35,7 +54,7 @@
     "📜 Bigger land parcels now need renown as well as coin: Cleared Acre 25, Riverbank 60, Meadow 130, Woodlot 200, Hillside 400, Ridge 600, Highland Claim 900, Greenvale 1,200. The Starting Plot is still 150 coin and no renown.",
     "🔒 A parcel you can't buy yet says why: \"Needs renown 130 (you have 90)\" on the Land page, the town land-for-sale list and the estate map. Quest rewards that give the Plot or the Acre still work.",
     "📖 New Encyclopedia entry \"Land and renown\" and a note from Orrin the first time renown is what holds you back.",
-    "⚖️ Numbers and wording are a first draft and may change. The map is unchanged."
+    "⚖️ The map is unchanged."
    ]
   },
   {
@@ -45,7 +64,7 @@
     "🎓 Teens (14-17) placed with a town master, or who finished there, can take that master's jobs: 16 modest-pay jobs from Forge Hand to Mews Hand. The second job opens half-way through the apprenticeship.",
     "🪙 Idle teens placed with a master become journeyman half-way through: a little extra pay each day and faster lessons.",
     "🧔 Orrin's note about heirs now mentions journeyman work (Mute Orrin in Settings if you prefer quiet).",
-    "⚖️ Job names, pay and numbers are a first draft and may change. Adults and the map are unchanged."
+    "⚖️ Adults and the map are unchanged."
    ]
   },
   {

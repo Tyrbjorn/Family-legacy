@@ -81,8 +81,12 @@ export function noteStage(s, m, su) {
   }
 }
 
-export const likedGift = (su, id) => (personaDef(su.persona) || {}).likesGift === id;
-export const giftMult = (su, id) => (likedGift(su, id) ? MC().likedGiftMult : 1);
+// R84 (D14): a suitor's starting class likes one craft gift (data/marriage.json classGifts); x classGiftMult, stacking with the persona
+// liked-gift bonus (x2.25 when both). Luxury gifts (Amber Brooch, Wedding Cloth Bolt) match no class. Crafted ids ("c|id|quality") are unwrapped.
+const giftBase = id => String(id).replace(/^c\|/, "").split("|")[0];
+export const likedGift = (su, id) => (personaDef(su.persona) || {}).likesGift === giftBase(id); // R84: crafted ids ("c|id|quality") are unwrapped, as for classLiked
+export const classLiked = (su, id) => !!su && !!(MC().classGifts || {})[su.cls] && (MC().classGifts || {})[su.cls] === giftBase(id);
+export const giftMult = (su, id) => (likedGift(su, id) ? MC().likedGiftMult : 1) * (classLiked(su, id) ? MC().classGiftMult || 1 : 1);
 
 // food from the larder as a courting gift (ties the food chains in)
 export function foodGiftIssue(s, su, k) {

@@ -80,7 +80,7 @@
    "name": "Scholarly",
    "icon": "📚",
    "likesStat": "INT",
-   "likesGift": "chocolate",
+   "likesGift": "inked_quire",
    "favors": [
     "bookish",
     "curious"
@@ -95,7 +95,7 @@
    "name": "Stern",
    "icon": "🧱",
    "likesStat": "STR",
-   "likesGift": "smokedmeat",
+   "likesGift": "whetstone_oil",
    "favors": [
     "stubborn",
     "brave"
@@ -111,7 +111,7 @@
    "name": "Devout",
    "icon": "🕯️",
    "likesStat": "WIL",
-   "likesGift": "flowers",
+   "likesGift": "ribbon_herbs",
    "favors": [
     "hardy"
    ],
@@ -169,5 +169,15 @@
   "dowryPerLevel": 10,
   "renown": 15,
   "rapport": 40
- }
+ },
+ "classGiftMult": 1.5,
+ "classGifts": {
+  "acolyte": "ribbon_herbs",
+  "fighter": "whetstone_oil",
+  "hunter": "arrow_set",
+  "scout": "arrow_set",
+  "apprentice": "inked_quire",
+  "cutpurse": "silver_thimble"
+ },
+ "classGiftNote": "R84: a suitor's starting class likes one craft gift (Healer: herbs, Warrior: whetstone, Ranger: arrows, Mage: quire, Rogue: thimble). x classGiftMult, stacking with likedGiftMult (x2.25 when both). The Amber Brooch and Wedding Cloth Bolt match no class (already the strongest gifts). Builder suitors and class lines (adventurer, artisan) have none. Placeholder numbers. Also R84: three persona favourites were aligned with class gifts so the x2.25 double match is reachable: pious Flowers -> Ribbon-tied Herbs (acolyte), stern Smoked meat -> Whetstone and Oil (fighter), scholarly Chocolate -> Inked Quire (apprentice)."
 }

@@ -50,6 +50,7 @@ import { eatDay, mealHeal, moraleSpeed } from "./food.js";
 import { household, householdDay, suitorsTick } from "./courtship.js";
 import { housesDay } from "./houses.js";
 import { introsDay } from "./intros.js";
+import { firstsDay } from "./firsts.js";
 import { normalize } from "./save.js";
 import { gainXp } from "./skills.js";
 import { D, T, Y, active, ageY, bl, furn, living, log, r, rng } from "./state.js";
@@ -268,6 +269,7 @@ for (const [n, f] of [
   ["automation", s => (autoTendDay(s), autoEquipDay(s), autoAscendDay(s), minionAgeDay(s), autoRecruitDay(s), familyAutoDay(s))],
   ["suitors", suitorsDay],
   ["houses", s => (housesDay(s), householdDay(s), introsDay(s))],
+  ["firsts", firstsDay], // R84
   ["members", membersDay],
   ["generations", generationsDay],
   ["rams", s => ((s._stallsFree = stalls(s) - animalCount(s)), ramsDay(s), delete s._stallsFree)], // R51 mountain rams breed
