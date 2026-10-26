@@ -116,11 +116,11 @@ export function bloodPreview(m, su) {
     words.push(ls.length === 1 ? `will be ${ls[0]}` : `may be ${ls.join(" or ")}`);
     tips.push(o.outcomes.map(x => `${x.label} ${Math.round(x.p * 100)}%`).join(" · "));
   }
-  return { text: `Heirs ${words.join("; ")}`, tip: tips.join(" | ") + (odds.some(o => o.tag) ? " · a Dwarf child of a half or blooded parent carries a lineage mark (no bonus)" : "") };
+  return { text: `Heirs ${words.join("; ")}`, tip: tips.join(" | ") + (odds.some(o => o.tag && o.outcomes.some(x => x.kind === "pure" && x.p > 0)) ? " · a Dwarf child of a half or blooded parent carries a lineage mark (no bonus)" : "") };
 }
 // save migration (R81): idempotent via the per-member marker bloodV. Old saves gave every Dwarf-blood child of a half parent the
 // half trait; under the new rules only the 1st generation is half. A member with no marker keeps `dwarfblood` (half) when they are a
-// founder / have an unknown or pure-dwarf parent; otherwise it becomes `dwarfblooded` (6 years less lifespan).
+// founder / have an unknown or pure-dwarf parent; otherwise it becomes `dwarfblooded` (trait swap only; lifespan is kept as it was, R82).
 export function migrateBloodlines(s) {
   const by = new Map((s.members || []).map(m => [m.id, m]));
   for (const m of s.members || []) {
@@ -132,7 +132,7 @@ export function migrateBloodlines(s) {
       const ps = (m.parents || []).map(id => by.get(id)).filter(Boolean);
       if (!(m.parents || []).length || !ps.length || ps.some(p => p.race === rid)) continue;
       m.traits = m.traits.map(t => (t === c.half ? c.blooded : t));
-      m.lifespan = (m.lifespan || T.baseLifespan) - ((tdef(c.half).life || 0) - (tdef(c.blooded).life || 0));
+      // R82: lifespan is deliberately NOT touched: a converted member keeps the years they already had (frailty / death unchanged).
     }
   }
 }

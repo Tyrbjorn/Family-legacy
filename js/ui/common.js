@@ -51,7 +51,7 @@ export function memberLine(m) {
 }
 
 // R81 heritage: "Half-dwarf" / "Dwarf-blooded" / "Dwarf" (placeholder tooltips)
-const HTIP = { half: "First generation only. Their children are Dwarf-blooded, unless the other parent is also of dwarf blood.", blooded: "Faint, permanent dwarf blood. Never counts as half again, and has half the Half-dwarf bonuses.", pure: "A full dwarf: lifespan 110, no extra bonuses. Counts wherever a class asks for dwarf blood." };
+const HTIP = { half: "First generation only. Their children are Dwarf-blooded, unless the other parent is also of dwarf blood.", blooded: "Faint, permanent dwarf blood. Never counts as half again, and has half the Half-dwarf bonuses.", pure: "Unmixed dwarven blood: lifespan 110, no extra bonuses. Counts wherever a class asks for dwarf blood." };
 export const heritageHtml = m =>
   Object.entries(E.heritageOf(m)).map(([r, k]) => `<span class="muted" title="${HTIP[k]}">${(E.heritageRace(r) || {}).icon || ""} Heritage: <b>${E.heritageLabel(r, k)}</b></span>`).join(" · ");
 export function badges(m) {

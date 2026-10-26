@@ -297,7 +297,7 @@
    "runecraft": 0.2,
    "farming": -0.2
   },
-  "desc": "First-generation half-dwarf: +12 years lifespan, +2 STR and VIT, +20% Smithing/Mining/Masonry/Runecraft XP, −20% Farming XP. Only this generation is half; their children are Dwarf-blooded (R81 placeholder text).",
+  "desc": "First-generation half-dwarf: +12 years lifespan, +2 STR and VIT, +20% Smithing/Mining/Masonry/Runecraft XP, −20% Farming XP. Only this generation is half; their children are Dwarf-blooded.",
   "blood": {
    "race": "dwarf",
    "kind": "half"
@@ -325,6 +325,6 @@
    "race": "dwarf",
    "kind": "blooded"
   },
-  "desc": "A faint, lasting trace of dwarf blood: +6 years lifespan, +1 STR and VIT, +10% Smithing/Mining/Masonry/Runecraft XP, −10% Farming XP. Permanent; never becomes half-dwarf again (R81 placeholder text)."
+  "desc": "A faint, lasting trace of dwarf blood: +6 years lifespan, +1 STR and VIT, +10% Smithing/Mining/Masonry/Runecraft XP, −10% Farming XP. Permanent; never becomes half-dwarf again."
  }
 ]

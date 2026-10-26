@@ -792,7 +792,7 @@ export const STEPS = [
   },
   {
     n: 55,
-    name: "R81 bloodlines: old Dwarf-blood (half) members whose parents are not a pure dwarf become Dwarf-blooded (-6 years lifespan); idempotent via m.bloodV, so no schema bump",
+    name: "R81 bloodlines: old Dwarf-blood (half) members whose parents are not a pure dwarf become Dwarf-blooded (trait swap only, lifespan kept); idempotent via m.bloodV, so no schema bump",
     run: migrateBloodlines,
   },
 ];

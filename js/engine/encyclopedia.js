@@ -26,7 +26,7 @@ const structDefs = D => Object.keys(D).filter(k => k.startsWith("structures/")).
 
 // R79: "Land and renown", built from D.estate.lands (placeholder lore text: Jeremy's OK)
 function landRenownEntry(D) {
-  const rows = arr((D.estate || {}).lands).map(l => `${l.name}: ${l.slots} land slots, ${costTxt(l.cost) || "free"}${l.renown ? `, needs renown ${num(l.renown)}` : ", no renown needed"}${l.requires ? `, after ${(arr(D.estate.lands).find(x => x.id === l.requires) || {}).name}` : ""}.`);
+  const rows = arr((D.estate || {}).lands).map((l, i) => ({ l, i })).sort((a, b) => (a.l.renown || 0) - (b.l.renown || 0) || a.i - b.i).map(({ l }) => `${l.name}: ${l.slots} land ${l.slots === 1 ? "slot" : "slots"}, ${costTxt(l.cost) || "free"}${l.renown ? `, needs renown ${num(l.renown)}` : ", no renown needed"}${l.requires ? `, after ${(arr(D.estate.lands).find(x => x.id === l.requires) || {}).name}` : ""}.`);
   return E("land:renown", "Land and renown", "📜", "Why bigger ground needs a name", [
     "Renown is what others say of you. It is earned in quests, board jobs, guild ranks, dungeons, marriages and deeds. It is not spent buying land; you only need to have it.",
     "The Starting Plot is for the asking. Bigger parcels need your household's renown to have reached a mark. A quest reward can still hand you the Plot or the Acre.",
@@ -41,7 +41,7 @@ function heritageEntry(D) {
   const pc = x => Math.round(x * 100) + "%", R = H.rules || {};
   const od = k => { const r = R[k]; return r && typeof r === "object" ? Object.entries(r).map(([a, p]) => `${pc(p)} ${a === "pure" ? pure : a === "half" ? half : bl}`).join(" / ") : r === "pure" ? "always " + pure : r === "half" ? "always " + half : r === "blooded" ? "always " + bl : "human"; };
   return E("heritage:blood", "Heritage and bloodlines", "⛏️", "Dwarf blood and how it runs in a family", [
-    `A ${pure} is a full dwarf: long-lived, and at home in mine and forge. Marry a dwarf of Clan Ironbrow and the blood begins to run in your line.`,
+    `A ${pure} is of unmixed dwarven blood: long-lived, and at home in mine and forge. Marry a dwarf of Clan Ironbrow and the blood begins to run in your line.`,
     `Only the first generation is ${half}. After that the blood is ${bl}: faint, permanent, and never counted as half again. A ${bl} person has half the ${half} bonuses.`,
     `A child of a ${pure} and a human is always ${half}. ${half} and human gives ${bl}; ${bl} and human stays ${bl}.`,
     `When both parents carry dwarf blood the result is chancy: ${half} and ${half}: ${od("half+half")}. ${half} and ${pure}: ${od("pure+half")}. ${bl} and ${pure}: ${od("pure+blooded")}. A ${pure} child of a mixed line carries a lineage mark but no bonus.`,
