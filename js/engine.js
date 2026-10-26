@@ -80,6 +80,7 @@ export * from "./engine/saltmere.js";
 export * from "./engine/highlands.js";
 export * from "./engine/dagon.js";
 export * from "./engine/dwarves.js";
+export * from "./engine/bloodlines.js"; // R81
 export * from "./engine/seablood.js";
 export * from "./engine/r60.js";
 import "./engine/r60-wire.js";

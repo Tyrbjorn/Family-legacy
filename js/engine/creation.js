@@ -53,7 +53,7 @@ export function saveMilestones(s) {
   const f = {};
   if (((s && s.flags) || {}).thaneOath != null) f.thaneOath = 1;
   const ms = (s && s.members) || [];
-  if (ms.some(m => m.parents && (m.parents.length || 0) && ((m.traits || []).includes("dwarfblood") || m.race === "dwarf"))) f.dwarfBorn = 1;
+  if (ms.some(m => m.parents && (m.parents.length || 0) && ((m.traits || []).includes("dwarfblood") || (m.traits || []).includes("dwarfblooded") || m.race === "dwarf"))) f.dwarfBorn = 1;
   if (ms.some(m => (m.traits || []).includes("seatouched"))) f.seaHeir = 1;
   const hr = s && s.hydra && s.hydra.result;
   if (hr) f["hydra_" + hr] = 1;

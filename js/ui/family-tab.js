@@ -1,7 +1,7 @@
 // Family tree: generations as rows in a pannable canvas; tap a member to open their card.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
-import { autoChip, badges, cl, injuryTags, memberLine, portrait } from "./common.js";
+import { autoChip, badges, heritageHtml, cl, injuryTags, memberLine, portrait } from "./common.js";
 import { U } from "./state.js";
 import { familyR60 } from "./r60-ui.js";
 
@@ -51,7 +51,7 @@ export function familyv() {
     const ps = (n?.parents || []).map(id => byId[id]?.name).filter(Boolean);
     card = `<div class="card"><div class="row">${portrait(m, 48)} ${memberLine(m)}<span style="flex:1"></span><button class="b" data-a="treesel" data-v="">✕</button></div>
 <div class="muted">${m.alive ? "Living" : n.marriedOut ? `Married into ${n.marriedOut}` : `Died Y${n.died}`}${m.persona && E.personaDef(m.persona) ? ` · ${E.personaDef(m.persona).icon} ${E.personaDef(m.persona).name}` : ""}${m.house && E.houseDef(m.house) ? ` · of ${E.houseDef(m.house).name}` : ""} · lifespan ~${m.lifespan}y</div>
-<div>${badges(m)}</div>
+<div>${badges(m)}</div>${E.hasBlood(m) ? `<div>${heritageHtml(m)}</div>` : ""}
 ${challengeRow(m)}${injuryTags(m)}
 ${ps.length ? `<div>Parents: ${ps.join(" & ")}</div>` : ""}${sp ? `<div>Spouse: <a data-a="treesel" data-v="${sp.id}">${sp.name}</a></div>` : ""}
 ${kids.length ? `<div>Children: ${(n.children || []).map(id => `<a data-a="treesel" data-v="${id}">${byId[id].name}</a>`).join(", ")}</div>` : ""}

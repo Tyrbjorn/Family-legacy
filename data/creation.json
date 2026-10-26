@@ -34,12 +34,28 @@
  },
  "beards": [ ["", "None"], ["forked", "Forked"], ["ringed-plait", "Ringed plait"] ],
  "races": [ ["human", "Human", null], ["dwarf", "Dwarf", "race_dwarf"] ],
- "bloodlines": [ ["", "None", null], ["dwarfblood", "Dwarf-blood", "blood_dwarf"], ["seatouched", "Sea-touched", "blood_sea"] ],
+ "heritage": {
+  "_note": "R81 bloodlines (fl-bloodlines-proposal.md, Jeremy's final answers). One entry per race that can be mixed in: `half` / `blooded` are trait ids (trait defs carry blood:{race,kind}); pure = the member's race. Add elf or sea here later; a person can hold several blooded tags. `rules` key = the two parents' kinds for that race (pure, half, blooded, none), a string is a fixed result, an object is odds. ONE rng draw per birth when any parent carries a non-human tag. Strength: half = trait def, blooded = 50% flat. Odds are Jeremy's; all player-facing text is a placeholder.",
+  "races": { "dwarf": { "name": "dwarf", "Name": "Dwarf", "half": "dwarfblood", "blooded": "dwarfblooded", "house": "ironbrow", "lifespan": 110, "icon": "⛏️" } },
+  "rules": {
+   "pure+pure": "pure",
+   "pure+none": "half",
+   "pure+half": { "half": 0.6, "pure": 0.4 },
+   "pure+blooded": { "half": 0.9, "pure": 0.1 },
+   "half+half": { "half": 0.75, "pure": 0.25 },
+   "half+none": "blooded",
+   "half+blooded": "blooded",
+   "blooded+none": "blooded",
+   "blooded+blooded": "blooded"
+  },
+  "pureTag": true
+ },
+ "bloodlines": [ ["", "None", null], ["dwarfblood", "Half-dwarf", "blood_dwarf"], ["seatouched", "Sea-touched", "blood_sea"] ],
  "openTraits": ["quick", "hardy", "charming", "brave", "nimble", "lazy", "frail", "awkward", "timid", "clumsy"],
  "frames": { "open": "common", "stone": "rare", "hydra": "hydra" },
  "unlocks": [
   { "id": "race_dwarf", "name": "Dwarf race", "how": "Swear the Thane's Oath in any game", "flag": "thaneOath" },
-  { "id": "blood_dwarf", "name": "Dwarf-blood bloodline", "how": "Have a dwarf-blooded child born into the family", "check": "dwarfBorn" },
+  { "id": "blood_dwarf", "name": "Half-dwarf bloodline", "how": "Have a half-dwarf or dwarf-blooded child born into the family", "check": "dwarfBorn" },
   { "id": "blood_sea", "name": "Sea-touched bloodline", "how": "Have a Sea-touched heir", "check": "seaHeir" },
   { "id": "hydra_slain", "name": "Bulwark trait + Hydra-scale frame", "how": "Slay Mother Hydra", "hydra": "slain", "traits": ["bulwark"], "frame": "hydra" },
   { "id": "hydra_blessed", "name": "Silvertongue trait", "how": "Be blessed by Mother Hydra", "hydra": "blessed", "traits": ["silvertongue"] },

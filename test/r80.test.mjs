@@ -6,8 +6,8 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);return s;};
 const NEW={ribbon_herbs:['Ribbon-tied Herbs',10,15,'millbrook'],whetstone_oil:['Whetstone and Oil',12,25,'millbrook'],arrow_set:['Fletched Arrow Set',12,25,'millbrook'],inked_quire:['Inked Quire',14,35,'thornwick'],silver_thimble:['Silvered Thimble',14,40,'ashford'],amber_brooch:['Amber Brooch',25,120,'eyrie'],wedding_cloth:['Wedding Cloth Bolt',20,80,'thornwick']};
-ok(/^R(80)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R80 build, save stays 55');
-ok(D.changelog.entries[0].build==='R80'&&D.changelog.entries[0].items.length>=3&&D.changelog.entries.some(e=>e.build==='R79'),'changelog');
+ok(/^R(80|81)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R80 build, save stays 55');
+ok(D.changelog.entries.some(e=>e.build==='R80'&&e.items.length>=3)&&D.changelog.entries.some(e=>e.build==='R79'),'changelog');
 const it=id=>D.items.find(i=>i.id===id);
 ok(new Set(D.items.map(i=>i.id)).size===D.items.length,'item ids unique');
 for(const [id,[name,aff,val,town]] of Object.entries(NEW)){

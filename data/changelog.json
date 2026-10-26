@@ -2,6 +2,16 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R81",
+   "title": "Dwarf blood now thins and settles",
+   "items": [
+    "⛏️ Only the first generation is Half-dwarf. After that the blood is Dwarf-blooded: permanent, never half again, and half as strong (small STR and VIT, a little craft XP, +6 years).",
+    "🧬 A dwarf and a human always have a Half-dwarf child. Half-dwarf with human or Dwarf-blooded with human gives Dwarf-blooded. When both parents carry dwarf blood the result is by chance, and a full Dwarf child of a mixed line carries a lineage mark.",
+    "💍 The Houses page shows how a suitor's blood may pass to your heirs (hover for the odds). The Family tab shows each person's heritage, and the Encyclopedia has a new \"Heritage and bloodlines\" entry.",
+    "📦 Older saves are updated once on load: Half-dwarf members whose parents are not full dwarves become Dwarf-blooded. Dwarf-only for now; wording and numbers are a first draft. The map is unchanged."
+   ]
+  },
+  {
    "build": "R80",
    "title": "Seven new courtship gifts",
    "items": [

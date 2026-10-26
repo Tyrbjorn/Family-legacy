@@ -3,7 +3,7 @@
 // help, the Oath's places for dwarves only, Dwarf-blood children, and Clan Ironbrow's grudge. Imports state.js only.
 import { D, T } from "./state.js";
 
-export const DW = { openGround: 0.8, ramCart: 1.2, retainerMax: 10, chariotGuard: 0.15, shieldPct: 0.1, shieldCap: 0.3, smithPct: 0.1, smithCap: 0.3, runePct: 0.5, runeCap: 1, farmApt: 0.4, bloodChance: 0.5 };
+export const DW = { openGround: 0.8, ramCart: 1.2, retainerMax: 10, chariotGuard: 0.15, shieldPct: 0.1, shieldCap: 0.3, smithPct: 0.1, smithCap: 0.3, runePct: 0.5, runeCap: 1, farmApt: 0.4 };
 const typeOf = mi => (D.minions.types || []).find(t => t.id === (mi && mi.type)) || {};
 export const isDwarfType = t => !!t && t.race === "dwarf";
 export const isDwarfMinion = mi => isDwarfType(typeOf(mi));
@@ -42,12 +42,4 @@ export function dwarfSpouse(s, sp) {
   sp.lifespan = (sp.lifespan || T.baseLifespan) + (110 - T.baseLifespan);
   return true;
 }
-// Dwarf-blood: a dwarf parent always passes it; a Dwarf-blood parent passes it half the time
-export function dwarfBlood(s, child, parents, rng) {
-  if ((child.traits || []).includes("dwarfblood")) return false;
-  const full = parents.some(isDwarf), half = parents.some(p => p && (p.traits || []).includes("dwarfblood"));
-  if (!full && !(half && rng() < DW.bloodChance)) return false;
-  (child.traits ||= []).push("dwarfblood");
-  child.lifespan = (child.lifespan || T.baseLifespan) + ((D.traits || []).find(t => t.id === "dwarfblood") || { life: 12 }).life;
-  return true;
-}
+// (R81) Dwarf-blood births moved to bloodlines.js: bloodTrait()

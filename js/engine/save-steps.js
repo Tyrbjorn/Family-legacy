@@ -27,6 +27,7 @@ import { itemDef } from "./inventory.js";
 import { clash, famFit, gstats, profFromSkills } from "./geartypes.js";
 import { themedFor } from "./skills.js";
 import { D, SAVE_VERSION, bl, log } from "./state.js";
+import { migrateBloodlines } from "./bloodlines.js";
 
 // Save migrations. Saves stay at SAVE_VERSION 1 (so FL1 codes keep working); s.schema records which
 // one-time steps ran. Steps run in this exact order; `once` steps are skipped when s.schema >= their n,
@@ -788,6 +789,11 @@ export const STEPS = [
       s.locked ||= [];
       s.branches ||= {};
     },
+  },
+  {
+    n: 55,
+    name: "R81 bloodlines: old Dwarf-blood (half) members whose parents are not a pure dwarf become Dwarf-blooded (-6 years lifespan); idempotent via m.bloodV, so no schema bump",
+    run: migrateBloodlines,
   },
 ];
 const ITEM_RENAMES = {

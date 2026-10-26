@@ -10,7 +10,7 @@ const kid=(s,age)=>{const m=E.newMember(s,{gender:'m',age:0,parents:null});m.age
 const A=D.apprenticeships, JM=D.jobs.filter(j=>j.journeyman), OLD=D.jobs.filter(j=>!j.journeyman);
 
 // ---- build, data, no schema change
-ok(/^R(7[89]|80)$/.test(BUILD)&&D.changelog.entries.some(e=>e.build==='R78'&&e.items.length>=3),'BUILD R78+ and changelog has R78');
+ok(/^R(7[89]|80|81)$/.test(BUILD)&&D.changelog.entries.some(e=>e.build==='R78'&&e.items.length>=3),'BUILD R78+ and changelog has R78');
 ok(E.SCHEMA===55&&STEPS.at(-1).n===55,'no SAVE_VERSION / schema bump: stays 55');
 ok(OLD.length===8&&D.jobs.slice(0,8).every(j=>!j.journeyman),'the 8 original jobs are unchanged and first');
 ok(JM.length===16&&new Set(JM.map(j=>j.id)).size===16,'16 journeyman jobs');

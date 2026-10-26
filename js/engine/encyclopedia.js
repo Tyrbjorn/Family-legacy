@@ -8,6 +8,7 @@ import { regionKnown, townKnown, nodeVisible, questVisible } from "./map.js";
 import { locKnown } from "./world.js";
 import { townKnownId } from "./sea.js";
 import { respectList } from "./r60.js";
+import { hasBlood } from "./bloodlines.js";
 
 export const ENC_SECTIONS = [
   ["items", "Items", "🎒"], ["buildings", "Buildings", "🏠"], ["classes", "Classes", "🛡️"], ["factions", "Factions", "🏳️"],
@@ -30,6 +31,21 @@ function landRenownEntry(D) {
     "Renown is what others say of you. It is earned in quests, board jobs, guild ranks, dungeons, marriages and deeds. It is not spent buying land; you only need to have it.",
     "The Starting Plot is for the asking. Bigger parcels need your household's renown to have reached a mark. A quest reward can still hand you the Plot or the Acre.",
     ...rows,
+  ].join(" "));
+}
+
+// R81: "Heritage and bloodlines" (placeholder lore text, numbers from D.creation.heritage)
+function heritageEntry(D) {
+  const H = (D.creation || {}).heritage || {}, tn = id => (arr(D.traits).find(x => x.id === id) || {}).name || id;
+  const c = (H.races || {}).dwarf || { Name: "Dwarf", half: "dwarfblood", blooded: "dwarfblooded" }, half = tn(c.half), bl = tn(c.blooded), pure = c.Name || "Dwarf";
+  const pc = x => Math.round(x * 100) + "%", R = H.rules || {};
+  const od = k => { const r = R[k]; return r && typeof r === "object" ? Object.entries(r).map(([a, p]) => `${pc(p)} ${a === "pure" ? pure : a === "half" ? half : bl}`).join(" / ") : r === "pure" ? "always " + pure : r === "half" ? "always " + half : r === "blooded" ? "always " + bl : "human"; };
+  return E("heritage:blood", "Heritage and bloodlines", "⛏️", "Dwarf blood and how it runs in a family", [
+    `A ${pure} is a full dwarf: long-lived, and at home in mine and forge. Marry a dwarf of Clan Ironbrow and the blood begins to run in your line.`,
+    `Only the first generation is ${half}. After that the blood is ${bl}: faint, permanent, and never counted as half again. A ${bl} person has half the ${half} bonuses.`,
+    `A child of a ${pure} and a human is always ${half}. ${half} and human gives ${bl}; ${bl} and human stays ${bl}.`,
+    `When both parents carry dwarf blood the result is chancy: ${half} and ${half}: ${od("half+half")}. ${half} and ${pure}: ${od("pure+half")}. ${bl} and ${pure}: ${od("pure+blooded")}. A ${pure} child of a mixed line carries a lineage mark but no bonus.`,
+    `${half}, ${bl} and ${pure} all count wherever a class asks for dwarf blood.`,
   ].join(" "));
 }
 
@@ -69,6 +85,7 @@ export function encCatalog(D) {
     ...arr(R.branches).map(b => E("br:" + b.id, b.name, b.icon, "A choice that split the realm", b.text)),
     ...arr(Object.values((D.intros || {}).lines || {})).map(l => E("i:" + l.id, l.name, l.icon, "A story begins", l.intro)),
     landRenownEntry(D), // R79
+    heritageEntry(D), // R81
   ];
   return C;
 }
@@ -122,6 +139,7 @@ export function encObserve(D, s) {
     if (e) add("lore", "e:" + e.id);
   }
   if (arr(s.land).length) add("lore", "land:renown"); // R79: once the family holds land
+  if (mem.some(hasBlood)) add("lore", "heritage:blood"); // R81: once a dwarf or someone of dwarf blood is in the family
   for (const b of arr((D.r60 || {}).branches)) if ((s.branches || {})[b.id]) add("lore", "br:" + b.id);
   for (const l of Object.values((D.intros || {}).lines || {})) if (((s.intros || {}).lines || {})[l.id]) add("lore", "i:" + l.id);
   return F;

@@ -27,6 +27,7 @@ export function newMember(s, { gender, age, cls = null, parents = null, stats } 
     traits: [],
     spouse: null,
     parents,
+    bloodV: 1, // R81: bloodline model version (migrateBloodlines skips members that have it)
     order: { type: "train", target: "farming" },
     action: null,
     injured: 0,

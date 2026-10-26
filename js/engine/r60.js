@@ -216,7 +216,7 @@ export function specialIssues(s, m, c, money = true) {
   if (m.cls === c.id) return ["already this class"];
   const k = classKeyIssue(s, c);
   if (k) out.push(k);
-  if (b.dwarf && m.race !== "dwarf" && !(m.traits || []).includes("dwarfblood")) out.push("dwarf or Dwarf-blood");
+  if (b.dwarf && m.race !== "dwarf" && !(m.traits || []).includes("dwarfblood") && !(m.traits || []).includes("dwarfblooded")) out.push("dwarf, half-dwarf or Dwarf-blooded");
   if (b.trait && !(m.traits || []).includes(b.trait)) out.push("needs the " + b.trait + " trait");
   for (const [sk, v] of Object.entries(b.skills || {})) if (((m.skills || {})[sk] || { lvl: 0 }).lvl < v) out.push(`${sk} ${((m.skills || {})[sk] || { lvl: 0 }).lvl}/${v}`);
   for (const [st, v] of Object.entries(b.stat || {})) if (DEP.statVal(m, st) < v) out.push(`${st} ${v}`);

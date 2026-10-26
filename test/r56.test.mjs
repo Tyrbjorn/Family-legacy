@@ -26,9 +26,9 @@ ok(D.changelog.entries.some(e=>e.build==='R56'),'changelog R56');
 { const s=base(); s.minions=[{type:'dwarfminer'}]; ok(E.isDwarfMinion(s.minions[0])&&!E.hasDwarfCart(s),'teamster rule needs a cart'); s.vault.push('ramcart'); ok(E.hasDwarfCart(s),'Ram Cart ok'); }
 // marriage + blood
 { const s=base(); const sp={house:'ironbrow',lifespan:55}; ok(E.dwarfSpouse(s,sp)&&sp.race==='dwarf'&&sp.lifespan===110,'a dwarf spouse lives ~110'); }
-{ const s=base(); const c={traits:[],lifespan:55}; ok(E.dwarfBlood(s,c,[{race:'dwarf'},{}],()=>0.9)&&c.traits.includes('dwarfblood')&&c.lifespan===67,'Dwarf-blood child: +12 years');
-  const t=D.traits.find(x=>x.id==='dwarfblood'); ok(t.stats.STR===2&&t.stats.VIT===2&&t.skillXp.smithing===0.2&&t.skillXp.farming===-0.2,'Dwarf-blood bonuses');
-  const g={traits:[]}; ok(!E.dwarfBlood(s,g,[{traits:['dwarfblood']},{}],()=>0.9)&&E.dwarfBlood(s,g,[{traits:['dwarfblood']},{}],()=>0.1),'a Dwarf-blood parent: half the time'); }
+{ const s=base(); const c={traits:[],lifespan:55}; ok(E.bloodTrait(s,c,[{race:'dwarf'},{}],()=>0.9).length===1&&c.traits.includes('dwarfblood')&&c.lifespan===67,'R81: a dwarf x human child is half-dwarf: +12 years');
+  const t=D.traits.find(x=>x.id==='dwarfblood'); ok(t.stats.STR===2&&t.stats.VIT===2&&t.skillXp.smithing===0.2&&t.skillXp.farming===-0.2,'half-dwarf bonuses unchanged');
+  const g={traits:[],lifespan:55}; E.bloodTrait(s,g,[{traits:['dwarfblood']},{}],()=>0.1); ok(g.traits.includes('dwarfblooded')&&!g.traits.includes('dwarfblood'),'R81: a half-dwarf parent with a human gives Dwarf-blooded (always)'); }
 // grudge
 { const s=base(); s.flags={soldGate:1}; ok(E.grudgeCeil(s,'ironbrow')===-25,'grudge holds'); s.doneQuests.push('ht_ironbrow2'); ok(E.grudgeCeil(s,'ironbrow')==null,'Ancestor Stones ends it'); }
 // tools

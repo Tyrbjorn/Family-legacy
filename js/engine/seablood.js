@@ -2,13 +2,14 @@
 // `seatouched`, family members); Deep One (Young Deep One followers, never family). Sea-touched passes like R56
 // Dwarf-blood; joined families get it at birth; late in life the Sea-touched may "change" and go down to Father.
 import { D, T, log, rng } from "./state.js";
+import { hasBlood } from "./bloodlines.js";
 import { DAGON_TOWN, dagonFavour, hydraBlessed } from "./dagon.js";
 
 export const SEAB = { parentChance: 0.5, joinChance: 0.25, life: 10, fishPct: 0.15, changeAge: 50, changeChance: 0.1, blessedChance: 0.2, warnDays: 30, churchPer: 2, churchCap: 10, lodgePer: 1, lodgeCap: 5, outsidePct: 0.05, raidGuard: 15 };
 export const isSea = m => !!m && (m.traits || []).includes("seatouched");
 const lifeOf = () => ((D.traits || []).find(t => t.id === "seatouched") || {}).life ?? SEAB.life;
 export function makeSea(child) {
-  if (isSea(child) || (child.traits || []).includes("dwarfblood")) return false; // one bloodline per child (dwarf rolls first)
+  if (isSea(child) || hasBlood(child)) return false; // one bloodline per child (dwarf rolls first)
   (child.traits ||= []).push("seatouched");
   child.lifespan = (child.lifespan || T.baseLifespan) + lifeOf();
   child.seaLife = 1;
@@ -16,7 +17,7 @@ export function makeSea(child) {
 }
 // birth: a Sea-touched parent passes it half the time; a family that joined the Lodge has 25% per child
 export function seaBirth(s, child, parents, roll = rng) {
-  if (isSea(child) || (child.traits || []).includes("dwarfblood")) return false;
+  if (isSea(child) || hasBlood(child)) return false;
   const p = parents.some(isSea) ? SEAB.parentChance : s.dagonPact === "join" ? SEAB.joinChance : 0;
   return p > 0 && roll() < p && makeSea(child);
 }

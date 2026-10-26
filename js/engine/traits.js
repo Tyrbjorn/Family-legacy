@@ -3,6 +3,7 @@ import { talentSkillXp } from "./talents.js";
 import { conflicts, traitDef } from "./family.js";
 import { LG, legacyValue } from "./legacy.js";
 import { D, rng } from "./state.js";
+import { isBloodTag } from "./bloodlines.js";
 
 const CFG = () =>
   LG().traits || { order: ["bad", "common", "good", "rare", "epic"], weights: {}, colors: {}, fromParent: 0.5 };
@@ -50,22 +51,25 @@ export function bestTrait(traits) {
   return tied[Math.floor(rng() * tied.length)];
 }
 
+// R81: a pure member's lineage mark (a "blooded" tag on a member whose race is that blood) is bookkeeping, it grants nothing
+const markOnly = (m, t) => { const b = (traitDef(t) || {}).blood; return !!b && b.kind === "blooded" && m.race === b.race; };
 export const traitStat = (m, k) =>
-  (m.traits || []).reduce((a, t) => a + (((traitDef(t) || {}).stats || {})[k] || 0), 0);
+  (m.traits || []).reduce((a, t) => a + (markOnly(m, t) ? 0 : ((traitDef(t) || {}).stats || {})[k] || 0), 0);
 export const traitSkillXp = (m, sk) =>
-  (m.traits || []).reduce((a, t) => a + (((traitDef(t) || {}).skillXp || {})[sk] || 0), 0) + talentSkillXp(m, sk); // R36 talents
+  (m.traits || []).reduce((a, t) => a + (markOnly(m, t) ? 0 : ((traitDef(t) || {}).skillXp || {})[sk] || 0), 0) + talentSkillXp(m, sk); // R36 talents
 const lifeOf = traits => traits.reduce((a, t) => a + ((traitDef(t) || {}).life || 0), 0);
 
 // Child gets exactly one guaranteed best trait (highest rarity across both parents; ties random),
 // other slots from parents' pools or fresh rolls, plus the Bloodline trait when unlocked.
 export function inheritTraits(s, child, parents) {
   const before = lifeOf(child.traits);
-  const pool = [...new Set(parents.flatMap(p => p.traits || []))];
+  const pool = [...new Set(parents.flatMap(p => p.traits || []))].filter(t => !isBloodTag(t)); // R81: blood tags pass only via bloodTrait()
   const best = bestTrait(pool);
   const out = best ? [best] : [];
   if (
     legacyValue(s, "bloodline") &&
     s.bloodline &&
+    !isBloodTag(s.bloodline) &&
     !out.includes(s.bloodline) &&
     !out.some(o => conflicts(o, s.bloodline))
   )
@@ -89,5 +93,5 @@ export function inheritTraits(s, child, parents) {
 }
 
 export function noteBloodline(s, m) {
-  for (const t of m.traits || []) if (!s.bloodline || rarityRank(t) > rarityRank(s.bloodline)) s.bloodline = t;
+  for (const t of m.traits || []) if (!isBloodTag(t) && (!s.bloodline || rarityRank(t) > rarityRank(s.bloodline))) s.bloodline = t;
 }

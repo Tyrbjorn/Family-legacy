@@ -50,8 +50,14 @@ export function memberLine(m) {
   return `${m.gender === "f" ? "👩" : "👨"} <b>${m.name}</b> · ${E.ageY(m)}y · ${c ? c.icon + " " + c.name : E.isAdult(m) ? "Commoner" : E.isTeen(m) ? "Teen" : "Child"}${E.mainPath(m) ? " + " + E.pathDef(E.mainPath(m).id).icon + " " + E.pathRankName(E.mainPath(m).rank) + " " + E.pathDef(E.mainPath(m).id).name : ""}${E.pendingPathChoices(m) ? " 🎯" : ""}${m.appr ? ` · 🎓 ${E.masterDef(m.appr.id)?.name || ""}` : ""} · CP ${E.cp(s, m)} · ⭐ ${fmt(m.renown || 0)}`;
 }
 
+// R81 heritage: "Half-dwarf" / "Dwarf-blooded" / "Dwarf" (placeholder tooltips)
+const HTIP = { half: "First generation only. Their children are Dwarf-blooded, unless the other parent is also of dwarf blood.", blooded: "Faint, permanent dwarf blood. Never counts as half again, and has half the Half-dwarf bonuses.", pure: "A full dwarf: lifespan 110, no extra bonuses. Counts wherever a class asks for dwarf blood." };
+export const heritageHtml = m =>
+  Object.entries(E.heritageOf(m)).map(([r, k]) => `<span class="muted" title="${HTIP[k]}">${(E.heritageRace(r) || {}).icon || ""} Heritage: <b>${E.heritageLabel(r, k)}</b></span>`).join(" · ");
 export function badges(m) {
-  return m.traits
+  const pureChip = Object.entries(E.heritageOf(m)).filter(([, k]) => k === "pure").map(([r]) => `<span class="tb" style="border-color:#b98;color:#b98" title="${HTIP.pure}">${(E.heritageRace(r) || {}).icon || ""} ${E.heritageRace(r).Name}</span>`).join("");
+  return pureChip + m.traits
+    .filter(t => !(E.isBloodTag(t) && E.traitDef(t).blood.kind === "blooded" && m.race === E.traitDef(t).blood.race))
     .map(t => {
       const d = E.traitDef(t);
       return d

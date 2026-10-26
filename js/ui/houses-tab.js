@@ -13,6 +13,8 @@ const traitChip = id => {
 const dowryStr = d =>
   [d.coin ? fmt(d.coin) + "🪙" : "", ...Object.entries(d.res || {}).map(([k, v]) => v + (RI[k] || E.resName(k)))].filter(Boolean).join(" ") || "none";
 
+// R81 heritage preview: words only, the odds are in the tooltip (placeholder text)
+const bloodLine = (m, su) => { const b = E.bloodPreview(m, su); return b ? `<div class="muted" title="${b.tip}">⛏️ ${b.text}</div>` : ""; };
 export function suitorCard(su) {
   const m = E.active(s);
   E.ensureSuitor(s, su);
@@ -27,7 +29,7 @@ export function suitorCard(su) {
   return `<div class="card suitor"><div class="row"><span><b>${su.name}</b>, ${su.age} · ${cl(su.cls)?.name || ""}${h ? ` · ${h.icon} ${h.name}` : " · commoner"}</span><span>${st.icon} ${st.name}</span></div>
 ${bar(su.affinity / 100)}<div class="muted">❤️ ${Math.floor(su.affinity)}/100${p ? ` · ${p.icon} ${p.name}: ${p.desc} · likes ${p.likesStat} and ${it(p.likesGift)?.name || E.resName(p.likesGift)}` : ""}</div>
 <div>${(su.traits || []).map(traitChip).join("")} <span class="muted">· dowry ${dowryStr(su.dowry || { coin: 0 })}</span></div>
-${left !== Infinity ? `<div class="muted">Leaves in ${left}d${su.house && su.affinity >= D.marriage.jiltAt ? " (jilting sours their house)" : ""}</div>${bar(1 - left / D.marriage.stayDays, "#88a")}` : ""}
+${bloodLine(m, su)}${left !== Infinity ? `<div class="muted">Leaves in ${left}d${su.house && su.affinity >= D.marriage.jiltAt ? " (jilting sours their house)" : ""}</div>${bar(1 - left / D.marriage.stayDays, "#88a")}` : ""}
 <div class="row" style="flex-wrap:wrap;gap:4px;justify-content:flex-start"><button class="b" data-a="court" data-v="${su.id}" ${canCourt ? "" : "disabled"}>Court</button>
 ${gifts.map(g => `<button class="b" data-a="gift" data-v="${su.id}" data-w="${g}">🎁 ${it(g).name}${E.likedGift(su, g) ? " ❤️" : ""}</button>`).join("")}
 ${foods.map(k => `<button class="b" data-a="foodgift" data-v="${su.id}" data-w="${k}">${RI[k] || E.resName(k)} ${D.marriage.foodGift.units}${E.likedGift(su, k) ? " ❤️" : ""}</button>`).join("")}

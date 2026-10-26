@@ -11,7 +11,7 @@ const rich=s=>{Object.assign(s.res,{coin:1e7,stone:1e5,wood:1e5,blocks:1e5});ret
 const LAND=D.estate.lands, TH={acre:25,riverbank:60,meadow:130,woodlot:200,hillside:400,ridge:600,highclaim:900,valley:1200};
 
 // ---- build, save format unchanged
-ok(/^R(79|80)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R79 build, save stays 55');
+ok(/^R(79|80|81)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R79 build, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R79'&&e.items.length>=3)&&D.changelog.entries.some(e=>e.build==='R78'),'changelog has R79 first and keeps R78');
 
 // ---- data: light thresholds, plot ungated
