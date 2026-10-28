@@ -2,7 +2,7 @@
 // formUrl: the form's .../viewform URL (or the /d/e/<id>/ base); entries: the entry.<number> id for each field ("" = not sent).
 // Get ids from the form's "Get pre-filled link". Radio/scale answers must match the form's option text exactly:
 // fun = "1".."5", tomorrow = "Yes" / "Maybe" / "No".
-export const BUILD = "R84";
+export const BUILD = "R85";
 export const FEEDBACK_FORM = {
   formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScFNZJaWiWnlOC4E0bWszOwFOoVvv7EtIC4DFSDSoJ_TMAaJw/viewform",
   entries: {

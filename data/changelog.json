@@ -2,6 +2,14 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R85",
+   "title": "Clearer tab tours",
+   "items": [
+    "🧔 Tab tours: when Orrin explains a tab, its name and icon are now in the card (like \"🎒 Bag › ⚔️ Gear\"), and that tab pulses with a gold ring in the bottom bar and the strip. The part being explained is no longer dimmed, and the card moves out of the way of it.",
+    "📌 The strip of rooms stays pinned at the top while a tour runs, so it no longer scrolls out of sight, and the tour scrolls to the first stop reliably."
+   ]
+  },
+  {
    "build": "R84",
    "title": "Apprentice perks, gifts and first rewards",
    "items": [

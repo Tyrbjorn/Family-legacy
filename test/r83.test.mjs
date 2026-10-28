@@ -5,7 +5,7 @@ for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]
 for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFileSync(R+'structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const src=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
-ok(/^R8[34]/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R83 build, save stays 55');
+ok(/^R8[345]/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R83 build, save stays 55');
 const CL=D.changelog.entries; ok(CL.some((e,i)=>e.build==='R83'&&e.title==='Small text cleanups'&&CL[i+1].build==='R82'),'changelog leads with R83 "Small text cleanups"');
 for(const b of ['R78','R79','R80','R81']){ const e=CL.find(x=>x.build===b); ok(e&&e.items.length>=3&&!e.items.some(i=>/first draft|may change/i.test(i)),b+': no draft claim, entry kept'); }
 const all=b=>CL.find(x=>x.build===b).items.join(' ');

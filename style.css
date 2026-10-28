@@ -319,3 +319,12 @@ button.tourmask{position:fixed;inset:0;width:100%;height:100%;border:0;padding:0
 #orrin .ostrip .row{flex-wrap:wrap;gap:4px;margin:0}
 @media (max-width:420px){#orrin .otx{font-size:12px}#orrin .ostrip .b{padding:4px 8px}}
 html.rm .idots i,html.rm .tdots i{transition:none}
+/* --- R85: tab-tour spotlight. The dim has holes (see coach-ui.js), the tab named by a stop is ringed and pulses, the sub-tab strip stays pinned during a tour --- */
+.tourwrap .tourmask{background:transparent}
+.tourwrap.nocut .tourmask{background:#0009}
+.tourdim{position:fixed;inset:0;background:#0009;pointer-events:none}
+.tourhole.tourtab{border-width:3px;animation:tourpulse 1.3s ease-in-out infinite}
+@keyframes tourpulse{0%,100%{box-shadow:0 0 0 2px #f4d58d44}50%{box-shadow:0 0 0 8px #f4d58daa}}
+@media (prefers-reduced-motion:reduce){.tourhole.tourtab{animation:none;box-shadow:0 0 0 6px #f4d58d88}}
+.tourtabn{display:inline-block;margin:4px 0 2px;padding:3px 10px;border:1px solid #f4d58d;border-radius:14px;background:#3a3020;color:#f4d58d;font-weight:700;font-size:15px}
+body.touring #subtabs{position:sticky;top:0;z-index:5}

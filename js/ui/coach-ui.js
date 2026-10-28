@@ -5,7 +5,7 @@ import { D, s, slot, entered, getLegacyRec, navGo } from "../main.js";
 import { U } from "./state.js";
 import { UI, uiOk, uiSave } from "./ui-live.js";
 import { render, tabVisible } from "./render.js";
-import { VIEWS } from "./nav-data.js";
+import { VIEWS, GROUPS, groupOfView } from "./nav-data.js";
 import { sect } from "./sect.js";
 import { INTRO_CARDS, CHAPTERS, chapterOf, OFFER, EXPLAINERS, LEDGER_TITLE, GROUND_NOTE, GROUND_TITLE, MASTERS, masterOf, INTRO_PLAYED, CREATION_HEAD, CREATION_HINT, allChimes } from "./coach-data.js";
 import { coachHelpers, ledgerRows, ledgerNext, ledgerDone, groundRows, groundDone, todayCoach, ledgerRec, firstLook, noteList, seenNotes, pendingNotes, markSeen, isSeen, noteFirst, FIRST_OF, chapterStops, stopText, tutActive, tutComplete, isMature } from "./coach-logic.js";
@@ -168,25 +168,62 @@ function tourFinish(how) {
   const nx = (U.tourQueue || []).shift();
   if (nx && how === "seen") tourStart(nx);
 }
+// R85: the tab a stop talks about is named in the card ("⚔️ Bag › Gear") and ringed in the bars (the bottom group button and, when it is on screen, the sub-tab).
+// The dim now has a cut-out for the target and the tab rings, so the part being explained is not dimmed; the sub-tab strip stays pinned while a tour runs.
+export const tabTitle = tab => {
+  const v = VIEWS[tab]; if (!v) return "";
+  const g = GROUPS.find(x => x[0] === groupOfView(tab));
+  return `${g ? g[1] + " " + g[2] + " › " : ""}${v[0]} ${v[1]}`;
+};
+const tabRects = tab => {
+  const out = [];
+  if (!tab) return out;
+  for (const el of [document.querySelector(`#tabs [data-group="${groupOfView(tab)}"]`), document.querySelector(`#subtabs [data-tab="${tab}"]`)]) {
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth) out.push(r);
+  }
+  return out;
+};
+const clipOk = () => typeof CSS !== "undefined" && CSS.supports && CSS.supports("clip-path", 'path("M0 0")');
+const hit = (a, b, m) => Math.max(0, Math.min(a.b, b.bottom + m) - Math.max(a.t, b.top - m)) * Math.max(0, Math.min(a.r, b.right + m) - Math.max(a.l, b.left - m));
 export function tourOverlay() {
   if (!U.tourCh) return "";
   const l = tourList(), st = tourStop(), ch = chapterOf(U.tourCh);
   if (!st) return "";
   const el = visEl(st.sel), r = el ? el.getBoundingClientRect() : null;
-  const hole = r ? `<div class="tourhole" style="left:${Math.round(r.left - 4)}px;top:${Math.round(r.top - 4)}px;width:${Math.round(r.width + 8)}px;height:${Math.round(r.height + 8)}px"></div>` : "";
-  const low = r && r.top + r.height / 2 > innerHeight * 0.5;
-  const pos = !r ? "top:50%;transform:translateY(-50%)" : low ? "top:calc(env(safe-area-inset-top) + 8px)" : "bottom:calc(env(safe-area-inset-bottom) + 84px)";
+  const tabId = st.tab && st.sel !== "#allbtn" ? st.tab : "", tabs = tabRects(tabId); // the "All" arrow stop is about the arrow, not the tab it opens on
+  const ring = (q, cls) => `<div class="tourhole${cls ? " " + cls : ""}" style="left:${Math.round(q.left - 4)}px;top:${Math.round(q.top - 4)}px;width:${Math.round(q.width + 8)}px;height:${Math.round(q.height + 8)}px"></div>`;
+  const rings = (r ? ring(r) : "") + tabs.map(q => ring(q, "tourtab")).join("");
+  // the dim: one layer with holes (target + tab rings), so what is being explained stays bright
+  const W = innerWidth, Hh = innerHeight, cut = clipOk();
+  const box = q => { const l0 = Math.max(0, Math.round(q.left - 4)), t0 = Math.max(0, Math.round(q.top - 4)), r0 = Math.min(W, Math.round(q.right + 4)), b0 = Math.min(Hh, Math.round(q.bottom + 4)); return r0 > l0 && b0 > t0 ? `M${l0} ${t0}H${r0}V${b0}H${l0}Z` : ""; };
+  const holes = [];
+  if (r) holes.push(r);
+  for (const q of tabs) if (!holes.some(h => hit({ l: q.left, r: q.right, t: q.top, b: q.bottom }, h, 4) > 0)) holes.push(q);
+  const dim = cut ? `<div class="tourdim" style="clip-path:path(evenodd,'M0 0H${W}V${Hh}H0Z${holes.map(box).join("")}')"></div>` : "";
+  const mid = !r;
+  // the card goes where it covers the least of the target and, above all, of the tab rings
+  const est = innerWidth < 520 ? 210 : 150, bot = 84;
+  const pa = { l: 8, r: innerWidth - 8, t: 8, b: 8 + est }, pb = { l: 8, r: innerWidth - 8, t: Math.max(8, Hh - bot - est), b: Hh - bot };
+  const cost = c => tabs.reduce((n, q) => n + hit(c, q, 6) * 20, 0) + (r ? hit(c, r, 0) : 0);
+  const low = r && r.top + r.height / 2 > Hh * 0.5;
+  const ca = cost(pa), cb = cost(pb), top = ca < cb ? true : cb < ca ? false : !!low;
+  const pos = mid ? "top:50%;transform:translateY(-50%)" : top ? "top:calc(env(safe-area-inset-top) + 8px)" : "bottom:calc(env(safe-area-inset-bottom) + 84px)";
   const i = Math.min(l.length - 1, U.tourI | 0), last = i === l.length - 1;
   const dots = `<span class="tdots" aria-hidden="true">${l.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")}</span>`;
+  const tn = tabId && tabTitle(tabId) ? `<div class="tourtabn" data-tourtab="${esc(tabId)}">${esc(tabTitle(tabId))}</div>` : "";
   const body = U.tourAsk
     ? `<div><b>Leave this tour?</b></div><div class="row"><button class="b sel" data-a="ch_keep" data-autofocus>Keep going</button><button class="b" data-a="ch_skip">Leave tour</button></div>`
-    : `<div class="muted">🧔 ${esc(ch.name)} · ${i + 1}/${l.length}</div><div class="ttx" aria-live="polite">${esc(stopText(st, H()) || "")}</div>${dots}<div class="row"><button class="b" data-a="ch_back" ${i === 0 ? "disabled" : ""}>‹ Back</button><button class="b" data-a="ch_next" data-autofocus>${last ? "Done" : "Next ›"}</button><span style="flex:1"></span><button class="b" data-a="ch_skip">Skip chapter</button><button class="b" data-a="ch_all">Skip all tours</button></div>`;
-  return `<div class="tourwrap" role="dialog" aria-modal="true" aria-label="Orrin's tour"><button class="tourmask" data-a="ch_ask" aria-label="Leave the tour?" tabindex="-1"></button>${hole}<div class="tourtip card" style="${pos}">${body}</div></div>`;
+    : `<div class="muted">🧔 ${esc(ch.name)} · ${i + 1}/${l.length}</div>${tn}<div class="ttx" aria-live="polite">${esc(stopText(st, H()) || "")}</div>${dots}<div class="row"><button class="b" data-a="ch_back" ${i === 0 ? "disabled" : ""}>‹ Back</button><button class="b" data-a="ch_next" data-autofocus>${last ? "Done" : "Next ›"}</button><span style="flex:1"></span><button class="b" data-a="ch_skip">Skip chapter</button><button class="b" data-a="ch_all">Skip all tours</button></div>`;
+  return `<div class="tourwrap${cut ? "" : " nocut"}" role="dialog" aria-modal="true" aria-label="Orrin's tour">${dim}<button class="tourmask" data-a="ch_ask" aria-label="Leave the tour?" tabindex="-1"></button>${rings}<div class="tourtip card" style="${pos}">${body}</div></div>`;
 }
 let _tick = 0;
 function tourTick() {
-  if (!U.tourCh) return;
+  if (!U.tourCh) { document.body.classList.remove("touring"); return; }
+  document.body.classList.add("touring");
   const st = tourStop(), ov = document.getElementById("overlay");
+  if (st && st.tab) { const sb = document.querySelector(`#subtabs [data-tab="${st.tab}"]`), strip = sb && sb.parentElement; if (strip && strip.scrollWidth > strip.clientWidth && U.tourStrip !== U.tourCh + ":" + U.tourI) { U.tourStrip = U.tourCh + ":" + U.tourI; strip.scrollLeft = sb.offsetLeft - (strip.clientWidth - sb.offsetWidth) / 2; return void setTimeout(() => render(), 0); } }
   if (!st) return void setTimeout(() => { tourFinish("seen"); render(); }, 0);
   const el = visEl(st.sel);
   if (st.sel && !el && !st.soft) {
@@ -198,8 +235,9 @@ function tourTick() {
   }
   if (el) {
     const r = el.getBoundingClientRect();
-    if ((r.top < 56 || r.bottom > innerHeight - 70) && U.tourScrolled !== U.tourCh + ":" + U.tourI) {
-      U.tourScrolled = U.tourCh + ":" + U.tourI;
+    const sk = U.tourCh + ":" + U.tourI, tries = U.tourScrolledK === sk ? U.tourScrolledN | 0 : 0; // R85: up to 3 tries per stop (the first one can land before the room has drawn)
+    if ((r.top < 56 || r.bottom > innerHeight - 70) && tries < 3) {
+      U.tourScrolledK = sk; U.tourScrolledN = tries + 1;
       el.scrollIntoView({ block: "center", behavior: "instant" });
       return void setTimeout(() => render(), 0);
     }
