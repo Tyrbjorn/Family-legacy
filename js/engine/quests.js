@@ -60,7 +60,9 @@ export function resolveQuest(s, m, q, eff) {
   const firstOnce = (q.once || q.story) && !s.doneQuests.includes(q.id);
   addRenown(s, m, Math.ceil(q.cp / 20) + (firstOnce ? LG().renown.questFirstOnce || 0 : 0));
   m.questsDone = (m.questsDone || 0) + 1;
-  (s.qRuns ||= {})[q.id] = (s.qRuns[q.id] || 0) + 1; // R48 times each quest was finished (stats)
+  (s.qRuns ||= {})[q.id] = (s.qRuns[q.id] || 0) + 1;
+  const qcd = questCooldown(q);
+  if (qcd) (s.qCool ||= {})[q.id] = s.day + qcd; // R86: rests for everyone // R48 times each quest was finished (stats)
   const firstDone = !s.doneQuests.includes(q.id);
   if (!s.doneQuests.includes(q.id)) s.doneQuests.push(q.id);
   talentQuest(s, m, q.id); // R36
@@ -123,12 +125,22 @@ export function dungeonRun(s, id) {
 }
 
 // ---- quests: story / one-time / rare drops
-export function questIssue(s, m, q) {
+// R86 quest cooldowns: per quest, shared by the family; only a success starts one
+export function questCooldown(q) {
+  if (!q || q.once || q.story) return 0;
+  if (q.cooldown != null) return q.cooldown;
+  return +((T.questCooldown || {})[q.type] || 0);
+}
+export const questRest = (s, q) => Math.max(0, Math.ceil(((s.qCool || {})[q?.id] || 0) - s.day));
+export const restText = n => `🕒 Back in ${n} day${n === 1 ? "" : "s"}`;
+export function questIssue(s, m, q, ignoreRest = false) {
   if (!q) return "missing";
   if (!known(s, q)) return "hear a rumor or explore";
   if (q.hydra) { const h = hydraIssue(s, q); if (h) return h; }
   if (q.rescue && !takenMembers(s).length) return "no one to rescue"; // R55 // R54 Mother's Pool
   if (q.once && s.doneQuests.includes(q.id)) return "done";
+  const rest = ignoreRest ? 0 : questRest(s, q);
+  if (rest) return restText(rest);
   const g60 = questGate(s, q); // R60 locks, Honor and Hostile gates
   if (g60) return g60;
   if (!regionOpen(s, q.region)) return "region locked";

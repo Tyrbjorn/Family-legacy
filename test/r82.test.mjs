@@ -4,7 +4,7 @@ const R=new URL('../data/',import.meta.url).pathname, D={};
 for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]=JSON.parse(fs.readFileSync(R+f));
 for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFileSync(R+'structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
-ok(/^R8[2345]/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R82 build, save stays 55');
+ok(/^R8[23456]/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R82 build, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==="R82"&&e.items.length>=1),'changelog leads with R82');
 const tr=id=>D.traits.find(t=>t.id===id);
 ok(!/placeholder/i.test(tr('dwarfblood').desc)&&!/placeholder/i.test(tr('dwarfblooded').desc)&&/First-generation half-dwarf/.test(tr('dwarfblood').desc)&&/faint, lasting trace/.test(tr('dwarfblooded').desc),'trait descriptions: no placeholder suffix, text kept');

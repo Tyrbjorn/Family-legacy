@@ -13,7 +13,7 @@ const R=D.estaterooms, ART=D.art, HL=D.world.haul;
 const size=p=>{const b=fs.readFileSync(p); if(b.toString('ascii',0,4)!=='RIFF') return null; const k=b.toString('ascii',12,16);
   if(k==='VP8X') return [1+b.readUIntLE(24,3),1+b.readUIntLE(27,3)]; if(k==='VP8L'){const v=b.readUInt32LE(21);return [1+(v&0x3fff),1+((v>>14)&0x3fff)];} const o=b.indexOf(Buffer.from([0x9d,0x01,0x2a])); return [b.readUInt16LE(o+3)&0x3fff,b.readUInt16LE(o+5)&0x3fff];};
 const T={}; for(const f of D.estate.structureFiles){const d=D['structures/'+f]; for(const x of (Array.isArray(d)?d:(d.structures||Object.values(d)))) T[x.id]=x;}
-ok(/^R(?:85|84|83|82|81|80|79|78|77|76|7[345])/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R73, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R73')&&D.changelog.entries.some(e=>e.build==='R72'),'changelog');
+ok(/^R(?:86|85|84|83|82|81|80|79|78|77|76|7[345])/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R73, save stays 55'); ok(D.changelog.entries.some(e=>e.build==='R73')&&D.changelog.entries.some(e=>e.build==='R72'),'changelog');
 
 // ---- 1. art data: every file exists with the size it claims; every game id maps to a sprite
 for(const [k,v] of Object.entries(ART.sprites)) if(v.file.startsWith('art/animals/')&&!v.file.includes('/sheets/')){ ok(fs.existsSync(root+v.file),'icon file '+k); const z=size(root+v.file); ok(z&&z[0]===v.size&&z[1]===v.size,'icon size '+k); ok(v.size===(/-sm$/.test(k)?24:64),'-sm icons are 24px, the rest 64px '+k); }

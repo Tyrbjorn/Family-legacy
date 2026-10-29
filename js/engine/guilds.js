@@ -106,7 +106,7 @@ export function joinIssues(s, m, gid) {
   else if (!g.open && m.guild) out.push(`sworn to ${guildDef(m.guild.id).name}`);
   if (!isAdult(m)) out.push("must be an adult");
   if (ageY(m) < (D.guilds.minJoinAge || 16)) out.push("age " + (D.guilds.minJoinAge || 16) + "+");
-  for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${statVal(m, k)}/${v}`);
+  for (const [k, v] of Object.entries(q.stats || {})) if (statVal(m, k) < v) out.push(`${k} ${Math.floor(statVal(m, k))}/${v}`);
   for (const [k, v] of Object.entries(q.skills || {}))
     if (m.skills[k].lvl < v) out.push(`${findId(D.skills, k).name} ${m.skills[k].lvl}/${v}`);
   const fee = Math.round((q.coin || 0) * apprFee(m, gid)); // R35 apprenticeship reward

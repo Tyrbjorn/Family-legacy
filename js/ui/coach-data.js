@@ -45,10 +45,11 @@ export const CHAPTERS = [
     { sel: '#view [data-a="market"]', tab: "main", text: "The Market buys what you can spare." },
   ] },
   { id: "t4", icon: "🏡", name: "Estate and rooms", stops: [
+    { sel: '#view [data-a="land"][data-v="plot"]', tab: "land", noLand: true, text: "First, ground of your own. Pay the reeve for the Starting Plot here (150 coin, no renown). The rest of the estate opens once it's yours." },
     { sel: "#view > .card, #view > details", tab: "estate", text: "Your estate's stage and score. Build more and it grows." },
-    { sel: '[data-sec="land.owned"]', tab: "land", text: "Your plot and how many slots it holds." },
+    { sel: '[data-sec="land.owned"]', tab: "land", land: true, text: "Your plot and how many slots it holds." },
     { sel: '[data-sec="buildings.rooms"]', tab: "buildings", text: "A building card and its upgrade button." },
-    { sel: "#view .estroom", tab: "land", text: "Tap a room to see who works there and what it makes." },
+    { sel: "#view .estroom", tab: "land", land: true, text: "Tap a room to see who works there and what it makes." },
     { sel: '[data-sec="estate.capacity"]', tab: "estate", text: "Capacity: how much the larder and the beds can hold." },
   ] },
   { id: "t5", icon: "🎒", name: "The Bag", stops: [
@@ -61,6 +62,7 @@ export const CHAPTERS = [
     { sel: '[data-sec="members.members"]', tab: "members", text: "Your people, and the head of the house." },
     { sel: '[data-sec="members.members"]', tab: "members", text: "Heirs work from {teen} and can wed from {court}.", needs: ["teen", "court"] },
     { sel: '[data-sec="courtship.suitors"]', tab: "courtship", text: "Suitors come calling. Gifts help; so does patience." },
+    { sel: "#guild-rules", tab: "guilds", text: "Adventurers doesn't count. Swear to one guild; Crafters sits alongside. Grey Join means needs not met yet." },
     { sel: "#view > .card", tab: "guilds", text: "Join a guild here, and rise through its ranks." },
     { sel: '[data-sec="quests.available"]', tab: "quests", text: "Quests are trips. Locked ones say why." },
   ] },
@@ -87,7 +89,7 @@ export const EXPLAINERS = [
   { id: "e2", icon: "📈", title: "Skills and XP", text: "Every task teaches a little. Skills level, and levels open better work.", after: "cook", go: "jobs" },
   { id: "e3", icon: "⬆️", title: "Upgrading", text: "Better tools and bigger rooms mean more for the same day. Spend a little on both.", after: "craft", go: "buildings" },
   { id: "e4", icon: "🏡", title: "The estate", text: "Land holds buildings, and buildings hold workers. A full estate pays you back in the dark months.", after: "estate", go: "estate" },
-  { id: "e5", icon: "🏛️", title: "Guilds and rank", text: "A guild gives skills you can't learn alone. Rank comes from work, not coin.", after: "path", go: "guilds" },
+  { id: "e5", icon: "🏛️", title: "Guilds and rank", text: "A guild gives skills you can't learn alone. Rank comes from work, not coin. One sworn guild each (Adventurers doesn't count; Crafters sits alongside).", after: "path", go: "guilds" },
   { id: "e6", icon: "📜", title: "Heirs, generations and saving", text: "You will not live forever, and that is the point. Heirs carry the name and the land. The book saves itself, but you can save it yourself from the ☰ menu.", after: "finale", go: "legacy" },
 ];
 // Orrin's added line for each tutorial step (shown under the step) and the chapter its Show me opens
@@ -139,7 +141,7 @@ export const GROUND = [
 // Orrin chimes in: one note per newly opened part. `kind:"intro"` rows are voiced over the existing unlock-intro lines (data/intros.json, read only).
 export const CHIMES = [
   { id: "craft", kind: "intro", icon: "🔨", title: "Crafting", line: "Someone's got hands for it now. Open the Crafting tab, make something, however small.", go: "craft", steps: ["Open Crafting", "Make something"], ch: "t3" },
-  { id: "guilds", kind: "intro", icon: "🏛️", title: "Guild access", line: "Guilds teach what I can't. Pick one that fits your hands.", go: "guilds", steps: ["Open Guilds", "Join one", "Take a rank-0 guild job"], quests: ["g_hearth_bridge", "g_vanguard_patrol", "g_lodge_hunt", "g_church_plague", "g_collegium_notes", "g_rogues_heist", "g_arch_survey"], ch: "t6" },
+  { id: "guilds", kind: "intro", icon: "🏛️", title: "Guild access", line: "Guilds teach what I can't. Adventurers takes anyone and doesn't count. Swear to one other guild; the Crafters can sit alongside it. A grey Join button tells you what you still lack. A second guild comes much later.", go: "guilds", steps: ["Open Guilds", "Join one", "Take a rank-0 guild job"], quests: ["g_hearth_bridge", "g_vanguard_patrol", "g_lodge_hunt", "g_church_plague", "g_collegium_notes", "g_rogues_heist", "g_arch_survey"], ch: "t6" },
   { id: "food", kind: "intro", icon: "🍲", title: "Food and meals", line: "The land's yours; now feed it. Rations and the menu set how content the house is.", go: "estate", steps: ["Open Estate", "Pick a ration"] },
   { id: "minions", kind: "intro", icon: "🧑‍🤝‍🧑", title: "Workers", line: "Hands cost coin and food, and pay in time.", go: "minions", steps: ["Open Minions", "Hire one"], quests: ["st2"] },
   { id: "houses", kind: "intro", icon: "💌", title: "Courtship", line: "A suitor's at the door. Court slowly; gifts help, but so does patience.", go: "courtship", steps: ["Open Courtship", "Start courting"], quests: ["rq_manor_letter", "rq_manor_gala"], ch: "t6" },

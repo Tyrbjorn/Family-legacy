@@ -11,7 +11,7 @@ const withFields=s=>{E.fieldsState(s).list.push({id:'f1',crop:'wheat',lvl:1,size
 const carts=s=>{const f=E.fieldsState(s);f.ups.cart1=true;f.ups.cart2=true;};
 
 // ---- data + build
-ok(/^R(75|76|77|78|79|80|81|82|83|84|85)$/.test(BUILD)&&D.changelog.entries.some(e=>e.build==='R75'&&e.items.length>=5),'R75 changelog kept'); 
+ok(/^R(75|76|77|78|79|80|81|82|83|84|85|86)$/.test(BUILD)&&D.changelog.entries.some(e=>e.build==='R75'&&e.items.length>=5),'R75 changelog kept'); 
 ok(E.SCHEMA===55&&STEPS.at(-1).n===55,'no schema step: save schema stays 55');
 ok(U&&U.name==='Union Hall'&&U.tiers.length===3&&U.quarter==='nw','union config in fields.json, home quarter');
 ok(U.tiers[0].cost.coin===4000&&U.tiers[0].cost.planks===80&&U.tiers[0].wagons===1,'T1 4000c + 80 planks + 1 Wagon (as simulated)');

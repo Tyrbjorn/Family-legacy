@@ -2,6 +2,19 @@
  "_note": "R39.1 'What's new' popup: newest first. The popup shows once per BUILD (the first entry should match js/config.js BUILD). Plain language for players.",
  "entries": [
   {
+   "build": "R86",
+   "title": "Trait picks, Orrin's pointers, guild rules, tidier Production",
+   "items": [
+    "⚖️ Character creation: you could take two good traits without a bad one. Now one good trait is free, and each bad trait (⚠️) lets you take one more good trait (so two good traits need one bad one). Extra picks you have unlocked (10 achievements, legacy picks) still count as free good picks. Existing families are not changed.",
+    "🧔 Orrin no longer walks you into the Estate before you own any ground. Until the Starting Plot is bought, his Go buttons, notes and the 'Estate and rooms' tour point to the Land page, where you buy the plot. Once it is yours they lead to the estate as before.",
+    "📒 Ground Ledger: the Go button on 'Lend a hand to Bram' (and 'Make a first run to market') seemed to do nothing, because it only opened the top of the Quests tab, which is where the Ledger already sits. Go now scrolls to that quest's card, opens its section and highlights it. The row also says what the quest still needs, e.g. 'deliver 10 wood'.",
+    "🛡️ Guilds: joining the Adventurers' Guild never locked the other guilds. Their Join buttons were grey only because their stat and skill needs weren't met yet, often leaving just the Rangers for a Wenna-trained, nimble founder. The Guilds tab now explains the rules (Adventurers is open to all, one sworn guild per person, Crafters alongside, each guild's needs, the second guild later). After registering, the class card no longer shows a misleading 'Second guild' hint. It says you can still swear to any guild.",
+    "🏛️ The guild rules are now in the tutorial: the 'Choose a Path' step, the Guilds intro, Orrin's Guild note and the guild stop on his family tour all say that the Adventurers' Guild doesn't count, you swear to one guild with the Crafters' Guild alongside, a grey Join button lists what you still need, and a second guild comes later. Guild requirements show whole stats (STR 5/7, not 5.2/7).",
+    "⚙️ Production: the quota picker only lists what your family can make now. Items that are only short on materials stay. Auto Tend folds locked skills into one line. Each has a 'Show all' button, so nothing is hidden for good.",
+    "🕒 Quest cooldowns: once anyone in the family finishes a repeatable quest, it rests for everyone. Errands and gathering rest 3 days, hunts, fights and bounties 5, guild quests 4, and house and dungeon quests 7. Story quests never rest, and a failed run can be retried at once. Resting quests show '🕒 Back in N days' and sit in a 'Resting (N)' group on the Quests tab. Standing quest orders pick the next-hardest open quest, or move to another region when every quest there is resting."
+   ]
+  },
+  {
    "build": "R85",
    "title": "Clearer tab tours",
    "items": [

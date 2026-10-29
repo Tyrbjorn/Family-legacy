@@ -209,6 +209,13 @@ export function legacyPanel() {
 
 // R34: Quotas card (Steward's Ledger). Row: item, target, one-time/standing, progress, status, priority, remove.
 const qName = k => (E.itemDef(k) || {}).name || (E.dishDef(k) || {}).name || E.resName(k);
+// R86 hide rule: an item counts as makeable now when quotaBlock (the engine's own "why is this quota stuck" check) finds nothing
+// in the way, or only a missing input material ("needs wood (3)"), or the luxury-fish setting. Anything else (not learned, Cooking N,
+// "no Kitchen", "no follower on X", "no crafter", "nothing makes it here") is a lock and is hidden.
+export function makeableNow(k) {
+  const b = E.quotaBlock(s, { id: "_probe", item: k, target: 1e12, mode: "standing", made: 0, from: 0 });
+  return !b || !!b.input || /^luxury/.test(b.why || "");
+}
 export function quotasv() {
   const L = E.quotaList(s).filter(q => !q.order), slots = E.quotaSlots(s), used = L.filter(q => !q.parent).length, t2 = E.quotaTier(s) >= 2; // R43: work-order chains show on the Orders card
   const row = (q, i) => {
@@ -218,12 +225,15 @@ export function quotasv() {
  <span>${q.parent ? "" : `<button class="b" style="padding:2px 6px" data-a="qoff" data-v="${q.id}" title="${q.off ? "Resume" : "Pause"}">${q.off ? "▶️" : "⏸️"}</button><button class="b ${q.pwd ? "sel" : ""}" style="padding:2px 6px;font-size:11px" data-a="qpwd" data-v="${q.id}" title="Pause when it next finishes">⏹ when done</button>`}<button class="b" style="font-size:11px;padding:2px 6px" data-a="qmode" data-v="${q.id}">${q.mode === "once" ? "One-time" : "Standing"}</button><button class="b" style="padding:2px 6px" data-a="qup" data-v="${q.id}" ${i ? "" : "disabled"}>▲</button><button class="b" style="padding:2px 6px" data-a="qdown" data-v="${q.id}" ${i < L.length - 1 ? "" : "disabled"}>▼</button><button class="b" style="padding:2px 6px" data-a="qdel" data-v="${q.id}">✖</button></span></div>
  <div class="bar"><i style="width:${pct}%;background:${col}"></i></div><div class="muted" style="font-size:12px">${fmt(have)}/${fmt(q.target)} ${q.mode === "once" ? "made" : "in store"} · <span style="color:${col}">${st.k === "met" ? "✅" : st.k === "blocked" ? "⚠️ blocked:" : "⏳"} ${st.text}</span>${q.parent ? " · pulled for the quota above" : ""}</div></div>`;
   };
-  const opts = [...new Set([...Object.keys(s.res).filter(k => E.producible(k)), ...(D.cooking?.dishes || []).map(x => x.id)])].sort();
-  const sel = U.qItem || opts[0];
+  const all = [...new Set([...Object.keys(s.res).filter(k => E.producible(k)), ...(D.cooking?.dishes || []).map(x => x.id)])].sort();
+  // R86 (Jeremy: "hide what cannot be made"): the quota picker lists only what the family can make now; items only short on
+  // materials stay (that's what a quota is for). "Show all" reveals the rest.
+  const opts = U.prodAll ? all : all.filter(k => makeableNow(k) || L.some(q => q.item === k)), hid = all.length - opts.length;
+  const sel = opts.includes(U.qItem) ? U.qItem : opts[0];
   const add = used < slots ? `<div class="row" style="gap:4px;justify-content:flex-start;flex-wrap:wrap;margin-top:4px"><select data-a="qitem">${opts.map(k => `<option value="${k}" ${k === sel ? "selected" : ""}>${RI[k] || ""} ${qName(k)}</option>`).join("")}</select><input type="number" min="1" value="${U.qNum || 50}" data-a="qnum" style="width:64px"><button class="b" data-a="qadd" data-v="standing">+ Keep</button><button class="b" data-a="qadd" data-v="once">+ Make once</button></div>` : `<div class="muted">All ${slots} quota slots used${t2 ? "" : " (tier 2: unlimited)"}.</div>`;
   return `<div class="card" id="quotas"><div class="row"><b>📋 Quotas</b>${autoChip("quotas", "", !(s.autoOff || {}).quotas)}<span class="muted">${slots > 99 ? used + " set" : used + "/" + slots + " slots"} · tier ${E.quotaTier(s)}</span></div>
  <div class="muted" style="font-size:12px">Automation works toward quotas top-down; standing quotas stop at the target. Reserves are never touched; food keeps cooking while stock is under ${E.QC().foodSafetyDays} days.${t2 ? " Tier 2: blocked quotas pull their inputs, standing targets are sell floors, a follower a month moves to a job that feeds a quota." : ""}</div>
- ${L.map(row).join("") || '<div class="muted">No quotas yet.</div>'}${add}</div>`;
+ ${L.map(row).join("") || '<div class="muted">No quotas yet.</div>'}${add}${hid || U.prodAll ? `<div class="muted" id="prod-more" style="font-size:12px">${U.prodAll ? "Showing everything, including what you can't make yet." : `${hid} more can't be made yet (skill, building or recipe still locked).`} <button class="b" style="font-size:11px" data-a="prod_all">${U.prodAll ? "Hide locked" : "Show all"}</button></div>` : ""}</div>`;
 }
 
 const estateLayoutNow = () => estateLayout(s, D, E);

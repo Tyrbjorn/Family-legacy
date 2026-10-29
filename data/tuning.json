@@ -504,5 +504,16 @@
   "tagMax": 3,
   "boardRows": 8,
   "recoverHint": 0.05
+ },
+ "questCooldown": {
+  "_note": "R86 quest cooldowns (Jeremy): days a repeatable quest rests for the whole family after a SUCCESSFUL run. once/story quests never rest; dungeon-type quests 7 days (placeholder, Jeremy); types not listed (chain, beat, story) have none. A quest's own 'cooldown' field overrides.",
+  "errand": 3,
+  "gather": 3,
+  "hunt": 5,
+  "fight": 5,
+  "bounty": 5,
+  "house": 7,
+  "guild": 4,
+  "dungeon": 7
  }
 }

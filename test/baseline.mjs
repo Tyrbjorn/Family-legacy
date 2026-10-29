@@ -5,7 +5,7 @@ import { execFile } from "child_process";
 const N = +(process.argv[2] || 10), Y = +(process.argv[3] || 40), P = +(process.argv[4] || 8), BIG = 3000;
 const run = seed => new Promise(res => execFile("node", [new URL("./longsim.mjs", import.meta.url).pathname, "1", String(Y)], { env: { ...process.env, SEED: String(seed) }, maxBuffer: 1 << 26 }, (e, out) => {
   const r = JSON.parse(out.slice(0, out.indexOf("\n]\n") + 3))[0];
-  res({ seed, maxGen: r.maxGen, avgFam: r.avgFam, wageX: r.wageX, wagesNow: r.wagesNow, maxScore: r.maxScore, vb: r.villageBuildings, coin: r.coinEvery10y, timing: r.timing, gens: r.gens, deaths: r.deaths, lineages: r.lineages, legacy: r.legacyEarned, tithed: r.tithed, evt: r.evt || {}, snap: [...r.snap.slice(1), [r.renown, r.minions, r.structs]], issues: /ISSUES 0 \[\]/.test(out) ? 0 : 1 });
+  res({ seed, maxGen: r.maxGen, avgFam: r.avgFam, wageX: r.wageX, wagesNow: r.wagesNow, maxScore: r.maxScore, vb: r.villageBuildings, coin: r.coinEvery10y, qRuns: r.qRuns || {}, timing: r.timing, gens: r.gens, deaths: r.deaths, lineages: r.lineages, legacy: r.legacyEarned, tithed: r.tithed, evt: r.evt || {}, snap: [...r.snap.slice(1), [r.renown, r.minions, r.structs]], issues: /ISSUES 0 \[\]/.test(out) ? 0 : 1 });
 }));
 const seeds = Array.from({ length: N }, (_, i) => i + 1), rows = [];
 for (let i = 0; i < seeds.length; i += P) rows.push(...(await Promise.all(seeds.slice(i, i + P).map(run))));
@@ -37,3 +37,6 @@ const ek = [...new Set(rows.flatMap(r => Object.keys(r.evt)))];
 console.log(`events per seed (median): ${ek.map(k => k + " " + med(rows.map(r => r.evt[k] || 0))).join(" · ")}`);
 if (process.env.ROWS) (await import("fs")).writeFileSync(process.env.ROWS, JSON.stringify(rows));
 console.log(`sims with issues: ${rows.filter(r => r.issues).length}`);
+// R86: quest spread (final lineage's s.qRuns): runs, distinct quests, top-1 / top-3 share, Ashbrook Harvest share (medians)
+{ const sp = rows.map(r => { const v = Object.entries(r.qRuns).sort((a, b) => b[1] - a[1]), tot = v.reduce((a, [, n]) => a + n, 0) || 1; return { tot, dis: v.length, top: v[0]?.[0], t1: 100 * (v[0]?.[1] || 0) / tot, t3: 100 * v.slice(0, 3).reduce((a, [, n]) => a + n, 0) / tot, hv: 100 * (r.qRuns.hq_ashbrook_harvest || 0) / tot }; });
+  console.log(`quest spread: runs ${med(sp.map(x => x.tot))} · distinct ${med(sp.map(x => x.dis))} · top-1 share ${med(sp.map(x => Math.round(x.t1)))}% · top-3 ${med(sp.map(x => Math.round(x.t3)))}% · Harvest ${med(sp.map(x => Math.round(x.hv)))}% · top quest per seed: ${sp.map(x => x.top).join(",")}`); }

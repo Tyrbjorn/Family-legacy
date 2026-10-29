@@ -13,6 +13,7 @@ const row = (m, x) => {
 // R47 second guild: which rule opened it, the second class and its next steps (capped at tier 2), or the quiet hint
 function second(m) {
   if (!D.guilds.second) return "";
+  if (!m.guild) return ""; // R86: no sworn guild yet (Adventurers is a rank track), so a "second guild" hint misleads
   const open = E.secondOpenText(m), why = E.stuck2(s, m);
   if (!m.guild2) return `<div class="muted" id="second-guild">${open ? "🔓 " + open + (why ? " · " + why.replace(/^Second guild: /, "Auto's pick: ") : "") : why || ""}</div>`;
   const c2 = E.cls2(m), g2 = E.guildDef(m.guild2.id);
@@ -33,6 +34,7 @@ export function classCard(m) {
   const nx = gid && E.chainNext(s, gid), nq = nx && E.findId(D.quests, nx.quest);
   let h = `<h3>🎓 Guild tiers</h3><div class="card" id="guildtiers"><div>${cur.icon || ""} <b>${cur.name}</b> <span class="muted">· Tier ${E.tierN(cur)} (${E.guildTierDef(cur).name || ""})${g ? " · " + (g.icon || "") + " " + g.name : ""} · Lv ${E.level(m)}</span></div>`;
   h += second(m);
+  if (!m.guild && cur.id === "adventurer") h += `<div class="muted" id="adv-note">🧭 The Adventurers' Guild is a rank track, not your one sworn guild. You can still swear to one of the others (Warriors, Rangers, Magic, Healers, Rogues, Architects) once you meet its stats and skills: see the Guilds tab. Joining one retrains you into its class.</div>`;
   h += list.length ? list.map(x => row(m, x)).join("") : `<div class="muted">${E.tierN(cur) >= 3 ? "Top tier of the base game reached (tier 4 comes with the expansion)." : "No next class yet."}</div>`;
   h += `<div class="row"><button class="b" data-a="clsall" data-v="${m.id}">${all ? "Show nearest" : "Show all"}</button>${nq ? `<span class="muted">📜 Next guild chain quest: <b>${nq.name}</b> (${E.rankName(nq.rank || 0)})${nx.unlock ? " → unlocks " + nx.unlock.map(E.unlockName).join(", ") : ""}</span>` : ""}</div></div>`;
   return h;

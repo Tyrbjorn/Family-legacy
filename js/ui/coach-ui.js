@@ -8,7 +8,7 @@ import { render, tabVisible } from "./render.js";
 import { VIEWS, GROUPS, groupOfView } from "./nav-data.js";
 import { sect } from "./sect.js";
 import { INTRO_CARDS, CHAPTERS, chapterOf, OFFER, EXPLAINERS, LEDGER_TITLE, GROUND_NOTE, GROUND_TITLE, MASTERS, masterOf, INTRO_PLAYED, CREATION_HEAD, CREATION_HINT, allChimes } from "./coach-data.js";
-import { coachHelpers, ledgerRows, ledgerNext, ledgerDone, groundRows, groundDone, todayCoach, ledgerRec, firstLook, noteList, seenNotes, pendingNotes, markSeen, isSeen, noteFirst, FIRST_OF, chapterStops, stopText, tutActive, tutComplete, isMature } from "./coach-logic.js";
+import { coachHelpers, hasLand, landGo, ledgerRows, ledgerNext, ledgerDone, groundRows, groundDone, todayCoach, ledgerRec, firstLook, noteList, seenNotes, pendingNotes, markSeen, isSeen, noteFirst, FIRST_OF, chapterStops, stopText, tutActive, tutComplete, isMature } from "./coach-logic.js";
 
 const esc = x => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 let _H = null;
@@ -106,7 +106,7 @@ export function offerCard() {
   if (!t.offer || U.tourCh) return "";
   return `<div class="card tut orrinoffer"><b>🧔 ${esc(OFFER.title)}</b> <span class="muted">${esc(OFFER.text)}</span><div class="row"><button class="b sel" data-a="offer_walk">${esc(OFFER.yes)}</button><button class="b" data-a="offer_skip">${esc(OFFER.no)}</button></div></div>`;
 }
-const rowBtns = (r, tab) => `${r.go && r.go !== "@menu" ? `<button class="b" data-a="coach_go" data-v="${r.go}">Go</button>` : r.go === "@menu" ? `<button class="b" data-a="m_open">Open menu</button>` : ""}${r.ch ? `<button class="b" data-a="ch_start" data-v="${r.ch}">Show me</button>` : ""}`;
+const rowBtns = (r0, tab, r = Object.assign({}, r0, { go: landGo(s, r0.go) })) => `${r.go && r.go !== "@menu" ? (r.go === "quests" && typeof r.quest === "string" ? `<button class="b" data-a="coach_quest" data-v="${r.quest}">Go</button>` : `<button class="b" data-a="coach_go" data-v="${r.go}">Go</button>`) : r.go === "@menu" ? `<button class="b" data-a="m_open">Open menu</button>` : ""}${r.ch ? `<button class="b" data-a="ch_start" data-v="${r.ch}">Show me</button>` : ""}`;
 export function ledgerCard() {
   const t = todayCoach(s, UI, slot, H(), uiOk() && slot >= 1);
   if (!t.ledger) return "";
@@ -114,10 +114,23 @@ export function ledgerCard() {
   const body = `<h3>${LEDGER_TITLE}</h3>${masterLine()}<div class="lrows">${rows.map(r => `<div class="lrow${r.done ? " dn" : ""}${nxt && nxt.id === r.id ? " nx" : ""}"><span>${r.done ? "✅" : "⬜"} ${esc(r.label)}${!r.done && E.firstReward(r.id) ? ` <span class="muted">· ${E.firstReward(r.id)}</span>` : ""}</span>${nxt && nxt.id === r.id ? `<div class="muted">${esc(r.line)}</div><div class="row">${rowBtns(r)}</div>` : ""}</div>`).join("")}</div><div class="row"><button class="b" data-a="ledger_hide">Hide this</button></div>`;
   return sect("main.ledger", body, { chip: `${nDone}/${rows.length}` });
 }
+// R86 (Jeremy: "Lend a hand to Bram" Go did nothing): a quest row's Go opened the Quests tab top, and the Ledger itself sits on
+// the Quests tab, so the click looked dead. Now Go opens Quests and scrolls to that quest's card (opening its section) and flashes it;
+// the row also says what the quest still needs (e.g. "deliver 10 wood").
+const qNeed = r => { if (typeof r.quest !== "string") return ""; const q = E.findId(D.quests, r.quest); const i = q && E.questIssue(s, E.active(s), q); return i && i !== "done" ? ` · ${i.startsWith("🕒") ? "" : "🔒 "}${esc(i)}` : ""; };
+export const goQuest = id => {
+  U.screen = null; U.noteCard = null; navGo("quests");
+  setTimeout(() => {
+    const b = document.querySelector(`#view [data-a="quest"][data-v="${id}"]`), c = b && b.closest(".card");
+    if (!c) return;
+    for (let d = c.parentElement; d; d = d.parentElement) if (d.tagName === "DETAILS") d.open = true;
+    c.scrollIntoView({ block: "center", behavior: "instant" }); c.classList.add("qflash"); setTimeout(() => c.classList.remove("qflash"), 1600);
+  }, 120);
+};
 export function groundBody(full) {
   const rows = groundRows(s, H()), n = rows.filter(r => r.status === "done").length, tot = rows.filter(r => !r.later).length;
   const note = tutComplete(s, H()) ? `<div class="orrinq">🧔 “${esc(GROUND_NOTE)}”</div>` : "";
-  return { n, tot, html: `<h3>${GROUND_TITLE}</h3>${note}${E.firstReward("ground_all") ? `<div class="muted">Finish every row for ${E.firstReward("ground_all")}.</div>` : ""}<div class="lrows">${rows.map(r => `<div class="lrow ${r.status}"><span>${r.status === "done" ? "✅" : r.status === "later" ? "⏳" : r.lock ? "🔒" : "⬜"} ${esc(r.label)}${r.status !== "done" && E.firstReward(r.id) ? ` <span class="muted">· ${E.firstReward(r.id)}</span>` : ""}</span>${r.status !== "done" ? `<div class="muted">${esc(r.note)}${r.lock ? ` · ${esc(r.lock)}` : ""}</div><div class="row">${r.status === "open" && !r.lock ? rowBtns(r) : ""}</div>` : ""}</div>`).join("")}</div>` };
+  return { n, tot, html: `<h3>${GROUND_TITLE}</h3>${note}${E.firstReward("ground_all") ? `<div class="muted">Finish every row for ${E.firstReward("ground_all")}.</div>` : ""}<div class="lrows">${rows.map(r => `<div class="lrow ${r.status}"><span>${r.status === "done" ? "✅" : r.status === "later" ? "⏳" : r.lock ? "🔒" : "⬜"} ${esc(r.label)}${r.status !== "done" && E.firstReward(r.id) ? ` <span class="muted">· ${E.firstReward(r.id)}</span>` : ""}</span>${r.status !== "done" ? `<div class="muted">${esc(r.note)}${r.lock ? ` · ${esc(r.lock)}` : r.status === "open" ? qNeed(r) : ""}</div><div class="row">${r.status === "open" && !r.lock ? rowBtns(r) : ""}</div>` : ""}</div>`).join("")}</div>` };
 }
 export function groundCard() {
   const t = todayCoach(s, UI, slot, H(), uiOk() && slot >= 1);
@@ -144,7 +157,7 @@ export function stepExtra(stepId) {
 
 // ---------------------------------------------------------------- tours: chapter overlay
 const visEl = sel => { if (!sel) return null; for (const el of document.querySelectorAll(sel)) { const r = el.getBoundingClientRect(); if (r.width > 0 && r.height > 0 && !el.closest("[hidden]")) return el; } return null; };
-const tourList = () => { const ch = chapterOf(U.tourCh); return ch ? chapterStops(ch, tabVisible, H()) : []; };
+const tourList = () => { const ch = chapterOf(U.tourCh); return ch ? chapterStops(ch, tabVisible, H(), hasLand(s)) : []; };
 export function tourStop() { const l = tourList(); return l[Math.max(0, Math.min(l.length - 1, U.tourI | 0))] || null; }
 function tourSet(i, dir) {
   const l = tourList();
@@ -267,7 +280,7 @@ const blocked = () => {
   if (window._mapDrag || s.gameOver || (s.pendingClass && s.pendingClass[0]) || s.needSuccession) return true;
   return false;
 };
-const dotTo = n => { if (n.go && n.go !== "@menu" && VIEWS[n.go]) (U.orrinDots ||= {})[n.go] = 1; };
+const dotTo = n0 => { const n = Object.assign({}, n0, { go: landGo(s, n0.go) }); if (n.go && n.go !== "@menu" && VIEWS[n.go]) (U.orrinDots ||= {})[n.go] = 1; };
 const later = id => { const n = noteList(s, H()).find(x => x.id === id); if (n) dotTo(n); U.orrinCur = null; U.orrinMenu = false; };
 export function coachTick() {
   tourTick();
@@ -312,7 +325,7 @@ export function noteDialog() {
 export const orrinOverlay = () => (U.noteCard ? noteDialog() : tourOverlay());
 
 // ---------------------------------------------------------------- click actions (merged into main.js `local`)
-const toGo = v => { U.screen = null; if (VIEWS[v]) navGo(v); };
+const toGo = v => { U.screen = null; v = landGo(s, v); if (VIEWS[v]) navGo(v); }; // R86: no land yet -> the Land page
 export const coachLocal = {
   intro_next: () => { const i = (U.introI | 0) + 1; if (i >= INTRO_CARDS.length) introEnd(); else U.introI = i; },
   intro_back: () => { U.introI = Math.max(0, (U.introI | 0) - 1); },
@@ -334,6 +347,8 @@ export const coachLocal = {
   ch_skip: () => { U.tourQueue = []; tourFinish("skipped"); },
   ch_all: () => { U.tourQueue = []; U.tourCh = null; U.tourAsk = false; if (uiOk()) { UI.coach.off = true; uiSave(); } },
   coach_go: v => toGo(v),
+  coach_quest: v => goQuest(v),
+  prod_all: () => { U.prodAll = !U.prodAll; }, // R86 Production tab: show/hide what cannot be made yet
   note_go: v => { const n = noteList(s, H()).find(x => x.id === v); U.noteCard = null; if (n) toGo(n.go); },
   note_close: () => { U.noteCard = null; },
   orrin_more: v => { const id = v; U.orrinCur = null; if (id === "_many") { U.screen = "notes"; } else U.noteCard = id; },

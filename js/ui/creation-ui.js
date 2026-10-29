@@ -35,7 +35,7 @@ export function creationv() {
     row("Sex", O.sexes.map(x => ch("gender", x.id, x.name, c.gender === x.id)).join("")),
     row("Race", O.races.map(x => ch("race", x.id, x.name, c.race === x.id, x.ok, x.how)).join("")),
     row("Bloodline", O.bloodlines.map(x => ch("blood", x.id, x.name, (c.blood || "") === x.id, x.ok, x.how)).join("")),
-    row(`Traits <b>${c.traits.length}/${cap}</b> · pick up to ${O.maxPicks}; a bad trait (⚠️) earns one more`, traits),
+    row(`Traits <b>${c.traits.length}/${cap}</b> · ${O.freeGood} good trait${O.freeGood === 1 ? "" : "s"} free; a bad trait (⚠️) earns one more good pick (up to ${O.maxPicks + O.bonusForBad})`, traits),
     row("Starting class" + (O.classes.some(x => x.ok) ? "" : ` <span class="muted">🔒 ${esc(O.classes[0] && O.classes[0].how)}</span>`), ch("cls", "", "None", !c.cls) + O.classes.map(x => ch("cls", x.id, x.icon + " " + x.name, c.cls === x.id, x.ok, x.how)).join("")),
     row("Hair", sty.map(([id, n]) => ch("hair", id, n, c.look.hair === id)).join("") + (c.gender === "f" ? ch("bun", "1", "Bun", !!c.look.bun) : "")),
     row("Hair colour", C.hairCols.map((h, i) => sw("hairCol", i, h.col, (c.look.hairCol | 0) === i, h.name)).join("")),

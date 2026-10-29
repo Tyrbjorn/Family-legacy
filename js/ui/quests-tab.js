@@ -31,7 +31,7 @@ function row(m, q, star) {
   const iss = !open ? `region locked (CP ${rg.cp})` : E.questIssue(s, m, q) || E.questAgeIssue(m, q, s);
   const k = qKind(q);
   return `<div class="card ${star ? "tut" : ""}" style="padding:6px 8px;margin:4px 0"><div class="row"><span>${star ? "⭐ <b>Start here:</b> " : k[0] + " "}<b>${q.name}</b><br><span class="muted">${rg.icon || ""} ${rg.name} · ${q.risk} · CP ${q.cp} · ${q.days}d · ${rew(q)} · 🚶 ${E.travelDays(q.id)}d${(so => (so ? ` · ${so.mode === "boat" ? "⛵" : "⛴️"} ${so.days}d${so.fare ? ` (${so.fare}🪙)` : ""}` : ""))(E.seaOption(s, q.id))}${q.act ? ` · Act ${q.act}${q.beat ? " beat" : ""}` : ""}${q.chain ? ` · 🪸 ${E.questChainName(q.chain)} ${q.step}/${E.questChain(q.chain).length}` : ""}${q.check ? ` · 🎲 ${E.checkText(m, q)}` : ""}</span>${q.desc && (q.grants || q.firstGrants || q.deliver || q.chain) ? `<br><span class="muted" style="font-size:11px">${q.desc}</span>` : ""}</span>
-<span class="row" style="gap:4px"><button class="b" data-a="qmap" data-v="${q.id}" title="Show on the map">📍</button><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss ? "disabled" : ""}>${on ? "On it" : "Go"}</button></span></div>${iss ? `<div class="muted">🔒 ${iss}</div>` : ""}</div>`;
+<span class="row" style="gap:4px"><button class="b" data-a="qmap" data-v="${q.id}" title="Show on the map">📍</button><button class="b ${on ? "sel" : ""}" data-a="quest" data-v="${q.id}" ${iss ? "disabled" : ""}>${on ? "On it" : "Go"}</button></span></div>${iss ? `<div class="muted">${iss.startsWith("🕒") ? "" : "🔒 "}${iss}</div>` : ""}</div>`;
 }
 
 // R49: choices waiting from a quest's ending (the reef chain): never block play
@@ -75,13 +75,15 @@ export function questParts() {
   const f = U.qFilter || "all";
   const vis = D.quests.filter(q => !q.story && E.questVisible(s, q) && !(q.once && s.doneQuests.includes(q.id)) && !(ratsOpen() && q.id === "rats"));
   const can = q => E.regionOpen(s, q.region) && !E.questIssue(s, m, q) && !E.questAgeIssue(m, q, s);
-  const list = f === "can" ? vis.filter(can) : vis;
+  const resting = vis.filter(q => E.questRest(s, q) > 0).sort((a, b) => E.questRest(s, a) - E.questRest(s, b)); // R86 cooldowns
+  const list = (f === "can" ? vis.filter(can) : vis).filter(q => !resting.includes(q));
   h += `<h3>📜 Available (${list.length})</h3><div class="row" style="gap:4px;justify-content:flex-start">${[["all", "All"], ["can", "Can do now"]].map(([k, n]) => `<button class="b ${f === k ? "sel" : ""}" data-a="qfilter" data-v="${k}">${n}</button>`).join("")}</div>`;
   for (const rg of D.regions) {
     const qs = list.filter(q => q.region === rg.id);
     if (qs.length) h += `<div class="muted" style="margin-top:6px">${rg.icon || ""} ${rg.name}${E.regionOpen(s, rg.id) ? "" : " 🔒"}</div>` + qs.map(q => row(m, q)).join("");
   }
   if (!list.length) h += '<div class="muted">Nothing here yet: walk, gather or explore to find more.</div>';
+  if (resting.length) h += `<details id="q-resting" style="margin-top:6px"><summary><b>🕒 Resting (${resting.length})</b> <span class="muted" style="font-size:12px">done recently; they open again soon</span></summary>${resting.map(q => row(m, q)).join("")}</details>`;
   P.available = h;
   P.story = storyv(m);
   h = "";

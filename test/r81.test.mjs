@@ -6,7 +6,7 @@ for(const f of fs.readdirSync(R).filter(f=>f.endsWith('.json')))D[f.slice(0,-5)]
 for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFileSync(R+'structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);return s;};
-ok(/^R(81|82|83|84|85)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R81 build, save stays 55 (no SAVE_VERSION / schema bump)');
+ok(/^R(81|82|83|84|85|86)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R81 build, save stays 55 (no SAVE_VERSION / schema bump)');
 ok(D.changelog.entries.some(e=>e.build==='R81'&&e.items.length>=3)&&D.changelog.entries.some(e=>e.build==='R80'),'changelog');
 const s0=fresh(), BASE=T.baseLifespan;
 const P=()=>({race:'dwarf',traits:[]}), H=()=>({traits:['dwarfblood']}), B=()=>({traits:['dwarfblooded']}), X=()=>({traits:[]});

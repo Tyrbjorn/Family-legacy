@@ -25,7 +25,7 @@ import {
   travelTick,
 } from "./map.js";
 import { minionPower } from "./minions.js";
-import { dungeonDef, dungeonIssue, questIssue } from "./quests.js";
+import { dungeonDef, dungeonIssue, questIssue, questRest } from "./quests.js";
 import { refineDay, taskYields } from "./requests.js";
 import { checkBonus } from "./saltmere.js";
 import { landFish } from "./fish.js";
@@ -150,18 +150,27 @@ export function doAction(s, m, a, eff) {
   if (h) h(s, m, a, eff);
 }
 
+// R86: picks the hardest quest the person can take in the region. Resting quests are skipped (questIssue). If the region's
+// quests are ALL resting, move to the open region whose hardest available quest is highest (ties: first in D.regions);
+// otherwise the old fallback "rats" (if it isn't resting itself); otherwise null (the caller has them work that day).
 export function autoQuest(s, m, region) {
-  const qs = D.quests.filter(
-    q =>
-      q.region === region &&
-      !q.story &&
-      !q.house && // standing orders never pick sides between houses
-      !questIssue(s, m, q) &&
-      q.risk !== "deadly" &&
-      q.cp <= cp(s, m) &&
-      regionOpen(s, region),
-  );
-  return qs.sort((a, b) => b.cp - a.cp)[0] || findId(D.quests, "rats");
+  const ok = (q, rg, ign) =>
+    q.region === rg &&
+    !q.story &&
+    !q.house && // standing orders never pick sides between houses
+    !questIssue(s, m, q, ign) &&
+    q.risk !== "deadly" &&
+    q.cp <= cp(s, m) &&
+    regionOpen(s, rg);
+  const best = (rg, ign) => D.quests.filter(q => ok(q, rg, ign)).sort((a, b) => b.cp - a.cp)[0];
+  const q = best(region);
+  if (q) return q;
+  if (best(region, true)) {
+    const alt = D.regions.filter(r => r.id !== region).map(r => best(r.id)).filter(Boolean).sort((a, b) => b.cp - a.cp)[0];
+    if (alt) return alt;
+  }
+  const rats = findId(D.quests, "rats");
+  return rats && !questRest(s, rats) ? rats : null;
 }
 
 // ---- standing orders: Explore / Adventure
@@ -282,7 +291,8 @@ export function actionAllowed(s, m, a) {
   }
   if (t === "quest") {
     const q = findId(D.quests, a.target);
-    return !!q && canQuest(m, q, s) && !questIssue(s, m, q);
+    const mid = m.action && m.action.type === "quest" && m.action.target === a.target && (m.action.trip || m.action.progress > 0); // R86: a run already under way finishes even if someone else's success set the quest resting
+    return !!q && canQuest(m, q, s) && !questIssue(s, m, q, mid);
   }
   if (t === "explore") return !exploreIssue(s, m, a.target);
   if (t === "dungeon") return !dungeonIssue(s, m, dungeonDef(a.target));

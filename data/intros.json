@@ -203,7 +203,7 @@
    "icon": "🏛️",
    "tab": "guilds",
    "when": "adultFree",
-   "intro": "Guilds train members and open new paths.",
+   "intro": "Guilds train members and open new paths. The Adventurers' Guild is open to all and doesn't count. Each person swears to one other guild, with the Crafters' Guild alongside. A grey Join button lists what you still need. A second guild comes later.",
    "steps": [
     {
      "id": "gd_view",

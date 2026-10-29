@@ -32,6 +32,8 @@ export function guildsv() {
   const m = E.active(s),
     A = D.guilds.adventurers;
   let h = `<div class="muted">Showing guild standing for <b>${m.name}</b> (switch members on Main).</div>`;
+  // R86 (Jeremy: "joined the adventurers guild and now can only join the rangers guild"): the rules were only implied by greyed buttons
+  h += `<div class="card muted" id="guild-rules">📜 <b>How guilds work:</b> the Adventurers' Guild is open to everyone and never blocks another guild. Each person can swear to <b>one</b> of the other guilds (the Crafters' Guild can be joined alongside it). Each guild's Join button stays grey until its listed stats and skills are met, so early on usually only the guild matching your master's trade and traits is open. Train stats and skills to open the others. A second guild opens later (tier 3, or Master in a trade).${m.guild ? ` <b>${m.name}</b> is sworn to the ${E.guildDef(m.guild.id).name}.` : ""}</div>`;
   h += `<h3>${A.icon} ${A.name}</h3><div class="card"><div class="muted">${A.desc} Branches: ${A.towns.map(t => E.findId(D.towns, t).name).join(", ")}.</div>`;
   if (!m.adv)
     h += `<div class="row" style="margin-top:6px"><span class="muted">Not registered</span><button class="b" data-a="advjoin" ${E.isAdult(m) && s.res.coin >= A.joinCost ? "" : "disabled"}>Register ${A.joinCost}🪙</button></div>`;

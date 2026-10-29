@@ -2,6 +2,7 @@ import * as E from "../../engine.js";
 import { s } from "../../main.js";
 import { U } from "../state.js";
 import { tourList } from "../guide.js";
+import { landGo } from "../coach-logic.js";
 import { groupOf, introTabOf } from "../render.js";
 import { toggleDock } from "../progress.js";
 
@@ -37,7 +38,7 @@ export const metaActions = ({ v, b, m }) => ({
   tournext: () => {
     U.tour++;
     const st = tourList()[U.tour];
-    if (st) U.tab = st.tab;
+    if (st) U.tab = landGo(s, st.tab); // R86: no estate before the plot
   },
   tourend: () => {
     U.tour = null;

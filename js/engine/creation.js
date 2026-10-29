@@ -125,6 +125,7 @@ export function creationOptions(rec) {
     frames: frames.map(([id, ok]) => ({ id, art: C.frames[id], ok })),
     maxPicks: (C.maxPicks || 2) + (have("third_pick") ? 1 : 0) + (legacyBonuses(rec).fx.picks || 0), // R60 carry-over picks
     bonusForBad: C.bonusPickForBad || 1,
+    freeGood: (C.freeGoodPicks ?? 1) + (have("third_pick") ? 1 : 0) + (legacyBonuses(rec).fx.picks || 0), // R86: good traits allowed without a bad one
   };
 }
 // a choice is {name, gender, race, blood, traits[], cls, look{hair,hairCol,skin,beard,bun}, house, frame}
@@ -141,6 +142,7 @@ export function creationIssue(choice, rec) {
   for (const t of ts) { const op = (traitDef(t) || {}).opposes; if (op && ts.includes(op)) return "Opposite traits"; }
   const bad = ts.filter(t => (traitDef(t) || {}).rarity === "bad").length;
   if (ts.length > o.maxPicks + (bad ? o.bonusForBad : 0)) return `Pick at most ${o.maxPicks}${bad ? "" : " (take a bad trait for one more)"}`;
+  if (ts.length - bad > o.freeGood + bad * o.bonusForBad) return bad ? "Too many good traits for one bad trait" : `Only ${o.freeGood} good trait${o.freeGood === 1 ? "" : "s"} without a bad one (⚠️). Take a bad trait first, or drop a good one`;
   if (c.gender && !["m", "f"].includes(c.gender)) return "Bad sex";
   return null;
 }

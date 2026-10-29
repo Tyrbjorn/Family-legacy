@@ -2,6 +2,7 @@
 // (same controls as the building card), R37: a status page (what runs, why something is idle or locked) plus Auto Equip; upgrades live in the Legacy panel.
 import * as E from "../engine.js";
 import { D, s } from "../main.js";
+import { U } from "./state.js";
 import { cardRefine } from "./estate-card.js";
 
 function ascendCard(btn) {
@@ -62,11 +63,12 @@ export function automationv() {
     : '<div class="card muted">No refining buildings yet (sawmill, mason yard, smithy, kitchen…). Their settings will appear here.</div>';
   const pwdBtn = (key, on) => `<button class="b ${on ? "sel" : ""}" style="font-size:11px" data-a="apwd" data-v="${key}" title="Switch off after the task in hand">⏹ when done</button>`;
   const btn = (key, on) => `<button class="b ${on ? "sel" : ""}" data-a="autotog" data-v="${key}">${on ? "On" : "Off"}</button>`;
-  const at = E.atCats().map(k => {
+  const atAll = E.atCats(), atLock = atAll.filter(k => E.atStatus(s, k).locked); // R86: locked skills fold into one line
+  const at = atAll.filter(k => U.prodAll || !E.atStatus(s, k).locked).map(k => {
     const x = E.atStatus(s, k), nm = k[0].toUpperCase() + k.slice(1);
     const st = x.locked ? `🔒 ${x.why}` : !x.on ? "off" : x.manned ? "paused: someone is doing it by hand" : x.target ? `running at ${Math.round(x.rate * 100)}%: ${x.target}${x.dflt ? " (default)" : ""}` : "idle: nothing to repeat yet";
     return `<div class="row" data-atstatus="${k}" style="gap:6px;justify-content:flex-start;flex-wrap:wrap"><b>${nm}</b> <span class="muted">${st}${x.pwd ? " · pauses when done" : ""}</span>${x.locked ? "" : btn("at_" + k, x.on)}${x.locked || !x.on ? "" : pwdBtn("at_" + k, x.pwd)}</div>`;
-  }).join("");
+  }).join("") + (atLock.length ? `<div class="muted" id="tend-more" style="font-size:12px">${U.prodAll ? "Showing locked skills too." : `${atLock.length} more skill${atLock.length === 1 ? "" : "s"} unlock later (${atLock.join(", ")}).`} <button class="b" style="font-size:11px" data-a="prod_all">${U.prodAll ? "Hide locked" : "Show all"}</button></div>` : "");
   const eq = [["gear", "Weapons, armor, offhands", "build the Armory (Guardhouse upgrade)"], ["tools", "Follower tools", "build a Workshop"]]
     .map(([k, nm, need]) => `<div class="row" style="gap:6px;justify-content:flex-start"><b>${nm}</b>${E.autoEqUnlocked(s, k) ? btn("eq_" + k, E.autoEqOn(s, k)) : `<span class="muted">locked: ${need}</span>`}</div>`).join("");
   return `<h3>⚙️ Automation status</h3>${statusCard()}${autoCraftCard(btn, pwdBtn)}${peopleCard()}<h4>🌱 Auto Tend <span class="muted">(free ${Math.round(E.legacyDef("at_tend").free * 100)}%; Workshop → Gather &amp; Refine Rate in 🏛️ Legacy raises it)</span></h4><div class="muted">Status of every skill. On from day 1 once the skill and its building are unlocked: starts on a default recipe, then repeats the last thing done by hand, and pauses while someone does it.</div><div class="card" style="padding:6px 8px">${at}</div><h4>🛡️ Auto Equip</h4><div class="muted">Once a day, puts better vault gear on family (first) and followers. Hand-equipped slots are never swapped.</div><div class="card" style="padding:6px 8px">${eq}</div>${familyCard(btn)}${ascendCard(btn)}${holdsCard()}<h4>🏭 Refining</h4><div class="muted">Refining: switch a building off, idle it while its output storage is full (cap ${E.matCap(s)}), or only refine while each input is above 50% / 75% of storage.</div>${list}`;

@@ -193,7 +193,7 @@ function orderDay(s, m, eff) {
       const q = autoQuest(s, m, o.target);
       m.action = q ? { type: "quest", target: q.id, progress: 0 } : null;
     }
-    doAction(s, m, m.action, eff);
+    doAction(s, m, m.action || { type: "work" }, eff); // R86: everything resting -> a day of work
   } else if (o.type === "craft") {
     if (!m.action || m.action.type !== "craft") m.action = { type: "craft", target: o.target, progress: 0 };
     doAction(s, m, m.action, eff);

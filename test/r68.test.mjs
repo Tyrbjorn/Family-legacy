@@ -8,7 +8,7 @@ for(const f of fs.readdirSync(root+'data').filter(f=>f.endsWith('.json'))) D[f.s
 for(const f of D.estate.structureFiles) D['structures/'+f]=JSON.parse(fs.readFileSync(root+'data/structures/'+f+'.json'));
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const R=D.estaterooms, A=R.art;
-ok(/^R(?:85|84|83|82|81|80|79|78|77|76|68|69|70|71|72|73|74|75)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
+ok(/^R(?:86|85|84|83|82|81|80|79|78|77|76|68|69|70|71|72|73|74|75)/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R68, save stays 55');
 ok(D.changelog.entries.some(e=>e.build==='R68'),'changelog');
 const webp=f=>{const b=fs.readFileSync(f);return b.slice(0,4).toString()==='RIFF'&&b.slice(8,12).toString()==='WEBP'&&b.slice(12,16).toString()==='VP8L';};
 for(const k of ['herbrack','toolrack','reagentshelf','lanterns','tanrack']) ok(A.pieces[k]==='pieces/'+k+'-wall'&&A.onWall.includes(k),'wall redraw '+k);

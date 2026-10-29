@@ -34,6 +34,11 @@ export const tutActive = (s, h) => !!tut(s) && !!tut(s).started && !tut(s).skipp
 const td = (s, ...ids) => !!tut(s) && (tut(s).skipped || ids.every(i => tutDoneIds(s).includes(i)));
 export const isMature = s => (s.day | 0) > 3 || (!!tut(s) && ((tut(s).step | 0) > 0 || !!tut(s).skipped));
 export const hasLand = s => arr(s.land).length > 0;
+// R86 (Jeremy: "Orrin will take you to the estate before it is purchased"): the Estate rooms that only make sense once the family
+// owns ground. Before the first plot every Orrin pointer (Go buttons, notes, dots, tour stops) aims at the Land page, where the
+// Starting Plot is bought, instead.
+export const LAND_VIEWS = ["estate", "buildings", "fields", "union", "minions", "auto"];
+export const landGo = (s, v) => (v && LAND_VIEWS.includes(v) && !hasLand(s) ? "land" : v);
 const built = s => Object.values(s.buildings || {}).some(v => v > 0) || arr(s.structures).length > 0;
 const pathChosen = s => living(s).some(m => m.cls || m.guild || m.craft || m.prof);
 const visited = (s, t) => arr(s.townsVisited).includes(t);
@@ -143,6 +148,7 @@ export function noteList(s, h) {
     const on = c.kind === "pack" ? declWhen(s, c.when, h) : !!TRIG[c.id](s, h);
     out.push(Object.assign({}, c, { on, quote: c.kind === "intro" ? h.introText(c.id) : "" }));
   }
+  for (const n of out) n.go = landGo(s, n.go); // R86
   return out;
 }
 export const noteById = (s, h, id) => noteList(s, h).find(n => n.id === id) || null;
@@ -177,8 +183,9 @@ export function stopText(st, h) {
   return t.replace(/\{(\w+)\}/g, (_, k) => (h[k] > 0 ? h[k] : "?"));
 }
 export const stopAvailable = (st, vis, h) => (!st.tab || vis(st.tab)) && stopText(st, h) != null;
-export function chapterStops(ch, vis, h) {
-  return ch.stops.filter(st => stopAvailable(st, vis, h));
+export function chapterStops(ch, vis, h, landed = true) {
+  // R86: before the first plot, stops in land-only rooms drop out and `noLand` stops (buy the plot) step in; after it, the reverse
+  return ch.stops.filter(st => (landed ? !st.noLand : !st.land && !LAND_VIEWS.includes(st.tab)) && stopAvailable(st, vis, h));
 }
 export const chapterIds = () => CHAPTERS.map(c => c.id);
 

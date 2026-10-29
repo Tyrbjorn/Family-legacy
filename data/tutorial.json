@@ -169,7 +169,7 @@
    "id": "path",
    "icon": "🧭",
    "title": "Choose a Path",
-   "text": "\"You're grown now. Blade, craft or guild: your choice.\" Pick a class, a craft or a guild (Work tab, Guilds).",
+   "text": "\"You're grown now. Blade, craft or guild: your choice.\" Pick a class, a craft or a guild (Work tab, Guilds). The Adventurers' Guild is open to all and doesn't count. Each person swears to one other guild, with the Crafters' Guild alongside. A grey Join button lists what you still need. A second guild comes later.",
    "check": "path",
    "reward": {
     "coin": 60,

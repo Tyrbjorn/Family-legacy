@@ -2,6 +2,8 @@
  "_note": "R59 character creation + per-device legacy unlocks (fl-r59-character-creation-proposal.md). Colours, open set and unlock mapping were approved as proposed; exact hex values for hair and house colours are invented.",
  "maxPicks": 2,
  "bonusPickForBad": 1,
+ "freeGoodPicks": 1,
+ "_freeGoodNote": "R86 (Jeremy: two positive traits must not come without a negative): only freeGoodPicks good (non-bad) traits are free; each bad trait allows bonusPickForBad more good ones. Extra picks from unlocks (third_pick, legacy picks) add free good picks.",
  "elderAge": 55,
  "skins": [
   { "id": "fair", "name": "Fair", "col": "#F1D3B8" },

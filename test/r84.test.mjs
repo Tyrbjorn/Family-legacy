@@ -7,7 +7,7 @@ for(const f of D.estate.structureFiles)D['structures/'+f]=JSON.parse(fs.readFile
 E.setData(D); let pass=0; const ok=(c,m)=>{if(!c){console.error('FAIL',m);process.exit(1);}pass++;};
 const src=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const fresh=()=>{const s=E.newGame(1);E.normalize(s);return s;};
-ok(/^R(84|85)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R84 build, save stays 55');
+ok(/^R(84|85|86)$/.test(BUILD)&&E.SCHEMA===55&&STEPS.at(-1).n===55,'R84 build, save stays 55');
 const CL=D.changelog.entries; ok(CL.some(e=>e.build==='R84'&&e.items.length>=5),'changelog leads with R84');
 
 // ---- D5 / D6: new saves only

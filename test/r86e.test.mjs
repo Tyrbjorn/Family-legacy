@@ -1,0 +1,20 @@
+// R86e: guild rules in the tutorial; Production hides what cannot be made (UI only)
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+const r = f => readFileSync(new URL("../" + f, import.meta.url), "utf8");
+let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; };
+const T = JSON.parse(r("data/tutorial.json")), I = JSON.parse(r("data/intros.json"));
+const path = JSON.stringify(T).match(/Choose a Path[^}]*/)[0];
+ok(/doesn't count/.test(path) && /one other guild/.test(path) && /second guild/.test(path), "tutorial path step explains guilds");
+ok(/doesn't count/.test(JSON.stringify(I).match(/"id": ?"guilds"[\s\S]{0,600}/)[0]), "guilds intro");
+const C = await import("../js/ui/coach-data.js");
+ok(C.CHAPTERS.find(c => c.id === "t6").stops.some(st => st.sel === "#guild-rules"), "t6 guild-rules stop");
+ok(/doesn't count/.test(C.EXPLAINERS.find(e => e.id === "e5").text), "e5");
+ok(/Math\.floor\(statVal\(m, k\)\)/.test(r("js/engine/guilds.js")), "whole stats in guild needs");
+const et = r("js/ui/estate-tab.js"), at = r("js/ui/automation-tab.js"), cu = r("js/ui/coach-ui.js");
+ok(/export function makeableNow/.test(et) && /!b \|\| !!b\.input/.test(et), "hide rule: only locks hidden, material shortfalls kept");
+ok(/U\.prodAll \? all : all\.filter\(k => makeableNow\(k\) \|\| L\.some/.test(et), "existing quotas never hidden");
+ok(/id="prod-more"/.test(et) && /id="tend-more"/.test(at) && /prod_all: \(\) =>/.test(cu), "show-all toggles");
+const CL = JSON.parse(r("data/changelog.json")).entries;
+ok(CL[0].build === "R86" && CL[0].items.some(i => /Production/.test(i)), "changelog");
+console.log("r86e ok", n);
